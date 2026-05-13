@@ -1,0 +1,61 @@
+# ION Production workspace root ignore candidate
+# Status: candidate. Review before installing as /home/sev/ION - Production/.gitignore.
+
+# Secrets and local env
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+*service_role*
+*SECRET*
+*TOKEN*
+.supabase/
+.env.supabase.local
+
+# Python/cache/build
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+dist/
+build/
+*.egg-info/
+.eggs/
+
+# Node/build
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.next/
+out/
+coverage/
+
+# Editor/OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Runtime/noisy local state
+*.log
+logs/
+tmp/
+_tmp/
+.cache/
+
+# Drive mirrors and generated exports
+ION_GDRIVE_CONTEXT_MIRROR/
+ION_REPO_MIRROR/
+exports/
+
+# Keep quarantine visible by default, but do not stage raw bundles blindly.
+quarentine/git_bundles_*/

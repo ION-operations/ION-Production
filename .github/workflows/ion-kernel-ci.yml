@@ -1,0 +1,48 @@
+# ION kernel: install + pytest (O0 production gate)
+name: ION kernel CI
+
+on:
+  push:
+    paths:
+      - "ION/**"
+      - ".github/workflows/ion-kernel-ci.yml"
+  pull_request:
+    paths:
+      - "ION/**"
+      - ".github/workflows/ion-kernel-ci.yml"
+
+defaults:
+  run:
+    working-directory: ION
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: ION/pyproject.toml
+
+      - name: Install package (editable) + dev deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: ion-preflight (K1)
+        run: ion-preflight
+
+      - name: Ruff lint
+        run: ruff check 04_packages/kernel 04_packages/ion_api 04_packages/ion_evidence_mcp 04_packages/ion_policy_mcp 04_packages/ion_recon_mcp 04_packages/ion_state_mcp tests
+
+      - name: Run pytest
+        run: python -m pytest

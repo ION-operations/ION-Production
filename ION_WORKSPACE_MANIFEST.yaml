@@ -1,0 +1,69 @@
+schema_id: ion.workspace_manifest.v0_1
+status: candidate
+created_at: '2026-05-13'
+workspace_root: /home/sev/ION - Production
+source_truth_target: monorepo_root_after_migration
+accepted_state_authority: false
+settlement_required: true
+
+families:
+  ION_Developement:
+    role: active ION kernel/context repo
+    git_status: nested_repo_current
+    description: Main ION development, kernel packages, context, docs, protocols, tests.
+  ION_GPT:
+    role: Custom GPT surfaces
+    git_status: workspace_folder_candidate
+    description: Custom GPT Action Gateway schemas and GPT release packages.
+  browser_extension:
+    role: browser carrier extension
+    git_status: workspace_folder_candidate
+    description: ChatGPT/ION browser extension source and build outputs.
+  mcp:
+    role: MCP and ChatGPT browser connector surfaces
+    git_status: workspace_folder_candidate
+    description: MCP server, preview, action schema, and connector scripts.
+  local_daemon:
+    role: local bridge daemons
+    git_status: workspace_folder_candidate
+    description: Local machine daemons for bridge and automation support.
+  systemd:
+    role: local user service templates
+    git_status: workspace_folder_candidate
+    description: systemd user-service templates for local ION services.
+  product_packager:
+    role: packaging/export builders
+    git_status: workspace_folder_candidate
+    description: Product/package builder utilities and release helpers.
+  Cursor:
+    role: Cursor integration surfaces
+    git_status: workspace_folder_candidate
+    description: Cursor extension and SDK material.
+  dAimon:
+    role: dAimon app/agent project
+    git_status: nested_repo_current
+    description: dAimon Gemini bridge and app/agent project.
+  AIM-OS:
+    role: AIM/legacy/adjacent architecture corpus
+    git_status: nested_repo_current
+    description: Large adjacent architecture/document corpus.
+  ATLAS:
+    role: ATLAS surfaces
+    git_status: workspace_folder_candidate
+  wisdomNET:
+    role: WisdomNET surfaces
+    git_status: workspace_folder_candidate
+  Needs_Routed:
+    role: operator staging/inbox
+    git_status: workspace_folder_candidate
+  quarentine:
+    role: archive witness and quarantine
+    git_status: workspace_folder_candidate
+    active_source: false
+
+rules:
+  - Do not use /home/sev as the project Git root.
+  - Do not delete nested repo histories before bundle backup.
+  - Do not treat quarantine as active source.
+  - Do not expose secrets in manifests, OpenAPI schemas, docs, or commits.
+  - GPT Builder changes require Custom GPT Action Release domain artifacts.

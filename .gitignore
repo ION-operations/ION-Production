@@ -1,0 +1,95 @@
+# ION Production workspace root ignore candidate
+# Status: candidate. Review before installing as /home/sev/ION - Production/.gitignore.
+
+# Secrets and local env
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.pfx
+# Secret-bearing filenames only; do not block documentation names containing token/secret.
+*.service_role
+*.service_role.*
+*service-role-key*
+*service_role_key*
+*secret.key
+*secret.pem
+*token.key
+*token.pem
+.supabase/
+.env.supabase.local
+
+# Python/cache/build
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+dist/
+build/
+*.egg-info/
+.eggs/
+
+# Node/build
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.next/
+out/
+coverage/
+
+# Editor/OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Runtime/noisy local state
+*.log
+logs/
+tmp/
+_tmp/
+.cache/
+
+# Drive mirrors and generated exports
+ION_GDRIVE_CONTEXT_MIRROR/
+ION_REPO_MIRROR/
+exports/
+
+# Keep quarantine visible by default, but do not stage raw bundles blindly.
+quarentine/git_bundles_*/
+
+# Local-only ION project vault. Never commit contents.
+ION_VAULT_LOCAL/
+
+# Local migration evidence; tracked only by explicit release decision, not broad add.
+quarentine/git_bundles_*/
+quarentine/git_dirs_*/
+quarentine/nested_repo_worktree_evidence_*/
+
+# Explicit local secret/env blocks discovered during root migration scan
+ION_Developement/.env.supabase.local
+dAimon/.env
+AIM-OS/data/mcp/*.key
+AIM-OS/data/mcp/*secret*
+AIM-OS/data/mcp/*credential*
+
+# Nested project dependency/build caches
+ION_Developement/ION/08_ui/joc_cockpit_shell/node_modules/
+dAimon/.venv/
+**/.venv/
+**/node_modules/
+**/__pycache__/
+**/.pytest_cache/
+
+# Migration evidence is local unless explicitly curated into docs
+quarentine/git_bundles_20260513/
+quarentine/git_dirs_20260513/
+quarentine/nested_repo_worktree_evidence_20260513/
