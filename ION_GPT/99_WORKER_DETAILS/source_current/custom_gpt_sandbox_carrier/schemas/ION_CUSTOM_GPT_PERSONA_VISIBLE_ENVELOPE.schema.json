@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "schema_id": "ion.custom_gpt.persona_visible_envelope.schema.v0_4_2",
+  "type": "object",
+  "required": ["ion_persona"],
+  "properties": {
+    "ion_persona": {
+      "type": "object",
+      "required": ["schema", "verdict", "persona", "route", "confidence", "gesture", "inner_monologue", "boundaries"],
+      "properties": {
+        "schema": {"const": "ion.persona_response_envelope.v0_1"},
+        "verdict": {"type": "string"},
+        "persona": {
+          "type": "object",
+          "required": ["visible_name", "role_ref", "selected_profile", "profile_status", "persona_is_total_ion"],
+          "properties": {
+            "visible_name": {"type": "string", "minLength": 1},
+            "role_ref": {"const": "role.persona_interface"},
+            "selected_profile": {"type": "string", "minLength": 1},
+            "profile_status": {"type": "string", "minLength": 1},
+            "persona_is_total_ion": {"const": false}
+          }
+        },
+        "route": {
+          "type": "object",
+          "required": ["route_id", "candidate_domains", "candidate_agents"],
+          "properties": {
+            "route_id": {"type": "string", "minLength": 1},
+            "selection_basis": {"type": "string"},
+            "candidate_domains": {"type": "array", "items": {"type": "string"}},
+            "candidate_agents": {"type": "array", "items": {"type": "string"}}
+          }
+        },
+        "confidence": {
+          "type": "object",
+          "required": ["level", "semantic"],
+          "properties": {
+            "level": {"type": "string", "minLength": 1},
+            "semantic": {"type": "string", "minLength": 1}
+          }
+        },
+        "gesture": {
+          "type": "object",
+          "required": ["gesture", "semantic"],
+          "properties": {
+            "gesture": {"type": "string", "minLength": 1},
+            "semantic": {"type": "string", "minLength": 1}
+          }
+        },
+        "inner_monologue": {
+          "type": "object",
+          "required": ["type", "text", "not_claimed"],
+          "properties": {
+            "type": {"const": "operator_visible_persona_signal_not_hidden_reasoning"},
+            "text": {"type": "string", "minLength": 1},
+            "not_claimed": {"type": "array", "items": {"type": "string"}}
+          }
+        },
+        "boundaries": {
+          "type": "object",
+          "required": ["output_is_not_state", "candidate_until_receipted_or_accepted", "production_authority", "live_execution_authority", "hidden_chain_of_thought_exposed"],
+          "properties": {
+            "output_is_not_state": {"const": true},
+            "candidate_until_receipted_or_accepted": {"const": true},
+            "production_authority": {"const": false},
+            "live_execution_authority": {"const": false},
+            "hidden_chain_of_thought_exposed": {"const": false}
+          }
+        }
+      }
+    }
+  }
+}

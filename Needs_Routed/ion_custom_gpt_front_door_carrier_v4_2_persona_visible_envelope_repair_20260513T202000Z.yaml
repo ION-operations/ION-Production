@@ -1,0 +1,51 @@
+schema_id: ion.custom_gpt.front_door_carrier_v4_2.persona_visible_envelope_repair.v1
+created_at_utc: 20260513T202000Z
+posture: sandbox-candidate
+accepted_state_claim: false
+production_authority: false
+live_execution_authority: false
+source_files_inspected:
+  - ION_Developement/ION/05_context/current/ai_assistant_work/protocols/PERSONA_VISIBLE_ENVELOPE_PROTOCOL_V0_1.md
+  - ION_Developement/ION/06_intelligence/orchestration/custom_gpt/v2_5_saved_files/08_persona/PERSONA_VISIBLE_ENVELOPE_REFERENCE.md
+  - ION_Developement/ION/04_packages/kernel/ion_persona_response_envelope.py
+  - ION_Developement/ION/03_registry/ion_persona_presentation_registry.yaml
+  - ION_Developement/ION/02_architecture/FRONT_DOOR_PERSONA_RELAY_STEWARD_BOUNDARY_PROTOCOL.md
+  - ION_Developement/ION/02_architecture/SINGLE_CARRIER_FULL_SPECTRUM_CHAT_PROTOCOL.md
+  - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/
+files_changed:
+  - ION_GPT/01_GPT_BUILDER_INPUTS/CURRENT_INSTRUCTIONS_TO_PASTE.md
+  - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/instructions/ION_CUSTOM_GPT_MAIN_INSTRUCTIONS_8000.md
+  - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/instructions/ION_CUSTOM_GPT_PERSONA_VISIBLE_ENVELOPE.md
+  - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/instructions/ION_CUSTOM_GPT_BOOT_RECEIPT_CONTRACT.md
+  - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/schemas/ION_CUSTOM_GPT_BOOT_SEQUENCE_RESULT.schema.json
+  - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/schemas/ION_CUSTOM_GPT_PERSONA_VISIBLE_ENVELOPE.schema.json
+  - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/registries/ION_CUSTOM_GPT_PERSONA_PROFILE_REGISTRY.yaml
+  - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/templates/ION_CUSTOM_GPT_BOOT_PERSONA_RESPONSE.template.md
+  - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/templates/ION_CUSTOM_GPT_PERSONA_INTERFACE_RESPONSE.template.md
+  - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/routes/BOOT_TO_PERSONA_ROUTE.yaml
+  - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/context/ION_CUSTOM_GPT_SANDBOX_CARRIER_CONTEXT_PACKAGE.yaml
+  - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tools/ion_custom_gpt_sequence_harness.py
+  - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tests/test_persona_visible_envelope_candidate.py
+  - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tests/test_boot_receipt_candidate.py
+  - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tests/test_persona_profile_selector_candidate.py
+tests_run:
+  - command: PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -q v4_and_v4_2_custom_gpt_tests
+    exit_code: 0
+    result: 20 passed
+validation:
+  boot_receipt_contract: pass
+  persona_visible_envelope_contract: pass
+  profile_selector_contract: pass
+  hidden_chain_of_thought_exposed: false
+  paste_instruction_chars: 7418
+blockers: []
+next:
+  - Review v4.2 candidate patch.
+  - Commit only after operator approval.
+non_claims:
+  - no accepted state claimed
+  - no GPT Builder update performed
+  - no Git push
+  - no deployment
+  - no service restart
+  - no live connector mutation

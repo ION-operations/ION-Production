@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "schema_id": "ion.custom_gpt.boot_sequence_result.schema.v0_4_2",
+  "type": "object",
+  "required": ["ion_boot_sequence_result"],
+  "properties": {
+    "ion_boot_sequence_result": {
+      "type": "object",
+      "required": [
+        "schema_id",
+        "boot_id",
+        "route_id",
+        "ion_project_hash",
+        "project_hash_status",
+        "mounted_packages",
+        "objective",
+        "active_workflow_object",
+        "phases_completed",
+        "persona_return_gate",
+        "accepted_state_claim",
+        "production_authority",
+        "live_execution_authority",
+        "receipt_status"
+      ],
+      "properties": {
+        "schema_id": {"const": "ion.boot_sequence_result.v1"},
+        "boot_id": {"type": "string", "minLength": 1},
+        "route_id": {"type": "string", "minLength": 1},
+        "ion_project_hash": {"type": "string", "minLength": 1},
+        "project_hash_status": {
+          "enum": [
+            "assigned_candidate",
+            "mounted_from_continuity_package",
+            "pending_build",
+            "missing",
+            "conflict_blocked"
+          ]
+        },
+        "mounted_packages": {
+          "type": "object",
+          "required": ["count", "posture"],
+          "properties": {
+            "count": {"type": "integer", "minimum": 0},
+            "posture": {"type": "string"}
+          }
+        },
+        "objective": {"type": "string"},
+        "active_workflow_object": {"type": "string"},
+        "phases_completed": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+        "persona_return_gate": {"enum": ["pass", "blocked"]},
+        "accepted_state_claim": {"const": false},
+        "production_authority": {"const": false},
+        "live_execution_authority": {"const": false},
+        "receipt_status": {"const": "candidate_boot_receipt"}
+      }
+    }
+  }
+}

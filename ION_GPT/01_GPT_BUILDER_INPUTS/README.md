@@ -4,24 +4,32 @@ This is the first folder to use when editing the Custom GPT.
 
 ## Instructions field
 
-Paste this file into the Custom GPT Instructions box:
+Paste this file into the GPT Builder Instructions box:
 
 ```text
 CURRENT_INSTRUCTIONS_TO_PASTE.md
 ```
 
-## Actions field
+## Knowledge uploads
 
-Action schemas are in:
+Upload the zip files from:
+
+```text
+../02_PACKAGES_TO_UPLOAD/UPLOAD_THESE_ZIPS/
+```
+
+## Actions
+
+Install the two Action schemas from:
 
 ```text
 ../03_ACTIONS/
 ```
 
-## Knowledge uploads
+## Continuity transfer
 
-Upload package guidance is in:
+For a new chat handoff, use:
 
 ```text
-../02_PACKAGES_TO_UPLOAD/
+../05_CONTINUITY_TRANSFER/
 ```

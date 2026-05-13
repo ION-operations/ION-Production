@@ -1,11 +1,17 @@
-# Packages to Upload
+# 02 Packages to Upload
 
-Use the zip files inside:
+Upload every zip in this folder:
 
-`UPLOAD_THESE_ZIPS/`
+```text
+UPLOAD_THESE_ZIPS/
+```
 
-That folder is the user-facing upload folder. It should contain only the current zip package set.
+This is the current GPT Knowledge upload set. It should contain the current 10-file package set, including the sandbox-carrier package first.
 
-Historical or replaced zip sets belong in:
+Do not upload files from historical folders unless a current release sheet explicitly says so.
 
-`../90_HISTORICAL_ZIPS/`
+Worker manifests and hashes are kept under:
+
+```text
+../99_WORKER_DETAILS/gpt_upload_set_worker_details/
+```

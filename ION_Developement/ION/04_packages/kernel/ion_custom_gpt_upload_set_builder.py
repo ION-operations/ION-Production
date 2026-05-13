@@ -56,6 +56,21 @@ GLOBAL_EXCLUDE_PATTERNS = [
 ]
 
 PACKAGE_SPECS = {
+    "ion_custom_gpt_sandbox_carrier_package": {
+        "title": "ION Custom GPT Sandbox Carrier Package",
+        "prefix": "ION_CUSTOM_GPT_SANDBOX_CARRIER_PACKAGE",
+        "purpose": "Primary GPT boot package: current paste instructions, front-door carrier contract, persona/boot receipt laws, action setup maps, and continuity-transfer instructions.",
+        "roots": [
+            "ION_GPT/README.md",
+            "ION_GPT/01_GPT_BUILDER_INPUTS",
+            "ION_GPT/02_PACKAGES_TO_UPLOAD/README.md",
+            "ION_GPT/03_ACTIONS",
+            "ION_GPT/04_CURRENT_SANDBOX_CARRIER",
+            "ION_GPT/05_CONTINUITY_TRANSFER",
+            "ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier",
+        ],
+        "extra_exclude_names": set(),
+    },
     "full_workspace_snapshot": {
         "title": "ION Production Workspace Snapshot",
         "prefix": "ION_PRODUCTION_WORKSPACE_SNAPSHOT",

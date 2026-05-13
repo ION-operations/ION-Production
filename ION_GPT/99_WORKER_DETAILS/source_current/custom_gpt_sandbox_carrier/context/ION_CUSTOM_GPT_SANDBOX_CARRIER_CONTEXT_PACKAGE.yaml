@@ -1,7 +1,7 @@
-schema_id: ion.context_package.v0_1
-package_id: ION_CUSTOM_GPT_SANDBOX_CARRIER_CONTEXT_PACKAGE_V0_3
-purpose: Make a Custom GPT operate as an ION sandbox carrier by mounting source posture, route
-  contracts, templates, and persona interface context before answering.
+schema_id: ion.context_package.v0_4_2
+package_id: ION_CUSTOM_GPT_SANDBOX_CARRIER_CONTEXT_PACKAGE_V0_4_2
+purpose: Make a Custom GPT operate as an ION sandbox carrier by mounting source posture,
+  route contracts, templates, and persona interface context before answering.
 called_by:
 - Custom GPT Knowledge upload
 - boot-sequence starter
@@ -32,6 +32,12 @@ root_nodes:
 - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/schemas/ION_CUSTOM_GPT_PERSONA_RETURN_PACKAGE.schema.json
 - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/schemas/ION_CUSTOM_GPT_SEQUENCE_CONTINUATION_ENVELOPE.schema.json
 - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tools/ion_custom_gpt_sequence_harness.py
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/instructions/ION_CUSTOM_GPT_PERSONA_VISIBLE_ENVELOPE.md
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/instructions/ION_CUSTOM_GPT_BOOT_RECEIPT_CONTRACT.md
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/schemas/ION_CUSTOM_GPT_BOOT_SEQUENCE_RESULT.schema.json
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/schemas/ION_CUSTOM_GPT_PERSONA_VISIBLE_ENVELOPE.schema.json
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/registries/ION_CUSTOM_GPT_PERSONA_PROFILE_REGISTRY.yaml
+- ION_GPT/05_CONTINUITY_TRANSFER/README.md
 included_nodes:
 - instructions
 - indexes
@@ -41,6 +47,7 @@ included_nodes:
 - evidence
 - schemas
 - tools
+- registries
 excluded_nodes:
 - secrets
 - vaults
@@ -49,8 +56,8 @@ excluded_nodes:
 traversal_rules:
 - Read START_HERE first.
 - Treat Persona Interface as presentation/ingress, not orchestration authority.
-- Preserve the logical path Persona ingress -> Relay -> Steward/internal -> Relay return ->
-  Persona response even when one carrier executes the phases sequentially.
+- Preserve the logical path Persona ingress -> Relay -> Steward/internal -> Relay
+  return -> Persona response even when one carrier executes the phases sequentially.
 - Read this context package second.
 - Use route packets before improvising response structure.
 - Use templates as output shape, not as ritual text to dump.
@@ -96,3 +103,27 @@ final_answer_gate:
   requires_relay_return_package_or_sandbox_candidate: true
   requires_persona_return_gate: true
   telemetry_only_substantive_response_forbidden: true
+persona_visible_envelope:
+  required: true
+  schema_ref: schemas/ION_CUSTOM_GPT_PERSONA_VISIBLE_ENVELOPE.schema.json
+  inner_monologue_type: operator_visible_persona_signal_not_hidden_reasoning
+  hidden_chain_of_thought_exposed: false
+boot_receipt_contract:
+  required_for_boot_sequence: true
+  schema_ref: schemas/ION_CUSTOM_GPT_BOOT_SEQUENCE_RESULT.schema.json
+  receipt_status: candidate_boot_receipt
+persona_profile_selector:
+  registry_ref: registries/ION_CUSTOM_GPT_PERSONA_PROFILE_REGISTRY.yaml
+  presentation_only: true
+  profiles_grant_authority: false
+project_continuity_hash:
+  carried_by: ion_project_hash
+  new_chat_without_package: pending_build
+  mounted_package: reuse_package_hash
+  mismatch_behavior: block_and_report_hash_conflict
+  action_gateway_enforcement: later_packet_only
+action_boot_check:
+  normal_boot_requires_live_actions: false
+  read_only_probe_first: true
+  stop_on_auth_invalid: true
+  write_smoke_requires_explicit_operator_approval: true

@@ -1,0 +1,63 @@
+schema_id: ion.gpt.folder_upload_continuity_project_hash_setup.v1
+created_at_utc: 20260513T213800Z
+posture: sandbox-candidate
+accepted_state_claim: false
+production_authority: false
+live_execution_authority: false
+git_push: false
+gpt_builder_updated: false
+objective: refresh ION_GPT user folder, v4.2 carrier package, continuity transfer, 10-file upload set, and project hash definition
+branch: codex/ion-custom-gpt-front-door-carrier-v4
+changes:
+- added user-facing ION_GPT/05_CONTINUITY_TRANSFER lane
+- restored 10-file GPT Knowledge upload set with focused sandbox-carrier package first
+- added project hash fields to continuity transfer package and boot receipt contract
+- added read-only Action boot/check posture to instructions and route contract
+- corrected active Action schema references to the two current ION_GPT/03_ACTIONS schema paths
+- refreshed current upload zips and worker upload manifests
+- preserved previous upload zips under historical folders
+artifacts:
+  current_upload_set_timestamp: 20260513T213800Z
+  current_upload_file_count: 10
+  current_upload_folder: ION_GPT/02_PACKAGES_TO_UPLOAD/UPLOAD_THESE_ZIPS
+  continuity_transfer_package: ION_CONTINUITY_TRANSFER_PACKAGE_20260513T214000Z.zip
+  continuity_transfer_sha256: 4299fa1e219662f07ed763340040b6d9e49514a48b2e9c00591b2a4a113e2070
+  continuity_transfer_latest_folder: ION_GPT/05_CONTINUITY_TRANSFER/LATEST_PACKAGE
+validation:
+  custom_gpt_v4_v4_2_tests:
+    command: PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -q ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tests/test_boot_process_repair_candidate.py ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tests/test_persona_return_gate_candidate.py ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tests/test_front_door_carrier_product_contract_candidate.py ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tests/test_persona_visible_envelope_candidate.py ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tests/test_boot_receipt_candidate.py ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tests/test_persona_profile_selector_candidate.py ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tests/test_project_hash_and_action_boot_candidate.py
+    result: 23 passed
+  continuity_transfer_tests:
+    command: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=ION_Developement/ION/04_packages PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -q ION_Developement/ION/tests/test_kernel_ion_continuity_transfer_package.py
+    result: 3 passed
+  py_compile:
+    command: python3 -m py_compile ION_Developement/ION/04_packages/kernel/ion_custom_gpt_upload_set_builder.py ION_Developement/ION/04_packages/kernel/ion_continuity_transfer_package.py ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tools/ion_custom_gpt_sequence_harness.py
+    result: passed
+  yaml_json_parse:
+    scope: ION_GPT plus continuity transfer templates plus this receipt
+    result: passed
+  openapi_parse:
+    ion_actions_operations: 25
+    ion_mcp_operations: 3
+    result: passed
+  instruction_length:
+    path: ION_GPT/01_GPT_BUILDER_INPUTS/CURRENT_INSTRUCTIONS_TO_PASTE.md
+    chars: 7800
+    under_8000: true
+  upload_manifest_hash_verification:
+    files: 10
+    missing: []
+    hash_mismatches: []
+    blocked_entries: 0
+blockers: []
+next:
+- review local diff
+- commit scoped ION_GPT v4.2/setup changes if accepted
+- do not touch GPT Builder until commit/release review is approved
+non_claims:
+- no accepted state claim
+- no GPT Builder update
+- no git push
+- no service restart
+- no live Action/MCP write
+- no production deployment

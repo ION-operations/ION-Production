@@ -1,4 +1,4 @@
-schema_id: ion.custom_gpt_route.v0_3
+schema_id: ion.custom_gpt_route.v0_4_2
 route_id: BOOT_TO_PERSONA_INTERFACE_RESPONSE
 trigger_phrases:
 - boot-sequence
@@ -15,9 +15,12 @@ input_context:
   - action_gateway_probe
   - mcp_probe
   - full_repo_snapshot
+  - continuity_transfer_package
+  - ion_project_hash
 internal_cycle:
 - phase: PERSONA_INTERFACE_INGRESS
-  purpose: receive operator language, preserve intent, and render it into ION-admissible intent
+  purpose: receive operator language, preserve intent, and render it into ION-admissible
+    intent
   public_output: false
 - phase: RELAY
   purpose: preserve signal integrity and package intent for Steward/internal routing
@@ -29,10 +32,12 @@ internal_cycle:
   purpose: select route/domain from indexes and current packets
   public_output: false
 - phase: MASON
-  purpose: perform bounded read-only/sandbox work or construct the candidate workflow object
+  purpose: perform bounded read-only/sandbox work or construct the candidate workflow
+    object
   public_output: false
 - phase: NEMESIS_OR_VICE_REVIEW
-  purpose: risk/proof check when connector, mutation, state claim, or protocol dispute is involved
+  purpose: risk/proof check when connector, mutation, state claim, or protocol dispute
+    is involved
   public_output: false_unless_blocking
 - phase: SCRIBE
   purpose: compress evidence, receipt posture, blocker, and next action
@@ -41,12 +46,12 @@ internal_cycle:
   purpose: ensure no false state/authority claim and confirm persona handoff
   public_output: false
 - phase: RELAY_RETURN_PACKAGE
-  purpose: convert Steward/Scribe/system result into controlled persona-ready return material
-    without changing meaning
+  purpose: convert Steward/Scribe/system result into controlled persona-ready return
+    material without changing meaning
   public_output: false
 - phase: PERSONA_RETURN_GATE
-  purpose: verify persona-ready package, source posture, authority limits, blockers, and visible
-    telemetry before final answer
+  purpose: verify persona-ready package, source posture, authority limits, blockers,
+    and visible telemetry before final answer
   public_output: false_unless_blocking
 - phase: PERSONA_INTERFACE_RESPONSE
   purpose: answer the operator clearly through the front-door persona output channel
@@ -74,11 +79,13 @@ fallbacks:
   no_full_repo: continue_with_uploaded_package_context
   no_action_auth: stop_protected_actions_and_report_auth_repair
   no_context_package: answer_conservatively_and_request_package_mount
+  no_project_hash: create_or_request_candidate_continuity_package_before_state_bearing_work
 completion_requirement:
   boot_route_must_complete_in_same_answer: true
   must_emit_persona_response: true
   persona_response_header: 'ION ::'
-  next_line_semantics: post-persona next practical action, not the active boot route deferred
+  next_line_semantics: post-persona next practical action, not the active boot route
+    deferred
   do_not_stop_at:
   - 'NEXT :: BOOT_TO_PERSONA_INTERFACE_RESPONSE'
   - telemetry_only_boot
@@ -89,6 +96,11 @@ completion_requirement:
   final_answer_gate_required: true
   workflow_object_required_for_substantive_response: true
   operator_turns_during_active_route_do_not_reset: true
+  candidate_boot_receipt_required: true
+  persona_visible_envelope_required: true
+  must_emit_before_ion_response:
+  - ion_boot_sequence_result
+  - ion_persona
 proceed_handling:
   operator_message: proceed
   meaning: continue the already mounted route/objective
@@ -96,8 +108,8 @@ proceed_handling:
   - invent_new_repair_target
   - skip_PERSONA_INTERFACE_RESPONSE
   - replace_active_route_with_status_summary
-  repair_if_prior_boot_deferred_persona: acknowledge route-completion defect, inspect workflow
-    object, and complete Persona Interface response first
+  repair_if_prior_boot_deferred_persona: acknowledge route-completion defect, inspect
+    workflow object, and complete Persona Interface response first
 sequence_continuation:
   operator_message_during_active_sequence: ingest_via_PERSONA_INTERFACE_INGRESS_and_RELAY
   default_effect: annotation_or_constraint_for_same_active_workflow_object_not_route_reset
@@ -195,3 +207,51 @@ final_answer_gate:
   requires_terminal_persona_or_continuation_envelope: true
   forbids_telemetry_only_substantive_answer: true
   visible_natural_language_owner: PERSONA_INTERFACE_RESPONSE
+  requires_boot_or_work_receipt_when_state_bearing: true
+  requires_persona_visible_envelope: true
+  requires_profile_selection_boundary: true
+persona_visible_envelope:
+  required_for_serious_ion_work: true
+  schema_ref: schemas/ION_CUSTOM_GPT_PERSONA_VISIBLE_ENVELOPE.schema.json
+  instruction_ref: instructions/ION_CUSTOM_GPT_PERSONA_VISIBLE_ENVELOPE.md
+  must_include:
+  - selected_profile
+  - candidate_domains
+  - candidate_agents
+  - confidence
+  - gesture
+  - operator_visible_inner_monologue
+  - boundaries
+  inner_monologue_type: operator_visible_persona_signal_not_hidden_reasoning
+  hidden_chain_of_thought_exposed: false
+boot_receipt:
+  required_for_boot_sequence: true
+  schema_ref: schemas/ION_CUSTOM_GPT_BOOT_SEQUENCE_RESULT.schema.json
+  instruction_ref: instructions/ION_CUSTOM_GPT_BOOT_RECEIPT_CONTRACT.md
+  receipt_status: candidate_boot_receipt
+  must_precede: ion_persona
+project_continuity_hash:
+  carried_by: ion_project_hash
+  new_chat_without_package: report_pending_and_create_or_request_candidate_continuity_package
+  package_mounted: reuse_package_hash
+  mismatch_behavior: block_and_report_hash_conflict
+  action_gateway_enforcement: later_packet_only
+action_boot_check:
+  normal_boot_requires_live_actions: false
+  when_requested_use_read_only_probes:
+  - ionGatewayHealth
+  - ionGatewayPolicy
+  - ionMcpHealth
+  - ionMcpAppStatus
+  - ionMcpJsonRpc_tools_list
+  stop_immediately_on:
+  - AUTH_INVALID
+  - gateway_token_invalid
+  - AUTH_MISSING
+  - Cloudflare_502_403_1010
+profile_selector:
+  registry_ref: registries/ION_CUSTOM_GPT_PERSONA_PROFILE_REGISTRY.yaml
+  default_profile: ion_default
+  presentation_only: true
+  profiles_do_not_grant_authority: true
+  recovered_profiles_are_candidate_or_historical: true
