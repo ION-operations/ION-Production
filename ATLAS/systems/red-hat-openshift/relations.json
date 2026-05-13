@@ -1,0 +1,89 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "implements",
+      "target": "kubernetes",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Red Hat documents OpenShift Container Platform as using Kubernetes as a core component and exposing a fully accessible Kubernetes API to the cluster."
+    },
+    {
+      "type": "competes_with",
+      "target": "vmware-tkg",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable enterprise Kubernetes platform vs TKG-class distribution in some hybrid/datacenter footprints."
+    },
+    {
+      "type": "competes_with",
+      "target": "digitalocean-doks",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Kubernetes platform vs public managed SKU in some footprints."
+    },
+    {
+      "type": "competes_with",
+      "target": "civo-kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Kubernetes platform vs public managed SKU in some footprints."
+    },
+    {
+      "type": "competes_with",
+      "target": "linode-lke",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Kubernetes platform vs public managed SKU in some footprints."
+    },
+    {
+      "type": "competes_with",
+      "target": "aws-eks",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Kubernetes platform vs hyperscaler-managed control plane in some footprints."
+    },
+    {
+      "type": "competes_with",
+      "target": "azure-aks",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Kubernetes platform vs hyperscaler-managed control plane in some footprints."
+    },
+    {
+      "type": "competes_with",
+      "target": "gcp-gke",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Kubernetes platform vs hyperscaler-managed control plane in some footprints."
+    },
+    {
+      "type": "competes_with",
+      "target": "oci-oke",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Kubernetes platform vs cloud-managed control plane in some footprints."
+    },
+    {
+      "type": "competes_with",
+      "target": "ibm-iks",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Kubernetes platform vs cloud-managed control plane in some footprints."
+    },
+    {
+      "type": "integrates_with",
+      "target": "openshift-dedicated",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Red Hat documents OpenShift Dedicated as offering OpenShift Container Platform clusters as a managed service (product family adjacency)."
+    },
+    {
+      "type": "competes_with",
+      "target": "openshift-dedicated",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitution between customer-operated OpenShift Container Platform and Red Hat–managed OpenShift Dedicated."
+    },
+    {
+      "type": "depends_on",
+      "target": "linux-kernel",
+      "evidence_tier": "INFERRED",
+      "notes": "OpenShift worker and control plane nodes are typically Linux-class systems per Kubernetes-on-bare-metal/VM patterns."
+    },
+    {
+      "type": "integrates_with",
+      "target": "rhel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Red Hat documents OpenShift Container Platform as deployed on RHEL-class node operating systems in typical on-prem and cloud footprints."
+    }
+  ]
+}

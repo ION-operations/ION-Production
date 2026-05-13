@@ -1,0 +1,474 @@
+% Chapter 11 converted from Markdown
+% Auto-generated - do not edit manually
+
+
+
+
+\section*{Section 11.1: Before PLIx: Plan Execution}
+
+Before PLIx, APOE (Atomic Provenance Orchestration Engine) executes plans—running steps in order, managing budgets and gates, but lacking intent awareness.
+
+\textbf{APOE's Original Purpose}
+
+APOE was designed to:
+
+\begin{itemize}
+\item \textbf{Execute Plans:} Run ExecutionPlans with role-based orchestration
+\item \textbf{Manage Budgets:} Track execution budgets (cost, time, tokens)
+\item \textbf{Enforce Gates:} Validate gates before execution (confidence, policy)
+\item \textbf{Track Provenance:} Record execution provenance for auditability
+\end{itemize}
+
+APOE's strength lies in its ability to orchestrate multi-agent plans with budget management and gate enforcement, enabling reliable plan execution.
+
+\textbf{Plan Execution Example}
+
+Before PLIx, APOE executes plans:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# Execute plan
+plan = ExecutionPlan(
+    steps=[
+        ExecutionStep(id="check_room", role="api_executor", description="Check room availability"),
+        ExecutionStep(id="reserve_room", role="api_executor", description="Reserve room", dependencies=["check_room"])
+    ],
+    roles={
+        "api_executor": RoleDefinition(description="Execute API calls", capabilities=["api"])
+    },
+    budget=Budget(max_cost=1000, max_time=300000),
+    gates=[ConfidenceGate(threshold=0.70)]
+)
+
+result = apoe.execute(plan)
+# Verification: "Did steps complete?"
+\end{lstlisting}
+
+APOE executes plans (runs steps in order) but doesn't verify intent achievement (did we achieve what we wanted?). This limits APOE's ability to orchestrate for purpose and measure intent-outcome alignment.
+
+\textbf{Limitations of Plan Execution}
+
+Plan execution has limitations:
+
+\begin{itemize}
+\item \textbf{No Intent Awareness:} APOE doesn't know what was intended, only what steps to execute
+\item \textbf{No Intent Verification:} Can't verify "did this plan achieve the intent?"
+\item \textbf{No Intent-Driven Execution:} Execution isn't driven by intent contracts
+\item \textbf{No Intent Evidence:} Doesn't collect evidence of intent achievement
+\end{itemize}
+
+These limitations prevent APOE from supporting intent-driven orchestration, verification, and learning.
+
+\textbf{Role-Based Execution}
+
+APOE executes plans using roles:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# Role-based execution
+executor = PlanExecutor()
+executor.register_role_handler("api_executor", async (description, inputs) => {
+    # Execute API call
+    return await execute_api_call(inputs)
+})
+
+result = executor.execute(plan)
+\end{lstlisting}
+
+Role-based execution enables flexible orchestration, but without intent awareness, roles don't understand purpose.
+
+\textbf{Budget and Gate Management}
+
+APOE manages budgets and gates:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# Budget management
+budget = Budget(max_cost=1000, max_time=300000)
+if budget.exceeded():
+    raise BudgetExceededError()
+
+# Gate enforcement
+gate = ConfidenceGate(threshold=0.70)
+if not gate.check(step):
+    raise GateFailedError()
+\end{lstlisting}
+
+Budget and gate management enables controlled execution, but without intent awareness, gates don't verify intent achievement.
+
+\textbf{Before PLIx Summary}
+
+Before PLIx, APOE is execution-focused:
+\begin{itemize}
+\item Executes plans (runs steps in order)
+\item Manages budgets and gates
+\item Tracks execution provenance
+\item Lacks intent awareness (no intent verification or evidence collection)
+\end{itemize}
+
+This execution focus limits APOE's ability to orchestrate for purpose and measure intent achievement.
+
+\section*{Section 11.2: After PLIx: Intent Achievement}
+
+After PLIx, APOE achieves intent—orchestrating execution to achieve intent contracts, verifying intent achievement, and collecting intent evidence.
+
+\textbf{Intent-Aware Orchestration}
+
+With PLIx, APOE achieves intent:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# Achieve intent
+contract = PLIxContract(
+    intent="Book a meeting room",
+    contract={"post": ["room_reserved == true"]}
+)
+
+# Compile contract to plan
+plan = compile_contract_to_plan(contract)
+
+# Execute to achieve intent
+result = apoe.execute(plan)
+
+# Verify intent achievement
+intent_achieved = verify_contract(contract, result.outcome)
+\end{lstlisting}
+
+APOE now orchestrates to achieve intent (what we want) in addition to executing plans (how to do it), enabling intent-driven orchestration.
+
+\textbf{Intent Verification}
+
+With PLIx, APOE verifies intent achievement:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# Verify intent after execution
+def verify_intent_achievement(contract: PLIxContract, result: ExecutionResult) -> bool:
+    # Check postconditions
+    for postcondition in contract.contract["post"]:
+        if not evaluate_postcondition(postcondition, result.outcome):
+            return False
+    return True
+
+# Execute and verify
+result = apoe.execute(plan)
+intent_achieved = verify_intent_achievement(contract, result)
+
+if not intent_achieved:
+    # Intent not achieved: trigger compensation or retry
+    handle_intent_failure(contract, result)
+\end{lstlisting}
+
+Intent verification enables APOE to verify that execution achieved the intended goals, not just that steps completed.
+
+\textbf{Intent Evidence Collection}
+
+With PLIx, APOE collects intent evidence:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# Collect intent evidence
+def collect_intent_evidence(contract: PLIxContract, result: ExecutionResult) -> Evidence:
+    evidence = Evidence(
+        contract=contract,
+        outcome=result.outcome,
+        execution_provenance=result.provenance,
+        postconditions_satisfied=verify_intent_achievement(contract, result),
+        timestamp=datetime.now()
+    )
+    
+    # Store evidence in SEG
+    seg.add_evidence(evidence)
+    
+    return evidence
+\end{lstlisting}
+
+Intent evidence collection enables APOE to record proof of intent achievement, supporting verification and learning.
+
+\textbf{Contract-Driven Execution}
+
+With PLIx, APOE execution is driven by contracts:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# Contract-driven execution
+def execute_contract(contract: PLIxContract) -> ExecutionResult:
+    # Compile contract to plan
+    plan = compile_contract_to_plan(contract)
+    
+    # Execute plan
+    result = apoe.execute(plan)
+    
+    # Verify intent achievement
+    intent_achieved = verify_intent_achievement(contract, result)
+    
+    # Collect evidence
+    evidence = collect_intent_evidence(contract, result)
+    
+    return ExecutionResult(
+        outcome=result.outcome,
+        intent_achieved=intent_achieved,
+        evidence=evidence
+    )
+\end{lstlisting}
+
+Contract-driven execution ensures that APOE orchestrates to achieve intent contracts, not just execute step sequences.
+
+\textbf{After PLIx Summary}
+
+After PLIx, APOE is intent-aware:
+\begin{itemize}
+\item Achieves intent (orchestrates to achieve intent contracts)
+\item Verifies intent achievement (checks postconditions)
+\item Collects intent evidence (records proof of intent achievement)
+\item Executes contract-driven (execution driven by intent contracts)
+\end{itemize}
+
+This intent awareness transforms APOE from execution-focused orchestration to intent-aware orchestration, enabling intent-driven systems.
+
+\section*{Section 11.3: Transformation Details}
+
+The transformation from plan execution to intent achievement involves compiling PLIx IR to APOE ExecutionPlans, mapping intent to roles, budgets, and gates, and enabling intent verification and evidence collection.
+
+\textbf{PLIx IR \textrightarrow{} APOE ExecutionPlan}
+
+IR to APOE compilation:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+def compile_to_apoe(ir: IRPlan) -> ExecutionPlan:
+    """Compile PLIx IR to APOE ExecutionPlan"""
+    
+    # Map IR nodes to APOE steps
+    steps = []
+    for node in ir.nodes:
+        step = ExecutionStep(
+            id=node.id,
+            role=extract_role(node.action),  # Extract role from action
+            description=f"{node.action}: {ir.intent}",  # Human-readable description
+            inputs=node.params,
+            outputs={},
+            dependencies=[
+                Dependency(step_id=dep_id, output_field="result")
+                for dep_id in node.deps
+            ]
+        )
+        steps.append(step)
+    
+    # Map roles
+    roles = {}
+    for step in steps:
+        if step.role not in roles:
+            roles[step.role] = RoleDefinition(
+                description=f"Execute {step.role} actions",
+                capabilities=[step.role]
+            )
+    
+    # Map budgets and gates from contract
+    budget, gates = map_budgets_and_gates(ir)
+    
+    return ExecutionPlan(
+        steps=steps,
+        roles=roles,
+        budget=budget,
+        gates=gates
+    )
+\end{lstlisting}
+
+This compilation transforms PLIx IR into APOE ExecutionPlans, preserving intent semantics while enabling APOE orchestration.
+
+\textbf{Intent \textrightarrow{} Role Mapping}
+
+Intent to role mapping:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+def extract_role(action: str) -> str:
+    """Extract role from action"""
+    # "api.reserve_room" \textrightarrow{} "api_executor"
+    namespace = action.split('.')[0]
+    role_mapping = {
+        "api": "api_executor",
+        "db": "database_executor",
+        "ai": "ai_agent",
+        "router": "router_agent"
+    }
+    return role_mapping.get(namespace, "default_executor")
+\end{lstlisting}
+
+Role mapping enables APOE to route tasks to appropriate executors based on intent actions.
+
+\textbf{Intent \textrightarrow{} Budget Mapping}
+
+Intent to budget mapping:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+def map_budgets_and_gates(ir: IRPlan) -> Tuple[Budget, List[Gate]]:
+    """Map intent to budgets and gates"""
+    
+    # Calculate budget from contract metadata
+    budget = Budget(
+        max_cost=ir.metadata.get("max_cost", 1000),
+        max_time=ir.metadata.get("max_time", 300000),
+        max_tokens=ir.metadata.get("max_tokens", 10000)
+    )
+    
+    # Map constraints to gates
+    gates = []
+    
+    # Confidence gate
+    gates.append(ConfidenceGate(
+        threshold=PLIX_DEFAULTS.confidence.global_minimum,
+        check=async (step) => {
+            confidence = await vif.get_confidence(step.role, step.inputs)
+            return confidence >= PLIX_DEFAULTS.confidence.global_minimum
+        }
+    ))
+    
+    # Policy gate (from constraints)
+    gates.append(PolicyGate(
+        constraints=ir.constraints,
+        check=async (step) => {
+            policy = compile_constraints_to_policy(ir.constraints)
+            return await evaluate_policy(policy, step.inputs)
+        }
+    ))
+    
+    return budget, gates
+\end{lstlisting}
+
+Budget and gate mapping enables APOE to enforce PLIx constraints (confidence thresholds, policy rules) during execution.
+
+\textbf{Intent Verification Integration}
+
+Intent verification integration:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+def execute_with_intent_verification(
+    contract: PLIxContract,
+    plan: ExecutionPlan
+) -> ExecutionResult:
+    """Execute plan with intent verification"""
+    
+    # Execute plan
+    result = apoe.execute(plan)
+    
+    # Verify intent achievement
+    intent_achieved = verify_contract(contract, result.outcome)
+    
+    # Collect evidence
+    evidence = collect_intent_evidence(contract, result)
+    
+    # Update result
+    result.intent_achieved = intent_achieved
+    result.evidence = evidence
+    
+    return result
+\end{lstlisting}
+
+Intent verification integration enables APOE to verify intent achievement after execution, ensuring that execution achieved intended goals.
+
+\textbf{Transformation Benefits}
+
+The transformation provides:
+
+\begin{itemize}
+\item \textbf{Intent-Driven Orchestration:} APOE orchestrates to achieve intent contracts
+\item \textbf{Intent Verification:} APOE verifies intent achievement through postcondition checking
+\item \textbf{Intent Evidence:} APOE collects evidence of intent achievement
+\item \textbf{Contract-Driven Execution:} Execution driven by intent contracts, not just step sequences
+\end{itemize}
+
+These benefits transform APOE from execution-focused orchestration to intent-aware orchestration, enabling intent-driven systems.
+
+\section*{Section 11.4: Implementation Examples}
+
+Implementation examples demonstrate PLIx \textrightarrow{} APOE compilation, intent execution, intent verification, and intent evidence collection.
+
+\textbf{Example 1: PLIx \textrightarrow{} APOE Compilation}
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# PLIx IR
+ir = IRPlan(
+    intent="Book a meeting room",
+    nodes=[
+        IRNode(id="check_availability", action="api.check_room_availability", deps=[]),
+        IRNode(id="reserve_room", action="api.reserve_room", deps=["check_availability"])
+    ],
+    constraints=["duration <= 4h"]
+)
+
+# Compile to APOE
+apoe_plan = compile_to_apoe(ir)
+
+print(f"APOE Plan Steps: {len(apoe_plan.steps)}")  # 2
+print(f"APOE Plan Roles: {list(apoe_plan.roles.keys())}")  # ["api_executor"]
+print(f"APOE Plan Gates: {len(apoe_plan.gates)}")  # 2 (confidence + policy)
+\end{lstlisting}
+
+This example demonstrates compiling PLIx IR to APOE ExecutionPlans, preserving intent semantics.
+
+\textbf{Example 2: Intent Execution}
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# Execute intent contract
+contract = PLIxContract(
+    intent="Book a meeting room",
+    contract={"post": ["room_reserved == true"]}
+)
+
+# Compile and execute
+plan = compile_contract_to_plan(contract)
+result = apoe.execute(plan)
+
+print(f"Execution completed: {result.success}")
+print(f"Outcome: {result.outcome}")
+\end{lstlisting}
+
+This example demonstrates executing intent contracts through APOE, achieving intent through orchestration.
+
+\textbf{Example 3: Intent Verification}
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# Verify intent achievement
+intent_achieved = verify_intent_achievement(contract, result)
+
+if intent_achieved:
+    print("Intent achieved: Room reserved")
+else:
+    print("Intent not achieved: Postconditions not satisfied")
+    # Trigger compensation or retry
+    handle_intent_failure(contract, result)
+\end{lstlisting}
+
+This example demonstrates verifying intent achievement through postcondition checking.
+
+\textbf{Example 4: Intent Evidence Collection}
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# Collect intent evidence
+evidence = collect_intent_evidence(contract, result)
+
+print(f"Evidence ID: {evidence.id}")
+print(f"Postconditions satisfied: {evidence.postconditions_satisfied}")
+print(f"Evidence stored in SEG: {evidence.seg_id}")
+
+# Query evidence
+evidence_chain = seg.query_evidence_chain(evidence.id)
+print(f"Evidence chain length: {len(evidence_chain)}")
+\end{lstlisting}
+
+This example demonstrates collecting intent evidence and storing it in SEG for verification and learning.
+
+\textbf{Implementation Benefits}
+
+Implementation examples demonstrate:
+
+\begin{itemize}
+\item \textbf{PLIx \textrightarrow{} APOE Compilation:} Transforming intent contracts to execution plans
+\item \textbf{Intent Execution:} Achieving intent through orchestration
+\item \textbf{Intent Verification:} Verifying intent achievement through postcondition checking
+\item \textbf{Intent Evidence:} Collecting proof of intent achievement
+\end{itemize}
+
+These examples show how APOE transforms from execution-focused orchestration to intent-aware orchestration, enabling intent-driven systems.
+
+\section*{Chapter 11 Summary}
+
+APOE transforms from plan execution to intent achievement through PLIx integration. Before PLIx, APOE executes plans but lacks intent awareness. After PLIx, APOE achieves intent contracts, verifies intent achievement, collects intent evidence, and executes contract-driven. This transformation enables intent-driven orchestration, verification, and learning, making APOE a foundation for intent-aware systems.
+
+\textbf{Next:} Chapter 12 explores SEG integration—how SEG transforms from evidence chains to intent lineage.
+
+\textbf{Word Count:} \textasciitilde{}2,200 words  
+

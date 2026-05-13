@@ -1,0 +1,31 @@
+{
+  "system_slug": "linux-security-modules",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-03",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "LSM is a kernel subsystem for security policy enforcement."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "Pod security contexts and host policies interact with LSM on Linux nodes."
+    },
+    {
+      "type": "integrates_with",
+      "target": "landlock",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Landlock is a Linux Security Module for unprivileged filesystem sandboxing; see Landlock uAPI documentation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-capabilities",
+      "evidence_tier": "INFERRED",
+      "notes": "LSM enforces MAC policy; capabilities split traditional root privileges — distinct layers often composed."
+    }
+  ]
+}

@@ -1,0 +1,191 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "gnu-gcc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "libstdc++ is built and released as part of the GNU Compiler Collection; g++ links it by default."
+    },
+    {
+      "type": "integrates_with",
+      "target": "glibc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "On GNU/Linux with glibc, libstdc++ relies on the C library for many POSIX and low-level services."
+    },
+    {
+      "type": "integrates_with",
+      "target": "musl",
+      "evidence_tier": "INFERRED",
+      "notes": "Alpine and other musl-based systems ship g++ builds that link libstdc++ atop musl."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-binutils",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GNU ld links libstdc++.so into g++-produced executables and shared libraries on typical flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "elf",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "libstdc++ is packaged as ELF shared objects and archives on Unix-class GNU/Linux targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "dwarf",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Debug builds emit DWARF describing C++ types and inline frames alongside libstdc++ symbols."
+    },
+    {
+      "type": "integrates_with",
+      "target": "c-language",
+      "evidence_tier": "INFERRED",
+      "notes": "C++ interop and extern C boundaries tie C++ standard library use to C ABI and headers."
+    },
+    {
+      "type": "integrates_with",
+      "target": "clang",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang may link against libstdc++ when configured with -stdlib=libstdc++ on Linux."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-gdb",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GDB debugs C++ programs using libstdc++ containers and symbols with appropriate debug info."
+    },
+    {
+      "type": "integrates_with",
+      "target": "lldb",
+      "evidence_tier": "INFERRED",
+      "notes": "LLDB can debug binaries linked against libstdc++ when debugging Linux C++ toolchains."
+    },
+    {
+      "type": "integrates_with",
+      "target": "riscv-isa",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GCC ships libstdc++ for supported targets including RISC-V GNU/Linux alongside the C library port."
+    },
+    {
+      "type": "competes_with",
+      "target": "llvm-libcxx",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable C++ standard library implementations in Clang/GCC-centric toolchain flows (libstdc++ vs libc++)."
+    },
+    {
+      "type": "competes_with",
+      "target": "msvcprt",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable C++ standard library implementations across platforms (GNU libstdc++ vs MSVC msvcp*.dll on Windows)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "debian",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Debian packages ship g++ builds that link GNU libstdc++ above glibc on typical GNU/Linux flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "ubuntu",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Ubuntu packages ship g++ builds that link GNU libstdc++ above glibc on typical GNU/Linux flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "fedora",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Fedora packages ship g++ builds that link GNU libstdc++ above glibc on typical GNU/Linux flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "rhel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "RHEL packages ship g++ builds that link GNU libstdc++ above glibc on typical GNU/Linux flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "rocky-linux",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Rocky Linux packages ship g++ builds that link GNU libstdc++ above glibc on typical GNU/Linux flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "almalinux",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "AlmaLinux packages ship g++ builds that link GNU libstdc++ above glibc on typical GNU/Linux flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "centos-stream",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "CentOS Stream packages ship g++ builds that link GNU libstdc++ above glibc on typical GNU/Linux flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "centos-linux",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Historical CentOS Linux packages shipped g++ builds that link GNU libstdc++ above glibc on typical GNU/Linux flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "freebsd-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "g++ builds on FreeBSD typically link GNU libstdc++ above FreeBSD libc in ports and base toolchains."
+    },
+    {
+      "type": "integrates_with",
+      "target": "openbsd-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "g++ builds on OpenBSD can link GNU libstdc++ above OpenBSD libc where GCC/libstdc++ packages are used."
+    },
+    {
+      "type": "integrates_with",
+      "target": "netbsd-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "g++ builds on NetBSD can link GNU libstdc++ above NetBSD libc where GCC/libstdc++ packages are used."
+    },
+    {
+      "type": "integrates_with",
+      "target": "dragonfly-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "g++ builds on DragonFly can link GNU libstdc++ above DragonFly libc where GCC/libstdc++ packages are used."
+    },
+    {
+      "type": "integrates_with",
+      "target": "illumos-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "g++ builds on illumos distributions can link GNU libstdc++ above illumos libc where GCC/libstdc++ packages are used."
+    },
+    {
+      "type": "integrates_with",
+      "target": "android-bionic",
+      "evidence_tier": "INFERRED",
+      "notes": "Rare g++-oriented native builds may link GNU libstdc++ above Bionic where such toolchains are configured; NDK defaults to libc++."
+    },
+    {
+      "type": "integrates_with",
+      "target": "newlib",
+      "evidence_tier": "INFERRED",
+      "notes": "Embedded g++ toolchains may link GNU libstdc++ above newlib in bare-metal or RTOS flows when enabled."
+    },
+    {
+      "type": "integrates_with",
+      "target": "wasi-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Experimental or vendor wasm triplets may layer libstdc++ above wasi-libc when sysroots align."
+    },
+    {
+      "type": "integrates_with",
+      "target": "uclibc",
+      "evidence_tier": "INFERRED",
+      "notes": "Embedded Linux g++ toolchains may link GNU libstdc++ above uClibc when sysroots align."
+    },
+    {
+      "type": "integrates_with",
+      "target": "dietlibc",
+      "evidence_tier": "INFERRED",
+      "notes": "Experimental minimal Linux g++ stacks may layer libstdc++ above dietlibc when sysroots align."
+    }
+  ]
+}

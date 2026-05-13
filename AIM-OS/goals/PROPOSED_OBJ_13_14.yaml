@@ -1,0 +1,179 @@
+# Proposed New Goals: OBJ-13 and OBJ-14
+# To be added to goals/GOAL_TREE.yaml
+# Created: 2025-11-05
+# Author: Aether
+
+# ============================================
+# OBJ-13: Automated Packaging & Distribution
+# ============================================
+
+  - id: OBJ-13
+    name: "Automated Packaging & Distribution System"
+    description: "Professional automated packaging system generating minimal distributions (PyPI, Docker, standalone) with 99% size reduction, one-command install, and always-current builds from latest codebase."
+    owner: Aether
+    priority_tier: "B - MEDIUM (Valuable for professional distribution and adoption)"
+    target_date: 2025-12-05
+    timeline_note: "Can run parallel with ship-critical work - improves distribution but not blocking"
+    key_results:
+      - id: KR-13.1
+        metric: "Packaging script operational for all 3 targets"
+        target: "100% (PyPI + Docker + standalone all working)"
+        current: "10% (design complete, implementation needed)"
+        timeline: "Nov 8-10 (3 days)"
+      - id: KR-13.2
+        metric: "Size reduction from full repository"
+        target: ">=95% reduction (2GB → <100MB uncompressed)"
+        current: "0% (manual aim-os-minimal outdated)"
+        timeline: "Nov 8-10"
+      - id: KR-13.3
+        metric: "Auto-install success rate on clean systems"
+        target: "100% (one-command ./install.sh succeeds)"
+        current: "0% (no auto-install yet)"
+        timeline: "Nov 9-10"
+      - id: KR-13.4
+        metric: "Package generation time"
+        target: "<5 minutes for all 3 targets"
+        current: "N/A"
+        timeline: "Nov 10 (optimization)"
+      - id: KR-13.5
+        metric: "CI/CD integration for automated releases"
+        target: "100% (every git tag auto-creates release packages)"
+        current: "0% (manual only)"
+        timeline: "Nov 11-12 (GitHub Actions)"
+    invariants: ["Packaging", "Distribution", "Infrastructure", "Professional", "Automation"]
+    status: designed
+    completion_percentage: 10
+    acceptance: scripts/packaging/README.md
+    artifacts:
+      - scripts/packaging/create_distribution.py (to be implemented)
+      - scripts/packaging/config/pypi_config.yaml
+      - scripts/packaging/config/docker_config.yaml
+      - scripts/packaging/config/standalone_config.yaml
+      - scripts/packaging/templates/ (setup.py, install.sh, README, Dockerfile)
+      - scripts/packaging/validators/ (package validation)
+    evidence:
+      - scripts/packaging/PACKAGING_DESIGN.md (complete design document)
+      - audits/2025-11-05/GOAL_TREE_DEEP_ANALYSIS.md (gap identification)
+      - aim-os-minimal/README.md (outdated manual approach documented)
+    depends_on: []
+    enables: 
+      - "Professional PyPI distribution (pip install aim-os)"
+      - "Minimal Docker images (~500MB vs 2GB)"
+      - "Standalone deployment packages (~8MB compressed)"
+      - "Easy adoption (one-command install)"
+      - "Always-current packages (auto-generated)"
+    work_estimate: "11-16 hours total (3-4 days focused work)"
+
+# ============================================
+# OBJ-14: Universal NL Tag Registry & Quintet Parity
+# ============================================
+
+  - id: OBJ-14
+    name: "Universal NL Tag Registry & Quintet Parity Completion"
+    description: "Complete universal registry for all NL tags across 70+ systems, achieving P >= 0.90 quintet parity (code + tests + docs + specs + tags) for entire codebase with automated validation and pre-commit enforcement."
+    owner: Aether
+    priority_tier: "A - HIGH (Critical for code quality, AI navigability, and maintainability)"
+    target_date: 2025-12-15
+    timeline_note: "Parallel with ship work - improves code quality without blocking core features"
+    historical_name: "GOAL 5"  # References early GOAL numbering for historical continuity
+    key_results:
+      - id: KR-14.1
+        metric: "Universal registry operational across all systems"
+        target: "100% (all 70+ systems registered and queryable)"
+        current: "70% (core 9 systems complete: VIF, CMC, APOE, HHNI, SEG, TCS, CAS, IIS, SDF-CVF)"
+        timeline: "Remaining 30% by Dec 10"
+      - id: KR-14.2
+        metric: "Quintet parity score (code+tests+docs+specs+tags)"
+        target: "P >= 0.90 for all packages (A+ grade)"
+        current: "P = 0.75 average (B+ grade, varies by package)"
+        timeline: "Achieve 0.90 by Dec 15"
+      - id: KR-14.3
+        metric: "NL tag coverage across codebase"
+        target: ">=75% of public functions tagged with NL_TAG"
+        current: "60% (109 files, 2,521 tags created)"
+        timeline: "Achieve 75% by Dec 12"
+      - id: KR-14.4
+        metric: "Automated validation operational"
+        target: "Pre-commit hooks block commits with P < 0.90"
+        current: "0% (manual validation only via scripts)"
+        timeline: "Build hooks by Nov 25"
+      - id: KR-14.5
+        metric: "Tag quality (uniqueness, accuracy, completeness)"
+        target: "100% (no duplicate IDs, all tags accurate, quartet complete)"
+        current: "95% (auto-tagger 90%+ accuracy, manual review needed)"
+        timeline: "Validate all tags by Dec 10"
+      - id: KR-14.6
+        metric: "Registry query performance"
+        target: "<100ms for any tag query"
+        current: "~50ms (already fast)"
+        timeline: "Maintain <100ms"
+    invariants: ["NL Tags", "Quintet Parity", "Code Quality", "SDF-CVF", "AI Navigability"]
+    status: in_progress
+    completion_percentage: 70
+    acceptance: knowledge_architecture/AETHER_MEMORY/GOAL_5_UNIVERSAL_REGISTRY_PLAN.md
+    artifacts:
+      - packages/nl_tags/ (universal registry implementation)
+      - packages/nl_tags/universal_registry.py (registry core)
+      - packages/nl_tags/tag_parser.py (tag extraction - has syntax error to fix!)
+      - scripts/vif_auto_tagger.py (LLM-assisted auto-tagging)
+      - scripts/audit_nl_tag_coverage.py (coverage auditing)
+      - scripts/validate_tagged_file.py (validation)
+      - knowledge_architecture/QUINTET_PARITY_ENHANCED_PLAN.md (comprehensive plan)
+    evidence:
+      - knowledge_architecture/AETHER_MEMORY/GOAL_4_ALL_CORE_SYSTEMS_COMPLETE.md (109 files tagged, 2,521 tags)
+      - knowledge_architecture/AETHER_MEMORY/QUINTET_PARITY_COMPLETE_AUTONOMOUS_SUCCESS.md (milestone achievement)
+      - knowledge_architecture/AETHER_MEMORY/GOAL_1_QUINTET_PARITY_COMPLETE.md (initial completion)
+      - knowledge_architecture/AETHER_MEMORY/GOAL_2_VIF_COMPLETE.md (VIF tagging complete)
+      - knowledge_architecture/AETHER_MEMORY/GOAL_3_CMC_COMPLETE.md (CMC tagging complete)
+    depends_on: 
+      - "OBJ-12 (Protocols & Standards Enforcement)"
+      - "SDF-CVF system (95% complete)"
+    enables: 
+      - "AI code comprehension (navigable via tags)"
+      - "Quality enforcement (P >= 0.90 prevents low-quality code)"
+      - "Cross-system navigation (tags show relationships)"
+      - "Automated documentation (tags → docs generation)"
+      - "Code search (semantic search via tags)"
+    work_estimate: "Remaining 30%: 8-12 hours (expand to remaining 60+ systems, build pre-commit hooks)"
+    related_goals:
+      - "Historical: GOAL 1, 2, 3, 4 (all fed into this)"
+      - "Current: OBJ-12 (protocols include quintet parity)"
+
+# ============================================
+# INTEGRATION NOTES
+# ============================================
+
+integration_notes: |
+  Both goals integrate cleanly into existing structure:
+  
+  OBJ-13 (Packaging):
+  - Complements OBJ-04 (Infrastructure) but focused on distribution not deployment
+  - Enables professional adoption (PyPI, Docker Hub)
+  - Non-blocking (can run parallel with ship-critical work)
+  
+  OBJ-14 (Universal Registry):
+  - Formalizes GOAL 5 from historical tracking
+  - Integrates with OBJ-12 (protocols enforcement)
+  - Already 70% complete - just needs goal formalization
+  - Critical for code quality and AI navigability
+
+# ============================================
+# VERSION UPDATE
+# ============================================
+
+version_update:
+  from: "v0.5.0"
+  to: "v0.6.0"
+  date: "2025-11-05"
+  changes:
+    - "Added OBJ-13: Automated Packaging & Distribution System"
+    - "Added OBJ-14: Universal NL Tag Registry & Quintet Parity (formalized GOAL 5)"
+    - "Formalized historical GOAL 5 into current objective structure"
+    - "All substantial work now tracked in goal tree"
+  rationale: |
+    Gap analysis revealed two areas of substantial work not tracked in goal tree:
+    1. GOAL 5 (Universal Registry) was 70% complete but not in current tree
+    2. Packaging system was designed but not tracked
+    
+    Adding these ensures no work is orphaned and maintains complete goal coverage.
+

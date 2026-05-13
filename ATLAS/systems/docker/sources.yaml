@@ -1,0 +1,26 @@
+primary:
+  - id: src-docker-docs
+    kind: documentation
+    title: "Docker Engine documentation"
+    locator: "https://docs.docker.com/engine/"
+    tier_hint: DOCUMENTED
+  - id: src-moby-repo
+    kind: source
+    title: "moby/moby (Docker Engine upstream)"
+    locator: "https://github.com/moby/moby"
+    tier_hint: DOCUMENTED
+  - id: std-oci
+    kind: standard
+    title: "Open Container Initiative specifications"
+    locator: "https://opencontainers.org/"
+    tier_hint: DOCUMENTED
+  - id: std-cni
+    kind: standard
+    title: "CNI (context only for cluster networking)"
+    locator: "https://www.cni.dev/docs/spec/"
+    tier_hint: DOCUMENTED
+  - id: src-docker-desktop
+    kind: documentation
+    title: "Docker Desktop documentation"
+    locator: "https://docs.docker.com/desktop/"
+    tier_hint: DOCUMENTED

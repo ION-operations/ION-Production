@@ -1,0 +1,31 @@
+{
+  "system_slug": "cloudflare-workers",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-10",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "http3",
+      "evidence_tier": "INFERRED",
+      "notes": "Cloudflare edge stack is QUIC/HTTP3 heavy in public documentation culture."
+    },
+    {
+      "type": "integrates_with",
+      "target": "webassembly",
+      "evidence_tier": "INFERRED",
+      "notes": "Workers support Wasm modules in documented runtime paths (verify product edition)."
+    },
+    {
+      "type": "competes_with",
+      "target": "amazon-cloudfront",
+      "evidence_tier": "INFERRED",
+      "notes": "Global edge; different programming model (compute at edge vs CDN-only)."
+    },
+    {
+      "type": "competes_with",
+      "target": "azure-front-door",
+      "evidence_tier": "INFERRED",
+      "notes": "Global edge delivery class."
+    }
+  ]
+}

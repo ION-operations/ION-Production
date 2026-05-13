@@ -1,0 +1,16 @@
+# Daemon/RAG System Dependencies
+# Production-grade RAG with FAISS vector search
+
+# Core Dependencies
+numpy>=1.24.0
+faiss-cpu>=1.7.4  # Fast similarity search (CPU version)
+# For GPU: faiss-gpu>=1.7.4
+
+# Optional but Recommended
+scikit-learn>=1.3.0  # ML algorithms
+sentence-transformers>=2.2.0  # Embeddings (if needed)
+
+# Already available via AIM-OS
+# cmc_service (CMC integration)
+# hhni (HHNI integration)
+# vif (VIF integration)

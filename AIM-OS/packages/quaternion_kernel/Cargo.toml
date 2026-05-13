@@ -1,0 +1,37 @@
+[package]
+name = "quaternion_kernel"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+axum = "0.7"
+tokio = { version = "1.0", features = ["full"] }
+tower = "0.4"
+tower-http = { version = "0.5", features = ["cors"] }
+
+[dev-dependencies]
+criterion = { version = "0.5", features = ["html_reports"] }
+rand = "0.8"
+
+[[bench]]
+name = "morton_bench"
+harness = false
+
+[[bench]]
+name = "s3_binning_bench"
+harness = false
+
+[[bench]]
+name = "quantum_bench"
+harness = false
+
+[[bench]]
+name = "kernel_bench"
+harness = false
+
+[[bin]]
+name = "quaternion_kernel_server"
+path = "src/bin/server.rs"
+

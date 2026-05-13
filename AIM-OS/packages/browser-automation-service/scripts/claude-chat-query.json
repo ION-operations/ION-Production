@@ -1,0 +1,52 @@
+{
+  "name": "Claude Chat Query",
+  "description": "Automate Claude chat - Navigate to Claude, wait for chat input, type query, and extract response",
+  "provider": "claude",
+  "variables": {
+    "query": "{{query}}",
+    "accountId": "{{accountId}}"
+  },
+  "actions": [
+    {
+      "type": "navigate",
+      "url": "https://claude.ai/chat",
+      "timeout": 30000,
+      "beforeDelay": 1000,
+      "afterDelay": 2000
+    },
+    {
+      "type": "wait",
+      "selector": "textarea",
+      "timeout": 15000,
+      "afterDelay": 1000
+    },
+    {
+      "type": "type",
+      "selector": "textarea",
+      "value": "{{query}}",
+      "humanLike": true,
+      "beforeDelay": 500,
+      "afterDelay": 1000
+    },
+    {
+      "type": "click",
+      "selector": "button[type='submit']",
+      "afterDelay": 2000
+    },
+    {
+      "type": "wait",
+      "selector": ".message-content",
+      "timeout": 30000,
+      "afterDelay": 1000
+    },
+    {
+      "type": "extract",
+      "selector": ".message-content",
+      "variable": "response"
+    }
+  ],
+  "output": {
+    "response": ".message-content"
+  }
+}
+

@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Virtio drivers and core infrastructure are part of the Linux kernel tree per kernel virtio documentation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-kvm",
+      "evidence_tier": "INFERRED",
+      "notes": "KVM guests commonly use virtio devices for paravirtual I/O; virtio is the device model, KVM is the hypervisor API."
+    },
+    {
+      "type": "integrates_with",
+      "target": "firecracker",
+      "evidence_tier": "INFERRED",
+      "notes": "Firecracker exposes virtio block and network devices to guests; virtio is the interface, Firecracker is the VMM."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-vhost",
+      "evidence_tier": "INFERRED",
+      "notes": "vhost accelerates virtio virtqueue handling on the host; virtio defines the guest/device contract."
+    },
+    {
+      "type": "integrates_with",
+      "target": "qemu",
+      "evidence_tier": "INFERRED",
+      "notes": "QEMU supplies virtio device models for guests; virtio is the contract, QEMU is the VMM."
+    }
+  ]
+}

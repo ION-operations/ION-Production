@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "model-context-protocol",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Anthropic documents MCP usage for tools in Claude Code / agent flows; pin exact doc URLs in sources.yaml."
+    },
+    {
+      "type": "competes_with",
+      "target": "openai-agents-chatgpt-public-runtime",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable commercial API/agent product class."
+    },
+    {
+      "type": "integrates_with",
+      "target": "vscode",
+      "evidence_tier": "INFERRED",
+      "notes": "Editor integrations exist in ecosystem; verify branded docs vs third-party."
+    }
+  ]
+}

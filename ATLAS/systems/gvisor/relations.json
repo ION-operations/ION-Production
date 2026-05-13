@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "depends_on",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "gVisor’s runsc runtime operates on Linux hosts using documented integration with cgroups and host services per upstream documentation."
+    },
+    {
+      "type": "implements",
+      "target": "oci-runtime-spec",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "runsc is an OCI-compatible runtime (runsc) executing bundles with gVisor’s userspace kernel per project documentation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Documented Kubernetes integration patterns for selecting runsc as the container runtime on nodes."
+    },
+    {
+      "type": "integrates_with",
+      "target": "containerd",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "containerd can invoke runsc as the low-level OCI runtime where configured per common deployment guides."
+    },
+    {
+      "type": "integrates_with",
+      "target": "docker",
+      "evidence_tier": "INFERRED",
+      "notes": "Docker Engine stacks can be configured to use runsc where supported; exact matrix is release-specific (survey-level)."
+    },
+    {
+      "type": "competes_with",
+      "target": "runc",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable low-level OCI runtime on Linux: Linux-namespace runc vs gVisor’s userspace-syscall interception model."
+    },
+    {
+      "type": "competes_with",
+      "target": "kata-containers",
+      "evidence_tier": "INFERRED",
+      "notes": "Different isolation mechanisms for OCI bundles: gVisor userspace kernel vs VM-backed Kata—neither is a drop-in security equivalence claim without threat-model context."
+    }
+  ]
+}

@@ -1,0 +1,64 @@
+diff --git a/ION/04_packages/kernel/ion_codex_chat_memory_visualization_ui.py b/ION/04_packages/kernel/ion_codex_chat_memory_visualization_ui.py
+index 43e0b9b..4f6f5ea 100644
+--- a/ION/04_packages/kernel/ion_codex_chat_memory_visualization_ui.py
++++ b/ION/04_packages/kernel/ion_codex_chat_memory_visualization_ui.py
+@@ -234,13 +234,14 @@ def _strata_panel(
+     for item in windows:
+         window_class = str(item.get("window_class") or "UNKNOWN")
+         cards = "".join(_segment_card(segment, compact=True) for segment in segments_by_class.get(window_class, [])[:4])
++        window_body = cards or '<p class="empty-note">No visible segments.</p>'
+         rows.append(
+             f'<section class="memory-window memory-{e(window_class.lower())}" data-memory-window-class="{e(window_class)}">'
+             '<div class="memory-window-head">'
+             f'<b>{e(WINDOW_LABELS.get(window_class, window_class))}</b>'
+             f'<span>{e(item.get("segment_count"))} segments / {e(item.get("token_estimate"))} tok</span>'
+             '</div>'
+-            f'{cards or "<p class=\"empty-note\">No visible segments.</p>"}'
++            f'{window_body}'
+             '</section>'
+         )
+     if not rows:
+@@ -330,12 +331,14 @@ def _route_graph_panel(
+             f'<p>{e((source or {}).get("source_kind"))} to {e((target or {}).get("source_kind"))} · {e(edge.get("display_style"))} · confidence {e(edge.get("confidence"))}</p>'
+             '</li>'
+         )
++    summary_body = summary_cards or '<article class="route-summary-card"><span>none</span><b>0</b></article>'
++    edge_body = "".join(rows) or '<li class="route-edge-row"><b>No route edges</b></li>'
+     return (
+         '<section class="memory-panel">'
+         '<div class="memory-panel-title"><h3>Context Route Graph</h3><span>retrieval and compaction edges</span></div>'
+-        f'<div class="route-summary-grid">{summary_cards or "<article class=\"route-summary-card\"><span>none</span><b>0</b></article>"}</div>'
++        f'<div class="route-summary-grid">{summary_body}</div>'
+         f'<div class="route-edge-filter-row">{"".join(filter_buttons)}</div>'
+-        f'<ol class="route-edge-list">{"".join(rows) or "<li class=\"route-edge-row\"><b>No route edges</b></li>"}</ol>'
++        f'<ol class="route-edge-list">{edge_body}</ol>'
+         '</section>'
+     )
+ 
+@@ -352,10 +355,11 @@ def _compaction_panel(events: list[Mapping[str, Any]]) -> str:
+             f'<span>{e(event.get("epoch_id") or "")} {e(event.get("row_start") or "")} {e(event.get("row_end") or "")}</span>'
+             '</li>'
+         )
++    compaction_body = "".join(rows) or '<li class="compaction-event"><b>No compaction events</b></li>'
+     return (
+         '<section class="memory-panel">'
+         '<div class="memory-panel-title"><h3>Compaction Timeline</h3><span>Capsule to Mini to long horizon</span></div>'
+-        f'<ol class="compaction-list">{"".join(rows) or "<li class=\"compaction-event\"><b>No compaction events</b></li>"}</ol>'
++        f'<ol class="compaction-list">{compaction_body}</ol>'
+         '</section>'
+     )
+ 
+@@ -417,11 +421,12 @@ def _source_ref_panel(source_refs: list[Any], omitted_refs: list[Mapping[str, An
+         + '</section>'
+         for group, items in sorted(grouped_refs.items())
+     )
++    lanes_body = lanes or '<p class="empty-note">No source refs.</p>'
+     return (
+         '<section class="memory-panel source-ref-drilldown">'
+         '<div class="memory-panel-title"><h3>Source Ref Drilldown</h3><span>click a path/ref to inspect visible linkage</span></div>'
+         f'<div class="source-group-filter-row">{"".join(filter_buttons)}</div>'
+-        f'{lanes or "<p class=\"empty-note\">No source refs.</p>"}'
++        f'{lanes_body}'
+         '</section>'
+     )
+ 

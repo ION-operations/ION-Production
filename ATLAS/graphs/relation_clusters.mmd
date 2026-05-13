@@ -1,0 +1,184 @@
+%% ATLAS relation clusters — structural, not evaluative
+
+flowchart LR
+  subgraph cluster_host["Host / isolation"]
+    linux-kernel
+    systemd
+    docker
+    azure-aci
+    containerd
+    podman
+    runc
+    cri-o
+    firecracker
+    nixos
+  end
+
+  subgraph cluster_orchestration["Desired state / scheduling"]
+    kubernetes
+    nomad
+    aws-ecs
+    aws-eks
+    azure-aks
+    azure-container-apps
+    gcp-gke
+    oci-oke
+    ibm-iks
+    digitalocean-doks
+    civo-kubernetes
+    linode-lke
+    vmware-tkg
+    red-hat-openshift
+    openshift-dedicated
+    apache-mesos
+  end
+
+  subgraph cluster_dev["Extension-heavy clients"]
+    vscode
+    cursor
+  end
+
+  subgraph cluster_protocol["Tooling & agent wiring"]
+    model-context-protocol
+    language-server-protocol
+  end
+
+  subgraph cluster_ai_public["Public AI surfaces (no internal topology asserted)"]
+    openai-agents-chatgpt-public-runtime
+    anthropic-claude-code-agent-sdk
+    gemini-api
+    deepseek-api
+    microsoft-agent-framework
+  end
+
+  subgraph cluster_agent_platform["Open agent platforms"]
+    openhands
+  end
+
+  docker --> containerd
+  containerd --> kubernetes
+  cri-o --> kubernetes
+  nomad --> docker
+  docker --> aws-ecs
+  docker --> azure-container-apps
+  docker --> azure-aci
+  kubernetes -. competes class .-> nomad
+  kubernetes -. competes class .-> aws-ecs
+  nomad -. competes class .-> aws-ecs
+  aws-eks --> kubernetes
+  azure-aks --> kubernetes
+  azure-aks --> azure-aci
+  gcp-gke --> kubernetes
+  oci-oke --> kubernetes
+  ibm-iks --> kubernetes
+  digitalocean-doks --> kubernetes
+  civo-kubernetes --> kubernetes
+  linode-lke --> kubernetes
+  vmware-tkg --> kubernetes
+  red-hat-openshift --> kubernetes
+  openshift-dedicated --> kubernetes
+  azure-container-apps -. K8s substrate .-> kubernetes
+  azure-container-apps -. competes class .-> azure-aci
+  aws-ecs -. competes class .-> aws-eks
+  aws-ecs -. competes class .-> azure-container-apps
+  nomad -. competes class .-> aws-eks
+  aws-eks -. competes class .-> azure-aks
+  aws-eks -. competes class .-> gcp-gke
+  aws-eks -. competes class .-> oci-oke
+  aws-eks -. competes class .-> ibm-iks
+  azure-aks -. competes class .-> gcp-gke
+  azure-aks -. competes class .-> oci-oke
+  azure-aks -. competes class .-> ibm-iks
+  azure-aks -. competes class .-> azure-container-apps
+  gcp-gke -. competes class .-> oci-oke
+  gcp-gke -. competes class .-> ibm-iks
+  oci-oke -. competes class .-> ibm-iks
+  aws-eks -. competes class .-> digitalocean-doks
+  aws-eks -. competes class .-> civo-kubernetes
+  azure-aks -. competes class .-> digitalocean-doks
+  azure-aks -. competes class .-> civo-kubernetes
+  gcp-gke -. competes class .-> digitalocean-doks
+  gcp-gke -. competes class .-> civo-kubernetes
+  oci-oke -. competes class .-> digitalocean-doks
+  oci-oke -. competes class .-> civo-kubernetes
+  ibm-iks -. competes class .-> digitalocean-doks
+  ibm-iks -. competes class .-> civo-kubernetes
+  digitalocean-doks -. competes class .-> civo-kubernetes
+  aws-eks -. competes class .-> linode-lke
+  azure-aks -. competes class .-> linode-lke
+  gcp-gke -. competes class .-> linode-lke
+  oci-oke -. competes class .-> linode-lke
+  ibm-iks -. competes class .-> linode-lke
+  digitalocean-doks -. competes class .-> linode-lke
+  civo-kubernetes -. competes class .-> linode-lke
+  linode-lke -. competes class .-> digitalocean-doks
+  linode-lke -. competes class .-> civo-kubernetes
+  nomad -. competes class .-> azure-aks
+  nomad -. competes class .-> gcp-gke
+  nomad -. competes class .-> oci-oke
+  nomad -. competes class .-> azure-container-apps
+  nomad -. competes class .-> ibm-iks
+  nomad -. competes class .-> azure-aci
+  nomad -. competes class .-> digitalocean-doks
+  nomad -. competes class .-> civo-kubernetes
+  nomad -. competes class .-> linode-lke
+  aws-eks -. competes class .-> vmware-tkg
+  azure-aks -. competes class .-> vmware-tkg
+  gcp-gke -. competes class .-> vmware-tkg
+  oci-oke -. competes class .-> vmware-tkg
+  ibm-iks -. competes class .-> vmware-tkg
+  digitalocean-doks -. competes class .-> vmware-tkg
+  civo-kubernetes -. competes class .-> vmware-tkg
+  linode-lke -. competes class .-> vmware-tkg
+  vmware-tkg -. competes class .-> digitalocean-doks
+  vmware-tkg -. competes class .-> civo-kubernetes
+  vmware-tkg -. competes class .-> linode-lke
+  nomad -. competes class .-> vmware-tkg
+  aws-eks -. competes class .-> red-hat-openshift
+  azure-aks -. competes class .-> red-hat-openshift
+  gcp-gke -. competes class .-> red-hat-openshift
+  oci-oke -. competes class .-> red-hat-openshift
+  ibm-iks -. competes class .-> red-hat-openshift
+  digitalocean-doks -. competes class .-> red-hat-openshift
+  civo-kubernetes -. competes class .-> red-hat-openshift
+  linode-lke -. competes class .-> red-hat-openshift
+  vmware-tkg -. competes class .-> red-hat-openshift
+  red-hat-openshift -. competes class .-> vmware-tkg
+  red-hat-openshift -. competes class .-> digitalocean-doks
+  red-hat-openshift -. competes class .-> civo-kubernetes
+  red-hat-openshift -. competes class .-> linode-lke
+  red-hat-openshift -. competes class .-> openshift-dedicated
+  openshift-dedicated -. competes class .-> red-hat-openshift
+  aws-eks -. competes class .-> openshift-dedicated
+  azure-aks -. competes class .-> openshift-dedicated
+  gcp-gke -. competes class .-> openshift-dedicated
+  oci-oke -. competes class .-> openshift-dedicated
+  ibm-iks -. competes class .-> openshift-dedicated
+  digitalocean-doks -. competes class .-> openshift-dedicated
+  civo-kubernetes -. competes class .-> openshift-dedicated
+  linode-lke -. competes class .-> openshift-dedicated
+  vmware-tkg -. competes class .-> openshift-dedicated
+  openshift-dedicated -. competes class .-> vmware-tkg
+  openshift-dedicated -. competes class .-> digitalocean-doks
+  openshift-dedicated -. competes class .-> civo-kubernetes
+  openshift-dedicated -. competes class .-> linode-lke
+  nomad -. competes class .-> red-hat-openshift
+  nomad -. competes class .-> openshift-dedicated
+  kubernetes -. HISTORICAL .-> apache-mesos
+  containerd --> runc
+  podman --> runc
+  cri-o --> runc
+  linux-kernel --> firecracker
+  firecracker -. K8s-class stacks .-> kubernetes
+  linux-kernel --> systemd
+  linux-kernel --> docker
+  linux-kernel --> podman
+  linux-kernel --> nixos
+  vscode --> model-context-protocol
+  cursor --> model-context-protocol
+  vscode --> language-server-protocol
+  cursor --> language-server-protocol
+  model-context-protocol -. coexists .-> language-server-protocol
+  anthropic-claude-code-agent-sdk --> model-context-protocol
+  microsoft-agent-framework --> model-context-protocol
+  openhands --> docker

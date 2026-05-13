@@ -1,0 +1,90 @@
+{
+  "name": "lucid-orchestrator",
+  "displayName": "Lucid Orchestrator",
+  "description": "The visor to the organism - inline folds for code intelligence",
+  "version": "0.1.0",
+  "publisher": "lucid-orchestrator",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other",
+    "Linters",
+    "Snippets"
+  ],
+  "activationEvents": [
+    "onLanguage:typescript",
+    "onLanguage:javascript",
+    "onLanguage:tsx",
+    "onLanguage:jsx"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "lucid.showSpec",
+        "title": "Show Spec",
+        "category": "Lucid"
+      },
+      {
+        "command": "lucid.showBlueprint",
+        "title": "Show Blueprint",
+        "category": "Lucid"
+      },
+      {
+        "command": "lucid.showTimeline",
+        "title": "Show Timeline",
+        "category": "Lucid"
+      },
+      {
+        "command": "lucid.proposeChange",
+        "title": "Propose Change",
+        "category": "Lucid"
+      }
+    ],
+    "configuration": {
+      "title": "Lucid Orchestrator",
+      "properties": {
+        "lucid.daemonUrl": {
+          "type": "string",
+          "default": "ws://localhost:8765",
+          "description": "WebSocket URL for Lucid Daemon"
+        },
+        "lucid.enableSpecFolds": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable Spec inline folds"
+        },
+        "lucid.enableBlueprintFolds": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable Blueprint inline folds"
+        },
+        "lucid.enableTimelineFolds": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable Timeline inline folds"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.74.0",
+    "@types/node": "16.x",
+    "@typescript-eslint/eslint-plugin": "^5.45.0",
+    "@typescript-eslint/parser": "^5.45.0",
+    "eslint": "^8.28.0",
+    "typescript": "^4.9.4"
+  },
+  "dependencies": {
+    "ws": "^8.14.2"
+  }
+}

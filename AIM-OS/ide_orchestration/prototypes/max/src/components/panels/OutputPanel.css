@@ -1,0 +1,287 @@
+/* Output Panel Styles */
+.output-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #1e1e1e;
+  color: #cccccc;
+}
+
+.output-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  background-color: #252526;
+  border-bottom: 1px solid #3e3e3e;
+}
+
+.output-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.output-header-icon {
+  width: 20px;
+  height: 20px;
+  color: #fbbf24;
+  flex-shrink: 0;
+}
+
+.output-header-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fbbf24;
+  margin: 0;
+}
+
+.output-header-subtitle {
+  font-size: 11px;
+  color: #858585;
+  margin: 2px 0 0 0;
+}
+
+.output-header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.output-autoscroll {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: #858585;
+  cursor: pointer;
+}
+
+.output-autoscroll input {
+  cursor: pointer;
+}
+
+.output-clear-button {
+  padding: 4px 8px;
+  background-color: #2d2d30;
+  border: 1px solid #3e3e3e;
+  border-radius: 4px;
+  color: #858585;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.output-clear-button:hover {
+  background-color: #323233;
+  color: #cccccc;
+}
+
+.output-filters {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  background-color: #252526;
+  border-bottom: 1px solid #3e3e3e;
+}
+
+.output-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.output-filter-icon {
+  width: 12px;
+  height: 12px;
+  color: #858585;
+  flex-shrink: 0;
+}
+
+.output-filter-label {
+  font-size: 11px;
+  color: #858585;
+  font-weight: 600;
+}
+
+.output-filter-button {
+  padding: 2px 6px;
+  background-color: #1e1e1e;
+  border: 1px solid #3e3e3e;
+  border-radius: 4px;
+  color: #858585;
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.output-filter-button:hover {
+  background-color: #2d2d30;
+  color: #cccccc;
+}
+
+.output-filter-button.active {
+  background-color: #007acc;
+  border-color: #007acc;
+  color: #ffffff;
+}
+
+.output-list {
+  flex: 1;
+  overflow: auto;
+  padding: 8px;
+  font-family: monospace;
+  font-size: 12px;
+}
+
+.output-entry {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px;
+  margin-bottom: 4px;
+  border-left: 3px solid transparent;
+  border-radius: 2px;
+  transition: background-color 0.2s;
+}
+
+.output-entry:hover {
+  background-color: #252526;
+}
+
+.output-entry-error {
+  border-left-color: #f87171;
+  background-color: rgba(248, 113, 113, 0.1);
+}
+
+.output-entry-warning {
+  border-left-color: #fbbf24;
+  background-color: rgba(251, 191, 36, 0.1);
+}
+
+.output-entry-info {
+  border-left-color: #60a5fa;
+  background-color: rgba(96, 165, 250, 0.1);
+}
+
+.output-entry-success {
+  border-left-color: #4ade80;
+  background-color: rgba(74, 222, 128, 0.1);
+}
+
+.output-entry-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.output-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.output-icon-error {
+  color: #f87171;
+}
+
+.output-icon-warning {
+  color: #fbbf24;
+}
+
+.output-icon-info {
+  color: #60a5fa;
+}
+
+.output-icon-success {
+  color: #4ade80;
+}
+
+.output-entry-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.output-entry-message {
+  color: #cccccc;
+  line-height: 1.4;
+  margin-bottom: 2px;
+}
+
+.output-entry-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  color: #858585;
+}
+
+.output-entry-source {
+  font-weight: 600;
+}
+
+.output-entry-location {
+  font-family: monospace;
+}
+
+.output-entry-time {
+  color: #6b7280;
+}
+
+.output-entry-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.output-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+  color: #858585;
+}
+
+.output-empty-icon {
+  width: 32px;
+  height: 32px;
+  color: #858585;
+  margin-bottom: 12px;
+}
+
+.output-empty p {
+  margin: 0;
+  font-size: 13px;
+}
+
+.output-error {
+  padding: 24px;
+  text-align: center;
+  color: #f87171;
+  font-size: 12px;
+}
+
+/* Scrollbar styling */
+.output-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.output-list::-webkit-scrollbar-track {
+  background: #1e1e1e;
+}
+
+.output-list::-webkit-scrollbar-thumb {
+  background: #3e3e3e;
+  border-radius: 4px;
+}
+
+.output-list::-webkit-scrollbar-thumb:hover {
+  background: #4e4e4e;
+}
+

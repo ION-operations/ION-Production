@@ -1,0 +1,34 @@
+chapter_id: ch23_threat_model_guardrails
+title: Threat Model & Guardrails
+word_count:
+  target: 2000
+  tolerance: 0.10
+  current_count: 2259
+quality_gates:
+  pre_chapter:
+    outline_loaded: true
+    deps_complete: true  # All core systems complete, dependencies satisfied
+    tierA_present: true
+    vif_min: 0.90
+  quality_assessment:
+    system_tier: tier_s
+    relevance_sufficient: true  # All sections support Threat Model & Guardrails theme
+    density_sufficient: true  # Comprehensive coverage with threat model, guardrails-as-code, sandboxes, privacy, integration
+    completion_sufficient: true  # Score: 0.95 (outline: 0.95, tier_s: 1.0, crossrefs: 0.90, use_cases: 0.95) ≥ 0.90 threshold
+    thoroughness_passed: true  # Score: 1.0 (all checklist items present) ≥ 0.85 threshold
+  completeness:
+    coverage_complete: true
+    relevance_sufficient: true
+    subsection_balance: true
+    minimum_substance: true
+  technical:
+    examples_run: true
+    sources_cited: true
+    tier_a_minimum: true
+    no_fake_features: true
+  integration:
+    no_contradictions: pending
+    terms_consistent: true
+    crossrefs_ok: true  # References Ch01, Ch07-Ch10, Ch17
+    meta_circular_present: false
+

@@ -1,0 +1,168 @@
+{
+  "systemId": "lucid-ide.backendArchitectSystem",
+  "humanName": "Lucid IDE Backend Architect System",
+  "version": "v1.0.0",
+  "status": "production",
+  
+  "intent": {
+    "purpose": "Provide visual backend builder with AI-powered architecture generation, graph visualization, and comprehensive AI Studio integration (21 sections)",
+    "must_not_regress": [
+      "Must not lose architecture state",
+      "Must not break AI Studio integration",
+      "Must not expose sensitive architecture data",
+      "Must not exceed 100ms render time",
+      "Must not break canvas rendering"
+    ],
+    "why_it_exists": "Transforms backend design from abstract concepts into visual, interactive architectures with AI-powered generation, enabling developers to design, iterate, and generate complete backend systems visually."
+  },
+  
+  "classification": {
+    "security_level": "high",
+    "perf_sensitivity": "high",
+    "ownership": "lucid-ide",
+    "sideEffects": [
+      "Generates backend code",
+      "Manages architecture state",
+      "Integrates with AI Studio",
+      "Provides context preview"
+    ]
+  },
+  
+  "internalNodes": [
+    {
+      "id": "backendArchitectV2",
+      "responsibility": "Main Backend Architect component (1200+ lines ⚠️ CRITICAL - needs refactoring)",
+      "must_never": [
+        "Lose architecture state",
+        "Break AI Studio integration",
+        "Expose sensitive architecture data"
+      ],
+      "perf_budget_ms": 100,
+      "status": "production"
+    },
+    {
+      "id": "backendCanvas",
+      "responsibility": "Visual canvas for backend architecture design",
+      "must_never": [
+        "Lose canvas state",
+        "Break node/edge rendering",
+        "Corrupt architecture data"
+      ],
+      "perf_budget_ms": 16,
+      "status": "production"
+    },
+    {
+      "id": "contextPreviewPanel",
+      "responsibility": "Context preview panel for architecture generation",
+      "must_never": [
+        "Expose sensitive context",
+        "Break context boundaries",
+        "Cause memory leaks"
+      ],
+      "perf_budget_ms": 1000,
+      "status": "production"
+    },
+    {
+      "id": "templateGallery",
+      "responsibility": "Template gallery for backend architecture templates",
+      "must_never": [
+        "Lose template data",
+        "Break template loading",
+        "Expose template internals"
+      ],
+      "perf_budget_ms": 50,
+      "status": "production"
+    },
+    {
+      "id": "aiStudioIntegration",
+      "responsibility": "Integration with 21 AI Studio sections",
+      "must_never": [
+        "Break AI Studio communication",
+        "Lose integration state",
+        "Expose API keys"
+      ],
+      "perf_budget_ms": 200,
+      "status": "production"
+    }
+  ],
+  
+  "systemMap": {
+    "mapFile": "./system.map.lucid.json5"
+  },
+  
+  "foresight": {
+    "predictedRisks": [
+      {
+        "risk_id": "large_component_performance",
+        "description": "Main component extremely large (1200+ lines) causing performance and maintainability issues",
+        "likelihood": "high",
+        "blast_radius_if_real": "backend_architect_unusable",
+        "mitigation": "Refactor into smaller components, extract canvas logic, use useReducer",
+        "watchpoint": "if render_time > 100ms for 10 consecutive renders, alert"
+      },
+      {
+        "risk_id": "ai_studio_integration_complexity",
+        "description": "21-section integration could become unmaintainable",
+        "likelihood": "medium",
+        "blast_radius_if_real": "ai_studio_integration_broken",
+        "mitigation": "Abstract integration layer, plugin system",
+        "watchpoint": "if integration_errors > 5 per minute, alert"
+      }
+    ],
+    "killSwitch": "backend-architect.enabled=false",
+    "emergencyProcedures": [
+      "Freeze all architecture operations",
+      "Disable AI Studio integration",
+      "Switch to read-only mode",
+      "Notify backend API system"
+    ]
+  },
+  
+  "integrations": {
+    "backendApiSystem": {
+      "protocol": "REST",
+      "whatIsExchanged": ["architecture_requests", "generation_responses"],
+      "security": "high",
+      "rateLimit": "unlimited"
+    },
+    "aiStudioSystem": {
+      "protocol": "react-props",
+      "whatIsExchanged": ["panel_state", "resource_configurations"],
+      "security": "high",
+      "rateLimit": "n/a"
+    },
+    "frontendSystem": {
+      "protocol": "react-props",
+      "whatIsExchanged": ["architecture_state", "ui_updates"],
+      "security": "medium",
+      "rateLimit": "n/a"
+    }
+  },
+  
+  "performance": {
+    "metrics": {
+      "render_time_ms": "target < 100ms",
+      "api_latency_ms": "target < 5000ms",
+      "canvas_fps": "target 60fps",
+      "memory_usage_mb": "target < 200MB"
+    },
+    "optimization": [
+      "Component refactoring",
+      "Code splitting",
+      "Lazy loading",
+      "Canvas optimization"
+    ],
+    "monitoring": ["render_time", "api_latency", "fps", "memory_usage"]
+  },
+  
+  "documentation": {
+    "l0_executive": "knowledge_architecture/systems/lucid-ide/backend-architect-system/L0_executive.md",
+    "l1_overview": "knowledge_architecture/systems/lucid-ide/backend-architect-system/L1_overview.md",
+    "l2_architecture": "knowledge_architecture/systems/lucid-ide/backend-architect-system/L2_architecture.md",
+    "l3_detailed": "knowledge_architecture/systems/lucid-ide/backend-architect-system/L3_detailed.md",
+    "l4_complete": "knowledge_architecture/systems/lucid-ide/backend-architect-system/L4_complete.md",
+    "system_map": "knowledge_architecture/systems/lucid-ide/backend-architect-system/system.map.lucid.json5",
+    "usage_envelope": "knowledge_architecture/systems/lucid-ide/backend-architect-system/usage.envelope.md"
+  }
+}
+

@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "depends_on",
+      "target": "webassembly",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "The component model defines typed composition and lowering to core Wasm artifacts."
+    },
+    {
+      "type": "integrates_with",
+      "target": "wasi",
+      "evidence_tier": "INFERRED",
+      "notes": "WASI worlds and component-model tooling are commonly composed (e.g. wit-bindgen, wasmtime)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "wasi-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "C/C++ Wasm component builds may link wasi-libc objects alongside component adapters in LLVM-family toolchains."
+    }
+  ]
+}

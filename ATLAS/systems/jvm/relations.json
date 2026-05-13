@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "competes_with",
+      "target": "ecma-335-cli",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable managed-runtime / portable-IL ecosystems in many deployment classes (not identical semantics)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "INFERRED",
+      "notes": "Typical HotSpot/OpenJDK deployments run as user processes on a host OS."
+    }
+  ]
+}

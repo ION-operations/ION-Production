@@ -1,0 +1,69 @@
+{
+  "name": "@aimos/plix",
+  "version": "0.1.0",
+  "description": "Pure language for expressing intent with mathematical rigor",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "plix-json": "./dist/cli-json.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "build:cli": "tsc && chmod +x dist/cli-json.js",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "format": "prettier --write \"src/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\"",
+    "type-check": "tsc --noEmit",
+    "bench": "ts-node benchmarks/run-all.ts",
+    "ci": "npm run lint && npm run type-check && npm run test:coverage",
+    "prepublishOnly": "npm run ci && npm run build"
+  },
+  "keywords": [
+    "intent",
+    "specification",
+    "formal-methods",
+    "verification",
+    "ai-consciousness"
+  ],
+  "author": "AIM-OS Project",
+  "license": "MIT",
+  "dependencies": {
+    "typescript": "^5.3.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.0",
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.50.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "jest": "^29.7.0",
+    "prettier": "^3.0.0",
+    "ts-jest": "^29.1.0",
+    "ts-node": "^10.9.0"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "roots": ["<rootDir>/src"],
+    "testMatch": ["**/__tests__/**/*.test.ts"],
+    "collectCoverageFrom": [
+      "src/**/*.ts",
+      "!src/**/*.test.ts",
+      "!src/**/__tests__/**"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 90,
+        "functions": 90,
+        "lines": 90,
+        "statements": 90
+      }
+    }
+  }
+}

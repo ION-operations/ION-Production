@@ -1,0 +1,1401 @@
+diff --git a/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/MANIFEST.json b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/MANIFEST.json
+new file mode 100644
+index 0000000..0000000
+--- /dev/null
++++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/MANIFEST.json
+--- /dev/null+++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/MANIFEST.json@@ -0,0 +1,64 @@+{
++  "schema_id": "ion.audited_read_action_quarantine_membrane_manifest.v0_1",
++  "package_id": "ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1",
++  "status": "CANDIDATE_NOT_ACCEPTED",
++  "created_by": "B01_RUNTIME_CONNECTORS_SANDBOX",
++  "created_at": "2026-05-11T00:00:00Z",
++  "production_authority": false,
++  "live_execution_authority": false,
++  "accepted_state_authority": false,
++  "root": "ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1",
++  "intent": "Define audited read/action logging plus quarantine-first write and ingest membrane for ION GPT, extension, Action Gateway, MCP, Codex, and local ION.",
++  "core_law": [
++    "All reads over allowed project surfaces are audit-event logged.",
++    "All inbound actions are audit-event logged.",
++    "All GPT/extension-originated writes land in quarantine first.",
++    "No quarantine payload becomes ingest candidate without validation and approval.",
++    "No ingest candidate becomes accepted ION state without receipt and settlement."
++  ],
++  "includes": {
++    "protocols": [
++      "protocols/AUDITED_READ_PROTOCOL.md",
++      "protocols/AUDITED_ACTION_PROTOCOL.md",
++      "protocols/QUARANTINED_WRITE_PROTOCOL.md",
++      "protocols/INGEST_APPROVAL_PROTOCOL.md",
++      "protocols/EXTENSION_DOWNLOAD_QUARANTINE_PROTOCOL.md",
++      "protocols/TOOL_AUTHORITY_CLASSIFICATION_PROTOCOL.md",
++      "protocols/AUDIT_LEDGER_HASH_CHAIN_PROTOCOL.md"
++    ],
++    "schemas": [
++      "schemas/audit_event.schema.json",
++      "schemas/read_event.schema.json",
++      "schemas/action_event.schema.json",
++      "schemas/quarantine_manifest.schema.json",
++      "schemas/quarantined_write.schema.json",
++      "schemas/ingest_request.schema.json",
++      "schemas/ingest_approval.schema.json",
++      "schemas/tool_authority_classification.schema.json",
++      "schemas/extension_download_quarantine.schema.json"
++    ],
++    "templates": [
++      "templates/READ_AUDIT_EVENT_TEMPLATE.md",
++      "templates/ACTION_AUDIT_EVENT_TEMPLATE.md",
++      "templates/QUARANTINE_WRITE_TEMPLATE.md",
++      "templates/INGEST_REQUEST_TEMPLATE.md",
++      "templates/INGEST_APPROVAL_TEMPLATE.md"
++    ],
++    "ui_contracts": [
++      "ui_contracts/audit_panel_requirements.md",
++      "ui_contracts/quarantine_panel_requirements.md"
++    ],
++    "packets": [
++      "packets/B01_AUDIT_MCP_READS_001.md",
++      "packets/B04_EXTENSION_DOWNLOAD_TO_QUARANTINE_001.md",
++      "packets/B05_LOCAL_INGEST_APPROVAL_GATE_001.md",
++      "packets/B01_B04_SAFE_COMMUNICATION_ACTION_LOGGING_001.md"
++    ]
++  },
++  "non_claims": [
++    "This package is candidate documentation/schema only.",
++    "This package does not implement logging hooks.",
++    "This package does not grant production or live execution authority.",
++    "This package does not accept any quarantined payload into ION."
++  ]
++}
+diff --git a/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/README.md b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/README.md
+new file mode 100644
+index 0000000..0000000
+--- /dev/null
++++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/README.md
+--- /dev/null+++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/README.md@@ -0,0 +1,45 @@+# ION Audited Read / Action / Quarantine Membrane v0.1 (Candidate)
++
++Status: `CANDIDATE_NOT_ACCEPTED`
++
++This context package defines the membrane for giving ION GPT and extension carriers broad **read visibility** and safe **typed communication** while forcing all write-like outputs into quarantine before ingest.
++
++Core rule:
++
++```text
++Read broadly from allowed project surfaces.
++Log every read.
++Log every inbound action.
++Write only into quarantine.
++Validate + approve before ingest.
++Settle before inheritance.
++```
++
++This is a protocol/schema/template package only. It does not install runtime hooks or mutate accepted state.
++
++## Scope
++
++- GPT Action Gateway reads and action submissions
++- MCP preview read/status tools
++- Extension YAML action detection and approvals
++- Extension downloads and artifact drops
++- Browser/self-chat queue prompts and captured returns
++- Codex work queue and task returns
++- Local quarantined candidates
++- Local ION ingest approval gates
++- Audit ledger and hash-chain event records
++
++## Required future implementation surfaces
++
++- `B01_AUDIT_MCP_READS_001`
++- `B04_EXTENSION_DOWNLOAD_TO_QUARANTINE_001`
++- `B05_LOCAL_INGEST_APPROVAL_GATE_001`
++- `B01_B04_SAFE_COMMUNICATION_ACTION_LOGGING_001`
++
++## Non-claims
++
++- No production authority.
++- No live execution authority.
++- No direct accepted-state mutation.
++- No direct secret access.
++- No automatic ingest.
+diff --git a/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/packets/B01_AUDIT_MCP_READS_001.md b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/packets/B01_AUDIT_MCP_READS_001.md
+new file mode 100644
+index 0000000..0000000
+--- /dev/null
++++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/packets/B01_AUDIT_MCP_READS_001.md
+--- /dev/null+++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/packets/B01_AUDIT_MCP_READS_001.md@@ -0,0 +1,22 @@+# B01_AUDIT_MCP_READS_001
++
++Objective: Implement audit-event emission for MCP/Gateway read/status tools without logging raw sensitive contents.
++
++Scope:
++- `ion_file_read`
++- `ion_file_search`
++- `ion_tree_list`
++- `ion_registry_read`
++- `ion_receipt_search`
++- `ion_status`
++- `ion_daemon_status`
++- `ion_codex_work_queue`
++
++Return:
++- CONTEXT PROOF
++- TEMPLATE ACTION PROOF
++- VALIDATION
++- RESULT
++- WORKLOAD DIFF
++- BLOCKERS
++- RECOMMENDED NEXT PACKET
+diff --git a/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/packets/B01_B04_SAFE_COMMUNICATION_ACTION_LOGGING_001.md b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/packets/B01_B04_SAFE_COMMUNICATION_ACTION_LOGGING_001.md
+new file mode 100644
+index 0000000..0000000
+--- /dev/null
++++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/packets/B01_B04_SAFE_COMMUNICATION_ACTION_LOGGING_001.md
+--- /dev/null+++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/packets/B01_B04_SAFE_COMMUNICATION_ACTION_LOGGING_001.md@@ -0,0 +1,10 @@+# B01_B04_SAFE_COMMUNICATION_ACTION_LOGGING_001
++
++Objective: Log all inbound actions, browser/self-chat queue events, carrier messages, selected-request starts, and proof-gate outcomes.
++
++Required:
++- action event emission
++- queue event emission
++- extension mode event emission
++- no secret logging
++- idempotency/replay handling
+diff --git a/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/packets/B04_EXTENSION_DOWNLOAD_TO_QUARANTINE_001.md b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/packets/B04_EXTENSION_DOWNLOAD_TO_QUARANTINE_001.md
+new file mode 100644
+index 0000000..0000000
+--- /dev/null
++++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/packets/B04_EXTENSION_DOWNLOAD_TO_QUARANTINE_001.md
+--- /dev/null+++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/packets/B04_EXTENSION_DOWNLOAD_TO_QUARANTINE_001.md@@ -0,0 +1,10 @@+# B04_EXTENSION_DOWNLOAD_TO_QUARANTINE_001
++
++Objective: Route extension downloads and artifact drops into quarantine with manifest/hash/preview before ingest.
++
++Required:
++- download capture manifest
++- quarantine path
++- approval UI
++- ingest request creation
++- audit events
+diff --git a/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/packets/B05_LOCAL_INGEST_APPROVAL_GATE_001.md b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/packets/B05_LOCAL_INGEST_APPROVAL_GATE_001.md
+new file mode 100644
+index 0000000..0000000
+--- /dev/null
++++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/packets/B05_LOCAL_INGEST_APPROVAL_GATE_001.md
+--- /dev/null+++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/packets/B05_LOCAL_INGEST_APPROVAL_GATE_001.md@@ -0,0 +1,10 @@+# B05_LOCAL_INGEST_APPROVAL_GATE_001
++
++Objective: Build local ION/user approval gate for promoting quarantined candidates into ingest pipeline.
++
++Required:
++- validation preflight
++- diff display
++- approval receipt
++- containment receipt
++- rejection/supersession path
+diff --git a/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/protocols/AUDITED_ACTION_PROTOCOL.md b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/protocols/AUDITED_ACTION_PROTOCOL.md
+new file mode 100644
+index 0000000..0000000
+--- /dev/null
++++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/protocols/AUDITED_ACTION_PROTOCOL.md
+--- /dev/null+++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/protocols/AUDITED_ACTION_PROTOCOL.md@@ -0,0 +1,36 @@+# AUDITED_ACTION_PROTOCOL
++
++Status: `CANDIDATE_NOT_ACCEPTED`
++
++## Law
++
++Every inbound action and action lifecycle transition MUST emit an audit event.
++
++Action events include:
++
++- action detected
++- action validation requested
++- validation accepted/refused
++- approval required
++- approval granted/refused
++- action submitted
++- queue packet created
++- selected request started
++- worker started/completed
++- proof accepted/blocked
++- quarantine write created
++- ingest requested/approved/rejected
++
++## Authority record
++
++Each action event MUST record:
++
++- production authority
++- live execution authority
++- accepted-state authority
++- approval requirement
++- operator approval evidence reference when present
++
++## Replay/idempotency
++
++Mutation-capable actions MUST include an idempotency key and refusal path for replay.
+diff --git a/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/protocols/AUDITED_READ_PROTOCOL.md b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/protocols/AUDITED_READ_PROTOCOL.md
+new file mode 100644
+index 0000000..0000000
+--- /dev/null
++++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/protocols/AUDITED_READ_PROTOCOL.md
+--- /dev/null+++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/protocols/AUDITED_READ_PROTOCOL.md@@ -0,0 +1,49 @@+# AUDITED_READ_PROTOCOL
++
++Status: `CANDIDATE_NOT_ACCEPTED`
++
++## Law
++
++Every successful or refused read-like operation over allowed local/project state MUST emit an audit event.
++
++Read-like operations include:
++
++- `file_read`
++- `file_search`
++- `tree_list`
++- `registry_read`
++- `receipt_search`
++- `queue_status`
++- `runner_status`
++- `git_status_summary`
++- `artifact_manifest`
++- `context_compile`
++- extension queue/status projections
++
++## What to log
++
++The audit event MUST record:
++
++- actor/callsign/carrier
++- tool/surface used
++- target paths or roots
++- operation intent/purpose
++- authority flags
++- result status
++- bytes/mtime/hash if available
++- redaction policy
++- whether content was logged
++
++## What not to log
++
++The read ledger MUST NOT store raw secret contents. For sensitive surfaces, log:
++
++```text
++event_type: read_refused
++reason: secret_or_forbidden_surface
++content_logged: false
++```
++
++## Allowed read posture
++
++A read being allowed does not imply write authority or accepted-state authority.
+diff --git a/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/protocols/AUDIT_LEDGER_HASH_CHAIN_PROTOCOL.md b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/protocols/AUDIT_LEDGER_HASH_CHAIN_PROTOCOL.md
+new file mode 100644
+index 0000000..0000000
+--- /dev/null
++++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/protocols/AUDIT_LEDGER_HASH_CHAIN_PROTOCOL.md
+--- /dev/null+++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/protocols/AUDIT_LEDGER_HASH_CHAIN_PROTOCOL.md@@ -0,0 +1,32 @@+# AUDIT_LEDGER_HASH_CHAIN_PROTOCOL
++
++Status: `CANDIDATE_NOT_ACCEPTED`
++
++## Ledger roots
++
++```text
++ION/05_context/current/audit/
++  read_events/
++  action_events/
++  queue_events/
++  extension_events/
++  quarantine_events/
++  approval_events/
++  proof_gate_events/
++  daily_rollups/
++  hash_chain/
++```
++
++## Hash chain
++
++Each event MAY include:
++
++```json
++{
++  "event_hash": "sha256(event without event_hash)",
++  "previous_event_hash": "sha256 previous event",
++  "chain_id": "audit_daily_YYYYMMDD"
++}
++```
++
++This is a tamper-evidence mechanism, not a replacement for backups or formal signing.
+diff --git a/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/protocols/EXTENSION_DOWNLOAD_QUARANTINE_PROTOCOL.md b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/protocols/EXTENSION_DOWNLOAD_QUARANTINE_PROTOCOL.md
+new file mode 100644
+index 0000000..0000000
+--- /dev/null
++++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/protocols/EXTENSION_DOWNLOAD_QUARANTINE_PROTOCOL.md
+--- /dev/null+++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/protocols/EXTENSION_DOWNLOAD_QUARANTINE_PROTOCOL.md@@ -0,0 +1,34 @@+# EXTENSION_DOWNLOAD_QUARANTINE_PROTOCOL
++
++Status: `CANDIDATE_NOT_ACCEPTED`
++
++## Law
++
++Extension downloads and browser-captured artifacts MUST land in quarantine first.
++
++Download flow:
++
++```text
++extension receives file/artifact
++→ hash + manifest
++→ quarantine/incoming_from_extension/
++→ cockpit preview
++→ validation
++→ ingest request
++→ approval
++→ ingest/settlement
++```
++
++The extension MUST NOT silently place downloaded files into active project state.
++
++## UI requirement
++
++The extension must show:
++
++- file name
++- size
++- hash
++- source page/chat/action
++- intended target if any
++- current quarantine state
++- approval status
+diff --git a/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/protocols/INGEST_APPROVAL_PROTOCOL.md b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/protocols/INGEST_APPROVAL_PROTOCOL.md
+new file mode 100644
+index 0000000..0000000
+--- /dev/null
++++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/protocols/INGEST_APPROVAL_PROTOCOL.md
+--- /dev/null+++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/protocols/INGEST_APPROVAL_PROTOCOL.md@@ -0,0 +1,33 @@+# INGEST_APPROVAL_PROTOCOL
++
++Status: `CANDIDATE_NOT_ACCEPTED`
++
++## Law
++
++Quarantine write != ingest.
++Ingest != accepted state.
++Accepted state requires settlement.
++
++## Lifecycle
++
++```text
++quarantined
++→ validated
++→ ingest_requested
++→ operator/local ION approval
++→ approved_for_ingest
++→ staged_applied_or_imported
++→ receipt_created
++→ parent settlement
++→ accepted/superseded/rejected
++```
++
++## Required checks
++
++- manifest parses
++- payload hashes match
++- target path is allowed
++- no secrets included
++- diff generated when applicable
++- authority class is compatible with target
++- approval evidence is present
+diff --git a/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/protocols/QUARANTINED_WRITE_PROTOCOL.md b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/protocols/QUARANTINED_WRITE_PROTOCOL.md
+new file mode 100644
+index 0000000..0000000
+--- /dev/null
++++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/protocols/QUARANTINED_WRITE_PROTOCOL.md
+--- /dev/null+++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/protocols/QUARANTINED_WRITE_PROTOCOL.md@@ -0,0 +1,52 @@+# QUARANTINED_WRITE_PROTOCOL
++
++Status: `CANDIDATE_NOT_ACCEPTED`
++
++## Law
++
++All GPT/extension-originated writes are candidate artifacts and MUST land in quarantine before ingest.
++
++Default quarantine root:
++
++```text
++ION/05_context/current/quarantine/
++```
++
++Recommended subfolders:
++
++```text
++incoming_from_chatgpt/
++incoming_from_extension/
++incoming_from_codex/
++incoming_artifacts/
++candidate_patches/
++candidate_context_packages/
++candidate_queue_packets/
++approved_for_ingest/
++rejected/
++receipts/
++manifests/
++```
++
++## Required candidate contents
++
++Each quarantined write SHOULD include:
++
++- payload
++- manifest
++- source message/action id
++- target proposal
++- hashes
++- authority flags
++- validation status
++- ingest status
++
++## Prohibited direct writes
++
++- accepted state files
++- secrets
++- `.env`
++- production config
++- protected registries
++- git push
++- deployment surfaces
+diff --git a/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/protocols/TOOL_AUTHORITY_CLASSIFICATION_PROTOCOL.md b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/protocols/TOOL_AUTHORITY_CLASSIFICATION_PROTOCOL.md
+new file mode 100644
+index 0000000..0000000
+--- /dev/null
++++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/protocols/TOOL_AUTHORITY_CLASSIFICATION_PROTOCOL.md
+--- /dev/null+++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/protocols/TOOL_AUTHORITY_CLASSIFICATION_PROTOCOL.md@@ -0,0 +1,30 @@+# TOOL_AUTHORITY_CLASSIFICATION_PROTOCOL
++
++Status: `CANDIDATE_NOT_ACCEPTED`
++
++## Authority classes
++
++- `read_only_status`
++- `read_only_content`
++- `communication_only`
++- `queue_candidate_creation`
++- `quarantined_write`
++- `bounded_worker_start`
++- `ingest_request`
++- `ingest_promotion`
++- `forbidden_secret_or_broad_control`
++
++## Tool policy
++
++Tools must declare:
++
++- mutation class
++- approval requirement
++- target allowed roots
++- logged event type
++- quarantine requirement
++- refusal classes
++
++## Rule
++
++No tool should be allowed merely because it exists. Tool visibility is not permission.
+diff --git a/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/receipts/sandbox_creation_receipt.json b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/receipts/sandbox_creation_receipt.json
+new file mode 100644
+index 0000000..0000000
+--- /dev/null
++++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/receipts/sandbox_creation_receipt.json
+--- /dev/null+++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/receipts/sandbox_creation_receipt.json@@ -0,0 +1,13 @@+{
++  "schema_id": "ion.sandbox_candidate_package_receipt.v0_1",
++  "package_id": "ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1",
++  "created_at": "2026-05-11T00:00:00Z",
++  "sandbox_path": "/mnt/data/ion_sandbox_work/ION_CODEX FULL/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1",
++  "status": "CANDIDATE_NOT_ACCEPTED",
++  "production_authority": false,
++  "live_execution_authority": false,
++  "accepted_state_authority": false,
++  "validation": {
++    "json_parse": "pending"
++  }
++}
+diff --git a/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/schemas/action_event.schema.json b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/schemas/action_event.schema.json
+new file mode 100644
+index 0000000..0000000
+--- /dev/null
++++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/schemas/action_event.schema.json
+--- /dev/null+++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/schemas/action_event.schema.json@@ -0,0 +1,96 @@+{
++  "$schema": "https://json-schema.org/draft/2020-12/schema",
++  "$id": "ion.schema.action_event.v0_1",
++  "type": "object",
++  "required": [
++    "schema_id",
++    "event_id",
++    "action_id",
++    "action_event_type",
++    "actor",
++    "authority",
++    "result"
++  ],
++  "properties": {
++    "schema_id": {
++      "const": "ion.action_event.v0_1"
++    },
++    "event_id": {
++      "type": "string"
++    },
++    "action_id": {
++      "type": "string"
++    },
++    "action_event_type": {
++      "enum": [
++        "detected",
++        "validated",
++        "approval_required",
++        "approved",
++        "rejected",
++        "submitted",
++        "queued",
++        "started",
++        "completed",
++        "proof_accepted",
++        "proof_blocked",
++        "refused"
++      ]
++    },
++    "actor": {
++      "type": "object",
++      "properties": {
++        "callsign": {
++          "type": "string"
++        },
++        "carrier": {
++          "type": "string"
++        },
++        "agent_class": {
++          "type": "string"
++        }
++      },
++      "additionalProperties": true
++    },
++    "authority": {
++      "type": "object",
++      "properties": {
++        "production_authority": {
++          "type": "boolean"
++        },
++        "live_execution_authority": {
++          "type": "boolean"
++        },
++        "accepted_state_authority": {
++          "type": "boolean"
++        },
++        "requires_operator_approval": {
++          "type": "boolean"
++        }
++      },
++      "required": [
++        "production_authority",
++        "live_execution_authority"
++      ],
++      "additionalProperties": true
++    },
++    "idempotency_key": {
++      "type": "string"
++    },
++    "target": {
++      "type": "object",
++      "additionalProperties": true
++    },
++    "result": {
++      "type": "object",
++      "additionalProperties": true
++    },
++    "receipt_refs": {
++      "type": "array",
++      "items": {
++        "type": "string"
++      }
++    }
++  },
++  "additionalProperties": true
++}
+diff --git a/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/schemas/audit_event.schema.json b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/schemas/audit_event.schema.json
+new file mode 100644
+index 0000000..0000000
+--- /dev/null
++++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/schemas/audit_event.schema.json
+--- /dev/null+++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/schemas/audit_event.schema.json@@ -0,0 +1,101 @@+{
++  "$schema": "https://json-schema.org/draft/2020-12/schema",
++  "$id": "ion.schema.audit_event.v0_1",
++  "type": "object",
++  "required": [
++    "schema_id",
++    "event_id",
++    "event_type",
++    "created_at",
++    "actor",
++    "authority",
++    "operation",
++    "result"
++  ],
++  "properties": {
++    "schema_id": {
++      "const": "ion.audit_event.v0_1"
++    },
++    "event_id": {
++      "type": "string"
++    },
++    "event_type": {
++      "type": "string"
++    },
++    "created_at": {
++      "type": "string"
++    },
++    "actor": {
++      "type": "object",
++      "properties": {
++        "callsign": {
++          "type": "string"
++        },
++        "carrier": {
++          "type": "string"
++        },
++        "agent_class": {
++          "type": "string"
++        }
++      },
++      "additionalProperties": true
++    },
++    "authority": {
++      "type": "object",
++      "properties": {
++        "production_authority": {
++          "type": "boolean"
++        },
++        "live_execution_authority": {
++          "type": "boolean"
++        },
++        "accepted_state_authority": {
++          "type": "boolean"
++        },
++        "requires_operator_approval": {
++          "type": "boolean"
++        }
++      },
++      "required": [
++        "production_authority",
++        "live_execution_authority"
++      ],
++      "additionalProperties": true
++    },
++    "source": {
++      "type": "object",
++      "additionalProperties": true
++    },
++    "target": {
++      "type": "object",
++      "additionalProperties": true
++    },
++    "operation": {
++      "type": "object",
++      "additionalProperties": true
++    },
++    "evidence": {
++      "type": "object",
++      "additionalProperties": true
++    },
++    "redaction": {
++      "type": "object",
++      "additionalProperties": true
++    },
++    "result": {
++      "type": "object",
++      "additionalProperties": true
++    },
++    "receipt_refs": {
++      "type": "array",
++      "items": {
++        "type": "string"
++      }
++    },
++    "hash_chain": {
++      "type": "object",
++      "additionalProperties": true
++    }
++  },
++  "additionalProperties": true
++}
+diff --git a/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/schemas/extension_download_quarantine.schema.json b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/schemas/extension_download_quarantine.schema.json
+new file mode 100644
+index 0000000..0000000
+--- /dev/null
++++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/schemas/extension_download_quarantine.schema.json
+--- /dev/null+++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/schemas/extension_download_quarantine.schema.json@@ -0,0 +1,60 @@+{
++  "$schema": "https://json-schema.org/draft/2020-12/schema",
++  "$id": "ion.schema.extension_download_quarantine.v0_1",
++  "type": "object",
++  "required": [
++    "schema_id",
++    "download_id",
++    "source",
++    "quarantine_path",
++    "hashes",
++    "state"
++  ],
++  "properties": {
++    "schema_id": {
++      "const": "ion.extension_download_quarantine.v0_1"
++    },
++    "download_id": {
++      "type": "string"
++    },
++    "source": {
++      "type": "object",
++      "additionalProperties": true
++    },
++    "filename": {
++      "type": "string"
++    },
++    "size_bytes": {
++      "type": "integer"
++    },
++    "hashes": {
++      "type": "object",
++      "additionalProperties": {
++        "type": "string"
++      }
++    },
++    "quarantine_path": {
++      "type": "string"
++    },
++    "state": {
++      "enum": [
++        "captured",
++        "quarantined",
++        "validated",
++        "ingest_requested",
++        "approved_for_ingest",
++        "rejected"
++      ]
++    },
++    "manifest_path": {
++      "type": "string"
++    },
++    "receipt_refs": {
++      "type": "array",
++      "items": {
++        "type": "string"
++      }
++    }
++  },
++  "additionalProperties": true
++}
+diff --git a/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/schemas/ingest_approval.schema.json b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/schemas/ingest_approval.schema.json
+new file mode 100644
+index 0000000..0000000
+--- /dev/null
++++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/schemas/ingest_approval.schema.json
+--- /dev/null+++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/schemas/ingest_approval.schema.json@@ -0,0 +1,49 @@+{
++  "$schema": "https://json-schema.org/draft/2020-12/schema",
++  "$id": "ion.schema.ingest_approval.v0_1",
++  "type": "object",
++  "required": [
++    "schema_id",
++    "approval_id",
++    "ingest_request_id",
++    "approved",
++    "approved_by",
++    "created_at"
++  ],
++  "properties": {
++    "schema_id": {
++      "const": "ion.ingest_approval.v0_1"
++    },
++    "approval_id": {
++      "type": "string"
++    },
++    "ingest_request_id": {
++      "type": "string"
++    },
++    "approved": {
++      "type": "boolean"
++    },
++    "approved_by": {
++      "type": "string"
++    },
++    "created_at": {
++      "type": "string"
++    },
++    "approval_evidence_ref": {
++      "type": "string"
++    },
++    "conditions": {
++      "type": "array",
++      "items": {
++        "type": "string"
++      }
++    },
++    "receipt_refs": {
++      "type": "array",
++      "items": {
++        "type": "string"
++      }
++    }
++  },
++  "additionalProperties": true
++}
+diff --git a/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/schemas/ingest_request.schema.json b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/schemas/ingest_request.schema.json
+new file mode 100644
+index 0000000..0000000
+--- /dev/null
++++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/schemas/ingest_request.schema.json
+--- /dev/null+++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/schemas/ingest_request.schema.json@@ -0,0 +1,59 @@+{
++  "$schema": "https://json-schema.org/draft/2020-12/schema",
++  "$id": "ion.schema.ingest_request.v0_1",
++  "type": "object",
++  "required": [
++    "schema_id",
++    "ingest_request_id",
++    "artifact_id",
++    "quarantine_manifest_path",
++    "requested_target",
++    "approval_required"
++  ],
++  "properties": {
++    "schema_id": {
++      "const": "ion.ingest_request.v0_1"
++    },
++    "ingest_request_id": {
++      "type": "string"
++    },
++    "artifact_id": {
++      "type": "string"
++    },
++    "quarantine_manifest_path": {
++      "type": "string"
++    },
++    "requested_target": {
++      "type": "string"
++    },
++    "approval_required": {
++      "type": "boolean"
++    },
++    "validation_refs": {
++      "type": "array",
++      "items": {
++        "type": "string"
++      }
++    },
++    "diff_refs": {
++      "type": "array",
++      "items": {
++        "type": "string"
++      }
++    },
++    "risk_class": {
++      "type": "string"
++    },
++    "status": {
++      "enum": [
++        "draft",
++        "requested",
++        "approved",
++        "rejected",
++        "applied",
++        "settled"
++      ]
++    }
++  },
++  "additionalProperties": true
++}
+diff --git a/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/schemas/quarantine_manifest.schema.json b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/schemas/quarantine_manifest.schema.json
+new file mode 100644
+index 0000000..0000000
+--- /dev/null
++++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/schemas/quarantine_manifest.schema.json
+--- /dev/null+++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/schemas/quarantine_manifest.schema.json@@ -0,0 +1,92 @@+{
++  "$schema": "https://json-schema.org/draft/2020-12/schema",
++  "$id": "ion.schema.quarantine_manifest.v0_1",
++  "type": "object",
++  "required": [
++    "schema_id",
++    "artifact_id",
++    "source_carrier",
++    "created_at",
++    "payload_paths",
++    "authority",
++    "ingest"
++  ],
++  "properties": {
++    "schema_id": {
++      "const": "ion.quarantine_manifest.v0_1"
++    },
++    "artifact_id": {
++      "type": "string"
++    },
++    "source_carrier": {
++      "type": "string"
++    },
++    "created_by": {
++      "type": "string"
++    },
++    "created_at": {
++      "type": "string"
++    },
++    "payload_paths": {
++      "type": "array",
++      "items": {
++        "type": "string"
++      }
++    },
++    "intended_target": {
++      "type": [
++        "string",
++        "null"
++      ]
++    },
++    "authority": {
++      "type": "object",
++      "properties": {
++        "production_authority": {
++          "type": "boolean"
++        },
++        "live_execution_authority": {
++          "type": "boolean"
++        },
++        "accepted_state_authority": {
++          "type": "boolean"
++        },
++        "requires_operator_approval": {
++          "type": "boolean"
++        }
++      },
++      "required": [
++        "production_authority",
++        "live_execution_authority"
++      ],
++      "additionalProperties": true
++    },
++    "validation": {
++      "type": "object",
++      "additionalProperties": true
++    },
++    "ingest": {
++      "type": "object",
++      "required": [
++        "status",
++        "requires_operator_approval"
++      ],
++      "properties": {
++        "status": {
++          "type": "string"
++        },
++        "requires_operator_approval": {
++          "type": "boolean"
++        },
++        "receipt_refs": {
++          "type": "array",
++          "items": {
++            "type": "string"
++          }
++        }
++      },
++      "additionalProperties": true
++    }
++  },
++  "additionalProperties": true
++}
+diff --git a/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/schemas/quarantined_write.schema.json b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/schemas/quarantined_write.schema.json
+new file mode 100644
+index 0000000..0000000
+--- /dev/null
++++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/schemas/quarantined_write.schema.json
+--- /dev/null+++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/schemas/quarantined_write.schema.json@@ -0,0 +1,56 @@+{
++  "$schema": "https://json-schema.org/draft/2020-12/schema",
++  "$id": "ion.schema.quarantined_write.v0_1",
++  "type": "object",
++  "required": [
++    "schema_id",
++    "write_id",
++    "quarantine_path",
++    "manifest_path",
++    "payload_paths",
++    "state"
++  ],
++  "properties": {
++    "schema_id": {
++      "const": "ion.quarantined_write.v0_1"
++    },
++    "write_id": {
++      "type": "string"
++    },
++    "quarantine_path": {
++      "type": "string"
++    },
++    "manifest_path": {
++      "type": "string"
++    },
++    "payload_paths": {
++      "type": "array",
++      "items": {
++        "type": "string"
++      }
++    },
++    "state": {
++      "enum": [
++        "quarantined",
++        "validated",
++        "ingest_requested",
++        "approved_for_ingest",
++        "rejected",
++        "superseded"
++      ]
++    },
++    "source_action_id": {
++      "type": "string"
++    },
++    "diff_path": {
++      "type": "string"
++    },
++    "receipt_refs": {
++      "type": "array",
++      "items": {
++        "type": "string"
++      }
++    }
++  },
++  "additionalProperties": true
++}
+diff --git a/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/schemas/read_event.schema.json b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/schemas/read_event.schema.json
+new file mode 100644
+index 0000000..0000000
+--- /dev/null
++++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/schemas/read_event.schema.json
+--- /dev/null+++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/schemas/read_event.schema.json@@ -0,0 +1,81 @@+{
++  "$schema": "https://json-schema.org/draft/2020-12/schema",
++  "$id": "ion.schema.read_event.v0_1",
++  "type": "object",
++  "required": [
++    "schema_id",
++    "event_id",
++    "read_kind",
++    "actor",
++    "target",
++    "result"
++  ],
++  "properties": {
++    "schema_id": {
++      "const": "ion.read_event.v0_1"
++    },
++    "event_id": {
++      "type": "string"
++    },
++    "read_kind": {
++      "enum": [
++        "file_read",
++        "file_search",
++        "tree_list",
++        "registry_read",
++        "receipt_search",
++        "queue_status",
++        "runner_status",
++        "git_status_summary",
++        "context_compile",
++        "artifact_manifest",
++        "read_refused"
++      ]
++    },
++    "actor": {
++      "type": "object",
++      "properties": {
++        "callsign": {
++          "type": "string"
++        },
++        "carrier": {
++          "type": "string"
++        },
++        "agent_class": {
++          "type": "string"
++        }
++      },
++      "additionalProperties": true
++    },
++    "target": {
++      "type": "object",
++      "properties": {
++        "paths": {
++          "type": "array",
++          "items": {
++            "type": "string"
++          }
++        },
++        "roots": {
++          "type": "array",
++          "items": {
++            "type": "string"
++          }
++        }
++      },
++      "additionalProperties": true
++    },
++    "redaction": {
++      "type": "object",
++      "additionalProperties": true
++    },
++    "result": {
++      "type": "object",
++      "additionalProperties": true
++    },
++    "audit_event_ref": {
++      "type": "string"
++    }
++  },
++  "additionalProperties": true
++}
+diff --git a/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/schemas/tool_authority_classification.schema.json b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/schemas/tool_authority_classification.schema.json
+new file mode 100644
+index 0000000..0000000
+--- /dev/null
++++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/schemas/tool_authority_classification.schema.json
+--- /dev/null+++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/schemas/tool_authority_classification.schema.json@@ -0,0 +1,66 @@+{
++  "$schema": "https://json-schema.org/draft/2020-12/schema",
++  "$id": "ion.schema.tool_authority_classification.v0_1",
++  "type": "object",
++  "required": [
++    "schema_id",
++    "tool_name",
++    "authority_class",
++    "mutation_class",
++    "logging_required"
++  ],
++  "properties": {
++    "schema_id": {
++      "const": "ion.tool_authority_classification.v0_1"
++    },
++    "tool_name": {
++      "type": "string"
++    },
++    "surface": {
++      "type": "string"
++    },
++    "authority_class": {
++      "enum": [
++        "read_only_status",
++        "read_only_content",
++        "communication_only",
++        "queue_candidate_creation",
++        "quarantined_write",
++        "bounded_worker_start",
++        "ingest_request",
++        "ingest_promotion",
++        "forbidden_secret_or_broad_control"
++      ]
++    },
++    "mutation_class": {
++      "enum": [
++        "none",
++        "candidate_only",
++        "quarantine_only",
++        "queue_mutation",
++        "runtime_control",
++        "ingest_mutation",
++        "forbidden"
++      ]
++    },
++    "logging_required": {
++      "type": "boolean"
++    },
++    "approval_required": {
++      "type": "boolean"
++    },
++    "allowed_roots": {
++      "type": "array",
++      "items": {
++        "type": "string"
++      }
++    },
++    "refusal_classes": {
++      "type": "array",
++      "items": {
++        "type": "string"
++      }
++    }
++  },
++  "additionalProperties": true
++}
+diff --git a/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/templates/ACTION_AUDIT_EVENT_TEMPLATE.md b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/templates/ACTION_AUDIT_EVENT_TEMPLATE.md
+new file mode 100644
+index 0000000..0000000
+--- /dev/null
++++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/templates/ACTION_AUDIT_EVENT_TEMPLATE.md
+--- /dev/null+++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/templates/ACTION_AUDIT_EVENT_TEMPLATE.md@@ -0,0 +1,29 @@+# ACTION_AUDIT_EVENT_TEMPLATE
++
++```json
++{
++  "schema_id": "ion.action_event.v0_1",
++  "event_id": "act_YYYYMMDDTHHMMSSZ_slug",
++  "action_id": "example",
++  "action_event_type": "submitted",
++  "actor": {
++    "callsign": "Sev",
++    "carrier": "chatgpt_browser"
++  },
++  "authority": {
++    "production_authority": false,
++    "live_execution_authority": false,
++    "accepted_state_authority": false,
++    "requires_operator_approval": true
++  },
++  "target": {
++    "queue_type": "codex_work_queue",
++    "request_id": "optional"
++  },
++  "result": {
++    "ok": true,
++    "status": "queued"
++  },
++  "receipt_refs": []
++}
++```
+diff --git a/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/templates/INGEST_APPROVAL_TEMPLATE.md b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/templates/INGEST_APPROVAL_TEMPLATE.md
+new file mode 100644
+index 0000000..0000000
+--- /dev/null
++++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/templates/INGEST_APPROVAL_TEMPLATE.md
+--- /dev/null+++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/templates/INGEST_APPROVAL_TEMPLATE.md@@ -0,0 +1,18 @@+# INGEST_APPROVAL_TEMPLATE
++
++```json
++{
++  "schema_id": "ion.ingest_approval.v0_1",
++  "approval_id": "ingest_approval_...",
++  "ingest_request_id": "ingest_req_...",
++  "approved": true,
++  "approved_by": "Braden",
++  "created_at": "timestamp",
++  "approval_evidence_ref": "receipt-or-ui-event",
++  "conditions": [
++    "apply only to candidate path",
++    "create containment receipt"
++  ],
++  "receipt_refs": []
++}
++```
+diff --git a/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/templates/INGEST_REQUEST_TEMPLATE.md b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/templates/INGEST_REQUEST_TEMPLATE.md
+new file mode 100644
+index 0000000..0000000
+--- /dev/null
++++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/templates/INGEST_REQUEST_TEMPLATE.md
+--- /dev/null+++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/templates/INGEST_REQUEST_TEMPLATE.md@@ -0,0 +1,16 @@+# INGEST_REQUEST_TEMPLATE
++
++```json
++{
++  "schema_id": "ion.ingest_request.v0_1",
++  "ingest_request_id": "ingest_req_...",
++  "artifact_id": "artifact_...",
++  "quarantine_manifest_path": "ION/05_context/current/quarantine/...",
++  "requested_target": "ION/...",
++  "approval_required": true,
++  "validation_refs": [],
++  "diff_refs": [],
++  "risk_class": "candidate_context_package",
++  "status": "requested"
++}
++```
+diff --git a/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/templates/QUARANTINE_WRITE_TEMPLATE.md b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/templates/QUARANTINE_WRITE_TEMPLATE.md
+new file mode 100644
+index 0000000..0000000
+--- /dev/null
++++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/templates/QUARANTINE_WRITE_TEMPLATE.md
+--- /dev/null+++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/templates/QUARANTINE_WRITE_TEMPLATE.md@@ -0,0 +1,14 @@+# QUARANTINE_WRITE_TEMPLATE
++
++Required folder:
++
++```text
++ION/05_context/current/quarantine/incoming_from_<carrier>/<timestamp>_<artifact_id>/
++  payload.*
++  manifest.json
++  source_message.json
++  target_proposal.json
++  proof_note.md
++```
++
++Required rule: payload is not ingest and not accepted state.
+diff --git a/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/templates/READ_AUDIT_EVENT_TEMPLATE.md b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/templates/READ_AUDIT_EVENT_TEMPLATE.md
+new file mode 100644
+index 0000000..0000000
+--- /dev/null
++++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/templates/READ_AUDIT_EVENT_TEMPLATE.md
+--- /dev/null+++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/templates/READ_AUDIT_EVENT_TEMPLATE.md@@ -0,0 +1,29 @@+# READ_AUDIT_EVENT_TEMPLATE
++
++```json
++{
++  "schema_id": "ion.read_event.v0_1",
++  "event_id": "read_YYYYMMDDTHHMMSSZ_slug",
++  "read_kind": "file_read",
++  "actor": {
++    "callsign": "Sev",
++    "carrier": "chatgpt_browser",
++    "agent_class": "ion_gpt_carrier"
++  },
++  "target": {
++    "paths": ["ION/..."],
++    "roots": []
++  },
++  "redaction": {
++    "policy": "no_secrets",
++    "content_logged": false,
++    "redacted": false
++  },
++  "result": {
++    "ok": true,
++    "status": "completed",
++    "summary": "read succeeded"
++  },
++  "audit_event_ref": "audit_..."
++}
++```
+diff --git a/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/ui_contracts/audit_panel_requirements.md b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/ui_contracts/audit_panel_requirements.md
+new file mode 100644
+index 0000000..0000000
+--- /dev/null
++++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/ui_contracts/audit_panel_requirements.md
+--- /dev/null+++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/ui_contracts/audit_panel_requirements.md@@ -0,0 +1,24 @@+# Audit Panel Requirements
++
++Status: `CANDIDATE_NOT_ACCEPTED`
++
++The extension cockpit SHOULD expose an Audit panel that can filter:
++
++- read events
++- action events
++- queue events
++- approval events
++- quarantine events
++- proof-gate events
++
++Each row should show:
++
++- event time
++- actor
++- surface/tool
++- target summary
++- authority class
++- result
++- receipt/ref links
++
++Raw secret content must never be displayed.
+diff --git a/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/ui_contracts/quarantine_panel_requirements.md b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/ui_contracts/quarantine_panel_requirements.md
+new file mode 100644
+index 0000000..0000000
+--- /dev/null
++++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/ui_contracts/quarantine_panel_requirements.md
+--- /dev/null+++ b/ION/05_context/current/audited_read_action_quarantine_membrane_context_package/ION_AUDITED_READ_ACTION_QUARANTINE_MEMBRANE_v0_1/ui_contracts/quarantine_panel_requirements.md@@ -0,0 +1,21 @@+# Quarantine Panel Requirements
++
++Status: `CANDIDATE_NOT_ACCEPTED`
++
++The extension cockpit SHOULD expose a Quarantine panel with:
++
++- incoming artifacts
++- source carrier
++- hash/size
++- intended target
++- validation state
++- ingest request state
++- approval controls
++- reject/supersede controls
++- receipt links
++
++The panel must clearly state:
++
++```text
++Quarantine is not accepted state.
++```

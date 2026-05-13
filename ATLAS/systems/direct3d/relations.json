@@ -1,0 +1,31 @@
+{
+  "system_slug": "direct3d",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-03",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "windows-nt",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Direct3D is Microsoft's GPU graphics/compute API family for Windows (primary documented surface)."
+    },
+    {
+      "type": "competes_with",
+      "target": "vulkan",
+      "evidence_tier": "INFERRED",
+      "notes": "Overlapping low-overhead GPU API space on Windows and cross-platform engines (Vulkan vs D3D12 is a common porting axis)."
+    },
+    {
+      "type": "competes_with",
+      "target": "opengl",
+      "evidence_tier": "INFERRED",
+      "notes": "Overlapping GPU graphics API space; OpenGL remains available on Windows via vendors but is legacy for many new D3D-focused titles."
+    },
+    {
+      "type": "competes_with",
+      "target": "metal",
+      "evidence_tier": "INFERRED",
+      "notes": "Overlapping GPU API space across platform ports (Windows/D3D vs Apple/Metal is a common engine matrix)."
+    }
+  ]
+}

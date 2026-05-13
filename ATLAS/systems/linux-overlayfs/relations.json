@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "OverlayFS is a Linux kernel filesystem implementation (overlay) for stacked lower/upper directory trees per kernel documentation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-namespaces",
+      "evidence_tier": "INFERRED",
+      "notes": "Overlay mounts are scoped by mount namespaces; union mounts are not namespace types themselves."
+    },
+    {
+      "type": "integrates_with",
+      "target": "oci-image-spec",
+      "evidence_tier": "INFERRED",
+      "notes": "OCI image layers describe content addressing and manifests; overlay mounts are one common Linux materialization strategy, not the spec itself."
+    },
+    {
+      "type": "integrates_with",
+      "target": "oci-runtime-spec",
+      "evidence_tier": "INFERRED",
+      "notes": "OCI runtime bundles define container filesystem roots; runtimes may use overlay mounts on Linux to assemble roots, distinct from the spec text."
+    },
+    {
+      "type": "integrates_with",
+      "target": "docker",
+      "evidence_tier": "INFERRED",
+      "notes": "Docker on Linux commonly uses overlay storage drivers backed by the kernel overlay filesystem per common deployment understanding."
+    },
+    {
+      "type": "integrates_with",
+      "target": "containerd",
+      "evidence_tier": "INFERRED",
+      "notes": "containerd snapshotters may assemble container root filesystems using overlay mounts on Linux."
+    },
+    {
+      "type": "integrates_with",
+      "target": "runc",
+      "evidence_tier": "INFERRED",
+      "notes": "runc starts bundles on Linux where the prepared rootfs may be produced via overlay mounts by higher layers."
+    },
+    {
+      "type": "integrates_with",
+      "target": "podman",
+      "evidence_tier": "INFERRED",
+      "notes": "Podman storage on Linux frequently uses overlay-style filesystem assembly for containers."
+    },
+    {
+      "type": "integrates_with",
+      "target": "cri-o",
+      "evidence_tier": "INFERRED",
+      "notes": "CRI-O uses Linux storage backends that may compose overlay mounts for Kubernetes pod filesystems."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "Kubernetes node runtimes rely on Linux filesystem assembly strategies; overlay is common but not universal."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-fuse",
+      "evidence_tier": "INFERRED",
+      "notes": "OverlayFS is an in-kernel stacked filesystem; FUSE delegates filesystem work to userspace — distinct mechanisms."
+    }
+  ]
+}

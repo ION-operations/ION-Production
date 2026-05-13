@@ -1,0 +1,37 @@
+{
+  "system_slug": "akamai",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-11",
+  "edges": [
+    {
+      "type": "competes_with",
+      "target": "amazon-cloudfront",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable enterprise CDN class."
+    },
+    {
+      "type": "competes_with",
+      "target": "fastly",
+      "evidence_tier": "INFERRED",
+      "notes": "CDN / edge vendor competition."
+    },
+    {
+      "type": "competes_with",
+      "target": "cloudflare-workers",
+      "evidence_tier": "INFERRED",
+      "notes": "Overlapping edge security and delivery."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "Ingress and origin patterns with K8s in customer architectures."
+    },
+    {
+      "type": "integrates_with",
+      "target": "grpc",
+      "evidence_tier": "INFERRED",
+      "notes": "API and microservice edge patterns where documented."
+    }
+  ]
+}

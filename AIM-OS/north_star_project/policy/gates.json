@@ -1,0 +1,321 @@
+{
+    "version":  "2.0.0",
+    "description":  "Executable quality gate policies for North Star document",
+    "created":  "2025-11-06",
+  "gates":  {
+                  "pre_chapter":  {
+                                      "name":  "Pre-Chapter Validation",
+                                      "blocking":  true,
+                                      "checks":  {
+                                                     "deps_complete":  {
+                                                                           "description":  "All dependency chapters must be complete",
+                                                                           "method":  "check_status_tracker",
+                                                                           "blocking":  true,
+                                                                           "error_message":  "Cannot start: dependencies not satisfied"
+                                                                       },
+                                                     "tierA_present":  {
+                                                                           "description":  "All Tier A sources must be available",
+                                                                           "method":  "check_file_existence",
+                                                                           "blocking":  true,
+                                                                           "error_message":  "No Tier A sources → BLOCK (research required)"
+                                                                       },
+                                                     "vif_min":  {
+                                                                     "description":  "VIF confidence must be \u003e= 0.70",
+                                                                     "method":  "vif_confidence_check",
+                                                                     "threshold":  0.70,
+                                                                     "blocking":  true,
+                                                                     "error_message":  "Confidence \u003c 0.70 → route to ARD research"
+                                                                 },
+                                                     "outline_loaded":  {
+                                                                            "description":  "Chapter outline must be prepared",
+                                                                            "method":  "check_outline_exists",
+                                                                            "blocking":  true,
+                                                                            "error_message":  "No outline found"
+                                                                        }
+                                                 }
+                                  },
+    "word_count": {
+                      "name": "Word Count Adherence",
+                      "blocking": false,
+      "checks": {
+        "within_tolerance": {
+                              "description": "Word count within tolerance",
+          "method": "calculate_deviation",
+                              "blocking": false,
+                              "warning_message": "Outside target tolerance; defer strict enforcement until intelligent completion spec lands"
+                          }
+                      }
+                  },
+                  "quality_assessment":  {
+                                             "name":  "Intelligent Quality Assessment",
+                                             "blocking":  true,
+                                             "checks":  {
+                                                            "relevance_sufficient":  {
+                                                                                         "description":  "Relevance score meets system tier threshold (measures topic coverage, focus alignment, audience match, Tier A alignment)",
+                                                                                         "method":  "calculate_relevance_score",
+                                                                                         "threshold_dynamic":  true,
+                                                                                         "factors":  {
+                                                                                                         "topic_coverage":  0.30,
+                                                                                                         "focus_alignment":  0.25,
+                                                                                                         "audience_match":  0.20,
+                                                                                                         "tier_a_alignment":  0.25
+                                                                                                     },
+                                                                                         "blocking":  true,
+                                                                                         "error_message":  "Relevance insufficient for {system_tier}: {relevance_score} \u003c {threshold}"
+                                                                                     },
+                                                            "density_sufficient":  {
+                                                                                       "description":  "Detail density score meets system tier threshold (measures explanation depth, example coverage, edge cases, integration, operational details)",
+                                                                                       "method":  "calculate_density_score",
+                                                                                       "threshold_dynamic":  true,
+                                                                                       "factors":  {
+                                                                                                       "explanation_depth":  0.25,
+                                                                                                       "example_coverage":  0.20,
+                                                                                                       "edge_case_coverage":  0.15,
+                                                                                                       "integration_explanation":  0.20,
+                                                                                                       "operational_details":  0.20
+                                                                                                   },
+                                                                                       "blocking":  true,
+                                                                                       "error_message":  "Detail density insufficient for {system_tier}: {density_score} \u003c {threshold}"
+                                                                                   },
+                                                            "completion_sufficient":  {
+                                                                                          "description":  "Completion score meets system tier threshold (measures outline coverage, Tier A coverage, crossref completeness, use case coverage)",
+                                                                                          "method":  "calculate_completion_score",
+                                                                                          "threshold_dynamic":  true,
+                                                                                          "factors":  {
+                                                                                                          "outline_coverage":  0.30,
+                                                                                                          "tier_a_coverage":  0.30,
+                                                                                                          "crossref_completeness":  0.20,
+                                                                                                          "use_case_coverage":  0.20
+                                                                                                      },
+                                                                                          "blocking":  true,
+                                                                                          "error_message":  "Completion insufficient for {system_tier}: {completion_score} \u003c {threshold}"
+                                                                                      },
+                                                            "thoroughness_passed":  {
+                                                                                        "description":  "Thoroughness checklist passes (weighted score \u003e= 0.85) - comprehensive measure of when section is thoroughly enough explained",
+                                                                                        "method":  "run_thoroughness_checklist",
+                                                                                        "threshold":  0.85,
+                                                                                        "checklist":  {
+                                                                                                          "concept_explained":  {
+                                                                                                                                    "weight":  0.15,
+                                                                                                                                    "required":  true
+                                                                                                                                },
+                                                                                                          "examples_provided":  {
+                                                                                                                                    "weight":  0.15,
+                                                                                                                                    "required":  true
+                                                                                                                                },
+                                                                                                          "edge_cases_addressed":  {
+                                                                                                                                       "weight":  0.10,
+                                                                                                                                       "required":  false
+                                                                                                                                   },
+                                                                                                          "integration_documented":  {
+                                                                                                                                         "weight":  0.15,
+                                                                                                                                         "required":  true
+                                                                                                                                     },
+                                                                                                          "operational_details":  {
+                                                                                                                                      "weight":  0.10,
+                                                                                                                                      "required":  true
+                                                                                                                                  },
+                                                                                                          "pitfalls_warned":  {
+                                                                                                                                  "weight":  0.05,
+                                                                                                                                  "required":  false
+                                                                                                                              },
+                                                                                                          "crossrefs_valid":  {
+                                                                                                                                  "weight":  0.10,
+                                                                                                                                  "required":  true
+                                                                                                                              },
+                                                                                                          "tier_a_cited":  {
+                                                                                                                               "weight":  0.15,
+                                                                                                                               "required":  true
+                                                                                                                           },
+                                                                                                          "contradictions_checked":  {
+                                                                                                                                         "weight":  0.05,
+                                                                                                                                         "required":  true
+                                                                                                                                     }
+                                                                                                      },
+                                                                                        "blocking":  true,
+                                                                                        "error_message":  "Thoroughness checklist failed: {missing_items} (score: {thoroughness_score} \u003c 0.85)"
+                                                                                    }
+                                                        },
+                                             "system_tiers":  {
+                                                                  "tier_s":  {
+                                                                                 "description":  "Critical systems (CMC, HHNI) - highest quality required",
+                                                                                 "relevance_threshold":  0.95,
+                                                                                 "density_threshold":  0.90,
+                                                                                 "completion_threshold":  0.95
+                                                                             },
+                                                                  "tier_a":  {
+                                                                                 "description":  "Core systems (VIF, APOE, SEG) - high quality required",
+                                                                                 "relevance_threshold":  0.90,
+                                                                                 "density_threshold":  0.85,
+                                                                                 "completion_threshold":  0.90
+                                                                             },
+                                                                  "tier_b":  {
+                                                                                 "description":  "Important systems - good quality required",
+                                                                                 "relevance_threshold":  0.85,
+                                                                                 "density_threshold":  0.80,
+                                                                                 "completion_threshold":  0.82
+                                                                             },
+                                                                  "tier_c":  {
+                                                                                 "description":  "Supporting systems - adequate quality",
+                                                                                 "relevance_threshold":  0.80,
+                                                                                 "density_threshold":  0.75,
+                                                                                 "completion_threshold":  0.75
+                                                                             }
+                                                              }
+                                         },
+                  "technical":  {
+                                    "name":  "Technical Accuracy Validation",
+                                    "blocking":  true,
+                                    "checks":  {
+                                                   "examples_run":  {
+                                                                        "description":  "All code examples must execute successfully",
+                                                                        "method":  "execute_code_blocks",
+                                                                        "blocking":  true,
+                                                                        "error_message":  "Code example failed to run"
+                                                                    },
+                                                   "math_verified":  {
+                                                                         "description":  "All mathematical formulas must be validated",
+                                                                         "method":  "verify_formulas",
+                                                                         "blocking":  false,
+                                                                         "warning_message":  "Formula verification failed"
+                                                                     },
+                                                   "no_fake_features":  {
+                                                                            "description":  "No hallucinated capabilities or features",
+                                                                            "method":  "cross_check_sources",
+                                                                            "blocking":  true,
+                                                                            "error_message":  "Unverified claim detected → cite source or remove"
+                                                                        },
+                                                   "sources_cited":  {
+                                                                         "description":  "All factual claims must have citations",
+                                                                         "method":  "check_evidence_file",
+                                                                         "min_citations":  1,
+                                                                         "blocking":  true,
+                                                                         "error_message":  "No citations found in evidence.jsonl"
+                                                                     },
+                                                   "tier_a_minimum":  {
+                                                                          "description":  "Minimum Tier A citations required",
+                                                                          "method":  "count_tier_a_citations",
+                                                                          "minimum":  1,
+                                                                          "blocking":  true,
+                                                                          "error_message":  "Insufficient Tier A citations"
+                                                                      }
+                                               }
+                                },
+                  "integration":  {
+                                      "name":  "Integration Coherence Validation",
+                                      "blocking":  true,
+                                      "checks":  {
+                                                     "no_contradictions":  {
+                                                                               "description":  "No conflicts with other chapters",
+                                                                               "method":  "seg_contradiction_check",
+                                                                               "blocking":  true,
+                                                                               "error_message":  "Contradiction detected with {chapter_id}"
+                                                                           },
+                                                     "terms_consistent":  {
+                                                                              "description":  "Terminology matches global glossary",
+                                                                              "method":  "glossary_validation",
+                                                                              "glossary_path":  "north_star_project/glossary.yaml",
+                                                                              "blocking":  true,
+                                                                              "error_message":  "Term drift detected: {term}"
+                                                                          },
+                                                     "crossrefs_ok":  {
+                                                                          "description":  "All cross-references must be valid",
+                                                                          "method":  "validate_cross_references",
+                                                                          "blocking":  true,
+                                                                          "error_message":  "Broken cross-reference: {reference}"
+                                                                      },
+                                                     "meta_circular_present":  {
+                                                                                   "description":  "Meta-circular element should be present",
+                                                                                   "method":  "detect_meta_circular",
+                                                                                   "blocking":  false,
+                                                                                   "warning_message":  "No meta-circular element found"
+                                                                               },
+                                                     "progressive_disclosure":  {
+                                                                                    "description":  "Progressive disclosure maintained",
+                                                                                    "method":  "check_disclosure_levels",
+                                                                                    "blocking":  false,
+                                                                                    "warning_message":  "Progressive disclosure may be violated"
+        }
+      }
+    }
+  },
+    "merge_policy":  {
+                         "requirements":  [
+      "all_deps_complete",
+      "tierA_present",
+                                              "vif_score \u003e= 0.70",
+      "all_4_gates_passed",
+      "evidence_file_non_empty",
+      "metrics_file_valid"
+    ],
+                         "auto_merge":  false,
+                         "requires_approval":  true,
+                         "approver_role":  "manager",
+                         "notification_channels":  [
+      "SHARED_MESSAGE_BOARD.md",
+      "STATUS_TRACKER.md"
+    ]
+  },
+    "contradiction_detection":  {
+                                    "enabled":  true,
+                                    "checks":  [
+                                                   {
+                                                       "name":  "glossary_drift",
+                                                       "description":  "Check term definitions consistent across chapters",
+                                                       "method":  "compare_term_usage",
+                                                       "source":  "north_star_project/glossary.yaml",
+                                                       "action_on_violation":  "block_merge"
+                                                   },
+                                                   {
+                                                       "name":  "numeric_mismatch",
+                                                       "description":  "Check numeric values consistent",
+                                                       "pattern":  "\\d+\\s*(words|chapters|systems|tools|agents)",
+                                                       "action_on_violation":  "create_warning"
+                                                   },
+                                                   {
+                                                       "name":  "dangling_crossrefs",
+                                                       "description":  "Check all chapter references valid",
+                                                       "pattern":  "(Chapter|Ch\\.?)\\s*\\d+",
+                                                       "action_on_violation":  "block_merge"
+                                                   },
+                                                   {
+                                                       "name":  "claim_conflict",
+                                                       "description":  "Check for contradictory claims using SEG",
+                                                       "method":  "seg_evidence_synthesis",
+                                                       "action_on_violation":  "block_merge"
+                                                   }
+                                               ]
+                                },
+    "quality_thresholds":  {
+                               "confidence_min":  0.70,
+                               "tier_a_citations_min":  1,
+                               "contradictions_max":  0,
+                               "code_examples_pass_rate":  1.00,
+                               "cross_ref_validity":  1.00,
+                               "thoroughness_min":  0.85,
+                               "relevance_dynamic":  true,
+                               "density_dynamic":  true,
+                               "completion_dynamic":  true
+                           },
+    "escalation_policy":  {
+                              "gate_failure":  {
+                                                   "first_failure":  "notify_author",
+                                                   "second_failure":  "notify_manager",
+                                                   "third_failure":  "block_all_progress"
+                                               },
+                              "confidence_below_threshold":  {
+                                                                 "action":  "route_to_ard_research",
+                                                                 "timeout":  "24 hours",
+                                                                 "fallback":  "mark_uncertain"
+                                                             },
+                              "contradiction_detected":  {
+                                                             "action":  "block_merge",
+                                                             "notification":  [
+                                                                                  "author",
+                                                                                  "manager"
+                                                                              ],
+                                                             "resolution_required":  true
+    }
+  }
+}
+

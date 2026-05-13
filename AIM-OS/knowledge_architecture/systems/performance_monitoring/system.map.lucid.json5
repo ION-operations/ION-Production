@@ -1,0 +1,599 @@
+{
+  system_id: "performance_monitoring",
+  system_name: "Performance Monitoring System",
+  version: "1.0.0",
+  last_updated: "2025-01-27T20:50:00Z",
+  map_type: "system_topology",
+  internal_topology: {
+    core_components: [
+      {
+        component_id: "performance_monitor",
+        name: "Performance Monitor",
+        type: "monitoring_engine",
+        tier: 2,
+        description: "Core performance monitoring engine that tracks and analyzes system performance metrics",
+        ports: {
+          input: [
+            "performance_data",
+            "monitoring_rules",
+          ],
+          output: [
+            "performance_metrics",
+            "monitoring_alerts",
+          ],
+        },
+        dependencies: [
+          "metrics_collector",
+          "alert_manager",
+        ],
+        blast_radius: "platform",
+        must_never: [
+          "Monitor performance without validation",
+          "Skip monitoring rules",
+          "Ignore performance thresholds",
+          "Bypass monitoring validation",
+        ],
+      },
+      {
+        component_id: "metrics_collector",
+        name: "Metrics Collector",
+        type: "collection_engine",
+        tier: 2,
+        description: "Collects performance metrics from various system components",
+        ports: {
+          input: [
+            "collection_requests",
+            "collection_rules",
+          ],
+          output: [
+            "collected_metrics",
+            "collection_status",
+          ],
+        },
+        dependencies: [
+          "collection_rules",
+          "data_processor",
+        ],
+        blast_radius: "platform",
+        must_never: [
+          "Collect metrics without validation",
+          "Skip collection rules",
+          "Ignore data quality",
+          "Bypass collection validation",
+        ],
+      },
+      {
+        component_id: "alert_manager",
+        name: "Alert Manager",
+        type: "alert_engine",
+        tier: 2,
+        description: "Manages performance alerts and notifications",
+        ports: {
+          input: [
+            "alert_requests",
+            "alert_rules",
+          ],
+          output: [
+            "performance_alerts",
+            "alert_status",
+          ],
+        },
+        dependencies: [
+          "alert_rules",
+          "notification_engine",
+        ],
+        blast_radius: "platform",
+        must_never: [
+          "Manage alerts without validation",
+          "Skip alert rules",
+          "Ignore alert thresholds",
+          "Bypass alert validation",
+        ],
+      },
+      {
+        component_id: "performance_analyzer",
+        name: "Performance Analyzer",
+        type: "analysis_engine",
+        tier: 2,
+        description: "Analyzes performance data and identifies trends and issues",
+        ports: {
+          input: [
+            "performance_data",
+            "analysis_rules",
+          ],
+          output: [
+            "performance_analysis",
+            "trend_reports",
+          ],
+        },
+        dependencies: [
+          "analysis_rules",
+          "trend_analyzer",
+        ],
+        blast_radius: "platform",
+        must_never: [
+          "Analyze performance without validation",
+          "Skip analysis rules",
+          "Ignore performance trends",
+          "Bypass analysis validation",
+        ],
+      },
+      {
+        component_id: "performance_reporter",
+        name: "Performance Reporter",
+        type: "reporting_engine",
+        tier: 2,
+        description: "Generates performance reports and dashboards",
+        ports: {
+          input: [
+            "report_requests",
+            "reporting_rules",
+          ],
+          output: [
+            "performance_reports",
+            "dashboard_data",
+          ],
+        },
+        dependencies: [
+          "reporting_templates",
+          "dashboard_engine",
+        ],
+        blast_radius: "platform",
+        must_never: [
+          "Generate reports without validation",
+          "Skip reporting rules",
+          "Ignore report requirements",
+          "Bypass reporting validation",
+        ],
+      },
+    ],
+    supporting_components: [
+      {
+        component_id: "collection_rules",
+        name: "Collection Rules",
+        type: "rules_engine",
+        tier: 1,
+        description: "Provides rules for metrics collection",
+        ports: {
+          input: [
+            "collection_requests",
+            "rule_definitions",
+          ],
+          output: [
+            "collection_rules",
+            "rule_status",
+          ],
+        },
+        dependencies: [
+          "rule_definitions",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Provide rules without validation",
+          "Skip rule definitions",
+          "Ignore rule requirements",
+          "Bypass rule validation",
+        ],
+      },
+      {
+        component_id: "data_processor",
+        name: "Data Processor",
+        type: "processing_engine",
+        tier: 1,
+        description: "Processes collected performance data",
+        ports: {
+          input: [
+            "raw_data",
+            "processing_rules",
+          ],
+          output: [
+            "processed_data",
+            "processing_status",
+          ],
+        },
+        dependencies: [
+          "processing_rules",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Process data without validation",
+          "Skip processing rules",
+          "Ignore data quality",
+          "Bypass processing validation",
+        ],
+      },
+      {
+        component_id: "alert_rules",
+        name: "Alert Rules",
+        type: "rules_engine",
+        tier: 1,
+        description: "Provides rules for alert management",
+        ports: {
+          input: [
+            "alert_requests",
+            "rule_definitions",
+          ],
+          output: [
+            "alert_rules",
+            "rule_status",
+          ],
+        },
+        dependencies: [
+          "rule_definitions",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Provide rules without validation",
+          "Skip rule definitions",
+          "Ignore rule requirements",
+          "Bypass rule validation",
+        ],
+      },
+      {
+        component_id: "notification_engine",
+        name: "Notification Engine",
+        type: "notification_engine",
+        tier: 1,
+        description: "Sends notifications for performance alerts",
+        ports: {
+          input: [
+            "notification_requests",
+            "notification_rules",
+          ],
+          output: [
+            "notifications",
+            "notification_status",
+          ],
+        },
+        dependencies: [
+          "notification_rules",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Send notifications without validation",
+          "Skip notification rules",
+          "Ignore notification requirements",
+          "Bypass notification validation",
+        ],
+      },
+      {
+        component_id: "trend_analyzer",
+        name: "Trend Analyzer",
+        type: "analysis_engine",
+        tier: 1,
+        description: "Analyzes performance trends and patterns",
+        ports: {
+          input: [
+            "performance_data",
+            "trend_rules",
+          ],
+          output: [
+            "trend_analysis",
+            "pattern_reports",
+          ],
+        },
+        dependencies: [
+          "trend_rules",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Analyze trends without validation",
+          "Skip trend rules",
+          "Ignore trend patterns",
+          "Bypass trend validation",
+        ],
+      },
+    ],
+  },
+  boundary_tendrils: {
+    input_ports: [
+      {
+        port_id: "performance_data_input",
+        name: "Performance Data Input",
+        type: "data_input",
+        protocol: "json",
+        description: "Receives performance data from system components",
+        required: true,
+        validation: "performance_data_schema",
+      },
+      {
+        port_id: "monitoring_rules_input",
+        name: "Monitoring Rules Input",
+        type: "data_input",
+        protocol: "json",
+        description: "Receives monitoring rules and configurations",
+        required: true,
+        validation: "monitoring_rules_schema",
+      },
+      {
+        port_id: "alert_requests_input",
+        name: "Alert Requests Input",
+        type: "data_input",
+        protocol: "json",
+        description: "Receives alert requests and configurations",
+        required: true,
+        validation: "alert_requests_schema",
+      },
+    ],
+    output_ports: [
+      {
+        port_id: "performance_metrics_output",
+        name: "Performance Metrics Output",
+        type: "data_output",
+        protocol: "json",
+        description: "Outputs performance metrics and data",
+        required: true,
+        validation: "performance_metrics_schema",
+      },
+      {
+        port_id: "performance_alerts_output",
+        name: "Performance Alerts Output",
+        type: "data_output",
+        protocol: "json",
+        description: "Outputs performance alerts and notifications",
+        required: true,
+        validation: "performance_alerts_schema",
+      },
+      {
+        port_id: "performance_reports_output",
+        name: "Performance Reports Output",
+        type: "data_output",
+        protocol: "json",
+        description: "Outputs performance reports and dashboards",
+        required: true,
+        validation: "performance_reports_schema",
+      },
+    ],
+  },
+  data_flow: {
+    primary_flow: [
+      {
+        step: 1,
+        component: "metrics_collector",
+        action: "Collect performance metrics",
+        input: [
+          "collection_requests",
+          "collection_rules",
+        ],
+        output: [
+          "collected_metrics",
+          "collection_status",
+        ],
+      },
+      {
+        step: 2,
+        component: "data_processor",
+        action: "Process performance data",
+        input: [
+          "raw_data",
+          "processing_rules",
+        ],
+        output: [
+          "processed_data",
+          "processing_status",
+        ],
+      },
+      {
+        step: 3,
+        component: "performance_analyzer",
+        action: "Analyze performance data",
+        input: [
+          "performance_data",
+          "analysis_rules",
+        ],
+        output: [
+          "performance_analysis",
+          "trend_reports",
+        ],
+      },
+      {
+        step: 4,
+        component: "alert_manager",
+        action: "Manage performance alerts",
+        input: [
+          "alert_requests",
+          "alert_rules",
+        ],
+        output: [
+          "performance_alerts",
+          "alert_status",
+        ],
+      },
+      {
+        step: 5,
+        component: "performance_reporter",
+        action: "Generate performance reports",
+        input: [
+          "report_requests",
+          "reporting_rules",
+        ],
+        output: [
+          "performance_reports",
+          "dashboard_data",
+        ],
+      },
+    ],
+    secondary_flows: [
+      {
+        flow_name: "metrics_collection",
+        components: [
+          "metrics_collector",
+          "collection_rules",
+          "data_processor",
+        ],
+        description: "Collects and processes performance metrics",
+      },
+      {
+        flow_name: "alert_management",
+        components: [
+          "alert_manager",
+          "alert_rules",
+          "notification_engine",
+        ],
+        description: "Manages performance alerts and notifications",
+      },
+      {
+        flow_name: "performance_analysis",
+        components: [
+          "performance_analyzer",
+          "trend_analyzer",
+        ],
+        description: "Analyzes performance data and trends",
+      },
+    ],
+  },
+  security_boundaries: {
+    tier_0: {
+      components: [
+        "collection_rules",
+        "data_processor",
+        "alert_rules",
+        "notification_engine",
+        "trend_analyzer",
+      ],
+      description: "Supporting components with basic security requirements",
+    },
+    tier_1: {
+      components: [
+        "metrics_collector",
+        "alert_manager",
+        "performance_analyzer",
+        "performance_reporter",
+      ],
+      description: "Processing components with standard security requirements",
+    },
+    tier_2: {
+      components: [
+        "performance_monitor",
+      ],
+      description: "Core component with comprehensive security requirements",
+    },
+  },
+  performance_characteristics: {
+    latency: {
+      metrics_collection: "< 1 second",
+      data_processing: "< 2 seconds",
+      performance_analysis: "< 5 seconds",
+      alert_generation: "< 1 second",
+    },
+    throughput: {
+      metrics_per_minute: 10000,
+      alerts_per_hour: 1000,
+      reports_per_hour: 100,
+      analyses_per_hour: 500,
+    },
+    resource_usage: {
+      cpu_usage: "< 30%",
+      memory_usage: "< 200MB",
+      disk_usage: "< 1GB",
+    },
+  },
+  monitoring_points: [
+    {
+      point_id: "metrics_collection_rate",
+      name: "Metrics Collection Rate",
+      type: "counter",
+      description: "Number of metrics collected per minute",
+    },
+    {
+      point_id: "alert_generation_rate",
+      name: "Alert Generation Rate",
+      type: "counter",
+      description: "Number of alerts generated per hour",
+    },
+    {
+      point_id: "data_processing_time",
+      name: "Data Processing Time",
+      type: "duration",
+      description: "Time taken for data processing",
+    },
+    {
+      point_id: "performance_analysis_time",
+      name: "Performance Analysis Time",
+      type: "duration",
+      description: "Time taken for performance analysis",
+    },
+  ],
+  error_handling: {
+    retry_policies: {
+      metrics_collection: "3 retries with exponential backoff",
+      data_processing: "2 retries with linear backoff",
+      alert_generation: "3 retries with exponential backoff",
+    },
+    circuit_breakers: {
+      monitoring_service: "Open after 5 consecutive failures",
+      collection_service: "Open after 3 consecutive failures",
+    },
+    fallback_strategies: {
+      metrics_collection_failure: "Use cached metrics data",
+      data_processing_failure: "Use simplified processing",
+      alert_generation_failure: "Use basic alert generation",
+    },
+  },
+  deployment_considerations: {
+    scalability: {
+      horizontal_scaling: "Supported via load balancer",
+      vertical_scaling: "Supported via resource allocation",
+      auto_scaling: "Supported via metrics-based scaling",
+    },
+    availability: {
+      target_uptime: "99.9%",
+      redundancy: "Multi-instance deployment",
+      failover: "Automatic failover to standby instances",
+    },
+    maintenance: {
+      rolling_updates: "Supported",
+      downtime: "Minimal during updates",
+      rollback: "Supported via version management",
+    },
+  },
+  metadata: {
+    created: "2025-01-27T20:50:00Z",
+    updated: "2025-11-02T17:00:00Z",
+    author: "aether",
+    status: "production",
+    version: "1.0.0",
+  },
+  confidenceRouting: {
+    high: "Read T0 executive summary (100 words) or code directly",
+    medium: "Read T0 + T1 overview (500 words) + T2 architecture (2k words)",
+    low: "Read T0 + T1 + T2 + T3 detailed (10k words)",
+    veryLow: "Read T0 + T1 + T2 + T3 + T4 complete (15k+ words) or ask for help",
+  },
+  relatedSystems: [
+    {
+      system: "cas",
+      relationship: "Performance Monitoring provides metrics to CAS for cognitive analysis",
+      whenToUse: "When implementing cognitive analysis or understanding performance patterns",
+      docs: [
+        "systems/cognitive_analysis/T2_architecture.md#performance-monitoring",
+      ],
+      priority: "required",
+    },
+    {
+      system: "cmc",
+      relationship: "Performance Monitoring stores metrics data in CMC",
+      whenToUse: "When implementing metrics storage or understanding memory persistence",
+      docs: [
+        "systems/cmc/T2_architecture.md#performance-monitoring",
+      ],
+      priority: "required",
+    },
+    {
+      system: "daemon_rag_system",
+      relationship: "Performance Monitoring tracks Daemon/RAG system performance",
+      whenToUse: "When implementing tool performance tracking or understanding system metrics",
+      docs: [
+        "systems/daemon_rag_system/T2_architecture.md#performance-monitoring",
+      ],
+      priority: "optional",
+    },
+  ],
+  documentation: {
+    T0: "knowledge_architecture/systems/performance_monitoring/T0_executive.md",
+    T1: "knowledge_architecture/systems/performance_monitoring/T1_overview.md",
+    T2: "knowledge_architecture/systems/performance_monitoring/T2_architecture.md",
+    T3: "knowledge_architecture/systems/performance_monitoring/T3_detailed.md",
+    T4: "knowledge_architecture/systems/performance_monitoring/T4_complete.md",
+  },
+}

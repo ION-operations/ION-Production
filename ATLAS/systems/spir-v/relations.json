@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "llvm-ir",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "LLVM documents SPIR-V support and workflows (SPIRVUsage.html)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "opencl",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "SPIR-V is used as a portable intermediate representation in OpenCL 2.1+ ecosystem (Khronos)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "vulkan",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Vulkan consumes SPIR-V for shader modules (Khronos Vulkan specification)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "opengl",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "OpenGL 4.6-era SPIR-V extension track (ARB_gl_spirv); GLSL remains the primary shader language surface historically."
+    },
+    {
+      "type": "integrates_with",
+      "target": "sycl",
+      "evidence_tier": "INFERRED",
+      "notes": "Some SYCL / LLVM GPU lowering paths consume SPIR-V for certain device targets (implementation-dependent)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "level-zero",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Level Zero specifies SPIR-V module and kernel programming rules (SPIR-V Programming Guide in the Level Zero specification)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "webgpu",
+      "evidence_tier": "INFERRED",
+      "notes": "WGSL lowering pipelines for WebGPU often target SPIR-V when the native backend is Vulkan (Tint-class toolchains)."
+    }
+  ]
+}

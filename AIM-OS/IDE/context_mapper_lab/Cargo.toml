@@ -1,0 +1,13 @@
+[package]
+name = "context_mapper_lab"
+version = "0.1.0"
+edition = "2021"
+description = "Strike 1: deterministic Rust Context Mapper harness (single-file extractor)"
+
+[dependencies]
+tree-sitter = "0.26"
+tree-sitter-rust = "0.24"
+regex = "1.10"
+
+[build-dependencies]
+cc = "1.0"

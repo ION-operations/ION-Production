@@ -1,0 +1,1247 @@
+--- /dev/null
++++ b/ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_PROTOCOL_V0_1.md
+@@ -0,0 +1,278 @@
++# ION Agent Branch Capsule Protocol v0.1
++
++Status: active provisional protocol
++Created: 2026-05-11
++Authority: context isolation and settlement workflow only
++Production authority: false
++Live execution authority: false
++
++## Purpose
++
++This protocol prevents wrong-context work by giving every active conversation and agent its own uniquely named context capsule branch.
++
++The shared Codex solo Capsule remains settled base context. It is not a multi-agent scratchpad.
++
++## Core law
++
++Every active agent/conversation must operate from a unique branch capsule.
++
++```text
++shared context = settled base memory
++branch capsule = local working memory for one conversation/agent/task
++settlement = only path back to shared context
++```
++
++Agents must not write directly into shared context:
++
++```text
++ION/05_context/current/codex_solo/CAPSULE.md
++ION/05_context/current/codex_solo/MINI.md
++ION/05_context/current/codex_solo/HOT_CONTEXT.md
++ION/05_context/current/codex_solo/STATUS.json
++ION/05_context/current/codex_solo/ROUTE.json
++```
++
++## Relationship to settlement protocol
++
++This protocol extends:
++
++```text
++ION/02_architecture/ION_MULTI_AGENT_CONTEXT_AND_WORKPACKET_SETTLEMENT_PROTOCOL_V0_1.md
++```
++
++Branch capsules produce candidate receipts and settlement packets. The context settler serializes accepted updates into shared context.
++
++## Branch hierarchy
++
++Use this lineage model:
++
++```text
++GLOBAL ION CONTEXT
++  -> project/session capsule
++    -> conversation capsule
++      -> agent branch capsule
++        -> task/workpacket capsule
++```
++
++Each branch names its parent explicitly. Branches may inherit from parents, but they cannot overwrite parents.
++
++## Required identity fields
++
++Every branch capsule requires:
++
++```json
++{
++  "context_instance_id": "ctx_YYYYMMDDTHHMMSSZ_agent_or_task",
++  "branch_id": "branch_YYYYMMDDTHHMMSSZ_agent_or_task",
++  "branch_type": "conversation|agent|task|workpacket",
++  "agent_tag": "codex_ui_recovery",
++  "conversation_tag": "helixion_joc_recovery",
++  "task_tag": "anchored_pages_recovery",
++  "parent_context_id": "ctx_shared_codex_solo_current",
++  "root": "/home/sev/ION - Production/ION_CODEX FULL",
++  "loaded_refs": [],
++  "write_scope": [],
++  "shared_context_write": false,
++  "settlement_required": true
++}
++```
++
++## Required startup identity card
++
++Every agent should expose a short identity card before material work:
++
++```text
++AGENT_TAG: codex_ui_recovery
++CONVERSATION_TAG: helixion_joc_recovery
++TASK_TAG: anchored_pages_recovery
++CONTEXT_INSTANCE: ctx_20260511T150210Z_codex_ui_recovery
++BRANCH_ID: branch_20260511T150210Z_codex_ui_recovery
++PARENT_CONTEXT: ctx_shared_codex_solo_current
++ROOT: /home/sev/ION - Production/ION_CODEX FULL
++SHARED_CONTEXT_WRITE: false
++SETTLEMENT_REQUIRED: true
++```
++
++If the agent cannot name these fields, it must treat itself as unmounted and request or create a branch capsule before continuing.
++
++## Branch folder layout
++
++```text
++ION/05_context/current/agent_context_branches/
++  README.md
++  BRANCH_CAPSULE_REGISTRY_V0_1.json
++  templates/
++    AGENT_BRANCH_CAPSULE.template.md
++    AGENT_BRANCH_STATUS.template.json
++    AGENT_CONTEXT_IDENTITY_CARD.template.md
++  <conversation_tag>/
++    <agent_tag>/
++      <task_tag>/                 # omitted only for conversation-level branches
++        CAPSULE.md
++        MINI.md
++        STATUS.json
++        LOADED_REFS.json
++        RECEIPTS/
++        TASK_RETURNS/
++        SETTLEMENT_REQUESTS/
++```
++
++## Branch capsule rules
++
++Branch capsules may contain:
++
++```text
++local task summary
++loaded refs
++agent-specific assumptions
++work scope
++candidate receipts
++task returns
++non-claims
++settlement requests
++```
++
++Branch capsules must not contain:
++
++```text
++accepted shared C-number assignments
++claims of shared current state
++production authority
++live execution authority
++secrets
++credential material
++hidden chain of thought
++unverified visual proof claims
++```
++
++## Wrong-context detection
++
++An agent is in drift if any of these are true:
++
++```text
++missing context_instance_id
++missing conversation_tag
++missing agent_tag
++parent_context_id unknown
++root does not match current active ION root
++loaded refs do not include required parent route/capsule proof
++write scope overlaps another active claim
++branch status says blocked/drifted
++agent attempts to write shared context directly
++agent assigns C-number directly
++```
++
++Drift outcome:
++
++```text
++stop material writes
++write branch drift receipt
++submit context_settlement conflict packet
++await settlement or operator direction
++```
++
++## Settlement request flow
++
++```text
++agent branch capsule
++-> candidate receipt/task return
++-> branch SETTLEMENT_REQUESTS/
++-> context_settlement/inbox/
++-> context settler review
++-> accepted/conflict/deferred outcome
++-> shared context update only by settler
++```
++
++## Naming rules
++
++Use stable, readable tags:
++
++```text
++conversation_tag = product_or_session_name
++agent_tag = role_or_lane_name
++task_tag = bounded_objective
++branch_id = branch_<utc_timestamp>_<agent_tag>
++context_instance_id = ctx_<utc_timestamp>_<agent_tag>
++```
++
++Examples:
++
++```text
++conversation_tag: helixion_joc_recovery
++agent_tag: codex_ui_recovery
++task_tag: anchored_pages_drawer_canon
++branch_id: branch_20260511T150210Z_codex_ui_recovery
++```
++
++## Branch-to-branch lineage
++
++One branch may fork another branch only when it records:
++
++```text
++parent_branch_id
++fork_reason
++refs_inherited
++refs_excluded
++authority_boundary
++settlement_target
++```
++
++Forked branches do not inherit write authority. They inherit evidence only.
++
++## Runtime helper contract
++
++The helper module is:
++
++```text
++ION/04_packages/kernel/ion_agent_branch_capsule.py
++```
++
++It may create branch-local files and settlement request packets only. It must not mutate shared Codex solo surfaces and must reject write scopes that overlap settled shared context.
++
++Helper outputs are proposal/runtime scaffolding. A helper-created settlement packet remains candidate evidence until the context settler accepts it.
++
++## Human-visible UI implication
++
++The Helixion/JOC/dAimon cockpit should eventually show:
++
++```text
++active agents
++their branch names
++parent context
++loaded refs
++write scope
++drift status
++settlement status
++latest receipt
++```
++
++This makes wrong-context issues visible to the operator and to the AI chat.
++
++## Non-claims
++
++This protocol does not:
++
++```text
++create a settled branch for the current conversation
++move existing agents into branches
++resolve the C-088 conflict
++update shared Capsule/Mini/HOT_CONTEXT
++run tests
++reload services
++grant production or live execution authority
++```
++
++## Required next implementation lane
++
++Future implementation should add:
++
++```text
++branch creation helper
++branch registry validator
++context identity card renderer
++settlement request generator
++wrong-context drift detector
++cockpit branch visibility page/drawer
++```
++
++These are separate implementation packets and must not bypass settlement.
+
+--- /dev/null
++++ b/ION/04_packages/kernel/ion_agent_branch_capsule.py
+@@ -0,0 +1,590 @@
++"""ION agent branch capsule helpers.
++
++This module creates and validates isolated branch-capsule working context for
++one conversation/agent/task lane. It is intentionally narrow: it writes only
++inside ``ION/05_context/current/agent_context_branches`` and, when requested,
++candidate settlement packets under ``ION/05_context/current/context_settlement``.
++It never mutates shared Codex solo context and never assigns C-numbers.
++"""
++from __future__ import annotations
++
++import argparse
++import hashlib
++import json
++import re
++from dataclasses import asdict, dataclass, field
++from datetime import datetime, timezone
++from pathlib import Path
++from typing import Any, Iterable
++
++READY_VERDICT = "ION_AGENT_BRANCH_CAPSULE_READY"
++BLOCKED_VERDICT = "ION_AGENT_BRANCH_CAPSULE_BLOCKED"
++WRITE_CONFIRMATION_TOKEN = "ION_BOUNDED_WRITE_CONFIRMED"
++
++PROTOCOL_PATH = Path("ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_PROTOCOL_V0_1.md")
++CURRENT_ROOT = Path("ION/05_context/current")
++BRANCH_ROOT = CURRENT_ROOT / "agent_context_branches"
++BRANCH_REGISTRY_PATH = BRANCH_ROOT / "BRANCH_CAPSULE_REGISTRY_V0_1.json"
++SETTLEMENT_INBOX = CURRENT_ROOT / "context_settlement" / "inbox"
++SETTLEMENT_CLAIMS = CURRENT_ROOT / "context_settlement" / "claims"
++
++SHARED_CONTEXT_SURFACES: tuple[str, ...] = (
++    "ION/05_context/current/codex_solo/CAPSULE.md",
++    "ION/05_context/current/codex_solo/MINI.md",
++    "ION/05_context/current/codex_solo/HOT_CONTEXT.md",
++    "ION/05_context/current/codex_solo/STATUS.json",
++    "ION/05_context/current/codex_solo/ROUTE.json",
++)
++
++DEFAULT_PARENT_CONTEXT_ID = "ctx_shared_codex_solo_current"
++DEFAULT_PARENT_REFS: tuple[str, ...] = (
++    "ION/05_context/current/codex_solo/ROUTE.json",
++    "ION/05_context/current/codex_solo/CAPSULE.md",
++    "ION/02_architecture/ION_MULTI_AGENT_CONTEXT_AND_WORKPACKET_SETTLEMENT_PROTOCOL_V0_1.md",
++    "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_PROTOCOL_V0_1.md",
++)
++
++
++@dataclass(frozen=True)
++class BranchCapsuleRecord:
++    schema_id: str
++    context_instance_id: str
++    branch_id: str
++    branch_type: str
++    conversation_tag: str
++    agent_tag: str
++    task_tag: str
++    parent_context_id: str
++    root: str
++    branch_path: str
++    loaded_refs: tuple[str, ...]
++    write_scope: tuple[str, ...]
++    shared_context_write: bool
++    settlement_required: bool
++    created_at: str
++    status: str
++    authority: dict[str, bool] = field(
++        default_factory=lambda: {
++            "production_authority": False,
++            "live_execution_authority": False,
++            "secrets_authority": False,
++            "browser_control_authority": False,
++        }
++    )
++
++
++def _shell_root(path: str | Path) -> Path:
++    p = Path(path).expanduser().resolve()
++    return p.parent if p.name == "ION" else p
++
++
++def _now() -> str:
++    return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
++
++
++def _timestamp_token(value: str | None = None) -> str:
++    if not value:
++        dt = datetime.now(timezone.utc).replace(microsecond=0)
++    else:
++        normalized = value.replace("Z", "+00:00")
++        dt = datetime.fromisoformat(normalized)
++        if dt.tzinfo is None:
++            dt = dt.replace(tzinfo=timezone.utc)
++        dt = dt.astimezone(timezone.utc).replace(microsecond=0)
++    return dt.strftime("%Y%m%dT%H%M%SZ")
++
++
++def _stable_hash(*parts: str, length: int = 12) -> str:
++    return hashlib.sha256("\n".join(parts).encode("utf-8")).hexdigest()[:length]
++
++
++def normalize_tag(value: str, *, fallback: str = "untagged") -> str:
++    text = (value or "").strip().lower()
++    text = re.sub(r"[^a-z0-9]+", "_", text).strip("_")
++    text = re.sub(r"_+", "_", text)
++    return text or fallback
++
++
++def _rel_path(path: str | Path) -> str:
++    return Path(str(path)).as_posix().lstrip("./")
++
++
++def _is_shared_context_surface(path: str) -> bool:
++    rel = _rel_path(path)
++    return rel in SHARED_CONTEXT_SURFACES
++
++
++def _overlap(left: Iterable[str], right: Iterable[str]) -> set[str]:
++    left_set = {_rel_path(p) for p in left}
++    right_set = {_rel_path(p) for p in right}
++    return left_set & right_set
++
++
++def default_loaded_refs() -> tuple[str, ...]:
++    return DEFAULT_PARENT_REFS
++
++
++def build_branch_capsule_record(
++    root: str | Path,
++    *,
++    conversation_tag: str,
++    agent_tag: str,
++    task_tag: str = "general",
++    branch_type: str = "agent",
++    parent_context_id: str = DEFAULT_PARENT_CONTEXT_ID,
++    loaded_refs: Iterable[str] | None = None,
++    write_scope: Iterable[str] | None = None,
++    emitted_at: str | None = None,
++) -> BranchCapsuleRecord:
++    shell_root = _shell_root(root)
++    conversation = normalize_tag(conversation_tag, fallback="conversation")
++    agent = normalize_tag(agent_tag, fallback="agent")
++    task = normalize_tag(task_tag, fallback="general")
++    branch_kind = normalize_tag(branch_type, fallback="agent")
++    timestamp = _timestamp_token(emitted_at)
++    suffix = task if task != "general" else agent
++    context_instance_id = f"ctx_{timestamp}_{suffix}"
++    branch_id = f"branch_{timestamp}_{suffix}"
++    rel_branch = BRANCH_ROOT / conversation / agent / task
++    refs = tuple(_rel_path(p) for p in (loaded_refs if loaded_refs is not None else default_loaded_refs()))
++    scope = tuple(_rel_path(p) for p in (write_scope or ()))
++
++    return BranchCapsuleRecord(
++        schema_id="ion.agent_branch_capsule.record.v1",
++        context_instance_id=context_instance_id,
++        branch_id=branch_id,
++        branch_type=branch_kind,
++        conversation_tag=conversation,
++        agent_tag=agent,
++        task_tag=task,
++        parent_context_id=parent_context_id,
++        root=str(shell_root),
++        branch_path=rel_branch.as_posix(),
++        loaded_refs=refs,
++        write_scope=scope,
++        shared_context_write=False,
++        settlement_required=True,
++        created_at=emitted_at or _now(),
++        status="ACTIVE_PROVISIONAL",
++    )
++
++
++def render_identity_card(record: BranchCapsuleRecord | dict[str, Any]) -> str:
++    data = asdict(record) if isinstance(record, BranchCapsuleRecord) else dict(record)
++    return "\n".join(
++        [
++            f"AGENT_TAG: {data.get('agent_tag', '')}",
++            f"CONVERSATION_TAG: {data.get('conversation_tag', '')}",
++            f"TASK_TAG: {data.get('task_tag', '')}",
++            f"CONTEXT_INSTANCE: {data.get('context_instance_id', '')}",
++            f"BRANCH_ID: {data.get('branch_id', '')}",
++            f"PARENT_CONTEXT: {data.get('parent_context_id', '')}",
++            f"ROOT: {data.get('root', '')}",
++            f"SHARED_CONTEXT_WRITE: {str(data.get('shared_context_write', False)).lower()}",
++            f"SETTLEMENT_REQUIRED: {str(data.get('settlement_required', True)).lower()}",
++        ]
++    ) + "\n"
++
++
++def _markdown_list(items: Iterable[str]) -> str:
++    values = list(items)
++    if not values:
++        return "- none declared"
++    return "\n".join(f"- `{item}`" for item in values)
++
++
++def render_branch_capsule(record: BranchCapsuleRecord | dict[str, Any]) -> str:
++    data = asdict(record) if isinstance(record, BranchCapsuleRecord) else dict(record)
++    return f"""# ION Agent Branch Capsule
++
++{render_identity_card(data)}
++## Purpose
++
++Local working memory for one bounded agent/conversation/task branch.
++
++## Loaded refs
++
++{_markdown_list(data.get("loaded_refs", ()))}
++
++## Write scope
++
++{_markdown_list(data.get("write_scope", ()))}
++
++## Non-claims
++
++- This branch does not mutate shared Capsule/Mini/HOT_CONTEXT/STATUS/ROUTE.
++- This branch does not assign C-numbers.
++- This branch does not grant production or live execution authority.
++- This branch must submit settlement requests before shared context can change.
++"""
++
++
++def render_branch_mini(record: BranchCapsuleRecord | dict[str, Any]) -> str:
++    data = asdict(record) if isinstance(record, BranchCapsuleRecord) else dict(record)
++    return "\n".join(
++        [
++            "# ION Agent Branch MINI",
++            "",
++            f"branch_id: {data.get('branch_id')}",
++            f"context_instance_id: {data.get('context_instance_id')}",
++            f"conversation_tag: {data.get('conversation_tag')}",
++            f"agent_tag: {data.get('agent_tag')}",
++            f"task_tag: {data.get('task_tag')}",
++            f"parent_context_id: {data.get('parent_context_id')}",
++            "shared_context_write: false",
++            "settlement_required: true",
++            "",
++        ]
++    )
++
++
++def branch_status(record: BranchCapsuleRecord | dict[str, Any], findings: Iterable[str] = ()) -> dict[str, Any]:
++    data = asdict(record) if isinstance(record, BranchCapsuleRecord) else dict(record)
++    finding_list = list(findings)
++    return {
++        "schema_id": "ion.agent_branch_capsule.status.v1",
++        "status": "DRIFTED_BLOCKED" if finding_list else "ACTIVE_PROVISIONAL",
++        "context_instance_id": data.get("context_instance_id"),
++        "branch_id": data.get("branch_id"),
++        "conversation_tag": data.get("conversation_tag"),
++        "agent_tag": data.get("agent_tag"),
++        "task_tag": data.get("task_tag"),
++        "parent_context_id": data.get("parent_context_id"),
++        "shared_context_write": bool(data.get("shared_context_write", False)),
++        "settlement_required": bool(data.get("settlement_required", True)),
++        "drift_findings": finding_list,
++        "authority": data.get(
++            "authority",
++            {
++                "production_authority": False,
++                "live_execution_authority": False,
++                "secrets_authority": False,
++            },
++        ),
++    }
++
++
++def validate_branch_record(
++    root: str | Path,
++    record: BranchCapsuleRecord | dict[str, Any],
++    *,
++    active_claims: Iterable[dict[str, Any]] = (),
++) -> dict[str, Any]:
++    shell_root = _shell_root(root)
++    data = asdict(record) if isinstance(record, BranchCapsuleRecord) else dict(record)
++    findings: list[str] = []
++    required = (
++        "context_instance_id",
++        "branch_id",
++        "branch_type",
++        "conversation_tag",
++        "agent_tag",
++        "task_tag",
++        "parent_context_id",
++        "root",
++        "loaded_refs",
++        "write_scope",
++        "shared_context_write",
++        "settlement_required",
++    )
++    for field_name in required:
++        if field_name not in data or data.get(field_name) in (None, ""):
++            findings.append(f"missing_required_field:{field_name}")
++
++    if str(data.get("root")) != str(shell_root):
++        findings.append(f"root_mismatch:{data.get('root')}")
++
++    if data.get("shared_context_write") is not False:
++        findings.append("shared_context_write_must_be_false")
++
++    if data.get("settlement_required") is not True:
++        findings.append("settlement_required_must_be_true")
++
++    loaded_refs = tuple(_rel_path(p) for p in data.get("loaded_refs") or ())
++    if not loaded_refs:
++        findings.append("loaded_refs_missing")
++    if data.get("parent_context_id") == DEFAULT_PARENT_CONTEXT_ID:
++        required_parent_refs = {
++            "ION/05_context/current/codex_solo/ROUTE.json",
++            "ION/05_context/current/codex_solo/CAPSULE.md",
++        }
++        missing_parent_refs = sorted(required_parent_refs - set(loaded_refs))
++        if missing_parent_refs:
++            findings.append("loaded_refs_missing_parent_context_proof:" + ",".join(missing_parent_refs))
++
++    write_scope = tuple(_rel_path(p) for p in data.get("write_scope") or ())
++    for rel in write_scope:
++        if _is_shared_context_surface(rel):
++            findings.append(f"shared_context_write_scope_forbidden:{rel}")
++        if re.search(r"(^|/|_)C-\d{3}($|_|/)", rel):
++            findings.append(f"checkpoint_assignment_surface_forbidden:{rel}")
++
++    branch_id = data.get("branch_id")
++    for claim in active_claims:
++        claim_branch = claim.get("branch_id")
++        if claim_branch and claim_branch == branch_id:
++            continue
++        overlap = _overlap(write_scope, claim.get("write_scope") or ())
++        for rel in sorted(overlap):
++            findings.append(f"write_scope_overlap:{rel}:with:{claim.get('claim_id') or claim_branch or 'unknown'}")
++
++    return {
++        "schema_id": "ion.agent_branch_capsule.validation.v1",
++        "ok": not findings,
++        "verdict": READY_VERDICT if not findings else BLOCKED_VERDICT,
++        "drifted": bool(findings),
++        "findings": findings,
++        "record": data,
++        "production_authority": False,
++        "live_execution_authority": False,
++        "mutates_shared_context": False,
++    }
++
++
++def _read_json(path: Path, default: Any) -> Any:
++    if not path.exists():
++        return default
++    try:
++        return json.loads(path.read_text(encoding="utf-8"))
++    except json.JSONDecodeError:
++        return default
++
++
++def _write_json(path: Path, payload: Any) -> None:
++    path.parent.mkdir(parents=True, exist_ok=True)
++    path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
++
++
++def update_branch_registry(root: str | Path, record: BranchCapsuleRecord | dict[str, Any]) -> Path:
++    shell_root = _shell_root(root)
++    path = shell_root / BRANCH_REGISTRY_PATH
++    registry = _read_json(
++        path,
++        {
++            "schema_id": "ion.agent_branch_capsule.registry.v1",
++            "created_at": _now(),
++            "status": "ACTIVE_PROVISIONAL",
++            "protocol": PROTOCOL_PATH.as_posix(),
++            "branch_root": BRANCH_ROOT.as_posix(),
++            "settlement_inbox": SETTLEMENT_INBOX.as_posix(),
++            "active_branches": [],
++            "authority": {
++                "production_authority": False,
++                "live_execution_authority": False,
++                "secrets_authority": False,
++                "browser_control_authority": False,
++            },
++        },
++    )
++    data = asdict(record) if isinstance(record, BranchCapsuleRecord) else dict(record)
++    branches = [b for b in registry.get("active_branches", []) if b.get("branch_id") != data.get("branch_id")]
++    branches.append(
++        {
++            "branch_id": data["branch_id"],
++            "context_instance_id": data["context_instance_id"],
++            "conversation_tag": data["conversation_tag"],
++            "agent_tag": data["agent_tag"],
++            "task_tag": data["task_tag"],
++            "branch_path": data["branch_path"],
++            "status": data.get("status", "ACTIVE_PROVISIONAL"),
++            "settlement_required": True,
++            "shared_context_write": False,
++        }
++    )
++    registry["active_branches"] = branches
++    registry["updated_at"] = _now()
++    _write_json(path, registry)
++    return path
++
++
++def write_branch_capsule(root: str | Path, record: BranchCapsuleRecord) -> dict[str, Any]:
++    shell_root = _shell_root(root)
++    validation = validate_branch_record(shell_root, record)
++    branch_dir = shell_root / record.branch_path
++    branch_dir.mkdir(parents=True, exist_ok=True)
++    for dirname in ("RECEIPTS", "TASK_RETURNS", "SETTLEMENT_REQUESTS"):
++        (branch_dir / dirname).mkdir(exist_ok=True)
++
++    (branch_dir / "CAPSULE.md").write_text(render_branch_capsule(record), encoding="utf-8")
++    (branch_dir / "MINI.md").write_text(render_branch_mini(record), encoding="utf-8")
++    _write_json(branch_dir / "STATUS.json", branch_status(record, validation["findings"]))
++    _write_json(branch_dir / "LOADED_REFS.json", {"schema_id": "ion.agent_branch_capsule.loaded_refs.v1", "loaded_refs": list(record.loaded_refs)})
++    _write_json(branch_dir / "BRANCH_RECORD.json", asdict(record))
++    registry_path = update_branch_registry(shell_root, record)
++
++    return {
++        "schema_id": "ion.agent_branch_capsule.write_result.v1",
++        "ok": validation["ok"],
++        "verdict": validation["verdict"],
++        "branch_path": record.branch_path,
++        "registry_path": registry_path.relative_to(shell_root).as_posix(),
++        "validation": validation,
++        "production_authority": False,
++        "live_execution_authority": False,
++        "mutates_shared_context": False,
++    }
++
++
++def build_settlement_request(
++    record: BranchCapsuleRecord | dict[str, Any],
++    *,
++    request_id: str | None = None,
++    requested_outcome: str = "ACCEPTED_AS_WITNESS",
++    reason: str = "branch capsule candidate ready for context-settler review",
++) -> dict[str, Any]:
++    data = asdict(record) if isinstance(record, BranchCapsuleRecord) else dict(record)
++    rid = request_id or f"SETTLE_BRANCH_{data['branch_id']}"
++    return {
++        "schema_id": "ion.context_settlement.inbox_packet.v1",
++        "packet_id": rid,
++        "created_at": _now(),
++        "status": "CANDIDATE_PENDING_SETTLEMENT",
++        "source_type": "agent_branch_capsule",
++        "domain": "context_settlement",
++        "risk_class": "branch_context_candidate",
++        "source_refs": [
++            data["branch_path"] + "/BRANCH_RECORD.json",
++            data["branch_path"] + "/CAPSULE.md",
++            data["branch_path"] + "/STATUS.json",
++        ],
++        "requested_outcome": requested_outcome,
++        "reason": reason,
++        "branch_identity": {
++            "context_instance_id": data["context_instance_id"],
++            "branch_id": data["branch_id"],
++            "conversation_tag": data["conversation_tag"],
++            "agent_tag": data["agent_tag"],
++            "task_tag": data["task_tag"],
++            "parent_context_id": data["parent_context_id"],
++        },
++        "acceptance_gates": [
++            "branch identity fields are complete",
++            "shared_context_write is false",
++            "settlement_required is true",
++            "write scope does not touch shared context surfaces",
++            "loaded refs include parent context proof",
++        ],
++        "non_claims": [
++            "This packet does not update shared Capsule/Mini/HOT_CONTEXT.",
++            "This packet does not assign a C-number.",
++            "This packet does not promote branch output to accepted state.",
++            "This packet does not grant production or live execution authority.",
++        ],
++        "authority": {
++            "production_authority": False,
++            "live_execution_authority": False,
++            "secrets_authority": False,
++            "browser_control_authority": False,
++        },
++    }
++
++
++def write_settlement_request(root: str | Path, record: BranchCapsuleRecord, request: dict[str, Any] | None = None) -> dict[str, Any]:
++    shell_root = _shell_root(root)
++    packet = request or build_settlement_request(record)
++    branch_dir = shell_root / record.branch_path / "SETTLEMENT_REQUESTS"
++    branch_dir.mkdir(parents=True, exist_ok=True)
++    branch_packet = branch_dir / f"{packet['packet_id']}.json"
++    inbox_packet = shell_root / SETTLEMENT_INBOX / f"{packet['packet_id']}.json"
++    _write_json(branch_packet, packet)
++    _write_json(inbox_packet, packet)
++    return {
++        "schema_id": "ion.agent_branch_capsule.settlement_write_result.v1",
++        "ok": True,
++        "branch_packet": branch_packet.relative_to(shell_root).as_posix(),
++        "inbox_packet": inbox_packet.relative_to(shell_root).as_posix(),
++        "production_authority": False,
++        "live_execution_authority": False,
++        "mutates_shared_context": False,
++    }
++
++
++def create_branch_capsule(
++    root: str | Path,
++    *,
++    conversation_tag: str,
++    agent_tag: str,
++    task_tag: str = "general",
++    branch_type: str = "agent",
++    parent_context_id: str = DEFAULT_PARENT_CONTEXT_ID,
++    loaded_refs: Iterable[str] | None = None,
++    write_scope: Iterable[str] | None = None,
++    emitted_at: str | None = None,
++    settlement_request: bool = False,
++) -> dict[str, Any]:
++    record = build_branch_capsule_record(
++        root,
++        conversation_tag=conversation_tag,
++        agent_tag=agent_tag,
++        task_tag=task_tag,
++        branch_type=branch_type,
++        parent_context_id=parent_context_id,
++        loaded_refs=loaded_refs,
++        write_scope=write_scope,
++        emitted_at=emitted_at,
++    )
++    write_result = write_branch_capsule(root, record)
++    settlement_result = write_settlement_request(root, record) if settlement_request else None
++    return {
++        "schema_id": "ion.agent_branch_capsule.create_result.v1",
++        "ok": write_result["ok"],
++        "verdict": write_result["verdict"],
++        "record": asdict(record),
++        "identity_card": render_identity_card(record),
++        "write_result": write_result,
++        "settlement_result": settlement_result,
++        "production_authority": False,
++        "live_execution_authority": False,
++        "mutates_shared_context": False,
++    }
++
++
++def main(argv: list[str] | None = None) -> int:
++    parser = argparse.ArgumentParser(description="ION agent branch capsule helper")
++    parser.add_argument("--ion-root", default=".")
++    sub = parser.add_subparsers(dest="command", required=True)
++
++    create = sub.add_parser("create")
++    create.add_argument("--conversation-tag", required=True)
++    create.add_argument("--agent-tag", required=True)
++    create.add_argument("--task-tag", default="general")
++    create.add_argument("--branch-type", default="agent")
++    create.add_argument("--parent-context-id", default=DEFAULT_PARENT_CONTEXT_ID)
++    create.add_argument("--loaded-ref", action="append", default=None)
++    create.add_argument("--write-scope", action="append", default=None)
++    create.add_argument("--emitted-at", default=None)
++    create.add_argument("--settlement-request", action="store_true")
++    create.add_argument("--confirmation", required=True)
++
++    validate = sub.add_parser("validate")
++    validate.add_argument("--record-json", required=True)
++
++    args = parser.parse_args(argv)
++
++    if args.command == "create":
++        if args.confirmation != WRITE_CONFIRMATION_TOKEN:
++            print(json.dumps({"ok": False, "verdict": BLOCKED_VERDICT, "finding": "write_confirmation_required"}, indent=2))
++            return 2
++        result = create_branch_capsule(
++            args.ion_root,
++            conversation_tag=args.conversation_tag,
++            agent_tag=args.agent_tag,
++            task_tag=args.task_tag,
++            branch_type=args.branch_type,
++            parent_context_id=args.parent_context_id,
++            loaded_refs=args.loaded_ref,
++            write_scope=args.write_scope,
++            emitted_at=args.emitted_at,
++            settlement_request=args.settlement_request,
++        )
++        print(json.dumps(result, indent=2, sort_keys=True))
++        return 0 if result["ok"] else 1
++
++    record = json.loads(Path(args.record_json).read_text(encoding="utf-8"))
++    result = validate_branch_record(args.ion_root, record)
++    print(json.dumps(result, indent=2, sort_keys=True))
++    return 0 if result["ok"] else 1
++
++
++if __name__ == "__main__":
++    raise SystemExit(main())
+
+--- /dev/null
++++ b/ION/tests/test_kernel_ion_agent_branch_capsule.py
+@@ -0,0 +1,118 @@
++import json
++from pathlib import Path
++
++from kernel.ion_agent_branch_capsule import (
++    BLOCKED_VERDICT,
++    BRANCH_REGISTRY_PATH,
++    READY_VERDICT,
++    SETTLEMENT_INBOX,
++    SHARED_CONTEXT_SURFACES,
++    build_branch_capsule_record,
++    create_branch_capsule,
++    render_identity_card,
++    validate_branch_record,
++)
++
++
++def _seed_root(root: Path) -> None:
++    (root / "pyproject.toml").write_text("[project]\nname = \"ion-test\"\n", encoding="utf-8")
++    (root / "ION/REPO_AUTHORITY.md").parent.mkdir(parents=True, exist_ok=True)
++    (root / "ION/REPO_AUTHORITY.md").write_text("# authority\n", encoding="utf-8")
++
++
++def test_branch_record_normalizes_tags_and_renders_identity_card(tmp_path: Path):
++    _seed_root(tmp_path)
++    record = build_branch_capsule_record(
++        tmp_path,
++        conversation_tag="Helixion JOC Recovery",
++        agent_tag="Codex UI Recovery",
++        task_tag="Anchored Pages Drawer Canon",
++        emitted_at="2026-05-11T15:02:10+00:00",
++    )
++
++    assert record.context_instance_id == "ctx_20260511T150210Z_anchored_pages_drawer_canon"
++    assert record.branch_id == "branch_20260511T150210Z_anchored_pages_drawer_canon"
++    assert record.conversation_tag == "helixion_joc_recovery"
++    assert record.agent_tag == "codex_ui_recovery"
++    assert record.task_tag == "anchored_pages_drawer_canon"
++    assert record.shared_context_write is False
++    assert record.settlement_required is True
++
++    card = render_identity_card(record)
++    assert "AGENT_TAG: codex_ui_recovery" in card
++    assert "CONTEXT_INSTANCE: ctx_20260511T150210Z_anchored_pages_drawer_canon" in card
++    assert "SHARED_CONTEXT_WRITE: false" in card
++
++
++def test_validate_branch_record_blocks_shared_context_and_overlaps(tmp_path: Path):
++    _seed_root(tmp_path)
++    record = build_branch_capsule_record(
++        tmp_path,
++        conversation_tag="demo",
++        agent_tag="agent",
++        task_tag="task",
++        write_scope=[SHARED_CONTEXT_SURFACES[0], "ION/04_packages/kernel/example.py"],
++        emitted_at="2026-05-11T15:02:10+00:00",
++    )
++
++    result = validate_branch_record(
++        tmp_path,
++        record,
++        active_claims=[
++            {
++                "claim_id": "other_claim",
++                "branch_id": "branch_other",
++                "write_scope": ["ION/04_packages/kernel/example.py"],
++            }
++        ],
++    )
++
++    assert result["ok"] is False
++    assert result["verdict"] == BLOCKED_VERDICT
++    assert f"shared_context_write_scope_forbidden:{SHARED_CONTEXT_SURFACES[0]}" in result["findings"]
++    assert "write_scope_overlap:ION/04_packages/kernel/example.py:with:other_claim" in result["findings"]
++
++
++def test_create_branch_capsule_writes_only_branch_lane_and_settlement_packet(tmp_path: Path):
++    _seed_root(tmp_path)
++
++    result = create_branch_capsule(
++        tmp_path,
++        conversation_tag="Helixion JOC Recovery",
++        agent_tag="Codex UI Recovery",
++        task_tag="Anchored Pages Drawer Canon",
++        write_scope=["ION/04_packages/kernel/ion_codex_chat_shell_ui.py"],
++        emitted_at="2026-05-11T15:02:10+00:00",
++        settlement_request=True,
++    )
++
++    assert result["ok"] is True
++    assert result["verdict"] == READY_VERDICT
++    branch_path = tmp_path / result["record"]["branch_path"]
++    assert (branch_path / "CAPSULE.md").exists()
++    assert (branch_path / "MINI.md").exists()
++    assert (branch_path / "STATUS.json").exists()
++    assert (branch_path / "LOADED_REFS.json").exists()
++    assert (branch_path / "BRANCH_RECORD.json").exists()
++    assert (branch_path / "RECEIPTS").is_dir()
++    assert (branch_path / "TASK_RETURNS").is_dir()
++    assert (branch_path / "SETTLEMENT_REQUESTS").is_dir()
++
++    status = json.loads((branch_path / "STATUS.json").read_text(encoding="utf-8"))
++    assert status["status"] == "ACTIVE_PROVISIONAL"
++    assert status["shared_context_write"] is False
++    assert status["settlement_required"] is True
++
++    registry = json.loads((tmp_path / BRANCH_REGISTRY_PATH).read_text(encoding="utf-8"))
++    assert registry["active_branches"][0]["branch_id"] == result["record"]["branch_id"]
++    assert registry["active_branches"][0]["shared_context_write"] is False
++
++    inbox_files = list((tmp_path / SETTLEMENT_INBOX).glob("SETTLE_BRANCH_*.json"))
++    assert len(inbox_files) == 1
++    inbox_packet = json.loads(inbox_files[0].read_text(encoding="utf-8"))
++    assert inbox_packet["status"] == "CANDIDATE_PENDING_SETTLEMENT"
++    assert inbox_packet["branch_identity"]["branch_id"] == result["record"]["branch_id"]
++    assert "This packet does not update shared Capsule/Mini/HOT_CONTEXT." in inbox_packet["non_claims"]
++
++    for rel in SHARED_CONTEXT_SURFACES:
++        assert not (tmp_path / rel).exists()
+
+--- /dev/null
++++ b/ION/05_context/current/agent_context_branches/README.md
+@@ -0,0 +1,28 @@
++# ION Agent Context Branches
++
++Status: active provisional runtime lane
++Created: 2026-05-11
++
++This folder holds unique branch capsules for active conversations, agents, tasks, and workpackets.
++
++Shared Codex solo context remains settled base context and must not be used as a multi-agent scratchpad.
++
++Branch capsules may inherit from shared context, but they cannot overwrite it. They submit candidate settlement packets through:
++
++```text
++ION/05_context/current/context_settlement/inbox/
++```
++
++Current protocol:
++
++```text
++ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_PROTOCOL_V0_1.md
++```
++
++Core law:
++
++```text
++one agent/conversation/task = one named branch capsule
++shared context write = false
++settlement required = true
++```
+
+--- /dev/null
++++ b/ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json
+@@ -0,0 +1,41 @@
++{
++  "schema_id": "ion.agent_branch_capsule.registry.v1",
++  "created_at": "2026-05-11",
++  "status": "ACTIVE_PROVISIONAL",
++  "protocol": "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_PROTOCOL_V0_1.md",
++  "branch_root": "ION/05_context/current/agent_context_branches",
++  "settlement_inbox": "ION/05_context/current/context_settlement/inbox",
++  "shared_context_surfaces": [
++    "ION/05_context/current/codex_solo/CAPSULE.md",
++    "ION/05_context/current/codex_solo/MINI.md",
++    "ION/05_context/current/codex_solo/HOT_CONTEXT.md",
++    "ION/05_context/current/codex_solo/STATUS.json",
++    "ION/05_context/current/codex_solo/ROUTE.json"
++  ],
++  "active_branches": [],
++  "required_identity_fields": [
++    "context_instance_id",
++    "branch_id",
++    "branch_type",
++    "agent_tag",
++    "conversation_tag",
++    "task_tag",
++    "parent_context_id",
++    "root",
++    "loaded_refs",
++    "write_scope",
++    "shared_context_write",
++    "settlement_required"
++  ],
++  "authority": {
++    "production_authority": false,
++    "live_execution_authority": false,
++    "secrets_authority": false,
++    "browser_control_authority": false
++  },
++  "non_claims": [
++    "This registry does not promote branch results into shared context.",
++    "This registry does not assign C-numbers.",
++    "This registry does not grant production or live execution authority."
++  ]
++}
+
+--- /dev/null
++++ b/ION/05_context/current/agent_context_branches/templates/AGENT_BRANCH_CAPSULE.template.md
+@@ -0,0 +1,30 @@
++# ION Agent Branch Capsule
++
++AGENT_TAG: {{agent_tag}}
++CONVERSATION_TAG: {{conversation_tag}}
++TASK_TAG: {{task_tag}}
++CONTEXT_INSTANCE: {{context_instance_id}}
++BRANCH_ID: {{branch_id}}
++PARENT_CONTEXT: {{parent_context_id}}
++ROOT: {{root}}
++SHARED_CONTEXT_WRITE: {{shared_context_write}}
++SETTLEMENT_REQUIRED: {{settlement_required}}
++
++## Purpose
++
++Local working memory for one bounded agent/conversation/task branch.
++
++## Loaded refs
++
++{{loaded_refs_markdown}}
++
++## Write scope
++
++{{write_scope_markdown}}
++
++## Non-claims
++
++- This branch does not mutate shared Capsule/Mini/HOT_CONTEXT/STATUS/ROUTE.
++- This branch does not assign C-numbers.
++- This branch does not grant production or live execution authority.
++- This branch must submit settlement requests before shared context can change.
+
+--- /dev/null
++++ b/ION/05_context/current/agent_context_branches/templates/AGENT_BRANCH_STATUS.template.json
+@@ -0,0 +1,18 @@
++{
++  "schema_id": "ion.agent_branch_capsule.status.v1",
++  "status": "{{status}}",
++  "context_instance_id": "{{context_instance_id}}",
++  "branch_id": "{{branch_id}}",
++  "conversation_tag": "{{conversation_tag}}",
++  "agent_tag": "{{agent_tag}}",
++  "task_tag": "{{task_tag}}",
++  "parent_context_id": "{{parent_context_id}}",
++  "shared_context_write": false,
++  "settlement_required": true,
++  "drift_findings": [],
++  "authority": {
++    "production_authority": false,
++    "live_execution_authority": false,
++    "secrets_authority": false
++  }
++}
+
+--- /dev/null
++++ b/ION/05_context/current/agent_context_branches/templates/AGENT_CONTEXT_IDENTITY_CARD.template.md
+@@ -0,0 +1,9 @@
++AGENT_TAG: {{agent_tag}}
++CONVERSATION_TAG: {{conversation_tag}}
++TASK_TAG: {{task_tag}}
++CONTEXT_INSTANCE: {{context_instance_id}}
++BRANCH_ID: {{branch_id}}
++PARENT_CONTEXT: {{parent_context_id}}
++ROOT: {{root}}
++SHARED_CONTEXT_WRITE: {{shared_context_write}}
++SETTLEMENT_REQUIRED: {{settlement_required}}
+
+--- /dev/null
++++ b/ION/05_context/current/context_settlement/inbox/SETTLE_AGENT_BRANCH_CAPSULE_RUNTIME_001_20260511.json
+@@ -0,0 +1,52 @@
++{
++  "schema_id": "ion.context_settlement.inbox_packet.v1",
++  "packet_id": "SETTLE_AGENT_BRANCH_CAPSULE_RUNTIME_001_20260511",
++  "created_at": "2026-05-11",
++  "status": "CANDIDATE_PENDING_SETTLEMENT",
++  "source_type": "runtime_helper_and_tests",
++  "domain": "context_settlement",
++  "risk_class": "context_runtime_candidate",
++  "settlement_batch": "C00_active_agent_claim_review_then_C01_checkpoint_assignment_and_shared_context_settlement",
++  "source_refs": [
++    "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_PROTOCOL_V0_1.md",
++    "ION/04_packages/kernel/ion_agent_branch_capsule.py",
++    "ION/tests/test_kernel_ion_agent_branch_capsule.py",
++    "ION/05_context/current/agent_context_branches/README.md",
++    "ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json",
++    "ION/05_context/current/agent_context_branches/templates/AGENT_BRANCH_CAPSULE.template.md",
++    "ION/05_context/current/agent_context_branches/templates/AGENT_BRANCH_STATUS.template.json",
++    "ION/05_context/current/agent_context_branches/templates/AGENT_CONTEXT_IDENTITY_CARD.template.md"
++  ],
++  "requested_outcome": "ACCEPTED_AS_WITNESS",
++  "checkpoint_request": {
++    "assign_c_number": true,
++    "agent_assigned_c_number": null,
++    "preferred_settlement": "record branch capsule runtime helpers as candidate implementation only after context-settler review"
++  },
++  "required_review": [
++    "context_settler",
++    "ION protocol steward",
++    "Codex solo context steward"
++  ],
++  "acceptance_gates": [
++    "does not mutate shared Capsule/Mini/HOT_CONTEXT directly",
++    "does not assign C-number directly",
++    "branch identity fields are complete",
++    "wrong-context drift checks are explicit",
++    "settlement-only merge path is preserved",
++    "targeted branch-capsule tests pass"
++  ],
++  "non_claims": [
++    "This packet does not create active branches for current live agents.",
++    "This packet does not settle or promote the protocol.",
++    "This packet does not resolve existing context conflicts.",
++    "This packet does not update shared context.",
++    "This packet does not reload services or grant live execution authority."
++  ],
++  "authority": {
++    "production_authority": false,
++    "live_execution_authority": false,
++    "secrets_authority": false,
++    "browser_control_authority": false
++  }
++}
+
+--- /dev/null
++++ b/ION/05_context/current/context_settlement/claims/claim_20260511_agent_branch_capsule_runtime_001.json
+@@ -0,0 +1,20 @@
++{
++  "schema_id": "ion.context_settlement.claim.v1",
++  "claim_id": "claim_20260511_agent_branch_capsule_runtime_001",
++  "created_at": "2026-05-11",
++  "status": "CANDIDATE_PENDING_SETTLEMENT",
++  "claim_type": "runtime_helper_implementation",
++  "source_packet": "ION/05_context/current/context_settlement/inbox/SETTLE_AGENT_BRANCH_CAPSULE_RUNTIME_001_20260511.json",
++  "claimed_surfaces": [
++    "ION/04_packages/kernel/ion_agent_branch_capsule.py",
++    "ION/tests/test_kernel_ion_agent_branch_capsule.py",
++    "ION/05_context/current/agent_context_branches"
++  ],
++  "shared_context_write": false,
++  "settlement_required": true,
++  "non_claims": [
++    "No shared Codex solo context was edited by this claim.",
++    "No C-number is assigned by this claim.",
++    "No production or live execution authority is granted by this claim."
++  ]
++}
+
+--- a/ION/05_context/current/context_settlement/CONTEXT_SETTLEMENT_REGISTRY_V0_1.json
++++ b/ION/05_context/current/context_settlement/CONTEXT_SETTLEMENT_REGISTRY_V0_1.json
+@@ -46,7 +46,8 @@
+   ],
+   "pending_inbox_packets": [
+     "ION/05_context/current/context_settlement/inbox/SETTLE_UI_RECOVERY_ANCHORED_PAGES_AND_DRAWER_CANON_20260511.json",
+-    "ION/05_context/current/context_settlement/inbox/SETTLE_WORKPACKETS_DIFFS_INGESTION_002_20260510T234208.json"
++    "ION/05_context/current/context_settlement/inbox/SETTLE_WORKPACKETS_DIFFS_INGESTION_002_20260510T234208.json",
++    "ION/05_context/current/context_settlement/inbox/SETTLE_AGENT_BRANCH_CAPSULE_RUNTIME_001_20260511.json"
+   ],
+   "authority": {
+     "production_authority": false,
+@@ -59,5 +60,9 @@
+     "This registry does not run the local content-proof scanner.",
+     "This registry does not update Capsule/Mini/HOT_CONTEXT.",
+     "This registry does not resolve the C-088 collision by itself."
+-  ]
++  ],
++  "active_claims": [
++    "ION/05_context/current/context_settlement/claims/claim_20260511_agent_branch_capsule_runtime_001.json"
++  ],
++  "updated_at": "2026-05-11"
+ }

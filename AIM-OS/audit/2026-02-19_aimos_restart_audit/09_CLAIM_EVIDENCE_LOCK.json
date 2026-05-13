@@ -1,0 +1,269 @@
+{
+  "generated_utc": "2026-02-19T04:54:16.012366+00:00",
+  "repo_root": "C:\\Users\\bombe\\OneDrive\\Desktop\\AIM-OS",
+  "claims": [
+    {
+      "id": "CLM-001",
+      "statement": "MCP tools/list surface matches tools/call surface.",
+      "status": "supported",
+      "evidence_command_id": "mcp_parity",
+      "observed": "listed=103 callable=103 parity_ok=True"
+    },
+    {
+      "id": "CLM-002",
+      "statement": "Coverage policy excludes tagged mirror files from coverage parsing scope.",
+      "status": "supported",
+      "evidence_command_id": "tagged_policy",
+      "observed": "policy_ok=True tagged_count=115 parse_failures=18"
+    },
+    {
+      "id": "CLM-003",
+      "statement": "APOE package test suite passes in controlled environment.",
+      "status": "supported",
+      "evidence_command_id": "apoe_tests",
+      "observed": "passed=381 failed=0 skipped=10 errors=0"
+    },
+    {
+      "id": "CLM-004",
+      "statement": "HHNI package test suite passes in controlled environment.",
+      "status": "supported",
+      "evidence_command_id": "hhni_tests",
+      "observed": "passed=119 failed=0 skipped=1 errors=0"
+    },
+    {
+      "id": "CLM-005",
+      "statement": "SEG package test suite passes in controlled environment.",
+      "status": "supported",
+      "evidence_command_id": "seg_tests",
+      "observed": "passed=104 failed=0 errors=0"
+    },
+    {
+      "id": "CLM-006",
+      "statement": "SDF-CVF package test suite passes in controlled environment.",
+      "status": "supported",
+      "evidence_command_id": "sdfcvf_tests",
+      "observed": "passed=154 failed=0 warnings=0"
+    },
+    {
+      "id": "CLM-007",
+      "statement": "MCP parity pytest guardrails are passing.",
+      "status": "supported",
+      "evidence_command_id": "mcp_parity_tests",
+      "observed": "passed=2 failed=0 errors=0"
+    },
+    {
+      "id": "CLM-008",
+      "statement": "Source-of-truth dry-run reports parity and current inventory metrics.",
+      "status": "supported",
+      "evidence_command_id": "source_of_truth",
+      "observed": "mcp_listed=103 mcp_callable=103 systems=64 docs=3407 tests=316"
+    }
+  ],
+  "evidence": {
+    "mcp_parity": {
+      "command": "C:\\Users\\bombe\\AppData\\Local\\Programs\\Python\\Python312\\python.exe scripts/check_mcp_tool_parity.py",
+      "returncode": 0,
+      "duration_seconds": 0.122,
+      "stdout_tail": [
+        "{",
+        "  \"listed_count\": 103,",
+        "  \"callable_count\": 103,",
+        "  \"parity_ok\": true,",
+        "  \"listed_not_callable\": [],",
+        "  \"callable_not_listed\": []",
+        "}"
+      ],
+      "stderr_tail": [],
+      "parsed": {
+        "listed_count": 103,
+        "callable_count": 103,
+        "parity_ok": true
+      }
+    },
+    "source_of_truth": {
+      "command": "C:\\Users\\bombe\\AppData\\Local\\Programs\\Python\\Python312\\python.exe scripts/detect_source_of_truth.py --dry-run --check-mcp-parity",
+      "returncode": 0,
+      "duration_seconds": 96.453,
+      "stdout_tail": [
+        "DRY RUN - Detecting source of truth...",
+        "",
+        "Source of Truth Preview:",
+        "   MCP Tools (listed): 103",
+        "   MCP Tools (callable): 103",
+        "   MCP Parity OK: True",
+        "   Cursor Commands: 16",
+        "   Systems: 64",
+        "   Documentation Files: 3407",
+        "   Test Files: 316",
+        "[OK] MCP tool parity check passed."
+      ],
+      "stderr_tail": [],
+      "parsed": {
+        "mcp_listed": 103,
+        "mcp_callable": 103,
+        "mcp_parity_ok": true,
+        "systems": 64,
+        "documentation_files": 3407,
+        "test_files": 316
+      }
+    },
+    "tagged_policy": {
+      "command": "C:\\Users\\bombe\\AppData\\Local\\Programs\\Python\\Python312\\python.exe scripts/check_tagged_coverage_policy.py",
+      "returncode": 0,
+      "duration_seconds": 1.4,
+      "stdout_tail": [
+        "        \"error_type\": \"IndentationError\",",
+        "        \"error\": \"expected an indented block after function definition on line 814 (cost_optimized_journaling_TAGGED.py, line 816)\"",
+        "      },",
+        "      {",
+        "        \"path\": \"packages\\\\timeline_context_system\\\\enhanced_timeline_tracker_TAGGED.py\",",
+        "        \"error_type\": \"IndentationError\",",
+        "        \"error\": \"expected an indented block after function definition on line 493 (enhanced_timeline_tracker_TAGGED.py, line 495)\"",
+        "      },",
+        "      {",
+        "        \"path\": \"packages\\\\timeline_context_system\\\\enhanced_timeline_tracker_TAGGED_TAGGED.py\",",
+        "        \"error_type\": \"IndentationError\",",
+        "        \"error\": \"expected an indented block after function definition on line 493 (enhanced_timeline_tracker_TAGGED_TAGGED.py, line 495)\"",
+        "      },",
+        "      {",
+        "        \"path\": \"packages\\\\timeline_context_system\\\\integrated_context_manager_TAGGED.py\",",
+        "        \"error_type\": \"IndentationError\",",
+        "        \"error\": \"expected an indented block after function definition on line 524 (integrated_context_manager_TAGGED.py, line 526)\"",
+        "      },",
+        "      {",
+        "        \"path\": \"packages\\\\vif\\\\calibration_TAGGED.py\",",
+        "        \"error_type\": \"SyntaxError\",",
+        "        \"error\": \"'(' was never closed (calibration_TAGGED.py, line 325)\"",
+        "      },",
+        "      {",
+        "        \"path\": \"packages\\\\vif\\\\cmc_integration_TAGGED.py\",",
+        "        \"error_type\": \"SyntaxError\",",
+        "        \"error\": \"'(' was never closed (cmc_integration_TAGGED.py, line 252)\"",
+        "      },",
+        "      {",
+        "        \"path\": \"packages\\\\vif\\\\confidence_extraction_TAGGED.py\",",
+        "        \"error_type\": \"SyntaxError\",",
+        "        \"error\": \"'(' was never closed (confidence_extraction_TAGGED.py, line 293)\"",
+        "      }",
+        "    ]",
+        "  },",
+        "  \"status\": {",
+        "    \"policy_ok\": true,",
+        "    \"parse_clean\": false",
+        "  }",
+        "}"
+      ],
+      "stderr_tail": [],
+      "parsed": {
+        "policy_ok": true,
+        "parse_clean": false,
+        "tagged_file_count": 115,
+        "parse_failure_count": 18
+      }
+    },
+    "mcp_parity_tests": {
+      "command": "C:\\Users\\bombe\\AppData\\Local\\Programs\\Python\\Python312\\python.exe -m pytest tests/test_mcp_tool_surface_parity.py -q -o addopts=''",
+      "returncode": 0,
+      "duration_seconds": 1.176,
+      "stdout_tail": [
+        "..                                                                       [100%]",
+        "2 passed in 0.12s"
+      ],
+      "stderr_tail": [],
+      "parsed": {
+        "passed": 2,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "warnings": 0,
+        "xfailed": 0,
+        "xpassed": 0
+      }
+    },
+    "apoe_tests": {
+      "command": "C:\\Users\\bombe\\AppData\\Local\\Programs\\Python\\Python312\\python.exe -m pytest packages/apoe/tests -q -o addopts=''",
+      "returncode": 0,
+      "duration_seconds": 19.036,
+      "stdout_tail": [
+        ".................................................ss.ssssssss............ [ 18%]",
+        "........................................................................ [ 36%]",
+        "........................................................................ [ 55%]",
+        "........................................................................ [ 73%]",
+        "........................................................................ [ 92%]",
+        "...............................                                          [100%]",
+        "381 passed, 10 skipped in 17.21s"
+      ],
+      "stderr_tail": [],
+      "parsed": {
+        "passed": 381,
+        "failed": 0,
+        "skipped": 10,
+        "errors": 0,
+        "warnings": 0,
+        "xfailed": 0,
+        "xpassed": 0
+      }
+    },
+    "hhni_tests": {
+      "command": "C:\\Users\\bombe\\AppData\\Local\\Programs\\Python\\Python312\\python.exe -m pytest packages/hhni/tests -q -o addopts=''",
+      "returncode": 0,
+      "duration_seconds": 23.723,
+      "stdout_tail": [
+        "..................................................s..................... [ 60%]",
+        "................................................                         [100%]",
+        "119 passed, 1 skipped in 21.55s"
+      ],
+      "stderr_tail": [],
+      "parsed": {
+        "passed": 119,
+        "failed": 0,
+        "skipped": 1,
+        "errors": 0,
+        "warnings": 0,
+        "xfailed": 0,
+        "xpassed": 0
+      }
+    },
+    "seg_tests": {
+      "command": "C:\\Users\\bombe\\AppData\\Local\\Programs\\Python\\Python312\\python.exe -m pytest packages/seg/tests -q -o addopts=''",
+      "returncode": 0,
+      "duration_seconds": 10.758,
+      "stdout_tail": [
+        "........................................................................ [ 69%]",
+        "................................                                         [100%]",
+        "104 passed in 9.08s"
+      ],
+      "stderr_tail": [],
+      "parsed": {
+        "passed": 104,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "warnings": 0,
+        "xfailed": 0,
+        "xpassed": 0
+      }
+    },
+    "sdfcvf_tests": {
+      "command": "C:\\Users\\bombe\\AppData\\Local\\Programs\\Python\\Python312\\python.exe -m pytest packages/sdfcvf/tests -q -o addopts=''",
+      "returncode": 0,
+      "duration_seconds": 651.26,
+      "stdout_tail": [
+        "........................................................................ [ 46%]",
+        "........................................................................ [ 93%]",
+        "..........                                                               [100%]",
+        "154 passed in 648.26s (0:10:48)"
+      ],
+      "stderr_tail": [],
+      "parsed": {
+        "passed": 154,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "warnings": 0,
+        "xfailed": 0,
+        "xpassed": 0
+      }
+    }
+  }
+}

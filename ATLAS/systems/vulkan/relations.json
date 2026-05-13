@@ -1,0 +1,61 @@
+{
+  "system_slug": "vulkan",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-03",
+  "edges": [
+    {
+      "type": "depends_on",
+      "target": "spir-v",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Vulkan uses SPIR-V as the shader intermediate representation for GPU execution (shader modules)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "INFERRED",
+      "notes": "Vulkan drivers and loaders run on Linux hosts."
+    },
+    {
+      "type": "integrates_with",
+      "target": "windows-nt",
+      "evidence_tier": "INFERRED",
+      "notes": "Vulkan on Windows via vendor ICDs and the Vulkan loader."
+    },
+    {
+      "type": "integrates_with",
+      "target": "opencl",
+      "evidence_tier": "INFERRED",
+      "notes": "Both Khronos GPU-oriented APIs; different primary programming models (graphics-first vs compute-first)."
+    },
+    {
+      "type": "competes_with",
+      "target": "opengl",
+      "evidence_tier": "INFERRED",
+      "notes": "Overlapping GPU graphics API space; OpenGL is the legacy state-machine API (coexistence is common)."
+    },
+    {
+      "type": "competes_with",
+      "target": "metal",
+      "evidence_tier": "INFERRED",
+      "notes": "Overlapping GPU API space; Metal is the primary path on Apple platforms (Vulkan may appear via layers like MoltenVK)."
+    },
+    {
+      "type": "competes_with",
+      "target": "direct3d",
+      "evidence_tier": "INFERRED",
+      "notes": "Overlapping GPU API space on Windows and in cross-platform engines (Vulkan vs Direct3D 12 is a common porting axis)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "webgpu",
+      "evidence_tier": "INFERRED",
+      "notes": "Browser engines and native WebGPU implementations often use Vulkan as the backend API on supported platforms."
+    },
+    {
+      "type": "competes_with",
+      "target": "opengl-es",
+      "evidence_tier": "INFERRED",
+      "notes": "Overlapping mobile/embedded GPU API space; many devices support or migrate between GLES and Vulkan."
+    }
+  ]
+}

@@ -1,0 +1,113 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "depends_on",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Alpine ships Linux kernel packages for supported architectures as part of the distribution."
+    },
+    {
+      "type": "integrates_with",
+      "target": "musl",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Alpine uses musl as the standard C library on supported architectures per project documentation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "elf",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Alpine userland binaries and shared libraries are ELF on typical Linux targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-gcc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GCC and related toolchain packages are provided via Alpine repositories for builds."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-binutils",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GNU binutils are used in standard Alpine build and link flows packaged in the distro."
+    },
+    {
+      "type": "integrates_with",
+      "target": "clang",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang/LLVM packages may be installed from Alpine repos for alternative compiler stacks."
+    },
+    {
+      "type": "integrates_with",
+      "target": "docker",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Official and community OCI images commonly use Alpine as a minimal musl-based base; Docker pulls and runs them like other Linux images."
+    },
+    {
+      "type": "integrates_with",
+      "target": "containerd",
+      "evidence_tier": "INFERRED",
+      "notes": "CRI/containerd nodes run Alpine-based workload images pulled as OCI artifacts."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "Kubernetes pods frequently use Alpine-class images on Linux nodes; not an exclusive pairing."
+    },
+    {
+      "type": "integrates_with",
+      "target": "oci-image-spec",
+      "evidence_tier": "INFERRED",
+      "notes": "Alpine bases are packaged as OCI image rootfs layers conforming to OCI image layout conventions."
+    },
+    {
+      "type": "competes_with",
+      "target": "debian",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Linux distribution defaults for containers and servers (musl/OpenRC vs glibc/systemd field patterns)."
+    },
+    {
+      "type": "competes_with",
+      "target": "ubuntu",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Linux distribution defaults for containers and servers (musl/OpenRC vs glibc/systemd field patterns)."
+    },
+    {
+      "type": "competes_with",
+      "target": "fedora",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Linux distribution defaults for containers and servers (musl/OpenRC vs glibc/systemd field patterns)."
+    },
+    {
+      "type": "competes_with",
+      "target": "rhel",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Linux distribution defaults for containers and servers (musl/OpenRC vs glibc/systemd field patterns)."
+    },
+    {
+      "type": "competes_with",
+      "target": "rocky-linux",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Linux distribution defaults for containers and servers (musl/OpenRC vs glibc/systemd field patterns)."
+    },
+    {
+      "type": "competes_with",
+      "target": "almalinux",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Linux distribution defaults for containers and servers (musl/OpenRC vs glibc/systemd field patterns)."
+    },
+    {
+      "type": "competes_with",
+      "target": "centos-stream",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Linux distribution defaults for containers and servers (musl/OpenRC vs glibc/systemd field patterns)."
+    },
+    {
+      "type": "competes_with",
+      "target": "centos-linux",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Linux distribution defaults for containers and servers (musl/OpenRC vs glibc/systemd field patterns)."
+    }
+  ]
+}

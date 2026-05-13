@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "depends_on",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Linux-focused CRI runtime; kubelet integration on Linux nodes."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Implements Kubernetes CRI for kubelet (`src-k8s-cri`, CRI-O docs)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "runc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Commonly uses runc (or compatible OCI runtime) underneath; configurable."
+    },
+    {
+      "type": "integrates_with",
+      "target": "crun",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "CRI-O can use crun as the low-level OCI runtime where configured."
+    },
+    {
+      "type": "integrates_with",
+      "target": "oci-distribution-spec",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Image pulls from registries use distribution-compatible HTTP semantics."
+    },
+    {
+      "type": "integrates_with",
+      "target": "oci-runtime-spec",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Executes pod containers as OCI bundles via a low-level OCI runtime implementing the spec."
+    },
+    {
+      "type": "competes_with",
+      "target": "containerd",
+      "evidence_tier": "INFERRED",
+      "notes": "Alternative CRI implementation class on Linux; not mutually exclusive in knowledge model."
+    }
+  ]
+}

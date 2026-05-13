@@ -1,0 +1,229 @@
+{
+  "systemId": "cursor_addon.agentAutomation",
+  "systemName": "Agent Automation - Cursor Background Agents Control",
+  "version": "v1.0.0",
+  "status": "production",
+  "layer": 6,
+  "description": "Controls Cursor Background Agents via HTTP API (Cloud) and CLI (Local) for autonomous operation. Supports long-running agents with monitoring, status updates, and webhook integration.",
+  
+  "internalNodes": [
+    {
+      "id": "agentMonitor",
+      "kind": "core.component",
+      "responsibility": "Manages agent lifecycle (start, stop, status, metrics) via Cursor API",
+      "status": "production",
+      "must_never": [
+        "Start agents without validation",
+        "Lose agent status tracking",
+        "Exceed runtime limits",
+        "Start duplicate agents"
+      ],
+      "perf_budget_ms": 1000,
+      "security_level": "high"
+    },
+    {
+      "id": "cloudApiClient",
+      "kind": "integration.component",
+      "responsibility": "Communicates with Cursor Cloud Agents API (api.cursor.com/v0)",
+      "status": "production",
+      "must_never": [
+        "Expose API keys",
+        "Make unauthorized requests",
+        "Lose API responses"
+      ],
+      "perf_budget_ms": 5000,
+      "security_level": "critical"
+    },
+    {
+      "id": "cliAgentClient",
+      "kind": "integration.component",
+      "responsibility": "Executes cursor-agent CLI for local repositories",
+      "status": "production",
+      "must_never": [
+        "Execute arbitrary commands",
+        "Exceed timeout limits",
+        "Lose CLI output"
+      ],
+      "perf_budget_ms": 300000,
+      "security_level": "high"
+    },
+    {
+      "id": "statusPoller",
+      "kind": "monitoring.component",
+      "responsibility": "Polls agent status and sends updates via bulletproof messaging",
+      "status": "production",
+      "must_never": [
+        "Miss status updates",
+        "Poll too frequently",
+        "Lose polling state"
+      ],
+      "perf_budget_ms": 1000,
+      "security_level": "medium"
+    },
+    {
+      "id": "webhookHandler",
+      "kind": "event.component",
+      "responsibility": "Handles webhook callbacks from Cursor API for real-time updates",
+      "status": "production",
+      "must_never": [
+        "Process invalid webhooks",
+        "Lose webhook events",
+        "Expose webhook secrets"
+      ],
+      "perf_budget_ms": 100,
+      "security_level": "high"
+    },
+    {
+      "id": "gitHubUrlDetector",
+      "kind": "utility.component",
+      "responsibility": "Detects GitHub URLs from local repository paths",
+      "status": "production",
+      "must_never": [
+        "Detect incorrect URLs",
+        "Fail silently on errors"
+      ],
+      "perf_budget_ms": 100,
+      "security_level": "medium"
+    }
+  ],
+  
+  "ports": [
+    {
+      "portId": "cursorCloudApi",
+      "direction": "outbound",
+      "connectsToSystem": "external.cursorCloud",
+      "protocol": "http_bearer",
+      "whatIsExchanged": [
+        "agent_creation_requests",
+        "status_queries",
+        "followup_messages",
+        "deletion_requests"
+      ],
+      "security_level": "critical"
+    },
+    {
+      "portId": "bulletproofMessaging",
+      "direction": "bidirectional",
+      "connectsToSystem": "cursor_addon.bulletproofMessaging",
+      "protocol": "envelope_v1",
+      "whatIsExchanged": [
+        "agent_started_events",
+        "agent_status_updates",
+        "agent_completed_events",
+        "agent_failed_events"
+      ],
+      "security_level": "high"
+    },
+    {
+      "portId": "cliIntegration",
+      "direction": "outbound",
+      "connectsToSystem": "system.cursorAgentCli",
+      "protocol": "stdio",
+      "whatIsExchanged": [
+        "cli_commands",
+        "stdout_output",
+        "stderr_output"
+      ],
+      "security_level": "high"
+    }
+  ],
+  
+  "internalEdges": [
+    {
+      "from": "agentMonitor",
+      "to": "cloudApiClient",
+      "type": "uses",
+      "description": "Uses Cloud API for GitHub repositories"
+    },
+    {
+      "from": "agentMonitor",
+      "to": "cliAgentClient",
+      "type": "uses",
+      "description": "Uses CLI for local repositories"
+    },
+    {
+      "from": "agentMonitor",
+      "to": "statusPoller",
+      "type": "uses",
+      "description": "Uses status poller for monitoring"
+    },
+    {
+      "from": "agentMonitor",
+      "to": "webhookHandler",
+      "type": "uses",
+      "description": "Uses webhook handler for real-time updates"
+    },
+    {
+      "from": "agentMonitor",
+      "to": "gitHubUrlDetector",
+      "type": "uses",
+      "description": "Uses GitHub URL detector for smart routing"
+    }
+  ],
+  
+  "externalEdges": [
+    {
+      "from": "cursor_addon.agentAutomation",
+      "to": "cursor_addon.bulletproofMessaging",
+      "type": "uses",
+      "description": "Sends agent status updates via bulletproof messaging"
+    },
+    {
+      "from": "cursor_addon.agentAutomation",
+      "to": "cursor_addon.commandServer",
+      "type": "integrates_with",
+      "description": "Exposes agent control via Command Server HTTP API"
+    },
+    {
+      "from": "cursor_addon.agentAutomation",
+      "to": "external.cursorCloud",
+      "type": "depends_on",
+      "description": "Requires Cursor Cloud API for cloud agents"
+    }
+  ],
+  
+  "performanceCharacteristics": {
+    "latency": {
+      "target_ms": 1000,
+      "p95_ms": 5000,
+      "p99_ms": 10000
+    },
+    "throughput": {
+      "agents_per_minute": 10,
+      "concurrent_agents": 10
+    },
+    "reliability": {
+      "delivery_guarantee": "best_effort",
+      "status_tracking": "polling_webhooks",
+      "failure_recovery": "manual_retry"
+    }
+  },
+  
+  "securityCharacteristics": {
+    "authentication": "bearer_token",
+    "authorization": "api_key_based",
+    "encryption": "https",
+    "audit": "status_logs"
+  },
+  
+  "deploymentCharacteristics": {
+    "runtime": "extension_host",
+    "storage": "in_memory",
+    "scalability": "limited",
+    "availability": "99.0%"
+  },
+  
+  "metadata": {
+    "documentation": [
+      "cursor-addon/docs/T0_AGENT_AUTOMATION_EXECUTIVE.md",
+      "cursor-addon/docs/AUTOMATION_SYSTEMS_EXPLAINED_T1.md",
+      "cursor-addon/docs/AUTOMATION_SYSTEMS_EXPLAINED_T2.md",
+      "cursor-addon/docs/CURSOR_API_RESEARCH.md"
+    ],
+    "code": [
+      "cursor-addon/src/agent/agentMonitor.ts"
+    ],
+    "tests": []
+  }
+}
+

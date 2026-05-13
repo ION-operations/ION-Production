@@ -1,0 +1,21 @@
+# DO NOT EXCLUDE THE FOLLOWING (! means include)
+!dist/**
+!out/**
+!package.json
+!README.md
+
+# EXCLUDE everything else
+.vscode/**
+.vscode-test/**
+src/**
+scripts/**
+node_modules/**
+*.ts
+!*.d.ts
+**/*.map
+.gitignore
+tsconfig.json
+webpack.config.js
+*.vsix
+*.log
+

@@ -1,0 +1,1561 @@
+diff --git a/ION/04_packages/kernel/ion_cockpit_view_model.py b/ION/04_packages/kernel/ion_cockpit_view_model.py
+index e55cf14..c310c0c 100644
+--- a/ION/04_packages/kernel/ion_cockpit_view_model.py
++++ b/ION/04_packages/kernel/ion_cockpit_view_model.py
+@@ -20,6 +20,7 @@ from .ion_chatgpt_sandbox_return_intake import build_sandbox_return_queue_projec
+ from .ion_codex_queue_runner import build_codex_queue_runner_status
+ from .ion_cockpit_service_manager import build_service_console_model
+ from .ion_local_service_status import build_local_service_status
++from .ion_living_graph_view_model import build_living_graph_view_model
+ 
+ CURRENT = Path("ION/05_context/current")
+ SIGNALS = Path("ION/05_context/signals")
+@@ -879,6 +880,7 @@ def build_cockpit_view_model(ion_root: str | Path = ".") -> dict[str, Any]:
+     codex_capsule_chat = _codex_capsule_chat_summary(root)
+     extension_micro_shell = _extension_micro_shell_summary(root)
+     docs_projects_packages = _docs_projects_packages_summary(root)
++    living_graph = build_living_graph_view_model(root)
+     counts = {
+         "spawn_rows": len(spawn_rows),
+         "spawn_true": active_spawn_count,
+@@ -933,6 +935,10 @@ def build_cockpit_view_model(ion_root: str | Path = ".") -> dict[str, Any]:
+             "page_perception_domain_count": extension_micro_shell.get("page_perception", {}).get("domain_count", 0),
+             "context_package_count": docs_projects_packages.get("context_packages", {}).get("package_count", 0),
+             "artifact_package_count": docs_projects_packages.get("artifact_packages", {}).get("zip_count_visible", 0),
++            "living_graph_status": living_graph.get("status"),
++            "living_graph_domain_count": living_graph.get("kpis", {}).get("domain_count", 0),
++            "living_graph_node_count": living_graph.get("kpis", {}).get("node_count", 0),
++            "living_graph_event_count": living_graph.get("kpis", {}).get("event_count", 0),
+         },
+         "queues": {
+             "operator_messages": operator_items,
+@@ -955,6 +961,7 @@ def build_cockpit_view_model(ion_root: str | Path = ".") -> dict[str, Any]:
+         "local_services": local_services,
+         "service_console": service_console,
+         "helixion_joc_rebuild": helixion_rebuild,
++        "living_graph": living_graph,
+         "receipts": recent_receipts(root),
+         "authority_classes": [
+             "ACTIVE_RUNTIME_AUTHORITY",
+@@ -968,6 +975,7 @@ def build_cockpit_view_model(ion_root: str | Path = ".") -> dict[str, Any]:
+             "JOC_REBUILD_PLAN",
+             "PAGE_BRANCH_PROVISIONAL",
+             "WISDOMNET_CANDIDATE",
++            "LIVING_GRAPH_SAMPLE_CANDIDATE",
+         ],
+         "source_paths": {name: str(rel) for name, rel in active_files.items()},
+     }
+diff --git a/ION/08_ui/joc_cockpit_shell/JocCockpitShell.tsx b/ION/08_ui/joc_cockpit_shell/JocCockpitShell.tsx
+index 13eb440..7bdf64b 100644
+--- a/ION/08_ui/joc_cockpit_shell/JocCockpitShell.tsx
++++ b/ION/08_ui/joc_cockpit_shell/JocCockpitShell.tsx
+@@ -20,6 +20,7 @@ import { QueueGatewayCockpitPanel } from './QueueGatewayCockpitPanel';
+ import { CodexCapsuleChatWorkbenchPanel } from './CodexCapsuleChatWorkbenchPanel';
+ import { ExtensionMicroShellPanel } from './ExtensionMicroShellPanel';
+ import { DocsProjectsPackagesPanel } from './DocsProjectsPackagesPanel';
++import { LivingGraphWorkbenchPanel } from './LivingGraphWorkbenchPanel';
+ import { CarrierTurnPanel } from './CarrierTurnPanel';
+ import { SpawnQueuePanel } from './SpawnQueuePanel';
+ import { TaskReturnLedgerPanel } from './TaskReturnLedgerPanel';
+@@ -51,10 +52,11 @@ const modes = [
+   ['stream', StreamIcon],
+ ] as const;
+ 
+-type LivePageId = 'mission' | 'queue' | 'codex' | 'extension' | 'docs' | 'gates' | 'receipts';
++type LivePageId = 'graph' | 'mission' | 'queue' | 'codex' | 'extension' | 'docs' | 'gates' | 'receipts';
+ type LiveDrawerId = 'receipts' | 'context' | 'debug' | 'timeline';
+ 
+ const liveTopNav: Array<{ id: LivePageId; label: string; title: string; summary: string }> = [
++  { id: 'graph', label: 'GRAPH', title: 'Living Operational Graph', summary: 'Graph-domain map, proof gates, route edges, sample/candidate honesty, and selected-object truth surface.' },
+   { id: 'mission', label: 'RUN', title: 'Mission Control', summary: 'Runtime health, service console, rebuild state, and local development route status.' },
+   { id: 'queue', label: 'QUEUE', title: 'Queue Gateway', summary: 'GPT Actions bridge, browser carrier queue, packet files, and queue authority boundaries.' },
+   { id: 'codex', label: 'CODEX', title: 'Codex Workbench', summary: 'Capsule Chat, response runs, worker handoffs, spawn queue, and task-return ledger.' },
+@@ -65,6 +67,7 @@ const liveTopNav: Array<{ id: LivePageId; label: string; title: string; summary:
+ ] as const;
+ 
+ const liveRail: Array<[LivePageId, (typeof WorkSurfaceIcon)]> = [
++  ['graph', GraphIcon],
+   ['mission', WorkSurfaceIcon],
+   ['queue', StreamIcon],
+   ['codex', RouteIcon],
+@@ -89,7 +92,7 @@ export function JocCockpitShell({ projection = v56CockpitProjectionFixture, runt
+ }
+ 
+ function LiveRuntimeCockpit({ projection, runtime, onRuntimeRefresh }: { projection: CockpitProjectionFixture; runtime: IonCockpitViewModel; onRuntimeRefresh?: () => void }) {
+-  const [activePage, setActivePage] = useState<LivePageId>('mission');
++  const [activePage, setActivePage] = useState<LivePageId>('graph');
+   const [activeDrawer, setActiveDrawer] = useState<LiveDrawerId>('receipts');
+   const page = liveTopNav.find((item) => item.id === activePage) ?? liveTopNav[0];
+ 
+@@ -116,6 +119,7 @@ function LiveRuntimeCockpit({ projection, runtime, onRuntimeRefresh }: { project
+           <span>CODEX CHAT: {runtime.top_bar.codex_capsule_chat_turn_count ?? 0}/{runtime.top_bar.codex_capsule_chat_response_run_count ?? 0}</span>
+           <span>EXT: {runtime.top_bar.extension_version ?? 'NA'} / DOM {runtime.top_bar.page_perception_domain_count ?? 0}</span>
+           <span>PKG: {runtime.top_bar.context_package_count ?? 0}/{runtime.top_bar.artifact_package_count ?? 0}</span>
++          <span>GRAPH: {runtime.top_bar.living_graph_status ?? 'NA'} / D{runtime.top_bar.living_graph_domain_count ?? 0} N{runtime.top_bar.living_graph_node_count ?? 0}</span>
+           <span className={runtime.runtime.blocked ? 'ion-runtime-top-warning' : undefined}>STATUS: {runtime.runtime.status}</span>
+         </div>
+       </header>
+@@ -168,6 +172,8 @@ function LiveRuntimeCockpit({ projection, runtime, onRuntimeRefresh }: { project
+ 
+ function renderLivePage(activePage: LivePageId, runtime: IonCockpitViewModel, projection: CockpitProjectionFixture, onRuntimeRefresh?: () => void): ReactNode {
+   switch (activePage) {
++    case 'graph':
++      return <LivingGraphWorkbenchPanel runtime={runtime} />;
+     case 'mission':
+       return (
+         <>
+diff --git a/ION/08_ui/joc_cockpit_shell/ion-runtime-cockpit.css b/ION/08_ui/joc_cockpit_shell/ion-runtime-cockpit.css
+index 2daf0ef..0aef20d 100644
+--- a/ION/08_ui/joc_cockpit_shell/ion-runtime-cockpit.css
++++ b/ION/08_ui/joc_cockpit_shell/ion-runtime-cockpit.css
+@@ -526,3 +526,348 @@
+   line-height: 1.4;
+   text-transform: uppercase;
+ }
++
++
++/* Living Operational Graph vertical slice.
++   Candidate-only cockpit projection: local selection and layer toggles do not
++   mutate ION state or claim live telemetry. */
++.ion-living-graph-workbench {
++  grid-column: 1 / -1;
++  min-height: 640px;
++  display: grid;
++  grid-template-columns: 190px minmax(420px, 1fr) 330px;
++  grid-template-rows: auto minmax(360px, 1fr) 150px;
++  grid-template-areas:
++    "graphTop graphTop graphTop"
++    "graphLeft graphViewport graphInspector"
++    "graphTimeline graphTimeline graphInspector";
++  gap: 8px;
++}
++
++.ion-living-graph-top {
++  grid-area: graphTop;
++  display: flex;
++  justify-content: space-between;
++  gap: 12px;
++  align-items: start;
++  border: 1px solid var(--ion-border);
++  background:
++    linear-gradient(180deg, rgba(255,255,255,0.03), transparent 44%),
++    var(--ion-panel);
++  padding: 10px;
++}
++
++.ion-living-graph-top h2,
++.ion-living-graph-inspector h3 {
++  margin: 0;
++  color: var(--ion-text);
++  font-size: 13px;
++  line-height: 1.2;
++  text-transform: uppercase;
++}
++
++.ion-living-graph-top p,
++.ion-living-graph-inspector p {
++  margin: 6px 0 0;
++  color: var(--ion-text-muted);
++  font-size: 9px;
++  line-height: 1.45;
++  text-transform: uppercase;
++}
++
++.ion-living-graph-badges {
++  display: grid;
++  gap: 5px;
++  min-width: 170px;
++}
++
++.ion-living-graph-badges span,
++.ion-living-graph-badges b,
++.ion-living-graph-verdict {
++  border: 1px solid var(--ion-border-active);
++  background: #0b0b0b;
++  padding: 6px 8px;
++  color: var(--ion-text-secondary);
++  font-size: 8px;
++  font-weight: 700;
++  text-align: center;
++  text-transform: uppercase;
++}
++
++.ion-living-graph-badges b.is-ready,
++.ion-living-graph-verdict.is-sample {
++  color: var(--ion-ok);
++}
++
++.ion-living-graph-left {
++  grid-area: graphLeft;
++  min-width: 0;
++  border: 1px solid var(--ion-border);
++  background: var(--ion-surface);
++  padding: 8px;
++  overflow: auto;
++}
++
++.ion-living-graph-left button {
++  width: 100%;
++  display: grid;
++  grid-template-columns: minmax(0, 1fr) 36px;
++  gap: 6px;
++  align-items: center;
++  margin-bottom: 5px;
++  border: 1px solid var(--ion-border);
++  background: var(--ion-panel);
++  color: var(--ion-text-secondary);
++  font-family: var(--ion-font);
++  font-size: 8px;
++  font-weight: 700;
++  letter-spacing: 0.8px;
++  text-align: left;
++  text-transform: uppercase;
++  cursor: pointer;
++  padding: 6px;
++}
++
++.ion-living-graph-left button.is-active {
++  border-color: var(--ion-border-active);
++  color: var(--ion-text);
++}
++
++.ion-living-graph-left button.is-muted {
++  opacity: 0.42;
++}
++
++.ion-living-graph-left button b {
++  color: var(--ion-text-muted);
++  text-align: right;
++}
++
++.ion-living-graph-proof-stack,
++.ion-living-graph-tab-row {
++  display: flex;
++  flex-wrap: wrap;
++  gap: 4px;
++}
++
++.ion-living-graph-proof-stack span,
++.ion-living-graph-tab-row span {
++  border: 1px solid var(--ion-border);
++  background: #090909;
++  padding: 4px 5px;
++  color: var(--ion-text-muted);
++  font-size: 7px;
++  font-weight: 700;
++  text-transform: uppercase;
++}
++
++.ion-living-graph-proof-stack span.is-pass {
++  color: var(--ion-ok);
++}
++
++.ion-living-graph-proof-stack span.is-watch {
++  color: var(--ion-watch);
++}
++
++.ion-living-graph-viewport {
++  grid-area: graphViewport;
++  position: relative;
++  min-height: 360px;
++  border: 1px solid var(--ion-border);
++  background:
++    radial-gradient(circle at 50% 50%, rgba(255,255,255,0.045), transparent 34%),
++    #060606;
++  overflow: hidden;
++}
++
++.ion-living-graph-viewport svg {
++  width: 100%;
++  height: 100%;
++  min-height: 360px;
++  display: block;
++}
++
++.ion-graph-board {
++  fill: #080808;
++  stroke: var(--ion-border);
++  stroke-width: 1;
++}
++
++.ion-graph-grid line {
++  stroke: rgba(255,255,255,0.055);
++  stroke-width: 1;
++}
++
++.ion-graph-route line {
++  stroke: #5f5f5f;
++  stroke-width: 1.2;
++  stroke-dasharray: 2 4;
++}
++
++.ion-graph-route.is-active line {
++  stroke: var(--ion-text-secondary);
++  stroke-width: 2;
++  stroke-dasharray: none;
++  filter: url(#ionGraphGlow);
++}
++
++.ion-graph-route text {
++  fill: var(--ion-text-muted);
++  font-family: var(--ion-font);
++  font-size: 7px;
++  text-anchor: middle;
++  text-transform: uppercase;
++}
++
++.ion-graph-node {
++  cursor: pointer;
++}
++
++.ion-graph-node rect {
++  fill: #101010;
++  stroke: var(--ion-border-active);
++  stroke-width: 1;
++}
++
++.ion-graph-node.is-core rect {
++  fill: #141414;
++  stroke: var(--ion-text-secondary);
++  filter: url(#ionGraphGlow);
++}
++
++.ion-graph-node.is-selected rect {
++  stroke: var(--ion-ok);
++  stroke-width: 2;
++}
++
++.ion-graph-node text {
++  fill: var(--ion-text);
++  font-family: var(--ion-font);
++  font-size: 8px;
++  font-weight: 700;
++  text-anchor: middle;
++  text-transform: uppercase;
++  pointer-events: none;
++}
++
++.ion-graph-node text + text {
++  fill: var(--ion-text-muted);
++  font-size: 6px;
++}
++
++.ion-living-graph-missing-source {
++  position: absolute;
++  z-index: 2;
++  left: 14px;
++  top: 14px;
++  max-width: 420px;
++  display: grid;
++  gap: 4px;
++  border: 1px solid var(--ion-watch);
++  background: rgba(10,10,10,0.92);
++  padding: 8px;
++  color: var(--ion-text-muted);
++  font-size: 8px;
++  text-transform: uppercase;
++}
++
++.ion-living-graph-missing-source b {
++  color: var(--ion-watch);
++}
++
++.ion-living-graph-inspector {
++  grid-area: graphInspector;
++  min-width: 0;
++  border: 1px solid var(--ion-border);
++  background: var(--ion-surface);
++  padding: 9px;
++  overflow: auto;
++}
++
++.ion-living-graph-inspector .ion-runtime-grid {
++  grid-template-columns: repeat(2, minmax(0, 1fr));
++}
++
++.ion-living-graph-verdict {
++  display: inline-block;
++  margin-top: 7px;
++  margin-bottom: 4px;
++  text-align: left;
++}
++
++.ion-living-graph-timeline {
++  grid-area: graphTimeline;
++  min-width: 0;
++  display: grid;
++  grid-template-rows: auto minmax(0, 1fr);
++  gap: 6px;
++  border: 1px solid var(--ion-border);
++  background: var(--ion-surface);
++  padding: 8px;
++  overflow: hidden;
++}
++
++.ion-living-graph-timeline > div:first-child {
++  display: flex;
++  justify-content: space-between;
++  gap: 8px;
++  align-items: center;
++}
++
++.ion-living-graph-timeline strong {
++  color: var(--ion-text-secondary);
++  font-size: 8px;
++  text-transform: uppercase;
++}
++
++.ion-living-graph-events {
++  display: flex;
++  gap: 5px;
++  overflow-x: auto;
++  padding-bottom: 4px;
++}
++
++.ion-living-graph-events button {
++  min-width: 170px;
++  border: 1px solid var(--ion-border);
++  background: var(--ion-panel);
++  color: var(--ion-text-muted);
++  font-family: var(--ion-font);
++  text-align: left;
++  text-transform: uppercase;
++  padding: 6px;
++  cursor: pointer;
++}
++
++.ion-living-graph-events button.is-active {
++  border-color: var(--ion-ok);
++  color: var(--ion-text);
++}
++
++.ion-living-graph-events span,
++.ion-living-graph-events b,
++.ion-living-graph-events em {
++  display: block;
++  font-size: 7px;
++  line-height: 1.35;
++}
++
++.ion-living-graph-events b {
++  color: var(--ion-text-secondary);
++}
++
++.ion-living-graph-events em {
++  color: var(--ion-text-muted);
++  font-style: normal;
++}
++
++@media (max-width: 1160px) {
++  .ion-living-graph-workbench {
++    grid-template-columns: 160px minmax(360px, 1fr);
++    grid-template-rows: auto minmax(320px, 1fr) auto 140px;
++    grid-template-areas:
++      "graphTop graphTop"
++      "graphLeft graphViewport"
++      "graphInspector graphInspector"
++      "graphTimeline graphTimeline";
++  }
++}
+diff --git a/ION/08_ui/joc_cockpit_shell/ionRuntimeCockpitTypes.ts b/ION/08_ui/joc_cockpit_shell/ionRuntimeCockpitTypes.ts
+index 234ef73..76127aa 100644
+--- a/ION/08_ui/joc_cockpit_shell/ionRuntimeCockpitTypes.ts
++++ b/ION/08_ui/joc_cockpit_shell/ionRuntimeCockpitTypes.ts
+@@ -349,6 +349,119 @@ export type IonExtensionMicroShellSummary = {
+   silent_browser_send_authority?: boolean;
+ };
+ 
++
++export type IonLivingGraphNodeCard = {
++  id: string;
++  label: string;
++  type: string;
++  domain_id?: string | null;
++  parent_id?: string | null;
++  authority_status?: string;
++  transition_authority_class?: string;
++  operational_status?: string;
++  proof_status?: string;
++  honesty_status?: string;
++  honesty_badge_required?: boolean;
++  child_count?: number;
++  route_count?: number;
++  receipt_count?: number;
++  tag_count?: number;
++  summary?: string;
++  available_tabs?: string[];
++  position?: { x?: number; y?: number; z?: number };
++  height?: number;
++  risk_heat?: number;
++  color_token?: string;
++};
++
++export type IonLivingGraphRouteEdge = {
++  id: string;
++  type: string;
++  source: string;
++  target: string;
++  authority_class?: string;
++  proof_required?: boolean;
++  state_can_cross?: boolean;
++  road_type?: string;
++  point_count?: number;
++  lane_count?: number;
++  timeline_track?: string;
++  ambient_allowed?: boolean;
++  honesty_status?: string;
++};
++
++export type IonLivingGraphTimelineEvent = {
++  id: string;
++  timestamp: string;
++  event_type: string;
++  actor_node?: string | null;
++  source_node?: string | null;
++  target_node?: string | null;
++  route_edge_id?: string | null;
++  timeline_track?: string;
++  status?: string;
++  severity?: string;
++  receipt_ref?: string | null;
++  proof_ref?: string | null;
++  honesty_status?: string;
++};
++
++export type IonLivingGraphViewModel = {
++  schema_id?: 'ion.living_graph_cockpit_view_model.v1' | string;
++  generated_at?: string;
++  status?: string;
++  data_mode?: string;
++  source_package_id?: string;
++  source_paths?: Record<string, string | undefined>;
++  honesty?: {
++    global_badge_label?: string;
++    requires_badge?: boolean;
++    default_status?: string;
++    live_telemetry_connected?: boolean;
++    non_claim?: string;
++  };
++  kpis?: Record<string, number | boolean | undefined>;
++  node_type_counts?: Record<string, number>;
++  edge_type_counts?: Record<string, number>;
++  timeline_track_counts?: Record<string, number>;
++  event_status_counts?: Record<string, number>;
++  screen_zones?: Record<string, Record<string, unknown>>;
++  missing_screen_zones?: string[];
++  layers?: Array<{
++    id: string;
++    label: string;
++    visible?: boolean;
++    node_types?: string[];
++    node_count?: number;
++    edge_count?: number;
++    event_count?: number;
++  }>;
++  core?: IonLivingGraphNodeCard;
++  selected?: IonLivingGraphNodeCard;
++  domains?: IonLivingGraphNodeCard[];
++  route_edges?: IonLivingGraphRouteEdge[];
++  timeline?: {
++    mode?: string;
++    tracks?: Array<Record<string, unknown>>;
++    window?: Record<string, unknown>;
++    playback?: Record<string, unknown>;
++    event_count?: number;
++    latest_events?: IonLivingGraphTimelineEvent[];
++  };
++  inspector_contract?: Record<string, unknown>;
++  layout?: Record<string, unknown>;
++  validation?: {
++    ok?: boolean;
++    finding_count?: number;
++    findings?: string[];
++    missing_edge_refs?: string[];
++    missing_event_refs?: string[];
++  };
++  authority?: Record<string, unknown>;
++  proof_gates?: Record<string, boolean>;
++  non_claims?: string[];
++};
++
+ export type IonDocsProjectsPackagesSummary = {
+   schema_id?: 'ion.docs_projects_packages_cockpit_summary.v1' | string;
+   status?: string;
+@@ -419,6 +532,10 @@ export type IonCockpitViewModel = {
+     page_perception_domain_count?: number;
+     context_package_count?: number;
+     artifact_package_count?: number;
++    living_graph_status?: string;
++    living_graph_domain_count?: number;
++    living_graph_node_count?: number;
++    living_graph_event_count?: number;
+   };
+   queues: IonQueueState;
+   agents: {
+@@ -447,6 +564,7 @@ export type IonCockpitViewModel = {
+   local_services?: IonLocalServiceStatus;
+   service_console?: IonServiceConsoleModel;
+   helixion_joc_rebuild?: IonHelixionJocRebuildProjection;
++  living_graph?: IonLivingGraphViewModel;
+   chatgpt_browser_mcp?: IonChatgptBrowserMcpSummary;
+   codex_capsule_chat?: IonCodexCapsuleChatSummary;
+   extension_micro_shell?: IonExtensionMicroShellSummary;
+
+diff --git a/ION/04_packages/kernel/ion_living_graph_view_model.py b/ION/04_packages/kernel/ion_living_graph_view_model.py
+new file mode 100644
+index 0000000..2f5d72f
+--- /dev/null
++++ b/ION/04_packages/kernel/ion_living_graph_view_model.py
+@@ -0,0 +1,456 @@
++"""ION Living Operational Graph cockpit projection.
++
++This module is deliberately dependency-free.  It turns the candidate living graph
++bundle into a compact cockpit view model that can be rendered by the local JOC
++shell without guessing from chat memory or claiming live telemetry.
++
++The projection is visibility-only unless a later accepted adapter binds nodes,
++edges, or events to accepted/local evidence.
++"""
++
++from __future__ import annotations
++
++import argparse
++import json
++from collections import Counter
++from datetime import datetime, timezone
++from pathlib import Path
++from typing import Any, Iterable
++
++CURRENT = Path("ION/05_context/current")
++LIVING_GRAPH = CURRENT / "living_graph"
++DEFAULT_BUNDLE = LIVING_GRAPH / "SAMPLE/living_operational_graph_sample_v0_3.json"
++DEFAULT_LAYOUT = LIVING_GRAPH / "LAYOUT/living_graph_layout_fixture_v0_3.json"
++OUTPUT = CURRENT / "ACTIVE_LIVING_GRAPH_VIEW_MODEL.json"
++
++REQUIRED_SCREEN_ZONES = {
++    "top_rail": {"role": "identity, KPI, search, global honesty badge"},
++    "left_drawer": {"role": "layers, filters, legend"},
++    "viewport": {"role": "central living operational graph territory"},
++    "right_inspector": {"role": "selected object truth surface"},
++    "bottom_timeline": {"role": "time axis and replay rail"},
++}
++
++DEFAULT_LAYERS = [
++    ("domains", "Domain districts", ("domain", "core")),
++    ("templates", "Templates and template groups", ("template", "template_group")),
++    ("carriers", "Carriers and agents", ("carrier", "agent", "operator")),
++    ("packets", "Packets, artifacts, and context", ("work_packet", "context_package", "artifact")),
++    ("receipts", "Receipts and settlements", ("receipt", "settlement")),
++    ("integrations", "Integrations and gateways", ("integration", "gateway")),
++    ("risk", "Risk and proof gates", ("risk_alert",)),
++]
++
++
++def utc_now() -> str:
++    return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
++
++
++def _read_json(path: Path) -> dict[str, Any]:
++    try:
++        if not path.exists():
++            return {}
++        loaded = json.loads(path.read_text(encoding="utf-8"))
++        return loaded if isinstance(loaded, dict) else {"_read_error": "json_root_not_object", "_path": str(path)}
++    except Exception as exc:  # pragma: no cover - defensive projection
++        return {"_read_error": str(exc), "_path": str(path)}
++
++
++def _list(value: Any) -> list[Any]:
++    return value if isinstance(value, list) else []
++
++
++def _dict(value: Any) -> dict[str, Any]:
++    return value if isinstance(value, dict) else {}
++
++
++def _text(value: Any, fallback: str = "unknown") -> str:
++    if isinstance(value, str) and value.strip():
++        return value.strip()
++    if isinstance(value, (int, float, bool)):
++        return str(value)
++    return fallback
++
++
++def _counter_for(items: Iterable[dict[str, Any]], key: str) -> dict[str, int]:
++    return dict(Counter(_text(item.get(key), "unknown") for item in items))
++
++
++def _node_position(node: dict[str, Any], layout_index: dict[str, dict[str, Any]]) -> dict[str, Any]:
++    layout = _dict(node.get("layout"))
++    position = _dict(layout.get("world_position"))
++    if position:
++        return position
++    domain_id = _text(node.get("id"), "")
++    district = layout_index.get(domain_id)
++    if district:
++        return _dict(district.get("centroid"))
++    return {}
++
++
++def _safe_node_card(node: dict[str, Any], *, layout_index: dict[str, dict[str, Any]], child_count: int, route_count: int) -> dict[str, Any]:
++    inspector = _dict(node.get("inspector"))
++    tabs = _dict(inspector.get("tabs"))
++    honesty = _dict(node.get("data_honesty"))
++    visual = _dict(node.get("visual_style"))
++    layout = _dict(node.get("layout"))
++    return {
++        "id": _text(node.get("id")),
++        "label": _text(node.get("label")),
++        "type": _text(node.get("type")),
++        "domain_id": node.get("domain_id"),
++        "parent_id": node.get("parent_id"),
++        "authority_status": _text(node.get("authority_status"), "unclassified"),
++        "transition_authority_class": _text(node.get("transition_authority_class"), "unclassified"),
++        "operational_status": _text(node.get("operational_status"), "unknown"),
++        "proof_status": _text(node.get("proof_status"), "unknown"),
++        "honesty_status": _text(honesty.get("status"), "unknown"),
++        "honesty_badge_required": bool(honesty.get("requires_badge", True)),
++        "child_count": child_count,
++        "route_count": route_count,
++        "receipt_count": len(_list(node.get("receipts"))),
++        "tag_count": len(_list(node.get("tags"))),
++        "summary": _text(inspector.get("summary"), ""),
++        "available_tabs": sorted(tabs.keys()),
++        "position": _node_position(node, layout_index),
++        "height": layout.get("height"),
++        "risk_heat": visual.get("risk_heat", 0),
++        "color_token": visual.get("district_color_token"),
++    }
++
++
++def _edge_card(edge: dict[str, Any]) -> dict[str, Any]:
++    geometry = _dict(edge.get("road_geometry"))
++    traffic = _dict(edge.get("traffic_contract"))
++    honesty = _dict(edge.get("data_honesty"))
++    return {
++        "id": _text(edge.get("id")),
++        "type": _text(edge.get("type")),
++        "source": _text(edge.get("source")),
++        "target": _text(edge.get("target")),
++        "authority_class": _text(edge.get("authority_class"), "unclassified"),
++        "proof_required": bool(edge.get("proof_required")),
++        "state_can_cross": bool(edge.get("state_can_cross")),
++        "road_type": _text(edge.get("road_type"), "unclassified"),
++        "point_count": len(_list(geometry.get("curve_points"))),
++        "lane_count": geometry.get("lane_count"),
++        "timeline_track": traffic.get("timeline_track"),
++        "ambient_allowed": bool(traffic.get("ambient_allowed")),
++        "honesty_status": _text(honesty.get("status"), "unknown"),
++    }
++
++
++def _event_card(event: dict[str, Any]) -> dict[str, Any]:
++    honesty = _dict(event.get("data_honesty"))
++    return {
++        "id": _text(event.get("id")),
++        "timestamp": _text(event.get("timestamp")),
++        "event_type": _text(event.get("event_type")),
++        "actor_node": event.get("actor_node"),
++        "source_node": event.get("source_node"),
++        "target_node": event.get("target_node"),
++        "route_edge_id": event.get("route_edge_id"),
++        "timeline_track": _text(event.get("timeline_track"), "unknown"),
++        "status": _text(event.get("status"), "unknown"),
++        "severity": _text(event.get("severity"), "unknown"),
++        "receipt_ref": event.get("receipt_ref"),
++        "proof_ref": event.get("proof_ref"),
++        "honesty_status": _text(honesty.get("status"), "unknown"),
++    }
++
++
++def _validate_bundle(bundle: dict[str, Any]) -> dict[str, Any]:
++    findings: list[str] = []
++    nodes = [item for item in _list(bundle.get("nodes")) if isinstance(item, dict)]
++    edges = [item for item in _list(bundle.get("edges")) if isinstance(item, dict)]
++    events = [item for item in _list(bundle.get("events")) if isinstance(item, dict)]
++
++    node_ids = [_text(node.get("id"), "") for node in nodes]
++    edge_ids = [_text(edge.get("id"), "") for edge in edges]
++    event_ids = [_text(event.get("id"), "") for event in events]
++    node_set = {node_id for node_id in node_ids if node_id}
++    edge_set = {edge_id for edge_id in edge_ids if edge_id}
++
++    if not bundle:
++        findings.append("missing_bundle")
++    if bundle.get("_read_error"):
++        findings.append(f"bundle_read_error:{bundle.get('_read_error')}")
++    if not nodes:
++        findings.append("missing_nodes")
++    if len(node_ids) != len(node_set):
++        findings.append("duplicate_node_ids")
++    if len(edge_ids) != len({edge_id for edge_id in edge_ids if edge_id}):
++        findings.append("duplicate_edge_ids")
++    if len(event_ids) != len({event_id for event_id in event_ids if event_id}):
++        findings.append("duplicate_event_ids")
++
++    missing_edge_refs = [
++        edge.get("id")
++        for edge in edges
++        if edge.get("source") not in node_set or edge.get("target") not in node_set
++    ]
++    if missing_edge_refs:
++        findings.append(f"edge_reference_missing:{len(missing_edge_refs)}")
++
++    missing_event_refs = [
++        event.get("id")
++        for event in events
++        if (event.get("actor_node") and event.get("actor_node") not in node_set)
++        or (event.get("source_node") and event.get("source_node") not in node_set)
++        or (event.get("target_node") and event.get("target_node") not in node_set)
++        or (event.get("route_edge_id") and event.get("route_edge_id") not in edge_set)
++    ]
++    if missing_event_refs:
++        findings.append(f"event_reference_missing:{len(missing_event_refs)}")
++
++    unbadged_nodes = [node.get("id") for node in nodes if not _dict(node.get("data_honesty")).get("requires_badge", False)]
++    unbadged_edges = [edge.get("id") for edge in edges if not _dict(edge.get("data_honesty")).get("requires_badge", False)]
++    unbadged_events = [event.get("id") for event in events if not _dict(event.get("data_honesty")).get("requires_badge", False)]
++    if unbadged_nodes:
++        findings.append(f"node_honesty_badge_missing:{len(unbadged_nodes)}")
++    if unbadged_edges:
++        findings.append(f"edge_honesty_badge_missing:{len(unbadged_edges)}")
++    if unbadged_events:
++        findings.append(f"event_honesty_badge_missing:{len(unbadged_events)}")
++
++    return {
++        "ok": not findings,
++        "finding_count": len(findings),
++        "findings": findings,
++        "missing_edge_refs": missing_edge_refs[:12],
++        "missing_event_refs": missing_event_refs[:12],
++    }
++
++
++def _build_layers(nodes: list[dict[str, Any]], edges: list[dict[str, Any]], events: list[dict[str, Any]]) -> list[dict[str, Any]]:
++    type_counts = Counter(_text(node.get("type")) for node in nodes)
++    layers: list[dict[str, Any]] = []
++    for layer_id, label, node_types in DEFAULT_LAYERS:
++        layers.append(
++            {
++                "id": layer_id,
++                "label": label,
++                "visible": True,
++                "node_types": list(node_types),
++                "node_count": sum(type_counts.get(node_type, 0) for node_type in node_types),
++            }
++        )
++    layers.append(
++        {
++            "id": "routes",
++            "label": "Routes and roads",
++            "visible": True,
++            "node_types": [],
++            "edge_count": len(edges),
++        }
++    )
++    layers.append(
++        {
++            "id": "timeline",
++            "label": "Timeline event traffic",
++            "visible": True,
++            "node_types": [],
++            "event_count": len(events),
++        }
++    )
++    return layers
++
++
++def build_living_graph_view_model(
++    root: str | Path = ".",
++    *,
++    bundle_path: str | Path | None = None,
++    layout_path: str | Path | None = None,
++    selected_node_id: str | None = None,
++) -> dict[str, Any]:
++    """Build a visibility-only living graph cockpit projection."""
++
++    root_path = Path(root)
++    bundle_rel = Path(bundle_path) if bundle_path is not None else DEFAULT_BUNDLE
++    layout_rel = Path(layout_path) if layout_path is not None else DEFAULT_LAYOUT
++    bundle_file = bundle_rel if bundle_rel.is_absolute() else root_path / bundle_rel
++    layout_file = layout_rel if layout_rel.is_absolute() else root_path / layout_rel
++
++    bundle = _read_json(bundle_file)
++    layout = _read_json(layout_file)
++    metadata = _dict(bundle.get("metadata"))
++    honesty = _dict(bundle.get("honesty"))
++    nodes = [item for item in _list(bundle.get("nodes")) if isinstance(item, dict)]
++    edges = [item for item in _list(bundle.get("edges")) if isinstance(item, dict)]
++    events = [item for item in _list(bundle.get("events")) if isinstance(item, dict)]
++    validation = _validate_bundle(bundle)
++
++    node_index = {_text(node.get("id")): node for node in nodes if node.get("id")}
++    layout_districts = [item for item in _list(layout.get("districts")) if isinstance(item, dict)]
++    layout_index = {_text(item.get("domain_id")): item for item in layout_districts if item.get("domain_id")}
++
++    child_counts = Counter(_text(node.get("parent_id"), "") for node in nodes if node.get("parent_id"))
++    route_counts = Counter()
++    for edge in edges:
++        route_counts[_text(edge.get("source"), "")] += 1
++        route_counts[_text(edge.get("target"), "")] += 1
++
++    domains = [
++        _safe_node_card(node, layout_index=layout_index, child_count=child_counts.get(_text(node.get("id")), 0), route_count=route_counts.get(_text(node.get("id")), 0))
++        for node in nodes
++        if node.get("type") == "domain"
++    ]
++    domains.sort(key=lambda item: item.get("label", ""))
++
++    core_node = next((node for node in nodes if node.get("type") == "core"), nodes[0] if nodes else {})
++    selected_raw = node_index.get(selected_node_id or "", {}) or core_node
++    selected = (
++        _safe_node_card(
++            selected_raw,
++            layout_index=layout_index,
++            child_count=child_counts.get(_text(selected_raw.get("id")), 0),
++            route_count=route_counts.get(_text(selected_raw.get("id")), 0),
++        )
++        if selected_raw
++        else {}
++    )
++
++    type_counts = _counter_for(nodes, "type")
++    edge_type_counts = _counter_for(edges, "type")
++    event_track_counts = _counter_for(events, "timeline_track")
++    event_status_counts = _counter_for(events, "status")
++    timeline = _dict(bundle.get("timeline"))
++    inspector_contract = _dict(bundle.get("inspector_contract"))
++
++    screen_zones = _dict(layout.get("screen_zones")) or REQUIRED_SCREEN_ZONES
++    missing_zones = [zone for zone in REQUIRED_SCREEN_ZONES if zone not in screen_zones]
++
++    route_edges = [_edge_card(edge) for edge in edges if edge.get("type") == "routes_to"]
++    route_edges = route_edges[:16]
++    latest_events = sorted((_event_card(event) for event in events), key=lambda item: item.get("timestamp", ""))[:12]
++
++    status = "ready" if validation["ok"] and bundle else "degraded" if bundle else "missing_source"
++    if bundle.get("_read_error"):
++        status = "invalid_source"
++
++    live_telemetry_connected = bool(honesty.get("live_telemetry_connected"))
++    return {
++        "schema_id": "ion.living_graph_cockpit_view_model.v1",
++        "generated_at": utc_now(),
++        "status": status,
++        "data_mode": _text(metadata.get("data_status"), _text(honesty.get("default_status"), "sample")),
++        "source_package_id": metadata.get("package_id"),
++        "source_paths": {
++            "bundle": str(bundle_rel),
++            "layout": str(layout_rel),
++            "visual_reference": _dict(bundle.get("layout_refs")).get("visual_reference"),
++        },
++        "honesty": {
++            "global_badge_label": honesty.get("global_badge_label") or "SAMPLE / CANDIDATE DATA",
++            "requires_badge": bool(honesty.get("requires_badge", True)),
++            "default_status": honesty.get("default_status") or "sample",
++            "live_telemetry_connected": live_telemetry_connected,
++            "non_claim": honesty.get("non_claim") or "No live graph claim is made by this projection.",
++        },
++        "kpis": {
++            "node_count": len(nodes),
++            "domain_count": len(domains),
++            "edge_count": len(edges),
++            "event_count": len(events),
++            "timeline_track_count": len(_list(timeline.get("tracks"))),
++            "proof_required_route_count": sum(1 for edge in edges if edge.get("proof_required")),
++            "risk_node_count": type_counts.get("risk_alert", 0),
++            "live_telemetry_connected": live_telemetry_connected,
++        },
++        "node_type_counts": type_counts,
++        "edge_type_counts": edge_type_counts,
++        "timeline_track_counts": event_track_counts,
++        "event_status_counts": event_status_counts,
++        "screen_zones": screen_zones,
++        "missing_screen_zones": missing_zones,
++        "layers": _build_layers(nodes, edges, events),
++        "core": _safe_node_card(core_node, layout_index=layout_index, child_count=child_counts.get(_text(core_node.get("id")), 0), route_count=route_counts.get(_text(core_node.get("id")), 0)) if core_node else {},
++        "selected": selected,
++        "domains": domains,
++        "route_edges": route_edges,
++        "timeline": {
++            "mode": timeline.get("mode"),
++            "tracks": _list(timeline.get("tracks")),
++            "window": _dict(timeline.get("window")),
++            "playback": _dict(timeline.get("playback")),
++            "event_count": len(events),
++            "latest_events": latest_events,
++        },
++        "inspector_contract": {
++            "tabs_required": _list(inspector_contract.get("tabs_required")),
++            "empty_state": inspector_contract.get("empty_state"),
++            "raw_json_policy": inspector_contract.get("raw_json_policy"),
++        },
++        "layout": {
++            "schema_id": layout.get("schema_id"),
++            "status": layout.get("status"),
++            "coordinate_system": layout.get("coordinate_system"),
++            "camera_presets": layout.get("camera_presets"),
++            "minimap": layout.get("minimap"),
++            "district_count": len(layout_districts),
++            "screen_zone_count": len(screen_zones),
++        },
++        "validation": validation,
++        "authority": {
++            "accepted_state": False,
++            "production_authority": False,
++            "live_execution_authority": False,
++            "unrestricted_filesystem_mutation": False,
++            "telemetry_claim_authority": live_telemetry_connected,
++            "settlement_required_for_inheritance": True,
++            "authority_ceiling": "sample_candidate_visibility_projection",
++        },
++        "proof_gates": {
++            "bundle_present": bundle_file.exists(),
++            "layout_present": layout_file.exists(),
++            "bundle_parses": bool(bundle) and not bundle.get("_read_error"),
++            "layout_parses": bool(layout) and not layout.get("_read_error"),
++            "references_resolve": not any(item.startswith("edge_reference_missing") or item.startswith("event_reference_missing") for item in validation["findings"]),
++            "honesty_badges_required": bool(honesty.get("requires_badge", True)),
++            "no_live_label_without_adapter": not live_telemetry_connected,
++            "required_zones_present": not missing_zones,
++        },
++        "non_claims": [
++            "not_accepted_ion_state",
++            "not_live_telemetry",
++            "not_production_authority",
++            "not_queue_worker",
++            "not_runtime_mutation",
++        ],
++    }
++
++
++def write_living_graph_view_model(root: str | Path = ".") -> dict[str, Any]:
++    root_path = Path(root)
++    model = build_living_graph_view_model(root_path)
++    out = root_path / OUTPUT
++    out.parent.mkdir(parents=True, exist_ok=True)
++    out.write_text(json.dumps(model, indent=2, sort_keys=True), encoding="utf-8")
++    return model
++
++
++def main(argv: list[str] | None = None) -> int:
++    parser = argparse.ArgumentParser(description="Build the ION Living Operational Graph cockpit view model.")
++    parser.add_argument("--root", default=".", help="ION repository root")
++    parser.add_argument("--bundle", default=None, help="Optional bundle path, relative to root unless absolute")
++    parser.add_argument("--layout", default=None, help="Optional layout path, relative to root unless absolute")
++    parser.add_argument("--selected-node-id", default=None, help="Optional selected node id")
++    parser.add_argument("--write", action="store_true", help="Write ACTIVE_LIVING_GRAPH_VIEW_MODEL.json")
++    args = parser.parse_args(argv)
++
++    model = build_living_graph_view_model(
++        args.root,
++        bundle_path=args.bundle,
++        layout_path=args.layout,
++        selected_node_id=args.selected_node_id,
++    )
++    if args.write:
++        out = Path(args.root) / OUTPUT
++        out.parent.mkdir(parents=True, exist_ok=True)
++        out.write_text(json.dumps(model, indent=2, sort_keys=True), encoding="utf-8")
++    print(json.dumps(model, indent=2, sort_keys=True))
++    return 0
++
++
++if __name__ == "__main__":  # pragma: no cover
++    raise SystemExit(main())
+
+diff --git a/ION/tests/test_kernel_ion_living_graph_view_model.py b/ION/tests/test_kernel_ion_living_graph_view_model.py
+new file mode 100644
+index 0000000..8ea6111
+--- /dev/null
++++ b/ION/tests/test_kernel_ion_living_graph_view_model.py
+@@ -0,0 +1,259 @@
++import json
++from pathlib import Path
++
++from kernel.ion_cockpit_view_model import build_cockpit_view_model
++from kernel.ion_living_graph_view_model import build_living_graph_view_model, write_living_graph_view_model
++
++
++def write_json(root: Path, rel: str, payload: dict):
++    path = root / rel
++    path.parent.mkdir(parents=True, exist_ok=True)
++    path.write_text(json.dumps(payload), encoding="utf-8")
++
++
++def seed_minimal_runtime(root: Path):
++    (root / "pyproject.toml").write_text("[project]\nname = \"ion-graph-test\"\n", encoding="utf-8")
++    (root / "ION/REPO_AUTHORITY.md").parent.mkdir(parents=True, exist_ok=True)
++    (root / "ION/REPO_AUTHORITY.md").write_text("# authority\n", encoding="utf-8")
++    current = "ION/05_context/current"
++    write_json(root, f"{current}/ACTIVE_CURSOR_HOOK_STATE.json", {"schema_id": "ion.cursor_hook_state.v1", "status": "ready"})
++    write_json(root, f"{current}/ACTIVE_WORK_PACKET.json", {"carrier": "codex", "objective": "graph cockpit"})
++    write_json(root, f"{current}/ACTIVE_ROLE_SPAWN_PLAN.json", {"role_spawn_plan": []})
++    write_json(root, f"{current}/ACTIVE_CARRIER_TURN_PACKET.json", {"carrier": "codex", "objective": "graph cockpit", "blocked_by_findings": False})
++    write_json(root, f"{current}/ACTIVE_CARRIER_TASK_RETURN_LEDGER.json", {"records": []})
++    write_json(root, f"{current}/ACTIVE_STEWARD_INTEGRATION_QUEUE.json", {"items": []})
++    write_json(root, f"{current}/ACTIVE_OPERATOR_MESSAGE_QUEUE.json", {"items": []})
++    write_json(root, f"{current}/ACTIVE_HUMAN_GATE_QUEUE.json", {"gates": []})
++    write_json(root, f"{current}/ACTIVE_FRONT_DOOR_PROOF_TRACE.json", {"schema_id": "ion.front_door_proof_trace.v1", "proof_complete": True})
++    write_json(root, f"{current}/ACTIVE_LANE_TIMELINE_VIEW_MODEL.json", {"schema_id": "ion.lane_timeline_view_model.v1", "events": []})
++    write_json(root, f"{current}/ACTIVE_RECEIPT_HYDRATION_VIEW_MODEL.json", {"schema_id": "ion.receipt_hydration_view_model.v1", "records": []})
++    write_json(root, f"{current}/ACTIVE_RUNTIME_DEBUG_OVERLAY.json", {"schema_id": "ion.runtime_debug_overlay.v1", "status": "ready"})
++    write_json(root, f"{current}/SAFE_FULL_PROJECT_PACKAGE_RESULT_V110.json", {
++        "schema_id": "ion.safe_full_project_package_result.v1",
++        "accepted": True,
++        "zip_root_audit": {"verdict": "ZIP_ROOT_CONFIRMED"},
++        "preservation_report": {"packaging_verdict": "PASS"},
++    })
++
++
++def seed_living_graph(root: Path):
++    honesty = {
++        "status": "sample",
++        "requires_badge": True,
++        "source_ref": "test_fixture",
++        "proof_ref": None,
++        "freshness_at": None,
++        "non_claim": "Deterministic sample data; not live telemetry.",
++    }
++    bundle = {
++        "schema_id": "ion.living_operational_graph.bundle.v0_3",
++        "metadata": {
++            "package_id": "ION_UI_DOMAIN_CONTEXT_PACKAGE_v0_4_SCHEMA_REPAIR",
++            "data_status": "sample_and_candidate",
++            "counts": {"nodes": 4, "edges": 2, "events": 2},
++        },
++        "honesty": {
++            "default_status": "sample",
++            "requires_badge": True,
++            "global_badge_label": "SAMPLE / CANDIDATE DATA",
++            "non_claim": "No live telemetry is connected.",
++            "live_telemetry_connected": False,
++        },
++        "nodes": [
++            {
++                "id": "core_exchange",
++                "type": "core",
++                "label": "Core Exchange",
++                "authority_status": "approved",
++                "transition_authority_class": "proof_required",
++                "operational_status": "sample",
++                "proof_status": "sample",
++                "data_honesty": honesty,
++                "layout": {"world_position": {"x": 0, "y": 0, "z": 0}, "height": 2.8},
++                "visual_style": {"risk_heat": 0.0},
++                "inspector": {"summary": "Central exchange", "tabs": {"overview": {}, "proof": {}}},
++            },
++            {
++                "id": "domain_finance",
++                "type": "domain",
++                "label": "Finance",
++                "authority_status": "candidate",
++                "transition_authority_class": "proof_required",
++                "operational_status": "sample",
++                "proof_status": "sample",
++                "data_honesty": honesty,
++                "layout": {"world_position": {"x": -3, "y": 0, "z": -2}, "height": 1.1},
++                "visual_style": {"district_color_token": "ion-slate-500", "risk_heat": 0.0},
++                "inspector": {"summary": "Finance district", "tabs": {"overview": {}, "events": {}, "proof": {}}},
++            },
++            {
++                "id": "template_finance_close",
++                "type": "template_group",
++                "label": "Close Template Group",
++                "domain_id": "domain_finance",
++                "parent_id": "domain_finance",
++                "authority_status": "candidate",
++                "transition_authority_class": "proof_required",
++                "operational_status": "sample",
++                "proof_status": "sample",
++                "data_honesty": honesty,
++                "layout": {"world_position": {"x": -3.1, "y": 0, "z": -1.6}, "height": 0.8},
++                "visual_style": {"risk_heat": 0.0},
++                "inspector": {"summary": "Template tower", "tabs": {"overview": {}}},
++            },
++            {
++                "id": "receipt_graph_schema",
++                "type": "receipt",
++                "label": "Graph Schema Receipt",
++                "authority_status": "candidate",
++                "transition_authority_class": "receipt_required",
++                "operational_status": "sample",
++                "proof_status": "sample",
++                "data_honesty": honesty,
++                "layout": {"world_position": {"x": -1.5, "y": 0, "z": -1}, "height": 0.5},
++                "visual_style": {"risk_heat": 0.0},
++                "inspector": {"summary": "Receipt checkpoint", "tabs": {"overview": {}, "receipts": {}}},
++            },
++        ],
++        "edges": [
++            {
++                "id": "e_core_to_finance",
++                "type": "routes_to",
++                "source": "core_exchange",
++                "target": "domain_finance",
++                "road_type": "highway_trunk",
++                "authority_class": "proof_required",
++                "proof_required": True,
++                "state_can_cross": False,
++                "data_honesty": honesty,
++                "road_geometry": {"curve_points": [{"x": 0, "y": 0, "z": 0}, {"x": -3, "y": 0, "z": -2}], "lane_count": 2},
++                "traffic_contract": {"timeline_track": "processes", "ambient_allowed": False},
++            },
++            {
++                "id": "e_finance_contains_template",
++                "type": "contains",
++                "source": "domain_finance",
++                "target": "template_finance_close",
++                "road_type": "district_path",
++                "authority_class": "candidate",
++                "proof_required": True,
++                "state_can_cross": False,
++                "data_honesty": honesty,
++                "road_geometry": {"curve_points": [], "lane_count": 1},
++                "traffic_contract": {"timeline_track": "proof_gates", "ambient_allowed": False},
++            },
++        ],
++        "events": [
++            {
++                "id": "ev_001",
++                "timestamp": "2026-05-10T10:00:00Z",
++                "event_type": "packet_queued",
++                "actor_node": "core_exchange",
++                "source_node": "core_exchange",
++                "target_node": "domain_finance",
++                "route_edge_id": "e_core_to_finance",
++                "status": "sample",
++                "severity": "info",
++                "timeline_track": "processes",
++                "data_honesty": honesty,
++            },
++            {
++                "id": "ev_002",
++                "timestamp": "2026-05-10T10:05:00Z",
++                "event_type": "receipt_written",
++                "actor_node": "receipt_graph_schema",
++                "source_node": "domain_finance",
++                "target_node": "receipt_graph_schema",
++                "route_edge_id": None,
++                "status": "sample",
++                "severity": "info",
++                "timeline_track": "receipts",
++                "data_honesty": honesty,
++            },
++        ],
++        "timeline": {
++            "mode": "sample_replay",
++            "tracks": [
++                {"id": "processes", "label": "Processes", "visible": True},
++                {"id": "receipts", "label": "Receipts", "visible": True},
++            ],
++            "window": {"start": "2026-05-10T10:00:00Z", "end": "2026-05-10T11:00:00Z"},
++            "playback": {"state": "paused", "scrubber_event_id": "ev_001"},
++        },
++        "inspector_contract": {"tabs_required": ["overview", "events", "proof", "receipts"], "raw_json_policy": "available"},
++        "layout_refs": {"visual_reference": "VISUAL/reference_dashboard_city_map.png"},
++    }
++    layout = {
++        "schema_id": "ion.living_graph.layout_fixture.v0_3",
++        "status": "candidate_layout_fixture",
++        "screen_zones": {
++            "top_rail": {"height_px": 72, "role": "identity"},
++            "left_drawer": {"width_px": 180, "role": "layers"},
++            "viewport": {"role": "central operational territory"},
++            "right_inspector": {"width_px": 320, "role": "truth surface"},
++            "bottom_timeline": {"height_px": 140, "role": "replay"},
++        },
++        "districts": [
++            {"id": "layout_domain_finance", "domain_id": "domain_finance", "label": "Finance", "centroid": {"x": -3, "y": 0, "z": -2}}
++        ],
++        "camera_presets": {"world": {"zoom": 52}},
++        "minimap": {"world_bounds": {"min": {"x": -5, "z": -5}, "max": {"x": 5, "z": 5}}},
++    }
++    write_json(root, "ION/05_context/current/living_graph/SAMPLE/living_operational_graph_sample_v0_3.json", bundle)
++    write_json(root, "ION/05_context/current/living_graph/LAYOUT/living_graph_layout_fixture_v0_3.json", layout)
++
++
++def test_living_graph_view_model_projects_sample_candidate_graph(tmp_path: Path):
++    seed_living_graph(tmp_path)
++
++    model = build_living_graph_view_model(tmp_path, selected_node_id="domain_finance")
++
++    assert model["schema_id"] == "ion.living_graph_cockpit_view_model.v1"
++    assert model["status"] == "ready"
++    assert model["data_mode"] == "sample_and_candidate"
++    assert model["honesty"]["live_telemetry_connected"] is False
++    assert model["kpis"]["node_count"] == 4
++    assert model["kpis"]["domain_count"] == 1
++    assert model["kpis"]["proof_required_route_count"] == 2
++    assert model["selected"]["id"] == "domain_finance"
++    assert model["selected"]["child_count"] == 1
++    assert model["domains"][0]["label"] == "Finance"
++    assert model["route_edges"][0]["id"] == "e_core_to_finance"
++    assert model["timeline"]["event_count"] == 2
++    assert model["proof_gates"]["required_zones_present"] is True
++    assert model["authority"]["production_authority"] is False
++    assert "not_live_telemetry" in model["non_claims"]
++
++
++def test_living_graph_view_model_missing_source_is_visibility_only(tmp_path: Path):
++    model = build_living_graph_view_model(tmp_path)
++
++    assert model["status"] == "missing_source"
++    assert model["validation"]["ok"] is False
++    assert model["proof_gates"]["bundle_present"] is False
++    assert model["authority"]["accepted_state"] is False
++    assert model["authority"]["live_execution_authority"] is False
++
++
++def test_write_living_graph_view_model(tmp_path: Path):
++    seed_living_graph(tmp_path)
++
++    model = write_living_graph_view_model(tmp_path)
++    out = tmp_path / "ION/05_context/current/ACTIVE_LIVING_GRAPH_VIEW_MODEL.json"
++
++    assert out.exists()
++    assert json.loads(out.read_text(encoding="utf-8"))["kpis"]["edge_count"] == 2
++    assert model["status"] == "ready"
++
++
++def test_cockpit_view_model_includes_living_graph_summary(tmp_path: Path):
++    seed_minimal_runtime(tmp_path)
++    seed_living_graph(tmp_path)
++
++    model = build_cockpit_view_model(tmp_path)
++
++    assert model["living_graph"]["status"] == "ready"
++    assert model["top_bar"]["living_graph_status"] == "ready"
++    assert model["top_bar"]["living_graph_domain_count"] == 1
++    assert model["top_bar"]["living_graph_node_count"] == 4
++    assert "LIVING_GRAPH_SAMPLE_CANDIDATE" in model["authority_classes"]
+
+diff --git a/ION/08_ui/joc_cockpit_shell/LivingGraphWorkbenchPanel.tsx b/ION/08_ui/joc_cockpit_shell/LivingGraphWorkbenchPanel.tsx
+new file mode 100644
+index 0000000..28c7308
+--- /dev/null
++++ b/ION/08_ui/joc_cockpit_shell/LivingGraphWorkbenchPanel.tsx
+@@ -0,0 +1,223 @@
++import { useMemo, useState } from 'react';
++import type { IonCockpitViewModel, IonLivingGraphNodeCard } from './ionRuntimeCockpitTypes';
++
++type Props = {
++  runtime: IonCockpitViewModel;
++};
++
++function fmt(value: unknown, fallback = '—') {
++  if (value === null || value === undefined || value === '') return fallback;
++  return String(value);
++}
++
++function statusClass(value: unknown) {
++  return String(value ?? 'unknown').toLowerCase().replace(/[^a-z0-9_-]+/g, '_');
++}
++
++function toScreenPoint(node: IonLivingGraphNodeCard, index: number, count: number) {
++  const raw = node.position ?? {};
++  const x = typeof raw.x === 'number' ? raw.x : undefined;
++  const z = typeof raw.z === 'number' ? raw.z : undefined;
++  if (typeof x === 'number' && typeof z === 'number') {
++    return {
++      x: 360 + x * 34,
++      y: 210 + z * 28,
++    };
++  }
++  const angle = (Math.PI * 2 * index) / Math.max(count, 1) - Math.PI / 2;
++  return {
++    x: 360 + Math.cos(angle) * 210,
++    y: 210 + Math.sin(angle) * 145,
++  };
++}
++
++export function LivingGraphWorkbenchPanel({ runtime }: Props) {
++  const graph = runtime.living_graph;
++  const nodes = useMemo(() => {
++    if (!graph) return [];
++    const all = [];
++    if (graph.core?.id) all.push(graph.core);
++    all.push(...(graph.domains ?? []));
++    return all;
++  }, [graph]);
++  const [activeNodeId, setActiveNodeId] = useState<string | undefined>(graph?.selected?.id ?? graph?.core?.id);
++  const [hiddenLayers, setHiddenLayers] = useState<Record<string, boolean>>({});
++  const [timelineCursor, setTimelineCursor] = useState<string | undefined>(typeof graph?.timeline?.playback?.scrubber_event_id === 'string' ? graph.timeline.playback.scrubber_event_id : undefined);
++
++  if (!graph) {
++    return (
++      <section className="ion-panel ion-living-graph-panel is-missing">
++        <div className="ion-section-title">LIVING OPERATIONAL GRAPH</div>
++        <h2>GRAPH MODEL ABSENT</h2>
++        <p>The cockpit model has not exposed a living_graph projection yet.</p>
++      </section>
++    );
++  }
++
++  const activeNode = nodes.find((node) => node.id === activeNodeId) ?? graph.selected ?? graph.core ?? nodes[0];
++  const pointById = new Map(nodes.map((node, index) => [node.id, toScreenPoint(node, index, nodes.length)]));
++  const showDomains = !hiddenLayers.domains;
++  const showRoutes = !hiddenLayers.routes;
++  const showTimeline = !hiddenLayers.timeline;
++
++  return (
++    <section className={`ion-living-graph-workbench is-${statusClass(graph.status)}`} aria-label="ION Living Operational Graph">
++      <header className="ion-living-graph-top">
++        <div>
++          <div className="ion-section-title">LIVING OPERATIONAL GRAPH / SAMPLE VERTICAL SLICE</div>
++          <h2>Developer cockpit territory map</h2>
++          <p>{graph.honesty?.non_claim ?? 'No live graph claim is made by this surface.'}</p>
++        </div>
++        <div className="ion-living-graph-badges">
++          <span>{fmt(graph.honesty?.global_badge_label, 'SAMPLE / CANDIDATE DATA')}</span>
++          <b className={`is-${statusClass(graph.status)}`}>{fmt(graph.status)}</b>
++        </div>
++      </header>
++
++      <aside className="ion-living-graph-left" aria-label="Graph layers">
++        <div className="ion-section-title">LAYERS</div>
++        {(graph.layers ?? []).map((layer) => (
++          <button
++            className={hiddenLayers[layer.id] ? 'is-muted' : 'is-active'}
++            key={layer.id}
++            onClick={() => setHiddenLayers((previous) => ({ ...previous, [layer.id]: !previous[layer.id] }))}
++            type="button"
++          >
++            <span>{layer.label}</span>
++            <b>{layer.node_count ?? layer.edge_count ?? layer.event_count ?? 0}</b>
++          </button>
++        ))}
++        <div className="ion-section-title">PROOF GATES</div>
++        <div className="ion-living-graph-proof-stack">
++          {Object.entries(graph.proof_gates ?? {}).map(([key, value]) => (
++            <span className={value ? 'is-pass' : 'is-watch'} key={key}>{key}</span>
++          ))}
++        </div>
++      </aside>
++
++      <div className="ion-living-graph-viewport" aria-label="Graph territory viewport">
++        {graph.status !== 'ready' && (
++          <div className="ion-living-graph-missing-source">
++            <b>GRAPH SOURCE NOT MOUNTED</b>
++            <span>{fmt(graph.source_paths?.bundle)}</span>
++            <span>{fmt(graph.source_paths?.layout)}</span>
++          </div>
++        )}
++
++        <svg role="img" aria-label="Living operational graph map" viewBox="0 0 720 420">
++          <defs>
++            <filter id="ionGraphGlow" x="-20%" y="-20%" width="140%" height="140%">
++              <feGaussianBlur stdDeviation="2" result="blur" />
++              <feMerge>
++                <feMergeNode in="blur" />
++                <feMergeNode in="SourceGraphic" />
++              </feMerge>
++            </filter>
++          </defs>
++          <rect x="10" y="10" width="700" height="400" rx="2" className="ion-graph-board" />
++          <g className="ion-graph-grid">
++            {Array.from({ length: 13 }).map((_, index) => (
++              <line key={`v-${index}`} x1={40 + index * 56} x2={40 + index * 56} y1="28" y2="392" />
++            ))}
++            {Array.from({ length: 8 }).map((_, index) => (
++              <line key={`h-${index}`} x1="28" x2="692" y1={42 + index * 48} y2={42 + index * 48} />
++            ))}
++          </g>
++
++          {showRoutes && (graph.route_edges ?? []).map((route) => {
++            const a = pointById.get(route.source);
++            const b = pointById.get(route.target);
++            if (!a || !b) return null;
++            const active = activeNode?.id === route.source || activeNode?.id === route.target;
++            return (
++              <g className={active ? 'ion-graph-route is-active' : 'ion-graph-route'} key={route.id}>
++                <line x1={a.x} y1={a.y} x2={b.x} y2={b.y} />
++                <text x={(a.x + b.x) / 2} y={(a.y + b.y) / 2 - 5}>{route.authority_class}</text>
++              </g>
++            );
++          })}
++
++          {showDomains && nodes.map((node, index) => {
++            const point = pointById.get(node.id) ?? toScreenPoint(node, index, nodes.length);
++            const isCore = node.type === 'core';
++            const active = activeNode?.id === node.id;
++            return (
++              <g
++                className={`ion-graph-node is-${statusClass(node.type)} ${active ? 'is-selected' : ''}`}
++                key={node.id}
++                onClick={() => setActiveNodeId(node.id)}
++                tabIndex={0}
++                role="button"
++                aria-label={`Select ${node.label}`}
++              >
++                <rect x={point.x - (isCore ? 50 : 42)} y={point.y - (isCore ? 30 : 24)} width={isCore ? 100 : 84} height={isCore ? 60 : 48} rx="2" />
++                <text x={point.x} y={point.y - 3}>{node.label}</text>
++                <text x={point.x} y={point.y + 13}>{node.proof_status} / {node.operational_status}</text>
++              </g>
++            );
++          })}
++        </svg>
++      </div>
++
++      <aside className="ion-living-graph-inspector" aria-label="Selected graph object inspector">
++        <div className="ion-section-title">SELECTED OBJECT TRUTH</div>
++        {activeNode ? (
++          <>
++            <h3>{activeNode.label}</h3>
++            <div className={`ion-living-graph-verdict is-${statusClass(activeNode.proof_status)}`}>{activeNode.type} / {activeNode.proof_status}</div>
++            <p>{activeNode.summary || 'No summary available for this graph object.'}</p>
++            <div className="ion-runtime-grid">
++              <Metric label="authority" value={activeNode.authority_status} />
++              <Metric label="transition" value={activeNode.transition_authority_class} />
++              <Metric label="routes" value={activeNode.route_count} />
++              <Metric label="children" value={activeNode.child_count} />
++              <Metric label="receipts" value={activeNode.receipt_count} />
++              <Metric label="honesty" value={activeNode.honesty_status} />
++            </div>
++            <div className="ion-section-title">INSPECTOR TABS</div>
++            <div className="ion-living-graph-tab-row">
++              {(activeNode.available_tabs ?? []).map((tab) => <span key={tab}>{tab}</span>)}
++            </div>
++          </>
++        ) : (
++          <div className="ion-empty-state">NO GRAPH OBJECT SELECTED</div>
++        )}
++      </aside>
++
++      <footer className="ion-living-graph-timeline" aria-label="Graph timeline replay">
++        <div>
++          <span className="ion-section-title">TIMELINE / {fmt(graph.timeline?.mode, 'sample replay')}</span>
++          <strong>{fmt(graph.timeline?.event_count, '0')} events</strong>
++        </div>
++        {showTimeline && (
++          <div className="ion-living-graph-events">
++            {(graph.timeline?.latest_events ?? []).map((event) => (
++              <button
++                className={timelineCursor === event.id ? 'is-active' : undefined}
++                key={event.id}
++                onClick={() => {
++                  setTimelineCursor(event.id);
++                  setActiveNodeId(event.target_node ?? event.source_node ?? event.actor_node ?? activeNodeId);
++                }}
++                type="button"
++              >
++                <span>{event.timestamp}</span>
++                <b>{event.event_type}</b>
++                <em>{event.timeline_track}</em>
++              </button>
++            ))}
++          </div>
++        )}
++      </footer>
++    </section>
++  );
++}
++
++function Metric({ label, value }: { label: string; value: unknown }) {
++  return (
++    <div className="ion-runtime-metric">
++      <span>{label}</span>
++      <b>{fmt(value)}</b>
++    </div>
++  );
++}

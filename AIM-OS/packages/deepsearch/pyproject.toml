@@ -1,0 +1,12 @@
+[build-system]
+requires = ["setuptools>=45"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "deepsearch"
+version = "0.1.0"
+description = "DEEPSEARCH - Sovereign Local Intelligence Engine with 9-layer architecture"
+requires-python = ">=3.9"
+
+[tool.setuptools.packages.find]
+where = ["."]

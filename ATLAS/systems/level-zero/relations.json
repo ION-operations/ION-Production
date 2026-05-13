@@ -1,0 +1,31 @@
+{
+  "system_slug": "level-zero",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-03",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "spir-v",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Level Zero specifies SPIR-V module objects for kernel/module build paths (see specification)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "sycl",
+      "evidence_tier": "INFERRED",
+      "notes": "Intel SYCL / oneAPI GPU stacks commonly use Level Zero as a low-level backend on supported configurations."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "INFERRED",
+      "notes": "Level Zero drivers and loaders run on Linux hosts with supported GPUs."
+    },
+    {
+      "type": "integrates_with",
+      "target": "windows-nt",
+      "evidence_tier": "INFERRED",
+      "notes": "Level Zero is supported in Intel oneAPI GPU stacks on Windows for supported configurations."
+    }
+  ]
+}

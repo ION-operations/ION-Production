@@ -1,0 +1,63 @@
+{
+  "name": "plix-language-support",
+  "displayName": "PLIx Language Support",
+  "description": "Syntax highlighting, IntelliSense, and validation for PLIx",
+  "version": "0.1.0",
+  "publisher": "aimos",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Linters",
+    "Formatters"
+  ],
+  "activationEvents": [
+    "onLanguage:plix"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "plix",
+        "aliases": ["PLIx", "plix"],
+        "extensions": [".plix"],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "plix",
+        "scopeName": "source.plix",
+        "path": "./syntaxes/plix.tmLanguage.json"
+      }
+    ],
+    "commands": [
+      {
+        "command": "plix.parse",
+        "title": "PLIx: Parse Current File"
+      },
+      {
+        "command": "plix.validate",
+        "title": "PLIx: Validate Current File"
+      },
+      {
+        "command": "plix.compile",
+        "title": "PLIx: Compile to Target"
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.80.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.3.0",
+    "vsce": "^2.15.0"
+  }
+}
+

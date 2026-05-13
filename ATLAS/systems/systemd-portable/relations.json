@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "systemd",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Portable services are implemented and operated by the systemd suite on Linux."
+    },
+    {
+      "type": "integrates_with",
+      "target": "systemd-unit-model",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Attached portable images ship unit files consumed by the standard systemd unit model."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Portable images rely on Linux mount, loop, and optional verity behaviors per documentation."
+    },
+    {
+      "type": "competes_with",
+      "target": "docker",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable packaging model for running services on a Linux host; OCI vs portable image differs."
+    },
+    {
+      "type": "competes_with",
+      "target": "oci-image-spec",
+      "evidence_tier": "INFERRED",
+      "notes": "Portable OS-tree bundles vs OCI image layers address similar delivery goals with different formats and runtimes."
+    },
+    {
+      "type": "integrates_with",
+      "target": "systemd-sysext",
+      "evidence_tier": "INFERRED",
+      "notes": "Both extend the host OS tree under systemd; sysext merges /usr-style hierarchies while portablectl attaches portable service profiles per distinct manuals."
+    },
+    {
+      "type": "integrates_with",
+      "target": "systemd-confext",
+      "evidence_tier": "INFERRED",
+      "notes": "Portable services and confext both layer host-visible trees; confext uses overlay merge for /etc-class paths per systemd-confext manuals."
+    }
+  ]
+}

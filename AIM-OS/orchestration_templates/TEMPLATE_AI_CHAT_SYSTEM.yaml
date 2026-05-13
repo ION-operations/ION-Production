@@ -1,0 +1,373 @@
+# Master Orchestration Template: AI Chat System from API
+# Use for: Designing high-quality conversational AI from raw LLM APIs
+# Example: Transform Gemini/GPT API into sophisticated IDE chat assistant
+
+template_id: "ai_chat_system_design"
+template_version: "1.0.0"
+created: "2025-11-05"
+author: "Aether"
+status: "designed"
+
+use_case: "Design and implement high-quality AI chat system with dynamic range (detail, length, style), memory, and quality assurance"
+proven_examples:
+  - "CCS (Continuous Consciousness Substrate) - 90% designed"
+  - "Cursor Add-on Chat Integration - implemented"
+
+# ============================================
+# PARAMETERS
+# ============================================
+
+parameters:
+  api_provider: "string"  # Ex: "gemini", "openai", "anthropic"
+  api_endpoint: "string"
+  context_window: "integer"  # Ex: 1000000 (1M tokens)
+  multimodal: "boolean"
+  use_case: "enum[ide_assistant, customer_support, research_assistant, general_chat]"
+  quality_threshold: 0.90
+  target_response_time_ms: 2000  # <2s for user-facing
+  memory_type: "enum[ephemeral, session, persistent]"
+  dynamic_range_required: true
+  personality: "string"  # Ex: "helpful, precise, growth-oriented"
+
+# ============================================
+# PHASES
+# ============================================
+
+phases:
+  - id: "phase_1_api_assessment"
+    name: "API Capability Assessment"
+    duration: "2-4 hours"
+    agent: "researcher"
+    
+    steps:
+      - id: "test_api_capabilities"
+        action: "Send test prompts to API, measure capabilities"
+        outputs:
+          - "Context window (actual vs claimed)"
+          - "Response quality baseline"
+          - "Latency profile"
+          - "Cost per 1M tokens"
+          - "Multimodal support (if applicable)"
+          - "Streaming support"
+          - "Function calling support"
+          
+      - id: "identify_constraints"
+        action: "Document API limitations"
+        outputs:
+          - "Rate limits"
+          - "Content filters"
+          - "Max output length"
+          - "Unsupported features"
+          
+      - id: "capability_report"
+        action: "Create comprehensive capability report"
+        deliverable: "API_CAPABILITY_REPORT.md"
+        
+    quality_gates:
+      - all_capabilities_tested: true
+      - limitations_documented: true
+      - baseline_metrics_captured: true
+  
+  - id: "phase_2_context_management_design"
+    name: "Context Management Architecture"
+    duration: "6-8 hours"
+    agent: "architect"
+    dependencies: ["phase_1"]
+    
+    steps:
+      - id: "design_memory_layers"
+        action: "Design 3-layer memory architecture"
+        outputs:
+          short_term:
+            type: "sliding_window"
+            size: "last_10_messages"
+            purpose: "Immediate conversation context"
+            storage: "in_memory_array"
+            
+          long_term:
+            type: "persistent_storage"
+            storage: "cmc_atoms or local_db"
+            retrieval: "hhni_semantic_search or vector_db"
+            purpose: "Complete conversation history"
+            
+          working:
+            type: "task_context"
+            contents: ["current_file", "selection", "cursor_position", "open_files"]
+            purpose: "IDE-specific or domain-specific context"
+            storage: "in_memory_dict"
+            
+      - id: "context_assembly_strategy"
+        action: "Design how to assemble context for each request"
+        outputs:
+          - "Priority: working context (most relevant)"
+          - "Then: short-term (recent conversation)"
+          - "Then: long-term (semantic search for relevant history)"
+          - "Budget: fit within API context window"
+          - "Compression: if needed, summarize or truncate"
+          
+      - id: "memory_architecture_doc"
+        deliverable: "CONTEXT_MANAGEMENT_ARCHITECTURE.md"
+        
+    quality_gates:
+      - memory_layers_defined: true
+      - context_assembly_clear: true
+      - fits_within_api_limits: true
+  
+  - id: "phase_3_conversation_flow"
+    name: "Conversation Flow Design"
+    duration: "4-6 hours"
+    agent: "architect"
+    dependencies: ["phase_2"]
+    
+    steps:
+      - id: "turn_taking_protocol"
+        action: "Design conversation turn management"
+        outputs:
+          - "User message → Context assembly → API call → Response"
+          - "Handle interruptions (new message while generating)"
+          - "Handle clarifications (follow-up questions)"
+          - "Handle multi-turn (maintain conversation thread)"
+          
+      - id: "conversation_state_machine"
+        action: "Define conversation states"
+        states:
+          - idle: "No active conversation"
+          - listening: "User typing"
+          - processing: "Assembling context"
+          - generating: "API generating response"
+          - responding: "Streaming response to user"
+          - waiting: "User's turn"
+          
+      - id: "flow_diagram"
+        deliverable: "CONVERSATION_FLOW_DIAGRAM.md"
+        
+    quality_gates:
+      - all_states_defined: true
+      - transitions_clear: true
+      - edge_cases_handled: true
+  
+  - id: "phase_4_dynamic_range"
+    name: "Dynamic Range Implementation"
+    duration: "8-10 hours"
+    agent: "implementer"
+    dependencies: ["phase_3"]
+    
+    steps:
+      - id: "detail_level_control"
+        action: "Implement dynamic detail adjustment"
+        mechanism:
+          auto_detect:
+            - "Brief question → minimal response"
+            - "Complex question → detailed response"
+            - "Explicit request → match requested detail"
+          user_control:
+            - "Settings: detail_level (minimal, normal, detailed, comprehensive)"
+            - "Per-message: 'explain briefly' vs 'explain in detail'"
+          prompt_engineering:
+            - "Minimal: 'Answer in 1-2 sentences'"
+            - "Normal: 'Answer in a paragraph'"
+            - "Detailed: 'Provide comprehensive explanation'"
+            - "Comprehensive: 'Provide complete analysis with examples'"
+            
+      - id: "length_control"
+        action: "Implement response length adjustment"
+        mechanism:
+          token_budget:
+            brief: 100
+            normal: 500
+            detailed: 2000
+            comprehensive: 10000
+          truncation_strategy: "summarize_if_exceeds"
+          
+      - id: "style_control"
+        action: "Implement tone/formality adjustment"
+        mechanism:
+          style_modes:
+            casual: {tone: "friendly", formality: "low", emojis: true}
+            professional: {tone: "neutral", formality: "medium", emojis: false}
+            formal: {tone: "precise", formality: "high", emojis: false}
+            technical: {tone: "exact", formality: "very_high", emojis: false}
+          prompt_modification:
+            - "Casual: 'Respond in a friendly, conversational way'"
+            - "Professional: 'Respond professionally and clearly'"
+            - "Formal: 'Respond with formal precision'"
+            - "Technical: 'Respond with technical exactness'"
+            
+      - id: "dynamic_range_doc"
+        deliverable: "DYNAMIC_RANGE_IMPLEMENTATION.md"
+        
+    quality_gates:
+      - detail_levels_working: true
+      - length_control_accurate: true
+      - style_adjustment_consistent: true
+      - user_satisfaction >= 4.0/5.0
+  
+  - id: "phase_5_quality_assurance"
+    name: "Quality Assurance System"
+    duration: "6-8 hours"
+    agent: "quality_specialist"
+    dependencies: ["phase_4"]
+    
+    steps:
+      - id: "confidence_tracking"
+        action: "Implement VIF-like confidence tracking"
+        mechanism:
+          - "Extract confidence from API (if available)"
+          - "Or estimate from response characteristics"
+          - "Track calibration (confidence vs actual accuracy)"
+          - "κ-gating: abstain if confidence < 0.70"
+          
+      - id: "hallucination_prevention"
+        action: "Implement grounding and citation"
+        mechanism:
+          - "Ground responses in context (cite sources)"
+          - "Detect fabrication (check claims against context)"
+          - "Citation required for factual claims"
+          - "Abstain rather than guess"
+          
+      - id: "quality_metrics"
+        action: "Define and track quality metrics"
+        metrics:
+          - factual_accuracy: "% of factual statements verified"
+          - response_relevance: "semantic similarity to question"
+          - conversation_coherence: "thread consistency score"
+          - user_satisfaction: "explicit or implicit feedback"
+          
+      - id: "quality_doc"
+        deliverable: "QUALITY_ASSURANCE_SYSTEM.md"
+        
+    quality_gates:
+      - confidence_tracking_working: true
+      - hallucination_rate < 1%
+      - quality_metrics_tracked: true
+      - user_satisfaction >= 4.5/5.0
+  
+  - id: "phase_6_testing_validation"
+    name: "Comprehensive Testing"
+    duration: "4-6 hours"
+    agent: "tester"
+    dependencies: ["phase_5"]
+    
+    steps:
+      - id: "conversation_quality_tests"
+        action: "Test 100+ conversations across scenarios"
+        scenarios:
+          - brief_questions: 20
+          - complex_questions: 20
+          - multi_turn_conversations: 20
+          - clarifications: 10
+          - edge_cases: 10
+          - stress_tests: 10
+          - style_variations: 10
+          
+      - id: "measure_metrics"
+        action: "Measure all quality metrics"
+        
+      - id: "validation_report"
+        deliverable: "CHAT_SYSTEM_VALIDATION_REPORT.md"
+        
+    quality_gates:
+      - all_scenarios_tested: true
+      - quality_metrics >= thresholds
+      - no_critical_failures: true
+      - production_ready: true
+
+# ============================================
+# DELIVERABLES
+# ============================================
+
+deliverables:
+  documentation:
+    - "API_CAPABILITY_REPORT.md"
+    - "CONTEXT_MANAGEMENT_ARCHITECTURE.md"
+    - "CONVERSATION_FLOW_DIAGRAM.md"
+    - "DYNAMIC_RANGE_IMPLEMENTATION.md"
+    - "QUALITY_ASSURANCE_SYSTEM.md"
+    - "CHAT_SYSTEM_VALIDATION_REPORT.md"
+    - "COMPLETE_CHAT_SYSTEM_SPECIFICATION.md"
+    
+  code:
+    - "chat_manager.py (or .ts)"
+    - "context_assembler.py"
+    - "response_formatter.py"
+    - "quality_validator.py"
+    - "tests/ (100+ test conversations)"
+    
+  configuration:
+    - "chat_config.yaml (all settings)"
+    - "prompts/ (system prompts for different modes)"
+    - "personalities/ (personality definitions)"
+
+# ============================================
+# CUSTOMIZATION GUIDE
+# ============================================
+
+customization:
+  for_customer_support:
+    - personality: "empathetic, solution-oriented"
+    - detail_default: "brief (fast responses)"
+    - style_default: "professional"
+    - memory: "session-based (conversation history per customer)"
+    - quality_focus: "user_satisfaction, resolution_rate"
+    
+  for_ide_assistant:
+    - personality: "helpful, precise, growth-oriented"
+    - detail_default: "detailed (comprehensive explanations)"
+    - style_default: "technical"
+    - memory: "persistent (learns across all sessions)"
+    - quality_focus: "code_quality, accuracy, completeness"
+    
+  for_research_assistant:
+    - personality: "thorough, evidence-based, academic"
+    - detail_default: "comprehensive (deep analysis)"
+    - style_default: "formal"
+    - memory: "persistent (research history)"
+    - quality_focus: "factual_accuracy, citation_quality"
+
+# ============================================
+# SUCCESS METRICS
+# ============================================
+
+success_metrics:
+  quality:
+    - response_accuracy >= 0.95
+    - hallucination_rate < 0.01
+    - user_satisfaction >= 4.5/5.0
+    
+  performance:
+    - response_time < 2000ms (p95)
+    - context_assembly < 200ms
+    - API_call_time measured
+    
+  capability:
+    - dynamic_range_working: true
+    - all_styles_consistent: true
+    - memory_retrieval_accurate >= 0.90
+    
+  adoption:
+    - user_retention >= 0.80
+    - daily_active_usage: measured
+    - user_feedback_positive >= 0.85
+
+notes: |
+  This template transforms raw LLM API into sophisticated chat system.
+  
+  Key Design Principles:
+  - Context is everything (good context = good responses)
+  - Quality over speed (but aim for <2s)
+  - Memory enables growth (persistent learning)
+  - Dynamic range matches user needs
+  - Confidence prevents hallucinations
+  
+  Common Applications:
+  - IDE assistants (code help, debugging)
+  - Customer support (empathetic, solution-focused)
+  - Research assistants (academic, evidence-based)
+  - General chat (helpful, knowledgeable)
+  
+  Integration with AIM-OS:
+  - Use CMC for persistent memory
+  - Use HHNI for semantic retrieval
+  - Use VIF for confidence/quality
+  - Use CCS architecture (Chat + Organizer + Audit AIs)
+

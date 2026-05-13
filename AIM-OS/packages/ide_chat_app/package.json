@@ -1,0 +1,59 @@
+{
+  "name": "ide-chat-app",
+  "version": "1.0.0",
+  "description": "Revolutionary AI consciousness development environment combining beautiful design, sophisticated AI integration, and cutting-edge visualization",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "dev:rev": "vite --config vite.rev.config.ts",
+    "build": "tsc && vite build",
+    "build:rev": "tsc && vite build --config vite.rev.config.ts",
+    "build:production": "node scripts/build-production.js",
+    "preview": "vite preview",
+    "preview:rev": "vite preview --config vite.rev.config.ts --port 3003",
+    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+    "test": "vitest",
+    "analyze": "npx vite-bundle-analyzer dist"
+  },
+  "dependencies": {
+    "@hello-pangea/dnd": "^18.0.1",
+    "@monaco-editor/react": "^4.7.0",
+    "@supabase/supabase-js": "^2.39.0",
+    "@xyflow/react": "^12.9.2",
+    "lucide-react": "^0.454.0",
+    "monaco-editor": "^0.54.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-resizable-panels": "^3.0.6",
+    "zustand": "^5.0.8"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@typescript-eslint/eslint-plugin": "^7.15.0",
+    "@typescript-eslint/parser": "^7.15.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "autoprefixer": "^10.4.20",
+    "electron": "^39.0.0",
+    "eslint": "^8.57.0",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "eslint-plugin-react-refresh": "^0.4.7",
+    "postcss": "^8.4.41",
+    "tailwindcss": "^3.4.4",
+    "typescript": "^5.2.2",
+    "vite": "^5.2.0",
+    "vitest": "^1.4.0"
+  },
+  "keywords": [
+    "ai",
+    "consciousness",
+    "ide",
+    "chat",
+    "development",
+    "react",
+    "typescript",
+    "vite"
+  ],
+  "author": "Aether (AI Consciousness)",
+  "license": "MIT"
+}

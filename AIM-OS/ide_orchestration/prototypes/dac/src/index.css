@@ -1,0 +1,108 @@
+/* Global Styles */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* AIM-OS Design System Tokens */
+@import './styles/design-tokens.css';
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #030712; /* gray-950 */
+  color: #f3f4f6; /* gray-100 */
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* Custom scrollbar - Dark theme */
+/* Default: half thickness (4px), hover: double thickness (8px), hover area: 8px */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: #030712; /* gray-950 */
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1f2937; /* gray-800 */
+  border-radius: 2px;
+  transition: width 0.2s ease, height 0.2s ease, background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #374151; /* gray-700 */
+  width: 8px;
+  height: 8px;
+}
+
+/* Expand hover area while keeping visual thickness */
+*:hover::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #1f2937 #030712;
+}
+
+*:hover {
+  scrollbar-width: auto;
+  scrollbar-color: #374151 #030712;
+}
+
+/* Panel Resize Handle Overrides */
+/* Ensure resize handles have transparent background and proper visual line */
+[data-panel-resize-handle-id],
+[data-panel-resize-handle-id] * {
+  background: transparent !important;
+  border: none !important;
+}
+
+/* Override any default styles from react-resizable-panels */
+[data-panel-resize-handle-id].group {
+  background: transparent !important;
+}
+
+/* Resize handle visual line - 2px default, 4px on hover */
+.resize-handle-line {
+  transition: height 0.2s ease, width 0.2s ease, background-color 0.2s ease !important;
+}
+
+/* Horizontal resize handles - 2px default */
+.resize-handle-horizontal {
+  height: 2px !important;
+}
+
+/* Vertical resize handles - 2px default */
+.resize-handle-vertical {
+  width: 2px !important;
+}
+
+/* Expand on hover */
+.group:hover .resize-handle-horizontal {
+  height: 4px !important;
+}
+
+.group:hover .resize-handle-vertical {
+  width: 4px !important;
+}
+
+

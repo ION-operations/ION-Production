@@ -1,0 +1,612 @@
+% Chapter 7 converted from Markdown
+% Auto-generated - do not edit manually
+
+
+
+
+\section*{Section 7.1: Alloy Integration}
+
+Alloy provides formal specification and model checking capabilities, enabling mathematical verification of PLIx contracts through relational modeling.
+
+\textbf{Alloy Overview}
+
+Alloy is a formal specification language based on first-order relational logic. It enables:
+
+\begin{itemize}
+\item \textbf{Relational Modeling:} Models systems as relations between atoms
+\item \textbf{Model Checking:} Automatically checks properties by exploring all possible states
+\item \textbf{Invariant Verification:} Verifies that properties hold in all states
+\item \textbf{Counterexample Generation:} Generates examples when properties fail
+\end{itemize}
+
+Alloy's strength lies in its ability to explore all possible system states within bounded scopes, providing mathematical guarantees about contract correctness.
+
+\textbf{PLIx \textrightarrow{} Alloy Translation}
+
+PLIx contracts translate to Alloy models:
+
+\begin{lstlisting}[caption=Code Example]
+// PLIx Contract: Book a meeting room
+// Pre: room_available == true
+// Post: room_reserved == true
+
+sig Room {
+  available: Bool,
+  reserved: Bool
+}
+
+sig User {
+  authenticated: Bool
+}
+
+sig Reservation {
+  room: Room,
+  user: User,
+  date: Int
+}
+
+pred bookRoom[r: Room, u: User] {
+  // Precondition: room available, user authenticated
+  r.available = True
+  u.authenticated = True
+  
+  // Postcondition: room reserved
+  r.reserved = True
+  r.available = False
+  
+  // Create reservation
+  some res: Reservation | res.room = r and res.user = u
+}
+
+// Invariant: Room cannot be both available and reserved
+assert roomStateConsistency {
+  all r: Room | not (r.available = True and r.reserved = True)
+}
+
+check roomStateConsistency for 5 Room, 3 User
+\end{lstlisting}
+
+This Alloy model captures the PLIx contract's preconditions, postconditions, and invariants, enabling formal verification.
+
+\textbf{Model Checking}
+
+Alloy model checking explores all possible states:
+
+\begin{lstlisting}[caption=Code Example]
+// Check: Can we always book a room when available?
+pred canBookWhenAvailable {
+  all r: Room, u: User |
+    (r.available = True and u.authenticated = True) implies
+    (some res: Reservation | res.room = r and res.user = u)
+}
+
+check canBookWhenAvailable for 5 Room, 3 User
+\end{lstlisting}
+
+Alloy explores all possible combinations of rooms and users within the scope (5 rooms, 3 users), checking if the property holds. If it finds a counterexample, it generates a concrete example showing when the property fails.
+
+\textbf{Invariant Verification}
+
+Alloy verifies invariants:
+
+\begin{lstlisting}[caption=Code Example]
+// Invariant: Reservations are unique per room-date
+assert uniqueReservations {
+  all r: Room, d: Int |
+    lone res: Reservation | res.room = r and res.date = d
+}
+
+check uniqueReservations for 5 Room, 10 Reservation
+\end{lstlisting}
+
+This invariant ensures that each room can have at most one reservation per date. Alloy checks this by exploring all possible reservation configurations, verifying that the invariant holds.
+
+\textbf{Alloy Benefits}
+
+Alloy integration provides:
+
+\begin{itemize}
+\item \textbf{Mathematical Verification:} Formal proofs of contract correctness
+\item \textbf{Counterexample Generation:} Concrete examples when properties fail
+\item \textbf{Invariant Checking:} Verification that properties hold in all states
+\item \textbf{Scope Exploration:} Systematic exploration of all possible states
+\end{itemize}
+
+These benefits enable rigorous contract verification, providing mathematical guarantees about contract correctness.
+
+\section*{Section 7.2: TLA+ Integration}
+
+TLA+ (Temporal Logic of Actions) provides temporal specification and verification capabilities, enabling verification of PLIx contract temporal properties and recovery correctness.
+
+\textbf{TLA+ Overview}
+
+TLA+ is a formal specification language based on temporal logic. It enables:
+
+\begin{itemize}
+\item \textbf{Temporal Specification:} Specifies how systems evolve over time
+\item \textbf{Action Specification:} Defines state transitions as actions
+\item \textbf{Temporal Verification:} Verifies temporal properties (safety, liveness)
+\item \textbf{Recovery Verification:} Verifies recovery correctness
+\end{itemize}
+
+TLA+'s strength lies in its ability to specify and verify temporal properties, making it ideal for verifying durable execution and saga patterns.
+
+\textbf{PLIx \textrightarrow{} TLA+ Translation}
+
+PLIx contracts translate to TLA+ specifications:
+
+\begin{lstlisting}[caption=Code Example]
+---- MODULE RoomBooking ----
+
+EXTENDS Naturals
+
+VARIABLES room_state, reservation_state
+
+TypeOK == 
+  /\ room_state \in {"available", "reserved"}
+  /\ reservation_state \in {"none", "pending", "confirmed"}
+
+Init == 
+  /\ room_state = "available"
+  /\ reservation_state = "none"
+
+BookRoom ==
+  /\ room_state = "available"
+  /\ room_state' = "reserved"
+  /\ reservation_state' = "confirmed"
+  /\ UNCHANGED <<>>
+
+CancelReservation ==
+  /\ room_state = "reserved"
+  /\ room_state' = "available"
+  /\ reservation_state' = "none"
+  /\ UNCHANGED <<>>
+
+Next == BookRoom \/ CancelReservation
+
+Spec == Init /\ [][Next]_<<room_state, reservation_state>>
+
+---- PLIx Contract Properties ----
+
+\* Safety: Room cannot be both available and reserved
+RoomStateSafety == 
+  [](room_state = "available" => ~(room_state = "reserved"))
+
+\* Liveness: If room is available, it can be reserved
+RoomAvailabilityLiveness == 
+  [](room_state = "available" => <><<BookRoom>>_<<room_state, reservation_state>>)
+
+====
+\end{lstlisting}
+
+This TLA+ specification captures the PLIx contract's temporal properties, enabling formal verification of safety and liveness.
+
+\textbf{Temporal Verification}
+
+TLA+ verifies temporal properties:
+
+\begin{lstlisting}[caption=Code Example]
+\* Safety Property: Room state consistency
+THEOREM Spec => []RoomStateSafety
+
+\* Liveness Property: Room can be reserved when available
+THEOREM Spec => RoomAvailabilityLiveness
+\end{lstlisting}
+
+TLA+ model checker (TLC) verifies these properties by exploring all possible execution paths, ensuring that safety properties hold in all states and liveness properties are eventually satisfied.
+
+\textbf{Recovery Verification}
+
+TLA+ verifies recovery correctness:
+
+\begin{lstlisting}[caption=Code Example]
+---- MODULE RoomBookingRecovery ----
+
+EXTENDS RoomBooking
+
+VARIABLES checkpoint_state
+
+RecoveryInit == 
+  /\ Init
+  /\ checkpoint_state = "none"
+
+Checkpoint ==
+  /\ room_state = "reserved"
+  /\ checkpoint_state' = "reserved"
+  /\ UNCHANGED <<room_state, reservation_state>>
+
+Recover ==
+  /\ checkpoint_state = "reserved"
+  /\ room_state' = "reserved"
+  /\ reservation_state' = "confirmed"
+  /\ checkpoint_state' = "none"
+  /\ UNCHANGED <<>>
+
+RecoveryNext == Next \/ Checkpoint \/ Recover
+
+RecoverySpec == RecoveryInit /\ [][RecoveryNext]_<<room_state, reservation_state, checkpoint_state>>
+
+\* Recovery Property: After recovery, state matches checkpoint
+RecoveryCorrectness == 
+  [](Recover => (room_state' = checkpoint_state))
+
+THEOREM RecoverySpec => RecoveryCorrectness
+====
+\end{lstlisting}
+
+This TLA+ specification verifies that recovery restores the correct state, ensuring that durable execution maintains consistency.
+
+\textbf{Saga Pattern Verification}
+
+TLA+ verifies saga pattern compensation:
+
+\begin{lstlisting}[caption=Code Example]
+---- MODULE SagaPattern ----
+
+VARIABLES step1_state, step2_state, compensation_state
+
+Init == 
+  /\ step1_state = "not_started"
+  /\ step2_state = "not_started"
+  /\ compensation_state = "none"
+
+ExecuteStep1 ==
+  /\ step1_state = "not_started"
+  /\ step1_state' = "completed"
+  /\ UNCHANGED <<step2_state, compensation_state>>
+
+ExecuteStep2 ==
+  /\ step1_state = "completed"
+  /\ step2_state = "not_started"
+  /\ step2_state' = "failed"
+  /\ compensation_state' = "triggered"
+  /\ UNCHANGED <<step1_state>>
+
+CompensateStep1 ==
+  /\ compensation_state = "triggered"
+  /\ step1_state = "completed"
+  /\ step1_state' = "compensated"
+  /\ compensation_state' = "completed"
+  /\ UNCHANGED <<step2_state>>
+
+SagaNext == ExecuteStep1 \/ ExecuteStep2 \/ CompensateStep1
+
+SagaSpec == Init /\ [][SagaNext]_<<step1_state, step2_state, compensation_state>>
+
+\* Saga Property: If step2 fails, step1 is compensated
+SagaCompensation == 
+  [](step2_state = "failed" => <><<CompensateStep1>>_<<step1_state, compensation_state>>)
+
+THEOREM SagaSpec => SagaCompensation
+====
+\end{lstlisting}
+
+This TLA+ specification verifies that saga compensation correctly undoes completed steps when later steps fail, ensuring system consistency.
+
+\textbf{TLA+ Benefits}
+
+TLA+ integration provides:
+
+\begin{itemize}
+\item \textbf{Temporal Verification:} Formal proofs of temporal properties
+\item \textbf{Recovery Verification:} Verification of recovery correctness
+\item \textbf{Saga Verification:} Verification of compensation correctness
+\item \textbf{Safety and Liveness:} Verification of both safety and liveness properties
+\end{itemize}
+
+These benefits enable rigorous verification of durable execution and saga patterns, providing mathematical guarantees about recovery correctness.
+
+\section*{Section 7.3: Invariant Verification}
+
+Invariant verification ensures that properties hold in all system states, providing mathematical guarantees about contract correctness.
+
+\textbf{Invariant Definition}
+
+Invariants are properties that must always hold:
+
+\begin{itemize}
+\item \textbf{State Invariants:} Properties that hold in every state
+\item \textbf{Transition Invariants:} Properties that hold across state transitions
+\item \textbf{Temporal Invariants:} Properties that hold over time
+\end{itemize}
+
+Invariants provide mathematical guarantees: if invariants hold, the system maintains correctness.
+
+\textbf{Layer-1 Guards: Runtime Invariants}
+
+Layer-1 guards enforce runtime invariants:
+
+\begin{lstlisting}[caption=Code Example]
+// Layer-1 Guard: JSON Schema validation
+const roomBookingSchema = {
+  type: "object",
+  properties: {
+    room_id: { type: "string" },
+    date: { type: "string", pattern: "^[0-9]{4}-[0-9]{2}-[0-9]{2}$" },
+    duration: { type: "number", minimum: 1, maximum: 4 }
+  },
+  required: ["room_id", "date", "duration"]
+};
+
+function validateRoomBooking(params: any): boolean {
+  return ajv.validate(roomBookingSchema, params);
+}
+
+// Layer-1 Guard: Regex constraints
+const datePattern = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/;
+function validateDate(date: string): boolean {
+  return datePattern.test(date);
+}
+\end{lstlisting}
+
+Layer-1 guards provide fast, runtime invariant checking, catching violations immediately during execution.
+
+\textbf{Layer-2 Validators: Compile-Time Invariants}
+
+Layer-2 validators enforce compile-time invariants:
+
+\begin{lstlisting}[caption=Code Example]
+// Layer-2 Validator: SMT Solver
+import { Z3 } from 'z3-solver';
+
+async function verifyInvariant(contract: PLIxContract): Promise<boolean> {
+  const solver = new Z3.Solver();
+  
+  // Add contract constraints
+  const roomAvailable = Z3.Bool.const('room_available');
+  const roomReserved = Z3.Bool.const('room_reserved');
+  
+  // Invariant: Room cannot be both available and reserved
+  solver.add(Z3.And(roomAvailable, roomReserved).not());
+  
+  // Check if invariant holds
+  const result = await solver.check();
+  return result === 'sat'; // If satisfiable, invariant holds
+}
+\end{lstlisting}
+
+Layer-2 validators provide rigorous, compile-time invariant checking, catching violations before execution.
+
+\textbf{Invariant Examples}
+
+Example invariants for room booking:
+
+\begin{lstlisting}[caption=Code Example]
+// Invariant 1: Room state consistency
+// A room cannot be both available and reserved
+const roomStateInvariant = (room: Room) => {
+  return !(room.available && room.reserved);
+};
+
+// Invariant 2: Reservation uniqueness
+// Each room can have at most one reservation per date
+const reservationUniquenessInvariant = (reservations: Reservation[]) => {
+  const dateRoomPairs = reservations.map(r => `\texttt{\$\{r.date\}\}-\texttt{\$\{r.room_id\}\}`);
+  return new Set(dateRoomPairs).size === dateRoomPairs.length;
+};
+
+// Invariant 3: Duration constraint
+// Booking duration must be between 1 and 4 hours
+const durationInvariant = (duration: number) => {
+  return duration >= 1 && duration <= 4;
+};
+\end{lstlisting}
+
+These invariants ensure contract correctness, providing mathematical guarantees about system behavior.
+
+\textbf{Invariant Verification Workflow}
+
+Invariant verification workflow:
+
+\begin{lstlisting}[caption=Code Example]
+\begin{enumerate}
+\item Define Invariants
+   \textdownarrow{}
+\item Layer-1 Guards (Runtime)
+\end{enumerate}
+   - JSON Schema validation
+   - Regex constraints
+   - Type checking
+   \textdownarrow{}
+\begin{enumerate}
+\item Layer-2 Validators (Compile-Time)
+\end{enumerate}
+   - SMT solver verification
+   - Alloy model checking
+   - TLA+ temporal verification
+   \textdownarrow{}
+\begin{enumerate}
+\item Verification Results
+\end{enumerate}
+   - Pass: Invariants hold
+   - Fail: Counterexamples generated
+\end{lstlisting}
+
+This workflow ensures invariants are verified at both runtime and compile-time, providing comprehensive verification coverage.
+
+\textbf{Invariant Verification Benefits}
+
+Invariant verification provides:
+
+\begin{itemize}
+\item \textbf{Mathematical Guarantees:} Formal proofs of contract correctness
+\item \textbf{Early Detection:} Compile-time detection of violations
+\item \textbf{Runtime Safety:} Runtime enforcement of invariants
+\item \textbf{Counterexample Generation:} Concrete examples when invariants fail
+\end{itemize}
+
+These benefits enable rigorous contract verification, providing mathematical guarantees about contract correctness.
+
+\section*{Section 7.4: Formal Validation Workflow}
+
+Formal validation workflow integrates CNL parsing, PLIx contract generation, formal specification translation, and verification, providing end-to-end formal validation.
+
+\textbf{Workflow Overview}
+
+Formal validation workflow:
+
+\begin{lstlisting}[caption=Code Example]
+CNL Input
+  \textdownarrow{}
+PLIx Parser
+  \textdownarrow{}
+PLIx Contract
+  \textdownarrow{}
+Formal Spec Translation
+  ├─\textrightarrow{} Alloy Model
+  ├─\textrightarrow{} TLA+ Specification
+  └─\textrightarrow{} SMT Constraints
+  \textdownarrow{}
+Formal Verification
+  ├─\textrightarrow{} Alloy Model Checking
+  ├─\textrightarrow{} TLA+ Model Checking
+  └─\textrightarrow{} SMT Solving
+  \textdownarrow{}
+Verification Results
+  ├─\textrightarrow{} Pass: Contract verified
+  └─\textrightarrow{} Fail: Counterexamples generated
+\end{lstlisting}
+
+This workflow provides complete formal validation, from CNL input to verification results.
+
+\textbf{CNL \textrightarrow{} PLIx \textrightarrow{} Formal Spec}
+
+Translation pipeline:
+
+\begin{lstlisting}[caption=Code Example]
+// Step 1: Parse CNL
+const cnl = `
+Intent: Book a meeting room
+Task reserve:
+  Action: api.reserve_room
+  Params: room_id=A101, date=2025-12-01
+`;
+
+const plixContract = parser.parse(cnl);
+
+// Step 2: Translate to Alloy
+const alloyModel = translateToAlloy(plixContract);
+// Generates: sig Room, pred bookRoom, assert invariants
+
+// Step 3: Translate to TLA+
+const tlaSpec = translateToTLA(plixContract);
+// Generates: VARIABLES, Init, Next, Spec, THEOREM
+
+// Step 4: Translate to SMT
+const smtConstraints = translateToSMT(plixContract);
+// Generates: Z3 constraints for invariant verification
+\end{lstlisting}
+
+This pipeline enables automatic translation from CNL to formal specifications, enabling formal verification.
+
+\textbf{Compiler Integration}
+
+Formal validation integrates with compiler:
+
+\begin{lstlisting}[caption=Code Example]
+class PLIxCompiler {
+  async compile(cnl: string): Promise<CompilationResult> {
+    // Parse CNL
+    const contract = this.parser.parse(cnl);
+    
+    // Formal validation
+    const validation = await this.formalValidator.validate(contract);
+    
+    if (!validation.valid) {
+      return {
+        success: false,
+        errors: validation.errors,
+        counterexamples: validation.counterexamples
+      };
+    }
+    
+    // Lower to IR
+    const ir = this.lowerToIR(contract);
+    
+    // Compile to target
+    const target = this.compileToTarget(ir);
+    
+    return {
+      success: true,
+      contract,
+      ir,
+      target
+    };
+  }
+}
+\end{lstlisting}
+
+Compiler integration ensures that contracts are formally validated before compilation, preventing invalid contracts from being executed.
+
+\textbf{Error Reporting}
+
+Formal validation provides detailed error reporting:
+
+\begin{lstlisting}[caption=Code Example]
+interface ValidationError {
+  type: 'invariant_violation' | 'safety_violation' | 'liveness_violation';
+  message: string;
+  location: { line: number; column: number };
+  counterexample?: {
+    alloy?: AlloyInstance;
+    tla?: TLAState;
+    smt?: SMTModel;
+  };
+}
+
+function reportValidationErrors(errors: ValidationError[]): void {
+  for (const error of errors) {
+    console.error(`Validation Error: \texttt{\$\{error.type\}\}`);
+    console.error(`Location: Line \texttt{\$\{error.location.line\}\}, Column \texttt{\$\{error.location.column\}\}`);
+    console.error(`Message: \texttt{\$\{error.message\}\}`);
+    
+    if (error.counterexample) {
+      console.error('Counterexample:');
+      if (error.counterexample.alloy) {
+        console.error(JSON.stringify(error.counterexample.alloy, null, 2));
+      }
+      if (error.counterexample.tla) {
+        console.error(JSON.stringify(error.counterexample.tla, null, 2));
+      }
+    }
+  }
+}
+\end{lstlisting}
+
+Error reporting provides actionable feedback, enabling contract debugging and correction.
+
+\textbf{Best Practices}
+
+Formal validation best practices:
+
+\begin{enumerate}
+\item \textbf{Start with Simple Invariants:} Begin with basic state invariants, then add temporal properties
+\item \textbf{Use Appropriate Tools:} Use Alloy for relational modeling, TLA+ for temporal properties, SMT for constraint solving
+\item \textbf{Verify Incrementally:} Verify contracts incrementally as they evolve
+\item \textbf{Generate Counterexamples:} Use counterexamples to understand violations
+\item \textbf{Integrate Early:} Integrate formal validation early in the development process
+\end{enumerate}
+
+These best practices ensure effective formal validation, providing mathematical guarantees about contract correctness.
+
+\textbf{Formal Validation Benefits}
+
+Formal validation workflow provides:
+
+\begin{itemize}
+\item \textbf{End-to-End Validation:} Complete validation from CNL to verification
+\item \textbf{Automatic Translation:} Automatic translation to formal specifications
+\item \textbf{Comprehensive Verification:} Verification using multiple formal methods
+\item \textbf{Actionable Feedback:} Detailed error reporting with counterexamples
+\end{itemize}
+
+These benefits enable rigorous contract verification, providing mathematical guarantees about contract correctness throughout the development process.
+
+\section*{Chapter 7 Summary}
+
+Formal validation provides mathematical verification of PLIx contracts through Alloy model checking, TLA+ temporal verification, and invariant verification. Alloy enables relational modeling and invariant checking, TLA+ enables temporal property verification and recovery correctness, and invariant verification ensures properties hold in all states. The formal validation workflow integrates CNL parsing, contract generation, formal specification translation, and verification, providing end-to-end formal validation with actionable feedback.
+
+\textbf{Next:} Chapter 8 explores compiler architecture—PLIx \textrightarrow{} IR \textrightarrow{} Execution Plans.
+
+\textbf{Word Count:} \textasciitilde{}2,400 words  
+

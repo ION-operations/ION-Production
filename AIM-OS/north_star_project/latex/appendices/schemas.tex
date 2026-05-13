@@ -1,0 +1,93 @@
+% Data Schemas Reference Appendix
+% Auto-generated
+
+\chapter{Data Schemas Reference}
+
+This appendix provides complete data schemas for all AIM-OS systems. See Chapter~\ref{ch:data_schemas} for detailed explanations.
+
+\section*{CMC Atom Schema}
+
+\begin{verbatim}
+{
+  "atom_id": "uuid",
+  "modality": "text|image|binary|reference",
+  "content": "string|uri",
+  "embedding": "vector[1536]",
+  "tags": ["string"],
+  "tx_time": "timestamp",
+  "valid_time": "timestamp",
+  "vif_witness": {
+    "model_id": "string",
+    "prompt": "string",
+    "tools": ["string"],
+    "confidence": 0.0-1.0
+  },
+  "predecessor_id": "uuid|null"
+}
+\end{verbatim}
+
+\section*{HHNI Node Schema}
+
+\begin{verbatim}
+{
+  "node_id": "uuid",
+  "level": 0-5,
+  "content": "string",
+  "embedding": "vector[1536]",
+  "children": ["uuid"],
+  "parents": ["uuid"],
+  "authority": 0.0-1.0,
+  "tx_time": "timestamp",
+  "valid_time": "timestamp"
+}
+\end{verbatim}
+
+\section*{VIF Witness Schema}
+
+\begin{verbatim}
+{
+  "witness_id": "uuid",
+  "operation_id": "uuid",
+  "model_id": "string",
+  "prompt": "string",
+  "tools": ["string"],
+  "confidence": 0.0-1.0,
+  "confidence_components": {
+    "model": 0.0-1.0,
+    "evidence": 0.0-1.0,
+    "precedent": 0.0-1.0
+  },
+  "tx_time": "timestamp",
+  "valid_time": "timestamp"
+}
+\end{verbatim}
+
+\section*{SEG Graph Schema}
+
+\begin{verbatim}
+{
+  "graph_id": "uuid",
+  "nodes": [...],
+  "edges": [...]
+}
+\end{verbatim}
+
+\section*{APOE Plan Schema}
+
+\begin{verbatim}
+{
+  "plan_id": "uuid",
+  "goal": "string",
+  "context": {},
+  "priority": "low|medium|high|critical",
+  "steps": [...],
+  "budgets": {
+    "tokens": 0,
+    "time": 0,
+    "tools": 0
+  },
+  "tx_time": "timestamp",
+  "valid_time": "timestamp"
+}
+\end{verbatim}
+

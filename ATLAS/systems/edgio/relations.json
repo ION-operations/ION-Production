@@ -1,0 +1,31 @@
+{
+  "system_slug": "edgio",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-11",
+  "edges": [
+    {
+      "type": "competes_with",
+      "target": "amazon-cloudfront",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable CDN / edge delivery class."
+    },
+    {
+      "type": "competes_with",
+      "target": "fastly",
+      "evidence_tier": "INFERRED",
+      "notes": "CDN vendor competition."
+    },
+    {
+      "type": "competes_with",
+      "target": "akamai",
+      "evidence_tier": "INFERRED",
+      "notes": "CDN vendor competition."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "Customer deployments fronting K8s origins."
+    }
+  ]
+}

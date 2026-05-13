@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "depends_on",
+      "target": "kubernetes",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Argo CD runs on Kubernetes and applies Git-declared desired state to the cluster via controllers and CRDs."
+    },
+    {
+      "type": "integrates_with",
+      "target": "helm",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Argo CD supports Helm charts as an application source type per upstream documentation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "oci-image-spec",
+      "evidence_tier": "INFERRED",
+      "notes": "Applications reference container images pulled as OCI images in typical deployments."
+    },
+    {
+      "type": "integrates_with",
+      "target": "oci-distribution-spec",
+      "evidence_tier": "INFERRED",
+      "notes": "OCI Helm charts and container images are often sourced from registries using distribution-class HTTP APIs."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kustomize",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Argo CD supports Kustomize as an application source type per upstream documentation."
+    },
+    {
+      "type": "competes_with",
+      "target": "fluxcd",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable GitOps controller class for Kubernetes continuous delivery; different architecture and UX than Flux."
+    }
+  ]
+}

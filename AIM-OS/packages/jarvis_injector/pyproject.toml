@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "jarvis-injector"
+version = "0.1.0"
+description = "AIM-OS Windows computer-action runtime for JOC/JARVIS"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115.0",
+    "uvicorn>=0.32.0",
+    "pydantic>=2.10.0",
+    "playwright>=1.50.0",
+    "psutil>=6.1.0",
+    "numpy>=2.1.0",
+    "opencv-python>=4.10.0.84",
+    "pillow>=11.0.0",
+    "comtypes>=1.4.8",
+    "pywin32>=308; platform_system == 'Windows'",
+    "pystray>=0.19.5",
+]
+
+[project.scripts]
+jarvis-injector = "jarvis_injector.runtime.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+

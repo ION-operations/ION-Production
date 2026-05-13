@@ -1,0 +1,63 @@
+% API Reference Quick Guide Appendix
+
+\chapter{API Reference Quick Guide}
+
+This appendix provides quick reference for AIM-OS APIs. See Chapter~\ref{ch:apis_reference} for complete documentation.
+
+\section*{MCP Tools (51 Tools)}
+
+\textbf{Core AIM-OS Tools (6):}
+\begin{itemize}
+    \item \texttt{store\_memory} - Store knowledge in \cmc
+    \item \texttt{retrieve\_memory} - Retrieve insights from \hhni
+    \item \texttt{get\_memory\_stats} - Get AIM-OS statistics
+    \item \texttt{create\_plan} - Create \apoe\ execution plans
+    \item \texttt{track\_confidence} - Track \vif\ confidence
+    \item \texttt{synthesize\_knowledge} - Synthesize \seg\ knowledge
+\end{itemize}
+
+\textbf{SCOR Tools (3):}
+\begin{itemize}
+    \item \texttt{check\_invariant} - Check invariant rules
+    \item \texttt{run\_baseline\_probe} - Detect consciousness drift
+    \item \texttt{detect\_manipulation\_signals} - Detect social manipulation
+\end{itemize}
+
+\textbf{Snapshot Tools (4):}
+\begin{itemize}
+    \item \texttt{create\_snapshot} - Create file snapshots
+    \item \texttt{restore\_snapshot} - Restore from snapshot
+    \item \texttt{list\_snapshots} - List available snapshots
+    \item \texttt{archive\_snapshot} - Archive snapshots
+\end{itemize}
+
+\textbf{AI Collaboration Tools (6):}
+\begin{itemize}
+    \item \texttt{send\_ai\_message} - Send a message to another AI system
+    \item \texttt{get\_ai\_messages} - Retrieve AI-to-AI messages
+    \item \texttt{start\_ai\_discussion} - Start a new discussion thread
+    \item \texttt{handoff\_task\_to\_ai} - Hand off a task to another AI system
+    \item \texttt{share\_ai\_profile} - Share AI profile and capabilities
+    \item \texttt{get\_ai\_collaboration\_summary} - Get summary of AI collaboration activity
+\end{itemize}
+
+\section*{HTTP Endpoints}
+
+\textbf{Base URL:} \texttt{http://localhost:5001}
+
+\textbf{MCP Execute Endpoint:}
+\begin{verbatim}
+POST /mcp/execute
+Content-Type: application/json
+
+{
+  "tool": "tool_name",
+  "arguments": {
+    "param1": "value1",
+    "param2": "value2"
+  }
+}
+\end{verbatim}
+
+See Chapter~\ref{ch:apis_reference} for complete endpoint documentation.
+

@@ -1,0 +1,254 @@
+/* File Changes Viewer Panel Styles */
+.file-changes-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #1e1e1e;
+  color: #cccccc;
+}
+
+.file-changes-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  background-color: #252526;
+  border-bottom: 1px solid #3e3e3e;
+}
+
+.file-changes-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.file-changes-header-icon {
+  width: 20px;
+  height: 20px;
+  color: #f59e0b;
+  flex-shrink: 0;
+}
+
+.file-changes-header-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #f59e0b;
+  margin: 0;
+}
+
+.file-changes-header-subtitle {
+  font-size: 11px;
+  color: #858585;
+  margin: 2px 0 0 0;
+}
+
+.file-changes-header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.file-changes-refresh-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: #858585;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.file-changes-refresh-button:hover {
+  background-color: #2d2d30;
+  color: #cccccc;
+}
+
+.file-changes-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.file-changes-list {
+  flex: 1;
+  overflow: auto;
+  padding: 8px;
+}
+
+.file-changes-item {
+  border: 1px solid #3e3e3e;
+  border-radius: 4px;
+  background-color: #252526;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.file-changes-item:hover {
+  border-color: #007acc;
+  background-color: #2a2d2e;
+}
+
+.file-changes-item.selected {
+  border-color: #007acc;
+  background-color: #2a2d2e;
+}
+
+.file-changes-item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+}
+
+.file-changes-item-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.file-change-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.file-change-icon.file-change-added {
+  color: #4ade80;
+}
+
+.file-change-icon.file-change-modified {
+  color: #fbbf24;
+}
+
+.file-change-icon.file-change-deleted {
+  color: #f87171;
+}
+
+.file-change-icon.file-change-renamed {
+  color: #60a5fa;
+}
+
+.file-changes-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.file-changes-file-path {
+  font-size: 12px;
+  font-weight: 600;
+  color: #cccccc;
+  font-family: monospace;
+  margin-bottom: 4px;
+}
+
+.file-changes-item-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 10px;
+  color: #858585;
+}
+
+.file-changes-status {
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.file-changes-stats {
+  font-family: monospace;
+}
+
+.file-changes-time {
+  color: #6b7280;
+}
+
+.file-changes-item-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.file-changes-diff {
+  padding: 12px;
+  border-top: 1px solid #3e3e3e;
+  background-color: #1e1e1e;
+}
+
+.file-changes-diff-header {
+  font-size: 11px;
+  font-weight: 600;
+  color: #60a5fa;
+  margin-bottom: 8px;
+}
+
+.file-changes-diff-content {
+  padding: 8px;
+  background-color: #252526;
+  border: 1px solid #3e3e3e;
+  border-radius: 4px;
+  overflow-x: auto;
+  font-size: 11px;
+  font-family: monospace;
+  color: #cccccc;
+  margin: 0;
+}
+
+.file-changes-diff-content code {
+  font-family: monospace;
+}
+
+.file-changes-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+  color: #858585;
+}
+
+.file-changes-empty-icon {
+  width: 32px;
+  height: 32px;
+  color: #858585;
+  margin-bottom: 12px;
+}
+
+.file-changes-empty p {
+  margin: 0;
+  font-size: 13px;
+}
+
+.file-changes-error {
+  padding: 24px;
+  text-align: center;
+  color: #f87171;
+  font-size: 12px;
+}
+
+/* Scrollbar styling */
+.file-changes-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.file-changes-list::-webkit-scrollbar-track {
+  background: #1e1e1e;
+}
+
+.file-changes-list::-webkit-scrollbar-thumb {
+  background: #3e3e3e;
+  border-radius: 4px;
+}
+
+.file-changes-list::-webkit-scrollbar-thumb:hover {
+  background: #4e4e4e;
+}
+

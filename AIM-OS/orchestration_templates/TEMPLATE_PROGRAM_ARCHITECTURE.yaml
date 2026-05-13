@@ -1,0 +1,331 @@
+# Master Orchestration Template: Program Architecture from Idea
+# Use for: Transform user idea into complete program architecture and implementation plan
+# Based on: MIGE (Memory to Idea Growth Engine) pipeline
+
+template_id: "program_architecture_from_idea"
+template_version: "1.0.0"
+created: "2025-11-05"
+author: "Aether"
+status: "designed"
+
+use_case: "Transform seed idea into complete program architecture with implementation roadmap"
+proven_examples:
+  - "MIGE Pipeline (70% designed)"
+  - "IDE Chat App architecture (proven in practice)"
+  - "North Star document project (meta-application!)"
+
+# ============================================
+# PARAMETERS
+# ============================================
+
+parameters:
+  user_idea: "string"  # Ex: "Build a real-time collaboration platform"
+  complexity: "enum[simple, moderate, complex, very_complex]"
+  domain: "string"  # Ex: "web_app", "mobile_app", "distributed_system"
+  target_users: "integer"  # Ex: 1000000
+  timeline: "integer_days"  # Ex: 90 (3 months)
+  team_size: "integer"  # Ex: 3 developers
+  quality_threshold: 0.90
+
+# ============================================
+# PHASES (MIGE Pipeline)
+# ============================================
+
+phases:
+  - id: "phase_1_intent_capture"
+    name: "A: Intent Capture"
+    duration: "1-2 hours"
+    agent: "strategist"
+    
+    steps:
+      - id: "capture_raw_intent"
+        action: "Capture user's desire verbatim"
+        outputs:
+          - raw_statement: "User's exact words"
+          - stated_outcome: "What they think they want"
+          - motivation: "Why they want it (pain, urgency)"
+          - problem_solving: "What problem this solves"
+          - success_feeling: "What success would feel like"
+          
+      - id: "extract_requirements"
+        action: "Extract explicit and implicit requirements"
+        outputs:
+          functional_requirements: ["feature_1", "feature_2", ...]
+          non_functional_requirements: ["performance", "scalability", "security"]
+          constraints: ["budget", "timeline", "technology_stack"]
+          
+      - id: "intent_document"
+        deliverable: "INTENT_CAPTURE.md"
+        
+    quality_gates:
+      - user_validated_intent: true
+      - requirements_complete: true
+      - constraints_clear: true
+  
+  - id: "phase_2_vision_tensor"
+    name: "B: Vision Tensor Generation"
+    duration: "2-3 hours"
+    agent: "architect"
+    dependencies: ["phase_1"]
+    
+    steps:
+      - id: "create_vision_tensor"
+        action: "Transform intent into structured vision"
+        outputs:
+          core_components: ["component_1", "component_2", ...]  # Ex: chat, video, presence, sync
+          data_model: "high_level_entities_and_relationships"
+          user_flows: ["flow_1", "flow_2", ...]  # Key user journeys
+          system_boundaries: "what's in scope, what's out"
+          quality_attributes: ["performance_targets", "security_requirements"]
+          
+      - id: "vision_validation"
+        action: "Validate vision achieves intent"
+        validation:
+          - vision_fit >= 0.90  # Does vision solve the problem?
+          - feasibility >= 0.80  # Is it buildable?
+          - completeness >= 0.85  # All requirements covered?
+          
+      - id: "vision_document"
+        deliverable: "VISION_TENSOR.md"
+        
+    quality_gates:
+      - vision_fit >= 0.90
+      - user_approved: true
+      - components_identified: true
+  
+  - id: "phase_3_system_mapping"
+    name: "C: BTSM Trunk Indexing (System Mapping)"
+    duration: "4-6 hours"
+    agent: "systems_analyst"
+    dependencies: ["phase_2"]
+    
+    steps:
+      - id: "map_existing_systems"
+        action: "Find existing systems/libraries that can be used"
+        outputs:
+          - "WebRTC (for video)"
+          - "WebSocket (for real-time)"
+          - "Yjs (for CRDT sync)"
+          - "PostgreSQL (for persistence)"
+          - [... all relevant existing tech]
+          
+      - id: "identify_new_components"
+        action: "Identify what needs to be built (not exists)"
+        outputs:
+          custom_components: ["presence_system", "room_manager", "permission_system"]
+          integrations: ["webrtc_wrapper", "yjs_integration"]
+          
+      - id: "create_system_map"
+        action: "Create complete system topology"
+        deliverable: "system.map.lucid.json5"
+        contents:
+          components: "all_components_with_responsibilities"
+          dependencies: "component_dependencies"
+          must_never_vows: "constraints_per_component"
+          performance_budgets: "latency_throughput_targets"
+          security_levels: "tier_per_component"
+          
+    quality_gates:
+      - all_components_mapped: true
+      - dependencies_clear: true
+      - no_orphan_components: true
+  
+  - id: "phase_4_design_variants"
+    name: "D: Branch Blueprints (Design Variants)"
+    duration: "6-8 hours"
+    agent: "architect"
+    dependencies: ["phase_3"]
+    
+    steps:
+      - id: "generate_3_variants"
+        action: "Create 3 distinct architectural approaches"
+        variants:
+          - variant_a: 
+              approach: "Monolithic (simpler, faster to build)"
+              pros: ["faster_development", "easier_deployment"]
+              cons: ["harder_to_scale", "tight_coupling"]
+              
+          - variant_b:
+              approach: "Microservices (scalable, modular)"
+              pros: ["independent_scaling", "loose_coupling"]
+              cons: ["complex_deployment", "network_overhead"]
+              
+          - variant_c:
+              approach: "Hybrid (monolith initially, microservices later)"
+              pros: ["fast_initial", "evolution_path"]
+              cons: ["migration_complexity"]
+              
+      - id: "design_proofs"
+        action: "Validate each variant is feasible"
+        validation_per_variant:
+          - technical_feasibility >= 0.80
+          - meets_requirements: true
+          - within_budget: true
+          - within_timeline: true
+          
+      - id: "variant_comparison"
+        deliverable: "DESIGN_VARIANTS_COMPARISON.md"
+        
+    quality_gates:
+      - three_distinct_variants: true
+      - all_variants_proven_feasible: true
+      - trade_offs_clear: true
+  
+  - id: "phase_5_selection"
+    name: "E: Variant Selection"
+    duration: "1-2 hours"
+    agent: "decision_maker"
+    dependencies: ["phase_4"]
+    
+    steps:
+      - id: "evaluate_variants"
+        action: "Score variants against criteria"
+        criteria:
+          development_speed: 0.25
+          scalability: 0.25
+          maintainability: 0.20
+          cost: 0.15
+          risk: 0.15
+          
+      - id: "select_variant"
+        action: "Choose optimal variant"
+        
+      - id: "selection_rationale"
+        deliverable: "VARIANT_SELECTION_RATIONALE.md"
+        
+    quality_gates:
+      - selection_justified: true
+      - user_approved: true
+  
+  - id: "phase_6_detailed_architecture"
+    name: "F: Detailed Architecture Design"
+    duration: "8-12 hours"
+    agent: "architect"
+    dependencies: ["phase_5"]
+    
+    steps:
+      - id: "create_t2_architecture"
+        action: "Write complete T2-level architecture (2,000-10,000 words)"
+        contents:
+          - system_architecture: "complete diagrams"
+          - component_design: "each component detailed"
+          - data_models: "complete schemas"
+          - api_contracts: "all APIs defined"
+          - deployment_architecture: "infrastructure design"
+          - security_architecture: "auth, authorization, encryption"
+          - performance_architecture: "caching, optimization"
+          
+      - id: "create_system_map"
+        deliverable: "system.map.lucid.json5"
+        
+      - id: "architecture_document"
+        deliverable: "COMPLETE_ARCHITECTURE.md"
+        
+    quality_gates:
+      - architecture_complete: true
+      - all_components_specified: true
+      - apis_defined: true
+      - quality >= 0.90
+  
+  - id: "phase_7_implementation_plan"
+    name: "G: Implementation Roadmap"
+    duration: "4-6 hours"
+    agent: "planner"
+    dependencies: ["phase_6"]
+    
+    steps:
+      - id: "break_into_tasks"
+        action: "Create detailed task breakdown"
+        granularity: "tasks_completable_in_1_3_days"
+        
+      - id: "create_timeline"
+        action: "Generate realistic timeline"
+        methodology: "bottom_up_estimation"
+        
+      - id: "identify_risks"
+        action: "Risk analysis and mitigation"
+        
+      - id: "roadmap_document"
+        deliverable: "IMPLEMENTATION_ROADMAP.md"
+        
+    quality_gates:
+      - all_tasks_defined: true
+      - timeline_realistic: true
+      - risks_identified: true
+      - team_approved: true
+  
+  - id: "phase_8_testing_strategy"
+    name: "H: Testing & Validation Strategy"
+    duration: "2-4 hours"
+    agent: "quality_specialist"
+    dependencies: ["phase_7"]
+    
+    steps:
+      - id: "define_test_pyramid"
+        levels:
+          - unit_tests: "70%"
+          - integration_tests: "20%"
+          - end_to_end_tests: "10%"
+          
+      - id: "create_test_plan"
+        deliverable: "TESTING_STRATEGY.md"
+        
+    quality_gates:
+      - test_coverage_targets_defined: true
+      - test_plan_comprehensive: true
+
+# ============================================
+# SUCCESS CRITERIA
+# ============================================
+
+success_criteria:
+  deliverables:
+    - complete_architecture_document: true
+    - system_map: true
+    - implementation_roadmap: true
+    - testing_strategy: true
+    - all_quality_gates_passed: true
+    
+  validation:
+    - user_approved: true
+    - team_confident: true
+    - ready_to_implement: true
+    
+  quality:
+    - architecture_quality >= 0.90
+    - feasibility_proven: true
+    - timeline_realistic: true
+
+# ============================================
+# EXAMPLE APPLICATION
+# ============================================
+
+example:
+  input: "Build a real-time collaboration platform with video chat, document editing, and offline support"
+  
+  output_after_template:
+    - "INTENT_CAPTURE.md (requirements, constraints)"
+    - "VISION_TENSOR.md (5 core components identified)"
+    - "system.map.lucid.json5 (12 components mapped)"
+    - "DESIGN_VARIANTS.md (3 variants: P2P, SFU, Hybrid)"
+    - "VARIANT_SELECTION.md (Hybrid chosen, rationale documented)"
+    - "COMPLETE_ARCHITECTURE.md (10,000 words, all components specified)"
+    - "IMPLEMENTATION_ROADMAP.md (12-week plan, 45 tasks)"
+    - "TESTING_STRATEGY.md (unit, integration, e2e tests)"
+    
+  time_to_complete: "25-35 hours (vs weeks of manual architecture work)"
+  quality: "Production-ready architecture, validated and approved"
+  
+  next_step: "Hand to development team → Implement following architecture"
+
+notes: |
+  This template is THE "Ultimate Builder" for applications.
+  
+  User says: "Build X"
+  → Template captures intent
+  → Generates complete architecture
+  → Creates implementation plan
+  → Ready to build
+  
+  This is MIGE pipeline formalized as reusable template.
+

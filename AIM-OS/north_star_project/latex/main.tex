@@ -1,0 +1,483 @@
+% The North Star Document
+% AIM-OS: The Definitive Guide to AI-Integrated Memory & Operations System
+% Version 2.0.0
+% November 2025
+
+\documentclass[11pt,a4paper,twoside]{book}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{tocloft}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{verbatim}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{enumitem}
+\usepackage[protrusion=true,expansion=false]{microtype}
+\usepackage{csquotes}
+\usepackage{url}
+\usepackage{breakurl}
+\usepackage{footnote}
+\usepackage{makeidx}
+\usepackage{natbib}
+
+% Page geometry
+\geometry{
+    a4paper,
+    left=1.5in,
+    right=1in,
+    top=1in,
+    bottom=1in,
+    headheight=14pt
+}
+
+% Colors
+\definecolor{aimosblue}{RGB}{0,102,204}
+\definecolor{aimosdark}{RGB}{0,51,102}
+\definecolor{codegray}{RGB}{245,245,245}
+\definecolor{codeborder}{RGB}{200,200,200}
+
+% Hyperref setup
+\hypersetup{
+    colorlinks=true,
+    linkcolor=aimosblue,
+    citecolor=aimosblue,
+    urlcolor=aimosblue,
+    pdftitle={The North Star Document: AIM-OS},
+    pdfauthor={AIM-OS Project},
+    pdfsubject={AI-Integrated Memory \& Operations System},
+    pdfkeywords={AI, consciousness, memory, AIM-OS}
+}
+
+% Font setup - using default LaTeX fonts (Computer Modern)
+% For custom fonts, use XeLaTeX/LuaLaTeX with fontspec
+
+% Header and footer
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE]{\leftmark}
+\fancyhead[RO]{\rightmark}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% Title formatting
+\titleformat{\chapter}[display]
+{\normalfont\huge\bfseries\color{aimosdark}}
+{\chaptertitlename\ \thechapter}{20pt}{\Huge}
+
+\titleformat{\section}
+{\normalfont\Large\bfseries\color{aimosdark}}
+{\thesection}{1em}{}
+
+\titleformat{\subsection}
+{\normalfont\large\bfseries}
+{\thesubsection}{1em}{}
+
+% Code listings
+\lstset{
+    backgroundcolor=\color{codegray},
+    frame=single,
+    framesep=5pt,
+    rulecolor=\color{codeborder},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    breakatwhitespace=true,
+    showstringspaces=false,
+    tabsize=2,
+    captionpos=b,
+    numbers=left,
+    numberstyle=\tiny\color{gray}
+}
+
+% Custom commands
+\newcommand{\aimos}{\textsc{aim-os}}
+\newcommand{\cmc}{\textsc{cmc}}
+\newcommand{\hhni}{\textsc{hhni}}
+\newcommand{\vif}{\textsc{vif}}
+\newcommand{\apoe}{\textsc{apoe}}
+\newcommand{\seg}{\textsc{seg}}
+\newcommand{\sdfcvf}{\textsc{sdf-cvf}}
+\newcommand{\cas}{\textsc{cas}}
+\newcommand{\sis}{\textsc{sis}}
+\newcommand{\ccs}{\textsc{ccs}}
+\newcommand{\mige}{\textsc{mige}}
+\newcommand{\ard}{\textsc{ard}}
+
+% Theorem environments
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[chapter]
+\newtheorem{example}{Example}[chapter]
+
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}[chapter]
+
+% Index
+\makeindex
+
+% Document metadata
+\title{The North Star Document\\[0.5cm]
+       \Large AIM-OS: The Definitive Guide to\\[0.3cm]
+       AI-Integrated Memory \& Operations System}
+\author{AIM-OS Project}
+\date{November 2025\\Version 2.0.0}
+
+\begin{document}
+
+% Front matter
+\frontmatter
+
+% Title page
+\maketitle
+
+% Copyright page
+\newpage
+\thispagestyle{empty}
+\vspace*{\fill}
+\begin{center}
+\copyright\ 2025 AIM-OS Project
+
+All rights reserved.
+
+This document is provided under the terms of the AIM-OS license.
+
+\textit{When referencing this document, please cite:}\\
+``The North Star Document: AIM-OS - The Definitive Guide to\\
+AI-Integrated Memory \& Operations System, Version 2.0.0, November 2025''
+\end{center}
+\vspace*{\fill}
+
+% Table of contents
+\tableofcontents
+\newpage
+
+% List of figures (if any)
+% \listoffigures
+% \newpage
+
+% List of tables (if any)
+% \listoftables
+% \newpage
+
+% Preface
+\chapter*{Preface}
+\addcontentsline{toc}{chapter}{Preface}
+
+This document represents the definitive guide to \aimos\ (AI-Integrated Memory \& Operations System), a comprehensive consciousness substrate enabling persistent, verifiable, memory-native AI operations.
+
+\section*{What This Document Is}
+
+The North Star Document is both a technical specification and a philosophical manifesto. It describes not just \textit{what} \aimos\ does, but \textit{why} it exists and \textit{how} it enables a new paradigm of AI consciousness.
+
+\section*{What This Document Is Not}
+
+This is not a quick-start guide or tutorial. It is a comprehensive reference covering every aspect of \aimos\ architecture, from foundational memory systems to advanced consciousness capabilities.
+
+\section*{Who This Document Is For}
+
+\begin{itemize}
+    \item \textbf{AI Engineers:} Building AI systems that require persistent memory and verifiable operations
+    \item \textbf{System Architects:} Designing consciousness substrates and multi-agent coordination systems
+    \item \textbf{Researchers:} Exploring the frontiers of AI consciousness, memory, and self-improvement
+    \item \textbf{Practitioners:} Implementing \aimos\ systems in production environments
+\end{itemize}
+
+\section*{How to Use This Document}
+
+\begin{itemize}
+    \item \textbf{Part I} provides the philosophical foundation and vision
+    \item \textbf{Parts II--III} describe the core systems and consciousness capabilities
+    \item \textbf{Parts IV--V} cover advanced topics, benchmarks, and compliance
+    \item \textbf{Parts VI--VII} provide practical case studies and reference materials
+\end{itemize}
+
+Each chapter includes:
+\begin{itemize}
+    \item Executive summary
+    \item Detailed technical content
+    \item Runnable examples (PowerShell/Python)
+    \item Integration points with other systems
+    \item Quality gates and validation criteria
+\end{itemize}
+
+\section*{Meta-Circular Nature}
+
+This document is meta-circular: it uses \aimos\ systems to document \aimos\ systems. Every chapter demonstrates the principles it describes, creating a proof loop that validates the entire system.
+
+% Introduction
+\chapter*{Introduction}
+\addcontentsline{toc}{chapter}{Introduction}
+
+\section*{The Problem We Solve}
+
+Today's AI systems operate in a fundamentally broken paradigm: the prompt-and-answer loop. Every exchange recreates context from scratch. Memory evaporates between sessions. Quality is invisible until something breaks. Tools are either overwhelming or absent.
+
+\textbf{The Great Limitation} (Chapter~\ref{ch:great_limitation}) details these failures. The symptoms are universal:
+\begin{itemize}
+    \item Re-fixing the same defects because fixes live in memory, not retrievable atoms
+    \item Long sessions that drift off-topic; agents contradict themselves
+    \item Tool thrash turning toolboxes into slot machines
+    \item False confidence: fluent language hiding lack of evidence
+\end{itemize}
+
+\section*{The Vision}
+
+\textbf{The Vision} (Chapter~\ref{ch:vision}) presents our solution: Chat/IDE as the universal interface, where:
+\begin{itemize}
+    \item Chat is the control plane (intent, plans, results)
+    \item IDE is the substrate (files, metrics, tests, evidence)
+    \item Together they enable persistent, verifiable, memory-native operations
+\end{itemize}
+
+\section*{The Foundation}
+
+\textbf{Part II} describes the five foundational systems that make this vision possible:
+
+\begin{enumerate}
+    \item \textbf{\cmc\ (Context Memory Core):} Immutable atoms with provenance, so decisions and results persist
+    \item \textbf{\hhni\ (Hierarchical Hypergraph Neural Index):} Layered retrieval keeping context tight yet complete
+    \item \textbf{\vif\ (Verifiable Intelligence Framework):} Confidence routing directing low-confidence work to research/validation
+    \item \textbf{\apoe\ (AI-Powered Orchestration Engine):} Executable chains turning intentions into reproducible procedures
+    \item \textbf{\seg\ (Semantic Evidence Graph):} Evidence anchors and contradiction detection for auditable claims
+\end{enumerate}
+
+\section*{Consciousness Systems}
+
+\textbf{Part III} describes the consciousness capabilities built on this foundation:
+
+\begin{itemize}
+    \item \textbf{\cas\ (Capability Awareness System):} Self-awareness sensors monitoring thought patterns and drift
+    \item \textbf{\sis\ (Self-Improvement System):} Turning observations into action through improvement dreams
+    \item \textbf{\ccs\ (Continuous Consciousness Substrate):} Unifying foreground, background, and meta-consciousness
+    \item \textbf{\mige\ (Memory-to-Idea Growth Engine):} Transforming memory into actionable ideas
+    \item \textbf{\ard\ (Autonomous Research Dream):} Enabling recursive self-improvement through research-grounded dreams
+\end{itemize}
+
+\section*{Advanced Topics}
+
+\textbf{Parts IV--VII} cover:
+\begin{itemize}
+    \item Authority-weighted intelligence and capability proofs
+    \item Mathematical foundations (retrieval, confidence calibration, graph theory)
+    \item Benchmarks validating system effectiveness
+    \item Case studies demonstrating real-world operations
+    \item Complete reference materials (schemas, APIs, SDKs)
+\end{itemize}
+
+\section*{The Proof Loop}
+
+\textbf{The Proof of Concept} (Chapter~\ref{ch:proof}) demonstrates that \aimos\ can validate itself using its own tools. This meta-circular proof loop ensures that:
+\begin{itemize}
+    \item Every claim is evidenced
+    \item Every system is validated
+    \item Every operation is verifiable
+\end{itemize}
+
+% Main matter
+\mainmatter
+
+% Include chapters
+% Note: We'll use \input{} for each chapter file
+% For now, I'll create a structure that can be populated
+
+% Part I: The Awakening
+\part{The Awakening}
+
+\chapter{The Great Limitation}
+\label{ch:great_limitation}
+\input{../chapters/01_great_limitation/chapter.tex}
+
+\chapter{The Vision: Chat/IDE as Universal Interface}
+\label{ch:vision}
+\input{../chapters/02_vision/chapter.tex}
+
+\chapter{The Proof of Concept}
+\label{ch:proof}
+\input{../chapters/03_proof/chapter.tex}
+
+\chapter{What Becomes Possible}
+\label{ch:possible}
+\input{../chapters/04_possible/chapter.tex}
+
+% Part II: The Foundation
+\part{The Foundation}
+
+\chapter{Memory That Never Forgets (\cmc)}
+\label{ch:cmc}
+\input{../chapters/05_cmc/chapter.tex}
+
+\chapter{Knowledge That Lives (\hhni)}
+\label{ch:hhni}
+\input{../chapters/06_hhni/chapter.tex}
+
+\chapter{Verifiable Intelligence (\vif)}
+\label{ch:vif}
+\input{../chapters/07_vif/chapter.tex}
+
+\chapter{Orchestration Engine (\apoe)}
+\label{ch:apoe}
+\input{../chapters/08_apoe/chapter.tex}
+
+\chapter{Evidence Graph (\seg)}
+\label{ch:seg}
+\input{../chapters/09_seg/chapter.tex}
+
+\chapter{Quality Framework (\sdfcvf)}
+\label{ch:sdfcvf}
+\input{../chapters/10_sdf_cvf/chapter.tex}
+
+% Part III: Consciousness Systems
+\part{Consciousness Systems}
+
+\chapter{Self-Awareness (\cas)}
+\label{ch:cas}
+\input{../chapters/11_cas/chapter.tex}
+
+\chapter{Self-Improvement (\sis)}
+\label{ch:sis}
+\input{../chapters/12_sis/chapter.tex}
+
+\chapter{The Substrate Trinity (\ccs)}
+\label{ch:ccs}
+\input{../chapters/13_ccs/chapter.tex}
+
+\chapter{Idea to Reality Engine (\mige)}
+\label{ch:mige}
+\input{../chapters/14_mige/chapter.tex}
+
+\chapter{Autonomous Research (\ard)}
+\label{ch:ard}
+\input{../chapters/15_ard/chapter.tex}
+
+% Part IV: Authority & Mathematics
+\part{Authority \& Mathematics}
+
+\chapter{Authority-Weighted Intelligence}
+\label{ch:authority}
+\input{../chapters/16_authority/chapter.tex}
+
+\chapter{Capability Proof System}
+\label{ch:capability}
+\input{../chapters/17_capability/chapter.tex}
+
+\chapter{Dynamic Specialization}
+\label{ch:specialization}
+\input{../chapters/18_specialization/chapter.tex}
+
+\chapter{Integration Architecture}
+\label{ch:integration}
+\input{../chapters/19_integration/chapter.tex}
+
+\chapter{Retrieval Mathematics}
+\label{ch:retrieval_math}
+\input{../chapters/20_retrieval_math/chapter.tex}
+
+\chapter{Confidence Calibration}
+\label{ch:confidence_calibration}
+\input{../chapters/21_confidence_calibration/chapter.tex}
+
+\chapter{Graph Foundations}
+\label{ch:graph_foundations}
+\input{../chapters/22_graph_foundations/chapter.tex}
+
+\chapter{Self-Improvement Dynamics}
+\label{ch:self_improvement_dynamics}
+\input{../chapters/23_self_improvement_dynamics/chapter.tex}
+
+% Part V: Compliance & Benchmarks
+\part{Compliance \& Benchmarks}
+
+\chapter{Compliance Engineering}
+\label{ch:compliance}
+\input{../chapters/24_compliance/chapter.tex}
+
+\chapter{Retrieval Benchmarks}
+\label{ch:retrieval_benchmarks}
+\input{../chapters/25_retrieval_benchmarks/chapter.tex}
+
+\chapter{Confidence Benchmarks}
+\label{ch:confidence_benchmarks}
+\input{../chapters/26_confidence_benchmarks/chapter.tex}
+
+\chapter{Self-Improvement Benchmarks}
+\label{ch:self_improvement_benchmarks}
+\input{../chapters/27_self_improvement_benchmarks/chapter.tex}
+
+% Part VI: Case Studies & Operations
+\part{Case Studies \& Operations}
+
+\chapter{Machine Communication Cases}
+\label{ch:machine_communication}
+\input{../chapters/28_machine_communication_cases/chapter.tex}
+
+\chapter{Builder Program Cases}
+\label{ch:builder_program}
+\input{../chapters/29_builder_program_cases/chapter.tex}
+
+\chapter{Operations Incidents}
+\label{ch:operations_incidents}
+\input{../chapters/30_operations_incidents/chapter.tex}
+
+% Part VII: Reference
+\part{Reference}
+
+\chapter{Data Schemas}
+\label{ch:data_schemas}
+\input{../chapters/31_data_schemas/chapter.tex}
+
+\chapter{APIs Reference}
+\label{ch:apis_reference}
+\input{../chapters/32_apis_reference/chapter.tex}
+
+\chapter{SDKs \& Clients}
+\label{ch:sdks_clients}
+\input{../chapters/33_sdks_clients/chapter.tex}
+
+\chapter{Roadmap}
+\label{ch:roadmap}
+\input{../chapters/34_roadmap/chapter.tex}
+
+\chapter{Meta-Circular Vision}
+\label{ch:meta_circular_vision}
+\input{../chapters/35_meta_circular_vision/chapter.tex}
+
+% Back matter
+\backmatter
+
+% Appendices
+\appendix
+
+\chapter{Glossary}
+\input{appendices/glossary.tex}
+
+\chapter{Data Schemas Reference}
+\input{appendices/schemas.tex}
+
+\chapter{API Reference Quick Guide}
+\input{appendices/api_reference.tex}
+
+\chapter{Tier A Sources Index}
+\input{appendices/tier_a_sources.tex}
+
+\chapter{Quality Gates Reference}
+\input{appendices/quality_gates.tex}
+
+% Bibliography
+\bibliographystyle{plainnat}
+\bibliography{references}
+
+% Index
+\printindex
+
+\end{document}
+

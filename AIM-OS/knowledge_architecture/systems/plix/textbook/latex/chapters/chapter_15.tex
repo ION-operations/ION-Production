@@ -1,0 +1,793 @@
+% Chapter 15 converted from Markdown
+% Auto-generated - do not edit manually
+
+
+
+
+\section*{Section 15.1: PROV-JSON Emission}
+
+PROV-JSON emission transforms PLIx execution traces into W3C PROV standard format, enabling standardized provenance tracking and interoperability.
+
+\textbf{PROV Standard Overview}
+
+W3C PROV provides:
+
+\begin{itemize}
+\item \textbf{Entities:} Things that exist (inputs, outputs, artifacts)
+\item \textbf{Activities:} Actions that occur (execution steps, transformations)
+\item \textbf{Agents:} Actors that perform activities (agents, tools, users)
+\item \textbf{Relations:} How entities relate (used, generated, attributed)
+\end{itemize}
+
+PROV enables standardized provenance representation, supporting interoperability and verification.
+
+\textbf{PROV-JSON Structure}
+
+PROV-JSON structure:
+
+\begin{lstlisting}[caption=Code Example]
+interface PROVJSON {
+  prefix: Record<string, string>;
+  entity: Record<string, Entity>;
+  activity: Record<string, Activity>;
+  agent: Record<string, Agent>;
+  wasGeneratedBy: Record<string, string>;
+  used: Record<string, string>;
+  wasAttributedTo: Record<string, string>;
+  wasDerivedFrom: Record<string, string>;
+}
+
+interface Entity {
+  "prov:type": string;
+  "prov:value": any;
+  "prov:label"?: string;
+}
+
+interface Activity {
+  "prov:type": string;
+  "prov:startTime"?: string;
+  "prov:endTime"?: string;
+  "prov:label"?: string;
+}
+\end{lstlisting}
+
+PROV-JSON structure enables standardized provenance representation.
+
+\textbf{PROV Emission Implementation}
+
+PROV emission from PLIx execution:
+
+\begin{lstlisting}[caption=Code Example]
+function emitPROV(
+  runId: string,
+  nodeId: string,
+  action: string,
+  inputs: Record<string, any>,
+  outputs: Record<string, any>,
+  agent: string
+): PROVJSON {
+  const activityId = `act:\texttt{\$\{runId\}\}.\texttt{\$\{nodeId\}\}`;
+  const entityInId = `ent:\texttt{\$\{runId\}\}.\texttt{\$\{nodeId\}\}.in`;
+  const entityOutId = `ent:\texttt{\$\{runId\}\}.\texttt{\$\{nodeId\}\}.out`;
+  const agentId = `agent:\texttt{\$\{agent\}\}`;
+  
+  return {
+    prefix: {
+      "prov": "http://www.w3.org/ns/prov#",
+      "act": `urn:activity:\texttt{\$\{runId\}\}:`,
+      "ent": `urn:entity:\texttt{\$\{runId\}\}:`,
+      "agent": "urn:agent:"
+    },
+    entity: {
+      [entityInId]: {
+        "prov:type": "Input",
+        "prov:value": inputs,
+        "prov:label": `Input for \texttt{\$\{action\}\}`
+      },
+      [entityOutId]: {
+        "prov:type": "Output",
+        "prov:value": outputs,
+        "prov:label": `Output from \texttt{\$\{action\}\}`
+      }
+    },
+    activity: {
+      [activityId]: {
+        "prov:type": action,
+        "prov:startTime": new Date().toISOString(),
+        "prov:label": `Execute \texttt{\$\{action\}\}`
+      }
+    },
+    agent: {
+      [agentId]: {
+        "prov:type": "SoftwareAgent",
+        "prov:label": agent
+      }
+    },
+    wasGeneratedBy: {
+      [entityOutId]: activityId
+    },
+    used: {
+      [activityId]: entityInId
+    },
+    wasAttributedTo: {
+      [activityId]: agentId
+    }
+  };
+}
+\end{lstlisting}
+
+PROV emission transforms PLIx execution into PROV-JSON, enabling standardized provenance tracking.
+
+\textbf{PROV Chain Building}
+
+PROV chain building for multi-step execution:
+
+\begin{lstlisting}[caption=Code Example]
+function buildPROVChain(
+  ir: IRPlan,
+  executionResults: Record<string, ExecutionResult>
+): PROVJSON {
+  const prov: PROVJSON = {
+    prefix: {
+      "prov": "http://www.w3.org/ns/prov#",
+      "act": `urn:activity:\texttt{\$\{ir.intent\}\}:`,
+      "ent": `urn:entity:\texttt{\$\{ir.intent\}\}:`,
+      "agent": "urn:agent:"
+    },
+    entity: {},
+    activity: {},
+    agent: {},
+    wasGeneratedBy: {},
+    used: {},
+    wasAttributedTo: {},
+    wasDerivedFrom: {}
+  };
+  
+  // Emit PROV for each node
+  for (const node of ir.nodes) {
+    const result = executionResults[node.id];
+    const nodePROV = emitPROV(
+      ir.intent,
+      node.id,
+      node.action,
+      node.params,
+      result.outputs,
+      result.agent
+    );
+    
+    // Merge PROV structures
+    Object.assign(prov.entity, nodePROV.entity);
+    Object.assign(prov.activity, nodePROV.activity);
+    Object.assign(prov.agent, nodePROV.agent);
+    Object.assign(prov.wasGeneratedBy, nodePROV.wasGeneratedBy);
+    Object.assign(prov.used, nodePROV.used);
+    Object.assign(prov.wasAttributedTo, nodePROV.wasAttributedTo);
+    
+    // Add derivation links for dependencies
+    for (const dep of node.deps) {
+      const depOutputId = `ent:\texttt{\$\{ir.intent\}\}.\texttt{\$\{dep\}\}.out`;
+      const nodeInputId = `ent:\texttt{\$\{ir.intent\}\}.\texttt{\$\{node.id\}\}.in`;
+      prov.wasDerivedFrom[nodeInputId] = depOutputId;
+    }
+  }
+  
+  return prov;
+}
+\end{lstlisting}
+
+PROV chain building creates complete provenance chains, enabling full execution traceability.
+
+\textbf{PROV Emission Benefits}
+
+PROV emission provides:
+
+\begin{itemize}
+\item \textbf{Standardized Format:} W3C PROV standard enables interoperability
+\item \textbf{Complete Traces:} Full execution provenance tracking
+\item \textbf{Verification:} Enables provenance verification
+\item \textbf{Interoperability:} Standard format supports tool integration
+\end{itemize}
+
+These benefits enable standardized provenance tracking and verification.
+
+\section*{Section 15.2: OpenLineage Events}
+
+OpenLineage events provide data lineage tracking for PLIx execution, enabling lineage queries and integration with data platforms.
+
+\textbf{OpenLineage Overview}
+
+OpenLineage provides:
+
+\begin{itemize}
+\item \textbf{Job Events:} Job-level lineage (START, COMPLETE, FAIL)
+\item \textbf{Run Events:} Run-level lineage (execution instances)
+\item \textbf{Dataset Events:} Dataset-level lineage (inputs/outputs)
+\item \textbf{Integration:} Integration with data platforms (Spark, Airflow, etc.)
+\end{itemize}
+
+OpenLineage enables data lineage tracking, supporting data governance and compliance.
+
+\textbf{OpenLineage Event Structure}
+
+OpenLineage event structure:
+
+\begin{lstlisting}[caption=Code Example]
+interface OpenLineageEvent {
+  eventType: "START" | "COMPLETE" | "FAIL";
+  eventTime: string;
+  run: {
+    runId: string;
+    facets?: Record<string, any>;
+  };
+  job: {
+    namespace: string;
+    name: string;
+    facets?: Record<string, any>;
+  };
+  inputs?: Dataset[];
+  outputs?: Dataset[];
+  producer: string;
+}
+
+interface Dataset {
+  namespace: string;
+  name: string;
+  facets?: Record<string, any>;
+}
+\end{lstlisting}
+
+OpenLineage event structure enables standardized data lineage tracking.
+
+\textbf{OpenLineage Event Emission}
+
+OpenLineage event emission:
+
+\begin{lstlisting}[caption=Code Example]
+function emitOpenLineageEvent(
+  eventType: "START" | "COMPLETE" | "FAIL",
+  jobName: string,
+  runId: string,
+  inputs?: Dataset[],
+  outputs?: Dataset[],
+  error?: Error
+): OpenLineageEvent {
+  return {
+    eventType,
+    eventTime: new Date().toISOString(),
+    run: {
+      runId,
+      facets: {
+        "plix:contract": {
+          intent: jobName,
+          timestamp: new Date().toISOString()
+        }
+      }
+    },
+    job: {
+      namespace: "aimos/plix",
+      name: jobName,
+      facets: {
+        "plix:execution": {
+          intent: jobName,
+          runId
+        }
+      }
+    },
+    inputs: inputs || [],
+    outputs: outputs || [],
+    producer: "plix://v0.1",
+    ...(error && {
+      run: {
+        runId,
+        facets: {
+          "plix:error": {
+            message: error.message,
+            stack: error.stack
+          }
+        }
+      }
+    })
+  };
+}
+
+function emitNodeEvent(
+  nodeId: string,
+  action: string,
+  eventType: "START" | "COMPLETE" | "FAIL",
+  inputs?: Dataset[],
+  outputs?: Dataset[],
+  error?: Error
+): OpenLineageEvent {
+  return emitOpenLineageEvent(
+    eventType,
+    `\texttt{\$\{nodeId\}\}:\texttt{\$\{action\}\}`,
+    `\texttt{\$\{nodeId\}\}_\texttt{\$\{Date.now()\}\}`,
+    inputs,
+    outputs,
+    error
+  );
+}
+\end{lstlisting}
+
+OpenLineage event emission provides standardized data lineage events, enabling lineage tracking.
+
+\textbf{OpenLineage Integration}
+
+OpenLineage integration with PLIx execution:
+
+\begin{lstlisting}[caption=Code Example]
+async function executeWithLineage(
+  ir: IRPlan,
+  executor: NodeExecutor,
+  lineageEmitter: (event: OpenLineageEvent) => Promise<void>
+): Promise<ExecutionResult> {
+  const runId = `run_\texttt{\$\{Date.now()\}\}`;
+  
+  // Emit START event
+  await lineageEmitter(emitOpenLineageEvent(
+    "START",
+    ir.intent,
+    runId
+  ));
+  
+  const results: Record<string, any> = {};
+  
+  try {
+    for (const node of ir.nodes) {
+      // Emit node START event
+      await lineageEmitter(emitNodeEvent(
+        node.id,
+        node.action,
+        "START",
+        mapToDatasets(node.params, "input")
+      ));
+      
+      try {
+        const output = await executor.exec(node.id, node.action, node.params);
+        results[node.id] = output;
+        
+        // Emit node COMPLETE event
+        await lineageEmitter(emitNodeEvent(
+          node.id,
+          node.action,
+          "COMPLETE",
+          mapToDatasets(node.params, "input"),
+          mapToDatasets(output, "output")
+        ));
+      } catch (error) {
+        // Emit node FAIL event
+        await lineageEmitter(emitNodeEvent(
+          node.id,
+          node.action,
+          "FAIL",
+          mapToDatasets(node.params, "input"),
+          undefined,
+          error as Error
+        ));
+        throw error;
+      }
+    }
+    
+    // Emit COMPLETE event
+    await lineageEmitter(emitOpenLineageEvent(
+      "COMPLETE",
+      ir.intent,
+      runId,
+      mapToDatasets(ir.evidenceRequired, "input"),
+      mapToDatasets(ir.evidenceProduce, "output")
+    ));
+    
+    return { results };
+  } catch (error) {
+    // Emit FAIL event
+    await lineageEmitter(emitOpenLineageEvent(
+      "FAIL",
+      ir.intent,
+      runId,
+      undefined,
+      undefined,
+      error as Error
+    ));
+    throw error;
+  }
+}
+
+function mapToDatasets(data: any, type: "input" | "output"): Dataset[] {
+  // Map data to OpenLineage datasets
+  if (typeof data === 'object' && data !== null) {
+    return Object.entries(data).map(([key, value]) => ({
+      namespace: "aimos/plix",
+      name: `\texttt{\$\{type\}\}:\texttt{\$\{key\}\}`,
+      facets: {
+        "dataSchema": {
+          fields: [{ name: key, type: typeof value }]
+        }
+      }
+    }));
+  }
+  return [];
+}
+\end{lstlisting}
+
+OpenLineage integration provides complete data lineage tracking for PLIx execution.
+
+\textbf{OpenLineage Benefits}
+
+OpenLineage provides:
+
+\begin{itemize}
+\item \textbf{Data Lineage:} Complete data lineage tracking
+\item \textbf{Platform Integration:} Integration with data platforms
+\item \textbf{Governance:} Supports data governance and compliance
+\item \textbf{Standardized Format:} Standard format enables tool integration
+\end{itemize}
+
+These benefits enable comprehensive data lineage tracking and integration.
+
+\section*{Section 15.3: SEG Integration}
+
+SEG integration stores PROV and OpenLineage events as SEG entities and relations, enabling intent-aware evidence tracking and lineage queries.
+
+\textbf{PROV \textrightarrow{} SEG Integration}
+
+PROV to SEG entity conversion:
+
+\begin{lstlisting}[caption=Code Example]
+async function storePROVInSEG(
+  prov: PROVJSON,
+  seg: SEGraph
+): Promise<void> {
+  // Store entities as SEG entities
+  for (const [entityId, entity] of Object.entries(prov.entity)) {
+    const segEntity = new Entity({
+      type: "provenance_entity",
+      name: entity["prov:label"] || entityId,
+      attributes: {
+        prov_id: entityId,
+        prov_type: entity["prov:type"],
+        prov_value: entity["prov:value"]
+      }
+    });
+    
+    await seg.add_entity(segEntity);
+  }
+  
+  // Store activities as SEG entities
+  for (const [activityId, activity] of Object.entries(prov.activity)) {
+    const segEntity = new Entity({
+      type: "provenance_activity",
+      name: activity["prov:label"] || activityId,
+      attributes: {
+        prov_id: activityId,
+        prov_type: activity["prov:type"],
+        prov_start_time: activity["prov:startTime"],
+        prov_end_time: activity["prov:endTime"]
+      }
+    });
+    
+    await seg.add_entity(segEntity);
+  }
+  
+  // Store relations
+  for (const [targetId, sourceId] of Object.entries(prov.wasGeneratedBy)) {
+    const sourceEntity = await seg.get_entity_by_attributes({ prov_id: sourceId });
+    const targetEntity = await seg.get_entity_by_attributes({ prov_id: targetId });
+    
+    if (sourceEntity && targetEntity) {
+      await seg.add_relation(new Relation({
+        source_id: sourceEntity.id,
+        target_id: targetEntity.id,
+        relation_type: RelationType.DERIVES_FROM,
+        attributes: {
+          prov_relation: "wasGeneratedBy"
+        }
+      }));
+    }
+  }
+}
+\end{lstlisting}
+
+PROV to SEG integration stores provenance as SEG entities and relations, enabling graph-based provenance queries.
+
+\textbf{OpenLineage \textrightarrow{} SEG Integration}
+
+OpenLineage to SEG integration:
+
+\begin{lstlisting}[caption=Code Example]
+async function storeOpenLineageInSEG(
+  event: OpenLineageEvent,
+  seg: SEGraph
+): Promise<void> {
+  // Store job as entity
+  const jobEntity = new Entity({
+    type: "lineage_job",
+    name: event.job.name,
+    attributes: {
+      namespace: event.job.namespace,
+      run_id: event.run.runId,
+      event_type: event.eventType,
+      event_time: event.eventTime
+    }
+  });
+  
+  const jobEntityId = (await seg.add_entity(jobEntity)).id;
+  
+  // Store datasets as entities
+  const datasetEntities: string[] = [];
+  
+  if (event.inputs) {
+    for (const dataset of event.inputs) {
+      const datasetEntity = new Entity({
+        type: "lineage_dataset",
+        name: dataset.name,
+        attributes: {
+          namespace: dataset.namespace,
+          dataset_type: "input"
+        }
+      });
+      
+      datasetEntities.push((await seg.add_entity(datasetEntity)).id);
+      
+      // Link dataset to job
+      await seg.add_relation(new Relation({
+        source_id: datasetEntity.id,
+        target_id: jobEntityId,
+        relation_type: RelationType.REFERENCES,
+        attributes: {
+          lineage_relation: "input"
+        }
+      }));
+    }
+  }
+  
+  if (event.outputs) {
+    for (const dataset of event.outputs) {
+      const datasetEntity = new Entity({
+        type: "lineage_dataset",
+        name: dataset.name,
+        attributes: {
+          namespace: dataset.namespace,
+          dataset_type: "output"
+        }
+      });
+      
+      const datasetEntityId = (await seg.add_entity(datasetEntity)).id;
+      
+      // Link job to dataset
+      await seg.add_relation(new Relation({
+        source_id: jobEntityId,
+        target_id: datasetEntityId,
+        relation_type: RelationType.DERIVES_FROM,
+        attributes: {
+          lineage_relation: "output"
+        }
+      }));
+    }
+  }
+}
+\end{lstlisting}
+
+OpenLineage to SEG integration stores lineage events as SEG entities and relations, enabling lineage queries.
+
+\textbf{Intent Lineage Tracking}
+
+Intent lineage tracking in SEG:
+
+\begin{lstlisting}[caption=Code Example]
+async function trackIntentLineage(
+  contract: PLIxContract,
+  executionResult: ExecutionResult,
+  prov: PROVJSON,
+  seg: SEGraph
+): Promise<void> {
+  // Store intent as entity
+  const intentEntity = new Entity({
+    type: "plix_intent",
+    name: contract.intent,
+    attributes: {
+      contract: contract.to_dict(),
+      intent_type: "booking"
+    }
+  });
+  
+  const intentEntityId = (await seg.add_entity(intentEntity)).id;
+  
+  // Store outcome as entity
+  const outcomeEntity = new Entity({
+    type: "plix_outcome",
+    name: "Execution Result",
+    attributes: {
+      results: executionResult.results,
+      intent_achieved: executionResult.intent_achieved
+    }
+  });
+  
+  const outcomeEntityId = (await seg.add_entity(outcomeEntity)).id;
+  
+  // Link intent to outcome
+  await seg.add_relation(new Relation({
+    source_id: intentEntityId,
+    target_id: outcomeEntityId,
+    relation_type: RelationType.DERIVES_FROM,
+    attributes: {
+      lineage_type: "intent_to_outcome",
+      prov_trace: prov
+    }
+  }));
+  
+  // Link PROV activities to intent
+  for (const [activityId, activity] of Object.entries(prov.activity)) {
+    const activityEntity = await seg.get_entity_by_attributes({ prov_id: activityId });
+    if (activityEntity) {
+      await seg.add_relation(new Relation({
+        source_id: intentEntityId,
+        target_id: activityEntity.id,
+        relation_type: RelationType.REFERENCES,
+        attributes: {
+          lineage_type: "intent_to_activity"
+        }
+      }));
+    }
+  }
+}
+\end{lstlisting}
+
+Intent lineage tracking stores intent-outcome relationships in SEG, enabling intent-driven lineage queries.
+
+\textbf{SEG Integration Benefits}
+
+SEG integration provides:
+
+\begin{itemize}
+\item \textbf{Graph-Based Queries:} Graph queries for provenance and lineage
+\item \textbf{Intent Awareness:} Intent-aware evidence tracking
+\item \textbf{Temporal Queries:} Bitemporal queries for evolution tracking
+\item \textbf{Evidence Chains:} Complete evidence chains for verification
+\end{itemize}
+
+These benefits enable comprehensive intent-aware evidence tracking and lineage queries.
+
+\section*{Section 15.4: Provenance Queries}
+
+Provenance queries enable intent lineage queries, evidence chain queries, and temporal queries, supporting verification and learning.
+
+\textbf{Intent Lineage Queries}
+
+Intent lineage queries:
+
+\begin{lstlisting}[caption=Code Example]
+async function queryIntentLineage(
+  outcomeEntityId: string,
+  seg: SEGraph
+): Promise<Entity[]> {
+  // Find all intents that led to this outcome
+  const relations = await seg.query_relations({
+    target_id: outcomeEntityId,
+    relation_type: RelationType.DERIVES_FROM
+  });
+  
+  const intentEntities: Entity[] = [];
+  
+  for (const relation of relations) {
+    const sourceEntity = await seg.get_entity(relation.source_id);
+    if (sourceEntity && sourceEntity.type === "plix_intent") {
+      intentEntities.push(sourceEntity);
+    }
+  }
+  
+  return intentEntities;
+}
+
+async function queryOutcomeLineage(
+  intentEntityId: string,
+  seg: SEGraph
+): Promise<Entity[]> {
+  // Find all outcomes from this intent
+  const relations = await seg.query_relations({
+    source_id: intentEntityId,
+    relation_type: RelationType.DERIVES_FROM
+  });
+  
+  const outcomeEntities: Entity[] = [];
+  
+  for (const relation of relations) {
+    const targetEntity = await seg.get_entity(relation.target_id);
+    if (targetEntity && targetEntity.type === "plix_outcome") {
+      outcomeEntities.push(targetEntity);
+    }
+  }
+  
+  return outcomeEntities;
+}
+\end{lstlisting}
+
+Intent lineage queries enable tracing outcomes to intents and intents to outcomes, supporting learning.
+
+\textbf{Evidence Chain Queries}
+
+Evidence chain queries:
+
+\begin{lstlisting}[caption=Code Example]
+async function queryEvidenceChain(
+  claimEntityId: string,
+  seg: SEGraph
+): Promise<Entity[]> {
+  // Find all evidence supporting this claim
+  const relations = await seg.query_relations({
+    target_id: claimEntityId,
+    relation_type: RelationType.SUPPORTS
+  });
+  
+  const evidenceEntities: Entity[] = [];
+  
+  for (const relation of relations) {
+    const sourceEntity = await seg.get_entity(relation.source_id);
+    if (sourceEntity) {
+      evidenceEntities.push(sourceEntity);
+      
+      // Recursively find evidence for this evidence
+      const subEvidence = await queryEvidenceChain(sourceEntity.id, seg);
+      evidenceEntities.push(...subEvidence);
+    }
+  }
+  
+  return evidenceEntities;
+}
+\end{lstlisting}
+
+Evidence chain queries enable complete evidence tracing, supporting verification.
+
+\textbf{Temporal Queries}
+
+Temporal queries:
+
+\begin{lstlisting}[caption=Code Example]
+async function queryProvenanceAtTime(
+  entityId: string,
+  timestamp: Date,
+  seg: SEGraph
+): Promise<Entity | null> {
+  // Query entity at specific time
+  return await seg.get_entity(entityId, as_of: timestamp);
+}
+
+async function queryLineageEvolution(
+  intentEntityId: string,
+  seg: SEGraph
+): Promise<Entity[]> {
+  // Query intent evolution over time
+  const entities = await seg.query_entities({
+    type: "plix_intent",
+    attributes_filter: { intent_name: intentEntityId }
+  });
+  
+  // Sort by valid time
+  return entities.sort((a, b) => 
+    a.vt_start.getTime() - b.vt_start.getTime()
+  );
+}
+\end{lstlisting}
+
+Temporal queries enable time-travel provenance queries, supporting evolution tracking.
+
+\textbf{Provenance Query Benefits}
+
+Provenance queries provide:
+
+\begin{itemize}
+\item \textbf{Intent Lineage:} Trace outcomes to intents
+\item \textbf{Evidence Chains:} Complete evidence tracing
+\item \textbf{Temporal Queries:} Time-travel provenance queries
+\item \textbf{Learning:} Support learning from intent-outcome relationships
+\end{itemize}
+
+These benefits enable comprehensive provenance analysis and learning.
+
+\section*{Chapter 15 Summary}
+
+Provenance emitters provide PROV-JSON emission, OpenLineage events, SEG integration, and provenance queries. PROV-JSON emission transforms PLIx execution into W3C PROV standard format. OpenLineage events provide data lineage tracking. SEG integration stores provenance as graph entities and relations. Provenance queries enable intent lineage, evidence chains, and temporal queries.
+
+\textbf{Next:} Chapter 16 explores policy emission—OPA/Rego integration for constraint enforcement.
+
+\textbf{Word Count:} \textasciitilde{}2,400 words  
+

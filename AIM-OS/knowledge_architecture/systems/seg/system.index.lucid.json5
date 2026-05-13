@@ -1,0 +1,300 @@
+{
+  "systemId": "seg.sharedEvidenceGraph",
+  "humanName": "Shared Evidence Graph - Knowledge Synthesis and Contradiction Detection",
+  "version": "v2.2.0",
+  "status": "production",
+  
+  "intent": {
+    "purpose": "Provide knowledge synthesis system that builds a shared evidence graph to detect contradictions, resolve conflicts, and synthesize insights across all AIM-OS systems. Think 'AI's reasoning engine' - connects all knowledge, finds patterns, and maintains logical consistency.",
+    "must_not_regress": [
+      "Must not create circular dependencies in graph",
+      "Must not miss critical contradictions",
+      "Must not resolve conflicts without evidence",
+      "Must not synthesize without sufficient evidence",
+      "Must not allow logical inconsistencies"
+    ],
+    "why_it_exists": "Enables knowledge synthesis across all AIM-OS systems. Detects contradictions, resolves conflicts, and maintains logical consistency. Provides reasoning engine for AI consciousness."
+  },
+  
+  "classification": {
+    "security_level": "critical",
+    "perf_sensitivity": "high",
+    "ownership": "core",
+    "sideEffects": [
+      "Builds shared evidence graph across all systems",
+      "Detects contradictions and conflicts",
+      "Resolves conflicts using evidence strength",
+      "Synthesizes insights and patterns",
+      "Maintains logical consistency"
+    ]
+  },
+  
+  "internalNodes": [
+    {
+      "id": "graphBuilder",
+      "responsibility": "Builds and maintains the shared evidence graph structure",
+      "must_never": [
+        "Create circular dependencies in graph",
+        "Lose graph connectivity",
+        "Allow inconsistent graph state"
+      ],
+      "perf_budget_ms": 50,
+      "status": "production"
+    },
+    {
+      "id": "contradictionDetector",
+      "responsibility": "Detects contradictions and conflicts in the evidence graph",
+      "must_never": [
+        "Miss critical contradictions",
+        "Create false positive conflicts",
+        "Lose contradiction context"
+      ],
+      "perf_budget_ms": 30,
+      "status": "production"
+    },
+    {
+      "id": "conflictResolver",
+      "responsibility": "Resolves conflicts using evidence strength and provenance",
+      "must_never": [
+        "Resolve conflicts without evidence",
+        "Lose conflict resolution reasoning",
+        "Create inconsistent resolutions"
+      ],
+      "perf_budget_ms": 40,
+      "status": "production"
+    },
+    {
+      "id": "knowledgeSynthesizer",
+      "responsibility": "Synthesizes insights and patterns from the evidence graph",
+      "must_never": [
+        "Synthesize without sufficient evidence",
+        "Create false synthesis patterns",
+        "Lose synthesis provenance"
+      ],
+      "perf_budget_ms": 60,
+      "status": "production"
+    },
+    {
+      "id": "evidenceValidator",
+      "responsibility": "Validates evidence quality and reliability",
+      "must_never": [
+        "Accept invalid evidence",
+        "Skip evidence validation",
+        "Lose validation reasoning"
+      ],
+      "perf_budget_ms": 25,
+      "status": "production"
+    },
+    {
+      "id": "relationshipMapper",
+      "responsibility": "Maps relationships and dependencies between evidence nodes",
+      "must_never": [
+        "Create incorrect relationships",
+        "Lose relationship context",
+        "Allow relationship cycles"
+      ],
+      "perf_budget_ms": 35,
+      "status": "production"
+    },
+    {
+      "id": "consistencyChecker",
+      "responsibility": "Maintains logical consistency across the entire graph",
+      "must_never": [
+        "Allow logical inconsistencies",
+        "Skip consistency checks",
+        "Lose consistency reasoning"
+      ],
+      "perf_budget_ms": 45,
+      "status": "production"
+    },
+    {
+      "id": "insightExtractor",
+      "responsibility": "Extracts actionable insights from graph patterns",
+      "must_never": [
+        "Extract insights without evidence",
+        "Create misleading insights",
+        "Lose insight provenance"
+      ],
+      "perf_budget_ms": 20,
+      "status": "production"
+    },
+    {
+      "id": "graphOptimizer",
+      "responsibility": "Optimizes graph structure for performance and clarity",
+      "must_never": [
+        "Lose graph information during optimization",
+        "Create optimization artifacts",
+        "Break graph connectivity"
+      ],
+      "perf_budget_ms": 70,
+      "status": "production"
+    }
+  ],
+  
+  "systemMap": {
+    "mapFile": "./system.map.lucid.json5"
+  },
+  
+  "foresight": {
+    "predictedRisks": [
+      {
+        "risk_id": "graph_circular_dependency",
+        "description": "Circular dependencies could be created in evidence graph",
+        "likelihood": "medium",
+        "blast_radius_if_real": "graph_traversal_fails",
+        "mitigation": "Implement cycle detection and prevention",
+        "watchpoint": "if cycle_detected, halt graph operation and alert"
+      },
+      {
+        "risk_id": "contradiction_miss",
+        "description": "Critical contradictions could be missed",
+        "likelihood": "medium",
+        "blast_radius_if_real": "logical_inconsistencies_propagate",
+        "mitigation": "Implement comprehensive contradiction detection",
+        "watchpoint": "if contradiction_detection_fails, trigger manual review"
+      },
+      {
+        "risk_id": "conflict_resolution_failure",
+        "description": "Conflict resolution could fail or create inconsistencies",
+        "likelihood": "low",
+        "blast_radius_if_real": "knowledge_graph_unreliable",
+        "mitigation": "Implement robust conflict resolution with validation",
+        "watchpoint": "if resolution_fails, halt operation and alert"
+      },
+      {
+        "risk_id": "graph_scalability_limit",
+        "description": "Graph could become too large for efficient operations",
+        "likelihood": "high",
+        "blast_radius_if_real": "graph_operations_slow",
+        "mitigation": "Implement graph partitioning and optimization",
+        "watchpoint": "if graph_size > 1M nodes, trigger optimization"
+      }
+    ],
+    "killSwitch": "seg.graph.enabled=false",
+    "emergencyProcedures": [
+      "Freeze graph updates immediately",
+      "Switch to read-only mode",
+      "Create emergency graph snapshot",
+      "Notify all dependent systems"
+    ]
+  },
+  
+  "lineage": {
+    "parentSystemId": null,
+    "childSystems": [
+      "apoe.aiPoweredOrchestration",
+      "cas.cognitiveAnalysis",
+      "iis.intuitiveIntelligence"
+    ],
+    "maturity": "production"
+  },
+  
+  "connections": [
+    {
+      "viaPort": "cmcIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "cmc.contextMemoryCore",
+      "protocol": "internal_api",
+      "data": ["provenance_edges", "graph_nodes", "evidence_links"],
+      "security_level": "critical",
+      "governanceRequired": true,
+      "implementation": "packages/seg/cmc_integration.py",
+      "status": "complete"
+    },
+    {
+      "viaPort": "hhniIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "hhni.hierarchicalHypergraph",
+      "protocol": "internal_api",
+      "data": ["retrieval_evidence", "indexed_knowledge", "context_graph"],
+      "security_level": "high",
+      "governanceRequired": true,
+      "implementation": "packages/seg/hhni_integration.py",
+      "status": "complete"
+    },
+    {
+      "viaPort": "vifIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "vif.verifiableIntelligence",
+      "protocol": "internal_api",
+      "data": ["witness_validation", "provenance_chains", "evidence_proofs"],
+      "security_level": "critical",
+      "governanceRequired": true,
+      "implementation": "packages/seg/vif_integration.py",
+      "status": "complete"
+    },
+    {
+      "viaPort": "apoeIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "apoe.aiPoweredOrchestration",
+      "protocol": "internal_api",
+      "data": ["knowledge_synthesis", "reasoning_chains", "evidence_context"],
+      "security_level": "high",
+      "governanceRequired": true,
+      "implementation": "packages/seg/apoe_integration.py",
+      "status": "complete"
+    },
+    {
+      "viaPort": "sdfcvfIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "sdfcvf.atomicEvolution",
+      "protocol": "internal_api",
+      "data": ["evolution_evidence", "change_provenance", "consistency_checks"],
+      "security_level": "high",
+      "governanceRequired": true,
+      "implementation": "packages/seg/sdfcvf_integration.py",
+      "status": "complete"
+    },
+    {
+      "viaPort": "casIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "cas.cognitiveAnalysis",
+      "protocol": "internal_api",
+      "data": ["failure_patterns", "cognitive_errors", "pattern_analysis"],
+      "security_level": "high",
+      "governanceRequired": true,
+      "implementation": "packages/seg/cas_integration.py",
+      "status": "complete"
+    },
+    {
+      "viaPort": "tcsIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "tcs.timelineContext",
+      "protocol": "internal_api",
+      "data": ["timeline_entries", "context_snapshots", "gate_evidence"],
+      "security_level": "high",
+      "governanceRequired": true,
+      "implementation": "packages/seg/tcs_integration.py",
+      "status": "complete"
+    }
+  ],
+  
+  "exceptions": [],
+  
+  "lastUpdated": "2025-01-27T00:25:00Z",
+  "atlasHealth": {
+    "undeclaredConnections": [],
+    "performanceAlerts": [],
+    "securityAlerts": []
+  },
+  
+  "relatedIdeas": [
+    "Evidence synthesis patterns",
+    "Knowledge graph approaches",
+    "Concept provenance chains",
+    "Contradiction detection algorithms"
+  ],
+  
+  "ideaReferenceCount": 39,
+  
+  "integrationPoints": {
+    "storage": "CMC stores all graph nodes and edges (packages/seg/cmc_integration.py)",
+    "retrieval": "HHNI indexes graph for knowledge retrieval (packages/seg/hhni_integration.py)",
+    "verification": "VIF validates all evidence with witnesses (packages/seg/vif_integration.py)",
+    "orchestration": "APOE uses SEG for knowledge synthesis (packages/seg/apoe_integration.py)",
+    "evolution": "SDF-CVF links evolution evidence to graph (packages/seg/sdfcvf_integration.py)",
+    "failure_analysis": "CAS stores failure patterns as evidence (packages/seg/cas_integration.py)",
+    "timeline": "TCS transforms timeline entries to evidence (packages/seg/tcs_integration.py)"
+  }
+}
+

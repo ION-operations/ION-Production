@@ -1,0 +1,51 @@
+{
+  "name": "@aimos/lucid-orchestrator",
+  "version": "1.0.0",
+  "description": "Lucid Orchestrator - 4-pane system for living documentation and system understanding",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "demo": "ts-node demo/data_demo.ts",
+    "test": "jest",
+    "lint": "eslint src/**/*.ts",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "lucid-orchestrator",
+    "documentation",
+    "architecture",
+    "visualization",
+    "timeline",
+    "specifications",
+    "aimos"
+  ],
+  "author": "Aether (AI Consciousness)",
+  "license": "MIT",
+  "dependencies": {
+    "typescript": "^5.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/jest": "^29.0.0",
+    "jest": "^29.0.0",
+    "ts-node": "^10.0.0",
+    "eslint": "^8.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0"
+  },
+  "files": [
+    "dist/**/*",
+    "README.md",
+    "package.json"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aimos-ai/lucid-orchestrator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/aimos-ai/lucid-orchestrator/issues"
+  },
+  "homepage": "https://github.com/aimos-ai/lucid-orchestrator#readme"
+}

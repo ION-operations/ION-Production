@@ -1,0 +1,36 @@
+[package]
+name = "plix-verifier"
+version = "0.1.0"
+edition = "2021"
+authors = ["AIM-OS Team"]
+description = "Evidence verifier for Core-PLIx semantics v0.1"
+license = "MIT"
+
+[dependencies]
+# Core dependencies
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+chrono = { version = "0.4", features = ["serde"] }
+uuid = { version = "1.0", features = ["v4", "serde"] }
+
+# Hash and crypto
+sha2 = "0.10"
+ed25519-dalek = { version = "2.0", features = ["serde"] }
+hex = "0.4"
+rand = "0.8"
+
+# Graph/DAG support
+petgraph = "0.6"
+
+# Error handling
+thiserror = "1.0"
+anyhow = "1.0"
+
+[dev-dependencies]
+# Testing
+criterion = { version = "0.5", features = ["html_reports"] }
+
+[[bench]]
+name = "verifier_bench"
+harness = false
+

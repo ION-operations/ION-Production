@@ -1,0 +1,19 @@
+{
+  "system_slug": "nccl",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-03",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "nvidia-cuda",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "NCCL is part of NVIDIA deep learning software stack documentation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "INFERRED",
+      "notes": "Typical training clusters run Linux hosts with NCCL-accelerated frameworks."
+    }
+  ]
+}

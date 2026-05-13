@@ -1,0 +1,125 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "depends_on",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Linux cgroups/namespaces for typical OCI execution via runc-compatible low-level runtime."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "CRI plugin commonly used by kubelet (`src-k8s-cri`, containerd CRI docs)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "docker",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Modern Docker Engine delegates to containerd; shared ecosystem history."
+    },
+    {
+      "type": "integrates_with",
+      "target": "runc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Default low-level OCI runtime in typical Linux stacks; alternatives exist (crun, etc.)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "crun",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "containerd can invoke crun as the low-level OCI runtime where configured."
+    },
+    {
+      "type": "integrates_with",
+      "target": "oci-image-spec",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Pulls and unpacks OCI images into layers and runtime bundles in typical CRI stacks."
+    },
+    {
+      "type": "integrates_with",
+      "target": "oci-distribution-spec",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Registry pull/push uses distribution-compatible HTTP behavior for manifests and blobs."
+    },
+    {
+      "type": "integrates_with",
+      "target": "oci-runtime-spec",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Creates and runs OCI bundles; invokes low-level runtimes conforming to the OCI Runtime Spec."
+    },
+    {
+      "type": "integrates_with",
+      "target": "alpine-linux",
+      "evidence_tier": "INFERRED",
+      "notes": "CRI stacks commonly run Alpine-based workload images pulled as OCI artifacts."
+    },
+    {
+      "type": "integrates_with",
+      "target": "debian",
+      "evidence_tier": "INFERRED",
+      "notes": "CRI stacks commonly run Debian-based workload images pulled as OCI artifacts."
+    },
+    {
+      "type": "integrates_with",
+      "target": "ubuntu",
+      "evidence_tier": "INFERRED",
+      "notes": "CRI stacks commonly run Ubuntu-based workload images pulled as OCI artifacts."
+    },
+    {
+      "type": "integrates_with",
+      "target": "fedora",
+      "evidence_tier": "INFERRED",
+      "notes": "CRI stacks commonly run Fedora-based workload images pulled as OCI artifacts."
+    },
+    {
+      "type": "integrates_with",
+      "target": "rhel",
+      "evidence_tier": "INFERRED",
+      "notes": "CRI stacks commonly run RHEL-derived workload images pulled as OCI artifacts."
+    },
+    {
+      "type": "integrates_with",
+      "target": "rocky-linux",
+      "evidence_tier": "INFERRED",
+      "notes": "CRI stacks commonly run Rocky Linux-based workload images pulled as OCI artifacts."
+    },
+    {
+      "type": "integrates_with",
+      "target": "almalinux",
+      "evidence_tier": "INFERRED",
+      "notes": "CRI stacks commonly run AlmaLinux-based workload images pulled as OCI artifacts."
+    },
+    {
+      "type": "integrates_with",
+      "target": "centos-stream",
+      "evidence_tier": "INFERRED",
+      "notes": "CRI stacks commonly run CentOS Stream-based workload images pulled as OCI artifacts."
+    },
+    {
+      "type": "integrates_with",
+      "target": "centos-linux",
+      "evidence_tier": "INFERRED",
+      "notes": "CRI stacks historically ran CentOS Linux-based workload images pulled as OCI artifacts."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kata-containers",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "containerd CRI stacks can select Kata as a VM-backed low-level OCI runtime alternative to default runc-class runtimes per common deployment guides."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gvisor",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "containerd can invoke runsc as the low-level OCI runtime where configured per common deployment guides."
+    },
+    {
+      "type": "integrates_with",
+      "target": "buildkit",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "BuildKit commonly uses containerd as a worker/store backend in Docker Engine-class deployments and standalone buildkitd setups."
+    }
+  ]
+}

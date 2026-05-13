@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "ROCm is primarily supported on Linux distributions with AMD GPU driver stacks."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-ir",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "HIP/Clang commonly use LLVM with the AMDGPU target (see LLVM AMDGPUUsage.html)."
+    },
+    {
+      "type": "competes_with",
+      "target": "nvidia-cuda",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable GPU compute ecosystems (ROCm/HIP vs NVIDIA CUDA) in many HPC/ML deployment classes."
+    }
+  ]
+}

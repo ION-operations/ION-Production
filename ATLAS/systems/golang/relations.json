@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "c-language",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Foreign-function interface via cgo (import \"C\" / C bindings)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "Kubernetes ecosystem and control-plane tooling are Go-centric; tie per-project sources when load-bearing."
+    }
+  ]
+}

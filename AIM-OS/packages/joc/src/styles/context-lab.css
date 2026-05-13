@@ -1,0 +1,547 @@
+/* ══════════════════════════════════════════════════════════
+   Context Lab — Strategy Evolution & Tournament Dashboard
+   ══════════════════════════════════════════════════════════ */
+
+:root {
+    --clab-gold: #ffd700;
+    --clab-silver: #c0c0c0;
+    --clab-bronze: #cd7f32;
+    --clab-bar: #4ecdc4;
+    --clab-bg: #0e1117;
+    --clab-surface: #161b22;
+    --clab-surface-alt: #1c2230;
+    --clab-border: #30363d;
+    --clab-text: #e6edf3;
+    --clab-text-dim: #8b949e;
+    --clab-accent: #58a6ff;
+    --clab-accent-glow: rgba(88, 166, 255, 0.15);
+    --clab-success: #4ecdc4;
+    --clab-danger: #ff6b6b;
+    --clab-gen0: #8b949e;
+    --clab-gen1: #58a6ff;
+    --clab-gen2: #bc8cff;
+    --clab-gen3: #f78166;
+}
+
+/* ─── Page Layout ─── */
+
+.clab-page {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    background: var(--clab-bg);
+    color: var(--clab-text);
+}
+
+/* ─── Header ─── */
+
+.clab-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    background: var(--clab-surface);
+    border-bottom: 1px solid var(--clab-border);
+    flex-shrink: 0;
+}
+
+.clab-title-area {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.clab-title {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.clab-subtitle {
+    font-size: 12px;
+    color: var(--clab-text-dim);
+    letter-spacing: 0.3px;
+}
+
+.clab-header-stats {
+    display: flex;
+    gap: 24px;
+}
+
+.clab-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.clab-stat-value {
+    font-size: 20px;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--clab-text);
+}
+
+.clab-stat-label {
+    font-size: 10px;
+    color: var(--clab-text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ─── Tabs ─── */
+
+.clab-tabs {
+    display: flex;
+    gap: 0;
+    padding: 0 24px;
+    background: var(--clab-surface);
+    border-bottom: 1px solid var(--clab-border);
+    flex-shrink: 0;
+}
+
+.clab-tab {
+    padding: 10px 20px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--clab-text-dim);
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.clab-tab:hover {
+    color: var(--clab-text);
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.clab-tab.active {
+    color: var(--clab-accent);
+    border-bottom-color: var(--clab-accent);
+}
+
+/* ─── Body ─── */
+
+.clab-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px 24px;
+}
+
+/* ─── Leaderboard Table ─── */
+
+.clab-table {
+    width: 100%;
+}
+
+.clab-table-header {
+    display: grid;
+    grid-template-columns: 52px 1fr 60px 80px 1fr 70px 50px 100px;
+    gap: 8px;
+    align-items: center;
+    padding: 8px 12px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--clab-text-dim);
+    border-bottom: 1px solid var(--clab-border);
+}
+
+.clab-table-row {
+    display: grid;
+    grid-template-columns: 52px 1fr 60px 80px 1fr 70px 50px 100px;
+    gap: 8px;
+    align-items: center;
+    padding: 10px 12px;
+    font-size: 13px;
+    border-bottom: 1px solid rgba(48, 54, 61, 0.5);
+    transition: background 0.15s ease;
+}
+
+.clab-table-row:hover {
+    background: var(--clab-surface);
+}
+
+.clab-table-row.top3 {
+    background: var(--clab-accent-glow);
+}
+
+.clab-col-rank {
+    font-size: 16px;
+    text-align: center;
+}
+
+.clab-variant-name {
+    font-weight: 600;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+}
+
+.clab-variant-parent {
+    display: block;
+    font-size: 10px;
+    color: var(--clab-text-dim);
+    margin-top: 1px;
+}
+
+.clab-gen-badge {
+    display: inline-block;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+}
+
+.clab-gen-badge.gen-0 {
+    background: rgba(139, 148, 158, 0.2);
+    color: var(--clab-gen0);
+}
+
+.clab-gen-badge.gen-1 {
+    background: rgba(88, 166, 255, 0.15);
+    color: var(--clab-gen1);
+}
+
+.clab-gen-badge.gen-2 {
+    background: rgba(188, 140, 255, 0.15);
+    color: var(--clab-gen2);
+}
+
+.clab-gen-badge.gen-3 {
+    background: rgba(247, 129, 102, 0.15);
+    color: var(--clab-gen3);
+}
+
+.clab-col-quality {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    color: var(--clab-success);
+}
+
+.clab-quality-bar {
+    height: 6px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.clab-quality-fill {
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.6s ease;
+}
+
+.clab-col-time,
+.clab-col-runs {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--clab-text-dim);
+    text-align: right;
+}
+
+.clab-col-range {
+    font-size: 11px;
+    color: var(--clab-text-dim);
+    text-align: right;
+}
+
+/* ─── Strategy Cards ─── */
+
+.clab-strategies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+}
+
+.clab-strategy-card {
+    background: var(--clab-surface);
+    border: 1px solid var(--clab-border);
+    border-radius: 8px;
+    padding: 16px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.clab-strategy-card:hover {
+    border-color: var(--clab-accent);
+    box-shadow: 0 0 16px var(--clab-accent-glow);
+}
+
+.clab-strategy-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.clab-strategy-name {
+    font-size: 15px;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.clab-strategy-rank {
+    font-size: 18px;
+}
+
+.clab-strategy-desc {
+    font-size: 12px;
+    color: var(--clab-text-dim);
+    margin-bottom: 12px;
+    line-height: 1.4;
+}
+
+.clab-strategy-stats {
+    display: flex;
+    gap: 16px;
+    font-size: 12px;
+    color: var(--clab-text-dim);
+    margin-bottom: 12px;
+}
+
+.clab-strategy-stats strong {
+    color: var(--clab-text);
+}
+
+.clab-strategy-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.clab-btn-sm {
+    padding: 4px 10px;
+    font-size: 11px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--clab-border);
+    border-radius: 4px;
+    color: var(--clab-text);
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.clab-btn-sm:hover {
+    background: var(--clab-accent-glow);
+    border-color: var(--clab-accent);
+}
+
+/* ─── Evolution Panel ─── */
+
+.clab-section {
+    background: var(--clab-surface);
+    border: 1px solid var(--clab-border);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.clab-section-title {
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--clab-text);
+}
+
+.clab-fork-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.clab-form-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.clab-form-row label {
+    width: 80px;
+    font-size: 12px;
+    color: var(--clab-text-dim);
+    flex-shrink: 0;
+}
+
+.clab-form-row input,
+.clab-form-row select {
+    flex: 1;
+    padding: 6px 10px;
+    font-size: 13px;
+    background: var(--clab-bg);
+    border: 1px solid var(--clab-border);
+    border-radius: 4px;
+    color: var(--clab-text);
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.clab-form-row input:focus,
+.clab-form-row select:focus {
+    border-color: var(--clab-accent);
+    outline: none;
+    box-shadow: 0 0 0 2px var(--clab-accent-glow);
+}
+
+.clab-btn-primary {
+    padding: 8px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    background: linear-gradient(135deg, #58a6ff, #bc8cff);
+    border: none;
+    border-radius: 6px;
+    color: white;
+    cursor: pointer;
+    transition: opacity 0.2s ease, transform 0.1s ease;
+    align-self: flex-start;
+}
+
+.clab-btn-primary:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
+}
+
+.clab-btn-primary:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* ─── Lineage Tree ─── */
+
+.clab-lineage {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.clab-lineage-branch {
+    margin-bottom: 12px;
+}
+
+.clab-lineage-node {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    font-size: 13px;
+    border-radius: 4px;
+    transition: background 0.15s ease;
+}
+
+.clab-lineage-node:hover {
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.clab-lineage-node.root {
+    font-weight: 700;
+}
+
+.clab-lineage-arrow {
+    color: var(--clab-text-dim);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+}
+
+.clab-lineage-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+}
+
+.clab-lineage-score {
+    margin-left: auto;
+    font-size: 12px;
+    color: var(--clab-success);
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* ─── History ─── */
+
+.clab-history {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.clab-history-card {
+    background: var(--clab-surface);
+    border: 1px solid var(--clab-border);
+    border-radius: 6px;
+    padding: 12px 16px;
+    transition: border-color 0.15s ease;
+}
+
+.clab-history-card:hover {
+    border-color: rgba(88, 166, 255, 0.3);
+}
+
+.clab-history-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.clab-history-id {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--clab-accent);
+}
+
+.clab-history-time {
+    font-size: 11px;
+    color: var(--clab-text-dim);
+}
+
+.clab-history-tasks {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+}
+
+.clab-history-task {
+    padding: 2px 8px;
+    font-size: 11px;
+    background: rgba(88, 166, 255, 0.1);
+    border-radius: 3px;
+    color: var(--clab-accent);
+}
+
+.clab-history-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--clab-text-dim);
+}
+
+.clab-history-winner strong {
+    color: var(--clab-gold);
+}
+
+/* ─── Result Toast ─── */
+
+.clab-result-toast {
+    position: fixed;
+    bottom: 60px;
+    right: 24px;
+    padding: 10px 20px;
+    background: var(--clab-surface);
+    border: 1px solid var(--clab-success);
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--clab-success);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+    animation: clabToastIn 0.3s ease-out;
+    z-index: 100;
+}
+
+@keyframes clabToastIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "competes_with",
+      "target": "openai-agents-chatgpt-public-runtime",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable commercial model API class."
+    },
+    {
+      "type": "integrates_with",
+      "target": "model-context-protocol",
+      "evidence_tier": "INFERRED",
+      "notes": "Third-party hosts may pair Gemini clients with MCP; verify Google-native MCP claims separately."
+    }
+  ]
+}

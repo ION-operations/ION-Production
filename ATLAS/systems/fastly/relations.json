@@ -1,0 +1,37 @@
+{
+  "system_slug": "fastly",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-11",
+  "edges": [
+    {
+      "type": "competes_with",
+      "target": "amazon-cloudfront",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable global CDN / edge delivery class."
+    },
+    {
+      "type": "competes_with",
+      "target": "azure-front-door",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable global edge delivery class."
+    },
+    {
+      "type": "competes_with",
+      "target": "cloudflare-workers",
+      "evidence_tier": "INFERRED",
+      "notes": "Edge compute + CDN overlap."
+    },
+    {
+      "type": "integrates_with",
+      "target": "http3",
+      "evidence_tier": "INFERRED",
+      "notes": "HTTP/3 and QUIC support depends on Fastly product and configuration."
+    },
+    {
+      "type": "integrates_with",
+      "target": "webassembly",
+      "evidence_tier": "INFERRED",
+      "notes": "Compute@Edge Wasm module paths where documented."
+    }
+  ]
+}

@@ -1,0 +1,391 @@
+# Master Orchestration Template: Large Document/Textbook Creation
+# Use for: Books, papers, comprehensive documentation, technical references
+# Proven: North Star document (70K words, 35 chapters)
+
+template_id: "large_document_creation"
+template_version: "1.0.0"
+created: "2025-11-05"
+author: "Aether"
+status: "production_ready"
+
+use_case: "Create comprehensive books, papers, or documentation with multiple parts/chapters"
+proven_examples:
+  - "AIM-OS North Star Document (70,000 words, 35 chapters, 10 parts)"
+  - "A Total System of Memory (61,739 words, 30+ chapters, 12 parts)"
+
+success_rate: "100% (1/1 applications - North Star in progress)"
+estimated_speedup: "3.5x vs sequential (with multi-agent parallel)"
+
+# ============================================
+# TEMPLATE PARAMETERS (User Configures)
+# ============================================
+
+parameters:
+  document_title: "string"  # Ex: "AIM-OS: The Ultimate Builder"
+  target_word_count: "integer"  # Ex: 70000
+  num_parts: "integer"  # Ex: 10
+  num_chapters: "integer"  # Ex: 35
+  progressive_disclosure: "boolean"  # T0-T6 style? true/false
+  technical_depth: "enum[basic, intermediate, advanced, expert]"
+  audience: "list[string]"  # Ex: ["researchers", "engineers", "builders"]
+  quality_threshold: "float"  # Ex: 0.90
+  num_agents: "integer"  # Ex: 5
+  target_completion_days: "integer"  # Ex: 25
+
+# ============================================
+# STRUCTURE
+# ============================================
+
+structure:
+  levels:
+    - level: "parts"
+      count: "${num_parts}"
+      naming: "Part {I-X}: {Title}"
+      
+    - level: "chapters"
+      count: "${num_chapters}"
+      naming: "Chapter {N}: {Title}"
+      parent: "parts"
+      
+    - level: "sections"
+      count: "8-12 per chapter"
+      naming: "{Chapter}.{N} {Title}"
+      parent: "chapters"
+
+# ============================================
+# PHASES
+# ============================================
+
+phases:
+  - id: "phase_0_ecosystem_prep"
+    name: "Ecosystem Preparation"
+    duration: "1-2 days"
+    blocking: true
+    
+    steps:
+      - validate_ecosystem_organization
+      - fix_critical_issues
+      - prepare_missing_docs
+      - validate_indices
+      
+    deliverables:
+      - "ECOSYSTEM_VALIDATION_REPORT.md"
+      - "Missing T0-T2 documentation created"
+      - "Indices current"
+      
+    quality_gates:
+      - critical_issues == 0
+      - core_systems_documented: true
+      - indices_current: true
+  
+  - id: "phase_1_structure_design"
+    name: "Document Structure Design"
+    duration: "4-6 hours"
+    
+    steps:
+      - define_parts_and_chapters
+      - create_chapter_outlines
+      - map_dependencies
+      - assign_to_agents
+      
+    deliverables:
+      - "WORK_ASSIGNMENTS.md"
+      - "DEPENDENCY_MAP.md"
+      - "Chapter outlines (all 35)"
+      
+    quality_gates:
+      - all_chapters_outlined: true
+      - dependencies_clear: true
+      - no_assignment_conflicts: true
+  
+  - id: "phase_2_parallel_execution"
+    name: "Multi-Agent Parallel Chapter Writing"
+    duration: "18-22 days"
+    
+    steps:
+      - agents_write_assigned_chapters
+      - dynamic_doc_creation_as_needed
+      - cross_agent_context_sharing
+      - quality_validation_per_chapter
+      - ecosystem_updates_continuous
+      
+    deliverables:
+      - "All 35 chapters written"
+      - "~15 supporting docs created dynamically"
+      - "Quality >= ${quality_threshold}"
+      
+    quality_gates:
+      - all_chapters_complete: true
+      - word_count_targets_met: true
+      - quality_scores >= ${quality_threshold}
+      - no_contradictions: true
+  
+  - id: "phase_3_integration"
+    name: "Integration & Coherence Validation"
+    duration: "2 days"
+    
+    steps:
+      - check_coherence_between_chapters
+      - validate_cross_references
+      - ensure_progressive_disclosure
+      - fix_contradictions
+      
+    deliverables:
+      - "INTEGRATION_VALIDATION_REPORT.md"
+      - "All cross-references validated"
+      - "Coherence confirmed"
+      
+    quality_gates:
+      - coherence_score >= 0.95
+      - cross_references_100_percent_valid: true
+      - no_contradictions: true
+  
+  - id: "phase_4_ecosystem_updates"
+    name: "Complete Ecosystem Updates"
+    duration: "1 day"
+    
+    steps:
+      - update_super_index
+      - update_navigation_index
+      - update_system_maps
+      - update_goal_tree
+      - create_reading_roadmaps
+      - update_readme
+      
+    deliverables:
+      - "~200 ecosystem files updated"
+      - "All indices current"
+      - "Goals reflect completion"
+      
+    quality_gates:
+      - all_indices_updated: true
+      - no_broken_links: true
+      - ecosystem_coherent: true
+  
+  - id: "phase_5_protocol_improvement"
+    name: "Protocol Validation & Improvement (SIS)"
+    duration: "1 day"
+    
+    steps:
+      - analyze_protocol_effectiveness
+      - identify_improvements
+      - implement_protocol_enhancements
+      - document_learnings
+      
+    deliverables:
+      - "PROTOCOL_LEARNINGS.md"
+      - "Protocol improvements (>=5 expected)"
+      - "Updated protocols"
+      
+    quality_gates:
+      - learnings_documented: true
+      - improvements_implemented: true
+      - protocols_enhanced: true
+
+# ============================================
+# AGENT COORDINATION
+# ============================================
+
+agent_coordination:
+  method: "file_based_message_board"
+  communication_file: "SHARED_MESSAGE_BOARD.md"
+  status_file: "STATUS_TRACKER.md"
+  assignment_file: "WORK_ASSIGNMENTS.md"
+  dependency_file: "DEPENDENCY_MAP.md"
+  
+  agent_workspaces:
+    pattern: "agents/{agent_name}/"
+    files:
+      - "assigned_chapters.md"
+      - "current_work.md"
+      - "completed_work.md"
+      - "quality_log.md"
+      - "context_notes.md"
+  
+  polling_interval: "30 minutes or after completing work"
+  
+  protocols:
+    before_starting:
+      - check_dependencies_satisfied
+      - post_to_message_board
+      - update_status_tracker
+      
+    during_work:
+      - update_progress_every_2_hours
+      - post_blockers_immediately
+      - share_context_with_dependent_agents
+      
+    after_completing:
+      - post_completion_to_board
+      - update_status_complete
+      - save_chapter_file
+      - update_own_completed_work
+
+# ============================================
+# DYNAMIC FEATURES
+# ============================================
+
+dynamic_features:
+  can_add_chapters: true
+  approval_required: "human or ai_manager"
+  
+  can_modify_structure: true
+  allowed_modifications:
+    - "split_section (if too complex)"
+    - "merge_sections (if too granular)"
+    - "change_title (as understanding deepens)"
+    - "reorder_sections (for better flow)"
+    
+  can_spawn_subchains: true
+  subchain_triggers:
+    - condition: "references_undocumented_concept"
+      action: "spawn_create_t0_t6_subchain"
+      priority: "HIGH"
+      
+    - condition: "discovers_critical_gap"
+      action: "spawn_research_subchain"
+      priority: "CRITICAL"
+
+# ============================================
+# QUALITY GATES (4 Per Chapter = 140 Total)
+# ============================================
+
+quality_gates:
+  per_chapter:
+    pre_chapter:
+      - confidence >= 0.70
+      - dependencies_satisfied: true
+      - context_retrieved: true
+      - outline_ready: true
+      
+    per_section:
+      - word_count_on_target: true  # ±10%
+      - quality_score >= ${quality_threshold}
+      - cross_references_valid: true
+      - diagrams_if_required: true
+      
+    post_chapter:
+      - total_word_count_correct: true  # ±5%
+      - all_sections_complete: true
+      - quality_score >= ${quality_threshold}
+      - metadata_complete: true
+      
+    integration:
+      - coherent_with_dependencies: true
+      - no_contradictions: true
+      - progressive_disclosure_maintained: true
+
+# ============================================
+# ECOSYSTEM INTEGRATION
+# ============================================
+
+ecosystem_integration:
+  context_retrieval:
+    system: "HHNI"
+    confidence_based_depth:
+      - confidence >= 0.90: "T0-T1"
+      - confidence >= 0.80: "T1-T2"
+      - confidence >= 0.70: "T2-T3"
+      - confidence < 0.70: "T3-T6 + ARD research"
+      
+  storage:
+    system: "CMC"
+    operations:
+      - "store_chapter_after_completion"
+      - "store_subsections_for_granularity"
+      - "enable_context_retrieval_for_dependent_chapters"
+      
+  validation:
+    system: "VIF"
+    operations:
+      - "track_confidence_per_chapter"
+      - "enforce_quality_gates"
+      - "kappa_gating (abstain if < 0.70)"
+      
+  synthesis:
+    system: "SEG"
+    operations:
+      - "detect_contradictions_between_chapters"
+      - "ensure_coherence"
+      - "track_knowledge_synthesis"
+      
+  quality:
+    system: "SDF-CVF"
+    operations:
+      - "enforce_quartet_parity"
+      - "validate_cross_references"
+      - "track_change_impact"
+      
+  improvement:
+    system: "SIS"
+    operations:
+      - "monitor_protocol_effectiveness"
+      - "identify_improvement_opportunities"
+      - "propose_enhancements"
+      - "document_learnings"
+
+# ============================================
+# SUCCESS CRITERIA
+# ============================================
+
+success_criteria:
+  document:
+    - total_words >= ${target_word_count}
+    - all_chapters_complete: ${num_chapters}
+    - quality_score >= ${quality_threshold}
+    - all_quality_gates_passed: true
+    
+  ecosystem:
+    - super_index_updated: true
+    - navigation_index_updated: true
+    - system_maps_updated: true
+    - goal_tree_updated: true
+    - no_broken_links: true
+    
+  protocols:
+    - all_protocols_followed: true
+    - protocol_improvements >= 5
+    - learnings_documented: true
+    
+  meta:
+    - proves_ultimate_builder: true
+    - validates_multi_agent: true
+    - demonstrates_dynamic_evolution: true
+
+# ============================================
+# NOTES & LEARNINGS
+# ============================================
+
+notes: |
+  This template is itself a meta-test of AIM-OS capabilities.
+  
+  Key Innovations:
+  - Ecosystem-aware (maintains all infrastructure while building)
+  - Dynamic evolution (structure adapts as understanding deepens)
+  - Quality-gated (140 gates ensure standards)
+  - Multi-agent coordinated (5 agents, file-based, no conflicts)
+  - Protocol-improving (SIS learns and enhances)
+  
+  Common Challenges:
+  - Chapter 1 (Foundation) often blocks many others
+  - Mathematics chapters need core systems first
+  - Integration validation can reveal late issues
+  - Ecosystem updates take longer than expected
+  
+  Best Practices:
+  - Start with independent chapters (parallel from day 1)
+  - Create comprehensive outlines before writing
+  - Use dynamic doc creation (don't block on missing docs)
+  - Update ecosystem continuously (not all at end)
+  - Document learnings as you go (SIS needs input)
+  
+  Adaptation Guide:
+  - For shorter docs (<10K words): Reduce quality gates, fewer phases
+  - For longer docs (>100K words): Add more coordination, more agents
+  - For less technical: Reduce ecosystem integration complexity
+  - For academic papers: Add peer review phase, citation management
+
+application_count: 1
+successful_applications: 1
+in_progress: ["North Star Document"]
+

@@ -1,0 +1,101 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "depends_on",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Fedora ships Linux kernel packages for supported architectures as part of the distribution."
+    },
+    {
+      "type": "integrates_with",
+      "target": "glibc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Fedora on standard ports uses glibc as the C library alongside the dynamic linker."
+    },
+    {
+      "type": "integrates_with",
+      "target": "systemd",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "systemd is the default init and service manager on Fedora editions per Fedora documentation themes."
+    },
+    {
+      "type": "integrates_with",
+      "target": "systemd-unit-model",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Fedora services are expressed as systemd unit files and drop-ins on default systemd installs."
+    },
+    {
+      "type": "integrates_with",
+      "target": "elf",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Fedora userland binaries and shared libraries are ELF on typical Linux targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-gcc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GCC toolchain packages are central to Fedora development and package build flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-binutils",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GNU binutils participate in standard Fedora RPM build and link flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-libstdcxx",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "g++-built packages link GNU libstdc++ above glibc on typical Fedora GNU/Linux flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "clang",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang/LLVM packages are available from Fedora repositories for alternative compiler stacks."
+    },
+    {
+      "type": "integrates_with",
+      "target": "docker",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Official fedora OCI images are common glibc-based bases; Docker pulls and runs them like other Linux images."
+    },
+    {
+      "type": "integrates_with",
+      "target": "containerd",
+      "evidence_tier": "INFERRED",
+      "notes": "CRI/containerd nodes run Fedora-based workload images pulled as OCI artifacts."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "Kubernetes nodes and pods frequently use Fedora-class or RHEL-family images on Linux; not exclusive."
+    },
+    {
+      "type": "integrates_with",
+      "target": "oci-image-spec",
+      "evidence_tier": "INFERRED",
+      "notes": "Fedora bases are packaged as OCI image rootfs layers conforming to OCI image layout conventions."
+    },
+    {
+      "type": "competes_with",
+      "target": "alpine-linux",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Linux distribution defaults for containers and servers (glibc/systemd vs musl/OpenRC field patterns)."
+    },
+    {
+      "type": "influences",
+      "target": "centos-stream",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Fedora Project innovation and ecosystem practices feed CentOS Stream as the public upstream development branch adjacent to RHEL minor streams."
+    },
+    {
+      "type": "influences",
+      "target": "rhel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Fedora Project innovation feeds Red Hat Enterprise Linux packaging and technology streams with distinct enterprise cadence and support policy."
+    }
+  ]
+}

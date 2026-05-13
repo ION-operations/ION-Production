@@ -1,0 +1,308 @@
+# Core-PLIx Kernel: Minimal Language Specification
+
+**Date:** 2025-01-27  
+**Status:** 📋 **IN PROGRESS**  
+**Goal:** Define minimal, orthogonal kernel language (Core-PLIx) that CNL lowers to
+
+---
+
+## 🎯 **DESIGN PRINCIPLES**
+
+### **Minimality**
+- **Smallest possible kernel** that captures PLIx semantics
+- **No redundancy** - each construct has unique purpose
+- **Orthogonal** - constructs don't overlap
+
+### **Orthogonality**
+- **Separation of concerns:** Contract vs Plan vs Evidence
+- **No hidden dependencies** - all dependencies explicit
+- **Composable** - constructs combine cleanly
+
+### **CNL Lowering**
+- **CNL → Core-PLIx** is deterministic transformation
+- **No information loss** - CNL semantics preserved
+- **Reversible** - Core-PLIx can be pretty-printed to CNL
+
+---
+
+## 📐 **CORE-PLIX GRAMMAR (EBNF)**
+
+```
+(* Core-PLIx Kernel Grammar *)
+
+(* Top-Level *)
+CoreIntent ::= SpeechAct EntityClause ActionClause Contract Plan [Evidence]
+
+(* Speech Acts *)
+SpeechAct ::= "ask" | "assert" | "plan" | "ensure" | "measure" | "decide" | "retract"
+
+(* Entity Clause *)
+EntityClause ::= "ent:" Tag
+
+(* Action Clause *)
+ActionClause ::= "act:" Identifier | "using" "cap:" Tag
+
+(* Contract *)
+Contract ::= "requires" Constraint+ "ensures" Constraint+
+
+(* Plan *)
+Plan ::= "plan" "[" PlanStep+ "]"
+
+PlanStep ::=
+  | "task" Identifier ":=" Action "(" [Params] ")"
+  | "depends" Identifier "<-" Identifier
+  | "retry" Identifier Integer Backoff
+  | "fallback" Identifier Identifier
+  | "compensate" Identifier "->" Action "(" [Params] ")"
+
+Action ::= Identifier | Tag
+
+Params ::= Param ("," Param)*
+Param ::= Identifier "=" (Scalar | TagRef)
+
+TagRef ::= Tag | Identifier "." "ref" ":" Tag
+
+(* Evidence *)
+Evidence ::= "evidence" "require" EvidenceRef+ "produce" EvidenceRef+
+
+EvidenceRef ::= Tag | Identifier
+
+(* Constraints *)
+Constraint ::=
+  | Identifier ComparisonOp (Scalar | Identifier | Tag)
+  | Constraint ("and" | "or" | "not") Constraint
+  | ("forall" | "exists") Identifier ":" Constraint
+
+ComparisonOp ::= "==" | "!=" | "<=" | ">=" | "<" | ">"
+
+(* Primitives *)
+Tag ::= [Namespace] ":" Identifier
+Identifier ::= [a-zA-Z_][a-zA-Z0-9_]*
+Scalar ::= Number | String | Boolean
+Number ::= [0-9]+ ("." [0-9]+)?
+String ::= "\"" [^"]* "\""
+Boolean ::= "true" | "false"
+Backoff ::= ("linear" | "exponential" | "fixed") "(" Duration "," Duration ")"
+Duration ::= Number ("ms" | "s" | "m" | "h")
+```
+
+---
+
+## 🔄 **CNL → CORE-PLIX LOWERING RULES**
+
+### **Rule 1: Intent Structure**
+
+**CNL:**
+```
+ask ent:plix://db/table/users
+  act:query
+  with: filter: "active == true"
+  pre: user_authenticated == true
+  post: results_returned == true
+  plan [
+    step check := api.check_auth()
+    step query := api.query_users(filter: ${check.filter})
+    depends query <- check
+  ]
+```
+
+**Core-PLIx:**
+```
+ask ent:plix://db/table/users
+  act:query
+  requires user_authenticated == true
+  ensures results_returned == true
+  plan [
+    task check := api.check_auth()
+    task query := api.query_users(filter: check.ref:filter)
+    depends query <- check
+  ]
+```
+
+**Transformation:**
+- `with:` → removed (parameters inlined in plan)
+- `pre:` → `requires`
+- `post:` → `ensures`
+- `step` → `task`
+- `${var}` → `var.ref:value` (tag reference)
+
+### **Rule 2: Evidence**
+
+**CNL:**
+```
+ensure ent:plix://db/schema/public
+  act:migrate
+  evidence:
+    w:plix://witness/schema_before
+    w:plix://witness/schema_after
+```
+
+**Core-PLIx:**
+```
+ensure ent:plix://db/schema/public
+  act:migrate
+  evidence
+    require plix://witness/schema_before
+    produce plix://witness/schema_after
+```
+
+**Transformation:**
+- `evidence:` → `evidence require ... produce ...`
+- `w:` prefix → removed (implicit witness)
+
+### **Rule 3: Compensation**
+
+**CNL:**
+```
+ensure ent:plix://db/table/users
+  act:create
+  plan [
+    step create := api.create_user(data: ${user_data})
+    compensate create -> api.delete_user(id: ${create.id})
+  ]
+```
+
+**Core-PLIx:**
+```
+ensure ent:plix://db/table/users
+  act:create
+  plan [
+    task create := api.create_user(data: user_data)
+    compensate create -> api.delete_user(id: create.ref:id)
+  ]
+```
+
+**Transformation:**
+- `compensate` in plan step → `compensate` as separate step
+- `${var.field}` → `var.ref:field`
+
+### **Rule 4: Retry and Fallback**
+
+**CNL:**
+```
+ensure ent:plix://api/service
+  act:call
+  plan [
+    step call := api.call(endpoint: ${endpoint})
+    retry call 3 exponential(100ms, 1s) jitter
+    fallback call api.fallback_call(endpoint: ${endpoint})
+  ]
+```
+
+**Core-PLIx:**
+```
+ensure ent:plix://api/service
+  act:call
+  plan [
+    task call := api.call(endpoint: endpoint)
+    retry call 3 exponential(100ms, 1s)
+    fallback call api.fallback_call(endpoint: endpoint)
+  ]
+```
+
+**Transformation:**
+- `retry` spec → `retry` step
+- `fallback` spec → `fallback` step
+- `jitter` → removed (implementation detail)
+
+---
+
+## 📊 **CORE-PLIX VS CNL**
+
+### **What CNL Adds (Sugar):**
+- **Readability:** Indentation, natural language
+- **Convenience:** `with:` clause, `${var}` interpolation
+- **Expressiveness:** `w:` prefix, `jitter` option
+
+### **What Core-PLIx Preserves (Essence):**
+- **Semantics:** All meaning preserved
+- **Structure:** Intent, contract, plan structure
+- **Dependencies:** All dependencies explicit
+
+### **Lowering Guarantees:**
+- ✅ **Deterministic:** Same CNL → same Core-PLIx
+- ✅ **Lossless:** No semantic information lost
+- ✅ **Reversible:** Core-PLIx → CNL (pretty-print)
+
+---
+
+## 🎯 **CORE-PLIX EXAMPLES**
+
+### **Example 1: Simple Query**
+
+**Core-PLIx:**
+```
+ask ent:plix://db/table/users
+  act:query
+  requires user_authenticated == true
+  ensures results_returned == true
+  plan [
+    task query := api.query_users(filter: "active == true")
+  ]
+```
+
+### **Example 2: Room Reservation**
+
+**Core-PLIx:**
+```
+ensure ent:plix://room/reservation
+  act:reserve
+  requires room_available(date, duration) == true
+  ensures room_reserved == true
+  plan [
+    task check := api.check_room_availability(date: date, duration: duration)
+    task reserve := api.reserve_room(room_id: check.ref:room_id, duration: duration)
+    task invite := api.create_calendar_event(room_id: reserve.ref:room_id)
+    depends reserve <- check
+    depends invite <- reserve
+    compensate reserve -> api.cancel_reservation(reservation_id: reserve.ref:id)
+  ]
+```
+
+### **Example 3: Database Migration**
+
+**Core-PLIx:**
+```
+ensure ent:plix://db/schema/public
+  act:migrate
+  requires schema_intact == true
+  ensures schema_fingerprint == "h_next"
+  evidence
+    require plix://witness/schema_before
+    produce plix://witness/schema_after
+  plan [
+    task migrate := api.migrate(version: "v2.0")
+  ]
+```
+
+---
+
+## 🔍 **VALIDATION RULES**
+
+### **Well-Formedness:**
+1. **All tags resolve** (via registry)
+2. **All dependencies acyclic** (plan is DAG)
+3. **All constraints type-check** (evaluate to boolean)
+4. **All evidence references valid** (require/produce consistent)
+
+### **Type Checking:**
+1. **Entity types match** (entity clause matches action)
+2. **Action types match** (action matches capability)
+3. **Parameter types match** (parameters match action signature)
+4. **Constraint types match** (constraints evaluate to boolean)
+
+---
+
+## 🎯 **NEXT STEPS**
+
+1. ✅ **Core-PLIx Grammar** - Complete
+2. ✅ **CNL Lowering Rules** - Complete
+3. ⏳ **Semantics** - Link to core calculus
+4. ⏳ **Type System** - Add to core calculus
+5. ⏳ **Compilation** - CNL → Core-PLIx implementation
+
+---
+
+**Status:** 📋 **CORE-PLIX KERNEL SPECIFICATION COMPLETE**  
+**Next:** Link to core calculus semantics
+

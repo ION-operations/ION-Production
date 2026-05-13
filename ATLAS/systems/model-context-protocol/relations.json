@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "vscode",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "VS Code documents MCP client capabilities; see vscode package ledger for URL pinning."
+    },
+    {
+      "type": "integrates_with",
+      "target": "anthropic-claude-code-agent-sdk",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Anthropic documents MCP in Claude Code / tooling flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "openai-agents-chatgpt-public-runtime",
+      "evidence_tier": "INFERRED",
+      "notes": "Third-party clients may combine OpenAI APIs with MCP hosts; not a vendor-native claim."
+    },
+    {
+      "type": "integrates_with",
+      "target": "language-server-protocol",
+      "evidence_tier": "INFERRED",
+      "notes": "Coexists in editor stacks; LSP targets language services, MCP targets tool/context servers—do not conflate."
+    },
+    {
+      "type": "integrates_with",
+      "target": "debug-adapter-protocol",
+      "evidence_tier": "INFERRED",
+      "notes": "Agent-capable editors may ship DAP (debug) alongside MCP (tools); distinct JSON-RPC contracts—do not merge."
+    },
+    {
+      "type": "integrates_with",
+      "target": "grpc",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct wire protocols (JSON-RPC vs gRPC/Protobuf); both appear in enterprise agent/tooling stacks—do not merge semantics."
+    },
+    {
+      "type": "integrates_with",
+      "target": "http3",
+      "evidence_tier": "INFERRED",
+      "notes": "Streamable HTTP transport for MCP may be fronted by HTTP/3-capable proxies; transport layering is deployment-specific."
+    }
+  ]
+}

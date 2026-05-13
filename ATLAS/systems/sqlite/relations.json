@@ -1,0 +1,19 @@
+{
+  "system_slug": "sqlite",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-04",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "INFERRED",
+      "notes": "Common embedding target on Linux and other POSIX hosts."
+    },
+    {
+      "type": "integrates_with",
+      "target": "webassembly",
+      "evidence_tier": "INFERRED",
+      "notes": "SQLite is embedded in Wasm runtimes and browsers in some stacks (implementation-dependent)."
+    }
+  ]
+}

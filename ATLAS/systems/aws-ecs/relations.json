@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "docker",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "AWS ECS documentation names integration with Docker among third-party tools."
+    },
+    {
+      "type": "competes_with",
+      "target": "kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable managed-orchestrator class for containerized workloads on AWS and beyond; not API-equivalent."
+    },
+    {
+      "type": "competes_with",
+      "target": "nomad",
+      "evidence_tier": "INFERRED",
+      "notes": "Alternative orchestration choice in some hybrid / VM footprints; overlap not total."
+    },
+    {
+      "type": "depends_on",
+      "target": "linux-kernel",
+      "evidence_tier": "INFERRED",
+      "notes": "Typical EC2 / on-premises capacity runs Linux-class hosts; Fargate hides host surface — do not assert internal hypervisor layout."
+    },
+    {
+      "type": "competes_with",
+      "target": "aws-eks",
+      "evidence_tier": "INFERRED",
+      "notes": "Both AWS first-party container orchestration products; ECS is not the Kubernetes API model."
+    },
+    {
+      "type": "competes_with",
+      "target": "azure-container-apps",
+      "evidence_tier": "INFERRED",
+      "notes": "Cross-vendor managed/serverless container platform substitution class."
+    }
+  ]
+}

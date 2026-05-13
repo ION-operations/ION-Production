@@ -1,0 +1,13 @@
+{
+  "system_slug": "amazon-s3",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-03",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "Kubernetes workloads commonly use S3-compatible object stores for artifacts and models."
+    }
+  ]
+}

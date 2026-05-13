@@ -1,0 +1,692 @@
+% Chapter 13 converted from Markdown
+% Auto-generated - do not edit manually
+
+
+
+
+\section*{Section 13.1: Parser Design}
+
+The CNL parser transforms human-readable CNL text into PLIx AST (Abstract Syntax Tree), enabling automatic contract generation from natural language intent expression.
+
+\textbf{Parser Architecture}
+
+CNL parser architecture:
+
+\begin{lstlisting}[caption=Code Example]
+class CNLParser {
+  // Lexical analysis: CNL text \textrightarrow{} tokens
+  tokenize(cnl: string): Token[];
+  
+  // Syntax analysis: tokens \textrightarrow{} AST
+  parse(tokens: Token[]): AST;
+  
+  // Semantic analysis: AST \textrightarrow{} validated AST
+  validate(ast: AST): ValidationResult;
+  
+  // Contract generation: AST \textrightarrow{} PLIx contract
+  generateContract(ast: AST): PLIxContract;
+}
+\end{lstlisting}
+
+Parser stages:
+\begin{enumerate}
+\item \textbf{Lexical Analysis:} Tokenize CNL into keywords, identifiers, values
+\item \textbf{Syntax Analysis:} Parse tokens into abstract syntax tree
+\item \textbf{Semantic Analysis:} Validate AST and resolve references
+\item \textbf{Contract Generation:} Generate formal contract from AST
+\end{enumerate}
+
+\textbf{Lexer Implementation}
+
+Lexer tokenizes CNL:
+
+\begin{lstlisting}[caption=Code Example]
+interface Token {
+  type: 'INTENT_KEYWORD' | 'TASK_KEYWORD' | 'IDENTIFIER' | 'STRING' | 'NUMBER' | 'COLON' | 'EQUALS' | 'COMMA' | 'NEWLINE';
+  value: string;
+  line: number;
+  column: number;
+}
+
+function tokenize(cnl: string): Token[] {
+  const tokens: Token[] = [];
+  const lines = cnl.split('\n');
+  
+  for (let lineNum = 0; lineNum < lines.length; lineNum++) {
+    const line = lines[lineNum];
+    let column = 0;
+    
+    // Skip empty lines
+    if (line.trim() === '') continue;
+    
+    // Intent keyword
+    if (line.startsWith('Intent:')) {
+      tokens.push({ type: 'INTENT_KEYWORD', value: 'Intent', line: lineNum, column });
+      column += 7;
+      tokens.push({ type: 'COLON', value: ':', line: lineNum, column });
+      column += 1;
+      const intentText = line.substring(8).trim();
+      tokens.push({ type: 'STRING', value: intentText, line: lineNum, column });
+      continue;
+    }
+    
+    // Task keyword
+    const taskMatch = line.match(/^Task\s+(\w+):/);
+    if (taskMatch) {
+      tokens.push({ type: 'TASK_KEYWORD', value: 'Task', line: lineNum, column });
+      column += 4;
+      tokens.push({ type: 'IDENTIFIER', value: taskMatch[1], line: lineNum, column: column + 1 });
+      column += taskMatch[1].length + 1;
+      tokens.push({ type: 'COLON', value: ':', line: lineNum, column });
+      continue;
+    }
+    
+    // Action line
+    if (line.trim().startsWith('Action:')) {
+      tokens.push({ type: 'IDENTIFIER', value: 'Action', line: lineNum, column: line.indexOf('Action') });
+      const actionValue = line.substring(line.indexOf(':') + 1).trim();
+      tokens.push({ type: 'IDENTIFIER', value: actionValue, line: lineNum, column: line.indexOf(':') + 2 });
+    }
+    
+    // Params line
+    if (line.trim().startsWith('Params:')) {
+      tokens.push({ type: 'IDENTIFIER', value: 'Params', line: lineNum, column: line.indexOf('Params') });
+      // Parse param list: key=value, key2=value2
+      const paramsText = line.substring(line.indexOf(':') + 1).trim();
+      parseParams(paramsText, tokens, lineNum);
+    }
+    
+    // ... more tokenization rules
+  }
+  
+  return tokens;
+}
+\end{lstlisting}
+
+Lexer converts CNL text into tokens, enabling syntax analysis.
+
+\textbf{Parser Implementation}
+
+Parser builds AST from tokens:
+
+\begin{lstlisting}[caption=Code Example]
+interface AST {
+  intent: string | null;
+  tasks: TaskAST[];
+  constraints: string[];
+  evidence: {
+    required: string[];
+    produce: string[];
+  };
+}
+
+interface TaskAST {
+  id: string;
+  action: string;
+  params: Record<string, any>;
+  depends_on: string[];
+  retry?: RetryAST;
+  compensate?: string;
+}
+
+function parse(tokens: Token[]): AST {
+  const ast: AST = {
+    intent: null,
+    tasks: [],
+    constraints: [],
+    evidence: { required: [], produce: [] }
+  };
+  
+  let i = 0;
+  
+  // Parse intent
+  while (i < tokens.length && tokens[i].type === 'INTENT_KEYWORD') {
+    i++; // Skip 'Intent'
+    i++; // Skip ':'
+    ast.intent = tokens[i].value;
+    i++;
+  }
+  
+  // Parse tasks
+  while (i < tokens.length) {
+    if (tokens[i].type === 'TASK_KEYWORD') {
+      const task = parseTask(tokens, i);
+      ast.tasks.push(task.ast);
+      i = task.nextIndex;
+    } else if (tokens[i].value === 'Constraints') {
+      i = parseConstraints(tokens, i, ast);
+    } else if (tokens[i].value === 'Evidence') {
+      i = parseEvidence(tokens, i, ast);
+    } else {
+      i++;
+    }
+  }
+  
+  return ast;
+}
+
+function parseTask(tokens: Token[], startIndex: number): { ast: TaskAST; nextIndex: number } {
+  let i = startIndex;
+  const task: TaskAST = {
+    id: '',
+    action: '',
+    params: {},
+    depends_on: []
+  };
+  
+  // Parse task ID
+  if (tokens[i].type === 'TASK_KEYWORD') {
+    i++;
+    task.id = tokens[i].value; // Task identifier
+    i += 2; // Skip identifier and ':'
+  }
+  
+  // Parse task body
+  while (i < tokens.length && tokens[i].type !== 'TASK_KEYWORD' && tokens[i].value !== 'Constraints' && tokens[i].value !== 'Evidence') {
+    if (tokens[i].value === 'Action') {
+      i += 2; // Skip 'Action' and ':'
+      task.action = tokens[i].value;
+      i++;
+    } else if (tokens[i].value === 'Params') {
+      i += 2; // Skip 'Params' and ':'
+      task.params = parseParamList(tokens, i);
+      i = findNextLine(tokens, i);
+    } else if (tokens[i].value === 'Depends') {
+      i += 2; // Skip 'Depends' and ':'
+      task.depends_on = parseIdentifierList(tokens, i);
+      i = findNextLine(tokens, i);
+    } else if (tokens[i].value === 'Compensate') {
+      i += 2; // Skip 'Compensate' and ':'
+      task.compensate = tokens[i].value;
+      i++;
+    } else if (tokens[i].value === 'Retry') {
+      i += 2; // Skip 'Retry' and ':'
+      task.retry = parseRetry(tokens, i);
+      i = findNextLine(tokens, i);
+    } else {
+      i++;
+    }
+  }
+  
+  return { ast: task, nextIndex: i };
+}
+\end{lstlisting}
+
+Parser builds AST from tokens, representing CNL structure.
+
+\textbf{Semantic Validation}
+
+Semantic validation ensures AST correctness:
+
+\begin{lstlisting}[caption=Code Example]
+interface ValidationResult {
+  valid: boolean;
+  errors: string[];
+}
+
+function validate(ast: AST): ValidationResult {
+  const errors: string[] = [];
+  
+  // Validate intent exists
+  if (!ast.intent || ast.intent.trim() === '') {
+    errors.push('Intent is required');
+  }
+  
+  // Validate tasks exist
+  if (ast.tasks.length === 0) {
+    errors.push('At least one task is required');
+  }
+  
+  // Validate task IDs are unique
+  const taskIds = new Set<string>();
+  for (const task of ast.tasks) {
+    if (taskIds.has(task.id)) {
+      errors.push(`Duplicate task ID: \texttt{\$\{task.id\}\}`);
+    }
+    taskIds.add(task.id);
+  }
+  
+  // Validate dependencies
+  for (const task of ast.tasks) {
+    for (const dep of task.depends_on) {
+      if (!ast.tasks.find(t => t.id === dep)) {
+        errors.push(`Task \texttt{\$\{task.id\}\} depends on unknown task: \texttt{\$\{dep\}\}`);
+      }
+    }
+  }
+  
+  // Validate compensation references
+  for (const task of ast.tasks) {
+    if (task.compensate) {
+      if (!ast.tasks.find(t => t.id === task.compensate)) {
+        errors.push(`Task \texttt{\$\{task.id\}\} compensates with unknown task: \texttt{\$\{task.compensate\}\}`);
+      }
+    }
+  }
+  
+  // Validate circular dependencies
+  const circularDeps = detectCircularDependencies(ast.tasks);
+  if (circularDeps.length > 0) {
+    errors.push(`Circular dependencies detected: \texttt{\$\{circularDeps.join(', ')\}\}`);
+  }
+  
+  return {
+    valid: errors.length === 0,
+    errors
+  };
+}
+\end{lstlisting}
+
+Semantic validation ensures contracts are well-formed before generation.
+
+\textbf{Parser Benefits}
+
+Parser design provides:
+
+\begin{itemize}
+\item \textbf{Automatic Translation:} CNL \textrightarrow{} Contract translation
+\item \textbf{Syntax Validation:} CNL syntax validation
+\item \textbf{Semantic Validation:} Contract correctness validation
+\item \textbf{Error Reporting:} Helpful error messages
+\end{itemize}
+
+These benefits enable reliable CNL processing, ensuring contracts are correctly generated from human-readable CNL.
+
+\section*{Section 13.2: AST to Contract Generation}
+
+AST to contract generation transforms validated AST into formal PLIx contracts, preserving intent semantics while enabling verification.
+
+\textbf{Contract Generation}
+
+Contract generation from AST:
+
+\begin{lstlisting}[caption=Code Example]
+function generateContract(ast: AST): PLIxContract {
+  // Generate contract from AST
+  const contract = new PLIxContract({
+    intent: ast.intent!,
+    contract: {
+      pre: extractPreconditions(ast),
+      post: extractPostconditions(ast)
+    },
+    tasks: ast.tasks.map(task => generateTask(task)),
+    constraints: ast.constraints,
+    evidence: ast.evidence
+  });
+  
+  return contract;
+}
+
+function generateTask(taskAST: TaskAST): Task {
+  return {
+    id: taskAST.id,
+    action: taskAST.action,
+    params: taskAST.params,
+    depends_on: taskAST.depends_on,
+    retry: taskAST.retry ? {
+      max_attempts: taskAST.retry.max,
+      backoff: taskAST.retry.backoff,
+      backoff_ms: taskAST.retry.ms
+    } : undefined,
+    compensate: taskAST.compensate
+  };
+}
+\end{lstlisting}
+
+Contract generation transforms AST into formal contracts, preserving semantics.
+
+\textbf{Precondition Extraction}
+
+Precondition extraction:
+
+\begin{lstlisting}[caption=Code Example]
+function extractPreconditions(ast: AST): string[] {
+  const preconditions: string[] = [];
+  
+  // Extract from task dependencies
+  for (const task of ast.tasks) {
+    for (const dep of task.depends_on) {
+      const depTask = ast.tasks.find(t => t.id === dep);
+      if (depTask) {
+        // Add dependency precondition
+        preconditions.push(`\texttt{\$\{depTask.id\}\}_completed == true`);
+      }
+    }
+  }
+  
+  // Extract from constraints
+  for (const constraint of ast.constraints) {
+    if (constraint.includes('required') || constraint.includes('must')) {
+      preconditions.push(constraint);
+    }
+  }
+  
+  return preconditions;
+}
+\end{lstlisting}
+
+Precondition extraction identifies what must be true before intent achievement.
+
+\textbf{Postcondition Extraction}
+
+Postcondition extraction:
+
+\begin{lstlisting}[caption=Code Example]
+function extractPostconditions(ast: AST): string[] {
+  const postconditions: string[] = [];
+  
+  // Extract from intent
+  if (ast.intent?.includes('book')) {
+    postconditions.push('room_reserved == true');
+  }
+  if (ast.intent?.includes('reserve')) {
+    postconditions.push('reservation_created == true');
+  }
+  
+  // Extract from evidence produce
+  for (const evidence of ast.evidence.produce) {
+    postconditions.push(`\texttt{\$\{evidence\}\}_produced == true`);
+  }
+  
+  return postconditions;
+}
+\end{lstlisting}
+
+Postcondition extraction identifies what must be true after intent achievement.
+
+\textbf{Contract Generation Benefits}
+
+Contract generation provides:
+
+\begin{itemize}
+\item \textbf{Semantic Preservation:} Maintains intent semantics through generation
+\item \textbf{Formal Contracts:} Generates verifiable contracts
+\item \textbf{Precondition/Postcondition:} Extracts pre/post conditions automatically
+\item \textbf{Task Mapping:} Maps AST tasks to contract tasks
+\end{itemize}
+
+These benefits enable automatic contract generation from CNL, bridging human intent and formal contracts.
+
+\section*{Section 13.3: Error Handling}
+
+Error handling provides helpful error messages, enabling contract debugging and correction.
+
+\textbf{Error Types}
+
+Parser error types:
+
+\begin{lstlisting}[caption=Code Example]
+class ParseError extends Error {
+  constructor(
+    public message: string,
+    public line: number,
+    public column: number,
+    public context: string,
+    public errorType: 'syntax' | 'semantic' | 'validation'
+  ) {
+    super(message);
+  }
+}
+
+class SyntaxError extends ParseError {
+  constructor(message: string, line: number, column: number, context: string) {
+    super(message, line, column, context, 'syntax');
+  }
+}
+
+class SemanticError extends ParseError {
+  constructor(message: string, line: number, column: number, context: string) {
+    super(message, line, column, context, 'semantic');
+  }
+}
+
+class ValidationError extends ParseError {
+  constructor(message: string, line: number, column: number, context: string) {
+    super(message, line, column, context, 'validation');
+  }
+}
+\end{lstlisting}
+
+Error types enable specific error handling and reporting.
+
+\textbf{Error Reporting}
+
+Error reporting provides actionable feedback:
+
+\begin{lstlisting}[caption=Code Example]
+function reportErrors(errors: ParseError[], cnl: string): void {
+  console.error('CNL Parse Errors:');
+  
+  for (const error of errors) {
+    console.error(`\n\texttt{\$\{error.errorType.toUpperCase()\}\} Error at line \texttt{\$\{error.line\}\}, column \texttt{\$\{error.column\}\}:`);
+    console.error(`  \texttt{\$\{error.message\}\}`);
+    
+    // Show context
+    const lines = cnl.split('\n');
+    if (error.line < lines.length) {
+      console.error(`  Context: \texttt{\$\{lines[error.line]\}\}`);
+      console.error(`  \texttt{\$\{' '.repeat(error.column)\}\}^`);
+    }
+  }
+}
+
+function parseWithErrorHandling(cnl: string): PLIxContract | null {
+  try {
+    const tokens = tokenize(cnl);
+    const ast = parse(tokens);
+    const validation = validate(ast);
+    
+    if (!validation.valid) {
+      const errors = validation.errors.map(err => 
+        new ValidationError(err, 0, 0, cnl)
+      );
+      reportErrors(errors, cnl);
+      return null;
+    }
+    
+    return generateContract(ast);
+  } catch (error) {
+    if (error instanceof ParseError) {
+      reportErrors([error], cnl);
+    } else {
+      console.error(`Unexpected error: \texttt{\$\{error\}\}`);
+    }
+    return null;
+  }
+}
+\end{lstlisting}
+
+Error reporting provides actionable feedback, enabling contract debugging.
+
+\textbf{Error Recovery}
+
+Error recovery attempts to fix common errors:
+
+\begin{lstlisting}[caption=Code Example]
+function recoverFromErrors(cnl: string, errors: ParseError[]): string {
+  let recovered = cnl;
+  
+  for (const error of errors) {
+    if (error.errorType === 'syntax') {
+      // Attempt syntax recovery
+      if (error.message.includes('missing colon')) {
+        // Add missing colon
+        const lines = recovered.split('\n');
+        if (error.line < lines.length) {
+          lines[error.line] = lines[error.line] + ':';
+          recovered = lines.join('\n');
+        }
+      }
+    }
+  }
+  
+  return recovered;
+}
+\end{lstlisting}
+
+Error recovery attempts to fix common errors automatically, improving parser usability.
+
+\textbf{Error Handling Benefits}
+
+Error handling provides:
+
+\begin{itemize}
+\item \textbf{Actionable Feedback:} Helpful error messages with context
+\item \textbf{Error Types:} Specific error types for different failure modes
+\item \textbf{Error Recovery:} Automatic recovery from common errors
+\item \textbf{Debugging Support:} Context and location information
+\end{itemize}
+
+These benefits enable effective contract debugging and correction.
+
+\section*{Section 13.4: Testing Strategies}
+
+Testing strategies ensure parser correctness, reliability, and robustness.
+
+\textbf{Unit Tests}
+
+Unit tests for parser components:
+
+\begin{lstlisting}[caption=Code Example]
+describe('CNLParser', () => {
+  describe('tokenize', () => {
+    it('tokenizes intent keyword', () => {
+      const tokens = tokenize('Intent: Book a room');
+      expect(tokens[0].type).toBe('INTENT_KEYWORD');
+      expect(tokens[0].value).toBe('Intent');
+    });
+    
+    it('tokenizes task keyword', () => {
+      const tokens = tokenize('Task reserve_room:');
+      expect(tokens[0].type).toBe('TASK_KEYWORD');
+      expect(tokens[1].type).toBe('IDENTIFIER');
+      expect(tokens[1].value).toBe('reserve_room');
+    });
+  });
+  
+  describe('parse', () => {
+    it('parses minimal contract', () => {
+      const cnl = `Intent: Book a room
+Task reserve:
+  Action: api.reserve_room`;
+      
+      const contract = parser.parse(cnl);
+      expect(contract.intent).toBe('Book a room');
+      expect(contract.tasks).toHaveLength(1);
+      expect(contract.tasks[0].id).toBe('reserve');
+    });
+  });
+  
+  describe('validate', () => {
+    it('validates dependencies', () => {
+      const cnl = `Intent: Book a room
+Task reserve:
+  Action: api.reserve_room
+  Depends: unknown_task`;
+      
+      const validation = parser.validate(parser.parse(parser.tokenize(cnl)));
+      expect(validation.valid).toBe(false);
+      expect(validation.errors).toContain('depends on unknown task');
+    });
+  });
+});
+\end{lstlisting}
+
+Unit tests ensure parser components work correctly in isolation.
+
+\textbf{Integration Tests}
+
+Integration tests for complete parsing:
+
+\begin{lstlisting}[caption=Code Example]
+describe('CNLParser Integration', () => {
+  it('parses complete contract', () => {
+    const cnl = `
+Intent: Book a meeting room on 2025-12-01 for 2h.
+
+Task check_availability:
+  Action: api.check_room_availability
+  Params: date=2025-12-01, duration=2h
+  Retry: max=3, backoff=exponential, backoff_ms=1000
+
+Task reserve_room:
+  Action: api.reserve_room
+  Params: room_id=\\texttt{\$\{check_availability.room_id\}\}, duration=2h
+  Depends: check_availability
+  Compensate: cancel_reservation
+
+Constraints:
+  duration <= 4h
+  calendar_conflicts == none
+
+Evidence Required:
+  calendar.open_slots
+
+Evidence Produce:
+  reservation.record
+`;
+    
+    const contract = parser.parse(cnl);
+    expect(contract.intent).toBe('Book a meeting room on 2025-12-01 for 2h.');
+    expect(contract.tasks).toHaveLength(2);
+    expect(contract.constraints).toHaveLength(2);
+    expect(contract.evidence.required).toContain('calendar.open_slots');
+    expect(contract.evidence.produce).toContain('reservation.record');
+  });
+});
+\end{lstlisting}
+
+Integration tests ensure complete parsing works end-to-end.
+
+\textbf{Error Handling Tests}
+
+Error handling tests:
+
+\begin{lstlisting}[caption=Code Example]
+describe('Error Handling', () => {
+  it('handles missing intent', () => {
+    const cnl = `Task reserve:
+  Action: api.reserve_room`;
+    
+    expect(() => parser.parse(cnl)).toThrow('Intent is required');
+  });
+  
+  it('handles circular dependencies', () => {
+    const cnl = `Intent: Book a room
+Task a:
+  Action: api.a
+  Depends: b
+Task b:
+  Action: api.b
+  Depends: a`;
+    
+    const validation = parser.validate(parser.parse(parser.tokenize(cnl)));
+    expect(validation.valid).toBe(false);
+    expect(validation.errors.some(e => e.includes('circular'))).toBe(true);
+  });
+});
+\end{lstlisting}
+
+Error handling tests ensure parser handles errors gracefully.
+
+\textbf{Testing Benefits}
+
+Testing strategies provide:
+
+\begin{itemize}
+\item \textbf{Correctness:} Ensures parser works correctly
+\item \textbf{Reliability:} Ensures parser handles edge cases
+\item \textbf{Robustness:} Ensures parser recovers from errors
+\item \textbf{Maintainability:} Tests document expected behavior
+\end{itemize}
+
+These benefits enable reliable CNL processing, ensuring contracts are correctly generated.
+
+\section*{Chapter 13 Summary}
+
+CNL compiler implementation transforms human-readable CNL into formal PLIx contracts through parser design, AST to contract generation, error handling, and testing strategies. Parser design provides lexical analysis, syntax analysis, semantic validation, and contract generation. AST to contract generation preserves intent semantics while enabling verification. Error handling provides actionable feedback for debugging. Testing strategies ensure correctness, reliability, and robustness.
+
+\textbf{Next:} Chapter 14 explores runtime implementation—durable execution, saga patterns, and recovery.
+
+\textbf{Word Count:} \textasciitilde{}2,200 words  
+

@@ -1,0 +1,79 @@
+{
+  "system_slug": "riscv-isa",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-11",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Linux documents and maintains a RISC-V architecture port."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-ir",
+      "evidence_tier": "INFERRED",
+      "notes": "LLVM targets RISC-V in mainstream backends."
+    },
+    {
+      "type": "integrates_with",
+      "target": "elf",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "RISC-V ELF psABI and ELF flags are part of the platform ABI story alongside the ISA manuals."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-binutils",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GNU as/ld include RISC-V targets for assembly and linking."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-lld",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "LLVM/lld supports RISC-V among LLVM targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-gcc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GCC includes a RISC-V backend alongside GNU binutils targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "glibc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "glibc supports GNU/Linux on RISC-V alongside the ELF psABI and ISA manuals."
+    },
+    {
+      "type": "integrates_with",
+      "target": "musl",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "musl includes Linux support on RISC-V among its documented architecture ports."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-libstdcxx",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GCC provides libstdc++ for supported RISC-V GNU/Linux targets alongside the C library."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-libcxx",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "LLVM/Clang libc++ is available for RISC-V targets in LLVM cross and native toolchains."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-libcxxabi",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "LLVM ships libc++abi for RISC-V alongside libc++ in LLVM toolchains."
+    },
+    {
+      "type": "integrates_with",
+      "target": "newlib",
+      "evidence_tier": "INFERRED",
+      "notes": "RISC-V embedded GCC distributions commonly include newlib for bare-metal and small-hosted targets."
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "docker",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Microsoft documents bringing Linux or Windows images from Docker Hub, Azure Container Registry, or other cloud registries."
+    },
+    {
+      "type": "integrates_with",
+      "target": "azure-aks",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Virtual nodes on Azure Container Instances can run pods scheduled from an AKS cluster per Microsoft Learn."
+    },
+    {
+      "type": "competes_with",
+      "target": "azure-container-apps",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitution among Azure container compute abstractions; different feature depth (building block vs application platform)."
+    },
+    {
+      "type": "depends_on",
+      "target": "linux-kernel",
+      "evidence_tier": "INFERRED",
+      "notes": "Linux and Windows containers are scheduled; underlying host OS is Microsoft-managed — do not assert undisclosed kernel layout."
+    }
+  ]
+}

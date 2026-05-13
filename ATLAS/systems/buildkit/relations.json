@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "depends_on",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Linux build workers use namespaces, cgroups, and filesystem primitives for build isolation in typical buildkitd deployments."
+    },
+    {
+      "type": "integrates_with",
+      "target": "oci-image-spec",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "BuildKit produces OCI-compatible image manifests and layer blobs aligned with the OCI Image Spec."
+    },
+    {
+      "type": "integrates_with",
+      "target": "oci-distribution-spec",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Push and registry export paths use HTTP APIs compatible with OCI distribution semantics."
+    },
+    {
+      "type": "integrates_with",
+      "target": "docker",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Docker Engine uses BuildKit as the default `docker build` backend in modern releases; shared Moby ecosystem."
+    },
+    {
+      "type": "integrates_with",
+      "target": "containerd",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "containerd commonly backs BuildKit workers and image storage in Engine-class stacks and standalone buildkitd setups."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "Cluster image-build pipelines (in-cluster buildkitd, CI/CD) integrate alongside kubelet/CRI without replacing the orchestrator API."
+    }
+  ]
+}

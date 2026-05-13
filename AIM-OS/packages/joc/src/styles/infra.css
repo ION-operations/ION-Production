@@ -1,0 +1,738 @@
+/* ═══════════════════════════════════════════════════════════════════
+   Infrastructure Console CSS — Panavision DXL Camera Body Aesthetic
+   ═══════════════════════════════════════════════════════════════════
+   Palette: Matte blacks and gunmetal greys (matches dashboard.css)
+   Panels: Recessed instrument cavities with machined edges
+   Color: ONLY for status LEDs and LCD readouts
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── Root ────────────────────────────────────────────────────── */
+.infra {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--dxl-body, #121212);
+    color: var(--dxl-text, #888);
+    font-family: 'SF Mono', 'Monaco', 'Consolas', 'Courier New', monospace;
+    font-size: 11px;
+    line-height: 1.4;
+    overflow: hidden;
+}
+
+/* ─── System Status Bar (Instrument Bezel) ───────────────────── */
+.infra__sysbar {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    height: 32px;
+    min-height: 32px;
+    padding: 0 8px;
+    background:
+        linear-gradient(180deg, #181818 0%, #111111 40%, #0e0e0e 100%);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.8);
+    box-shadow:
+        inset 0 1px 0 var(--dxl-edge-hi, rgba(255, 255, 255, 0.06)),
+        0 1px 3px var(--dxl-cavity-deep, rgba(0, 0, 0, 0.72));
+    position: relative;
+    z-index: 10;
+}
+
+.infra__sysbar::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--dxl-edge-hi);
+    opacity: 0.3;
+}
+
+.infra__sysbar-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 0 8px;
+    white-space: nowrap;
+    color: var(--dxl-text-dim, #555);
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.infra__sysbar-sep {
+    width: 1px;
+    height: 16px;
+    background: rgba(255, 255, 255, 0.06);
+    margin: 0 4px;
+    flex-shrink: 0;
+}
+
+.infra__sysbar-spacer {
+    flex: 1;
+}
+
+.infra__sysbar-label {
+    font-size: 9px;
+    color: var(--dxl-text-dim);
+    letter-spacing: 0.06em;
+}
+
+.infra__sysbar-value {
+    font-size: 10px;
+    font-variant-numeric: tabular-nums;
+    color: var(--dxl-text);
+}
+
+/* ─── LED Indicators ─────────────────────────────────────────── */
+.infra__led {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow:
+        0 0 3px currentColor,
+        inset 0 -1px 1px rgba(0, 0, 0, 0.4);
+}
+
+.infra__led--on {
+    color: var(--dxl-led-green, #22cc44);
+}
+
+.infra__led--off {
+    color: var(--dxl-led-red, #cc3333);
+}
+
+.infra__led--warn {
+    color: var(--dxl-led-amber, #cc8800);
+}
+
+.infra__led--blue {
+    color: var(--dxl-led-blue, #4488cc);
+}
+
+.infra__led--pulse {
+    animation: infraLedPulse 2s ease-in-out infinite;
+}
+
+@keyframes infraLedPulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.4;
+    }
+}
+
+/* ─── Main Layout (Two-column) ───────────────────────────────── */
+.infra__workspace {
+    display: grid;
+    grid-template-columns: 1fr clamp(280px, 22vw, 380px);
+    gap: 0;
+    flex: 1;
+    overflow: hidden;
+}
+
+.infra__col {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: #2a2a2a #0e0e0e;
+}
+
+.infra__col--main {
+    background: var(--dxl-body, #121212);
+}
+
+.infra__col--side {
+    border-left: 1px solid rgba(0, 0, 0, 0.6);
+    box-shadow: -1px 0 0 var(--dxl-edge-hi);
+    background: var(--dxl-panel, #0e0e0e);
+}
+
+/* ─── Section Panels (Recessed Instrument Cavities) ──────────── */
+.infra__section {
+    position: relative;
+}
+
+.infra__section+.infra__section {
+    border-top: 1px solid rgba(0, 0, 0, 0.5);
+    box-shadow: inset 0 1px 0 var(--dxl-edge-hi);
+}
+
+.infra__section-hdr {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--dxl-text-label, #666);
+    background:
+        linear-gradient(180deg, #161616 0%, #121212 100%);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+    box-shadow:
+        inset 0 1px 0 var(--dxl-edge-hi),
+        0 1px 2px rgba(0, 0, 0, 0.3);
+    user-select: none;
+}
+
+.infra__section-hdr svg {
+    opacity: 0.5;
+    flex-shrink: 0;
+}
+
+.infra__section-badge {
+    margin-left: auto;
+    font-size: 9px;
+    font-weight: 400;
+    color: var(--dxl-text-dim);
+    letter-spacing: 0.04em;
+}
+
+.infra__section-body {
+    padding: 6px 8px;
+}
+
+/* ─── Service Registry Grid (LED Panel) ──────────────────────── */
+.infra__svc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+}
+
+.infra__svc-card {
+    position: relative;
+    padding: 8px 10px;
+    border-radius: 4px;
+    background:
+        linear-gradient(180deg, #171717 0%, #131313 100%);
+    border: 1px solid rgba(255, 255, 255, 0.02);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.03),
+        inset 0 -1px 2px rgba(0, 0, 0, 0.3);
+    transition: border-color 0.15s;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.infra__svc-card:hover {
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+.infra__svc-card--expanded {
+    grid-column: 1 / -1;
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+/* Criticality edge strip */
+.infra__svc-edge {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+}
+
+.infra__svc-edge--p0 {
+    background: var(--dxl-led-red);
+    box-shadow: 0 0 4px rgba(204, 51, 51, 0.3);
+}
+
+.infra__svc-edge--p1 {
+    background: var(--dxl-led-amber);
+    box-shadow: 0 0 4px rgba(204, 136, 0, 0.2);
+}
+
+.infra__svc-edge--p2 {
+    background: var(--dxl-text-dim);
+}
+
+.infra__svc-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+}
+
+.infra__svc-name {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--dxl-text-bright, #b0b0b0);
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.infra__svc-meta {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 9px;
+    color: var(--dxl-text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.infra__svc-crit {
+    font-size: 8px;
+    font-weight: 600;
+    padding: 1px 5px;
+    border-radius: 2px;
+    letter-spacing: 0.06em;
+    background: var(--dxl-lcd-bg, #080c0a);
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    box-shadow:
+        inset 0 1px 3px rgba(0, 0, 0, 0.6),
+        inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+.infra__svc-crit--p0 {
+    color: var(--dxl-led-red);
+}
+
+.infra__svc-crit--p1 {
+    color: var(--dxl-led-amber);
+}
+
+.infra__svc-crit--p2 {
+    color: var(--dxl-text-dim);
+}
+
+.infra__svc-status {
+    font-size: 8px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 1px 5px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+.infra__svc-status--up {
+    color: var(--dxl-led-green);
+    background: rgba(34, 204, 68, 0.08);
+    border: 1px solid rgba(34, 204, 68, 0.15);
+}
+
+.infra__svc-status--down {
+    color: var(--dxl-led-red);
+    background: rgba(204, 51, 51, 0.08);
+    border: 1px solid rgba(204, 51, 51, 0.15);
+}
+
+.infra__svc-status--degraded {
+    color: var(--dxl-led-amber);
+    background: rgba(204, 136, 0, 0.08);
+    border: 1px solid rgba(204, 136, 0, 0.15);
+}
+
+.infra__svc-status--unknown {
+    color: var(--dxl-text-dim);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Expanded detail panel */
+.infra__svc-detail {
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.infra__svc-detail-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 2px 0;
+    font-size: 9px;
+}
+
+.infra__svc-detail-label {
+    color: var(--dxl-text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    min-width: 60px;
+    flex-shrink: 0;
+}
+
+.infra__svc-detail-value {
+    color: var(--dxl-text);
+    font-variant-numeric: tabular-nums;
+}
+
+.infra__svc-cmd {
+    font-family: inherit;
+    font-size: 9px;
+    padding: 2px 6px;
+    border-radius: 2px;
+    background: var(--dxl-lcd-bg);
+    color: var(--dxl-lcd-text, #33cc66);
+    border: 1px solid rgba(0, 0, 0, 0.4);
+    box-shadow:
+        inset 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+.infra__svc-dep {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 8px;
+    padding: 1px 5px;
+    border-radius: 2px;
+    margin-right: 3px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.infra__svc-dep--ok {
+    color: var(--dxl-led-green);
+    border-color: rgba(34, 204, 68, 0.12);
+}
+
+.infra__svc-dep--fail {
+    color: var(--dxl-led-red);
+    border-color: rgba(204, 51, 51, 0.12);
+}
+
+/* ─── Diagnostics Panel (LCD Readout) ────────────────────────── */
+.infra__diag-lcd {
+    background: var(--dxl-lcd-bg);
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
+    padding: 8px 10px;
+    box-shadow:
+        inset 0 2px 6px rgba(0, 0, 0, 0.5),
+        inset 0 0 12px rgba(0, 0, 0, 0.3),
+        0 1px 0 var(--dxl-edge-hi);
+    font-size: 10px;
+    color: var(--dxl-lcd-text);
+    font-variant-numeric: tabular-nums;
+    white-space: pre-wrap;
+    overflow-y: auto;
+    max-height: 200px;
+    scrollbar-width: thin;
+    scrollbar-color: #1a2a1a #080c0a;
+}
+
+.infra__diag-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 2px 0;
+    border-bottom: 1px solid rgba(51, 204, 102, 0.06);
+}
+
+.infra__diag-row:last-child {
+    border-bottom: none;
+}
+
+.infra__diag-key {
+    color: rgba(51, 204, 102, 0.5);
+    min-width: 100px;
+    text-transform: uppercase;
+    font-size: 9px;
+    letter-spacing: 0.06em;
+}
+
+.infra__diag-val {
+    color: var(--dxl-lcd-text);
+    font-weight: 500;
+}
+
+/* ─── Buttons (Rubber Tactile) ───────────────────────────────── */
+.infra__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 4px 10px;
+    font-size: 9px;
+    font-weight: 600;
+    font-family: inherit;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--dxl-text-bright);
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 3px;
+    background:
+        linear-gradient(180deg, #232323 0%, #1a1a1a 40%, #161616 100%);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        inset 0 -1px 2px rgba(0, 0, 0, 0.4),
+        0 2px 4px rgba(0, 0, 0, 0.4);
+    transition: all 0.1s;
+    white-space: nowrap;
+}
+
+.infra__btn:hover {
+    background:
+        linear-gradient(180deg, #282828 0%, #1e1e1e 40%, #1a1a1a 100%);
+}
+
+.infra__btn:active {
+    box-shadow:
+        inset 0 2px 4px rgba(0, 0, 0, 0.5),
+        inset 0 0 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(1px);
+}
+
+.infra__btn--refresh {
+    color: var(--dxl-led-green);
+    border-color: rgba(34, 204, 68, 0.15);
+}
+
+.infra__btn--danger {
+    color: var(--dxl-led-red);
+    border-color: rgba(204, 51, 51, 0.15);
+}
+
+.infra__btn-group {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+/* ─── Auto-refresh toggle (hardware switch feel) ─────────────── */
+.infra__auto-toggle {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 9px;
+    color: var(--dxl-text-dim);
+    cursor: pointer;
+    padding: 2px 8px;
+    border-radius: 3px;
+    background: linear-gradient(180deg, #1a1a1a 0%, #141414 100%);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    user-select: none;
+}
+
+.infra__auto-toggle input[type="checkbox"] {
+    accent-color: var(--dxl-led-green);
+    width: 10px;
+    height: 10px;
+}
+
+/* ─── Empty State ────────────────────────────────────────────── */
+.infra__empty {
+    padding: 12px 8px;
+    text-align: center;
+    color: var(--dxl-text-dim);
+    font-size: 10px;
+    font-style: italic;
+}
+
+/* ─── Timestamp ──────────────────────────────────────────────── */
+.infra__timestamp {
+    font-size: 9px;
+    font-variant-numeric: tabular-nums;
+    color: var(--dxl-text-dim);
+}
+
+/* ─── Service Control Buttons ────────────────────────────────── */
+.infra__btn--start {
+    color: var(--dxl-led-green);
+    border-color: rgba(34, 204, 68, 0.15);
+}
+
+.infra__btn--stop {
+    color: var(--dxl-led-red);
+    border-color: rgba(204, 51, 51, 0.15);
+}
+
+.infra__btn--repair {
+    color: var(--dxl-led-amber);
+    border-color: rgba(204, 136, 0, 0.15);
+}
+
+.infra__btn--kill {
+    color: var(--dxl-led-red);
+    border-color: rgba(204, 51, 51, 0.15);
+    font-size: 8px;
+    padding: 2px 6px;
+}
+
+.infra__btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* ─── Inline Spinner ─────────────────────────────────────────── */
+.infra__spinner {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border: 1.5px solid rgba(255, 255, 255, 0.1);
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: infraSpin 0.6s linear infinite;
+    flex-shrink: 0;
+}
+
+@keyframes infraSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ─── Process Monitor Panel ──────────────────────────────────── */
+.infra__proc-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.infra__proc-card {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    border-radius: 3px;
+    background: linear-gradient(180deg, #151515 0%, #111111 100%);
+    border: 1px solid rgba(255, 255, 255, 0.02);
+    font-size: 9px;
+    transition: border-color 0.15s;
+}
+
+.infra__proc-card:hover {
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+.infra__proc-pid {
+    color: var(--dxl-lcd-text);
+    font-weight: 600;
+    min-width: 36px;
+    font-variant-numeric: tabular-nums;
+}
+
+.infra__proc-name {
+    color: var(--dxl-text-bright);
+    min-width: 50px;
+}
+
+.infra__proc-stat {
+    color: var(--dxl-text-dim);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.infra__proc-cmd {
+    color: var(--dxl-text-dim);
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 8px;
+}
+
+.infra__proc-spacer {
+    flex: 1;
+}
+
+/* ─── Gemini CLI Diagnostics Terminal ────────────────────────── */
+.infra__diag-terminal {
+    background: #050a07;
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
+    padding: 8px 10px;
+    box-shadow:
+        inset 0 2px 6px rgba(0, 0, 0, 0.5),
+        inset 0 0 12px rgba(0, 0, 0, 0.3),
+        0 1px 0 var(--dxl-edge-hi);
+    font-size: 9px;
+    font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+    color: var(--dxl-lcd-text);
+    white-space: pre-wrap;
+    overflow-y: auto;
+    max-height: 180px;
+    scrollbar-width: thin;
+    scrollbar-color: #1a2a1a #050a07;
+    line-height: 1.5;
+}
+
+.infra__diag-terminal-line {
+    display: block;
+    padding: 1px 0;
+}
+
+.infra__diag-terminal-line--info {
+    color: rgba(51, 204, 102, 0.7);
+}
+
+.infra__diag-terminal-line--warn {
+    color: var(--dxl-led-amber);
+}
+
+.infra__diag-terminal-line--error {
+    color: var(--dxl-led-red);
+}
+
+.infra__diag-terminal-line--cmd {
+    color: var(--dxl-led-blue, #4488cc);
+}
+
+.infra__diag-terminal-prompt {
+    color: rgba(51, 204, 102, 0.5);
+    user-select: none;
+}
+
+/* ─── Service Quick Actions (inline power toggle) ────────────── */
+.infra__svc-actions {
+    display: flex;
+    gap: 3px;
+    margin-top: 6px;
+}
+
+.infra__svc-actions .infra__btn {
+    flex: 1;
+    justify-content: center;
+    padding: 3px 6px;
+    font-size: 8px;
+}
+
+/* ─── Confirm dialog overlay ─────────────────────────────────── */
+.infra__confirm {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    margin-top: 4px;
+    border-radius: 3px;
+    background: rgba(204, 51, 51, 0.08);
+    border: 1px solid rgba(204, 51, 51, 0.2);
+    font-size: 9px;
+    color: var(--dxl-led-red);
+}
+
+/* ─── Danger bulk action ─────────────────────────────────────── */
+.infra__btn--danger {
+    background: rgba(204, 51, 51, 0.15);
+    border: 1px solid rgba(204, 51, 51, 0.4);
+    color: #cc3333;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    width: 100%;
+}
+
+.infra__btn--danger:hover {
+    background: rgba(204, 51, 51, 0.3);
+    border-color: rgba(204, 51, 51, 0.6);
+    color: #ff4444;
+}

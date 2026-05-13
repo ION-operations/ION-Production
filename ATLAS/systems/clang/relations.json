@@ -1,0 +1,203 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "llvm-ir",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Clang lowers C/C++/Objective-C to LLVM IR for the LLVM middle/back end."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-lld",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Clang can invoke lld via -fuse-ld=lld and related driver options."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-binutils",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "On many GNU/Linux triplets the driver invokes GNU as and GNU ld by default."
+    },
+    {
+      "type": "integrates_with",
+      "target": "c-language",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Clang compiles ISO C and common C extensions; primary LLVM C compiler."
+    },
+    {
+      "type": "integrates_with",
+      "target": "wasi-libc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Clang wasm32-wasi targets link against wasi-libc sysroots in LLVM distributions."
+    },
+    {
+      "type": "integrates_with",
+      "target": "dwarf",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Debug builds emit DWARF (typical on ELF targets) when using -g."
+    },
+    {
+      "type": "integrates_with",
+      "target": "elf",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Default object format on Unix-class ELF targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "language-server-protocol",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "clangd implements the Language Server Protocol for C/C++."
+    },
+    {
+      "type": "competes_with",
+      "target": "gnu-gcc",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang and GCC are substitutable C/C++ compilers on many Linux and cross-compile flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-gdb",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Clang -g DWARF builds are commonly debugged with GDB on Linux."
+    },
+    {
+      "type": "integrates_with",
+      "target": "lldb",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "LLDB is the LLVM-native debugger paired with Clang in LLVM-centric toolchains."
+    },
+    {
+      "type": "integrates_with",
+      "target": "glibc",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang on GNU/Linux often produces binaries linked against glibc when using the gnu environment."
+    },
+    {
+      "type": "integrates_with",
+      "target": "musl",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang can target musl with appropriate triplets and sysroots (e.g. Alpine-class environments)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-libstdcxx",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang may use GNU libstdc++ when invoked with -stdlib=libstdc++ on supported Linux setups."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-libcxx",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Clang links LLVM libc++ when using -stdlib=libc++ in LLVM-oriented C++ builds."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-libcxxabi",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Clang-generated C++ references libc++abi symbols for exceptions, RTTI, and static initialization on Itanium ABI targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "alpine-linux",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang/LLVM packages may be installed on Alpine for alternative compiler stacks targeting musl."
+    },
+    {
+      "type": "integrates_with",
+      "target": "debian",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang/LLVM packages are available from Debian archives for alternative compiler stacks on glibc."
+    },
+    {
+      "type": "integrates_with",
+      "target": "ubuntu",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang/LLVM packages are available from Ubuntu archives for alternative compiler stacks on glibc."
+    },
+    {
+      "type": "integrates_with",
+      "target": "fedora",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang/LLVM packages are available from Fedora repositories for alternative compiler stacks on glibc."
+    },
+    {
+      "type": "integrates_with",
+      "target": "rhel",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang/LLVM toolchains may be installed on RHEL where Red Hat or related repositories offer them."
+    },
+    {
+      "type": "integrates_with",
+      "target": "rocky-linux",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang/LLVM packages may be installed from Rocky Linux repositories where offered."
+    },
+    {
+      "type": "integrates_with",
+      "target": "almalinux",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang/LLVM packages may be installed from AlmaLinux repositories where offered."
+    },
+    {
+      "type": "integrates_with",
+      "target": "centos-stream",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang/LLVM packages may be installed from CentOS Stream repositories where offered."
+    },
+    {
+      "type": "integrates_with",
+      "target": "centos-linux",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang/LLVM packages could be installed from historical CentOS Linux repositories where offered."
+    },
+    {
+      "type": "integrates_with",
+      "target": "msvc-vcruntime",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang targeting Windows can link MSVC-compatible CRT DLL layouts when using the Windows SDK and MSVC-style linking."
+    },
+    {
+      "type": "integrates_with",
+      "target": "freebsd-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang/LLVM toolchains on FreeBSD link against FreeBSD libc in typical ports and base builds."
+    },
+    {
+      "type": "integrates_with",
+      "target": "openbsd-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang/LLVM may be used on OpenBSD and link against OpenBSD libc where configured."
+    },
+    {
+      "type": "integrates_with",
+      "target": "netbsd-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang/LLVM may be used on NetBSD and link against NetBSD libc where configured."
+    },
+    {
+      "type": "integrates_with",
+      "target": "dragonfly-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang/LLVM may be used on DragonFly and link against DragonFly libc where configured."
+    },
+    {
+      "type": "integrates_with",
+      "target": "illumos-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang/LLVM may be used on illumos distributions and link against illumos libc where configured."
+    },
+    {
+      "type": "integrates_with",
+      "target": "android-bionic",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang is the primary NDK compiler and links native code against Bionic for Android targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "newlib",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang/LLVM embedded toolchains may link against newlib sysroots when configured for bare-metal targets."
+    }
+  ]
+}

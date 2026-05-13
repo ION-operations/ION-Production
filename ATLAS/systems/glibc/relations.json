@@ -1,0 +1,191 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "glibc provides thin syscall wrappers and userland POSIX/C API atop the Linux kernel ABI."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-gcc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GCC targets glibc on typical GNU/Linux triplets; shared bootstrap and ABI history."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-binutils",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GNU ld links against glibc shared objects; dynamic linker is part of the glibc package."
+    },
+    {
+      "type": "integrates_with",
+      "target": "elf",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "libc.so and ld-linux are ELF shared objects; PT_INTERP / dynamic linking story."
+    },
+    {
+      "type": "integrates_with",
+      "target": "c-language",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "glibc is a major implementation of the C standard library portion of hosted C environments."
+    },
+    {
+      "type": "integrates_with",
+      "target": "riscv-isa",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "glibc includes ports for GNU/Linux targets including RISC-V alongside the psABI."
+    },
+    {
+      "type": "integrates_with",
+      "target": "clang",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang-built binaries commonly link against glibc on GNU/Linux when using the gnu libc environment."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-gdb",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GDB debugs glibc-linked executables and shared libraries; libc debuginfo is common on distros."
+    },
+    {
+      "type": "integrates_with",
+      "target": "lldb",
+      "evidence_tier": "INFERRED",
+      "notes": "LLDB on Linux often debugs processes linked against glibc similarly to GDB-centric flows."
+    },
+    {
+      "type": "competes_with",
+      "target": "musl",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Linux libc implementations (glibc vs musl) with different ABI and feature sets."
+    },
+    {
+      "type": "competes_with",
+      "target": "freebsd-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Unix libc implementations across Linux vs FreeBSD base system (not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "openbsd-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Unix libc implementations across Linux vs OpenBSD base system (not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "netbsd-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Unix libc implementations across Linux vs NetBSD base system (not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "dragonfly-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Unix libc implementations across Linux vs DragonFly base system (not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "illumos-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Unix libc implementations across Linux vs illumos distribution libc (not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "android-bionic",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable libc implementations across GNU/Linux glibc vs Android Bionic (not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "newlib",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable C library implementations across GNU/Linux glibc vs embedded newlib toolchains (not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "wasi-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable C library implementations across GNU/Linux glibc vs Wasm WASI wasi-libc (not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "uclibc",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Linux libc implementations across glibc vs uClibc (not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "dietlibc",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Linux libc implementations across glibc vs dietlibc (not ABI-interchangeable)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-libstdcxx",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GNU libstdc++ relies on glibc for many C/POSIX services underneath C++ standard library facilities on GNU/Linux."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-libcxx",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "libc++ on GNU/Linux sits on glibc for C/POSIX services under C++ standard library facilities."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-libcxxabi",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "libc++abi uses glibc-backed pthread and C services for hosted exception and runtime support on GNU/Linux."
+    },
+    {
+      "type": "integrates_with",
+      "target": "debian",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Debian GNU/Linux uses glibc as the standard C library on mainstream architecture ports."
+    },
+    {
+      "type": "integrates_with",
+      "target": "ubuntu",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Ubuntu uses glibc as the standard C library on mainstream desktop and server ports."
+    },
+    {
+      "type": "integrates_with",
+      "target": "fedora",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Fedora uses glibc as the standard C library on mainstream architecture ports."
+    },
+    {
+      "type": "integrates_with",
+      "target": "rhel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "RHEL uses glibc as the standard C library on supported enterprise architecture ports."
+    },
+    {
+      "type": "integrates_with",
+      "target": "rocky-linux",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Rocky Linux uses glibc as the standard C library on mainstream architecture ports."
+    },
+    {
+      "type": "integrates_with",
+      "target": "almalinux",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "AlmaLinux uses glibc as the standard C library on mainstream architecture ports."
+    },
+    {
+      "type": "integrates_with",
+      "target": "centos-stream",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "CentOS Stream uses glibc as the standard C library on mainstream architecture ports."
+    },
+    {
+      "type": "integrates_with",
+      "target": "centos-linux",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Historical CentOS Linux releases used glibc as the standard C library on mainstream architecture ports."
+    }
+  ]
+}

@@ -1,0 +1,170 @@
+{
+  "systemId": "cursor_addon.bulletproofMessaging",
+  "humanName": "Bulletproof Messaging Protocol",
+  "version": "v1.0.0",
+  "status": "production",
+  
+  "intent": {
+    "purpose": "Provide reliable message protocol ensuring guaranteed delivery, ordering, and exactly-once processing across Extension UI, VS Code Extension Host, and external clients",
+    "must_not_regress": [
+      "Must not lose messages",
+      "Must not process duplicates",
+      "Must not process messages out of order",
+      "Must not fail silently",
+      "Must not exceed 50ms processing latency"
+    ],
+    "why_it_exists": "Solves critical gaps in extension communication: no guaranteed delivery, no deduplication, no link health monitoring, no persistent queues. Enables autonomous operation with reliable communication."
+  },
+  
+  "classification": {
+    "security_level": "high",
+    "perf_sensitivity": "high",
+    "ownership": "core",
+    "sideEffects": [
+      "Ensures message delivery",
+      "Prevents duplicate processing",
+      "Maintains ordering guarantees",
+      "Tracks connection health"
+    ]
+  },
+  
+  "internalNodes": [
+    {
+      "id": "messageRouter",
+      "responsibility": "Routes messages with ordering, deduplication, retry logic, and dead letter queue",
+      "must_never": [
+        "Process duplicate messages",
+        "Process messages out of order",
+        "Lose messages without tracking"
+      ],
+      "perf_budget_ms": 50,
+      "status": "production"
+    },
+    {
+      "id": "envelopeProtocol",
+      "responsibility": "Versioned envelope format (v1) with ACK/NACK, sequence numbers, idempotency keys",
+      "must_never": [
+        "Break envelope format compatibility",
+        "Allow invalid envelope structures"
+      ],
+      "perf_budget_ms": 5,
+      "status": "production"
+    },
+    {
+      "id": "idempotencyManager",
+      "responsibility": "Prevents duplicate message processing using persistent ID tracking",
+      "must_never": [
+        "Lose processed IDs on restart",
+        "Allow duplicate processing"
+      ],
+      "perf_budget_ms": 10,
+      "status": "production"
+    },
+    {
+      "id": "orderingManager",
+      "responsibility": "Enforces FIFO ordering per sender using sequence numbers",
+      "must_never": [
+        "Process messages out of order",
+        "Lose sequence number state"
+      ],
+      "perf_budget_ms": 20,
+      "status": "production"
+    },
+    {
+      "id": "deadLetterQueue",
+      "responsibility": "Stores failed messages for manual review and retry",
+      "must_never": [
+        "Lose DLQ entries",
+        "Allow DLQ to grow unbounded"
+      ],
+      "perf_budget_ms": 100,
+      "status": "production"
+    },
+    {
+      "id": "resequencer",
+      "responsibility": "Handles out-of-order messages with gap detection and TTL expiration",
+      "must_never": [
+        "Process messages out of order",
+        "Block indefinitely on gaps"
+      ],
+      "perf_budget_ms": 30,
+      "status": "production"
+    },
+    {
+      "id": "persistentOutbox",
+      "responsibility": "Survives reloads/crashes using IndexedDB (webview) and Memento (extension)",
+      "must_never": [
+        "Lose undelivered messages",
+        "Corrupt outbox state"
+      ],
+      "perf_budget_ms": 200,
+      "status": "production"
+    },
+    {
+      "id": "heartbeatMonitor",
+      "responsibility": "Monitors connection health with RTT tracking and automatic reconnect",
+      "must_never": [
+        "Miss connection failures",
+        "Report false health status"
+      ],
+      "perf_budget_ms": 5,
+      "status": "production"
+    }
+  ],
+  
+  "integration_points": [
+    {
+      "system": "cursor_addon.extensionUI",
+      "protocol": "envelope_v1",
+      "direction": "bidirectional",
+      "purpose": "UI ↔ Extension communication"
+    },
+    {
+      "system": "cursor_addon.commandServer",
+      "protocol": "http_envelope",
+      "direction": "bidirectional",
+      "purpose": "HTTP API integration"
+    },
+    {
+      "system": "cursor_addon.agentAutomation",
+      "protocol": "envelope_v1",
+      "direction": "bidirectional",
+      "purpose": "Agent status updates"
+    },
+    {
+      "system": "cursor_addon.mcpClient",
+      "protocol": "envelope_v1",
+      "direction": "bidirectional",
+      "purpose": "MCP tool call wrapping"
+    }
+  ],
+  
+  "dependencies": [],
+  
+  "performance_summary": {
+    "latency_ms": 50,
+    "throughput_msg_per_sec": 100,
+    "reliability": "at_least_once",
+    "ordering": "fifo_per_sender"
+  },
+  
+  "documentation_status": {
+    "T0": "complete",
+    "T1": "complete",
+    "T2": "complete",
+    "T3": "pending",
+    "T4": "pending",
+    "T5": "pending",
+    "T6": "pending",
+    "system_map": "complete",
+    "system_index": "complete"
+  },
+  
+  "test_coverage": {
+    "unit_tests": 26,
+    "integration_tests": 10,
+    "coverage_percent": 85,
+    "status": "production_ready"
+  }
+}
+

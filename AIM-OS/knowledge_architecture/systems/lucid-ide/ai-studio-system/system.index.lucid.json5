@@ -1,0 +1,191 @@
+{
+  "systemId": "lucid-ide.aiStudioSystem",
+  "humanName": "Lucid IDE AI Studio System",
+  "version": "v1.0.0",
+  "status": "production",
+  
+  "intent": {
+    "purpose": "Provide comprehensive AI management interface with 15+ panels for agents, models, providers, knowledge maps, RAG pipelines, tools, templates, and performance monitoring",
+    "must_not_regress": [
+      "Must not lose panel state",
+      "Must not break AI Studio integration",
+      "Must not expose API keys",
+      "Must not exceed 100ms panel load time",
+      "Must not break 3D knowledge map rendering"
+    ],
+    "why_it_exists": "Transforms backend AI capabilities into unified management interface enabling developers to configure, monitor, and optimize all AI resources through comprehensive panel system."
+  },
+  
+  "classification": {
+    "security_level": "high",
+    "perf_sensitivity": "high",
+    "ownership": "lucid-ide",
+    "sideEffects": [
+      "Manages AI resources",
+      "Configures AI providers",
+      "Monitors AI performance",
+      "Visualizes knowledge maps",
+      "Manages vector databases"
+    ]
+  },
+  
+  "internalNodes": [
+    {
+      "id": "agentsPanel",
+      "responsibility": "Agent management panel (360+ lines) for creating, configuring, and running AI agents",
+      "must_never": [
+        "Lose agent configurations",
+        "Allow unauthorized agent execution",
+        "Expose sensitive agent data"
+      ],
+      "perf_budget_ms": 100,
+      "status": "production"
+    },
+    {
+      "id": "knowledgeMapPanel",
+      "responsibility": "3D knowledge map visualization with Three.js (3700+ lines ⚠️ CRITICAL)",
+      "must_never": [
+        "Lose knowledge map state",
+        "Break 3D rendering",
+        "Exceed memory limits"
+      ],
+      "perf_budget_ms": 16,
+      "status": "production"
+    },
+    {
+      "id": "modelsPanel",
+      "responsibility": "Model management and configuration panel",
+      "must_never": [
+        "Lose model configurations",
+        "Allow unauthorized model access",
+        "Break model switching"
+      ],
+      "perf_budget_ms": 50,
+      "status": "production"
+    },
+    {
+      "id": "providersPanel",
+      "responsibility": "AI provider management (OpenAI, Anthropic, XAI)",
+      "must_never": [
+        "Expose API keys",
+        "Lose provider configurations",
+        "Break provider switching"
+      ],
+      "perf_budget_ms": 50,
+      "status": "production"
+    },
+    {
+      "id": "ragPipelineView",
+      "responsibility": "RAG pipeline visualization and management",
+      "must_never": [
+        "Lose pipeline state",
+        "Break pipeline execution",
+        "Expose sensitive data"
+      ],
+      "perf_budget_ms": 100,
+      "status": "production"
+    },
+    {
+      "id": "vectorDBPanel",
+      "responsibility": "Vector database management and operations",
+      "must_never": [
+        "Lose vector data",
+        "Break vector operations",
+        "Expose embeddings"
+      ],
+      "perf_budget_ms": 200,
+      "status": "production"
+    },
+    {
+      "id": "performanceMetricsPanel",
+      "responsibility": "Performance monitoring and metrics display",
+      "must_never": [
+        "Lose metrics data",
+        "Break real-time updates",
+        "Expose sensitive metrics"
+      ],
+      "perf_budget_ms": 50,
+      "status": "production"
+    }
+  ],
+  
+  "systemMap": {
+    "mapFile": "./system.map.lucid.json5"
+  },
+  
+  "foresight": {
+    "predictedRisks": [
+      {
+        "risk_id": "large_component_performance",
+        "description": "Knowledge map panel extremely large (3700+ lines) causing performance issues",
+        "likelihood": "high",
+        "blast_radius_if_real": "knowledge_map_unusable",
+        "mitigation": "Refactor into smaller components, code splitting",
+        "watchpoint": "if render_time > 16ms for 10 consecutive frames, alert"
+      },
+      {
+        "risk_id": "api_key_exposure",
+        "description": "API keys could be exposed in providers panel",
+        "likelihood": "medium",
+        "blast_radius_if_real": "provider_account_compromise",
+        "mitigation": "Secure storage, input sanitization, never log keys",
+        "watchpoint": "if api_key_in_log detected, alert immediately"
+      }
+    ],
+    "killSwitch": "ai-studio.enabled=false",
+    "emergencyProcedures": [
+      "Disable all AI Studio panels",
+      "Revoke all API keys",
+      "Switch to read-only mode",
+      "Notify security team"
+    ]
+  },
+  
+  "integrations": {
+    "backendApiSystem": {
+      "protocol": "REST",
+      "whatIsExchanged": ["ai_requests", "ai_responses", "configuration_data"],
+      "security": "high",
+      "rateLimit": "unlimited"
+    },
+    "frontendSystem": {
+      "protocol": "react-props",
+      "whatIsExchanged": ["panel_state", "ui_updates"],
+      "security": "medium",
+      "rateLimit": "n/a"
+    },
+    "threeJs": {
+      "protocol": "WebGL",
+      "whatIsExchanged": ["3d_scene_data", "rendering_commands"],
+      "security": "low",
+      "rateLimit": "60fps"
+    }
+  },
+  
+  "performance": {
+    "metrics": {
+      "panel_load_time_ms": "target < 100ms",
+      "knowledge_map_fps": "target 60fps",
+      "api_latency_ms": "target < 200ms",
+      "memory_usage_mb": "target < 500MB"
+    },
+    "optimization": [
+      "Code splitting",
+      "Lazy loading",
+      "WebGL optimization",
+      "Component memoization"
+    ],
+    "monitoring": ["panel_load_time", "fps", "api_latency", "memory_usage"]
+  },
+  
+  "documentation": {
+    "l0_executive": "knowledge_architecture/systems/lucid-ide/ai-studio-system/L0_executive.md",
+    "l1_overview": "knowledge_architecture/systems/lucid-ide/ai-studio-system/L1_overview.md",
+    "l2_architecture": "knowledge_architecture/systems/lucid-ide/ai-studio-system/L2_architecture.md",
+    "l3_detailed": "knowledge_architecture/systems/lucid-ide/ai-studio-system/L3_detailed.md",
+    "l4_complete": "knowledge_architecture/systems/lucid-ide/ai-studio-system/L4_complete.md",
+    "system_map": "knowledge_architecture/systems/lucid-ide/ai-studio-system/system.map.lucid.json5",
+    "usage_envelope": "knowledge_architecture/systems/lucid-ide/ai-studio-system/usage.envelope.md"
+  }
+}
+

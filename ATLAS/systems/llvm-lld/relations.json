@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "llvm-ir",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "LTO and codegen outputs feed lld in LLVM-based builds."
+    },
+    {
+      "type": "integrates_with",
+      "target": "elf",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "lld consumes and emits ELF objects/executables on typical Unix-class targets."
+    },
+    {
+      "type": "competes_with",
+      "target": "gnu-binutils",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable with GNU ld in many ELF link workflows (clang -fuse-ld=lld, rustc defaults)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "c-language",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Clang commonly invokes lld when configured as the system or project linker."
+    },
+    {
+      "type": "integrates_with",
+      "target": "clang",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Clang driver selects lld when configured (e.g. -fuse-ld=lld)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "wasi-libc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "wasm-ld links wasi-libc objects into Wasm modules for WASI targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "rust-language",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "rustc uses lld by default on many platforms (rustc platform documentation)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "INFERRED",
+      "notes": "Some kernel/toolchain configurations use LLVM=1 / lld paths; not universal."
+    },
+    {
+      "type": "integrates_with",
+      "target": "riscv-isa",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "LLVM/lld supports RISC-V among many targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-libcxx",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "lld resolves libc++ (and libc++abi) symbols when linking Clang -stdlib=libc++ outputs."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-libcxxabi",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "lld resolves libc++abi when finalizing libc++-using binaries on LLVM toolchains."
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+﻿{
+    "version":  1,
+    "diagrams":  [
+                     {
+                         "description":  "Two-stage hierarchical retrieval (coarse → refine)",
+                         "name":  "hhni_two_stage",
+                         "edges":  [
+                                       [
+                                           "L0",
+                                           "L1"
+                                       ],
+                                       [
+                                           "L1",
+                                           "L2"
+                                       ],
+                                       [
+                                           "L2",
+                                           "L3"
+                                       ],
+                                       [
+                                           "L3",
+                                           "L4"
+                                       ],
+                                       [
+                                           "L4",
+                                           "L5"
+                                       ]
+                                   ],
+                         "stages":  [
+                                        {
+                                            "select":  "diverse 5–9 at appropriate level",
+                                            "stage":  "coarse"
+                                        },
+                                        {
+                                            "rerank":  "intent-specific",
+                                            "stage":  "refine",
+                                            "filters":  "tags,time,authority"
+                                        }
+                                    ],
+                         "nodes":  [
+                                       "L0",
+                                       "L1",
+                                       "L2",
+                                       "L3",
+                                       "L4",
+                                       "L5"
+                                   ]
+                     }
+                 ]
+}

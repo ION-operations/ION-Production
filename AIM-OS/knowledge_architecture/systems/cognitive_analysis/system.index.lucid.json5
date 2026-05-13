@@ -1,0 +1,449 @@
+{
+  "systemId": "cas.cognitiveAnalysis",
+  "humanName": "Cognitive Analysis System - Meta-Cognition Monitoring and Improvement",
+  "version": "v2.2.0",
+  "status": "production",
+  
+  "intent": {
+    "purpose": "Provide meta-layer system that observes and analyzes cognitive processes across all AIM-OS systems. Monitors activation state (hot vs cold), category recognition accuracy, attention load, and failure modes. Creates transparent, debuggable cognition by analyzing HOW the AI thinks during operation.",
+    "must_not_regress": [
+      "Must not lose activation state",
+      "Must not miss category errors",
+      "Must not miss attention narrowing",
+      "Must not skip introspection cycles",
+      "Must not lose decision logs"
+    ],
+    "why_it_exists": "Enables meta-cognitive awareness and self-monitoring for AI consciousness. Provides transparency, debugging, and continuous improvement through cognitive analysis."
+  },
+  
+  "classification": {
+    "security_level": "high",
+    "perf_sensitivity": "medium",
+    "ownership": "core",
+    "sideEffects": [
+      "Monitors all AI cognitive operations",
+      "Tracks activation and attention state",
+      "Detects cognitive failure modes",
+      "Performs hourly introspection",
+      "Logs all decisions with reasoning"
+    ]
+  },
+  
+  "internalNodes": [
+    {
+      "id": "activationTracker",
+      "responsibility": "Tracks what's 'hot' (actively used) vs 'cold' (available but inactive) in AI attention",
+      "must_never": [
+        "Lose activation state",
+        "Allow activation failures to go undetected",
+        "Skip activation warnings",
+        "Create inconsistent activation data"
+      ],
+      "perf_budget_ms": 10,
+      "status": "production"
+    },
+    {
+      "id": "categoryRecognizer",
+      "responsibility": "Detects how tasks get classified and validates against actual requirements",
+      "must_never": [
+        "Miss category errors",
+        "Allow wrong categorization",
+        "Skip category validation",
+        "Lose category reasoning"
+      ],
+      "perf_budget_ms": 15,
+      "status": "production"
+    },
+    {
+      "id": "attentionMonitor",
+      "responsibility": "Monitors cognitive load and attention narrowing",
+      "must_never": [
+        "Miss attention narrowing",
+        "Allow overload to go undetected",
+        "Skip attention warnings",
+        "Lose attention metrics"
+      ],
+      "perf_budget_ms": 8,
+      "status": "production"
+    },
+    {
+      "id": "failureModeDetector",
+      "responsibility": "Detects cognitive failure modes and patterns",
+      "must_never": [
+        "Miss failure patterns",
+        "Skip failure analysis",
+        "Lose failure context",
+        "Allow failures to repeat"
+      ],
+      "perf_budget_ms": 20,
+      "status": "production"
+    },
+    {
+      "id": "learningExtractor",
+      "responsibility": "Extracts learnings from decisions and outcomes",
+      "must_never": [
+        "Lose learning opportunities",
+        "Skip learning extraction",
+        "Create false learnings",
+        "Lose learning provenance"
+      ],
+      "perf_budget_ms": 25,
+      "status": "production"
+    },
+    {
+      "id": "introspectionEngine",
+      "responsibility": "Performs hourly cognitive introspection and validation",
+      "must_never": [
+        "Skip introspection cycles",
+        "Lose introspection data",
+        "Allow drift to go undetected",
+        "Create inconsistent introspection"
+      ],
+      "perf_budget_ms": 30,
+      "status": "production"
+    },
+    {
+      "id": "decisionLogger",
+      "responsibility": "Logs all decisions with full context and reasoning",
+      "must_never": [
+        "Lose decision logs",
+        "Skip decision logging",
+        "Create incomplete logs",
+        "Allow log tampering"
+      ],
+      "perf_budget_ms": 5,
+      "status": "production"
+    }
+  ],
+  
+  "systemMap": {
+    "mapFile": "./system.map.lucid.json5"
+  },
+  
+  "foresight": {
+    "predictedRisks": [
+      {
+        "risk_id": "activation_state_loss",
+        "description": "Activation state could be lost or corrupted",
+        "likelihood": "low",
+        "blast_radius_if_real": "cognitive_monitoring_unreliable",
+        "mitigation": "Implement redundant activation tracking and validation",
+        "watchpoint": "if activation_state_loss_detected, halt monitoring and alert"
+      },
+      {
+        "risk_id": "category_recognition_failure",
+        "description": "Category recognition could fail or misclassify",
+        "likelihood": "medium",
+        "blast_radius_if_real": "task_misclassification",
+        "mitigation": "Implement category validation and fallback mechanisms",
+        "watchpoint": "if category_error_detected, trigger manual review"
+      },
+      {
+        "risk_id": "introspection_skip",
+        "description": "Introspection cycles could be skipped",
+        "likelihood": "low",
+        "blast_radius_if_real": "cognitive_drift_undetected",
+        "mitigation": "Implement mandatory introspection scheduling and validation",
+        "watchpoint": "if introspection_skipped, trigger immediate introspection"
+      }
+    ],
+    "killSwitch": "cas.monitoring.enabled=false",
+    "emergencyProcedures": [
+      "Disable all monitoring immediately",
+      "Create emergency cognitive snapshot",
+      "Switch to safe mode",
+      "Notify all dependent systems"
+    ]
+  },
+  
+  "lineage": {
+    "parentSystemId": null,
+    "childSystems": [
+      "consciousness_analyzer",
+      "consciousness_error_learning",
+      "consciousness_optimization_detector"
+    ],
+    "enhancements": [
+      "consciousness_analyzer",
+      "consciousness_error_learning",
+      "consciousness_optimization_detector",
+      "consciousness_enhancement"
+    ],
+    "maturity": "production"
+  },
+  
+  "concepts": [
+    {
+      "id": "activation",
+      "name": "Activation Tracker",
+      "type": "subsystem",
+      "layer": 2,
+      "parentSystem": "cas",
+      "description": "Tracks 'hot' vs 'cold' principles/concepts",
+      "components": [],
+      "integrationPoints": ["hhni_inform", "cmc_storage", "apoe_observe", "tcs_use"]
+    },
+    {
+      "id": "category",
+      "name": "Category Recognizer",
+      "type": "subsystem",
+      "layer": 2,
+      "parentSystem": "cas",
+      "description": "Detects task classification and validates accuracy",
+      "components": [],
+      "integrationPoints": ["vif_enhance", "cmc_storage", "apoe_observe", "tcs_use"]
+    },
+    {
+      "id": "attention",
+      "name": "Attention Monitor",
+      "type": "subsystem",
+      "layer": 2,
+      "parentSystem": "cas",
+      "description": "Monitors cognitive load and attention narrowing",
+      "components": [],
+      "integrationPoints": ["cmc_storage", "apoe_observe", "tcs_use"]
+    },
+    {
+      "id": "failure_modes",
+      "name": "Failure Mode Detector",
+      "type": "subsystem",
+      "layer": 2,
+      "parentSystem": "cas",
+      "description": "Detects cognitive failure patterns",
+      "components": [],
+      "integrationPoints": ["seg_map", "cmc_storage", "sdfcvf_provide", "apoe_observe", "tcs_use"]
+    },
+    {
+      "id": "introspection",
+      "name": "Introspection Engine",
+      "type": "subsystem",
+      "layer": 2,
+      "parentSystem": "cas",
+      "description": "Performs hourly cognitive introspection",
+      "components": [],
+      "integrationPoints": ["cmc_storage", "vif_enhance", "seg_map", "apoe_observe", "tcs_use"]
+    },
+    {
+      "id": "cas_apoe_integration",
+      "name": "CAS ↔ APOE Integration",
+      "type": "integration",
+      "systems": ["cas", "apoe"],
+      "bidirectional": true,
+      "pattern": "observe",
+      "purpose": "CAS observes APOE decision-making processes, tracks reasoning transparency"
+    },
+    {
+      "id": "cas_vif_integration",
+      "name": "CAS ↔ VIF Integration",
+      "type": "integration",
+      "systems": ["cas", "vif"],
+      "bidirectional": true,
+      "pattern": "enhance",
+      "purpose": "CAS enhances VIF witnesses with cognitive context, enhances confidence calibration"
+    },
+    {
+      "id": "cas_hhni_integration",
+      "name": "CAS ↔ HHNI Integration",
+      "type": "integration",
+      "systems": ["cas", "hhni"],
+      "bidirectional": true,
+      "pattern": "inform",
+      "purpose": "CAS informs HHNI retrieval with activation-awareness (hot vs cold concepts)"
+    },
+    {
+      "id": "cas_cmc_integration",
+      "name": "CAS ↔ CMC Integration",
+      "type": "integration",
+      "systems": ["cas", "cmc"],
+      "bidirectional": true,
+      "pattern": "store",
+      "purpose": "CAS stores introspection analyses in CMC atoms, enables meta-learning"
+    },
+    {
+      "id": "cas_sdfcvf_integration",
+      "name": "CAS ↔ SDF-CVF Integration",
+      "type": "integration",
+      "systems": ["cas", "sdfcvf"],
+      "bidirectional": true,
+      "pattern": "provide",
+      "purpose": "CAS provides failure mode context to SDF-CVF for quality violations"
+    },
+    {
+      "id": "cas_seg_integration",
+      "name": "CAS ↔ SEG Integration",
+      "type": "integration",
+      "systems": ["cas", "seg"],
+      "bidirectional": true,
+      "pattern": "map",
+      "purpose": "CAS maps cognitive connections alongside knowledge connections (via general API)"
+    },
+    {
+      "id": "cas_tcs_integration",
+      "name": "CAS ↔ TCS Integration",
+      "type": "integration",
+      "systems": ["cas", "tcs"],
+      "bidirectional": true,
+      "pattern": "use",
+      "purpose": "CAS uses TCS timeline entries for meta-pattern analysis"
+    },
+    {
+      "id": "cas_iis_integration",
+      "name": "CAS ↔ IIS Integration",
+      "type": "integration",
+      "systems": ["cas", "iis"],
+      "bidirectional": true,
+      "pattern": "audit",
+      "purpose": "CAS audits IIS intuition patterns (separate system, CAS monitors it)"
+    },
+    {
+      "id": "consciousness_analyzer",
+      "name": "Consciousness Analyzer",
+      "type": "enhancement",
+      "layer": 2,
+      "parentSystem": "cas",
+      "description": "System-wide metrics collection and performance analysis (enhances CAS)",
+      "components": [],
+      "integrationPoints": ["cmc_metrics", "hhni_metrics", "vif_metrics", "apoe_metrics", "sdfcvf_metrics", "iis_metrics"]
+    },
+    {
+      "id": "consciousness_error_learning",
+      "name": "Consciousness Error Learning",
+      "type": "enhancement",
+      "layer": 2,
+      "parentSystem": "cas",
+      "description": "Error capture and learning from mistakes (enhances CAS)",
+      "components": [],
+      "integrationPoints": ["cmc_storage", "vif_confidence"]
+    },
+    {
+      "id": "consciousness_optimization_detector",
+      "name": "Consciousness Optimization Detector",
+      "type": "enhancement",
+      "layer": 2,
+      "parentSystem": "cas",
+      "description": "System auditing and optimization opportunities (enhances CAS)",
+      "components": [],
+      "integrationPoints": ["cmc_storage", "vif_confidence", "hhni_analysis"]
+    }
+  ],
+  
+  "connections": [
+    {
+      "viaPort": "apoeIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "apoe.aiPoweredOrchestration",
+      "protocol": "internal_api",
+      "data": ["decision_events", "execution_context", "plan_analysis", "cognitive_state"],
+      "security_level": "high",
+      "governanceRequired": true,
+      "pattern": "observe",
+      "tags": ["APOE-OBSERVE", "CAS-META"]
+    },
+    {
+      "viaPort": "vifIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "vif.verifiableIntelligence",
+      "protocol": "internal_api",
+      "data": ["confidence_scores", "provenance_data", "verification_results", "cognitive_metrics"],
+      "security_level": "high",
+      "governanceRequired": true,
+      "pattern": "enhance",
+      "tags": ["VIF-ENHANCE", "CAS-META"]
+    },
+    {
+      "viaPort": "hhniIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "hhni.hierarchicalHypergraph",
+      "protocol": "internal_api",
+      "data": ["context_queries", "retrieval_context", "activation_context", "cognitive_load_data"],
+      "security_level": "medium",
+      "governanceRequired": false,
+      "pattern": "inform",
+      "tags": ["HHNI-INFORM", "CAS-META"]
+    },
+    {
+      "viaPort": "cmcIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "cmc.contextMemoryCore",
+      "protocol": "internal_api",
+      "data": ["cognitive_analyses", "decision_logs", "introspection_data", "learning_data"],
+      "security_level": "critical",
+      "governanceRequired": true,
+      "pattern": "store",
+      "tags": ["CMC-STORAGE", "CAS-META"]
+    },
+    {
+      "viaPort": "sdfcvfIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "sdfcvf.atomicEvolution",
+      "protocol": "internal_api",
+      "data": ["quality_metrics", "failure_patterns", "evolution_recommendations", "cognitive_analysis"],
+      "security_level": "medium",
+      "governanceRequired": false,
+      "pattern": "provide",
+      "tags": ["SDF-CVF-PROVIDE", "CAS-META"]
+    },
+    {
+      "viaPort": "segIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "seg.sharedEvidenceGraph",
+      "protocol": "general_api",
+      "data": ["cognitive_connections", "evidence_nodes", "graph_queries", "synthesis_insights"],
+      "security_level": "medium",
+      "governanceRequired": true,
+      "pattern": "map",
+      "tags": ["SEG-MAP", "CAS-META"],
+      "note": "Uses SEG general API (no formal port, documented as relatedSystem)"
+    },
+    {
+      "viaPort": "tcsIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "tcs.timelineContextSystem",
+      "protocol": "internal_api",
+      "data": ["timeline_entries", "meta_pattern_analysis", "cognitive_metrics", "timeline_queries"],
+      "security_level": "medium",
+      "governanceRequired": false,
+      "pattern": "use",
+      "tags": ["TCS-USE", "CAS-META"]
+    },
+    {
+      "viaPort": "iisIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "iis.intuitiveIntelligenceSystem",
+      "protocol": "internal_api",
+      "data": ["intuition_patterns", "audit_analysis", "audit_results", "pattern_validation"],
+      "security_level": "low",
+      "governanceRequired": false,
+      "pattern": "audit",
+      "tags": ["IIS-AUDIT", "CAS-META"],
+      "note": "IIS is separate system, CAS monitors it"
+    }
+  ],
+  
+  "exceptions": [],
+  
+  "lastUpdated": "2025-01-27T00:35:00Z",
+  "atlasHealth": {
+    "undeclaredConnections": [],
+    "performanceAlerts": [],
+    "securityAlerts": []
+  },
+  
+  "relatedIdeas": [
+    "Cognitive analysis patterns",
+    "Meta-cognitive insights",
+    "Consciousness patterns",
+    "Introspection protocols"
+  ],
+  
+  "ideaReferenceCount": 18,
+  
+  "integrationPoints": {
+    "orchestration": "APOE provides execution context for analysis",
+    "verification": "VIF provides confidence and provenance data",
+    "retrieval": "HHNI provides context for activation tracking",
+    "storage": "CMC stores all cognitive analyses and logs",
+    "knowledge": "SEG links cognitive patterns to evidence graph"
+  }
+}
+

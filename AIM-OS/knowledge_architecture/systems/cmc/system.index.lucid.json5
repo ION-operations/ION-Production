@@ -1,0 +1,330 @@
+{
+  "systemId": "cmc.contextMemoryCore",
+  "humanName": "Context Memory Core - Bitemporal Memory Substrate",
+  "version": "v0.1",
+  "status": "production",
+  
+  "intent": {
+    "purpose": "Provide persistent, bitemporal memory substrate for AIM-OS that enables AI systems to remember everything, time-travel through memory, and retrieve perfect context for any task",
+    "must_not_regress": [
+      "Must not lose data integrity",
+      "Must not allow concurrent writes to same atom",
+      "Must not modify atoms after creation",
+      "Must not break bitemporal query semantics",
+      "Must not exceed 200ms write pipeline latency"
+    ],
+    "why_it_exists": "Transforms ephemeral AI context into structured, queryable, reversible memory. Enables true persistence and time-travel queries for AI consciousness."
+  },
+  
+  "classification": {
+    "security_level": "critical",
+    "perf_sensitivity": "high",
+    "ownership": "core",
+    "sideEffects": [
+      "Stores all AIM-OS memory permanently",
+      "Provides time-travel query capabilities",
+      "Enables AI consciousness continuity",
+      "Manages bitemporal data integrity"
+    ]
+  },
+  
+  "internalNodes": [
+    {
+      "id": "atomManager",
+      "responsibility": "Manages fundamental memory units (atoms) with bitemporal tracking",
+      "must_never": [
+        "Allow concurrent writes to same atom",
+        "Delete atoms (only supersede)",
+        "Modify atoms after creation"
+      ],
+      "perf_budget_ms": 10,
+      "status": "production"
+    },
+    {
+      "id": "snapshotEngine", 
+      "responsibility": "Creates immutable content-addressed snapshots of system state",
+      "must_never": [
+        "Modify snapshots after creation",
+        "Create snapshots without deterministic ordering",
+        "Allow hash collisions"
+      ],
+      "perf_budget_ms": 50,
+      "status": "production"
+    },
+    {
+      "id": "storageManager",
+      "responsibility": "Manages multi-tier persistence (vector, object, metadata, graph stores)",
+      "must_never": [
+        "Lose data integrity",
+        "Allow unauthorized access to stored content",
+        "Exceed storage quotas without notification"
+      ],
+      "perf_budget_ms": 100,
+      "status": "production"
+    },
+    {
+      "id": "writePipeline",
+      "responsibility": "Processes context ingestion: Parse → Atomize → Enrich → Index → Gate → Snapshot",
+      "must_never": [
+        "Skip quality gates",
+        "Create atoms without proper validation",
+        "Allow race conditions in write path"
+      ],
+      "perf_budget_ms": 200,
+      "status": "production"
+    },
+    {
+      "id": "readPipeline",
+      "responsibility": "Retrieves context: Query → HHNI → DVNS → Dedupe → Budget → Context",
+      "must_never": [
+        "Return inconsistent results",
+        "Exceed context budget without warning",
+        "Return stale data when fresh is available"
+      ],
+      "perf_budget_ms": 150,
+      "status": "production"
+    },
+    {
+      "id": "moleculeComposer",
+      "responsibility": "Groups related atoms into semantic structures",
+      "must_never": [
+        "Create circular dependencies",
+        "Compose atoms from different snapshots",
+        "Lose semantic relationships"
+      ],
+      "perf_budget_ms": 75,
+      "status": "development"
+    },
+    {
+      "id": "bitemporalQueryEngine",
+      "responsibility": "Enables time-travel queries with transaction and valid time",
+      "must_never": [
+        "Return data from future valid times",
+        "Allow queries that break causality",
+        "Expose deleted data without proper authorization"
+      ],
+      "perf_budget_ms": 100,
+      "status": "production"
+    }
+  ],
+  
+  "subsystems": [
+    {
+      "id": "atoms",
+      "name": "Atom Management Subsystem",
+      "status": "production",
+      "description": "Fundamental memory units (atoms) with bitemporal tracking, semantic metadata, and provenance",
+      "documentation": {
+        "L0": "components/atoms/README.md",
+        "L1": "components/atoms/L1_overview.md",
+        "L2": "components/atoms/L2_architecture.md",
+        "L3": "components/atoms/L3_detailed.md"
+      },
+      "integrationPoints": ["hhni", "vif", "seg"]
+    },
+    {
+      "id": "pipelines",
+      "name": "Pipeline Subsystem",
+      "status": "production",
+      "description": "Data flow orchestration: Write Pipeline (ingest) and Read Pipeline (query) with 7 stages each",
+      "documentation": {
+        "L0": "components/pipelines/README.md",
+        "L1": "components/pipelines/L1_overview.md",
+        "L2": "components/pipelines/L2_architecture.md"
+      },
+      "integrationPoints": ["hhni", "vif", "sdfcvf"]
+    },
+    {
+      "id": "snapshots",
+      "name": "Snapshot Subsystem",
+      "status": "production",
+      "description": "Immutable, content-addressed atom bundles for time-travel queries and rollback",
+      "documentation": {
+        "L0": "components/snapshots/README.md",
+        "L1": "components/snapshots/L1_overview.md",
+        "L2": "components/snapshots/L2_architecture.md"
+      },
+      "integrationPoints": ["vif", "seg"]
+    },
+    {
+      "id": "storage",
+      "name": "Storage Subsystem",
+      "status": "production",
+      "description": "Multi-tier persistence: Vector Store, Object Store, Metadata Store, Graph Store",
+      "documentation": {
+        "L0": "components/storage/README.md",
+        "L1": "components/storage/L1_overview.md",
+        "L2": "components/storage/L2_architecture.md"
+      },
+      "integrationPoints": ["hhni", "seg"]
+    }
+  ],
+  
+  "systemMap": {
+    "mapFile": "./system.map.lucid.json5"
+  },
+  
+  "foresight": {
+    "predictedRisks": [
+      {
+        "risk_id": "storage_quota_exhaustion",
+        "description": "Unlimited memory growth could exhaust storage capacity",
+        "likelihood": "medium",
+        "blast_radius_if_real": "entire_memory_system_unavailable",
+        "mitigation": "Implement tiered storage with archival policies",
+        "watchpoint": "if storage_usage > 80% for 24h, trigger archival"
+      },
+      {
+        "risk_id": "bitemporal_query_performance_degradation",
+        "description": "Complex temporal queries could become too slow",
+        "likelihood": "high",
+        "blast_radius_if_real": "time_travel_queries_unusable",
+        "mitigation": "Implement query optimization and caching",
+        "watchpoint": "if query_latency > 100ms for 10 consecutive queries, alert"
+      },
+      {
+        "risk_id": "concurrent_write_violation",
+        "description": "Race conditions could corrupt memory integrity",
+        "likelihood": "low",
+        "blast_radius_if_real": "data_corruption_across_system",
+        "mitigation": "Enforce single-writer discipline with locks",
+        "watchpoint": "if concurrent_write_attempts detected, halt system"
+      }
+    ],
+    "killSwitch": "cmc.memory.enabled=false",
+    "emergencyProcedures": [
+      "Freeze all writes immediately",
+      "Create emergency snapshot",
+      "Switch to read-only mode",
+      "Notify all dependent systems"
+    ]
+  },
+  
+  "lineage": {
+    "parentSystemId": null,
+    "childSystems": [
+      "hhni.hierarchicalHypergraph",
+      "apoe.aiPoweredOrchestration", 
+      "vif.verifiableIntelligence",
+      "seg.sharedEvidenceGraph",
+      "sdfcvf.atomicEvolution",
+      "tcs.timelineContext",
+      "cas.cognitiveAnalysis"
+    ],
+    "maturity": "production"
+  },
+  
+  "connections": [
+    {
+      "viaPort": "hhniIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "hhni.hierarchicalHypergraph",
+      "protocol": "internal_api",
+      "data": ["atoms_for_indexing", "hierarchical_paths", "retrieval_queries", "index_updates"],
+      "notificationPattern": {
+        "trigger": "cmc_event_journal_polling",
+        "delivery": "at_least_once_idempotent",
+        "modalityAllowlist": ["tcs_timeline", "plan_execution", "cas_introspection_analysis"],
+        "tagHints": ["hhni_index", "timeline_context", "apoe", "cas", "seg"]
+      },
+      "security_level": "high",
+      "governanceRequired": true
+    },
+    {
+      "viaPort": "apoeIntegration",
+      "direction": "bidirectional", 
+      "connectsToSystemId": "apoe.aiPoweredOrchestration",
+      "protocol": "internal_api",
+      "data": ["context_retrieval_requests", "execution_traces", "plan_artifacts", "plan_execution_atoms"],
+      "security_level": "high",
+      "governanceRequired": true
+    },
+    {
+      "viaPort": "vifIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "vif.verifiableIntelligence",
+      "protocol": "internal_api", 
+      "data": ["witness_storage", "confidence_scores", "verification_requests"],
+      "security_level": "critical",
+      "governanceRequired": true
+    },
+    {
+      "viaPort": "segIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "seg.sharedEvidenceGraph",
+      "protocol": "internal_api",
+      "data": ["provenance_edges", "graph_nodes", "evidence_links"],
+      "security_level": "high",
+      "governanceRequired": true
+    },
+    {
+      "viaPort": "sdfcvfIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "sdfcvf.atomicEvolution",
+      "protocol": "internal_api",
+      "data": ["schema_validation", "parity_checks", "evolution_artifacts"],
+      "security_level": "high",
+      "governanceRequired": true
+    },
+    {
+      "viaPort": "tcsIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "tcs.timelineContext",
+      "protocol": "internal_api",
+      "data": ["timeline_entry_storage", "tcs_timeline_atoms", "context_retrieval_queries", "timeline_queries"],
+      "security_level": "high",
+      "governanceRequired": true
+    },
+    {
+      "viaPort": "casIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "cas.cognitiveAnalysis",
+      "protocol": "internal_api",
+      "data": ["introspection_analysis_storage", "cas_introspection_analysis_atoms", "pattern_recognition_queries", "cognitive_history_queries"],
+      "security_level": "high",
+      "governanceRequired": true
+    }
+  ],
+  
+  "exceptions": [],
+  
+  "apiEndpoints": [
+    {
+      "name": "get_atom",
+      "path": "packages/cmc_service/memory_store.py#get_atom",
+      "purpose": "Retrieve a single atom by ID (supports SEG, test workflows)",
+      "stability": "stable"
+    },
+    {
+      "name": "store_timeline_entry_for_seg",
+      "path": "packages/cmc_service/tcs_seg_integration_helper.py#store_timeline_entry_for_seg",
+      "purpose": "TCS→CMC helper to store timeline entry and return atom_id for SEG ingest",
+      "stability": "stable"
+    }
+  ],
+  
+  "keyFlows": [
+    {
+      "id": "tcs_cmc_seg_gate",
+      "name": "TCS→CMC→SEG Gate Evidence Flow",
+      "steps": [
+        "TCS creates timeline entry",
+        "CMC stores entry as modality 'tcs_timeline' (helper) → returns atom_id",
+        "SEG ingests by atom_id → returns evidence_id",
+        "Capture tuple (prompt_id, atom_id, evidence_id)"
+      ]
+    },
+    {
+      "id": "apoe_plan_execution_atoms",
+      "name": "APOE plan_execution Atom Schema",
+      "summary": "APOE stores execution state as atoms with modality 'plan_execution' tagged apoe/plan/status:*; includes metadata (plan_name, execution_id, steps, timings)"
+    }
+  ],
+  
+  "lastUpdated": "2025-10-29T02:54:00Z",
+  "atlasHealth": {
+    "undeclaredConnections": [],
+    "performanceAlerts": [],
+    "securityAlerts": []
+  }
+}

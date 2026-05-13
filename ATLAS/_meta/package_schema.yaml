@@ -1,0 +1,78 @@
+# ATLAS package schema — machine-readable constraints
+# Human guidance: see package_template.md and quality_bar.md
+schema_version: "1.0"
+
+required_paths:
+  - "00_identity.md"
+  - "01_scope.md"
+  - "02_architecture.md"
+  - "03_components.md"
+  - "04_process_memory_namespace.md"
+  - "05_storage_network_ipc.md"
+  - "06_security_permissions.md"
+  - "07_extension_tooling.md"
+  - "08_build_deploy_update.md"
+  - "09_operator_surface.md"
+  - "10_observability.md"
+  - "11_lineage.md"
+  - "12_relation_map.md"
+  - "13_evidence_ledger.md"
+  - "14_documented_vs_inferred.md"
+  - "sources.yaml"
+  - "tags.yaml"
+  - "relations.json"
+
+markdown_frontmatter:
+  required_keys:
+    - atlas_package
+    - system_slug
+    - schema_version
+    - last_reviewed
+    - evidence_grade
+  optional_keys:
+    - maintainer
+    - upstream_url
+  atlas_package_enum: ["system"]
+
+yaml_files:
+  sources_yaml:
+    required_root_keys:
+      - primary
+    primary_item_keys:
+      - id
+      - kind
+      - title
+      - locator
+      - tier_hint
+    kind_enum: ["documentation", "source", "standard", "paper", "observation_log"]
+  tags_yaml:
+    required_root_keys:
+      - tags
+
+json_files:
+  relations_json:
+    required_root_keys:
+      - schema_version
+      - edges
+    edge_required_keys:
+      - type
+      - target
+      - evidence_tier
+    allowed_relation_types:
+      - influences
+      - fork_of
+      - implements
+      - hosts
+      - depends_on
+      - integrates_with
+      - competes_with
+      - exposes_surface
+      - manages
+      - documents
+
+evidence_tier_enum:
+  - DOCUMENTED
+  - OBSERVED
+  - HISTORICAL
+  - INFERRED
+  - UNKNOWN

@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "influences",
+      "target": "linux-kernel",
+      "evidence_tier": "HISTORICAL",
+      "notes": "Shared Unix/BSD ideas and code lineage in broader ecosystem; not a parent-child relationship."
+    },
+    {
+      "type": "competes_with",
+      "target": "linux-kernel",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable server/desktop OS kernel + base system in some deployments."
+    },
+    {
+      "type": "integrates_with",
+      "target": "docker",
+      "evidence_tier": "INFERRED",
+      "notes": "Container workflows on FreeBSD use jails/Podman/OCI tooling; parity with Linux Docker Engine is not assumed—verify per deployment docs."
+    },
+    {
+      "type": "integrates_with",
+      "target": "freebsd-libc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "FreeBSD libc is part of the FreeBSD base system userland shipped with the distribution."
+    }
+  ]
+}

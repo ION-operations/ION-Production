@@ -1,0 +1,222 @@
+{
+  "snapshot_utc": "2026-02-19T06:25:40.626912+00:00",
+  "repo": {
+    "tracked_files": 54322,
+    "commit_count": 633,
+    "lucid_mcp_server_lines": 10626
+  },
+  "mcp_tool_surface": {
+    "count": 103,
+    "listed_count": 103,
+    "callable_count": 103,
+    "header_count": 93,
+    "parity_ok": true,
+    "listed_not_callable": [],
+    "callable_not_listed": [],
+    "categories": {
+      "Core AIM-OS": 6,
+      "SCOR": 3,
+      "Snapshots": 4,
+      "Timeline": 3,
+      "Goal Timeline": 3,
+      "IIS": 3,
+      "Co-Agency": 3,
+      "Dataset Management": 4,
+      "Application Lifecycle": 3,
+      "Autonomous Protocol": 9,
+      "ARD": 3,
+      "CAS": 3,
+      "NL Tags": 5,
+      "Cursor Integration": 5,
+      "Cursor Commands": 10,
+      "AI Collaboration": 6,
+      "Prompt Chains": 7,
+      "Observability": 1,
+      "HHNI Indexing": 1,
+      "API Integration": 3
+    },
+    "source": "lucid_mcp_server.py",
+    "detection_method": "balanced all_tools parse + handle_tools_call parse",
+    "last_updated": "2026-02-19T02:08:33.000000+00:00"
+  },
+  "source_of_truth_detector": {
+    "systems_count": 64,
+    "documentation_files": 3407,
+    "test_files": 316
+  },
+  "validation_snapshot": {
+    "apoe_tests": {
+      "passed": 381,
+      "failed": 0,
+      "skipped": 10,
+      "warnings": 0
+    },
+    "hhni_tests": {
+      "passed": 119,
+      "failed": 0,
+      "skipped": 1,
+      "warnings": 0
+    },
+    "seg_tests": {
+      "passed": 104,
+      "failed": 0,
+      "warnings": 0
+    },
+    "sdfcvf_tests": {
+      "passed": 154,
+      "failed": 0,
+      "runtime_seconds": 361,
+      "warnings": 0
+    },
+    "sdfcvf_integration_subset": {
+      "test_apoe_integration": {
+        "passed": 5,
+        "failed": 0
+      },
+      "test_cas_integration": {
+        "passed": 5,
+        "failed": 0
+      },
+      "test_hhni_integration": {
+        "passed": 5,
+        "failed": 0
+      },
+      "test_vif_integration": {
+        "passed": 5,
+        "failed": 0
+      }
+    },
+    "benchmark_smoke_snapshot": {
+      "commands_failed": 0,
+      "pytest_passed": 48,
+      "pytest_failed": 0,
+      "pytest_warnings": 0,
+      "duration_seconds_total_baseline": 65.758,
+      "duration_seconds_total_candidate": 65.981,
+      "retrieval_p95_ms_baseline": 238.46350004896522,
+      "retrieval_p95_ms_candidate": 266.00339997094125,
+      "retrieval_mean_relevance_baseline": 0.7666666666666666,
+      "retrieval_mean_relevance_candidate": 0.7666666666666666
+    },
+    "benchmark_quick_snapshot": {
+      "commands_failed_baseline": 0,
+      "commands_failed_candidate": 0,
+      "pytest_passed_baseline": 641,
+      "pytest_passed_candidate": 641,
+      "pytest_failed_baseline": 0,
+      "pytest_failed_candidate": 0,
+      "pytest_warnings_baseline": 0,
+      "pytest_warnings_candidate": 0,
+      "duration_seconds_total_baseline": 449.232,
+      "duration_seconds_total_candidate": 384.936,
+      "comparison_verdict": "pass"
+    },
+    "benchmark_full_snapshot": {
+      "commands_failed_baseline": 0,
+      "commands_failed_candidate": 0,
+      "pytest_passed_baseline": 760,
+      "pytest_passed_candidate": 760,
+      "pytest_failed_baseline": 0,
+      "pytest_failed_candidate": 0,
+      "pytest_warnings_baseline": 0,
+      "pytest_warnings_candidate": 0,
+      "duration_seconds_total_baseline": 1275.167,
+      "duration_seconds_total_candidate": 1338.396,
+      "retrieval_p95_ms_baseline": 33457.76639995165,
+      "retrieval_p95_ms_candidate": 28901.877099997364,
+      "retrieval_p99_ms_baseline": 34905.545599991456,
+      "retrieval_p99_ms_candidate": 31666.17659991607,
+      "retrieval_mean_relevance_baseline": 0.6492857883022914,
+      "retrieval_mean_relevance_candidate": 0.6492857883022914,
+      "comparison_verdict": "pass"
+    }
+  },
+  "policy_snapshot": {
+    "tagged_coverage_policy": {
+      "coverage_omit_has_tagged_pattern": true,
+      "tagged_file_count": 115,
+      "tagged_parse_failures": 18,
+      "policy_script": "scripts/check_tagged_coverage_policy.py"
+    },
+    "claim_evidence_lock": {
+      "claims_total": 8,
+      "claims_supported": 8,
+      "artifact_md": "audit/2026-02-19_aimos_restart_audit/09_CLAIM_EVIDENCE_LOCK.md",
+      "artifact_json": "audit/2026-02-19_aimos_restart_audit/09_CLAIM_EVIDENCE_LOCK.json",
+      "generator_script": "scripts/generate_claim_evidence_lock.py"
+    },
+    "readme_claim_normalization": {
+      "phase": "completed",
+      "status_blocks_updated": true,
+      "residual_deep_claim_strings": false
+    },
+    "ci_claim_lock_automation": {
+      "workflow": ".github/workflows/claim-evidence-lock.yml",
+      "readme_policy_script": "scripts/check_readme_claim_language.py",
+      "quick_mode_enabled": true,
+      "full_mode_enabled": true
+    },
+    "sprint4_warning_burndown": {
+      "baseline_total_warnings": 464,
+      "postpatch_total_warnings": 0,
+      "baseline": {
+        "apoe": {
+          "warnings": 357,
+          "artifact": "audit/2026-02-19_aimos_restart_audit/11_SPRINT4_APOE_BASELINE.txt"
+        },
+        "seg": {
+          "warnings": 2,
+          "artifact": "audit/2026-02-19_aimos_restart_audit/09_CLAIM_EVIDENCE_LOCK.md"
+        },
+        "sdfcvf": {
+          "warnings": 105,
+          "artifact": "audit/2026-02-19_aimos_restart_audit/11_SPRINT4_SDFCVF_BASELINE.txt"
+        }
+      },
+      "postpatch": {
+        "apoe": {
+          "warnings": 0,
+          "artifact": "audit/2026-02-19_aimos_restart_audit/11_SPRINT4_APOE_POSTPATCH.txt"
+        },
+        "seg": {
+          "warnings": 0,
+          "artifact": "audit/2026-02-19_aimos_restart_audit/11_SPRINT4_SEG_POSTPATCH.txt"
+        },
+        "sdfcvf": {
+          "warnings": 0,
+          "artifact": "audit/2026-02-19_aimos_restart_audit/11_SPRINT4_SDFCVF_POSTPATCH.txt"
+        }
+      },
+      "claim_lock_refreshed": true,
+      "claim_lock_artifacts": {
+        "md": "audit/2026-02-19_aimos_restart_audit/09_CLAIM_EVIDENCE_LOCK.md",
+        "json": "audit/2026-02-19_aimos_restart_audit/09_CLAIM_EVIDENCE_LOCK.json"
+      }
+    },
+    "benchmark_package_phase1": {
+      "status": "completed",
+      "manifest": "benchmarks/openai_eval/benchmark_manifest.json",
+      "runner": "scripts/run_openai_benchmark_pack.py",
+      "benchmark_readme": "benchmarks/openai_eval/README.md",
+      "profiles": [
+        "smoke",
+        "quick",
+        "full"
+      ]
+    },
+    "benchmark_campaign_phase2": {
+      "status": "completed",
+      "latest_smoke_baseline_run": "audit/2026-02-19_aimos_restart_audit/12_benchmark_runs/20260219T052150Z_baseline_smoke/run.json",
+      "latest_smoke_candidate_run": "audit/2026-02-19_aimos_restart_audit/12_benchmark_runs/20260219T052150Z_aimos_assisted_smoke/run.json",
+      "latest_smoke_comparison": "audit/2026-02-19_aimos_restart_audit/12_benchmark_runs/20260219T052150Z_aimos_assisted_smoke/comparison.json",
+      "latest_quick_baseline_run": "audit/2026-02-19_aimos_restart_audit/12_benchmark_runs/20260219T052525Z_baseline_quick/run.json",
+      "latest_quick_candidate_run": "audit/2026-02-19_aimos_restart_audit/12_benchmark_runs/20260219T053301Z_aimos_assisted_quick/run.json",
+      "latest_quick_comparison": "audit/2026-02-19_aimos_restart_audit/12_benchmark_runs/20260219T053301Z_aimos_assisted_quick/comparison.json",
+      "latest_full_baseline_run": "audit/2026-02-19_aimos_restart_audit/12_benchmark_runs/20260219T054002Z_baseline_full/run.json",
+      "latest_full_candidate_run": "audit/2026-02-19_aimos_restart_audit/12_benchmark_runs/20260219T060125Z_aimos_assisted_full/run.json",
+      "latest_full_comparison": "audit/2026-02-19_aimos_restart_audit/12_benchmark_runs/20260219T060125Z_aimos_assisted_full/comparison.json",
+      "quick_verdict": "pass",
+      "full_verdict": "pass"
+    }
+  }
+}

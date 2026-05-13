@@ -1,0 +1,155 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "oci-distribution-spec",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Image manifests and blobs are transported via registry HTTP APIs defined by the distribution spec."
+    },
+    {
+      "type": "integrates_with",
+      "target": "oci-runtime-spec",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Unpacked images yield a runtime bundle (rootfs + config.json) governed by the OCI Runtime Spec."
+    },
+    {
+      "type": "integrates_with",
+      "target": "docker",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Docker Engine builds and runs OCI-compatible images; format standardized separately from Moby/dockerd."
+    },
+    {
+      "type": "integrates_with",
+      "target": "containerd",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "containerd pulls, stores, and unpacks OCI images toward runtime bundles in typical CRI stacks."
+    },
+    {
+      "type": "integrates_with",
+      "target": "runc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "OCI images are unpacked into OCI runtime bundles consumed by runc-class runtimes."
+    },
+    {
+      "type": "integrates_with",
+      "target": "crun",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "OCI images unpack into bundles executed by crun when configured as the low-level OCI runtime."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Workloads are commonly specified as container images pulled as OCI artifacts into node runtimes."
+    },
+    {
+      "type": "competes_with",
+      "target": "systemd-portable",
+      "evidence_tier": "INFERRED",
+      "notes": "Overlapping 'ship runnable service tree' goal: OCI layers vs systemd portable OS-tree bundles; different tooling and hosts."
+    },
+    {
+      "type": "competes_with",
+      "target": "systemd-sysext",
+      "evidence_tier": "INFERRED",
+      "notes": "OCI layers target container roots; sysext merges extensions into host hierarchies under systemd — different format and activation path."
+    },
+    {
+      "type": "competes_with",
+      "target": "systemd-confext",
+      "evidence_tier": "INFERRED",
+      "notes": "OCI config-in-image vs confext host /etc merge — different delivery and activation path."
+    },
+    {
+      "type": "integrates_with",
+      "target": "alpine-linux",
+      "evidence_tier": "INFERRED",
+      "notes": "Many published OCI images use Alpine-derived rootfs layers; layout still conforms to OCI image spec."
+    },
+    {
+      "type": "integrates_with",
+      "target": "debian",
+      "evidence_tier": "INFERRED",
+      "notes": "Many published OCI images use Debian-derived rootfs layers; layout still conforms to OCI image spec."
+    },
+    {
+      "type": "integrates_with",
+      "target": "ubuntu",
+      "evidence_tier": "INFERRED",
+      "notes": "Many published OCI images use Ubuntu-derived rootfs layers; layout still conforms to OCI image spec."
+    },
+    {
+      "type": "integrates_with",
+      "target": "fedora",
+      "evidence_tier": "INFERRED",
+      "notes": "Many published OCI images use Fedora-derived rootfs layers; layout still conforms to OCI image spec."
+    },
+    {
+      "type": "integrates_with",
+      "target": "rhel",
+      "evidence_tier": "INFERRED",
+      "notes": "Many published OCI images use RHEL-derived or UBI rootfs layers; layout still conforms to OCI image spec."
+    },
+    {
+      "type": "integrates_with",
+      "target": "rocky-linux",
+      "evidence_tier": "INFERRED",
+      "notes": "Many published OCI images use Rocky Linux-derived rootfs layers; layout still conforms to OCI image spec."
+    },
+    {
+      "type": "integrates_with",
+      "target": "almalinux",
+      "evidence_tier": "INFERRED",
+      "notes": "Many published OCI images use AlmaLinux-derived rootfs layers; layout still conforms to OCI image spec."
+    },
+    {
+      "type": "integrates_with",
+      "target": "centos-stream",
+      "evidence_tier": "INFERRED",
+      "notes": "Many published OCI images use CentOS Stream-derived rootfs layers; layout still conforms to OCI image spec."
+    },
+    {
+      "type": "integrates_with",
+      "target": "centos-linux",
+      "evidence_tier": "INFERRED",
+      "notes": "Many historical OCI images used CentOS Linux-derived rootfs layers; layout still conforms to OCI image spec."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-overlayfs",
+      "evidence_tier": "INFERRED",
+      "notes": "OCI image layers define manifests and blobs; Linux hosts often unpack and mount with overlay, which is kernel behavior distinct from the image spec."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-fuse",
+      "evidence_tier": "INFERRED",
+      "notes": "OCI image spec governs layer blobs and manifests; FUSE is a Linux filesystem bridge unrelated to image JSON law."
+    },
+    {
+      "type": "integrates_with",
+      "target": "buildkit",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "BuildKit builds and exports container images whose manifests and layers conform to OCI Image Spec layout."
+    },
+    {
+      "type": "integrates_with",
+      "target": "helm",
+      "evidence_tier": "INFERRED",
+      "notes": "Helm chart templates commonly reference workload container images that are pulled as OCI images."
+    },
+    {
+      "type": "integrates_with",
+      "target": "fluxcd",
+      "evidence_tier": "INFERRED",
+      "notes": "Flux image automation reconciles workload image references as OCI images (tags/digests)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "argo-cd",
+      "evidence_tier": "INFERRED",
+      "notes": "Argo CD Applications reference container images that are pulled as OCI images in typical deployments."
+    }
+  ]
+}

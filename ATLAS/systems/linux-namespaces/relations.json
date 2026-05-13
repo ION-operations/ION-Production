@@ -1,0 +1,89 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Linux namespaces are kernel mechanisms for isolating views of global resources (mount, UTS, IPC, PID, network, user, cgroup, time per documented types)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "docker",
+      "evidence_tier": "INFERRED",
+      "notes": "Docker Engine on Linux composes namespaces (and cgroups) for container isolation per common deployment understanding."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "Kubernetes pods and containers rely on Linux namespaces on Linux nodes."
+    },
+    {
+      "type": "integrates_with",
+      "target": "containerd",
+      "evidence_tier": "INFERRED",
+      "notes": "containerd creates and joins namespaces when managing Linux containers."
+    },
+    {
+      "type": "integrates_with",
+      "target": "runc",
+      "evidence_tier": "INFERRED",
+      "notes": "runc configures Linux namespaces when creating OCI runtime bundles on Linux."
+    },
+    {
+      "type": "integrates_with",
+      "target": "podman",
+      "evidence_tier": "INFERRED",
+      "notes": "Podman uses Linux namespaces for rootless and rootful containers on Linux."
+    },
+    {
+      "type": "integrates_with",
+      "target": "cri-o",
+      "evidence_tier": "INFERRED",
+      "notes": "CRI-O configures Linux namespaces for Kubernetes workloads on Linux nodes."
+    },
+    {
+      "type": "integrates_with",
+      "target": "systemd",
+      "evidence_tier": "INFERRED",
+      "notes": "systemd may create or enter namespaces for services and portable/nspawn-style flows on Linux."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-cgroups",
+      "evidence_tier": "INFERRED",
+      "notes": "Linux container isolation commonly composes namespaces with cgroup resource controllers; distinct concerns."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-capabilities",
+      "evidence_tier": "INFERRED",
+      "notes": "Container stacks compose namespaces with capability sets; namespaces change views, capabilities gate privileged operations."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-overlayfs",
+      "evidence_tier": "INFERRED",
+      "notes": "Mount namespaces scope overlay union mounts; OverlayFS is a filesystem driver, not a namespace kind."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-netfilter",
+      "evidence_tier": "INFERRED",
+      "notes": "Network namespaces scope interfaces and routing; netfilter rules are evaluated per network namespace."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-fuse",
+      "evidence_tier": "INFERRED",
+      "notes": "Mount namespaces scope FUSE mounts; FUSE is a filesystem mechanism, not a namespace kind."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-kvm",
+      "evidence_tier": "INFERRED",
+      "notes": "Namespaces isolate process views within one kernel; KVM runs separate guest VMs — different isolation model."
+    }
+  ]
+}

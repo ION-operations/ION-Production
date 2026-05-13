@@ -1,0 +1,253 @@
+{
+  "run_id": "20260219T053301Z_aimos_assisted_quick",
+  "generated_utc": "2026-02-19T05:39:26.092232+00:00",
+  "repo_root": "C:\\Users\\bombe\\OneDrive\\Desktop\\AIM-OS",
+  "manifest_path": "C:\\Users\\bombe\\OneDrive\\Desktop\\AIM-OS\\benchmarks\\openai_eval\\benchmark_manifest.json",
+  "manifest_name": "aimos_openai_eval_pack",
+  "profile": "quick",
+  "variant": "aimos_assisted",
+  "notes": "Sprint5 quick assisted",
+  "dry_run": false,
+  "python_exe": "C:\\Users\\bombe\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+  "env_overrides": {
+    "AIMOS_ASSISTED": "1"
+  },
+  "tasks": [
+    {
+      "id": "mcp_parity",
+      "name": "MCP parity check",
+      "command": [
+        "C:\\Users\\bombe\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "scripts/check_mcp_tool_parity.py"
+      ],
+      "parse": "json_stdout",
+      "timeout_seconds": 120,
+      "returncode": 0,
+      "duration_seconds": 0.11,
+      "parsed": {
+        "listed_count": 103,
+        "callable_count": 103,
+        "parity_ok": true,
+        "listed_not_callable": [],
+        "callable_not_listed": []
+      },
+      "stdout_tail": [
+        "{",
+        "  \"listed_count\": 103,",
+        "  \"callable_count\": 103,",
+        "  \"parity_ok\": true,",
+        "  \"listed_not_callable\": [],",
+        "  \"callable_not_listed\": []",
+        "}"
+      ],
+      "stderr_tail": [],
+      "not_executed": false,
+      "log_path": "C:\\Users\\bombe\\OneDrive\\Desktop\\AIM-OS\\audit\\2026-02-19_aimos_restart_audit\\12_benchmark_runs\\20260219T053301Z_aimos_assisted_quick\\logs\\mcp_parity.log",
+      "output_json_path": null,
+      "output_json_loaded": false,
+      "extracted_metrics": {}
+    },
+    {
+      "id": "source_of_truth_dry_run",
+      "name": "Source of truth detector dry-run",
+      "command": [
+        "C:\\Users\\bombe\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "scripts/detect_source_of_truth.py",
+        "--dry-run",
+        "--check-mcp-parity"
+      ],
+      "parse": "none",
+      "timeout_seconds": 300,
+      "returncode": 0,
+      "duration_seconds": 90.899,
+      "parsed": {},
+      "stdout_tail": [
+        "DRY RUN - Detecting source of truth...",
+        "",
+        "Source of Truth Preview:",
+        "   MCP Tools (listed): 103",
+        "   MCP Tools (callable): 103",
+        "   MCP Parity OK: True",
+        "   Cursor Commands: 16",
+        "   Systems: 64",
+        "   Documentation Files: 3407",
+        "   Test Files: 316",
+        "[OK] MCP tool parity check passed."
+      ],
+      "stderr_tail": [],
+      "not_executed": false,
+      "log_path": "C:\\Users\\bombe\\OneDrive\\Desktop\\AIM-OS\\audit\\2026-02-19_aimos_restart_audit\\12_benchmark_runs\\20260219T053301Z_aimos_assisted_quick\\logs\\source_of_truth_dry_run.log",
+      "output_json_path": null,
+      "output_json_loaded": false,
+      "extracted_metrics": {}
+    },
+    {
+      "id": "mcp_parity_tests",
+      "name": "MCP parity pytest guardrails",
+      "command": [
+        "C:\\Users\\bombe\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "-m",
+        "pytest",
+        "tests/test_mcp_tool_surface_parity.py",
+        "-q",
+        "-o",
+        "addopts=''"
+      ],
+      "parse": "pytest",
+      "timeout_seconds": 300,
+      "returncode": 0,
+      "duration_seconds": 0.719,
+      "parsed": {
+        "passed": 2,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "warnings": 0,
+        "xfailed": 0,
+        "xpassed": 0
+      },
+      "stdout_tail": [
+        "..                                                                       [100%]",
+        "2 passed in 0.09s"
+      ],
+      "stderr_tail": [],
+      "not_executed": false,
+      "log_path": "C:\\Users\\bombe\\OneDrive\\Desktop\\AIM-OS\\audit\\2026-02-19_aimos_restart_audit\\12_benchmark_runs\\20260219T053301Z_aimos_assisted_quick\\logs\\mcp_parity_tests.log",
+      "output_json_path": null,
+      "output_json_loaded": false,
+      "extracted_metrics": {}
+    },
+    {
+      "id": "apoe_tests",
+      "name": "APOE package suite",
+      "command": [
+        "C:\\Users\\bombe\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "-m",
+        "pytest",
+        "packages/apoe/tests",
+        "-q",
+        "-o",
+        "addopts=''"
+      ],
+      "parse": "pytest",
+      "timeout_seconds": 1800,
+      "returncode": 0,
+      "duration_seconds": 14.287,
+      "parsed": {
+        "passed": 381,
+        "failed": 0,
+        "skipped": 10,
+        "errors": 0,
+        "warnings": 0,
+        "xfailed": 0,
+        "xpassed": 0
+      },
+      "stdout_tail": [
+        ".................................................ss.ssssssss............ [ 18%]",
+        "........................................................................ [ 36%]",
+        "........................................................................ [ 55%]",
+        "........................................................................ [ 73%]",
+        "........................................................................ [ 92%]",
+        "...............................                                          [100%]",
+        "381 passed, 10 skipped in 12.49s"
+      ],
+      "stderr_tail": [],
+      "not_executed": false,
+      "log_path": "C:\\Users\\bombe\\OneDrive\\Desktop\\AIM-OS\\audit\\2026-02-19_aimos_restart_audit\\12_benchmark_runs\\20260219T053301Z_aimos_assisted_quick\\logs\\apoe_tests.log",
+      "output_json_path": null,
+      "output_json_loaded": false,
+      "extracted_metrics": {}
+    },
+    {
+      "id": "seg_tests",
+      "name": "SEG package suite",
+      "command": [
+        "C:\\Users\\bombe\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "-m",
+        "pytest",
+        "packages/seg/tests",
+        "-q",
+        "-o",
+        "addopts=''"
+      ],
+      "parse": "pytest",
+      "timeout_seconds": 1800,
+      "returncode": 0,
+      "duration_seconds": 11.547,
+      "parsed": {
+        "passed": 104,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "warnings": 0,
+        "xfailed": 0,
+        "xpassed": 0
+      },
+      "stdout_tail": [
+        "........................................................................ [ 69%]",
+        "................................                                         [100%]",
+        "104 passed in 9.70s"
+      ],
+      "stderr_tail": [],
+      "not_executed": false,
+      "log_path": "C:\\Users\\bombe\\OneDrive\\Desktop\\AIM-OS\\audit\\2026-02-19_aimos_restart_audit\\12_benchmark_runs\\20260219T053301Z_aimos_assisted_quick\\logs\\seg_tests.log",
+      "output_json_path": null,
+      "output_json_loaded": false,
+      "extracted_metrics": {}
+    },
+    {
+      "id": "sdfcvf_tests",
+      "name": "SDF-CVF package suite",
+      "command": [
+        "C:\\Users\\bombe\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+        "-m",
+        "pytest",
+        "packages/sdfcvf/tests",
+        "-q",
+        "-o",
+        "addopts=''"
+      ],
+      "parse": "pytest",
+      "timeout_seconds": 3600,
+      "returncode": 0,
+      "duration_seconds": 267.374,
+      "parsed": {
+        "passed": 154,
+        "failed": 0,
+        "skipped": 0,
+        "errors": 0,
+        "warnings": 0,
+        "xfailed": 0,
+        "xpassed": 0
+      },
+      "stdout_tail": [
+        "........................................................................ [ 46%]",
+        "........................................................................ [ 93%]",
+        "..........                                                               [100%]",
+        "154 passed in 265.67s (0:04:25)"
+      ],
+      "stderr_tail": [],
+      "not_executed": false,
+      "log_path": "C:\\Users\\bombe\\OneDrive\\Desktop\\AIM-OS\\audit\\2026-02-19_aimos_restart_audit\\12_benchmark_runs\\20260219T053301Z_aimos_assisted_quick\\logs\\sdfcvf_tests.log",
+      "output_json_path": null,
+      "output_json_loaded": false,
+      "extracted_metrics": {}
+    }
+  ],
+  "aggregate": {
+    "commands_total": 6,
+    "commands_failed": 0,
+    "commands_passed": 6,
+    "duration_seconds_total": 384.936,
+    "pytest_totals": {
+      "passed": 641,
+      "failed": 0,
+      "skipped": 10,
+      "errors": 0,
+      "warnings": 0,
+      "xfailed": 0,
+      "xpassed": 0
+    },
+    "performance_metrics": {}
+  }
+}

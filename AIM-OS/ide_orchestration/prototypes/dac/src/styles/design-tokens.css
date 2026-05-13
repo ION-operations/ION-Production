@@ -1,0 +1,299 @@
+/* AIM-OS Design System Tokens */
+/* Comprehensive design tokens for all AIM-OS applications */
+
+:root {
+  /* ===== BACKGROUND COLORS ===== */
+  --aimos-bg-primary: #030712;      /* Main background (gray-950) */
+  --aimos-bg-secondary: #111827;    /* Secondary background (gray-900) */
+  --aimos-bg-tertiary: #1f2937;     /* Tertiary background (gray-800) */
+  --aimos-bg-elevated: #374151;     /* Elevated surfaces (gray-700) */
+  --aimos-bg-hover: #4b5563;        /* Hover states (gray-600) */
+
+  /* ===== TEXT COLORS ===== */
+  --aimos-text-primary: #f3f4f6;    /* Primary text (gray-100) */
+  --aimos-text-secondary: #9ca3af;  /* Secondary text (gray-400) */
+  --aimos-text-tertiary: #6b7280;    /* Tertiary text (gray-500) */
+  --aimos-text-disabled: #4b5563;   /* Disabled text (gray-600) */
+
+  /* ===== BORDER COLORS ===== */
+  --aimos-border-primary: #374151;  /* Primary borders (gray-700) */
+  --aimos-border-secondary: #4b5563; /* Secondary borders (gray-600) */
+  --aimos-border-subtle: #1f2937;    /* Subtle borders (gray-800) */
+
+  /* ===== SEMANTIC COLORS - SUCCESS ===== */
+  --aimos-success: #10b981;         /* Success/Healthy (green-500) */
+  --aimos-success-dark: #059669;    /* Success dark (green-600) */
+  --aimos-success-light: #34d399;   /* Success light (green-400) */
+  --aimos-success-bg: rgba(16, 185, 129, 0.1); /* Success background */
+
+  /* ===== SEMANTIC COLORS - WARNING ===== */
+  --aimos-warning: #f59e0b;         /* Warning (amber-500) */
+  --aimos-warning-dark: #d97706;    /* Warning dark (amber-600) */
+  --aimos-warning-light: #fbbf24;    /* Warning light (amber-400) */
+  --aimos-warning-bg: rgba(245, 158, 11, 0.1); /* Warning background */
+
+  /* ===== SEMANTIC COLORS - ERROR ===== */
+  --aimos-error: #ef4444;            /* Error (red-500) */
+  --aimos-error-dark: #dc2626;       /* Error dark (red-600) */
+  --aimos-error-light: #f87171;      /* Error light (red-400) */
+  --aimos-error-bg: rgba(239, 68, 68, 0.1); /* Error background */
+
+  /* ===== SEMANTIC COLORS - INFO ===== */
+  --aimos-info: #3b82f6;             /* Info (blue-500) */
+  --aimos-info-dark: #2563eb;        /* Info dark (blue-600) */
+  --aimos-info-light: #60a5fa;       /* Info light (blue-400) */
+  --aimos-info-bg: rgba(59, 130, 246, 0.1); /* Info background */
+
+  /* ===== AIM-OS SYSTEM COLORS ===== */
+  --aimos-cmc: #7ee787;              /* CMC (green) */
+  --aimos-cmc-dark: #56d364;
+  --aimos-cmc-light: #a0e7a0;
+  --aimos-cmc-bg: rgba(126, 231, 135, 0.1);
+
+  --aimos-hhni: #79c0ff;             /* HHNI (blue) */
+  --aimos-hhni-dark: #58a6ff;
+  --aimos-hhni-light: #a5d6ff;
+  --aimos-hhni-bg: rgba(121, 192, 255, 0.1);
+
+  --aimos-vif: #ffa657;               /* VIF (orange) */
+  --aimos-vif-dark: #ff8c42;
+  --aimos-vif-light: #ffc085;
+  --aimos-vif-bg: rgba(255, 166, 87, 0.1);
+
+  --aimos-apoe: #d2a8ff;              /* APOE (purple) */
+  --aimos-apoe-dark: #b87fff;
+  --aimos-apoe-light: #e6cfff;
+  --aimos-apoe-bg: rgba(210, 168, 255, 0.1);
+
+  --aimos-seg: #ff7b72;               /* SEG (red) */
+  --aimos-seg-dark: #ff5d52;
+  --aimos-seg-light: #ff9d95;
+  --aimos-seg-bg: rgba(255, 123, 114, 0.1);
+
+  --aimos-cas: #4ec9b0;               /* CAS (teal) */
+  --aimos-cas-dark: #3db89a;
+  --aimos-cas-light: #6dd9c4;
+  --aimos-cas-bg: rgba(78, 201, 176, 0.1);
+
+  --aimos-tcs: #569cd6;               /* TCS (cyan) */
+  --aimos-tcs-dark: #3d8bc4;
+  --aimos-tcs-light: #7ab3e8;
+  --aimos-tcs-bg: rgba(86, 156, 214, 0.1);
+
+  --aimos-scor: #f44747;              /* SCOR (red) */
+  --aimos-scor-dark: #d32f2f;
+  --aimos-scor-light: #ff6b6b;
+  --aimos-scor-bg: rgba(244, 71, 71, 0.1);
+
+  /* ===== INTERACTIVE COLORS ===== */
+  --aimos-primary: #3b82f6;           /* Primary (blue-500) */
+  --aimos-primary-hover: #2563eb;     /* Primary hover (blue-600) */
+  --aimos-primary-active: #1d4ed8;    /* Primary active (blue-700) */
+  --aimos-primary-disabled: #1e3a8a; /* Primary disabled (blue-800) */
+
+  --aimos-secondary: #8b5cf6;         /* Secondary (violet-500) */
+  --aimos-secondary-hover: #7c3aed;  /* Secondary hover (violet-600) */
+  --aimos-secondary-active: #6d28d9; /* Secondary active (violet-700) */
+
+  --aimos-accent: #ec4899;            /* Accent (pink-500) */
+  --aimos-accent-hover: #db2777;     /* Accent hover (pink-600) */
+  --aimos-accent-active: #be185d;     /* Accent active (pink-700) */
+
+  /* ===== TYPOGRAPHY ===== */
+  --aimos-font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  --aimos-font-mono: 'JetBrains Mono', 'Fira Code', 'Consolas', 'Courier New', monospace;
+  --aimos-font-display: 'Inter', sans-serif;
+
+  /* Font Sizes */
+  --aimos-text-xs: 0.75rem;      /* 12px */
+  --aimos-text-sm: 0.875rem;     /* 14px */
+  --aimos-text-base: 1rem;       /* 16px */
+  --aimos-text-lg: 1.125rem;     /* 18px */
+  --aimos-text-xl: 1.25rem;      /* 20px */
+  --aimos-text-2xl: 1.5rem;      /* 24px */
+  --aimos-text-3xl: 1.875rem;    /* 30px */
+  --aimos-text-4xl: 2.25rem;     /* 36px */
+
+  /* Line Heights */
+  --aimos-leading-tight: 1.25;
+  --aimos-leading-normal: 1.5;
+  --aimos-leading-relaxed: 1.75;
+
+  /* Font Weights */
+  --aimos-font-light: 300;
+  --aimos-font-normal: 400;
+  --aimos-font-medium: 500;
+  --aimos-font-semibold: 600;
+  --aimos-font-bold: 700;
+
+  /* ===== SPACING ===== */
+  --aimos-space-0: 0;
+  --aimos-space-1: 0.25rem;   /* 4px */
+  --aimos-space-2: 0.5rem;     /* 8px */
+  --aimos-space-3: 0.75rem;    /* 12px */
+  --aimos-space-4: 1rem;       /* 16px */
+  --aimos-space-5: 1.25rem;    /* 20px */
+  --aimos-space-6: 1.5rem;     /* 24px */
+  --aimos-space-8: 2rem;       /* 32px */
+  --aimos-space-10: 2.5rem;    /* 40px */
+  --aimos-space-12: 3rem;      /* 48px */
+  --aimos-space-16: 4rem;       /* 64px */
+  --aimos-space-20: 5rem;       /* 80px */
+  --aimos-space-24: 6rem;       /* 96px */
+
+  /* ===== LAYOUT ===== */
+  --aimos-container-sm: 640px;
+  --aimos-container-md: 768px;
+  --aimos-container-lg: 1024px;
+  --aimos-container-xl: 1280px;
+  --aimos-container-2xl: 1536px;
+
+  /* Border Radius */
+  --aimos-radius-sm: 0.25rem;   /* 4px */
+  --aimos-radius-md: 0.5rem;     /* 8px */
+  --aimos-radius-lg: 0.75rem;    /* 12px */
+  --aimos-radius-xl: 1rem;       /* 16px */
+  --aimos-radius-full: 9999px;   /* Full circle */
+
+  /* Grid Gaps */
+  --aimos-grid-gap-sm: var(--aimos-space-2);  /* 8px */
+  --aimos-grid-gap-md: var(--aimos-space-4);  /* 16px */
+  --aimos-grid-gap-lg: var(--aimos-space-6);  /* 24px */
+
+  /* Panel Spacing */
+  --aimos-panel-padding: var(--aimos-space-4);  /* 16px */
+  --aimos-panel-gap: var(--aimos-space-3);      /* 12px */
+
+  /* ===== SHADOWS & DEPTH ===== */
+  --aimos-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --aimos-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --aimos-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --aimos-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --aimos-shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+
+  --aimos-depth-0: none;
+  --aimos-depth-1: var(--aimos-shadow-sm);
+  --aimos-depth-2: var(--aimos-shadow-md);
+  --aimos-depth-3: var(--aimos-shadow-lg);
+  --aimos-depth-4: var(--aimos-shadow-xl);
+  --aimos-depth-5: var(--aimos-shadow-2xl);
+
+  /* ===== TRANSITIONS & ANIMATIONS ===== */
+  --aimos-transition-fast: 150ms;
+  --aimos-transition-base: 200ms;
+  --aimos-transition-slow: 300ms;
+  --aimos-transition-slower: 500ms;
+
+  --aimos-ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --aimos-ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --aimos-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --aimos-ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+
+  --aimos-transition-standard: var(--aimos-transition-base) var(--aimos-ease-standard);
+  --aimos-transition-hover: var(--aimos-transition-fast) var(--aimos-ease-out);
+  --aimos-transition-focus: var(--aimos-transition-fast) var(--aimos-ease-out);
+}
+
+/* ===== LIGHT THEME ===== */
+[data-theme="light"] {
+  --aimos-bg-primary: #ffffff;
+  --aimos-bg-secondary: #f9fafb;
+  --aimos-bg-tertiary: #f3f4f6;
+  --aimos-bg-elevated: #e5e7eb;
+  --aimos-bg-hover: #d1d5db;
+
+  --aimos-text-primary: #111827;
+  --aimos-text-secondary: #6b7280;
+  --aimos-text-tertiary: #9ca3af;
+  --aimos-text-disabled: #d1d5db;
+
+  --aimos-border-primary: #e5e7eb;
+  --aimos-border-secondary: #d1d5db;
+  --aimos-border-subtle: #f3f4f6;
+}
+
+/* ===== HIGH CONTRAST THEME ===== */
+[data-theme="high-contrast"] {
+  --aimos-bg-primary: #000000;
+  --aimos-bg-secondary: #1a1a1a;
+  --aimos-bg-tertiary: #2a2a2a;
+  --aimos-bg-elevated: #3a3a3a;
+  --aimos-bg-hover: #4a4a4a;
+
+  --aimos-text-primary: #ffffff;
+  --aimos-text-secondary: #cccccc;
+  --aimos-text-tertiary: #999999;
+  --aimos-text-disabled: #666666;
+
+  --aimos-border-primary: #666666;
+  --aimos-border-secondary: #999999;
+  --aimos-border-subtle: #2a2a2a;
+
+  --aimos-primary: #00ffff;
+  --aimos-primary-hover: #00cccc;
+  --aimos-secondary: #ff00ff;
+  --aimos-accent: #ffff00;
+}
+
+/* ===== UTILITY CLASSES ===== */
+.aimos-panel {
+  background: var(--aimos-bg-secondary);
+  border: 1px solid var(--aimos-border-primary);
+  border-radius: var(--aimos-radius-md);
+  padding: var(--aimos-panel-padding);
+  box-shadow: var(--aimos-depth-1);
+}
+
+.aimos-panel-header {
+  padding: var(--aimos-space-4);
+  border-bottom: 1px solid var(--aimos-border-primary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.aimos-panel-content {
+  padding: var(--aimos-space-4);
+  overflow-y: auto;
+}
+
+.aimos-panel-footer {
+  padding: var(--aimos-space-3);
+  border-top: 1px solid var(--aimos-border-primary);
+  background: var(--aimos-bg-tertiary);
+}
+
+/* Hover Effects */
+.hover-lift {
+  transition: transform var(--aimos-transition-hover), box-shadow var(--aimos-transition-hover);
+}
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--aimos-shadow-lg);
+}
+
+/* Focus Effects */
+.focus-ring {
+  transition: box-shadow var(--aimos-transition-focus);
+}
+.focus-ring:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+}
+
+/* Loading Animations */
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+.loading-spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+.loading-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+

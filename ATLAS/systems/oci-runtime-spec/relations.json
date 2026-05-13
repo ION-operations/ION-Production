@@ -1,0 +1,77 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "oci-image-spec",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Container images unpack into a runtime bundle (rootfs + config.json) governed by the runtime spec."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Linux namespaces, cgroups, and capabilities are the dominant backing primitives described in the spec."
+    },
+    {
+      "type": "integrates_with",
+      "target": "runc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "runc is the OCI reference implementation for executing bundles per the runtime spec."
+    },
+    {
+      "type": "integrates_with",
+      "target": "crun",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "crun is an alternative OCI runtime implementation on Linux conforming to the same spec."
+    },
+    {
+      "type": "integrates_with",
+      "target": "docker",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Engine stack ultimately executes OCI bundles via a low-level runtime (commonly runc-class) implementing this spec."
+    },
+    {
+      "type": "integrates_with",
+      "target": "containerd",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Creates and supervises OCI bundles; invokes low-level runtimes conforming to the runtime spec."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "kubelet/CRI path runs containers as OCI bundles on Linux nodes in typical stacks."
+    },
+    {
+      "type": "integrates_with",
+      "target": "podman",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Podman generates and runs OCI bundles using a configurable low-level runtime implementing the spec."
+    },
+    {
+      "type": "integrates_with",
+      "target": "cri-o",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "CRI-O runs pods via OCI bundles and a low-level OCI runtime implementing the spec."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-overlayfs",
+      "evidence_tier": "INFERRED",
+      "notes": "Runtime bundles specify rootfs; Linux toolchains may assemble that rootfs using overlay mounts — orthogonal to the runtime spec text."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kata-containers",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Kata Containers provides an OCI-compatible runtime implementation that executes bundles with VM-level isolation on supported Linux stacks."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gvisor",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "gVisor’s runsc is an OCI-compatible runtime implementation that executes bundles with userspace syscall interposition on supported Linux stacks."
+    }
+  ]
+}

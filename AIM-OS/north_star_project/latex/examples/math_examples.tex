@@ -1,0 +1,91 @@
+% Example: How to handle math in chapters
+% This shows the proper LaTeX formatting for mathematical content
+
+\section{Scoring Function}
+
+The refined retrieval stage uses a weighted combination of factors:
+
+\textbf{Base Formula:}
+\begin{equation}
+\text{score} = w_c \cdot \text{content} + w_a \cdot \text{authority} + w_t \cdot \text{temporal} + w_s \cdot \text{structure}
+\end{equation}
+
+Where:
+\begin{itemize}
+    \item $w_c$ = content weight (default: 0.4)
+    \item $w_a$ = authority weight (default: 0.3)
+    \item $w_t$ = temporal weight (default: 0.2)
+    \item $w_s$ = structure weight (default: 0.1)
+\end{itemize}
+
+\section{Authority Scoring Model}
+
+The authority scoring model combines multiple factors:
+
+\begin{equation}
+\text{authority}(a, c) = w_e \cdot \text{evidence} + w_v \cdot \text{validation} + w_p \cdot \text{peer} + w_c \cdot \text{context\_fit}
+\end{equation}
+
+With default weights:
+\begin{align}
+w_e &= 0.4 \quad \text{(evidence weight)} \\
+w_v &= 0.3 \quad \text{(validation weight)} \\
+w_p &= 0.2 \quad \text{(peer weight)} \\
+w_c &= 0.1 \quad \text{(context fit weight)}
+\end{align}
+
+\section{Learning Rate Differential Equation}
+
+Self-improvement dynamics follow a differential equation:
+
+\begin{equation}
+\frac{dQ}{dt} = \alpha \cdot (\text{benefit} - \text{cost}) - \beta \cdot \text{regression}
+\end{equation}
+
+Where:
+\begin{itemize}
+    \item $Q$ = quality metric
+    \item $\alpha$ = learning rate coefficient
+    \item $\beta$ = regression penalty coefficient
+    \item $\text{benefit}$ = improvement benefit
+    \item $\text{cost}$ = improvement cost
+    \item $\text{regression}$ = quality regression rate
+\end{itemize}
+
+\section{Graph Formal Definition}
+
+The semantic evidence graph is formally defined as:
+
+\begin{equation}
+G = (V, E, \tau_{TT}, \tau_{VT}, \theta, \sigma, \varepsilon)
+\end{equation}
+
+Where:
+\begin{align}
+V &= C \cup S \cup D \cup A \quad \text{(Claims, Sources, Derivations, Agents)} \\
+E &\subseteq V \times V \times \text{EdgeTypes} \quad \text{(Directed edges with types)} \\
+\tau_{TT} &: V \cup E \to \text{Timestamps} \quad \text{(Transaction time)} \\
+\tau_{VT} &: V \to \text{Intervals} \quad \text{(Valid time)} \\
+\theta &: V \to \text{Content} \quad \text{(Node content function)} \\
+\sigma &: E \to [0, 1] \quad \text{(Edge strength function)} \\
+\varepsilon &: C \to \mathbb{R}^d \quad \text{(Claim embedding function)}
+\end{align}
+
+\section{Bayesian Update}
+
+Confidence calibration uses Bayesian updates:
+
+\begin{equation}
+\text{posterior} = \frac{\text{prior} \cdot \text{likelihood}}{\text{evidence}}
+\end{equation}
+
+With prior distribution:
+\begin{equation}
+\text{prior} = \text{Beta}(\alpha, \beta)
+\end{equation}
+
+Where $\alpha$ = successes, $\beta$ = failures, and:
+\begin{equation}
+E[\text{prior}] = \frac{\alpha}{\alpha + \beta}
+\end{equation}
+

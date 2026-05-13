@@ -1,0 +1,180 @@
+/* Confidence Indicator Component Styles */
+.confidence-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 500;
+}
+
+.confidence-badge {
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid;
+}
+
+.confidence-inline {
+  padding: 0;
+  border: none;
+}
+
+.confidence-full {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  background-color: #252526;
+  border: 1px solid #3e3e3e;
+  border-radius: 4px;
+}
+
+.confidence-full-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.confidence-full-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.confidence-full-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.confidence-full-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.confidence-full-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #cccccc;
+}
+
+.confidence-full-description {
+  font-size: 10px;
+  color: #858585;
+}
+
+.confidence-full-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.confidence-status-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.confidence-status-icon.confidence-pass {
+  color: #4ade80;
+}
+
+.confidence-status-icon.confidence-warn {
+  color: #fbbf24;
+}
+
+.confidence-status-icon.confidence-fail {
+  color: #f87171;
+}
+
+.confidence-full-value {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.confidence-full-band {
+  display: flex;
+  align-items: center;
+}
+
+.confidence-band-badge {
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 500;
+}
+
+.confidence-icon-emoji {
+  font-size: 12px;
+  line-height: 1;
+}
+
+.confidence-label {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.confidence-percentage {
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* Size variants */
+.confidence-sm {
+  font-size: 10px;
+  padding: 1px 4px;
+}
+
+.confidence-sm .confidence-icon-emoji {
+  font-size: 10px;
+}
+
+.confidence-sm .confidence-label,
+.confidence-sm .confidence-percentage {
+  font-size: 10px;
+}
+
+.confidence-md {
+  font-size: 11px;
+  padding: 2px 6px;
+}
+
+.confidence-md .confidence-icon-emoji {
+  font-size: 12px;
+}
+
+.confidence-md .confidence-label,
+.confidence-md .confidence-percentage {
+  font-size: 11px;
+}
+
+.confidence-lg {
+  font-size: 12px;
+  padding: 4px 8px;
+}
+
+.confidence-lg .confidence-icon-emoji {
+  font-size: 14px;
+}
+
+.confidence-lg .confidence-label,
+.confidence-lg .confidence-percentage {
+  font-size: 12px;
+}
+
+/* Band colors */
+.confidence-high {
+  color: #4ade80;
+}
+
+.confidence-medium {
+  color: #fbbf24;
+}
+
+.confidence-low {
+  color: #f87171;
+}
+
+.confidence-unknown {
+  color: #858585;
+}
+

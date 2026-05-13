@@ -1,0 +1,235 @@
+{
+  "systemId": "router.apoeMcpRouter",
+  "humanName": "Router (APOE-MCP Router)",
+  "version": "v1.0.0",
+  "status": "production",
+  
+  "intent": {
+    "purpose": "Intelligent tool selection system that chooses the right MCP tool at the right moment, maintains rolling context, and keeps coding/chat agents unblocked. Uses Scout LLM for fast proposals, Bandit layer for learned ranking, and Rules engine for safety gates.",
+    "must_not_regress": [
+      "Must not skip snapshot building",
+      "Must not bypass cache checks",
+      "Must not execute without validation",
+      "Must not lose execution outcomes",
+      "Must not exceed 200ms decision time (p95)",
+      "Must not allow unsafe tool selections"
+    ],
+    "why_it_exists": "Enables autonomous operation with confidence ≥0.70 by providing deterministic, inspectable tool selection with learning capabilities. Transforms ad-hoc tool selection into systematic, verifiable process."
+  },
+  
+  "classification": {
+    "security_level": "high",
+    "perf_sensitivity": "high",
+    "ownership": "router",
+    "sideEffects": [
+      "Selects MCP tools",
+      "Generates tool call plans",
+      "Learns from outcomes",
+      "Maintains tool success rates",
+      "Records decision evidence"
+    ]
+  },
+  
+  "internalNodes": [
+    {
+      "id": "router",
+      "responsibility": "Main orchestrator implementing control loop: Observe → Propose → Score → Plan → Execute → Validate → Learn",
+      "must_never": [
+        "Skip snapshot building",
+        "Bypass cache checks",
+        "Execute without validation",
+        "Lose execution outcomes"
+      ],
+      "perf_budget_ms": 200,
+      "status": "production"
+    },
+    {
+      "id": "scoutLLM",
+      "responsibility": "Fast policy LLM adapter (Cerebras) for tool proposals with pattern caching and request batching",
+      "must_never": [
+        "Skip pattern cache checks",
+        "Exceed token limits",
+        "Lose proposal rationale",
+        "Bypass optimization"
+      ],
+      "perf_budget_ms": 700,
+      "status": "production"
+    },
+    {
+      "id": "banditScorer",
+      "responsibility": "Learned policy layer scoring tools via utility function with parallel scoring and gradient descent learning",
+      "must_never": [
+        "Skip weight normalization",
+        "Lose learning outcomes",
+        "Bypass parallel scoring",
+        "Allow invalid scores"
+      ],
+      "perf_budget_ms": 100,
+      "status": "production"
+    },
+    {
+      "id": "rulesEngine",
+      "responsibility": "Hard gates for safety, budget, preconditions, rate limits with VIF integration",
+      "must_never": [
+        "Bypass depth limits",
+        "Skip budget checks",
+        "Allow VIF violations",
+        "Lose validation reasons"
+      ],
+      "perf_budget_ms": 15,
+      "status": "production"
+    },
+    {
+      "id": "toolManifest",
+      "responsibility": "Registry of all available tools with capabilities, requirements, metadata, precondition resolvers",
+      "must_never": [
+        "Lose tool metadata",
+        "Skip precondition checks",
+        "Allow invalid tools",
+        "Lose success rate tracking"
+      ],
+      "perf_budget_ms": 10,
+      "status": "production"
+    },
+    {
+      "id": "snapshotBuilder",
+      "responsibility": "Aggregates system state from AIM-OS systems (CMC, HHNI, VIF, SEG, TCS)",
+      "must_never": [
+        "Skip system queries",
+        "Lose context data",
+        "Create incomplete snapshots",
+        "Bypass aggregation"
+      ],
+      "perf_budget_ms": 150,
+      "status": "production"
+    },
+    {
+      "id": "routerCache",
+      "responsibility": "Performance optimization caching context snapshots and tool proposals with LRU eviction and TTL",
+      "must_never": [
+        "Lose cache consistency",
+        "Skip TTL checks",
+        "Allow cache corruption",
+        "Bypass eviction"
+      ],
+      "perf_budget_ms": 5,
+      "status": "production"
+    }
+  ],
+  
+  "systemMap": {
+    "mapFile": "./system.map.lucid.json5"
+  },
+  
+  "foresight": {
+    "predictedRisks": [
+      {
+        "risk_id": "cache_corruption",
+        "description": "Cache corruption leading to stale proposals causing poor tool selections",
+        "likelihood": "medium",
+        "blast_radius_if_real": "all_tool_selections_degraded",
+        "mitigation": "TTL expiration, cache validation, checksums",
+        "watchpoint": "if cache_hit_rate > 0.9 but selection_accuracy drops, alert"
+      },
+      {
+        "risk_id": "bandit_weight_drift",
+        "description": "Bandit weights drifting over time causing poor selections",
+        "likelihood": "medium",
+        "blast_radius_if_real": "selection_quality_degradation",
+        "mitigation": "Weight normalization, periodic reset, monitoring",
+        "watchpoint": "if weight_variance > threshold, reset weights"
+      },
+      {
+        "risk_id": "rules_bypass",
+        "description": "Rules engine bypass allowing unsafe operations",
+        "likelihood": "low",
+        "blast_radius_if_real": "execution_safety_compromised",
+        "mitigation": "Hard gates, validation checks, audit logs",
+        "watchpoint": "if validation_bypass detected, halt system"
+      }
+    ],
+    "killSwitch": "router.enabled=false",
+    "emergencyProcedures": [
+      "Freeze all tool selections immediately",
+      "Switch to manual mode",
+      "Clear cache",
+      "Reset Bandit weights",
+      "Notify AIM-OS systems"
+    ]
+  },
+  
+  "integrations": {
+    "apoe": {
+      "protocol": "internal_api",
+      "whatIsExchanged": ["tool_call_plans", "execution_results", "success_feedback"],
+      "security": "high",
+      "rateLimit": "unlimited"
+    },
+    "cmc": {
+      "protocol": "internal_api",
+      "whatIsExchanged": ["decision_atoms", "tool_weights", "success_rates"],
+      "security": "high",
+      "rateLimit": "unlimited"
+    },
+    "hhni": {
+      "protocol": "internal_api",
+      "whatIsExchanged": ["context_queries", "semantic_search_results"],
+      "security": "high",
+      "rateLimit": "unlimited"
+    },
+    "vif": {
+      "protocol": "internal_api",
+      "whatIsExchanged": ["confidence_scores", "quality_gates", "validation_requests"],
+      "security": "critical",
+      "rateLimit": "unlimited"
+    },
+    "seg": {
+      "protocol": "internal_api",
+      "whatIsExchanged": ["decision_evidence", "tool_selection_chains"],
+      "security": "high",
+      "rateLimit": "unlimited"
+    },
+    "tcs": {
+      "protocol": "internal_api",
+      "whatIsExchanged": ["timeline_entries", "decision_events"],
+      "security": "medium",
+      "rateLimit": "unlimited"
+    },
+    "log-sentinels": {
+      "protocol": "internal_api",
+      "whatIsExchanged": ["tool_suggestions", "log_insights"],
+      "security": "medium",
+      "rateLimit": "unlimited"
+    }
+  },
+  
+  "performance": {
+    "metrics": {
+      "decision_time_ms": "target < 200ms (p95)",
+      "cache_hit_rate": "target > 80%",
+      "tool_selection_accuracy": "target > 90%",
+      "success_rate_per_tool": "tracked per tool",
+      "bandit_weight_stability": "monitored",
+      "scout_latency_ms": "target < 700ms"
+    },
+    "optimization": [
+      "Pattern caching",
+      "Request batching",
+      "Parallel scoring",
+      "Pre-computed score cache",
+      "LRU eviction"
+    ],
+    "monitoring": ["decision_time", "cache_hit_rate", "selection_accuracy", "success_rate", "weight_stability"]
+  },
+  
+  "documentation": {
+    "T0_executive": "knowledge_architecture/systems/router/T0_executive.md",
+    "T1_overview": "knowledge_architecture/systems/router/T1_overview.md",
+    "T2_architecture": "knowledge_architecture/systems/router/T2_architecture.md",
+    "T3_detailed": "knowledge_architecture/systems/router/T3_detailed.md",
+    "T4_complete": "knowledge_architecture/systems/router/T4_complete.md",
+    "system_map": "knowledge_architecture/systems/router/system.map.lucid.json5",
+    "usage_envelope": "knowledge_architecture/systems/router/usage.envelope.md"
+  }
+}
+

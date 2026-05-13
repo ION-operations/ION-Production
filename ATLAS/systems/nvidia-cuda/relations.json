@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "nvidia-ptx",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "CUDA compilation produces PTX and/or embeds PTX for driver JIT (CUDA docs + PTX manual)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "NVIDIA GPU driver and CUDA user-mode stack on Linux hosts."
+    },
+    {
+      "type": "integrates_with",
+      "target": "windows-nt",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "CUDA toolkit and runtime on Windows hosts."
+    },
+    {
+      "type": "competes_with",
+      "target": "amd-rocm",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable GPU compute ecosystems (CUDA vs ROCm/HIP) in many HPC/ML deployment classes."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-ir",
+      "evidence_tier": "INFERRED",
+      "notes": "Some CUDA compilation paths and LLVM-based tooling interact with LLVM IR workflows."
+    },
+    {
+      "type": "competes_with",
+      "target": "sycl",
+      "evidence_tier": "INFERRED",
+      "notes": "Overlapping accelerator programming model space (CUDA native vs portable C++ SYCL)."
+    }
+  ]
+}

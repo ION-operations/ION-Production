@@ -1,0 +1,59 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "implements",
+      "target": "oci-runtime-spec",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "runc is the OCI reference implementation; executes bundles per the Runtime Specification."
+    },
+    {
+      "type": "depends_on",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Linux cgroups/namespaces for default build targets; other OS ports have different matrices."
+    },
+    {
+      "type": "integrates_with",
+      "target": "containerd",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "containerd commonly invokes runc (or compatible runtime) to start OCI bundles."
+    },
+    {
+      "type": "integrates_with",
+      "target": "podman",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Podman commonly uses runc on Linux by default; runtime selection is configurable."
+    },
+    {
+      "type": "integrates_with",
+      "target": "cri-o",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "CRI-O commonly uses runc as low-level runtime; alternatives supported per docs."
+    },
+    {
+      "type": "integrates_with",
+      "target": "oci-image-spec",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "OCI images unpack into OCI runtime bundles that runc-class runtimes execute."
+    },
+    {
+      "type": "competes_with",
+      "target": "crun",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable low-level OCI runtime on Linux (crun vs runc)."
+    },
+    {
+      "type": "competes_with",
+      "target": "kata-containers",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable low-level isolation boundary for OCI bundles: namespace-isolated runc vs VM-backed Kata (different threat models)."
+    },
+    {
+      "type": "competes_with",
+      "target": "gvisor",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable low-level OCI runtime on Linux: Linux-namespace runc vs gVisor runsc syscall interposition model."
+    }
+  ]
+}

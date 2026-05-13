@@ -1,0 +1,593 @@
+diff --git a/ION/03_registry/ion_chatgpt_browser_mcp_tool_policy.yaml b/ION/03_registry/ion_chatgpt_browser_mcp_tool_policy.yaml
+index f3a5593..86b96b4 100644
+--- a/ION/03_registry/ion_chatgpt_browser_mcp_tool_policy.yaml	
++++ b/ION/03_registry/ion_chatgpt_browser_mcp_tool_policy.yaml	
+@@ -37,6 +37,7 @@ allowed_status_read_tools:
+   - ion_swarm_status
+   - ion_codex_capsule_chat_status
+   - ion_codex_capsule_message_poll
++  - ion_bounded_patch_preview
+ allowed_bounded_queue_receipt_tools:
+   - ion_queue_operator_message
+   - ion_request_codex_work_packet
+@@ -44,6 +45,7 @@ allowed_bounded_queue_receipt_tools:
+   - ion_record_chatgpt_decision
+   - ion_create_containment_receipt
+   - ion_file_put_text
++  - ion_bounded_patch_apply
+   - ion_artifact_upload_init
+   - ion_artifact_upload_chunk
+   - ion_artifact_upload_commit
+@@ -81,8 +83,25 @@ artifact_transfer_roots:
+   - ION/05_context/current/chatgpt_connector/artifacts/
+   - ION/05_context/inbox/
+   - ION/05_context/signals/
++bounded_patch_roots:
++  - .codex/
++  - docs/
++  - ION/01_doctrine/
++  - ION/02_architecture/
++  - ION/03_registry/
++  - ION/04_packages/kernel/
++  - ION/05_context/current/action_surface_cartography/
++  - ION/05_context/current/chatgpt_connector/
++  - ION/05_context/current/context_settlement/
++  - ION/05_context/inbox/
++  - ION/06_artifacts/
++  - ION/07_templates/
++  - ION/09_integrations/
++  - ION/tests/
+ first_full_carrier_tool_surfaces:
+   - ion_file_put_text
++  - ion_bounded_patch_preview
++  - ion_bounded_patch_apply
+   - ion_artifact_upload_init
+   - ion_artifact_upload_chunk
+   - ion_artifact_upload_commit
+diff --git a/ION/04_packages/kernel/ion_chatgpt_browser_mcp_connector_contract.py b/ION/04_packages/kernel/ion_chatgpt_browser_mcp_connector_contract.py
+index 9c934ce..8f25185 100644
+--- a/ION/04_packages/kernel/ion_chatgpt_browser_mcp_connector_contract.py	
++++ b/ION/04_packages/kernel/ion_chatgpt_browser_mcp_connector_contract.py	
+@@ -9,6 +9,7 @@ from __future__ import annotations
+ import argparse
+ import base64
+ import binascii
++import difflib
+ import hashlib
+ import json
+ import re
+@@ -48,6 +49,7 @@ OUTPUT_RELATIVE_PATH = Path("ION/05_context/current/CHATGPT_BROWSER_MCP_CONNECTO
+ CONNECTOR_STATE_DIR = Path("ION/05_context/current/chatgpt_connector")
+ CODEX_WORK_QUEUE_RELATIVE_PATH = Path("ION/05_context/current/ACTIVE_CHATGPT_CONNECTOR_CODEX_WORK_QUEUE.json")
+ CODEX_WORK_REQUEST_IDEMPOTENCY_LEDGER_RELATIVE_PATH = CONNECTOR_STATE_DIR / "runtime" / "codex_work_request_idempotency_ledger.json"
++BOUNDED_PATCH_APPLY_IDEMPOTENCY_LEDGER_RELATIVE_PATH = CONNECTOR_STATE_DIR / "runtime" / "bounded_patch_apply_idempotency_ledger.json"
+ ACTIVE_CARRIER_MESSAGE_QUEUE_RELATIVE_PATH = Path("ION/05_context/current/ACTIVE_CARRIER_MESSAGE_QUEUE.json")
+ 
+ PROTOCOL_RELATIVE_PATH = Path("ION/02_architecture/ION_CHATGPT_BROWSER_MCP_CONNECTOR_PROTOCOL.md")
+@@ -95,6 +97,29 @@ ARTIFACT_TARGET_ROOTS = (
+     Path("ION/05_context/inbox"),
+     Path("ION/05_context/signals"),
+ )
++BOUNDED_PATCH_ALLOWED_ROOTS = (
++    Path(".codex"),
++    Path("docs"),
++    Path("ION/01_doctrine"),
++    Path("ION/02_architecture"),
++    Path("ION/03_registry"),
++    Path("ION/04_packages/kernel"),
++    Path("ION/05_context/current/action_surface_cartography"),
++    Path("ION/05_context/current/chatgpt_connector"),
++    Path("ION/05_context/current/context_settlement"),
++    Path("ION/05_context/inbox"),
++    Path("ION/06_artifacts"),
++    Path("ION/07_templates"),
++    Path("ION/09_integrations"),
++    Path("ION/tests"),
++)
++PROTECTED_SHARED_CONTEXT_RELATIVE_PATHS = {
++    "ION/05_context/current/codex_solo/CAPSULE.md",
++    "ION/05_context/current/codex_solo/MINI.md",
++    "ION/05_context/current/codex_solo/HOT_CONTEXT.md",
++    "ION/05_context/current/codex_solo/STATUS.json",
++    "ION/05_context/current/codex_solo/ROUTE.json",
++}
+ DEFAULT_SEARCH_ROOTS = (
+     Path("ION/02_architecture"),
+     Path("ION/03_registry"),
+@@ -154,6 +179,7 @@ STATUS_READ_TOOLS = {
+     "ion_swarm_status",
+     "ion_codex_capsule_chat_status",
+     "ion_codex_capsule_message_poll",
++    "ion_bounded_patch_preview",
+ }
+ 
+ BOUNDED_QUEUE_RECEIPT_TOOLS = {
+@@ -175,6 +201,7 @@ BOUNDED_QUEUE_RECEIPT_TOOLS = {
+     "ion_codex_runner_reconcile",
+     "ion_codex_capsule_message_send",
+     "ion_codex_capsule_sync_to_queue",
++    "ion_bounded_patch_apply",
+ }
+ 
+ FORBIDDEN_CAPABILITIES = {
+@@ -889,6 +916,287 @@ def _codex_work_request_replay_result(root: Path, tool_name: str, existing: Mapp
+     )
+ 
+ 
++def _load_bounded_patch_apply_idempotency_ledger(root: Path) -> dict[str, Any]:
++    path = root / BOUNDED_PATCH_APPLY_IDEMPOTENCY_LEDGER_RELATIVE_PATH
++    payload = _read_json(path)
++    if isinstance(payload, dict):
++        payload.setdefault("schema_id", "ion.chatgpt_browser_connector_bounded_patch_apply_idempotency_ledger.v1")
++        payload.setdefault("entries", {})
++        return payload
++    return {
++        "schema_id": "ion.chatgpt_browser_connector_bounded_patch_apply_idempotency_ledger.v1",
++        "created_at": _now(),
++        "updated_at": _now(),
++        "entries": {},
++        "production_authority": False,
++        "live_execution_authority": False,
++    }
++
++
++def _save_bounded_patch_apply_idempotency_ledger(root: Path, ledger: Mapping[str, Any]) -> None:
++    _write_json(root / BOUNDED_PATCH_APPLY_IDEMPOTENCY_LEDGER_RELATIVE_PATH, dict(ledger))
++
++
++def _bounded_patch_operations_fingerprint(operations: list[dict[str, Any]]) -> str:
++    canonical = json.dumps(operations, sort_keys=True, separators=(",", ":"))
++    return _sha256_text(canonical)
++
++
++def _bounded_patch_dedupe_key(args: Mapping[str, Any], operations: list[dict[str, Any]]) -> tuple[str, str, bool]:
++    explicit = str(args.get("idempotency_key") or "").strip()
++    if explicit:
++        return f"idempotency_key:{_normalize_idempotency_token(explicit)}", "idempotency_key", False
++    client_request_id = str(args.get("client_request_id") or "").strip()
++    if client_request_id:
++        return f"client_request_id:{_normalize_idempotency_token(client_request_id)}", "client_request_id", False
++    return f"patch_sha256:{_bounded_patch_operations_fingerprint(operations)}", "patch_sha256", True
++
++
++def _bounded_patch_existing_apply(root: Path, dedupe_key: str) -> dict[str, Any] | None:
++    ledger = _load_bounded_patch_apply_idempotency_ledger(root)
++    entries = ledger.get("entries") if isinstance(ledger.get("entries"), Mapping) else {}
++    entry = entries.get(dedupe_key)
++    if isinstance(entry, Mapping):
++        receipt_path = root / str(entry.get("receipt_path") or "")
++        if receipt_path.exists():
++            return dict(entry)
++    return None
++
++
++def _record_bounded_patch_apply_idempotency(
++    root: Path,
++    dedupe_key: str,
++    *,
++    source: str,
++    implicit: bool,
++    receipt_path: Path,
++    operations_sha256: str,
++    touched_paths: list[str],
++) -> None:
++    ledger = _load_bounded_patch_apply_idempotency_ledger(root)
++    entries = dict(ledger.get("entries") if isinstance(ledger.get("entries"), Mapping) else {})
++    entries[dedupe_key] = {
++        "recorded_at": _now(),
++        "source": source,
++        "implicit": implicit,
++        "receipt_path": receipt_path.relative_to(root).as_posix(),
++        "operations_sha256": operations_sha256,
++        "touched_paths": touched_paths,
++        "production_authority": False,
++        "live_execution_authority": False,
++    }
++    ledger["entries"] = entries
++    ledger["updated_at"] = _now()
++    _save_bounded_patch_apply_idempotency_ledger(root, ledger)
++
++
++def _bounded_patch_replay_result(root: Path, existing: Mapping[str, Any], dedupe_key: str, source: str) -> dict[str, Any]:
++    return _ok(
++        "ion_bounded_patch_apply",
++        {
++            "schema_id": "ion.chatgpt_browser_connector_bounded_patch_apply_result.v1",
++            "idempotent_replay": True,
++            "duplicate_prevented": True,
++            "dedupe_key": dedupe_key,
++            "idempotency_source": source,
++            "receipt_path": existing.get("receipt_path"),
++            "operations_sha256": existing.get("operations_sha256"),
++            "touched_paths": list(existing.get("touched_paths") or []),
++            "production_authority": False,
++            "live_execution_authority": False,
++        },
++        mutates_active_state=False,
++    )
++
++
++def _validate_bounded_patch_target(root: Path, value: str) -> tuple[Path | None, str | None]:
++    if not value or value.startswith("/") or ".." in Path(value).parts:
++        return None, "target_path_must_be_repo_relative"
++    rel = Path(value)
++    rel_posix = rel.as_posix()
++    if rel_posix in PROTECTED_SHARED_CONTEXT_RELATIVE_PATHS:
++        return None, "protected_shared_context_path_requires_settlement"
++    if rel.name in {"CAPSULE.md", "MINI.md", "HOT_CONTEXT.md", "STATUS.json", "ROUTE.json"} and rel_posix.startswith("ION/05_context/current/codex_solo/"):
++        return None, "protected_shared_context_path_requires_settlement"
++    lower_parts = {part.lower() for part in rel.parts}
++    if lower_parts & FORBIDDEN_TRANSFER_PATH_PARTS:
++        return None, "target_path_contains_forbidden_secret_word"
++    try:
++        target = _safe_rel_path(root, rel_posix)
++    except ValueError:
++        return None, "target_path_must_be_repo_relative"
++    allowed = any(_is_under(target, (root / allowed_root).resolve()) for allowed_root in BOUNDED_PATCH_ALLOWED_ROOTS)
++    if not allowed:
++        return None, "target_path_not_in_bounded_patch_roots"
++    if target.is_dir():
++        return None, "target_path_is_directory"
++    return target, None
++
++
++def _normalize_bounded_patch_operations(args: Mapping[str, Any]) -> tuple[list[dict[str, Any]], str | None]:
++    raw = args.get("operations")
++    if raw is None:
++        raw = [{
++            "path": args.get("path") or args.get("target_path"),
++            "old_text": args.get("old_text"),
++            "new_text": args.get("new_text"),
++            "expected_sha256": args.get("expected_sha256"),
++        }]
++    if not isinstance(raw, list):
++        return [], "operations_must_be_list"
++    operations: list[dict[str, Any]] = []
++    for item in raw:
++        if not isinstance(item, Mapping):
++            return [], "operation_must_be_object"
++        path = str(item.get("path") or item.get("target_path") or "").strip()
++        old_text = item.get("old_text")
++        new_text = item.get("new_text")
++        expected_sha = str(item.get("expected_sha256") or "").strip() or None
++        if not path:
++            return [], "operation_path_required"
++        if not isinstance(old_text, str) or not isinstance(new_text, str):
++            return [], "operation_old_text_and_new_text_required"
++        operations.append({
++            "path": path,
++            "old_text": old_text,
++            "new_text": new_text,
++            "expected_sha256": expected_sha,
++        })
++    if not operations:
++        return [], "operations_required"
++    paths = [op["path"] for op in operations]
++    if len(paths) != len(set(paths)):
++        return [], "duplicate_patch_operation_path_not_supported"
++    return operations, None
++
++
++def _bounded_patch_preview(root: Path, args: Mapping[str, Any]) -> dict[str, Any]:
++    operations, finding = _normalize_bounded_patch_operations(args)
++    if finding:
++        return _blocked("ion_bounded_patch_preview", finding)
++    if len(operations) > 25:
++        return _blocked("ion_bounded_patch_preview", "too_many_patch_operations")
++    previews: list[dict[str, Any]] = []
++    touched_paths: list[str] = []
++    for op in operations:
++        target, target_finding = _validate_bounded_patch_target(root, op["path"])
++        if target_finding or target is None:
++            return _blocked("ion_bounded_patch_preview", target_finding or "invalid_patch_target", {"path": op["path"]})
++        rel = target.relative_to(root).as_posix()
++        if not target.exists():
++            return _blocked("ion_bounded_patch_preview", "target_path_missing", {"path": rel})
++        original = target.read_text(encoding="utf-8", errors="replace")
++        original_sha = _sha256_text(original)
++        expected_sha = op.get("expected_sha256")
++        if expected_sha and expected_sha != original_sha:
++            return _blocked("ion_bounded_patch_preview", "expected_sha256_mismatch", {"path": rel, "expected_sha256": expected_sha, "actual_sha256": original_sha})
++        occurrences = original.count(op["old_text"])
++        if occurrences != 1:
++            return _blocked("ion_bounded_patch_preview", "old_text_must_match_exactly_once", {"path": rel, "occurrences": occurrences})
++        updated = original.replace(op["old_text"], op["new_text"], 1)
++        updated_sha = _sha256_text(updated)
++        diff = "".join(difflib.unified_diff(
++            original.splitlines(keepends=True),
++            updated.splitlines(keepends=True),
++            fromfile=f"a/{rel}",
++            tofile=f"b/{rel}",
++        ))
++        previews.append({
++            "path": rel,
++            "original_sha256": original_sha,
++            "updated_sha256": updated_sha,
++            "old_text_sha256": _sha256_text(op["old_text"]),
++            "new_text_sha256": _sha256_text(op["new_text"]),
++            "diff": diff,
++            "diff_bytes": len(diff.encode("utf-8")),
++        })
++        touched_paths.append(rel)
++    return _ok(
++        "ion_bounded_patch_preview",
++        {
++            "schema_id": "ion.chatgpt_browser_connector_bounded_patch_preview.v1",
++            "operation_count": len(operations),
++            "touched_paths": touched_paths,
++            "operations_sha256": _bounded_patch_operations_fingerprint(operations),
++            "previews": previews,
++            "production_authority": False,
++            "live_execution_authority": False,
++        },
++        mutates_active_state=False,
++    )
++
++
++def _bounded_patch_apply(root: Path, args: Mapping[str, Any]) -> dict[str, Any]:
++    if str(args.get("confirmation") or "") != "ION_BOUNDED_WRITE_CONFIRMED":
++        return _blocked("ion_bounded_patch_apply", "confirmation_required")
++    operations, finding = _normalize_bounded_patch_operations(args)
++    if finding:
++        return _blocked("ion_bounded_patch_apply", finding)
++    dedupe_key, dedupe_source, implicit = _bounded_patch_dedupe_key(args, operations)
++    if args.get("force_new") is not True:
++        existing = _bounded_patch_existing_apply(root, dedupe_key)
++        if existing:
++            return _bounded_patch_replay_result(root, existing, dedupe_key, dedupe_source)
++    preview = _bounded_patch_preview(root, {"operations": operations})
++    if not preview.get("ok"):
++        blocked = dict(preview)
++        blocked["tool"] = "ion_bounded_patch_apply"
++        return blocked
++    previews = list(preview["data"]["previews"])
++    updated_text_by_path: dict[str, str] = {}
++    for op, item in zip(operations, previews):
++        target = _safe_rel_path(root, item["path"])
++        original = target.read_text(encoding="utf-8", errors="replace")
++        updated_text_by_path[item["path"]] = original.replace(op["old_text"], op["new_text"], 1)
++    for rel, updated in updated_text_by_path.items():
++        target = _safe_rel_path(root, rel)
++        target.write_text(updated, encoding="utf-8")
++    touched_paths = list(preview["data"]["touched_paths"])
++    receipt = _write_connector_packet(root, "patch_receipts", "bounded_patch_apply", {
++        "schema_id": "ion.chatgpt_browser_connector_bounded_patch_receipt.v1",
++        "action": "ion_bounded_patch_apply",
++        "status": "CANDIDATE_PATCH_APPLIED",
++        "touched_paths": touched_paths,
++        "operations_sha256": preview["data"]["operations_sha256"],
++        "preview": previews,
++        "dedupe_key": dedupe_key,
++        "idempotency_source": dedupe_source,
++        "implicit_idempotency_key": implicit,
++        "production_authority": False,
++        "live_execution_authority": False,
++        "settlement_required": True,
++    })
++    _record_bounded_patch_apply_idempotency(
++        root,
++        dedupe_key,
++        source=dedupe_source,
++        implicit=implicit,
++        receipt_path=receipt,
++        operations_sha256=preview["data"]["operations_sha256"],
++        touched_paths=touched_paths,
++    )
++    return _ok(
++        "ion_bounded_patch_apply",
++        {
++            "schema_id": "ion.chatgpt_browser_connector_bounded_patch_apply_result.v1",
++            "status": "CANDIDATE_PATCH_APPLIED",
++            "receipt_path": receipt.relative_to(root).as_posix(),
++            "touched_paths": touched_paths,
++            "operations_sha256": preview["data"]["operations_sha256"],
++            "idempotent_replay": False,
++            "duplicate_prevented": False,
++            "dedupe_key": dedupe_key,
++            "idempotency_source": dedupe_source,
++            "implicit_idempotency_key": implicit,
++            "production_authority": False,
++            "live_execution_authority": False,
++            "settlement_required": True,
++        },
++        mutates_active_state=True,
++    )
++
++
++
+ def _artifact_receipt(root: Path, prefix: str, payload: Mapping[str, Any]) -> Path:
+     return _write_connector_packet(root, "artifact_receipts", prefix, payload)
+ 
+@@ -1909,6 +2217,10 @@ def call_chatgpt_connector_tool(
+         return _ok(tool_name, result, mutates_active_state=True)
+     if tool_name == "ion_file_put_text":
+         return _put_text_artifact(shell_root, args)
++    if tool_name == "ion_bounded_patch_preview":
++        return _bounded_patch_preview(shell_root, args)
++    if tool_name == "ion_bounded_patch_apply":
++        return _bounded_patch_apply(shell_root, args)
+     if tool_name == "ion_artifact_upload_init":
+         return _artifact_upload_init(shell_root, args)
+     if tool_name == "ion_artifact_upload_chunk":
+diff --git a/ION/04_packages/kernel/ion_chatgpt_browser_mcp_http_preview.py b/ION/04_packages/kernel/ion_chatgpt_browser_mcp_http_preview.py
+index 9b23baf..e2be3d6 100644
+--- a/ION/04_packages/kernel/ion_chatgpt_browser_mcp_http_preview.py	
++++ b/ION/04_packages/kernel/ion_chatgpt_browser_mcp_http_preview.py	
+@@ -442,6 +442,46 @@ def _tool_schema(name: str) -> dict[str, Any]:
+             "required": ["confirmation"],
+             "additionalProperties": False,
+         }
++
++    if name in {"ion_bounded_patch_preview", "ion_bounded_patch_apply"}:
++        operation_schema = {
++            "type": "object",
++            "properties": {
++                "path": {"type": "string"},
++                "target_path": {"type": "string"},
++                "old_text": {"type": "string"},
++                "new_text": {"type": "string"},
++                "expected_sha256": {"type": "string"},
++            },
++            "additionalProperties": False,
++        }
++        properties = {
++            "operations": {"type": "array", "items": operation_schema, "maxItems": 25},
++            "path": {"type": "string"},
++            "target_path": {"type": "string"},
++            "old_text": {"type": "string"},
++            "new_text": {"type": "string"},
++            "expected_sha256": {"type": "string"},
++        }
++        required = []
++        if name == "ion_bounded_patch_apply":
++            properties.update({
++                "confirmation": {"type": "string"},
++                "idempotency_key": {
++                    "type": "string",
++                    "description": "Stable key for safe retries; repeated keys return the original patch receipt.",
++                },
++                "client_request_id": {"type": "string"},
++                "force_new": {"type": "boolean"},
++            })
++            required = ["confirmation"]
++        return {
++            "type": "object",
++            "properties": properties,
++            "required": required,
++            "additionalProperties": False,
++        }
++
+     if name == "ion_file_put_text":
+         return {
+             "type": "object",
+diff --git a/ION/tests/test_kernel_ion_chatgpt_browser_mcp_connector_contract.py b/ION/tests/test_kernel_ion_chatgpt_browser_mcp_connector_contract.py
+index 398f650..9d5416e 100644
+--- a/ION/tests/test_kernel_ion_chatgpt_browser_mcp_connector_contract.py	
++++ b/ION/tests/test_kernel_ion_chatgpt_browser_mcp_connector_contract.py	
+@@ -762,3 +762,126 @@ def test_capsule_message_send_writes_bounded_state_and_packet_only(tmp_path):
+     assert polled["ok"] is True
+     assert polled["data"]["message_count"] >= 1
+     assert not queue_dir.exists() or not list(queue_dir.glob("*.json"))
++
++
++def test_bounded_patch_preview_and_apply_with_receipt_and_replay(tmp_path):
++    _seed_root(tmp_path)
++    target = tmp_path / "ION/04_packages/kernel/sample_patch_target.py"
++    target.parent.mkdir(parents=True, exist_ok=True)
++    target.write_text("VALUE = 1\n", encoding="utf-8")
++    original_sha = hashlib.sha256(target.read_text(encoding="utf-8").encode("utf-8")).hexdigest()
++
++    preview = call_chatgpt_connector_tool(
++        tmp_path,
++        "ion_bounded_patch_preview",
++        {
++            "operations": [
++                {
++                    "path": "ION/04_packages/kernel/sample_patch_target.py",
++                    "old_text": "VALUE = 1\n",
++                    "new_text": "VALUE = 2\n",
++                    "expected_sha256": original_sha,
++                }
++            ]
++        },
++    )
++
++    assert preview["ok"] is True
++    assert preview["mutates_active_state"] is False
++    assert preview["data"]["touched_paths"] == ["ION/04_packages/kernel/sample_patch_target.py"]
++    assert "-VALUE = 1" in preview["data"]["previews"][0]["diff"]
++    assert "+VALUE = 2" in preview["data"]["previews"][0]["diff"]
++
++    applied = call_chatgpt_connector_tool(
++        tmp_path,
++        "ion_bounded_patch_apply",
++        {
++            "confirmation": "ION_BOUNDED_WRITE_CONFIRMED",
++            "idempotency_key": "patch-sample-target-001",
++            "operations": [
++                {
++                    "path": "ION/04_packages/kernel/sample_patch_target.py",
++                    "old_text": "VALUE = 1\n",
++                    "new_text": "VALUE = 2\n",
++                    "expected_sha256": original_sha,
++                }
++            ],
++        },
++    )
++    replay = call_chatgpt_connector_tool(
++        tmp_path,
++        "ion_bounded_patch_apply",
++        {
++            "confirmation": "ION_BOUNDED_WRITE_CONFIRMED",
++            "idempotency_key": "patch-sample-target-001",
++            "operations": [
++                {
++                    "path": "ION/04_packages/kernel/sample_patch_target.py",
++                    "old_text": "VALUE = 1\n",
++                    "new_text": "VALUE = 2\n",
++                    "expected_sha256": original_sha,
++                }
++            ],
++        },
++    )
++
++    assert applied["ok"] is True
++    assert applied["mutates_active_state"] is True
++    assert applied["data"]["status"] == "CANDIDATE_PATCH_APPLIED"
++    assert (tmp_path / applied["data"]["receipt_path"]).exists()
++    assert target.read_text(encoding="utf-8") == "VALUE = 2\n"
++    assert replay["ok"] is True
++    assert replay["mutates_active_state"] is False
++    assert replay["data"]["idempotent_replay"] is True
++    assert replay["data"]["duplicate_prevented"] is True
++    assert replay["data"]["receipt_path"] == applied["data"]["receipt_path"]
++
++
++def test_bounded_patch_blocks_protected_shared_context(tmp_path):
++    _seed_root(tmp_path)
++    target = tmp_path / "ION/05_context/current/codex_solo/CAPSULE.md"
++    target.parent.mkdir(parents=True, exist_ok=True)
++    target.write_text("# Capsule\n", encoding="utf-8")
++
++    result = call_chatgpt_connector_tool(
++        tmp_path,
++        "ion_bounded_patch_apply",
++        {
++            "confirmation": "ION_BOUNDED_WRITE_CONFIRMED",
++            "operations": [
++                {
++                    "path": "ION/05_context/current/codex_solo/CAPSULE.md",
++                    "old_text": "# Capsule\n",
++                    "new_text": "# Changed\n",
++                }
++            ],
++        },
++    )
++
++    assert result["ok"] is False
++    assert result["finding"] == "protected_shared_context_path_requires_settlement"
++    assert target.read_text(encoding="utf-8") == "# Capsule\n"
++
++
++def test_bounded_patch_blocks_non_allowlisted_path(tmp_path):
++    _seed_root(tmp_path)
++    target = tmp_path / "random.txt"
++    target.write_text("x\n", encoding="utf-8")
++
++    result = call_chatgpt_connector_tool(
++        tmp_path,
++        "ion_bounded_patch_preview",
++        {
++            "operations": [
++                {
++                    "path": "random.txt",
++                    "old_text": "x\n",
++                    "new_text": "y\n",
++                }
++            ],
++        },
++    )
++
++    assert result["ok"] is False
++    assert result["finding"] == "target_path_not_in_bounded_patch_roots"
++    assert target.read_text(encoding="utf-8") == "x\n"

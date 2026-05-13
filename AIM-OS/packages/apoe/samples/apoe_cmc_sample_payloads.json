@@ -1,0 +1,84 @@
+{
+  "start": {
+    "modality": "plan_execution",
+    "tags": ["apoe","plan","execution","plan_name:daily_sync","status:partial"],
+    "content": {
+      "plan_id": "daily_sync",
+      "execution_id": "exec_0001",
+      "plan_name": "daily_sync",
+      "status": "partial",
+      "started_at": "2025-01-28T09:00:00Z",
+      "finished_at": null,
+      "step_count": 12,
+      "avg_duration_seconds": 0.0,
+      "success_rate": 0.0,
+      "error_count": 0,
+      "outputs": {}
+    },
+    "metadata": {
+      "plan_name": "daily_sync",
+      "execution_id": "exec_0001",
+      "status": "partial",
+      "steps_completed": 0,
+      "total_steps": 12,
+      "started_at": "2025-01-28T09:00:00Z",
+      "completed_at": null,
+      "duration_seconds": null
+    }
+  },
+  "partial": {
+    "modality": "plan_execution",
+    "tags": ["apoe","plan","execution","plan_name:daily_sync","status:partial"],
+    "content": {
+      "plan_id": "daily_sync",
+      "execution_id": "exec_0001",
+      "plan_name": "daily_sync",
+      "status": "partial",
+      "started_at": "2025-01-28T09:00:00Z",
+      "finished_at": null,
+      "step_count": 12,
+      "avg_duration_seconds": 45.2,
+      "success_rate": 0.0,
+      "error_count": 1,
+      "outputs": {"progress": 6, "errors": [{"message": "timeout", "at": "2025-01-28T09:15:12Z"}]}
+    },
+    "metadata": {
+      "plan_name": "daily_sync",
+      "execution_id": "exec_0001",
+      "status": "partial",
+      "steps_completed": 6,
+      "total_steps": 12,
+      "started_at": "2025-01-28T09:00:00Z",
+      "completed_at": null,
+      "duration_seconds": null
+    }
+  },
+  "complete": {
+    "modality": "plan_execution",
+    "tags": ["apoe","plan","execution","plan_name:daily_sync","status:success"],
+    "content": {
+      "plan_id": "daily_sync",
+      "execution_id": "exec_0001",
+      "plan_name": "daily_sync",
+      "status": "success",
+      "started_at": "2025-01-28T09:00:00Z",
+      "finished_at": "2025-01-28T09:20:34Z",
+      "step_count": 12,
+      "avg_duration_seconds": 20.57,
+      "success_rate": 1.0,
+      "error_count": 1,
+      "outputs": {"result": "ok"}
+    },
+    "metadata": {
+      "plan_name": "daily_sync",
+      "execution_id": "exec_0001",
+      "status": "success",
+      "steps_completed": 12,
+      "total_steps": 12,
+      "started_at": "2025-01-28T09:00:00Z",
+      "completed_at": "2025-01-28T09:20:34Z",
+      "duration_seconds": 1234.0
+    }
+  }
+}
+

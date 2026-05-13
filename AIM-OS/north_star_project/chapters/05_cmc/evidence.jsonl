@@ -1,0 +1,14 @@
+{"claim": "CMC provides atoms, journaling, and bitemporal preservation.", "tier": "A", "source": "knowledge_architecture/systems/cmc/T0_executive.md", "anchor": "overview"}
+{"claim": "CMC implementation artifacts exist and are validated by tests.", "tier": "A", "source": "packages/cmc_service/", "anchor": "memory_store"}
+{"claim": "Provenance and snapshots enable recovery and auditing.", "tier": "A", "source": "knowledge_architecture/systems/cmc/T2_architecture.md", "anchor": "snapshots"}
+{"claim": "Hash-chained journal segments protect integrity and enable quarantine.", "tier": "A", "source": "knowledge_architecture/systems/cmc/T2_architecture.md", "anchor": "integrity"}
+{"claim": "Bitemporal queries must support both transaction-time and valid-time replays.", "tier": "A", "source": "knowledge_architecture/systems/cmc/T2_architecture.md", "anchor": "bitemporal"}
+{"claim": "CMC consists of five core components: Memory Store, Bitemporal Engine, Provenance/Witness Store, Snapshot Manager, and API/Schema Layer.", "tier": "A", "source": "knowledge_architecture/systems/cmc/T2_architecture.md", "anchor": "components"}
+{"claim": "Write path includes seven stages: Ingest → Atomize → Enrich → Index (HHNI) → Gate → Persist → Snapshot.", "tier": "A", "source": "knowledge_architecture/systems/cmc/T2_architecture.md", "anchor": "write_path"}
+{"claim": "Read path includes: HHNI Lookup → DVNS Physics → Deduplication → Conflict Resolution → Compression.", "tier": "A", "source": "knowledge_architecture/systems/cmc/T2_architecture.md", "anchor": "read_path"}
+{"claim": "CMC integrates with HHNI for hierarchical indexing, VIF for witness storage, SEG for provenance graphs, APOE for context retrieval, and SDF-CVF for quartet parity.", "tier": "A", "source": "knowledge_architecture/systems/cmc/T1_overview.md", "anchor": "integrations"}
+{"claim": "Atom schema includes identity (UUID), modality, content reference, embedding, tags, TPV, temporal fields, and VIF witness envelope.", "tier": "A", "source": "knowledge_architecture/systems/cmc/T2_architecture.md", "anchor": "atom_schema"}
+{"claim": "Snapshot restore procedure (create, verify, execute, restore, replay) is codified for Wave 1.", "tier": "A", "source": "knowledge_architecture/systems/cmc/L3_detailed.md", "anchor": "snapshot_runbook"}
+{"claim": "SnapshotManager APIs in advanced_pipelines.py back the runnable examples for logging integrity reports.", "tier": "A", "source": "packages/cmc_service/advanced_pipelines.py", "anchor": "SnapshotManager"}
+{"claim": "Tier S gate policy enforces vif_min and intelligent metric thresholds for CMC work.", "tier": "A", "source": "north_star_project/policy/gates.json", "anchor": "quality_assessment.system_tier"}
+{"claim": "READY_TO_EXECUTE.md defines the Wave 1 sequencing that CMC atoms refer to.", "tier": "A", "source": "north_star_project/READY_TO_EXECUTE.md", "anchor": "Wave 1 plan"}

@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "llvm-ir",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "LLVM NVPTX target lowers LLVM IR to PTX (NVPTXUsage.html)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "nvidia-cuda",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "CUDA toolchains compile device code to PTX and embed PTX in fatbins for driver consumption."
+    }
+  ]
+}

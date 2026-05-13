@@ -1,0 +1,83 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "dwarf",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GDB interprets DWARF for source-level debugging on typical ELF targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "elf",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GDB loads ELF executables and shared libraries."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-gcc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GCC -g builds feed GDB with debug info in typical GNU flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "clang",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Clang -g DWARF builds are debugged with GDB on common Linux setups."
+    },
+    {
+      "type": "integrates_with",
+      "target": "c-language",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GDB is the common debugger for C/C++ on GNU/Linux."
+    },
+    {
+      "type": "integrates_with",
+      "target": "debug-adapter-protocol",
+      "evidence_tier": "INFERRED",
+      "notes": "Many IDE debug adapters wrap GDB as the backend behind DAP."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-binutils",
+      "evidence_tier": "INFERRED",
+      "notes": "Static inspection (readelf/objdump) complements live GDB sessions."
+    },
+    {
+      "type": "competes_with",
+      "target": "lldb",
+      "evidence_tier": "INFERRED",
+      "notes": "GDB and LLDB are substitutable debuggers for many C/C++ workflows on Linux."
+    },
+    {
+      "type": "integrates_with",
+      "target": "glibc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GDB debugs glibc-linked programs; stepping into libc is common when debuginfo packages are installed."
+    },
+    {
+      "type": "integrates_with",
+      "target": "musl",
+      "evidence_tier": "INFERRED",
+      "notes": "GDB can debug musl-linked executables on Linux when symbols and debuginfo are available."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-libstdcxx",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GDB debugs C++ code using libstdc++ with appropriate debug info and pretty-printers."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-libcxx",
+      "evidence_tier": "INFERRED",
+      "notes": "GDB can debug libc++-linked binaries when DWARF and sysroot match the Clang/libc++ stack."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-libcxxabi",
+      "evidence_tier": "INFERRED",
+      "notes": "GDB unwinds through exception frames involving libc++abi when debugging Clang C++ binaries."
+    }
+  ]
+}

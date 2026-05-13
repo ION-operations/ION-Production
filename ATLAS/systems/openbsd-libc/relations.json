@@ -1,0 +1,101 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "c-language",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "OpenBSD libc implements C and POSIX interfaces for hosted C on OpenBSD triplets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "elf",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "OpenBSD libc and the dynamic linker participate in ELF dynamic linking on supported architectures."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-gcc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GCC in ports/base toolchains commonly links against OpenBSD libc."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-binutils",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GNU ld links against libc in typical OpenBSD ELF flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "clang",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang/LLVM may be used in ports and link against libc where configured."
+    },
+    {
+      "type": "competes_with",
+      "target": "glibc",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable C library implementations across different Unix-like OS families (not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "musl",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable C library implementations across different Unix-like OS kernels and linking models."
+    },
+    {
+      "type": "competes_with",
+      "target": "freebsd-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct BSD libc implementations with separate release engineering and syscall policies."
+    },
+    {
+      "type": "competes_with",
+      "target": "netbsd-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct BSD libc implementations with separate release engineering and syscall policies."
+    },
+    {
+      "type": "competes_with",
+      "target": "dragonfly-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct BSD libc implementations with separate release engineering and syscall policies."
+    },
+    {
+      "type": "competes_with",
+      "target": "illumos-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct Unix libc implementations (BSD vs Solaris/illumos lineage; not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "android-bionic",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct libc implementations (BSD base libc vs Android Bionic; not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "newlib",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct libc implementations (BSD base libc vs embedded newlib; not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "wasi-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct libc implementations (BSD base libc vs Wasm WASI wasi-libc; not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "uclibc",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct libc implementations (BSD base libc vs Linux uClibc; not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "dietlibc",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct libc implementations (BSD base libc vs Linux dietlibc; not ABI-interchangeable)."
+    }
+  ]
+}

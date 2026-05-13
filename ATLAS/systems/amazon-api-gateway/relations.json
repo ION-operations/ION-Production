@@ -1,0 +1,31 @@
+{
+  "system_slug": "amazon-api-gateway",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-09",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "amazon-s3",
+      "evidence_tier": "INFERRED",
+      "notes": "API Gateway can integrate with S3 as backend in documented patterns."
+    },
+    {
+      "type": "integrates_with",
+      "target": "openid-connect",
+      "evidence_tier": "INFERRED",
+      "notes": "JWT/OIDC authorizers are common API Gateway patterns."
+    },
+    {
+      "type": "integrates_with",
+      "target": "grpc",
+      "evidence_tier": "INFERRED",
+      "notes": "Check AWS API Gateway v2 / HTTP API gRPC support per region and docs."
+    },
+    {
+      "type": "competes_with",
+      "target": "envoy",
+      "evidence_tier": "INFERRED",
+      "notes": "Managed API edge vs self-managed gateway mesh."
+    }
+  ]
+}

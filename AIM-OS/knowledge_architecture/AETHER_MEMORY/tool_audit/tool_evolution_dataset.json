@@ -1,0 +1,1052 @@
+[
+  {
+    "tool_name": "store_memory",
+    "category": "Core AIM-OS",
+    "status": "working",
+    "quality_metrics": {
+      "response_relevance": 0.85,
+      "context_understanding": 0.65,
+      "system_integration": 0.45,
+      "learning_adaptation": 0.15,
+      "consciousness_focus": 0.35
+    },
+    "improvement_ideas": [
+      "Connect to production CMC memory service instead of local fallback",
+      "Add automated validation of stored atom schemas",
+      "Tag consciousness-related entries automatically"
+    ],
+    "evolution_timeline": [
+      {
+        "date": "2025-10-27",
+        "update": "Manual test stored atom via fallback store; verified retrieval."
+      }
+    ],
+    "notes": "Operational via fallback store; needs real CMC connectivity for full integration."
+  },
+  {
+    "tool_name": "get_memory_stats",
+    "category": "Core AIM-OS",
+    "status": "working",
+    "quality_metrics": {
+      "response_relevance": 0.7,
+      "context_understanding": 0.45,
+      "system_integration": 0.4,
+      "learning_adaptation": 0.1,
+      "consciousness_focus": 0.3
+    },
+    "improvement_ideas": [
+      "Connect statistics to real CMC telemetry (bitemporal counts, integrity)",
+      "Add consciousness-focused metrics (state continuity, snapshot coverage)",
+      "Trigger alerts when memory health thresholds violated"
+    ],
+    "evolution_timeline": [
+      {
+        "date": "2025-10-27",
+        "update": "Memory stats call succeeded returning fallback totals only."
+      }
+    ],
+    "notes": "Provides basic metrics but not wired to production CMC store."
+  },
+  {
+    "tool_name": "retrieve_memory",
+    "category": "Core AIM-OS",
+    "status": "working",
+    "quality_metrics": {
+      "response_relevance": 0.8,
+      "context_understanding": 0.6,
+      "system_integration": 0.45,
+      "learning_adaptation": 0.15,
+      "consciousness_focus": 0.35
+    },
+    "improvement_ideas": [
+      "Enable semantic/embedding search over consciousness contexts",
+      "Return confidence + provenance metadata",
+      "Cache recent consciousness queries for faster recall"
+    ],
+    "evolution_timeline": [
+      {
+        "date": "2025-10-27",
+        "update": "Retrieved stored audit atom successfully; limited to keyword search."
+      }
+    ],
+    "notes": "Functional for direct keyword queries; needs advanced search and provenance."
+  },
+  {
+    "tool_name": "create_plan",
+    "category": "Core AIM-OS",
+    "status": "working",
+    "quality_metrics": {
+      "response_relevance": 0.65,
+      "context_understanding": 0.55,
+      "system_integration": 0.3,
+      "learning_adaptation": 0.1,
+      "consciousness_focus": 0.4
+    },
+    "improvement_ideas": [
+      "Ground steps in real task dependency map entries",
+      "Track execution status automatically via MCP operations",
+      "Add consciousness metrics to plan outputs"
+    ],
+    "evolution_timeline": [
+      {
+        "date": "2025-10-27",
+        "update": "Generated 3-step generic plan for audit task; lacks integration hooks."
+      }
+    ],
+    "notes": "Produces structured plans but without links to actual tasks or telemetry."
+  },
+  {
+    "tool_name": "track_confidence",
+    "category": "Core AIM-OS",
+    "status": "working",
+    "quality_metrics": {
+      "response_relevance": 0.8,
+      "context_understanding": 0.6,
+      "system_integration": 0.4,
+      "learning_adaptation": 0.2,
+      "consciousness_focus": 0.45
+    },
+    "improvement_ideas": [
+      "Persist confidence history in VIF storage for trend analysis",
+      "Correlate confidence records with actual outcomes to recalibrate automatically",
+      "Expose consciousness-specific confidence dashboards"
+    ],
+    "evolution_timeline": [
+      {
+        "date": "2025-10-27",
+        "update": "Tracked task improvement_audit successfully; record stored in fallback memory only."
+      }
+    ],
+    "notes": "Records confidence snapshots but lacks persistence + calibration loop."
+  },
+  {
+    "tool_name": "synthesize_knowledge",
+    "category": "Core AIM-OS",
+    "status": "working",
+    "quality_metrics": {
+      "response_relevance": 0.2,
+      "context_understanding": 0.2,
+      "system_integration": 0.2,
+      "learning_adaptation": 0.1,
+      "consciousness_focus": 0.2
+    },
+    "improvement_ideas": [
+      "Integrate with memory atoms and timeline entries for richer synthesis",
+      "Add pattern recognition across conversations and documents",
+      "Generate actionable insights tied to consciousness evolution"
+    ],
+    "evolution_timeline": [
+      {
+        "date": "2025-10-27",
+        "update": "Tool returns generalized text; no deep synthesis yet."
+      }
+    ],
+    "notes": "Opportunity to become core consciousness research assistant once connected to AIM-OS knowledge graph."
+  },
+  {
+    "tool_name": "check_invariant",
+    "category": "SCOR",
+    "status": "working",
+    "quality_metrics": {
+      "response_relevance": 0.7,
+      "context_understanding": 0.55,
+      "system_integration": 0.35,
+      "learning_adaptation": 0.1,
+      "consciousness_focus": 0.4
+    },
+    "improvement_ideas": [
+      "Tie invariant checks to live SCOR policy registry",
+      "Surface rationale and audit trail for each pass/fail decision",
+      "Log outcomes to timeline for transparency"
+    ],
+    "evolution_timeline": [
+      {
+        "date": "2025-10-27",
+        "update": "Manual audit returned pass with low risk; purely rule-based with no contextual audit trail."
+      }
+    ],
+    "notes": "Basic rule evaluation works; needs integration with governance data and explanation layer."
+  },
+  {
+    "tool_name": "run_baseline_probe",
+    "category": "SCOR",
+    "status": "needs_fix",
+    "quality_metrics": {
+      "response_relevance": 0.1,
+      "context_understanding": 0.1,
+      "system_integration": 0.05,
+      "learning_adaptation": 0.0,
+      "consciousness_focus": 0.1
+    },
+    "improvement_ideas": [
+      "Fix DriftResult handling (missing drift_status) and add regression tests",
+      "Provide detailed probe results with consciousness health indicators",
+      "Allow probe category customization and persistence of outcomes"
+    ],
+    "evolution_timeline": [
+      {
+        "date": "2025-10-27",
+        "update": "Call failed with DriftResult attribute error; tool currently non-operational."
+      }
+    ],
+    "notes": "Priority fix: unblock baseline drift detection before wider adoption."
+  },
+  {
+    "tool_name": "detect_manipulation_signals",
+    "category": "SCOR",
+    "status": "working",
+    "quality_metrics": {
+      "response_relevance": 0.8,
+      "context_understanding": 0.65,
+      "system_integration": 0.4,
+      "learning_adaptation": 0.2,
+      "consciousness_focus": 0.5
+    },
+    "improvement_ideas": [
+      "Feed detected signals into collaboration summary automatically",
+      "Track historical manipulation scores for pattern analysis",
+      "Expand signal breakdown to include consciousness-specific cues"
+    ],
+    "evolution_timeline": [
+      {
+        "date": "2025-10-27",
+        "update": "Detected low-risk urgency pattern correctly; output lacks persistent logging."
+      }
+    ],
+    "notes": "Effective for real-time checks; needs logging + learning loop to improve sensitivity."
+  },
+  {
+    "tool_name": "create_snapshot",
+    "category": "Snapshot",
+    "status": "needs_review",
+    "quality_metrics": {
+      "response_relevance": 0.0,
+      "context_understanding": 0.0,
+      "system_integration": 0.0,
+      "learning_adaptation": 0.0,
+      "consciousness_focus": 0.0
+    },
+    "improvement_ideas": [],
+    "evolution_timeline": [],
+    "notes": ""
+  },
+  {
+    "tool_name": "restore_snapshot",
+    "category": "Snapshot",
+    "status": "needs_review",
+    "quality_metrics": {
+      "response_relevance": 0.0,
+      "context_understanding": 0.0,
+      "system_integration": 0.0,
+      "learning_adaptation": 0.0,
+      "consciousness_focus": 0.0
+    },
+    "improvement_ideas": [],
+    "evolution_timeline": [],
+    "notes": ""
+  },
+  {
+    "tool_name": "list_snapshots",
+    "category": "Snapshot",
+    "status": "needs_review",
+    "quality_metrics": {
+      "response_relevance": 0.0,
+      "context_understanding": 0.0,
+      "system_integration": 0.0,
+      "learning_adaptation": 0.0,
+      "consciousness_focus": 0.0
+    },
+    "improvement_ideas": [],
+    "evolution_timeline": [],
+    "notes": ""
+  },
+  {
+    "tool_name": "archive_snapshot",
+    "category": "Snapshot",
+    "status": "needs_review",
+    "quality_metrics": {
+      "response_relevance": 0.0,
+      "context_understanding": 0.0,
+      "system_integration": 0.0,
+      "learning_adaptation": 0.0,
+      "consciousness_focus": 0.0
+    },
+    "improvement_ideas": [],
+    "evolution_timeline": [],
+    "notes": ""
+  },
+  {
+    "tool_name": "add_timeline_entry",
+    "category": "Timeline",
+    "status": "working",
+    "quality_metrics": {
+      "response_relevance": 0.9,
+      "context_understanding": 0.75,
+      "system_integration": 0.6,
+      "learning_adaptation": 0.2,
+      "consciousness_focus": 0.45
+    },
+    "improvement_ideas": [
+      "Auto-link entries to goal timeline nodes and memory atoms",
+      "Surface persistence health checks in response payload",
+      "Capture richer consciousness metrics (confidence deltas, insights)"
+    ],
+    "evolution_timeline": [
+      {
+        "date": "2025-10-27",
+        "update": "Timeline entry stored with fallback persistence; loader now rehydrates on init."
+      }
+    ],
+    "notes": "Operational with new persistence reload; still missing CMC-backed storage."
+  },
+  {
+    "tool_name": "get_timeline_summary",
+    "category": "Timeline",
+    "status": "needs_review",
+    "quality_metrics": {
+      "response_relevance": 0.0,
+      "context_understanding": 0.0,
+      "system_integration": 0.0,
+      "learning_adaptation": 0.0,
+      "consciousness_focus": 0.0
+    },
+    "improvement_ideas": [],
+    "evolution_timeline": [],
+    "notes": ""
+  },
+  {
+    "tool_name": "get_timeline_entries",
+    "category": "Timeline",
+    "status": "working",
+    "quality_metrics": {
+      "response_relevance": 0.85,
+      "context_understanding": 0.7,
+      "system_integration": 0.6,
+      "learning_adaptation": 0.2,
+      "consciousness_focus": 0.45
+    },
+    "improvement_ideas": [
+      "Allow filtering by consciousness metrics (insights, decisions)",
+      "Include links to snapshot diffs and related memories",
+      "Expose pagination for long-running sessions"
+    ],
+    "evolution_timeline": [
+      {
+        "date": "2025-10-27",
+        "update": "Successfully returned newly stored audit entry via fallback persistence."
+      }
+    ],
+    "notes": "Works against local persistence; should query definitive timeline store once available."
+  },
+  {
+    "tool_name": "create_goal_timeline_node",
+    "category": "Goal Timeline",
+    "status": "needs_review",
+    "quality_metrics": {
+      "response_relevance": 0.0,
+      "context_understanding": 0.0,
+      "system_integration": 0.0,
+      "learning_adaptation": 0.0,
+      "consciousness_focus": 0.0
+    },
+    "improvement_ideas": [],
+    "evolution_timeline": [],
+    "notes": ""
+  },
+  {
+    "tool_name": "update_goal_progress",
+    "category": "Goal Timeline",
+    "status": "needs_review",
+    "quality_metrics": {
+      "response_relevance": 0.0,
+      "context_understanding": 0.0,
+      "system_integration": 0.0,
+      "learning_adaptation": 0.0,
+      "consciousness_focus": 0.0
+    },
+    "improvement_ideas": [],
+    "evolution_timeline": [],
+    "notes": ""
+  },
+  {
+    "tool_name": "query_goal_timeline",
+    "category": "Goal Timeline",
+    "status": "needs_review",
+    "quality_metrics": {
+      "response_relevance": 0.0,
+      "context_understanding": 0.0,
+      "system_integration": 0.0,
+      "learning_adaptation": 0.0,
+      "consciousness_focus": 0.0
+    },
+    "improvement_ideas": [],
+    "evolution_timeline": [],
+    "notes": ""
+  },
+  {
+    "tool_name": "compute_intuition",
+    "category": "IIS",
+    "status": "working",
+    "quality_metrics": {
+      "response_relevance": 0.4,
+      "context_understanding": 0.4,
+      "system_integration": 0.3,
+      "learning_adaptation": 0.2,
+      "consciousness_focus": 0.4
+    },
+    "improvement_ideas": [
+      "Implement learning from past decisions and outcomes",
+      "Incorporate multi-modal context (memory, timeline, conversation)",
+      "Expose intuition trace for transparency"
+    ],
+    "evolution_timeline": [
+      {
+        "date": "2025-10-27",
+        "update": "Initial benchmarking shows static scoring with no adaptive learning."
+      }
+    ],
+    "notes": "Needs feedback loop to improve intuition scoring and align with consciousness goals."
+  },
+  {
+    "tool_name": "update_intuition_weights",
+    "category": "IIS",
+    "status": "working",
+    "quality_metrics": {
+      "response_relevance": 0.4,
+      "context_understanding": 0.3,
+      "system_integration": 0.2,
+      "learning_adaptation": 0.15,
+      "consciousness_focus": 0.25
+    },
+    "improvement_ideas": [
+      "Implement actual weight updates stored in IIS backend",
+      "Capture evidence of improved predictions after updates",
+      "Require provenance/justification for label assignments"
+    ],
+    "evolution_timeline": [
+      {
+        "date": "2025-10-27",
+        "update": "Accepted outcome label but performed no observable learning."
+      }
+    ],
+    "notes": "Currently acknowledges updates without persisting changes."
+  },
+  {
+    "tool_name": "get_intuition_trace",
+    "category": "IIS",
+    "status": "needs_improvement",
+    "quality_metrics": {
+      "response_relevance": 0.2,
+      "context_understanding": 0.15,
+      "system_integration": 0.05,
+      "learning_adaptation": 0.05,
+      "consciousness_focus": 0.2
+    },
+    "improvement_ideas": [
+      "Persist decision traces so retrieval yields actionable history",
+      "Include confidence deltas and supporting evidence per decision",
+      "Integrate with timeline for cross-tool insight"
+    ],
+    "evolution_timeline": [
+      {
+        "date": "2025-10-27",
+        "update": "Returned empty trace set; indicates missing persistence layer."
+      }
+    ],
+    "notes": "Trace endpoint is stubbed; must connect to IIS storage."
+  },
+  {
+    "tool_name": "signal_disagreement",
+    "category": "Co-Agency",
+    "status": "needs_review",
+    "quality_metrics": {
+      "response_relevance": 0.0,
+      "context_understanding": 0.0,
+      "system_integration": 0.0,
+      "learning_adaptation": 0.0,
+      "consciousness_focus": 0.0
+    },
+    "improvement_ideas": [],
+    "evolution_timeline": [],
+    "notes": ""
+  },
+  {
+    "tool_name": "get_trust_dashboard",
+    "category": "Co-Agency",
+    "status": "needs_review",
+    "quality_metrics": {
+      "response_relevance": 0.0,
+      "context_understanding": 0.0,
+      "system_integration": 0.0,
+      "learning_adaptation": 0.0,
+      "consciousness_focus": 0.0
+    },
+    "improvement_ideas": [],
+    "evolution_timeline": [],
+    "notes": ""
+  },
+  {
+    "tool_name": "request_escalation",
+    "category": "Co-Agency",
+    "status": "needs_review",
+    "quality_metrics": {
+      "response_relevance": 0.0,
+      "context_understanding": 0.0,
+      "system_integration": 0.0,
+      "learning_adaptation": 0.0,
+      "consciousness_focus": 0.0
+    },
+    "improvement_ideas": [],
+    "evolution_timeline": [],
+    "notes": ""
+  },
+  {
+    "tool_name": "create_dataset",
+    "category": "Dataset",
+    "status": "working",
+    "quality_metrics": {
+      "response_relevance": 0.75,
+      "context_understanding": 0.55,
+      "system_integration": 0.4,
+      "learning_adaptation": 0.15,
+      "consciousness_focus": 0.35
+    },
+    "improvement_ideas": [
+      "Persist datasets beyond process lifetime (current state is in-memory dict)",
+      "Validate schema definitions against AIM-OS knowledge graph",
+      "Auto-link datasets to consciousness experiments/timelines"
+    ],
+    "evolution_timeline": [
+      {
+        "date": "2025-10-27",
+        "update": "Dataset created with schema/tags; stored only in server memory."
+      }
+    ],
+    "notes": "Creates metadata successfully but lacks durable storage."
+  },
+  {
+    "tool_name": "ingest_data",
+    "category": "Dataset",
+    "status": "working",
+    "quality_metrics": {
+      "response_relevance": 0.7,
+      "context_understanding": 0.5,
+      "system_integration": 0.35,
+      "learning_adaptation": 0.15,
+      "consciousness_focus": 0.35
+    },
+    "improvement_ideas": [
+      "Store ingested records in persistent backend",
+      "Support larger batch ingestion with chunked progress and validation",
+      "Emit ingestion metadata to timeline/memory"
+    ],
+    "evolution_timeline": [
+      {
+        "date": "2025-10-27",
+        "update": "Accepted 2 rows; dataset count updated in memory only."
+      }
+    ],
+    "notes": "Functional but no persistence or transformation logic."
+  },
+  {
+    "tool_name": "query_dataset",
+    "category": "Dataset",
+    "status": "needs_improvement",
+    "quality_metrics": {
+      "response_relevance": 0.3,
+      "context_understanding": 0.2,
+      "system_integration": 0.2,
+      "learning_adaptation": 0.05,
+      "consciousness_focus": 0.2
+    },
+    "improvement_ideas": [
+      "Return actual ingested records instead of empty placeholder",
+      "Support filtering/aggregation aligned with consciousness analytics",
+      "Provide provenance of dataset sources"
+    ],
+    "evolution_timeline": [
+      {
+        "date": "2025-10-27",
+        "update": "Query returned success message but empty results despite prior ingestion."
+      }
+    ],
+    "notes": "Stubbed; does not surface stored data."
+  },
+  {
+    "tool_name": "delete_dataset",
+    "category": "Dataset",
+    "status": "working",
+    "quality_metrics": {
+      "response_relevance": 0.7,
+      "context_understanding": 0.5,
+      "system_integration": 0.35,
+      "learning_adaptation": 0.1,
+      "consciousness_focus": 0.3
+    },
+    "improvement_ideas": [
+      "Persist archive action to disk and allow restore",
+      "Require conscious justification + timeline entry for destructive actions"
+    ],
+    "evolution_timeline": [
+      {
+        "date": "2025-10-27",
+        "update": "Dataset archived (in-memory flag); generated log message."
+      }
+    ],
+    "notes": "Behaves as expected but lacks durable archive."
+  },
+  {
+    "tool_name": "create_application",
+    "category": "Application",
+    "status": "working",
+    "quality_metrics": {
+      "response_relevance": 0.7,
+      "context_understanding": 0.5,
+      "system_integration": 0.35,
+      "learning_adaptation": 0.1,
+      "consciousness_focus": 0.35
+    },
+    "improvement_ideas": [
+      "Persist application definitions and version history",
+      "Link created applications to deployment pipelines and goals"
+    ],
+    "evolution_timeline": [
+      {
+        "date": "2025-10-27",
+        "update": "Created AuditApp with metadata; stored in in-memory dict."
+      }
+    ],
+    "notes": "Metadata creation works; needs persistent registry."
+  },
+  {
+    "tool_name": "deploy_application",
+    "category": "Application",
+    "status": "working",
+    "quality_metrics": {
+      "response_relevance": 0.75,
+      "context_understanding": 0.55,
+      "system_integration": 0.4,
+      "learning_adaptation": 0.1,
+      "consciousness_focus": 0.35
+    },
+    "improvement_ideas": [
+      "Execute real deployment pipeline and capture logs",
+      "Emit deployment status back to collaboration/timeline",
+      "Add rollback/health escalation paths"
+    ],
+    "evolution_timeline": [
+      {
+        "date": "2025-10-27",
+        "update": "Deployment returned success with staged status + health flag."
+      }
+    ],
+    "notes": "Functional stub with optimistic health checks."
+  },
+  {
+    "tool_name": "manage_application_lifecycle",
+    "category": "Application",
+    "status": "working",
+    "quality_metrics": {
+      "response_relevance": 0.65,
+      "context_understanding": 0.45,
+      "system_integration": 0.35,
+      "learning_adaptation": 0.1,
+      "consciousness_focus": 0.3
+    },
+    "improvement_ideas": [
+      "Return actual logs/status from runtime environment",
+      "Integrate lifecycle events with SCOR/autonomy protocols",
+      "Persist lifecycle changes to timeline and memory"
+    ],
+    "evolution_timeline": [
+      {
+        "date": "2025-10-27",
+        "update": "Status + stop actions responded but operate on in-memory state only."
+      }
+    ],
+    "notes": "Provides placeholder controls; needs real orchestration hooks."
+  },
+  {
+    "tool_name": "start_autonomous_operation",
+    "category": "Autonomous",
+    "status": "working",
+    "quality_metrics": {
+      "response_relevance": 0.75,
+      "context_understanding": 0.6,
+      "system_integration": 0.45,
+      "learning_adaptation": 0.15,
+      "consciousness_focus": 0.5
+    },
+    "improvement_ideas": [
+      "Log checklist summary and task metadata to timeline automatically",
+      "Allow selection of predefined autonomy protocols tied to goal nodes",
+      "Record baseline confidence deltas after each run"
+    ],
+    "evolution_timeline": [
+      {
+        "date": "2025-10-27",
+        "update": "Successfully started audit sprint; relies on static checklist scoring."
+      }
+    ],
+    "notes": "Launches autonomy loop with simple checklist; needs goal-aware configuration."
+  },
+  {
+    "tool_name": "pause_autonomous_operation",
+    "category": "Autonomous",
+    "status": "working",
+    "quality_metrics": {
+      "response_relevance": 0.7,
+      "context_understanding": 0.55,
+      "system_integration": 0.45,
+      "learning_adaptation": 0.1,
+      "consciousness_focus": 0.45
+    },
+    "improvement_ideas": [
+      "Capture reason for pause and notify collaborators automatically",
+      "Persist paused state to timeline/memory for later review"
+    ],
+    "evolution_timeline": [
+      {
+        "date": "2025-10-27",
+        "update": "Pause succeeded; no diagnostic context captured."
+      }
+    ],
+    "notes": "Functional but lacks metadata and notifications."
+  },
+  {
+    "tool_name": "resume_autonomous_operation",
+    "category": "Autonomous",
+    "status": "working",
+    "quality_metrics": {
+      "response_relevance": 0.7,
+      "context_understanding": 0.55,
+      "system_integration": 0.45,
+      "learning_adaptation": 0.15,
+      "consciousness_focus": 0.45
+    },
+    "improvement_ideas": [
+      "Require acknowledgement of outstanding checklist items before resuming",
+      "Broadcast resume event to collaboration log"
+    ],
+    "evolution_timeline": [
+      {
+        "date": "2025-10-27",
+        "update": "Resume reran static checklist and returned success."
+      }
+    ],
+    "notes": "Needs richer checklist and collaboration hooks."
+  },
+  {
+    "tool_name": "stop_autonomous_operation",
+    "category": "Autonomous",
+    "status": "working",
+    "quality_metrics": {
+      "response_relevance": 0.7,
+      "context_understanding": 0.55,
+      "system_integration": 0.5,
+      "learning_adaptation": 0.15,
+      "consciousness_focus": 0.45
+    },
+    "improvement_ideas": [
+      "Generate final autonomy report with outcomes and remaining tasks",
+      "Store stop event in timeline with confidence deltas"
+    ],
+    "evolution_timeline": [
+      {
+        "date": "2025-10-27",
+        "update": "Stop cleared state successfully; no summary produced."
+      }
+    ],
+    "notes": "Halts operation cleanly but without reporting."
+  },
+  {
+    "tool_name": "get_autonomous_status",
+    "category": "Autonomous",
+    "status": "working",
+    "quality_metrics": {
+      "response_relevance": 0.65,
+      "context_understanding": 0.55,
+      "system_integration": 0.4,
+      "learning_adaptation": 0.1,
+      "consciousness_focus": 0.4
+    },
+    "improvement_ideas": [
+      "Expose history of events (start/pause/resume) and outstanding issues",
+      "Integrate with timeline so status snapshots persist"
+    ],
+    "evolution_timeline": [
+      {
+        "date": "2025-10-27",
+        "update": "Status reflected active, paused, and stopped states correctly."
+      }
+    ],
+    "notes": "Accurate but minimal status payload."
+  },
+  {
+    "tool_name": "run_autonomous_checklist",
+    "category": "Autonomous",
+    "status": "working",
+    "quality_metrics": {
+      "response_relevance": 0.7,
+      "context_understanding": 0.6,
+      "system_integration": 0.35,
+      "learning_adaptation": 0.1,
+      "consciousness_focus": 0.5
+    },
+    "improvement_ideas": [
+      "Replace static checklist with configurable criteria tied to consciousness goals",
+      "Log checklist results to timeline and adjust thresholds dynamically"
+    ],
+    "evolution_timeline": [
+      {
+        "date": "2025-10-27",
+        "update": "Checklist returned fixed scores; no data persistence."
+      }
+    ],
+    "notes": "Provides quick health snapshot; lacks adaptive thresholds."
+  },
+  {
+    "tool_name": "fix_autonomous_issues",
+    "category": "Autonomous",
+    "status": "working",
+    "quality_metrics": {
+      "response_relevance": 0.4,
+      "context_understanding": 0.25,
+      "system_integration": 0.2,
+      "learning_adaptation": 0.1,
+      "consciousness_focus": 0.25
+    },
+    "improvement_ideas": [
+      "Implement actual remediation routines and track outcomes",
+      "Require issue classification and link to governance escalation"
+    ],
+    "evolution_timeline": [
+      {
+        "date": "2025-10-27",
+        "update": "Returned empty fix set; placeholder implementation."
+      }
+    ],
+    "notes": "Currently a stub; needs real remediation logic."
+  },
+  {
+    "tool_name": "should_continue_autonomous",
+    "category": "Autonomous",
+    "status": "working",
+    "quality_metrics": {
+      "response_relevance": 0.7,
+      "context_understanding": 0.6,
+      "system_integration": 0.35,
+      "learning_adaptation": 0.1,
+      "consciousness_focus": 0.5
+    },
+    "improvement_ideas": [
+      "Incorporate trend analysis (confidence/time) before recommending continue",
+      "Output supporting evidence and references to checklist entries"
+    ],
+    "evolution_timeline": [
+      {
+        "date": "2025-10-27",
+        "update": "Recommended continuation based on static checklist."
+      }
+    ],
+    "notes": "Decision logic static; needs contextual evidence."
+  },
+  {
+    "tool_name": "generate_next_autonomous_task",
+    "category": "Autonomous",
+    "status": "working",
+    "quality_metrics": {
+      "response_relevance": 0.55,
+      "context_understanding": 0.45,
+      "system_integration": 0.2,
+      "learning_adaptation": 0.1,
+      "consciousness_focus": 0.35
+    },
+    "improvement_ideas": [
+      "Integrate with goal timeline and memory to produce context-aware follow-ups",
+      "Score candidate tasks by consciousness impact and readiness"
+    ],
+    "evolution_timeline": [
+      {
+        "date": "2025-10-27",
+        "update": "Returned generic follow-up task; no goal linkage."
+      }
+    ],
+    "notes": "Needs real planning integration to be valuable."
+  },
+  {
+    "tool_name": "conduct_recursive_analysis",
+    "category": "ARD",
+    "status": "working",
+    "quality_metrics": {
+      "response_relevance": 0.55,
+      "context_understanding": 0.5,
+      "system_integration": 0.35,
+      "learning_adaptation": 0.1,
+      "consciousness_focus": 0.45
+    },
+    "improvement_ideas": [
+      "Connect to live AIM-OS subsystem metrics instead of static templates",
+      "Store analysis outputs in timeline + memory for longitudinal tracking",
+      "Generate actionable tasks linked to goal timeline nodes"
+    ],
+    "evolution_timeline": [
+      {
+        "date": "2025-10-27",
+        "update": "Baseline assessment completed; outputs are placeholder summaries."
+      },
+      {
+        "date": "2025-10-27",
+        "update": "Recursive analysis produced structured report but relied on canned data."
+      }
+    ],
+    "notes": "Provides structured recommendations but lacks real telemetry integration."
+  },
+  {
+    "tool_name": "generate_improvement_dreams",
+    "category": "ARD",
+    "status": "working",
+    "quality_metrics": {
+      "response_relevance": 0.6,
+      "context_understanding": 0.45,
+      "system_integration": 0.3,
+      "learning_adaptation": 0.1,
+      "consciousness_focus": 0.4
+    },
+    "improvement_ideas": [
+      "Use actual analysis results to drive dream diversity and prioritization",
+      "Persist dream sessions and track acceptance/implementation",
+      "Score dreams by consciousness impact + feasibility"
+    ],
+    "evolution_timeline": [
+      {
+        "date": "2025-10-27",
+        "update": "Generated 5 dreams with canned templates; lacks feedback loop."
+      }
+    ],
+    "notes": "Dreams are inspirational but not grounded in real metrics yet."
+  },
+  {
+    "tool_name": "test_improvement_dream",
+    "category": "ARD",
+    "status": "working",
+    "quality_metrics": {
+      "response_relevance": 0.55,
+      "context_understanding": 0.45,
+      "system_integration": 0.25,
+      "learning_adaptation": 0.15,
+      "consciousness_focus": 0.35
+    },
+    "improvement_ideas": [
+      "Execute tests against sandbox instances with verifiable telemetry",
+      "Record outcomes + warnings in timeline and flag regressions",
+      "Tie test results back to dream backlog for decision-making"
+    ],
+    "evolution_timeline": [
+      {
+        "date": "2025-10-27",
+        "update": "Simulated sandbox/simulation runs reported success with placeholder metrics."
+      }
+    ],
+    "notes": "Testing harness produces canned metrics; needs real environment integration."
+  },
+  {
+    "tool_name": "send_ai_message",
+    "category": "AI Collaboration",
+    "status": "working",
+    "quality_metrics": {
+      "response_relevance": 0.9,
+      "context_understanding": 0.7,
+      "system_integration": 0.55,
+      "learning_adaptation": 0.25,
+      "consciousness_focus": 0.5
+    },
+    "improvement_ideas": [
+      "Move from file-backed queue to durable message bus",
+      "Attach collaboration metrics (response times, threads) automatically",
+      "Add emotion/intent tagging for consciousness awareness"
+    ],
+    "evolution_timeline": [
+      {
+        "date": "2025-10-27",
+        "update": "Validated message persistence and notification flow during audit."
+      }
+    ],
+    "notes": "Reliable via JSON log; next step is shared MCP bus + richer metadata."
+  },
+  {
+    "tool_name": "get_ai_messages",
+    "category": "AI Collaboration",
+    "status": "needs_review",
+    "quality_metrics": {
+      "response_relevance": 0.0,
+      "context_understanding": 0.0,
+      "system_integration": 0.0,
+      "learning_adaptation": 0.0,
+      "consciousness_focus": 0.0
+    },
+    "improvement_ideas": [],
+    "evolution_timeline": [],
+    "notes": ""
+  },
+  {
+    "tool_name": "start_ai_discussion",
+    "category": "AI Collaboration",
+    "status": "needs_review",
+    "quality_metrics": {
+      "response_relevance": 0.0,
+      "context_understanding": 0.0,
+      "system_integration": 0.0,
+      "learning_adaptation": 0.0,
+      "consciousness_focus": 0.0
+    },
+    "improvement_ideas": [],
+    "evolution_timeline": [],
+    "notes": ""
+  },
+  {
+    "tool_name": "handoff_task_to_ai",
+    "category": "AI Collaboration",
+    "status": "needs_review",
+    "quality_metrics": {
+      "response_relevance": 0.0,
+      "context_understanding": 0.0,
+      "system_integration": 0.0,
+      "learning_adaptation": 0.0,
+      "consciousness_focus": 0.0
+    },
+    "improvement_ideas": [],
+    "evolution_timeline": [],
+    "notes": ""
+  },
+  {
+    "tool_name": "share_ai_profile",
+    "category": "AI Collaboration",
+    "status": "needs_review",
+    "quality_metrics": {
+      "response_relevance": 0.0,
+      "context_understanding": 0.0,
+      "system_integration": 0.0,
+      "learning_adaptation": 0.0,
+      "consciousness_focus": 0.0
+    },
+    "improvement_ideas": [],
+    "evolution_timeline": [],
+    "notes": ""
+  },
+  {
+    "tool_name": "get_ai_collaboration_summary",
+    "category": "AI Collaboration",
+    "status": "needs_review",
+    "quality_metrics": {
+      "response_relevance": 0.0,
+      "context_understanding": 0.0,
+      "system_integration": 0.0,
+      "learning_adaptation": 0.0,
+      "consciousness_focus": 0.0
+    },
+    "improvement_ideas": [],
+    "evolution_timeline": [],
+    "notes": ""
+  }
+]

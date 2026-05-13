@@ -1,0 +1,568 @@
+# North Star Document - Executable Chain Specification
+# Machine-readable orchestration chain for 40-chapter document creation
+# Integrates: APOE (orchestration) + VIF (confidence) + SEG (evidence) + SDF-CVF (quality)
+
+chain:
+  id: "aimos_north_star_v2"
+  version: "2.0.0"
+  created: "2025-11-06"
+  author: "aether"
+  target_completion: "2025-12-03"
+  
+  metadata:
+    total_words: 70000
+    total_chapters: 40
+    total_gates: 160
+    agents: 5
+    quality_threshold: 0.90
+    confidence_threshold: 0.70
+
+  # TIER A REQUIREMENTS (Authority Map)
+  tier_a_sources:
+    cmc:
+      - "knowledge_architecture/systems/cmc/T0_executive.md"
+      - "knowledge_architecture/systems/cmc/T1_overview.md"
+      - "knowledge_architecture/systems/cmc/T2_architecture.md"
+      - "packages/cmc_service/"
+    
+    hhni:
+      - "knowledge_architecture/systems/hhni/T0_executive.md"
+      - "knowledge_architecture/systems/hhni/T1_overview.md"
+      - "knowledge_architecture/systems/hhni/T2_architecture.md"
+      - "packages/hhni/"
+    
+    mige:
+      - "Documentation/MEMORY_TO_IDEA_INTEGRATION_GUIDE.md"
+      - "Documentation/memory_into_idea.txt"
+    
+    ard:
+      - "knowledge_architecture/systems/autonomous_research_dream/README.md"
+      - "knowledge_architecture/systems/autonomous_research_dream/T1_overview.md"
+    
+    ldp:
+      - "knowledge_architecture/AETHER_MEMORY/LUCID_DEVELOPMENT_PROTOCOL.md"
+    
+    multi_agent:
+      - "ideas/COORDINATION_GUIDE.md"
+      - "coordination/epic_standards_overhaul/comms/"
+
+  # PART I: THE AWAKENING
+  nodes:
+    - id: "ch01_great_limitation"
+      kind: "chapter"
+      part: 1
+      title: "The Great Limitation"
+      agent: "sonnet"
+      priority: "IMMEDIATE"
+      deps: []
+      
+      tier_requirements:
+        TierA: ["Documentation/A Total System of Memory.docx"]
+        TierB: ["knowledge_architecture/CONCEPT_PROVENANCE_CHAINS.md"]
+        TierC: []
+      
+      word_count:
+        target: 2000
+        tolerance: 0.10
+      
+      gates: ["pre_chapter", "word_count", "technical", "integration"]
+      
+      outputs:
+        - "north_star_project/chapters/01_great_limitation/chapter.md"
+        - "north_star_project/chapters/01_great_limitation/evidence.jsonl"
+        - "north_star_project/chapters/01_great_limitation/metrics.yaml"
+      
+      quality_criteria:
+        confidence_min: 0.70
+        tier_a_citations_min: 1
+        contradictions_max: 0
+        examples_required: true
+    
+    - id: "ch02_vision_chat_ide"
+      kind: "chapter"
+      part: 1
+      title: "The Vision - Chat/IDE as Universal Interface"
+      agent: "sonnet"
+      priority: "IMMEDIATE"
+      deps: []
+      
+      tier_requirements:
+        TierA:
+          - "knowledge_architecture/CONTINUOUS_CONSCIOUSNESS_SUBSTRATE_COMPLETE_ANALYSIS.md"
+          - "knowledge_architecture/AETHER_MEMORY/LUCID_DEVELOPMENT_PROTOCOL.md"
+        TierB: []
+        TierC: []
+      
+      word_count:
+        target: 2000
+        tolerance: 0.10
+      
+      gates: ["pre_chapter", "word_count", "technical", "integration"]
+      
+      outputs:
+        - "north_star_project/chapters/02_vision/chapter.md"
+        - "north_star_project/chapters/02_vision/evidence.jsonl"
+        - "north_star_project/chapters/02_vision/metrics.yaml"
+      
+      quality_criteria:
+        confidence_min: 0.90
+        tier_a_citations_min: 2
+        contradictions_max: 0
+        meta_circular_required: true
+
+    - id: "ch03_proof_concept"
+      kind: "chapter"
+      part: 1
+      title: "The Proof of Concept"
+      agent: "sonnet"
+      priority: "HIGH"
+      deps: ["ch01_great_limitation", "ch02_vision_chat_ide"]
+      
+      tier_requirements:
+        TierA:
+          - "north_star_project/"
+          - "orchestration_templates/"
+        TierB: []
+        TierC: []
+      
+      word_count:
+        target: 1500
+        tolerance: 0.10
+      
+      gates: ["pre_chapter", "word_count", "technical", "integration"]
+      
+      outputs:
+        - "north_star_project/chapters/03_proof/chapter.md"
+        - "north_star_project/chapters/03_proof/evidence.jsonl"
+        - "north_star_project/chapters/03_proof/metrics.yaml"
+      
+      quality_criteria:
+        confidence_min: 0.90
+        tier_a_citations_min: 1
+        meta_circular_required: true
+        live_metrics_required: true
+
+    - id: "ch04_what_possible"
+      kind: "chapter"
+      part: 1
+      title: "What Becomes Possible"
+      agent: "sonnet"
+      priority: "IMMEDIATE"
+      deps: []
+      
+      tier_requirements:
+        TierA:
+          - "goals/GOAL_TREE.yaml"
+        TierB: []
+        TierC: []
+      
+      word_count:
+        target: 1500
+        tolerance: 0.10
+      
+      gates: ["pre_chapter", "word_count", "technical", "integration"]
+      
+      outputs:
+        - "north_star_project/chapters/04_possible/chapter.md"
+        - "north_star_project/chapters/04_possible/evidence.jsonl"
+        - "north_star_project/chapters/04_possible/metrics.yaml"
+      
+      quality_criteria:
+        confidence_min: 0.80
+        tier_a_citations_min: 1
+        contradictions_max: 0
+
+    # PART II: THE FOUNDATION
+    - id: "ch05_memory_cmc"
+      kind: "chapter"
+      part: 2
+      title: "Memory That Never Forgets (CMC)"
+      agent: "aether"
+      priority: "CRITICAL"
+      deps: ["ch02_vision_chat_ide"]
+      
+      tier_requirements:
+        TierA:
+          - "knowledge_architecture/systems/cmc/T0_executive.md"
+          - "knowledge_architecture/systems/cmc/T1_overview.md"
+          - "knowledge_architecture/systems/cmc/T2_architecture.md"
+          - "packages/cmc_service/"
+        TierB:
+          - "knowledge_architecture/CONCEPT_PROVENANCE_CHAINS.md"
+        TierC: []
+      
+      word_count:
+        target: 3000
+        tolerance: 0.10
+      
+      gates: ["pre_chapter", "word_count", "technical", "integration"]
+      
+      outputs:
+        - "north_star_project/chapters/05_cmc/chapter.md"
+        - "north_star_project/chapters/05_cmc/evidence.jsonl"
+        - "north_star_project/chapters/05_cmc/metrics.yaml"
+        - "north_star_project/chapters/05_cmc/diagrams.json"
+      
+      quality_criteria:
+        confidence_min: 0.90
+        tier_a_citations_min: 5
+        contradictions_max: 0
+        code_examples_required: true
+        diagrams_required: true
+        meta_circular_required: true
+
+    - id: "ch06_knowledge_hhni"
+      kind: "chapter"
+      part: 2
+      title: "Knowledge That Lives (HHNI)"
+      agent: "aether"
+      priority: "CRITICAL"
+      deps: ["ch02_vision_chat_ide", "ch05_memory_cmc"]
+      
+      tier_requirements:
+        TierA:
+          - "knowledge_architecture/systems/hhni/T0_executive.md"
+          - "knowledge_architecture/systems/hhni/T1_overview.md"
+          - "knowledge_architecture/systems/hhni/T2_architecture.md"
+          - "packages/hhni/"
+        TierB: []
+        TierC: []
+      
+      word_count:
+        target: 3000
+        tolerance: 0.10
+      
+      gates: ["pre_chapter", "word_count", "technical", "integration"]
+      
+      outputs:
+        - "north_star_project/chapters/06_hhni/chapter.md"
+        - "north_star_project/chapters/06_hhni/evidence.jsonl"
+        - "north_star_project/chapters/06_hhni/metrics.yaml"
+        - "north_star_project/chapters/06_hhni/diagrams.json"
+      
+      quality_criteria:
+        confidence_min: 0.90
+        tier_a_citations_min: 5
+        contradictions_max: 0
+        math_verified_required: true
+        diagrams_required: true
+
+    # ... (remaining 34 chapters follow same structure)
+
+  # RISK SPIKES (Run Before Main Chapters)
+  spikes:
+    - id: "spike_cmc_persistence"
+      title: "CMC Persistence Validation"
+      priority: "CRITICAL"
+      duration: "4 hours"
+      agent: "aether"
+      deps: []
+      
+      objectives:
+        - "Verify bitemporal storage works"
+        - "Confirm atom schema complete"
+        - "Test snapshot creation"
+        - "Validate witness envelopes"
+      
+      outputs:
+        - "north_star_project/spikes/cmc_validation.md"
+      
+      success_criteria:
+        - "All CMC tests pass"
+        - "Bitemporal queries work"
+        - "Snapshots deterministic"
+    
+    - id: "spike_hhni_traversal"
+      title: "HHNI 6-Level Traversal"
+      priority: "CRITICAL"
+      duration: "4 hours"
+      agent: "lexicon"
+      deps: []
+      
+      objectives:
+        - "Verify 6-level hierarchy works"
+        - "Test DVNS physics optimization"
+        - "Confirm multi-resolution queries"
+        - "Validate T0-T6 routing"
+      
+      outputs:
+        - "north_star_project/spikes/hhni_traversal.md"
+      
+      success_criteria:
+        - "All levels accessible"
+        - "DVNS improves retrieval"
+        - "T0-T6 routing works"
+    
+    - id: "spike_vif_calibration"
+      title: "VIF Confidence Calibration"
+      priority: "HIGH"
+      duration: "3 hours"
+      agent: "lexicon"
+      deps: []
+      
+      objectives:
+        - "Verify Îº-gating works"
+        - "Test confidence scoring"
+        - "Validate witness creation"
+        - "Confirm abstain behavior"
+      
+      outputs:
+        - "north_star_project/spikes/vif_calibration.md"
+      
+      success_criteria:
+        - "Îº < 0.70 â†’ abstains"
+        - "Confidence accurate"
+        - "Witnesses created"
+    
+    - id: "spike_meta_circular_proof"
+      title: "Meta-Circular Proof Validation"
+      priority: "HIGH"
+      duration: "3 hours"
+      agent: "aether"
+      deps: []
+      
+      objectives:
+        - "Verify document can reference itself"
+        - "Test live metric injection"
+        - "Confirm orchestration tracking"
+        - "Validate self-description"
+      
+      outputs:
+        - "north_star_project/spikes/meta_circular.md"
+      
+      success_criteria:
+        - "Self-reference works"
+        - "Metrics updateable"
+        - "No circular deadlock"
+
+# GLOBAL QUALITY GATES (Apply to ALL Chapters)
+gates:
+  pre_chapter:
+    checks:
+      - name: "deps_complete"
+        description: "All dependency chapters completed"
+        blocking: true
+      
+      - name: "tierA_present"
+        description: "All Tier A sources available"
+        blocking: true
+      
+      - name: "vif_min"
+        description: "VIF confidence >= 0.70"
+        blocking: true
+      
+      - name: "outline_loaded"
+        description: "Chapter outline prepared"
+        blocking: true
+  
+  word_count:
+    target_field: "word_count.target"
+    tolerance_field: "word_count.tolerance"
+    blocking: true
+  
+  technical:
+    checks:
+      - name: "examples_run"
+        description: "All code examples tested"
+        blocking: true
+      
+      - name: "math_verified"
+        description: "All formulas validated"
+        blocking: false
+      
+      - name: "no_fake_features"
+        description: "No hallucinated capabilities"
+        blocking: true
+      
+      - name: "sources_cited"
+        description: "All claims have citations"
+        blocking: true
+  
+  integration:
+    checks:
+      - name: "no_contradictions"
+        description: "No conflicts with other chapters"
+        blocking: true
+      
+      - name: "terms_consistent"
+        description: "Terminology matches glossary"
+        blocking: true
+      
+      - name: "crossrefs_ok"
+        description: "All cross-references valid"
+        blocking: true
+      
+      - name: "meta_circular_present"
+        description: "Meta-circular element included"
+        blocking: false
+
+# MERGE POLICY
+merge_policy:
+  requirements:
+    - "all_deps_complete"
+    - "tierA_present"
+    - "vif_score >= 0.70"
+    - "all_4_gates_passed"
+    - "evidence_file_non_empty"
+    - "metrics_file_valid"
+  
+  auto_merge: false
+  requires_approval: true
+  approver: "aether"
+
+# DELIVERABLE SCHEMAS
+schemas:
+  chapter:
+    path: "chapters/{chapter_id}/chapter.md"
+    required_frontmatter:
+      - "id"
+      - "title"
+      - "part"
+      - "word_count"
+      - "confidence"
+      - "tier_a_sources"
+      - "created"
+      - "author"
+    
+    required_sections:
+      - "Introduction"
+      - "Core Content"
+      - "Integration Proof"
+      - "Meta-Circular Element"
+      - "Conclusion"
+  
+  evidence:
+    path: "chapters/{chapter_id}/evidence.jsonl"
+    schema:
+      claim: "string"
+      source: "string"
+      tier: "enum[A, B, C]"
+      page: "integer"
+      confidence: "float"
+      timestamp: "iso8601"
+  
+  metrics:
+    path: "chapters/{chapter_id}/metrics.yaml"
+    schema:
+      word_count:
+        actual: "integer"
+        target: "integer"
+        deviation: "float"
+      
+      confidence:
+        overall: "float"
+        per_section: "array[float]"
+      
+      gates_passed:
+        pre_chapter: "boolean"
+        word_count: "boolean"
+        technical: "boolean"
+        integration: "boolean"
+      
+      citations:
+        tier_a: "integer"
+        tier_b: "integer"
+        tier_c: "integer"
+      
+      quality_score: "float"
+      
+      meta_circular_elements: "integer"
+      
+      time_to_complete: "duration"
+
+# ORCHESTRATION HOOKS
+hooks:
+  start_chapter:
+    script: "scripts/hooks/start_chapter.py"
+    validates:
+      - "deps_complete"
+      - "tierA_available"
+      - "vif >= 0.70"
+    loads:
+      - "outline"
+      - "tier_a_sources"
+      - "related_chapters"
+  
+  finalize_section:
+    script: "scripts/hooks/finalize_section.py"
+    checks:
+      - "vif_score"
+      - "citations_present"
+    actions:
+      - "log_evidence"
+      - "update_metrics"
+    routes:
+      - condition: "vif < 0.70"
+        action: "route_to_ard"
+  
+  merge_chapter:
+    script: "scripts/hooks/merge_chapter.py"
+    validates:
+      - "all_gates_passed"
+      - "evidence_complete"
+      - "metrics_valid"
+    actions:
+      - "update_status_tracker"
+      - "post_to_message_board"
+      - "trigger_dependent_chapters"
+
+# CONTRADICTION DETECTION
+contradiction_police:
+  enabled: true
+  
+  checks:
+    - name: "glossary_drift"
+      description: "Check term definitions consistent"
+      source: "north_star_project/glossary.yaml"
+    
+    - name: "numeric_mismatch"
+      description: "Check numbers consistent across chapters"
+      pattern: "\\d+\\s*(words|chapters|systems|tools)"
+    
+    - name: "dangling_crossrefs"
+      description: "Check all references valid"
+      pattern: "Chapter \\d+|Ch \\d+"
+    
+    - name: "claim_conflict"
+      description: "Check contradictory claims"
+      method: "seg_synthesis"
+  
+  action_on_violation:
+    - "block_merge"
+    - "create_issue"
+    - "notify_author"
+
+# EXECUTION SCHEDULE
+schedule:
+  start_date: "2025-11-06"
+  end_date: "2025-12-03"
+  
+  phases:
+    - name: "Risk Spikes"
+      days: [1, 2]
+      chapters: []
+      spikes: ["spike_cmc_persistence", "spike_hhni_traversal", "spike_vif_calibration", "spike_meta_circular_proof"]
+    
+    - name: "Wave 1: Independence"
+      days: [1, 2]
+      chapters: ["ch01_great_limitation", "ch02_vision_chat_ide", "ch04_what_possible"]
+    
+    - name: "Wave 2: Early Dependencies"
+      days: [3, 4]
+      chapters: ["ch03_proof_concept", "ch05_memory_cmc", "ch06_knowledge_hhni"]
+    
+    # ... (remaining waves)
+
+# STATUS TRACKING
+status:
+  spikes_complete: 0
+  chapters_complete: 0
+  total_words: 0
+  gates_passed: 0
+  evidence_entries: 0
+  contradictions_detected: 0
+  confidence_average: 0.00
+  
+  updated_at: "2025-11-06T00:00:00Z"
+  updated_by: "system"
+

@@ -1,0 +1,31 @@
+{
+  "system_slug": "webgl",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-03",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "opengl",
+      "evidence_tier": "INFERRED",
+      "notes": "WebGL is specified as a browser embedding of OpenGL ES-class APIs (Khronos WebGL materials)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "opengl-es",
+      "evidence_tier": "INFERRED",
+      "notes": "WebGL 1.0/2.0 tracks OpenGL ES 2.0/3.0-class baselines as its normative API substrate (Khronos)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "webassembly",
+      "evidence_tier": "INFERRED",
+      "notes": "Engines often combine Wasm modules with WebGL contexts for portable graphics in browsers."
+    },
+    {
+      "type": "competes_with",
+      "target": "webgpu",
+      "evidence_tier": "INFERRED",
+      "notes": "Overlapping browser GPU API space; WebGPU is the newer explicit pipeline model (WGSL vs GLSL ES)."
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "spir-v",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "SPIR-V is used as a portable device IR in OpenCL 2.1+ specification tracks (Khronos)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "amd-rocm",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "AMD ships OpenCL implementations as part of ROCm / AMD GPU software stacks on supported platforms."
+    },
+    {
+      "type": "competes_with",
+      "target": "nvidia-cuda",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable GPU/accelerator compute APIs in many deployment classes (OpenCL vs CUDA)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "INFERRED",
+      "notes": "Typical OpenCL ICD + vendor drivers run on Linux hosts."
+    },
+    {
+      "type": "integrates_with",
+      "target": "sycl",
+      "evidence_tier": "INFERRED",
+      "notes": "SYCL is a Khronos C++ programming model that commonly lowers to OpenCL backends among other options."
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+[Unit]
+Description=AIM-OS MCP HTTP Fallback Server
+Documentation=https://github.com/aim-os
+After=network.target
+
+[Service]
+Type=simple
+# Adjust these paths as needed for your installation
+Environment=AIMOS_ROOT=/home/sev/AIM-OS-GIT
+Environment=MCP_PYTHON=/home/sev/AIM-OS-GIT/.venv/bin/python
+WorkingDirectory=/home/sev/AIM-OS-GIT
+ExecStart=/home/sev/AIM-OS-GIT/.venv/bin/python /home/sev/AIM-OS-GIT/scripts/mcp_http_fallback_server.py --port 5001 --host 127.0.0.1
+Restart=always
+RestartSec=3
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=default.target

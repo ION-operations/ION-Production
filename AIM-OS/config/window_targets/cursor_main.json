@@ -1,0 +1,39 @@
+{
+  "id": "cursor_main",
+  "display_name": "Cursor Main Window",
+  "process_hints": ["Cursor.exe"],
+  "title_regex": "Cursor",
+  "class_hints": [],
+  "preferred_adapters": ["uia", "keyboard", "visual"],
+  "regions": {
+    "chatPanel": {
+      "anchor": "bottomRight",
+      "x": -760,
+      "y": -420,
+      "w": 720,
+      "h": 360
+    }
+  },
+  "submit_policy": ["press_enter"],
+  "verification_policy": ["window_visible", "window_active"],
+  "uia": {
+    "max_depth": 18,
+    "panel_automation_id_patterns": ["workbench.panel.aichat"],
+    "panel_class_hints": ["composer-bar", "conversations"],
+    "message_automation_id_prefixes": ["bubble-"],
+    "message_class_hints": ["composer-rendered-message"],
+    "human_message_hints": [
+      "composer-human-message",
+      "human-execution-message-top",
+      "plan-execution-message-container"
+    ],
+    "assistant_message_hints": ["composer-message-blur"],
+    "input_class_hints": [
+      "composer-input",
+      "composer-input-blur-wrapper",
+      "aislash-editor-input"
+    ],
+    "ignore_offscreen": true,
+    "min_visible_ratio": 0.05
+  }
+}

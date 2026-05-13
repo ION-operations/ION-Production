@@ -1,0 +1,203 @@
+# =====================================================
+# AIM-OS .gitignore — Clean version 2026-03-10
+# Maintained by Opus (COO)
+# =====================================================
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv
+
+# Environment variables (API keys)
+.env
+.env.*
+!.env.example
+*.key
+secrets/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.cursor/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Sensitive data — NEVER track
+gmail.txt
+*.pem
+
+# Temp/generated files
+dummy
+tmp_*.txt
+tmp_*.json
+
+# Large legacy/experimental docs
+Documentation_Consolidated/
+legacy_docs/
+analysis/
+Documentation_Consolidated/**/appexamples/
+
+# Very deep historical IDE builds
+knowledge_architecture/applications/ide_chat_app/analysis/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Logs
+*.log
+*.log.*
+logs/
+
+# Local claim-evidence lock scratch outputs
+audit/ci_claim_lock*/
+
+# CMC service data
+packages/cmc_service/data/
+
+# Test cache
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+reports/coverage/
+
+# Large HHNI index files
+**/HHNI_IDEA_INDEX.json
+**/HHNI_*.json
+
+# Database files
+*.db
+*.db-shm
+*.db-wal
+*.db.index
+
+# =====================================================
+# LARGE BINARY FILES — NEVER TRACK IN GIT
+# =====================================================
+
+# Archives & packages
+*.zip
+*.tar.gz
+*.rar
+*.7z
+*.faiss
+*.pkl
+*.vsix
+
+# Documents (keep as local-only)
+*.docx
+*.pptx
+*.pdf
+*.epub
+
+# Media files
+*.mp4
+*.mp3
+*.wav
+*.avi
+*.mov
+*.mkv
+*.flac
+
+# Model weights and ML artifacts
+*.onnx
+*.safetensors
+*.bin
+*.h5
+*.gguf
+*.pt
+*.pth
+
+# =====================================================
+# Node.js
+# =====================================================
+node_modules/
+**/node_modules/
+
+# Backup files
+*.backup
+*.corrupt
+*_backup
+*_corrupt
+
+# --- Exceptions: keep specific examples versioned ---
+!Documentation/appexamples/
+!Documentation/appexamples/gptwaves/
+!Documentation/appexamples/gptwaves/**
+
+# GPTwaves build artifacts
+Documentation/appexamples/gptwaves/dist/
+Documentation/appexamples/gptwaves/node_modules/
+Documentation/appexamples/gptwaves/_recovery/
+Documentation/appexamples/gptwaves/.vite/
+
+# Exclude >100MB reference PDF
+apps/ProEarth/external-repos/ProEarth_Updated (6)/docs/subsystems/ocean/physics/Chen20a.pdf
+
+# Apps: exclude large drafts and world editors
+apps/ProEarth/
+apps/planet-engine/
+apps/lucidimage/
+apps/OPUStree/
+apps/Procedural_trees_rocks/
+apps/Documentation/
+apps/earthdocs/
+apps/MASTER_ORCHESTRATION/
+apps/OPUS_ONBOARDING_PACK/
+apps/TBD/
+
+# =====================================================
+# Local operational/runtime artifacts
+# =====================================================
+backups/
+cursor-addon/out/
+mcp_ai_messages.json
+mcp_timeline_entries.json
+codex_workspace/persistence/collaboration/*.json
+mcp_memory/index/tags/*.json
+packages/browser-automation-service/browser-automation-accounts.json
+packages/browser-automation-service/browser-automation-vault.json
+packages/browser-automation-service/browser-automation-scripts/
+SHARED_MESSAGE_BOARD_ANTIGRAVITY.md
+
+# Tauri/Rust build artifacts (100MB+ debug symbols)
+IDE/src-tauri/target/
+**/target/debug/
+**/target/release/
+*.pdb
+*.rlib
+*.lib
+
+# Vault (machine-local encrypted credentials)
+.aimos_vault/

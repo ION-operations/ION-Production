@@ -1,0 +1,113 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "depends_on",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "RHEL ships supported Linux kernel streams for enterprise architectures as part of the distribution."
+    },
+    {
+      "type": "integrates_with",
+      "target": "glibc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "RHEL on standard ports uses glibc as the C library alongside the dynamic linker."
+    },
+    {
+      "type": "integrates_with",
+      "target": "systemd",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "systemd is the default init and service manager on supported RHEL major releases per Red Hat documentation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "systemd-unit-model",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "RHEL services are expressed as systemd unit files and drop-ins on default systemd installs."
+    },
+    {
+      "type": "integrates_with",
+      "target": "elf",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "RHEL userland binaries and shared libraries are ELF on typical Linux targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-gcc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GCC toolchain packages participate in RHEL developer toolsets and RPM build flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-binutils",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GNU binutils participate in standard RHEL RPM build and link flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-libstdcxx",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "g++-built packages link GNU libstdc++ above glibc on typical RHEL GNU/Linux flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "clang",
+      "evidence_tier": "INFERRED",
+      "notes": "LLVM/Clang toolchains may be installed from RHEL or related repositories where offered."
+    },
+    {
+      "type": "integrates_with",
+      "target": "docker",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Official and certified RHEL-base OCI images and Podman/Docker-style workflows are common in field patterns; Docker pulls RHEL-class bases where published."
+    },
+    {
+      "type": "integrates_with",
+      "target": "containerd",
+      "evidence_tier": "INFERRED",
+      "notes": "CRI/containerd nodes run RHEL-derived workload images pulled as OCI artifacts in Kubernetes-class deployments."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "RHEL is a common node OS for on-prem and vendor Kubernetes platforms including OpenShift-class footprints."
+    },
+    {
+      "type": "integrates_with",
+      "target": "oci-image-spec",
+      "evidence_tier": "INFERRED",
+      "notes": "RHEL userlands are packaged as OCI image rootfs layers where vendors publish UBI or RHEL bases."
+    },
+    {
+      "type": "integrates_with",
+      "target": "red-hat-openshift",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Red Hat documents OpenShift Container Platform as running on RHEL-class nodes in typical product deployments."
+    },
+    {
+      "type": "competes_with",
+      "target": "alpine-linux",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Linux distribution defaults for containers and servers (glibc/systemd enterprise vs musl/OpenRC field patterns)."
+    },
+    {
+      "type": "influences",
+      "target": "rocky-linux",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Rocky Linux rebuilds and tracks RHEL-compatible major/minor streams with independent community governance."
+    },
+    {
+      "type": "influences",
+      "target": "almalinux",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "AlmaLinux rebuilds and tracks RHEL-compatible major/minor streams with independent foundation governance."
+    },
+    {
+      "type": "influences",
+      "target": "centos-linux",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Historical CentOS Linux releases aligned RHEL-compatible major/minor streams prior to the CentOS Stream pivot and documented EOL timelines."
+    }
+  ]
+}

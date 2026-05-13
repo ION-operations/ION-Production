@@ -1,0 +1,664 @@
+% Chapter 8 converted from Markdown
+% Auto-generated - do not edit manually
+
+
+
+
+\section*{Section 8.1: PLIx IR Design}
+
+PLIx IR (Intermediate Representation) preserves contract semantics and execution metadata, enabling compilation to multiple execution targets while maintaining intent fidelity.
+
+\textbf{IR Purpose}
+
+IR serves as an intermediate representation between PLIx contracts and execution targets:
+
+\begin{itemize}
+\item \textbf{Semantic Preservation:} Preserves contract intent and semantics
+\item \textbf{Execution Metadata:} Includes execution metadata (dependencies, retry, compensation)
+\item \textbf{Target Independence:} Enables compilation to multiple targets (Temporal, APOE, Step Functions)
+\item \textbf{Optimization:} Enables optimization before target compilation
+\end{itemize}
+
+IR bridges the gap between intent expression (PLIx contracts) and execution mechanisms (target systems), enabling intent-preserving compilation.
+
+\textbf{IR Structure}
+
+IR consists of two main structures:
+
+\begin{lstlisting}[caption=Code Example]
+interface IRNode {
+  id: string;                    // Task identifier
+  action: string;                // Action to execute (e.g., "api.reserve_room")
+  params: Record<string, any>;  // Execution parameters
+  deps: string[];                // Dependency task IDs
+  retry?: {                      // Retry configuration
+    max: number;
+    backoff: "none" | "linear" | "exponential";
+    ms: number;
+  };
+  compensate?: string;           // Compensation task ID (Saga pattern)
+}
+
+interface IRPlan {
+  intent: string;                // Contract intent
+  nodes: IRNode[];               // Execution nodes
+  constraints: string[];         // Contract constraints
+  evidenceRequired: string[];    // Required evidence
+  evidenceProduce: string[];     // Produced evidence
+}
+\end{lstlisting}
+
+This structure preserves both contract semantics (intent, constraints, evidence) and execution metadata (dependencies, retry, compensation).
+
+\textbf{IR Design Principles}
+
+IR design follows principles:
+
+\begin{enumerate}
+\item \textbf{Semantic Preservation:} IR preserves contract semantics exactly
+\item \textbf{Execution Metadata:} IR includes all execution metadata needed for compilation
+\item \textbf{Target Independence:} IR is independent of specific execution targets
+\item \textbf{Optimization Support:} IR enables optimization before target compilation
+\end{enumerate}
+
+These principles ensure that IR maintains intent fidelity while enabling flexible compilation.
+
+\textbf{IR Example}
+
+Example IR for room booking contract:
+
+\begin{lstlisting}[caption=Code Example]
+const irPlan: IRPlan = {
+  intent: "Book a meeting room",
+  nodes: [
+    {
+      id: "check_availability",
+      action: "api.check_room_availability",
+      params: {
+        date: "2025-12-01",
+        duration: 2
+      },
+      deps: [],
+      retry: {
+        max: 3,
+        backoff: "exponential",
+        ms: 1000
+      }
+    },
+    {
+      id: "reserve_room",
+      action: "api.reserve_room",
+      params: {
+        room_id: "\texttt{\$\{check_availability.room_id\}\}",
+        duration: 2
+      },
+      deps: ["check_availability"],
+      compensate: "cancel_reservation"
+    },
+    {
+      id: "cancel_reservation",
+      action: "api.cancel_reservation",
+      params: {
+        reservation_id: "\texttt{\$\{reserve_room.res_id\}\}"
+      },
+      deps: []
+    }
+  ],
+  constraints: [
+    "duration <= 4h",
+    "calendar_conflicts == none"
+  ],
+  evidenceRequired: ["calendar.open_slots"],
+  evidenceProduce: ["reservation.record"]
+};
+\end{lstlisting}
+
+This IR preserves the contract's intent, execution steps, dependencies, retry logic, and compensation, enabling compilation to any execution target.
+
+\textbf{IR Benefits}
+
+IR design provides:
+
+\begin{itemize}
+\item \textbf{Semantic Preservation:} Maintains contract semantics through compilation
+\item \textbf{Execution Metadata:} Includes all metadata needed for execution
+\item \textbf{Target Flexibility:} Enables compilation to multiple targets
+\item \textbf{Optimization Support:} Enables optimization before compilation
+\end{itemize}
+
+These benefits enable intent-preserving compilation, ensuring that execution achieves the intended goals.
+
+\section*{Section 8.2: Lowering Process}
+
+Lowering transforms PLIx contracts into IR, resolving dependencies, interpolating parameters, and ordering tasks topologically.
+
+\textbf{Lowering Overview}
+
+Lowering process:
+
+\begin{lstlisting}[caption=Code Example]
+PLIx Contract
+  \textdownarrow{}
+Dependency Resolution
+  \textdownarrow{}
+Parameter Interpolation
+  \textdownarrow{}
+Topological Ordering
+  \textdownarrow{}
+IR Plan
+\end{lstlisting}
+
+This process transforms contracts into executable IR while preserving semantics.
+
+\textbf{Dependency Resolution}
+
+Dependency resolution builds dependency graph:
+
+\begin{lstlisting}[caption=Code Example]
+function resolveDependencies(contract: PLIxContract): Map<string, string[]> {
+  const deps = new Map<string, string[]>();
+  
+  for (const task of contract.tasks) {
+    const taskDeps: string[] = [];
+    
+    // Resolve explicit dependencies
+    if (task.depends_on) {
+      taskDeps.push(...task.depends_on);
+    }
+    
+    // Resolve implicit dependencies from parameter references
+    for (const [key, value] of Object.entries(task.params || {})) {
+      if (typeof value === 'string' && value.startsWith('\texttt{\$\{')) {
+        const ref = value.match(/\$\{([^\}\}]+)\}/)?.[1];
+        if (ref) {
+          const [sourceTask] = ref.split('.');
+          if (!taskDeps.includes(sourceTask)) {
+            taskDeps.push(sourceTask);
+          }
+        }
+      }
+    }
+    
+    deps.set(task.id, taskDeps);
+  }
+  
+  return deps;
+}
+\end{lstlisting}
+
+Dependency resolution identifies both explicit dependencies (\texttt{depends\_on}) and implicit dependencies (parameter references), building a complete dependency graph.
+
+\textbf{Parameter Interpolation}
+
+Parameter interpolation resolves parameter references:
+
+\begin{lstlisting}[caption=Code Example]
+function interpolateParams(
+  task: Task,
+  results: Record<string, any>
+): Record<string, any> {
+  const interpolated: Record<string, any> = {};
+  
+  for (const [key, value] of Object.entries(task.params || {})) {
+    if (typeof value === 'string' && value.includes('\texttt{\$\{')) {
+      // Resolve parameter reference: \texttt{\$\{task.field\\}\}\}
+      const interpolatedValue = value.replace(/\$\{([^}]+)\}/g, (match, ref) => {
+        const [taskId, field] = ref.split('.');
+        return results[taskId]?.[field] ?? match;
+      });
+      interpolated[key] = interpolatedValue;
+    } else {
+      interpolated[key] = value;
+    }
+  }
+  
+  return interpolated;
+}
+\end{lstlisting}
+
+Parameter interpolation resolves \texttt{$\{task.field\}} references to actual values from previous task results, enabling dynamic parameter passing.
+
+\textbf{Topological Ordering}
+
+Topological ordering ensures tasks execute in dependency order:
+
+\begin{lstlisting}[caption=Code Example]
+function topologicalOrder(nodes: IRNode[]): IRNode[] {
+  const ordered: IRNode[] = [];
+  const visited = new Set<string>();
+  const visiting = new Set<string>();
+  
+  function visit(node: IRNode) {
+    if (visiting.has(node.id)) {
+      throw new Error(`Circular dependency detected: \texttt{\$\{node.id\}\}`);
+    }
+    
+    if (visited.has(node.id)) {
+      return;
+    }
+    
+    visiting.add(node.id);
+    
+    // Visit dependencies first
+    for (const depId of node.deps) {
+      const dep = nodes.find(n => n.id === depId);
+      if (dep) {
+        visit(dep);
+      }
+    }
+    
+    visiting.delete(node.id);
+    visited.add(node.id);
+    ordered.push(node);
+  }
+  
+  for (const node of nodes) {
+    if (!visited.has(node.id)) {
+      visit(node);
+    }
+  }
+  
+  return ordered;
+}
+\end{lstlisting}
+
+Topological ordering ensures that dependencies execute before dependents, enabling correct execution order while detecting circular dependencies.
+
+\textbf{Lowering Implementation}
+
+Complete lowering implementation:
+
+\begin{lstlisting}[caption=Code Example]
+function lowerToIR(contract: PLIxContract): IRPlan {
+  // Build IR nodes
+  const nodes: IRNode[] = contract.tasks.map(task => ({
+    id: task.id,
+    action: task.action,
+    params: task.params || {},
+    deps: task.depends_on || [],
+    retry: task.retry ? {
+      max: task.retry.max_attempts || 0,
+      backoff: task.retry.backoff || "none",
+      ms: task.retry.backoff_ms || 0
+    } : undefined,
+    compensate: task.compensate
+  }));
+  
+  // Resolve dependencies
+  const deps = resolveDependencies(contract);
+  for (const node of nodes) {
+    node.deps = deps.get(node.id) || [];
+  }
+  
+  // Topological ordering
+  const ordered = topologicalOrder(nodes);
+  
+  return {
+    intent: contract.intent,
+    nodes: ordered,
+    constraints: contract.constraints || [],
+    evidenceRequired: contract.evidence?.required || [],
+    evidenceProduce: contract.evidence?.produce || []
+  };
+}
+\end{lstlisting}
+
+This implementation performs complete lowering: building IR nodes, resolving dependencies, and ordering topologically.
+
+\textbf{Lowering Benefits}
+
+Lowering process provides:
+
+\begin{itemize}
+\item \textbf{Dependency Resolution:} Identifies all dependencies (explicit and implicit)
+\item \textbf{Parameter Interpolation:} Resolves parameter references dynamically
+\item \textbf{Topological Ordering:} Ensures correct execution order
+\item \textbf{Circular Detection:} Detects circular dependencies
+\end{itemize}
+
+These benefits enable correct IR generation, ensuring that execution follows dependency order and resolves parameters correctly.
+
+\section*{Section 8.3: Target Compilation}
+
+Target compilation transforms IR into execution target formats (Temporal, Step Functions, Argo), enabling execution on various platforms.
+
+\textbf{Target Overview}
+
+PLIx supports multiple execution targets:
+
+\begin{itemize}
+\item \textbf{Temporal:} Durable workflow execution with saga patterns
+\item \textbf{AWS Step Functions:} Serverless workflow orchestration
+\item \textbf{Argo Workflows:} Kubernetes-native workflow execution
+\item \textbf{APOE:} AIM-OS native orchestration engine
+\end{itemize}
+
+Each target provides different execution capabilities, enabling flexible deployment.
+
+\textbf{Temporal Compilation}
+
+Temporal compilation generates Temporal workflows:
+
+\begin{lstlisting}[caption=Code Example]
+function compileToTemporal(ir: IRPlan): TemporalWorkflow {
+  return function* workflow() {
+    const results: Record<string, any> = {};
+    
+    for (const node of ir.nodes) {
+      // Resolve parameters
+      const params = interpolateParams(node, results);
+      
+      // Execute activity with retry
+      const result = yield wf.executeActivity(
+        node.action,
+        { args: params },
+        {
+          retry: {
+            maximumAttempts: node.retry?.max || 1,
+            backoffCoefficient: node.retry?.backoff === "exponential" ? 2 : 1,
+            initialInterval: node.retry?.ms || 1000
+          }
+        }
+      );
+      
+      results[node.id] = result;
+      
+      // Handle compensation on failure
+      if (node.compensate) {
+        try {
+          // Continue execution
+        } catch (error) {
+          // Trigger compensation
+          const compensateNode = ir.nodes.find(n => n.id === node.compensate);
+          if (compensateNode) {
+            yield wf.executeActivity(compensateNode.action, {
+              args: interpolateParams(compensateNode, results)
+            });
+          }
+          throw error;
+        }
+      }
+    }
+    
+    return results;
+  };
+}
+\end{lstlisting}
+
+Temporal compilation generates workflows with durable execution, retry logic, and saga compensation, enabling reliable intent achievement.
+
+\textbf{Step Functions Compilation}
+
+Step Functions compilation generates Step Functions definitions:
+
+\begin{lstlisting}[caption=Code Example]
+function compileToStepFunctions(ir: IRPlan): StepFunctionsDefinition {
+  const states: Record<string, any> = {};
+  
+  for (const node of ir.nodes) {
+    states[node.id] = {
+      Type: "Task",
+      Resource: `arn:aws:states:::lambda:invoke`,
+      Parameters: {
+        FunctionName: node.action,
+        Payload: {
+          ...node.params
+        }
+      },
+      Retry: node.retry ? [{
+        ErrorEquals: ["States.ALL"],
+        MaxAttempts: node.retry.max,
+        BackoffRate: node.retry.backoff === "exponential" ? 2 : 1,
+        IntervalSeconds: node.retry.ms / 1000
+      }] : undefined,
+      Catch: node.compensate ? [{
+        ErrorEquals: ["States.ALL"],
+        Next: node.compensate,
+        ResultPath: "$.error"
+      }] : undefined,
+      Next: getNextNode(node, ir.nodes)
+    };
+  }
+  
+  return {
+    Comment: ir.intent,
+    StartAt: ir.nodes[0].id,
+    States: states
+  };
+}
+\end{lstlisting}
+
+Step Functions compilation generates serverless workflows with retry and error handling, enabling scalable intent achievement.
+
+\textbf{Argo Compilation}
+
+Argo compilation generates Argo Workflow definitions:
+
+\begin{lstlisting}[caption=Code Example]
+# Generated Argo Workflow
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: book-meeting-room-
+spec:
+  entrypoint: book-meeting-room
+  templates:
+  - name: book-meeting-room
+    steps:
+    - - name: check-availability
+        template: check-availability
+    - - name: reserve-room
+        template: reserve-room
+        arguments:
+          parameters:
+          - name: room-id
+            value: "{{steps.check-availability.outputs.result.room_id}}"
+  
+  - name: check-availability
+    container:
+      image: api-executor:latest
+      command: [api.check_room_availability]
+      args: ["--date", "2025-12-01", "--duration", "2h"]
+  
+  - name: reserve-room
+    container:
+      image: api-executor:latest
+      command: [api.reserve_room]
+      args: ["--room-id", "{{inputs.parameters.room-id}}"]
+\end{lstlisting}
+
+Argo compilation generates Kubernetes-native workflows, enabling containerized intent achievement.
+
+\textbf{Target Compilation Benefits}
+
+Target compilation provides:
+
+\begin{itemize}
+\item \textbf{Target Flexibility:} Enables compilation to multiple execution targets
+\item \textbf{Platform Optimization:} Optimizes for each target's capabilities
+\item \textbf{Deployment Flexibility:} Enables deployment on various platforms
+\item \textbf{Intent Preservation:} Maintains intent semantics across targets
+\end{itemize}
+
+These benefits enable flexible deployment while preserving intent fidelity.
+
+\section*{Section 8.4: APOE Integration}
+
+APOE integration compiles PLIx IR into APOE ExecutionPlans, enabling intent-aware orchestration within AIM-OS.
+
+\textbf{APOE Overview}
+
+APOE (Atomic Provenance Orchestration Engine) provides:
+
+\begin{itemize}
+\item \textbf{Plan Execution:} Executes ExecutionPlans with role-based orchestration
+\item \textbf{Budget Management:} Manages execution budgets and gates
+\item \textbf{Provenance Tracking:} Tracks execution provenance
+\item \textbf{Multi-Agent Coordination:} Coordinates multiple agents
+\end{itemize}
+
+APOE integration enables PLIx contracts to execute within AIM-OS, leveraging existing orchestration capabilities.
+
+\textbf{IR \textrightarrow{} APOE Compilation}
+
+IR to APOE compilation:
+
+\begin{lstlisting}[caption=Code Example]
+function compileToAPOE(ir: IRPlan): ExecutionPlan {
+  const steps: ExecutionStep[] = ir.nodes.map(node => ({
+    id: node.id,
+    role: extractRole(node.action),  // Extract role from action (e.g., "api" \textrightarrow{} "api_executor")
+    description: `\texttt{\$\{node.action\}\}: \texttt{\$\{ir.intent\}\}`,  // Human-readable description
+    inputs: node.params,
+    outputs: {},
+    dependencies: node.deps.map(depId => ({
+      step_id: depId,
+      output_field: "result"
+    }))
+  }));
+  
+  const roles: Record<string, RoleDefinition> = {};
+  for (const step of steps) {
+    if (!roles[step.role]) {
+      roles[step.role] = {
+        description: `Execute \texttt{\$\{step.role\}\} actions`,
+        capabilities: [step.role]
+      };
+    }
+  }
+  
+  return {
+    steps,
+    roles,
+    budget: {
+      max_cost: 1000,
+      max_time: 300000  // 5 minutes
+    },
+    gates: [
+      {
+        type: "confidence",
+        threshold: 0.70,
+        check: async (step) => {
+          const confidence = await vif.get_confidence(step.role, step.inputs);
+          return confidence >= 0.70;
+        }
+      }
+    ]
+  };
+}
+
+function extractRole(action: string): string {
+  // Extract role from action: "api.reserve_room" \textrightarrow{} "api"
+  return action.split('.')[0];
+}
+\end{lstlisting}
+
+This compilation transforms IR into APOE ExecutionPlans, mapping IR nodes to APOE steps, dependencies to APOE dependencies, and adding APOE-specific metadata (budgets, gates).
+
+\textbf{Role Mapping}
+
+Role mapping assigns IR actions to APOE roles:
+
+\begin{lstlisting}[caption=Code Example]
+const roleMapping: Record<string, string> = {
+  "api": "api_executor",
+  "db": "database_executor",
+  "ai": "ai_agent",
+  "router": "router_agent"
+};
+
+function mapRole(action: string): string {
+  const [namespace] = action.split('.');
+  return roleMapping[namespace] || "default_executor";
+}
+\end{lstlisting}
+
+Role mapping enables APOE to route tasks to appropriate executors, leveraging APOE's role-based orchestration.
+
+\textbf{Budget and Gate Mapping}
+
+Budget and gate mapping:
+
+\begin{lstlisting}[caption=Code Example]
+function mapBudgetsAndGates(ir: IRPlan): {
+  budget: Budget;
+  gates: Gate[];
+} {
+  return {
+    budget: {
+      max_cost: calculateCost(ir.nodes),
+      max_time: calculateTime(ir.nodes),
+      max_tokens: calculateTokens(ir.nodes)
+    },
+    gates: [
+      {
+        type: "confidence",
+        threshold: PLIX_DEFAULTS.confidence.global_minimum,
+        check: async (step) => {
+          const confidence = await vif.get_confidence(step.role, step.inputs);
+          return confidence >= PLIX_DEFAULTS.confidence.global_minimum;
+        }
+      },
+      {
+        type: "policy",
+        check: async (step) => {
+          const policy = compileConstraintsToPolicy(ir.constraints);
+          return await evaluatePolicy(policy, step.inputs);
+        }
+      }
+    ]
+  };
+}
+\end{lstlisting}
+
+Budget and gate mapping enables APOE to enforce PLIx constraints (confidence thresholds, policy rules) during execution.
+
+\textbf{APOE Execution}
+
+APOE execution with PLIx contracts:
+
+\begin{lstlisting}[caption=Code Example]
+async function executePLIxContract(contract: PLIxContract) {
+  // Compile to IR
+  const ir = lowerToIR(contract);
+  
+  // Compile to APOE
+  const apoePlan = compileToAPOE(ir);
+  
+  // Execute via APOE
+  const executor = new PlanExecutor();
+  const result = await executor.execute(apoePlan);
+  
+  // Verify intent achievement
+  const verification = await verifyIntent(contract, result);
+  
+  return {
+    result,
+    verification
+  };
+}
+\end{lstlisting}
+
+APOE execution enables PLIx contracts to execute within AIM-OS, leveraging APOE's orchestration capabilities while maintaining intent fidelity.
+
+\textbf{APOE Integration Benefits}
+
+APOE integration provides:
+
+\begin{itemize}
+\item \textbf{Native Integration:} Leverages existing AIM-OS orchestration
+\item \textbf{Intent Awareness:} Enables intent-aware execution
+\item \textbf{Provenance Tracking:} Tracks execution provenance
+\item \textbf{Multi-Agent Coordination:} Coordinates multiple agents
+\end{itemize}
+
+These benefits enable seamless PLIx execution within AIM-OS, leveraging existing infrastructure while adding intent-awareness.
+
+\section*{Chapter 8 Summary}
+
+Compiler architecture transforms PLIx contracts into executable plans through IR design, lowering process, target compilation, and APOE integration. IR preserves contract semantics and execution metadata, lowering resolves dependencies and orders tasks topologically, target compilation generates execution code for various platforms, and APOE integration enables native AIM-OS execution. This architecture enables intent-preserving compilation, ensuring that execution achieves intended goals while maintaining flexibility across execution targets.
+
+\textbf{Next:} Part II Architecture complete. Part III explores AIM-OS integration—CMC, VIF, APOE, and SEG transformations.
+
+\textbf{Word Count:} \textasciitilde{}2,300 words  
+

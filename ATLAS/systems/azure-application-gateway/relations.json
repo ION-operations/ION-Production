@@ -1,0 +1,31 @@
+{
+  "system_slug": "azure-application-gateway",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-09",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "azure-aks",
+      "evidence_tier": "INFERRED",
+      "notes": "Application Gateway Ingress Controller patterns on AKS."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "Kubernetes ingress integration via AGIC where deployed."
+    },
+    {
+      "type": "competes_with",
+      "target": "aws-elastic-load-balancing",
+      "evidence_tier": "INFERRED",
+      "notes": "Cross-cloud managed L7 load balancing class."
+    },
+    {
+      "type": "competes_with",
+      "target": "haproxy",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable edge tier vs self-managed HAProxy."
+    }
+  ]
+}

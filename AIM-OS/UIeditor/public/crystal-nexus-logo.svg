@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  OmniBuilder Logo — "Crystal Nexus"
+  An isometric crystal cube with inner colorfield refraction,
+  outer thin wireframe shell, and water reflection pool.
+  Masterpiece SVG — pure geometry, zero raster.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1000" width="800" height="1000">
+  <defs>
+    <!-- Background gradient — deep space navy -->
+    <radialGradient id="bgGrad" cx="50%" cy="45%" r="70%" fx="50%" fy="30%">
+      <stop offset="0%" stop-color="#0a1236"/>
+      <stop offset="60%" stop-color="#04091a"/>
+      <stop offset="100%" stop-color="#020308"/>
+    </radialGradient>
+
+    <!-- Inner cube face gradients — hidden colorfield refracting through crystal -->
+    <!-- Left-top face: hot orange → crimson -->
+    <linearGradient id="faceLeftTop" x1="400" y1="450" x2="250" y2="340" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#fc6020"/>
+      <stop offset="100%" stop-color="#c9220c"/>
+    </linearGradient>
+
+    <!-- Left-bottom face: gold → emerald → ocean blue -->
+    <radialGradient id="faceLeftBot" cx="340" cy="470" r="170" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ffb726"/>
+      <stop offset="40%" stop-color="#2ad67b"/>
+      <stop offset="100%" stop-color="#1259b3"/>
+    </radialGradient>
+
+    <!-- Top-left face: electric blue -->
+    <linearGradient id="faceTopL" x1="400" y1="310" x2="278" y2="450" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1a6ceb"/>
+      <stop offset="100%" stop-color="#0e43b5"/>
+    </linearGradient>
+
+    <!-- Top-right face: deep cobalt -->
+    <linearGradient id="faceTopR" x1="400" y1="310" x2="521" y2="380" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1050cc"/>
+      <stop offset="100%" stop-color="#0838ab"/>
+    </linearGradient>
+
+    <!-- Right-top face: royal blue -->
+    <linearGradient id="faceRightTop" x1="521" y1="380" x2="521" y2="450" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1254de"/>
+      <stop offset="100%" stop-color="#0d3fba"/>
+    </linearGradient>
+
+    <!-- Right-bottom face: deep blue → midnight -->
+    <linearGradient id="faceRightBot" x1="400" y1="450" x2="550" y2="560" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1256e6"/>
+      <stop offset="100%" stop-color="#061c7d"/>
+    </linearGradient>
+
+    <!-- Wireframe glow filter -->
+    <filter id="wireGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="2.5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Stronger glow for inner edges -->
+    <filter id="innerGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="1.5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+
+    <!-- Reflection fade mask -->
+    <linearGradient id="reflFade" x1="0" y1="590" x2="0" y2="950" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="white" stop-opacity="0.75"/>
+      <stop offset="40%" stop-color="white" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="black" stop-opacity="1"/>
+    </linearGradient>
+    <mask id="reflMask" maskUnits="userSpaceOnUse" x="0" y="590" width="800" height="410">
+      <rect x="0" y="590" width="800" height="410" fill="url(#reflFade)"/>
+    </mask>
+
+    <!-- Water surface shimmer -->
+    <linearGradient id="waterShimmer" x1="0" y1="590" x2="800" y2="590" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#0a1640" stop-opacity="0"/>
+      <stop offset="30%" stop-color="#1a3a6a" stop-opacity="0.08"/>
+      <stop offset="50%" stop-color="#2a5090" stop-opacity="0.12"/>
+      <stop offset="70%" stop-color="#1a3a6a" stop-opacity="0.08"/>
+      <stop offset="100%" stop-color="#0a1640" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Pool hole gradient -->
+    <radialGradient id="poolHole" cx="400" cy="590" r="100" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#000000" stop-opacity="0.8"/>
+      <stop offset="100%" stop-color="#030612" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- ═══ Reusable scene group ═══ -->
+    <g id="cubeScene">
+      <!-- Inner cube faces — the colorfield -->
+      <!-- Top-left triangle -->
+      <polygon points="400,450 278.76,380 400,310" fill="url(#faceTopL)"/>
+      <!-- Top-right triangle -->
+      <polygon points="400,450 400,310 521.24,380" fill="url(#faceTopR)"/>
+      <!-- Right-top quad -->
+      <polygon points="400,450 521.24,380 521.24,450" fill="url(#faceRightTop)"/>
+      <!-- Right-bottom quad -->
+      <polygon points="400,450 521.24,450 521.24,520 400,590" fill="url(#faceRightBot)"/>
+      <!-- Left-top triangle -->
+      <polygon points="400,450 278.76,450 278.76,380" fill="url(#faceLeftTop)"/>
+      <!-- Left-bottom quad — the rainbow face -->
+      <polygon points="400,450 400,590 278.76,520 278.76,450" fill="url(#faceLeftBot)"/>
+
+      <!-- Inner cube wireframe edges — crystal structure -->
+      <g stroke="#6df2ff" stroke-width="1.8" fill="none" filter="url(#innerGlow)"
+         stroke-linecap="round" stroke-linejoin="round">
+        <!-- Outer hexagon -->
+        <polygon points="400,310 521.24,380 521.24,520 400,590 278.76,520 278.76,380"/>
+        <!-- Inner lines to center -->
+        <path d="M400,450 L400,310"/>
+        <path d="M400,450 L278.76,380"/>
+        <path d="M400,450 L278.76,450"/>
+        <path d="M400,450 L400,590"/>
+        <path d="M400,450 L521.24,450"/>
+        <path d="M400,450 L521.24,380"/>
+      </g>
+
+      <!-- Outer crystal shell — thin, larger, ethereal -->
+      <g stroke="#2ce2ff" stroke-width="1.0" fill="none" opacity="0.55" filter="url(#wireGlow)">
+        <!-- Outer shell top -->
+        <path d="M218.14,345 L400,240 L581.86,345"/>
+        <!-- Vertical connector from top to inner -->
+        <path d="M400,240 L400,310"/>
+        <!-- Left vertical pillar -->
+        <path d="M218.14,345 L218.14,555"/>
+        <!-- Right vertical pillar -->
+        <path d="M581.86,345 L581.86,555"/>
+        <!-- Bottom connectors -->
+        <path d="M218.14,555 L278.76,590"/>
+        <path d="M581.86,555 L521.24,590"/>
+      </g>
+
+      <!-- Connecting struts — shell to inner cube -->
+      <g stroke="#3de8ff" stroke-width="1.2" fill="none" opacity="0.7" filter="url(#wireGlow)">
+        <path d="M218.14,345 L278.76,380"/>
+        <path d="M581.86,345 L521.24,380"/>
+        <path d="M218.14,555 L278.76,520"/>
+        <path d="M581.86,555 L521.24,520"/>
+      </g>
+    </g>
+  </defs>
+
+  <!-- ═══ BACKGROUND ═══ -->
+  <rect width="800" height="1000" fill="url(#bgGrad)"/>
+
+  <!-- Star field -->
+  <g fill="#ffffff">
+    <circle cx="120" cy="160" r="0.8" opacity="0.5"/>
+    <circle cx="680" cy="100" r="1.2" opacity="0.3"/>
+    <circle cx="650" cy="200" r="0.9" opacity="0.7"/>
+    <circle cx="720" cy="430" r="1.0" opacity="0.4"/>
+    <circle cx="80" cy="380" r="1.5" opacity="0.2"/>
+    <circle cx="560" cy="110" r="1.1" opacity="0.6"/>
+    <circle cx="350" cy="60" r="0.6" opacity="0.8"/>
+    <circle cx="190" cy="290" r="0.7" opacity="0.4"/>
+    <circle cx="620" cy="480" r="1.3" opacity="0.3"/>
+    <circle cx="140" cy="520" r="0.8" opacity="0.5"/>
+    <circle cx="450" cy="120" r="0.5" opacity="0.6"/>
+    <circle cx="280" cy="200" r="0.4" opacity="0.7"/>
+    <circle cx="700" cy="320" r="0.6" opacity="0.35"/>
+    <circle cx="50" cy="245" r="0.9" opacity="0.25"/>
+  </g>
+
+  <!-- ═══ MAIN CUBE SCENE ═══ -->
+  <use href="#cubeScene"/>
+
+  <!-- ═══ WATER SURFACE — the pool ═══ -->
+  <!-- Water line shimmer -->
+  <line x1="100" y1="590" x2="700" y2="590" stroke="#2ce2ff" stroke-width="0.5" opacity="0.2"/>
+  <rect x="100" y="590" width="600" height="2" fill="url(#waterShimmer)"/>
+
+  <!-- Pool hole — dark square void under the cube -->
+  <rect x="280" y="588" width="240" height="6" fill="#020308" opacity="0.9"/>
+
+  <!-- ═══ REFLECTION — mirrored scene fading into pool ═══ -->
+  <g mask="url(#reflMask)">
+    <use href="#cubeScene" transform="matrix(1, 0, 0, -1, 0, 1180)"/>
+  </g>
+
+  <!-- Pool darkening overlay -->
+  <rect x="0" y="592" width="800" height="410" fill="#030612" opacity="0.4" style="mix-blend-mode: multiply;"/>
+
+  <!-- Subtle pool ripple lines -->
+  <g stroke="#1a4a7a" stroke-width="0.3" opacity="0.15">
+    <line x1="150" y1="640" x2="650" y2="640"/>
+    <line x1="180" y1="690" x2="620" y2="690"/>
+    <line x1="200" y1="740" x2="600" y2="740"/>
+    <line x1="230" y1="790" x2="570" y2="790"/>
+    <line x1="260" y1="840" x2="540" y2="840"/>
+  </g>
+
+</svg>

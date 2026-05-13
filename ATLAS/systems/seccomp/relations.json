@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "seccomp and seccomp-filter are Linux kernel facilities for restricting syscalls, including BPF filter programs evaluated at syscall entry."
+    },
+    {
+      "type": "integrates_with",
+      "target": "libseccomp",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "libseccomp generates and loads seccomp BPF programs against the documented kernel seccomp uAPI."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-capabilities",
+      "evidence_tier": "INFERRED",
+      "notes": "seccomp restricts which syscalls run; capabilities gate privileged operations when syscalls are permitted — complementary."
+    }
+  ]
+}

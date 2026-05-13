@@ -1,0 +1,44 @@
+{
+  "name": "aimos-test-panel",
+  "displayName": "AIM-OS Test Panel",
+  "description": "COMPLETELY SEPARATE test extension for HTML panel",
+  "version": "1.0.0",
+  "publisher": "aimos-test",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "activationEvents": [
+    "onView:testPanel"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "testContainer",
+          "title": "TEST",
+          "icon": "$(beaker)"
+        }
+      ]
+    },
+    "views": {
+      "testContainer": [
+        {
+          "id": "testPanel",
+          "name": "Test Panel",
+          "when": "true"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "compile": "tsc",
+    "watch": "tsc -watch",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.74.0",
+    "typescript": "^5.0.0",
+    "@vscode/vsce": "^2.22.0"
+  }
+}

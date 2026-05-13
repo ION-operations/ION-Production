@@ -1,0 +1,77 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "implements",
+      "target": "kubernetes",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Oracle documents OKE as using open-source Kubernetes certified CNCF-conformant."
+    },
+    {
+      "type": "competes_with",
+      "target": "aws-eks",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable managed Kubernetes on another cloud; not identical IAM/networking model."
+    },
+    {
+      "type": "competes_with",
+      "target": "azure-aks",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable managed Kubernetes on another cloud."
+    },
+    {
+      "type": "competes_with",
+      "target": "gcp-gke",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable managed Kubernetes on another cloud."
+    },
+    {
+      "type": "competes_with",
+      "target": "ibm-iks",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable managed Kubernetes on another cloud."
+    },
+    {
+      "type": "competes_with",
+      "target": "digitalocean-doks",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable managed Kubernetes on another cloud."
+    },
+    {
+      "type": "competes_with",
+      "target": "civo-kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable managed Kubernetes on another cloud."
+    },
+    {
+      "type": "competes_with",
+      "target": "linode-lke",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable managed Kubernetes on another cloud."
+    },
+    {
+      "type": "competes_with",
+      "target": "vmware-tkg",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Kubernetes platform vs customer-operated TKG in some footprints."
+    },
+    {
+      "type": "competes_with",
+      "target": "red-hat-openshift",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Kubernetes platform vs Red Hat OpenShift in some footprints."
+    },
+    {
+      "type": "competes_with",
+      "target": "openshift-dedicated",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable managed Kubernetes vs Red Hat managed OpenShift in some footprints."
+    },
+    {
+      "type": "depends_on",
+      "target": "linux-kernel",
+      "evidence_tier": "INFERRED",
+      "notes": "Typical worker nodes are Linux-class VMs or bare metal per OKE compute options."
+    }
+  ]
+}

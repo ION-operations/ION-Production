@@ -1,0 +1,652 @@
+% Chapter 6 converted from Markdown
+% Auto-generated - do not edit manually
+
+
+
+
+\section*{Section 6.1: Gherkin-Style Grammar}
+
+PLIx CNL grammar is inspired by Gherkin's Given-When-Then structure, providing natural language syntax with unambiguous mapping to formal contracts.
+
+\textbf{Gherkin Structure}
+
+Gherkin uses a structured natural language format:
+
+\begin{lstlisting}[caption=Code Example]
+Feature: Book a meeting room
+  Scenario: Successful booking
+    Given a user is authenticated
+    And a room is available
+    When the user books the room
+    Then the room is reserved
+    And a calendar event is created
+\end{lstlisting}
+
+Gherkin's structure separates context (Given), action (When), and outcome (Then), providing clear intent expression. This structure enables both human readability and machine verifiability.
+
+\textbf{PLIx CNL: Gherkin-Inspired}
+
+PLIx CNL adapts Gherkin's structure for intent contracts:
+
+\begin{lstlisting}[caption=Code Example]
+Intent: Book a meeting room on 2025-12-01 for 2h.
+
+Task check_availability:
+  Action: api.check_room_availability
+  Params: date=2025-12-01, duration=2h
+  Retry: max=3, backoff=exponential, backoff_ms=1000
+
+Task reserve_room:
+  Action: api.reserve_room
+  Params: room_id=\texttt{\$\{check_availability.room_id\}\}, duration=2h
+  Depends: check_availability
+  Compensate: cancel_reservation
+
+Constraints:
+  duration <= 4h
+  calendar_conflicts == none
+
+Evidence Required:
+  calendar.open_slots
+
+Evidence Produce:
+  reservation.record
+\end{lstlisting}
+
+PLIx CNL preserves Gherkin's natural language readability while adding execution metadata (actions, params, retry, compensation). This enables both intent expression and execution planning in a single format.
+
+\textbf{Natural Language Syntax}
+
+PLIx CNL uses natural language keywords:
+
+\begin{itemize}
+\item \textbf{Intent:} Expresses the goal
+\item \textbf{Task:} Defines execution steps
+\item \textbf{Action:} Specifies what to do
+\item \textbf{Params:} Provides execution parameters
+\item \textbf{Depends:} Expresses dependencies
+\item \textbf{Compensate:} Defines compensation logic
+\item \textbf{Constraints:} Expresses requirements
+\item \textbf{Evidence:} Specifies verification needs
+\end{itemize}
+
+These keywords provide structure while maintaining natural language readability, enabling both human understanding and machine parsing.
+
+\textbf{Unambiguous Mapping}
+
+PLIx CNL maps unambiguously to formal contracts:
+
+\begin{lstlisting}[caption=Code Example]
+Intent: Book a meeting room
+  \textdownarrow{}
+contract:
+  intent: "Book a meeting room"
+  post:
+    - "room_reserved == true"
+\end{lstlisting}
+
+\begin{lstlisting}[caption=Code Example]
+Task reserve_room:
+  Action: api.reserve_room
+  Params: room_id=\texttt{\$\{check_availability.room_id\}\}
+  \textdownarrow{}
+task:
+  id: "reserve_room"
+  action: "api.reserve_room"
+  params:
+    room_id: "\texttt{\$\{check_availability.room_id\}\}"
+\end{lstlisting}
+
+This unambiguous mapping enables automatic translation from CNL to formal contracts, preserving intent while enabling verification.
+
+\textbf{Parsing Walkthrough}
+
+Parsing PLIx CNL involves:
+
+\begin{enumerate}
+\item \textbf{Lexical Analysis:} Tokenize CNL into keywords, identifiers, values
+\item \textbf{Syntax Analysis:} Parse tokens into abstract syntax tree (AST)
+\item \textbf{Semantic Analysis:} Resolve dependencies, validate constraints
+\item \textbf{Contract Generation:} Generate formal contract from AST
+\end{enumerate}
+
+Example parsing:
+
+\begin{lstlisting}[caption=Code Example]
+Input: "Task reserve_room: Action: api.reserve_room"
+  \textdownarrow{} Lexical Analysis
+Tokens: [Task, reserve_room, Action, api.reserve_room]
+  \textdownarrow{} Syntax Analysis
+AST: { type: "task", id: "reserve_room", action: "api.reserve_room" }
+  \textdownarrow{} Semantic Analysis
+Validated: dependencies resolved, constraints checked
+  \textdownarrow{} Contract Generation
+Contract: { tasks: [{ id: "reserve_room", action: "api.reserve_room" }] }
+\end{lstlisting}
+
+This parsing process enables automatic translation from human-readable CNL to machine-verifiable contracts.
+
+\textbf{Gherkin-Style Benefits}
+
+Gherkin-style grammar provides:
+
+\begin{itemize}
+\item \textbf{Human Readability:} Natural language syntax enables human understanding
+\item \textbf{Machine Verifiability:} Structured format enables automatic parsing
+\item \textbf{Unambiguous Mapping:} Clear structure enables contract generation
+\item \textbf{Testability:} Given-When-Then structure enables test generation
+\end{itemize}
+
+These benefits make PLIx CNL both human-friendly and machine-processable, bridging the gap between natural language intent and formal contracts.
+
+\section*{Section 6.2: SmaCoNat Methodology}
+
+SmaCoNat (Small Controlled Natural Language) methodology provides minimal keywords with unambiguous mapping, enabling concise intent expression.
+
+\textbf{SmaCoNat Principles}
+
+SmaCoNat follows three principles:
+
+\begin{enumerate}
+\item \textbf{Minimal Keywords:} Use the smallest set of keywords necessary
+\item \textbf{Unambiguous Mapping:} Each keyword maps to exactly one concept
+\item \textbf{Structured Syntax:} Syntax provides clear structure without ambiguity
+\end{enumerate}
+
+These principles enable concise intent expression while maintaining clarity and verifiability.
+
+\textbf{Minimal Keywords}
+
+SmaCoNat uses minimal keywords:
+
+\begin{itemize}
+\item \textbf{Intent:} Goal expression
+\item \textbf{Task:} Execution step
+\item \textbf{Action:} What to do
+\item \textbf{Params:} Execution parameters
+\item \textbf{Depends:} Dependencies
+\item \textbf{Compensate:} Compensation logic
+\item \textbf{Constraints:} Requirements
+\item \textbf{Evidence:} Verification needs
+\end{itemize}
+
+This minimal set enables complete intent expression without keyword overload, making CNL easy to learn and use.
+
+\textbf{Unambiguous Mapping}
+
+Each SmaCoNat keyword maps unambiguously:
+
+\begin{itemize}
+\item \textbf{Intent:} Always maps to contract intent
+\item \textbf{Task:} Always maps to contract task
+\item \textbf{Action:} Always maps to task action
+\item \textbf{Params:} Always maps to task parameters
+\item \textbf{Depends:} Always maps to task dependencies
+\item \textbf{Compensate:} Always maps to task compensation
+\item \textbf{Constraints:} Always maps to contract constraints
+\item \textbf{Evidence:} Always maps to contract evidence
+\end{itemize}
+
+This unambiguous mapping enables automatic contract generation without ambiguity resolution, ensuring consistent translation.
+
+\textbf{Structured Syntax}
+
+SmaCoNat provides structured syntax:
+
+\begin{lstlisting}[caption=Code Example]
+Intent: <goal>
+Task <id>:
+  Action: <action>
+  Params: <params>
+  Depends: <dependencies>
+  Compensate: <compensation>
+Constraints:
+  <constraint1>
+  <constraint2>
+Evidence Required:
+  <evidence1>
+Evidence Produce:
+  <evidence2>
+\end{lstlisting}
+
+This structure provides clear hierarchy: Intent \textrightarrow{} Tasks \textrightarrow{} Constraints \textrightarrow{} Evidence. This hierarchy enables both human understanding and machine parsing.
+
+\textbf{SmaCoNat Examples}
+
+Example SmaCoNat contract:
+
+\begin{lstlisting}[caption=Code Example]
+Intent: Process payment
+
+Task validate_payment:
+  Action: api.validate_payment
+  Params: amount=\texttt{\$\{amount\}\}, account=\texttt{\$\{account\}\}
+
+Task transfer_funds:
+  Action: api.transfer_funds
+  Params: from=\texttt{\$\{account\}\}, to=\texttt{\$\{merchant\}\}, amount=\texttt{\$\{amount\}\}
+  Depends: validate_payment
+  Compensate: reverse_transfer
+
+Constraints:
+  amount > 0
+  account_balance >= amount
+
+Evidence Required:
+  payment_request
+  account_balance
+
+Evidence Produce:
+  transaction_record
+\end{lstlisting}
+
+This example demonstrates SmaCoNat's conciseness: complete intent expression in minimal keywords, enabling both readability and verifiability.
+
+\textbf{SmaCoNat Benefits}
+
+SmaCoNat methodology provides:
+
+\begin{itemize}
+\item \textbf{Conciseness:} Minimal keywords enable concise expression
+\item \textbf{Clarity:} Unambiguous mapping enables clear understanding
+\item \textbf{Verifiability:} Structured syntax enables automatic parsing
+\item \textbf{Learnability:} Minimal keywords enable easy learning
+\end{itemize}
+
+These benefits make SmaCoNat ideal for PLIx CNL, enabling both human-friendly intent expression and machine-processable contracts.
+
+\section*{Section 6.3: Grammar Specification}
+
+PLIx CNL grammar is formally specified using EBNF (Extended Backus-Naur Form), providing complete syntax definition for parsing and validation.
+
+\textbf{EBNF Grammar Specification}
+
+PLIx CNL EBNF grammar:
+
+\begin{lstlisting}[caption=Code Example]
+plix_contract = intent_section, task_section, [constraint_section], [evidence_section];
+
+intent_section = "Intent:", string_literal;
+
+task_section = "Task", identifier, ":", task_body;
+task_body = action_line, [params_line], [depends_line], [retry_line], [compensate_line];
+action_line = "Action:", action_identifier;
+params_line = "Params:", param_list;
+depends_line = "Depends:", identifier_list;
+retry_line = "Retry:", retry_spec;
+compensate_line = "Compensate:", identifier;
+
+constraint_section = "Constraints:", constraint_list;
+constraint_list = constraint, {constraint};
+constraint = expression;
+
+evidence_section = "Evidence Required:", evidence_list, "Evidence Produce:", evidence_list;
+evidence_list = evidence, {evidence};
+evidence = string_literal;
+
+action_identifier = identifier, ".", identifier;
+param_list = param, {",", param};
+param = identifier, "=", value;
+value = string_literal | number | identifier | "\texttt{\$\{", identifier, "\}\}";
+identifier_list = identifier, {",", identifier};
+retry_spec = "max=", number, ",", "backoff=", backoff_type, ",", "backoff_ms=", number;
+backoff_type = "none" | "linear" | "exponential";
+\end{lstlisting}
+
+This EBNF specification provides complete syntax definition, enabling parser generation and syntax validation.
+
+\textbf{YAML/JSON Examples}
+
+PLIx CNL can be expressed in YAML:
+
+\begin{lstlisting}[caption=Code Example]
+intent: "Book a meeting room"
+
+tasks:
+  - id: check_availability
+    action: api.check_room_availability
+    params:
+      date: "2025-12-01"
+      duration: 2h
+    retry:
+      max_attempts: 3
+      backoff: exponential
+      backoff_ms: 1000
+  
+  - id: reserve_room
+    action: api.reserve_room
+    params:
+      room_id: "\texttt{\$\{check_availability.room_id\}\}"
+    depends_on:
+      - check_availability
+    compensate: cancel_reservation
+
+constraints:
+  - "duration <= 4h"
+  - "calendar_conflicts == none"
+
+evidence:
+  required:
+    - "calendar.open_slots"
+  produce:
+    - "reservation.record"
+\end{lstlisting}
+
+And in JSON:
+
+\begin{lstlisting}[caption=Code Example]
+{
+  "intent": "Book a meeting room",
+  "tasks": [
+    {
+      "id": "check_availability",
+      "action": "api.check_room_availability",
+      "params": {
+        "date": "2025-12-01",
+        "duration": "2h"
+      },
+      "retry": {
+        "max_attempts": 3,
+        "backoff": "exponential",
+        "backoff_ms": 1000
+      }
+    },
+    {
+      "id": "reserve_room",
+      "action": "api.reserve_room",
+      "params": {
+        "room_id": "\texttt{\$\{check_availability.room_id\}\}"
+      },
+      "depends_on": ["check_availability"],
+      "compensate": "cancel_reservation"
+    }
+  ],
+  "constraints": [
+    "duration <= 4h",
+    "calendar_conflicts == none"
+  ],
+  "evidence": {
+    "required": ["calendar.open_slots"],
+    "produce": ["reservation.record"]
+  }
+}
+\end{lstlisting}
+
+These formats enable both human editing (YAML) and machine processing (JSON), providing flexibility in contract expression.
+
+\textbf{Grammar Features}
+
+PLIx CNL grammar provides:
+
+\begin{itemize}
+\item \textbf{Task Blocks:} Structured task definitions with metadata
+\item \textbf{Constraints:} Expression-based constraint specification
+\item \textbf{Evidence:} Required and produced evidence tracking
+\item \textbf{Dependencies:} Task dependency expression
+\item \textbf{Compensation:} Saga pattern compensation logic
+\item \textbf{Retry Logic:} Configurable retry with backoff strategies
+\end{itemize}
+
+These features enable complete intent expression with execution metadata, bridging intent and execution in a single format.
+
+\textbf{Complete Specification}
+
+The complete PLIx CNL grammar specification includes:
+
+\begin{itemize}
+\item \textbf{EBNF Syntax:} Formal syntax definition
+\item \textbf{YAML Format:} Human-readable format
+\item \textbf{JSON Format:} Machine-processable format
+\item \textbf{Semantic Rules:} Validation and constraint rules
+\item \textbf{Parser Implementation:} Reference parser implementation
+\end{itemize}
+
+This complete specification enables parser generation, syntax validation, and contract generation, providing a complete foundation for PLIx CNL processing.
+
+\section*{Section 6.4: Parser Implementation}
+
+PLIx CNL parser translates CNL text into PLIx AST (Abstract Syntax Tree), enabling contract generation and validation.
+
+\textbf{Parser Architecture}
+
+PLIx CNL parser architecture:
+
+\begin{lstlisting}[caption=Code Example]
+class PLIxParser {
+  // Lexical analysis
+  tokenize(cnl: string): Token[];
+  
+  // Syntax analysis
+  parse(tokens: Token[]): AST;
+  
+  // Semantic analysis
+  validate(ast: AST): ValidationResult;
+  
+  // Contract generation
+  generateContract(ast: AST): PLIxContract;
+}
+\end{lstlisting}
+
+Parser stages:
+\begin{enumerate}
+\item \textbf{Lexical Analysis:} Tokenize CNL into tokens
+\item \textbf{Syntax Analysis:} Parse tokens into AST
+\item \textbf{Semantic Analysis:} Validate AST and resolve references
+\item \textbf{Contract Generation:} Generate formal contract from AST
+\end{enumerate}
+
+\textbf{Lexical Analysis}
+
+Lexical analysis tokenizes CNL:
+
+\begin{lstlisting}[caption=Code Example]
+function tokenize(cnl: string): Token[] {
+  const tokens: Token[] = [];
+  const lines = cnl.split('\n');
+  
+  for (const line of lines) {
+    if (line.startsWith('Intent:')) {
+      tokens.push({ type: 'INTENT_KEYWORD', value: 'Intent' });
+      tokens.push({ type: 'COLON', value: ':' });
+      tokens.push({ type: 'STRING', value: line.substring(8).trim() });
+    } else if (line.startsWith('Task')) {
+      tokens.push({ type: 'TASK_KEYWORD', value: 'Task' });
+      // Parse task identifier
+      const match = line.match(/Task\s+(\w+):/);
+      if (match) {
+        tokens.push({ type: 'IDENTIFIER', value: match[1] });
+        tokens.push({ type: 'COLON', value: ':' });
+      }
+    }
+    // ... more tokenization rules
+  }
+  
+  return tokens;
+}
+\end{lstlisting}
+
+Lexical analysis converts CNL text into tokens, enabling syntax analysis.
+
+\textbf{Syntax Analysis}
+
+Syntax analysis parses tokens into AST:
+
+\begin{lstlisting}[caption=Code Example]
+function parse(tokens: Token[]): AST {
+  const ast: AST = {
+    intent: null,
+    tasks: [],
+    constraints: [],
+    evidence: { required: [], produce: [] }
+  };
+  
+  let i = 0;
+  while (i < tokens.length) {
+    if (tokens[i].type === 'INTENT_KEYWORD') {
+      i++; // Skip 'Intent'
+      i++; // Skip ':'
+      ast.intent = tokens[i].value;
+      i++;
+    } else if (tokens[i].type === 'TASK_KEYWORD') {
+      const task = parseTask(tokens, i);
+      ast.tasks.push(task.ast);
+      i = task.nextIndex;
+    }
+    // ... more parsing rules
+  }
+  
+  return ast;
+}
+\end{lstlisting}
+
+Syntax analysis builds AST from tokens, representing CNL structure.
+
+\textbf{Semantic Analysis}
+
+Semantic analysis validates AST:
+
+\begin{lstlisting}[caption=Code Example]
+function validate(ast: AST): ValidationResult {
+  const errors: string[] = [];
+  
+  // Validate intent exists
+  if (!ast.intent) {
+    errors.push('Intent is required');
+  }
+  
+  // Validate tasks exist
+  if (ast.tasks.length === 0) {
+    errors.push('At least one task is required');
+  }
+  
+  // Validate dependencies
+  for (const task of ast.tasks) {
+    for (const dep of task.depends_on || []) {
+      if (!ast.tasks.find(t => t.id === dep)) {
+        errors.push(`Task \texttt{\$\{task.id\}\} depends on unknown task \texttt{\$\{dep\}\}`);
+      }
+    }
+  }
+  
+  // Validate compensation references
+  for (const task of ast.tasks) {
+    if (task.compensate) {
+      if (!ast.tasks.find(t => t.id === task.compensate)) {
+        errors.push(`Task \texttt{\$\{task.id\}\} compensates with unknown task \texttt{\$\{task.compensate\}\}`);
+      }
+    }
+  }
+  
+  return {
+    valid: errors.length === 0,
+    errors
+  };
+}
+\end{lstlisting}
+
+Semantic analysis validates AST correctness, ensuring contracts are well-formed.
+
+\textbf{Error Handling}
+
+Parser error handling:
+
+\begin{lstlisting}[caption=Code Example]
+class ParseError extends Error {
+  constructor(
+    public message: string,
+    public line: number,
+    public column: number,
+    public context: string
+  ) {
+    super(message);
+  }
+}
+
+function parseWithErrorHandling(cnl: string): PLIxContract {
+  try {
+    const tokens = tokenize(cnl);
+    const ast = parse(tokens);
+    const validation = validate(ast);
+    
+    if (!validation.valid) {
+      throw new ParseError(
+        `Validation failed: \texttt{\$\{validation.errors.join(', ')\}\}`,
+        0, 0, cnl
+      );
+    }
+    
+    return generateContract(ast);
+  } catch (error) {
+    if (error instanceof ParseError) {
+      // Provide helpful error messages
+      console.error(`Parse error at line \texttt{\$\{error.line\}\}, column \texttt{\$\{error.column\}\}: \texttt{\$\{error.message\}\}`);
+      console.error(`Context: \texttt{\$\{error.context\}\}`);
+    }
+    throw error;
+  }
+}
+\end{lstlisting}
+
+Error handling provides helpful error messages, enabling contract debugging.
+
+\textbf{Testing Strategies}
+
+Parser testing strategies:
+
+\begin{lstlisting}[caption=Code Example]
+describe('PLIxParser', () => {
+  it('parses minimal contract', () => {
+    const cnl = `Intent: Book a room
+Task reserve:
+  Action: api.reserve_room`;
+    
+    const contract = parser.parse(cnl);
+    expect(contract.intent).toBe('Book a room');
+    expect(contract.tasks).toHaveLength(1);
+  });
+  
+  it('validates dependencies', () => {
+    const cnl = `Intent: Book a room
+Task reserve:
+  Action: api.reserve_room
+  Depends: unknown_task`;
+    
+    expect(() => parser.parse(cnl)).toThrow('depends on unknown task');
+  });
+  
+  it('handles parameter interpolation', () => {
+    const cnl = `Intent: Book a room
+Task reserve:
+  Action: api.reserve_room
+  Params: room_id=\\texttt{\$\{check.room_id\}\}`;
+    
+    const contract = parser.parse(cnl);
+    expect(contract.tasks[0].params.room_id).toBe('\texttt{\$\{check.room_id\}\}');
+  });
+});
+\end{lstlisting}
+
+Testing ensures parser correctness, enabling reliable contract generation.
+
+\textbf{Parser Implementation Benefits}
+
+Parser implementation provides:
+
+\begin{itemize}
+\item \textbf{Automatic Translation:} CNL \textrightarrow{} Contract translation
+\item \textbf{Syntax Validation:} CNL syntax validation
+\item \textbf{Semantic Validation:} Contract correctness validation
+\item \textbf{Error Reporting:} Helpful error messages
+\item \textbf{Testing Support:} Parser testing infrastructure
+\end{itemize}
+
+These benefits enable reliable CNL processing, ensuring contracts are correctly generated from human-readable CNL.
+
+\section*{Chapter 6 Summary}
+
+PLIx CNL grammar provides human-readable intent expression with machine-processable contracts. Gherkin-style structure enables natural language syntax, SmaCoNat methodology provides minimal keywords, EBNF specification enables formal parsing, and parser implementation enables automatic contract generation. CNL bridges human intent and formal contracts, enabling both readability and verifiability.
+
+\textbf{Next:} Chapter 7 explores formal validation—Alloy, TLA+, and invariant verification.
+
+\textbf{Word Count:} \textasciitilde{}2,500 words  
+

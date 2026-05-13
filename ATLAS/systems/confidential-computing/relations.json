@@ -1,0 +1,25 @@
+{
+  "system_slug": "confidential-computing",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-03",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "tpm2",
+      "evidence_tier": "INFERRED",
+      "notes": "Attestation and key storage workflows often involve TPM-class roots of trust."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "INFERRED",
+      "notes": "Linux hosts integrate confidential VM and TEE drivers on supported hardware."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-kvm",
+      "evidence_tier": "INFERRED",
+      "notes": "Confidential VM stacks on Linux may compose KVM-style virtualization with hardware TEE features depending on platform."
+    }
+  ]
+}

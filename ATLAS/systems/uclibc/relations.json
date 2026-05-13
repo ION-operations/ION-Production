@@ -1,0 +1,131 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "c-language",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "uClibc implements the C standard library for Linux userland on supported architectures."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "uClibc provides syscall wrappers and POSIX-oriented services on Linux."
+    },
+    {
+      "type": "integrates_with",
+      "target": "elf",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Typical uClibc deployments use ELF shared objects and the uClibc dynamic linker on Linux."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-gcc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GCC cross toolchains commonly target uClibc sysroots in embedded Linux builds."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-binutils",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GNU ld links uClibc objects and shared libraries in embedded GNU/Linux flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "clang",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang may target uClibc sysroots when embedded distributions provide matching triplets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "riscv-isa",
+      "evidence_tier": "INFERRED",
+      "notes": "Embedded Linux ports may combine uClibc with RISC-V Linux targets where supported."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-libstdcxx",
+      "evidence_tier": "INFERRED",
+      "notes": "g++ may link GNU libstdc++ above uClibc in embedded Linux toolchains when configured."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-libcxx",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang libc++ stacks may target uClibc-backed sysroots in specialized embedded flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-libcxxabi",
+      "evidence_tier": "INFERRED",
+      "notes": "libc++abi may pair with libc++ on uClibc when packaging matches."
+    },
+    {
+      "type": "competes_with",
+      "target": "glibc",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Linux libc implementations (uClibc vs glibc; not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "musl",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Linux libc implementations (uClibc vs musl; not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "freebsd-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct libc implementations (Linux uClibc vs BSD base libcs)."
+    },
+    {
+      "type": "competes_with",
+      "target": "openbsd-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct libc implementations (Linux uClibc vs BSD base libcs)."
+    },
+    {
+      "type": "competes_with",
+      "target": "netbsd-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct libc implementations (Linux uClibc vs BSD base libcs)."
+    },
+    {
+      "type": "competes_with",
+      "target": "dragonfly-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct libc implementations (Linux uClibc vs BSD base libcs)."
+    },
+    {
+      "type": "competes_with",
+      "target": "illumos-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct libc implementations (Linux uClibc vs illumos libc)."
+    },
+    {
+      "type": "competes_with",
+      "target": "android-bionic",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct libc implementations (Linux uClibc vs Android Bionic)."
+    },
+    {
+      "type": "competes_with",
+      "target": "newlib",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct embedded libc lineages (Linux uClibc vs bare-metal/RTOS newlib)."
+    },
+    {
+      "type": "competes_with",
+      "target": "wasi-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct libc implementations (Linux uClibc vs Wasm WASI wasi-libc)."
+    },
+    {
+      "type": "competes_with",
+      "target": "dietlibc",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable embedded Linux libc implementations (uClibc-ng vs dietlibc; not ABI-interchangeable)."
+    }
+  ]
+}

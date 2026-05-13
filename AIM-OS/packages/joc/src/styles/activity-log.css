@@ -1,0 +1,196 @@
+/* ─── Activity Log ─── */
+
+.actlog-page {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    color: var(--text-primary, #e0e0e0);
+}
+
+.actlog-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border, #2a2a4a);
+    flex-shrink: 0;
+}
+
+.actlog-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.actlog-header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.actlog-title {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.actlog-subtitle {
+    font-size: 11px;
+    color: var(--text-dim, #888);
+}
+
+.actlog-search {
+    padding: 5px 10px;
+    border-radius: 4px;
+    border: 1px solid var(--border, #2a2a4a);
+    background: var(--bg-elevated, #1e1e3a);
+    color: var(--text-primary);
+    font-size: 11px;
+    width: 180px;
+}
+
+.actlog-search:focus {
+    outline: none;
+    border-color: var(--accent, #00d4ff);
+}
+
+.actlog-export-btn {
+    padding: 4px 10px;
+    font-size: 10px;
+    border: 1px solid var(--border, #2a2a4a);
+    background: var(--bg-elevated, #1e1e3a);
+    color: var(--text-secondary);
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.actlog-export-btn:hover {
+    background: var(--bg-hover, #252550);
+}
+
+.actlog-body {
+    flex: 1;
+    overflow-y: auto;
+}
+
+/* Filter */
+.actlog-filter-bar {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--border, #2a2a4a);
+    padding: 0 16px;
+    position: sticky;
+    top: 0;
+    background: var(--bg-base, #0f0f23);
+    z-index: 1;
+}
+
+.actlog-filter-btn {
+    padding: 8px 14px;
+    font-size: 11px;
+    border: none;
+    background: none;
+    color: var(--text-dim, #888);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.12s;
+}
+
+.actlog-filter-btn:hover {
+    color: var(--text-primary);
+}
+
+.actlog-filter-btn.active {
+    color: var(--text-primary);
+}
+
+/* Timeline */
+.actlog-timeline {
+    padding: 8px 16px;
+}
+
+.actlog-event {
+    display: flex;
+    gap: 12px;
+    position: relative;
+    padding-bottom: 2px;
+}
+
+.actlog-event-line {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 20px;
+    flex-shrink: 0;
+    position: relative;
+}
+
+.actlog-event-line::after {
+    content: '';
+    position: absolute;
+    top: 12px;
+    bottom: -2px;
+    left: 50%;
+    width: 1px;
+    background: var(--border, #2a2a4a);
+    transform: translateX(-50%);
+}
+
+.actlog-event:last-child .actlog-event-line::after {
+    display: none;
+}
+
+.actlog-event-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 4px;
+    z-index: 1;
+    box-shadow: 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+.actlog-event-content {
+    flex: 1;
+    padding: 2px 0 14px;
+    min-width: 0;
+}
+
+.actlog-event-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 2px;
+}
+
+.actlog-event-icon {
+    font-size: 12px;
+}
+
+.actlog-event-title {
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.actlog-event-badge {
+    font-size: 8px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    padding: 1px 6px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.actlog-event-time {
+    margin-left: auto;
+    font-size: 10px;
+    color: var(--text-dim, #888);
+    font-family: 'SF Mono', monospace;
+}
+
+.actlog-event-detail {
+    font-size: 11px;
+    color: var(--text-dim, #888);
+    margin-left: 18px;
+}

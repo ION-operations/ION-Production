@@ -1,0 +1,421 @@
+% Chapter converted from Markdown
+% Auto-generated - do not edit manually
+
+\section*{Chapter 32 - APIs Reference}
+
+
+\subsection*{Purpose}
+
+This chapter provides reference documentation for AIM-OS APIs including MCP tools, HTTP endpoints, and integration interfaces. APIs enable external systems to integrate with AIM-OS and access its capabilities.
+
+\subsection*{Executive Summary}
+
+\item AIM-OS provides 59 MCP tools for AI-to-AI communication and system integration.
+\item HTTP endpoints enable external systems to access AIM-OS capabilities.
+\item Integration interfaces enable seamless integration with existing systems.
+
+\subsection*{MCP Tools Reference}
+
+AIM-OS provides 59 MCP tools organized by category:
+
+\subsubsection*{Core AIM-OS Tools (6)}
+\item \texttt{store\_memory} - Store knowledge in CMC
+  - \textbf{Parameters:} \texttt{content} (string), \texttt{tags} (array), \texttt{metadata} (object)
+  - \textbf{Returns:} \texttt{atom\_id} (string), \texttt{timestamp} (string)
+  - \textbf{Example:} Store chapter expansion insights
+\item \texttt{retrieve\_memory} - Retrieve insights from HHNI
+  - \textbf{Parameters:} \texttt{query} (string), \texttt{limit} (integer), \texttt{filters} (object)
+  - \textbf{Returns:} \texttt{memories} (array), \texttt{count} (integer)
+  - \textbf{Example:} Retrieve relevant insights for chapter expansion
+\item \texttt{get\_memory\_stats} - Get AIM-OS statistics
+  - \textbf{Parameters:} \texttt{include\_breakdown} (boolean)
+  - \textbf{Returns:} \texttt{total\_atoms} (integer), \texttt{total\_snapshots} (integer), \texttt{breakdown} (object)
+  - \textbf{Example:} Get memory system statistics
+\item \texttt{create\_plan} - Create APOE execution plans
+  - \textbf{Parameters:} \texttt{goal} (string), \texttt{context} (object), \texttt{priority} (string)
+  - \textbf{Returns:} \texttt{plan\_id} (string), \texttt{steps} (array)
+  - \textbf{Example:} Create plan for chapter expansion
+\item \texttt{track\_confidence} - Track VIF confidence
+  - \textbf{Parameters:} \texttt{task} (string), \texttt{confidence} (float), \texttt{evidence} (array)
+  - \textbf{Returns:} \texttt{witness\_id} (string), \texttt{confidence} (float)
+  - \textbf{Example:} Track confidence for chapter expansion
+\item \texttt{synthesize\_knowledge} - Synthesize SEG knowledge
+  - \textbf{Parameters:} \texttt{topics} (array), \texttt{depth} (string), \texttt{format} (string)
+  - \textbf{Returns:} \texttt{synthesis} (object), \texttt{insights} (array)
+  - \textbf{Example:} Synthesize knowledge from multiple sources
+
+\subsubsection*{Timeline Context Tools (3)}
+\item \texttt{add\_timeline\_entry} - Track context at each prompt
+  - \textbf{Parameters:} \texttt{prompt\_id} (string), \texttt{user\_input} (string), \texttt{context\_state} (object)
+  - \textbf{Returns:} \texttt{entry\_id} (string), \texttt{timestamp} (string)
+  - \textbf{Example:} Track context for chapter expansion session
+\item \texttt{get\_timeline\_summary} - Get recent timeline entries
+  - \textbf{Parameters:} \texttt{limit} (integer)
+  - \textbf{Returns:} \texttt{entries} (array), \texttt{count} (integer)
+  - \textbf{Example:} Get recent context entries
+\item \texttt{get\_timeline\_entries} - Query timeline history
+  - \textbf{Parameters:} \texttt{start\_time} (string), \texttt{end\_time} (string), \texttt{limit} (integer)
+  - \textbf{Returns:} \texttt{entries} (array), \texttt{count} (integer)
+  - \textbf{Example:} Query timeline history for chapter expansion
+
+\subsubsection*{Goal Timeline Tools (3)}
+\item \texttt{create\_goal\_timeline\_node} - Create goals as timeline planning nodes
+  - \textbf{Parameters:} \texttt{goal\_id} (string), \texttt{name} (string), \texttt{description} (string), \texttt{priority} (string)
+  - \textbf{Returns:} \texttt{goal\_id} (string), \texttt{node\_id} (string)
+  - \textbf{Example:} Create goal for chapter expansion
+\item \texttt{update\_goal\_progress} - Update goal progress and status
+  - \textbf{Parameters:} \texttt{goal\_id} (string), \texttt{progress} (float), \texttt{status} (string)
+  - \textbf{Returns:} \texttt{goal\_id} (string), \texttt{updated\_progress} (float)
+  - \textbf{Example:} Update goal progress for chapter expansion
+\item \texttt{query\_goal\_timeline} - Query goals with filtering
+  - \textbf{Parameters:} \texttt{status} (string), \texttt{priority} (string), \texttt{limit} (integer)
+  - \textbf{Returns:} \texttt{goals} (array), \texttt{count} (integer)
+  - \textbf{Example:} Query goals for chapter expansion
+
+\subsubsection*{AI Collaboration Tools (6)}
+\item \texttt{send\_ai\_message} - Send a message to another AI system
+  - \textbf{Parameters:} \texttt{from\_ai} (string), \texttt{to\_ai} (string), \texttt{content} (string), \texttt{message\_type} (string)
+  - \textbf{Returns:} \texttt{message\_id} (string), \texttt{thread\_id} (string)
+  - \textbf{Example:} Send status update to Aether
+\item \texttt{get\_ai\_messages} - Retrieve AI-to-AI messages
+  - \textbf{Parameters:} \texttt{from\_ai} (string), \texttt{to\_ai} (string), \texttt{message\_type} (string), \texttt{limit} (integer)
+  - \textbf{Returns:} \texttt{messages} (array), \texttt{count} (integer)
+  - \textbf{Example:} Get messages from Aether
+\item \texttt{start\_ai\_discussion} - Start a new discussion thread
+  - \textbf{Parameters:} \texttt{from\_ai} (string), \texttt{to\_ai} (string), \texttt{topic} (string), \texttt{initial\_message} (string)
+  - \textbf{Returns:} \texttt{thread\_id} (string), \texttt{message\_id} (string)
+  - \textbf{Example:} Start discussion about chapter expansion
+\item \texttt{handoff\_task\_to\_ai} - Hand off a task to another AI system
+  - \textbf{Parameters:} \texttt{from\_ai} (string), \texttt{to\_ai} (string), \texttt{task\_description} (string), \texttt{task\_data} (object)
+  - \textbf{Returns:} \texttt{handoff\_id} (string), \texttt{thread\_id} (string)
+  - \textbf{Example:} Hand off chapter expansion to Codex
+\item \texttt{share\_ai\_profile} - Share AI profile and capabilities
+  - \textbf{Parameters:} \texttt{from\_ai} (string), \texttt{to\_ai} (string), \texttt{profile\_data} (object)
+  - \textbf{Returns:} \texttt{profile\_id} (string), \texttt{timestamp} (string)
+  - \textbf{Example:} Share profile with other agents
+\item \texttt{get\_ai\_collaboration\_summary} - Get summary of AI collaboration activity
+  - \textbf{Parameters:} None
+  - \textbf{Returns:} \texttt{total\_messages} (integer), \texttt{active\_threads} (integer), \texttt{summary} (object)
+  - \textbf{Example:} Get collaboration summary
+
+\subsubsection*{Autonomous Protocol Tools (9)}
+\item \texttt{start\_autonomous\_operation} - Start autonomous operation
+  - \textbf{Parameters:} \texttt{task} (string), \texttt{confidence} (float)
+  - \textbf{Returns:} \texttt{operation\_id} (string), \texttt{status} (string)
+  - \textbf{Example:} Start autonomous chapter expansion
+\item \texttt{pause\_autonomous\_operation} - Pause autonomous operation
+  - \textbf{Parameters:} None
+  - \textbf{Returns:} \texttt{status} (string)
+  - \textbf{Example:} Pause autonomous operation
+\item \texttt{resume\_autonomous\_operation} - Resume autonomous operation
+  - \textbf{Parameters:} None
+  - \textbf{Returns:} \texttt{status} (string)
+  - \textbf{Example:} Resume autonomous operation
+\item \texttt{stop\_autonomous\_operation} - Stop autonomous operation
+  - \textbf{Parameters:} None
+  - \textbf{Returns:} \texttt{status} (string)
+  - \textbf{Example:} Stop autonomous operation
+\item \texttt{get\_autonomous\_status} - Get current status
+  - \textbf{Parameters:} None
+  - \textbf{Returns:} \texttt{status} (string), \texttt{operation\_id} (string), \texttt{progress} (float)
+  - \textbf{Example:} Get autonomous operation status
+\item \texttt{run\_autonomous\_checklist} - Run safety checklist
+  - \textbf{Parameters:} None
+  - \textbf{Returns:} \texttt{checklist} (object), \texttt{passed} (boolean)
+  - \textbf{Example:} Run autonomous safety checklist
+\item \texttt{fix\_autonomous\_issues} - Fix autonomous issues
+  - \textbf{Parameters:} None
+  - \textbf{Returns:} \texttt{fixes} (array), \texttt{status} (string)
+  - \textbf{Example:} Fix autonomous operation issues
+\item \texttt{should\_continue\_autonomous} - Check if should continue
+  - \textbf{Parameters:} None
+  - \textbf{Returns:} \texttt{should\_continue} (boolean), \texttt{reason} (string)
+  - \textbf{Example:} Check if autonomous operation should continue
+\item \texttt{generate\_next\_autonomous\_task} - Generate next task
+  - \textbf{Parameters:} None
+  - \textbf{Returns:} \texttt{task} (string), \texttt{confidence} (float)
+  - \textbf{Example:} Generate next autonomous task
+
+\subsubsection*{Additional Tool Categories}
+
+\textbf{SCOR Tools (3):} Safety, consciousness, reliability monitoring tools  
+\textbf{Snapshot Tools (4):} File versioning and bitemporal management tools  
+\textbf{Intuitive Intelligence Tools (3):} AI intuition and learning system tools  
+\textbf{Co-Agency \& Trust Tools (3):} Human-AI collaboration protocol tools  
+\textbf{Dataset Management Tools (4):} Data management and analysis tools  
+\textbf{Application Lifecycle Tools (3):} Application management and deployment tools  
+\textbf{Autonomous Research Dream Tools (3):} Advanced research capability tools  
+\textbf{Observability Tools (4):} System monitoring and health check tools
+
+\textbf{Total:} 59 MCP tools available
+
+\subsection*{HTTP Endpoints Reference}
+
+AIM-OS provides HTTP endpoints for external integration:
+
+\subsubsection*{MCP Execute Endpoint}
+
+\textbf{Endpoint:} \texttt{POST http://localhost:5001/mcp/execute}  
+\textbf{Content-Type:} \texttt{application/json}
+
+\textbf{Request Format:}
+``\texttt{json
+{
+  "tool": "tool\_name",
+  "arguments": {
+    "param1": "value1",
+    "param2": "value2"
+  }
+}
+}`\texttt{
+
+\textbf{Response Format:}
+}`\texttt{json
+{
+  "success": true,
+  "result": {},
+  "error": null
+}
+}`\texttt{
+
+\textbf{Error Format:}
+}`\texttt{json
+{
+  "success": false,
+  "result": null,
+  "error": {
+    "code": "error\_code",
+    "message": "Error message"
+  }
+}
+}`\texttt{
+
+\textbf{Example Request:}
+}`\texttt{json
+{
+  "tool": "store\_memory",
+  "arguments": {
+    "content": "AIM-OS enables AI consciousness",
+    "tags": ["consciousness", "ai"]
+  }
+}
+}`\texttt{
+
+\textbf{Example Response:}
+}`\texttt{json
+{
+  "success": true,
+  "result": {
+    "atom\_id": "atom\_12345",
+    "timestamp": "2025-11-06T17:00:00Z"
+  },
+  "error": null
+}
+}`\texttt{
+
+\subsubsection*{Health Check Endpoint}
+
+\textbf{Endpoint:} }GET http://localhost:5001/health\texttt{  
+\textbf{Method:} GET
+
+\textbf{Response Format:}
+}`\texttt{json
+{
+  "status": "healthy",
+  "timestamp": "2025-11-06T17:00:00Z",
+  "systems": {
+    "cmc": "healthy",
+    "hhni": "healthy",
+    "vif": "healthy"
+  }
+}
+}`\texttt{
+
+\textbf{Status Values:}
+\item }healthy\texttt{ - All systems operational
+\item }degraded\texttt{ - Some systems degraded
+\item }unhealthy\texttt{ - Critical systems failing
+
+\subsubsection*{Metrics Endpoint}
+
+\textbf{Endpoint:} }GET http://localhost:5001/metrics\texttt{  
+\textbf{Method:} GET
+
+\textbf{Response Format:}
+}`\texttt{json
+{
+  "memory": {
+    "total\_atoms": 10000,
+    "total\_snapshots": 500
+  },
+  "performance": {
+    "avg\_latency\_ms": 50,
+    "p95\_latency\_ms": 80
+  },
+  "collaboration": {
+    "total\_messages": 141,
+    "active\_threads": 5
+  }
+}
+}`\texttt{
+
+\subsubsection*{MCP List Endpoint}
+
+\textbf{Endpoint:} }GET http://localhost:5001/mcp/list\texttt{  
+\textbf{Method:} GET
+
+\textbf{Response Format:}
+}`\texttt{json
+{
+  "tools": [
+    {
+      "name": "store\_memory",
+      "description": "Store knowledge in CMC",
+      "parameters": {}
+    }
+  ],
+  "count": 59
+}
+}`\texttt{
+
+\subsection*{Integration Interfaces}
+
+AIM-OS provides integration interfaces for common systems:
+
+\subsubsection*{Cursor IDE Integration}
+
+\textbf{MCP Server Integration:}
+\item \textbf{Protocol:} JSON-RPC 2.0 over stdio
+\item \textbf{Server:} }lucid\_mcp\_server.py\texttt{
+\item \textbf{Configuration:} }\textasciitilde{}/.cursor/mcp.json\texttt{
+\item \textbf{Tools:} 59 MCP tools available
+\item \textbf{Features:} Tool discovery, execution, error handling
+
+\textbf{Integration Points:}
+\item Extension command server (}cursor-addon/src/commandServer.ts\texttt{)
+\item MCP client (}cursor-addon/src/mcp/mcpClient.ts\texttt{)
+\item Tool execution via HTTP endpoints
+
+\subsubsection*{Electron App Integration}
+
+\textbf{HTTP Endpoint Integration:}
+\item \textbf{Endpoint:} }http://localhost:5001/mcp/execute\texttt{
+\item \textbf{Protocol:} HTTP POST with JSON
+\item \textbf{Features:} UI messaging, tool execution, status updates
+
+\textbf{Integration Points:}
+\item MCP API client (}packages/ide\_chat\_app/src/services/mcpApi.ts\texttt{)
+\item UI panel communication via HTTP endpoints
+\item Real-time updates via WebSocket (planned)
+
+\subsubsection*{External API Integration}
+
+\textbf{RESTful API:}
+\item \textbf{Base URL:} }http://localhost:5001\texttt{
+\item \textbf{Protocol:} HTTP/HTTPS
+\item \textbf{Authentication:} API keys (planned)
+\item \textbf{Rate Limiting:} Per-IP limits (planned)
+
+\textbf{Integration Points:}
+\item HTTP endpoints for all MCP tools
+\item Health check and metrics endpoints
+\item Webhook support (planned)
+
+\subsubsection*{SDK Integration}
+
+\textbf{SDK Support:}
+\item \textbf{Python SDK:} }from aimos import AIMOSClient\texttt{
+\item \textbf{TypeScript SDK:} }import { AIMOSClient } from '@aimos/sdk'\texttt{
+\item \textbf{PowerShell SDK:} }Import-Module AIMOS\texttt{
+
+\textbf{Integration Points:}
+\item High-level abstractions over HTTP endpoints
+\item Type-safe interfaces
+\item Error handling and retries
+\item Authentication management
+
+\subsection*{Runnable Examples}
+
+\subsubsection*{Example 1: Call MCP Tool via HTTP Endpoint}
+}`\texttt{powershell
+\section*{Call store\_memory tool via HTTP endpoint}
+\_\_MATH\_BLOCK\_0\_\_result = Invoke-WebRequest -Uri 'http://localhost:5001/mcp/execute' }
+    -Method POST -ContentType 'application/json' -Body \_\_MATH\_BLOCK\_1\_\_(\_\_MATH\_BLOCK\_2\_\_(\_\_MATH\_BLOCK\_3\_\_health = Invoke-WebRequest -Uri 'http://localhost:5001/health' |
+    Select-Object -ExpandProperty Content | ConvertFrom-Json
+
+Write-Host "System Health:"
+Write-Host "  Status: \_\_MATH\_BLOCK\_4\_\_health.status)"
+Write-Host "  Systems:"
+\_\_MATH\_BLOCK\_5\_\_(\_\_MATH\_BLOCK\_6\_\_(\_\_MATH\_BLOCK\_7\_\_metrics = Invoke-WebRequest -Uri 'http://localhost:5001/metrics' |
+    Select-Object -ExpandProperty Content | ConvertFrom-Json
+
+Write-Host "System Metrics:"
+Write-Host "  Memory:"
+Write-Host "    Total Atoms: \_\_MATH\_BLOCK\_8\_\_metrics.memory.total\_atoms)"
+Write-Host "    Total Snapshots: \_\_MATH\_BLOCK\_9\_\_metrics.memory.total\_snapshots)"
+Write-Host "  Performance:"
+Write-Host "    Avg Latency: \_\_MATH\_BLOCK\_10\_\_metrics.performance.avg\_latency\_ms)ms"
+Write-Host "    P95 Latency: \_\_MATH\_BLOCK\_11\_\_metrics.performance.p95\_latency\_ms)ms"
+}`\texttt{
+
+\subsubsection*{Example 4: List Available MCP Tools}
+}`\texttt{powershell
+\section*{List available MCP tools via HTTP endpoint}
+\_\_MATH\_BLOCK\_12\_\_(\_\_MATH\_BLOCK\_13\_\_tools.tools | Select-Object -First 10 | ForEach-Object {
+    Write-Host "  - \_\_MATH\_BLOCK\_14\_\_\_.name): \_\_MATH\_BLOCK\_15\_\_\_.description)"
+}
+}``
+
+\subsection*{Integration Points}
+
+APIs integrate deeply with all AIM-OS systems:
+
+\subsubsection*{APOE (Chapter 8)}
+
+\textbf{APOE provides:} Orchestration for API calls  
+\textbf{APIs provide:} Tool execution requiring orchestration  
+\textbf{Integration:} APOE orchestrates API calls with quality gates and budgets
+
+\textbf{Key Insight:} APOE enables orchestration. APIs use APOE for workflow orchestration.
+
+\subsubsection*{VIF (Chapter 7)}
+
+\textbf{VIF provides:} Confidence tracking for API operations  
+\textbf{APIs provide:} Operations requiring confidence tracking  
+\textbf{Integration:} VIF tracks confidence for all API operations
+
+\textbf{Key Insight:} VIF enables confidence tracking. APIs use VIF for operation confidence.
+
+\subsubsection*{CCS (Chapter 13)}
+
+\textbf{CCS provides:} Real-time communication for APIs  
+\textbf{APIs provide:} Communication requiring real-time substrate  
+\textbf{Integration:} CCS enables real-time API communication
+
+\textbf{Key Insight:} CCS enables real-time communication. APIs use CCS for communication substrate.
+
+\subsubsection*{CMC (Chapter 5)}
+
+\textbf{CMC provides:} Persistent storage for API operations  
+\textbf{APIs provide:} Operations requiring storage  
+\textbf{Integration:} CMC stores all API operation history
+
+\textbf{Key Insight:} CMC enables persistence. APIs use CMC for operation storage.
+
+\textbf{Overall Insight:} APIs integrate with all systems to enable comprehensive AIM-OS access. Every system contributes to API functionality.
+
+\subsection*{Connection to Other Chapters}
+
+APIs connect to all AIM-OS systems:
+
+\item \textbf{Chapter 1 (The Great Limitation):} APIs address "no integration" by enabling external system access
+\item \textbf{Chapter 2 (The Vision):} APIs enable the "integration" principle from the universal interface
+\item \textbf{Chapter 3 (The Proof):} APIs validate integration through proof loop
+\item \textbf{Chapter 5 (CMC):} APIs use CMC for operation storage
+\item \textbf{Chapter 7 (VIF):} APIs use VIF for confidence tracking
+\item \textbf{Chapter 8 (APOE):} APIs use APOE for orchestration
+\item \textbf{Chapter 13 (CCS):} APIs use CCS for real-time communication
+\item \textbf{Chapter 33 (SDKs \& Clients):} APIs provide underlying interfaces for SDKs
+
+\textbf{Key Insight:} APIs are the integration system that enables AIM-OS to work with external systems. Without APIs, external systems cannot access AIM-OS capabilities.
+

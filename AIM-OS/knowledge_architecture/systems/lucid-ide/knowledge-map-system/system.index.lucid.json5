@@ -1,0 +1,157 @@
+{
+  "systemId": "lucid-ide.knowledgeMapSystem",
+  "humanName": "Lucid IDE Knowledge Map System",
+  "version": "v1.0.0",
+  "status": "production",
+  
+  "intent": {
+    "purpose": "Provide vector database and semantic relationship mapping with knowledge map visualization, component analysis, and AI-powered context retrieval",
+    "must_not_regress": [
+      "Must not expose sensitive data",
+      "Must not break query filtering",
+      "Must not allow unauthorized access",
+      "Must not exceed 200ms API latency",
+      "Must not break vector search"
+    ],
+    "why_it_exists": "Transforms codebase into semantic knowledge graph enabling developers to understand relationships, dependencies, and context through vector similarity and AI-powered analysis."
+  },
+  
+  "classification": {
+    "security_level": "high",
+    "perf_sensitivity": "high",
+    "ownership": "lucid-ide",
+    "sideEffects": [
+      "Stores embeddings",
+      "Performs vector searches",
+      "Generates knowledge maps",
+      "Analyzes component relationships"
+    ]
+  },
+  
+  "internalNodes": [
+    {
+      "id": "knowledgeMapApi",
+      "responsibility": "Knowledge map API route providing GET/POST endpoints for knowledge map operations",
+      "must_never": [
+        "Expose sensitive data",
+        "Break query filtering",
+        "Allow unauthorized access"
+      ],
+      "perf_budget_ms": 200,
+      "status": "production"
+    },
+    {
+      "id": "knowledgeMapIntegration",
+      "responsibility": "AIKnowledgeMapIntegration singleton managing knowledge map data and operations",
+      "must_never": [
+        "Lose integration state",
+        "Break data retrieval",
+        "Expose embeddings"
+      ],
+      "perf_budget_ms": 200,
+      "status": "production"
+    },
+    {
+      "id": "knowledgeMapPanel",
+      "responsibility": "Knowledge map panel UI (3700+ lines ⚠️ CRITICAL) with 3D visualization",
+      "must_never": [
+        "Lose visualization state",
+        "Break 3D rendering",
+        "Exceed memory limits"
+      ],
+      "perf_budget_ms": 16,
+      "status": "production"
+    },
+    {
+      "id": "vectorDatabase",
+      "responsibility": "Vector database operations for embeddings and semantic search",
+      "must_never": [
+        "Lose vector data",
+        "Break similarity search",
+        "Expose embeddings"
+      ],
+      "perf_budget_ms": 200,
+      "status": "production"
+    }
+  ],
+  
+  "systemMap": {
+    "mapFile": "./system.map.lucid.json5"
+  },
+  
+  "foresight": {
+    "predictedRisks": [
+      {
+        "risk_id": "large_component_performance",
+        "description": "Knowledge map panel extremely large (3700+ lines) causing performance issues",
+        "likelihood": "high",
+        "blast_radius_if_real": "knowledge_map_unusable",
+        "mitigation": "Refactor into smaller components, code splitting, WebGL optimization",
+        "watchpoint": "if render_time > 16ms for 10 consecutive frames, alert"
+      },
+      {
+        "risk_id": "vector_search_performance",
+        "description": "Vector searches could become slow with large datasets",
+        "likelihood": "medium",
+        "blast_radius_if_real": "knowledge_map_queries_unusable",
+        "mitigation": "Vector indexing, caching, batch operations",
+        "watchpoint": "if search_time > 500ms for 10 consecutive queries, alert"
+      }
+    ],
+    "killSwitch": "knowledge-map.enabled=false",
+    "emergencyProcedures": [
+      "Disable all knowledge map operations",
+      "Freeze vector database",
+      "Switch to read-only mode",
+      "Notify backend API system"
+    ]
+  },
+  
+  "integrations": {
+    "backendApiSystem": {
+      "protocol": "REST",
+      "whatIsExchanged": ["api_requests", "api_responses"],
+      "security": "high",
+      "rateLimit": "unlimited"
+    },
+    "aiProviders": {
+      "protocol": "HTTP",
+      "whatIsExchanged": ["embedding_requests", "embedding_responses"],
+      "security": "critical",
+      "rateLimit": "provider-specific"
+    },
+    "vectorStore": {
+      "protocol": "vector-db",
+      "whatIsExchanged": ["vectors", "search_queries"],
+      "security": "high",
+      "rateLimit": "unlimited"
+    }
+  },
+  
+  "performance": {
+    "metrics": {
+      "api_latency_ms": "target < 200ms",
+      "vector_search_time_ms": "target < 200ms",
+      "embedding_generation_time_ms": "target < 1000ms",
+      "knowledge_map_fps": "target 60fps"
+    },
+    "optimization": [
+      "Vector indexing",
+      "Caching",
+      "Batch operations",
+      "WebGL optimization"
+    ],
+    "monitoring": ["api_latency", "vector_search_time", "fps", "memory_usage"]
+  },
+  
+  "documentation": {
+    "l0_executive": "knowledge_architecture/systems/lucid-ide/knowledge-map-system/L0_executive.md",
+    "l1_overview": "knowledge_architecture/systems/lucid-ide/knowledge-map-system/L1_overview.md",
+    "l2_architecture": "knowledge_architecture/systems/lucid-ide/knowledge-map-system/L2_architecture.md",
+    "l3_detailed": "knowledge_architecture/systems/lucid-ide/knowledge-map-system/L3_detailed.md",
+    "l4_complete": "knowledge_architecture/systems/lucid-ide/knowledge-map-system/L4_complete.md",
+    "system_map": "knowledge_architecture/systems/lucid-ide/knowledge-map-system/system.map.lucid.json5",
+    "usage_envelope": "knowledge_architecture/systems/lucid-ide/knowledge-map-system/usage.envelope.md"
+  }
+}
+

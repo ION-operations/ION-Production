@@ -1,0 +1,208 @@
+/* Properties Panel Styles */
+.properties-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #1e1e1e;
+  color: #cccccc;
+}
+
+.properties-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  background-color: #252526;
+  border-bottom: 1px solid #3e3e3e;
+}
+
+.properties-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.properties-header-icon {
+  width: 20px;
+  height: 20px;
+  color: #a78bfa;
+  flex-shrink: 0;
+}
+
+.properties-header-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #a78bfa;
+  margin: 0;
+}
+
+.properties-header-subtitle {
+  font-size: 11px;
+  color: #858585;
+  margin: 2px 0 0 0;
+}
+
+.properties-list {
+  flex: 1;
+  overflow: auto;
+  padding: 8px;
+}
+
+.properties-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  border-bottom: 1px solid #3e3e3e;
+  transition: background-color 0.2s;
+}
+
+.properties-item:hover {
+  background-color: #252526;
+}
+
+.properties-item-left {
+  flex: 1;
+  min-width: 0;
+}
+
+.properties-key {
+  font-size: 12px;
+  font-weight: 600;
+  color: #cccccc;
+  margin-bottom: 4px;
+}
+
+.properties-description {
+  font-size: 10px;
+  color: #858585;
+}
+
+.properties-item-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.properties-value-display {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.properties-value {
+  font-size: 12px;
+  color: #60a5fa;
+  font-family: monospace;
+}
+
+.properties-edit-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: #858585;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+
+.properties-edit-button:hover {
+  background-color: #2d2d30;
+  color: #cccccc;
+}
+
+.properties-icon {
+  width: 12px;
+  height: 12px;
+}
+
+.properties-edit-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.properties-input {
+  padding: 4px 6px;
+  background-color: #1e1e1e;
+  border: 1px solid #3e3e3e;
+  border-radius: 4px;
+  color: #cccccc;
+  font-size: 12px;
+  font-family: monospace;
+  outline: none;
+  width: 120px;
+}
+
+.properties-input:focus {
+  border-color: #007acc;
+}
+
+.properties-checkbox {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.properties-save-button,
+.properties-cancel-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+
+.properties-save-button {
+  color: #4ade80;
+}
+
+.properties-save-button:hover {
+  background-color: rgba(74, 222, 128, 0.2);
+}
+
+.properties-cancel-button {
+  color: #f87171;
+}
+
+.properties-cancel-button:hover {
+  background-color: rgba(248, 113, 113, 0.2);
+}
+
+.properties-error {
+  padding: 24px;
+  text-align: center;
+  color: #f87171;
+  font-size: 12px;
+}
+
+/* Scrollbar styling */
+.properties-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.properties-list::-webkit-scrollbar-track {
+  background: #1e1e1e;
+}
+
+.properties-list::-webkit-scrollbar-thumb {
+  background: #3e3e3e;
+  border-radius: 4px;
+}
+
+.properties-list::-webkit-scrollbar-thumb:hover {
+  background: #4e4e4e;
+}
+

@@ -1,0 +1,70 @@
+{
+  "name": "ChatGPT File Upload",
+  "description": "Automate ChatGPT with file upload - Navigate to ChatGPT, upload file, type query, and extract response",
+  "provider": "chatgpt",
+  "variables": {
+    "query": "{{query}}",
+    "filePath": "{{filePath}}",
+    "accountId": "{{accountId}}"
+  },
+  "actions": [
+    {
+      "type": "navigate",
+      "url": "https://chat.openai.com",
+      "timeout": 30000,
+      "beforeDelay": 1000,
+      "afterDelay": 2000
+    },
+    {
+      "type": "wait",
+      "selector": "textarea[data-id='root']",
+      "timeout": 15000,
+      "afterDelay": 1000
+    },
+    {
+      "type": "click",
+      "selector": "button[aria-label='Attach files']",
+      "afterDelay": 1000
+    },
+    {
+      "type": "wait",
+      "selector": "input[type='file']",
+      "timeout": 5000,
+      "afterDelay": 500
+    },
+    {
+      "type": "upload",
+      "selector": "input[type='file']",
+      "filePath": "{{filePath}}",
+      "afterDelay": 2000
+    },
+    {
+      "type": "type",
+      "selector": "textarea[data-id='root']",
+      "value": "{{query}}",
+      "humanLike": true,
+      "beforeDelay": 500,
+      "afterDelay": 1000
+    },
+    {
+      "type": "click",
+      "selector": "button[data-testid='send-button']",
+      "afterDelay": 2000
+    },
+    {
+      "type": "wait",
+      "selector": ".markdown",
+      "timeout": 30000,
+      "afterDelay": 1000
+    },
+    {
+      "type": "extract",
+      "selector": ".markdown",
+      "variable": "response"
+    }
+  ],
+  "output": {
+    "response": ".markdown"
+  }
+}
+

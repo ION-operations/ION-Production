@@ -1,0 +1,612 @@
+{
+  system_id: "error_intelligence_system",
+  system_name: "Error Intelligence System",
+  version: "1.0.0",
+  last_updated: "2025-01-27T20:50:00Z",
+  map_type: "system_topology",
+  internal_topology: {
+    core_components: [
+      {
+        component_id: "error_capture_engine",
+        name: "Error Capture Engine",
+        type: "capture_engine",
+        tier: 2,
+        description: "Captures and processes errors from various system components",
+        ports: {
+          input: [
+            "error_data",
+            "capture_rules",
+          ],
+          output: [
+            "captured_errors",
+            "capture_status",
+          ],
+        },
+        dependencies: [
+          "error_parser",
+          "error_validator",
+        ],
+        blast_radius: "platform",
+        must_never: [
+          "Capture errors without validation",
+          "Skip capture rules",
+          "Ignore error data",
+          "Bypass capture validation",
+        ],
+      },
+      {
+        component_id: "error_analyzer",
+        name: "Error Analyzer",
+        type: "analysis_engine",
+        tier: 2,
+        description: "Analyzes errors to identify patterns, root causes, and impact",
+        ports: {
+          input: [
+            "error_data",
+            "analysis_rules",
+          ],
+          output: [
+            "error_analysis",
+            "pattern_reports",
+          ],
+        },
+        dependencies: [
+          "analysis_rules",
+          "pattern_detector",
+        ],
+        blast_radius: "platform",
+        must_never: [
+          "Analyze errors without validation",
+          "Skip analysis rules",
+          "Ignore error patterns",
+          "Bypass analysis validation",
+        ],
+      },
+      {
+        component_id: "error_classifier",
+        name: "Error Classifier",
+        type: "classification_engine",
+        tier: 2,
+        description: "Classifies errors by type, severity, and impact",
+        ports: {
+          input: [
+            "error_data",
+            "classification_rules",
+          ],
+          output: [
+            "error_classification",
+            "severity_assessment",
+          ],
+        },
+        dependencies: [
+          "classification_rules",
+          "severity_analyzer",
+        ],
+        blast_radius: "platform",
+        must_never: [
+          "Classify errors without validation",
+          "Skip classification rules",
+          "Ignore error severity",
+          "Bypass classification validation",
+        ],
+      },
+      {
+        component_id: "error_clusterer",
+        name: "Error Clusterer",
+        type: "clustering_engine",
+        tier: 2,
+        description: "Clusters similar errors together for analysis and resolution",
+        ports: {
+          input: [
+            "error_data",
+            "clustering_rules",
+          ],
+          output: [
+            "error_clusters",
+            "cluster_analysis",
+          ],
+        },
+        dependencies: [
+          "clustering_rules",
+          "similarity_analyzer",
+        ],
+        blast_radius: "platform",
+        must_never: [
+          "Cluster errors without validation",
+          "Skip clustering rules",
+          "Ignore error similarity",
+          "Bypass clustering validation",
+        ],
+      },
+      {
+        component_id: "error_intelligence_engine",
+        name: "Error Intelligence Engine",
+        type: "intelligence_engine",
+        tier: 2,
+        description: "Provides intelligent insights and recommendations for error resolution",
+        ports: {
+          input: [
+            "error_analysis",
+            "intelligence_rules",
+          ],
+          output: [
+            "error_insights",
+            "resolution_recommendations",
+          ],
+        },
+        dependencies: [
+          "intelligence_rules",
+          "recommendation_engine",
+        ],
+        blast_radius: "platform",
+        must_never: [
+          "Provide intelligence without validation",
+          "Skip intelligence rules",
+          "Ignore error insights",
+          "Bypass intelligence validation",
+        ],
+      },
+    ],
+    supporting_components: [
+      {
+        component_id: "error_parser",
+        name: "Error Parser",
+        type: "parsing_engine",
+        tier: 1,
+        description: "Parses error data from various sources",
+        ports: {
+          input: [
+            "raw_error_data",
+            "parsing_rules",
+          ],
+          output: [
+            "parsed_errors",
+            "parsing_errors",
+          ],
+        },
+        dependencies: [
+          "parsing_rules",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Parse errors without validation",
+          "Skip parsing rules",
+          "Ignore parsing errors",
+          "Bypass parsing validation",
+        ],
+      },
+      {
+        component_id: "error_validator",
+        name: "Error Validator",
+        type: "validation_engine",
+        tier: 1,
+        description: "Validates error data for completeness and accuracy",
+        ports: {
+          input: [
+            "error_data",
+            "validation_rules",
+          ],
+          output: [
+            "validation_result",
+            "validation_errors",
+          ],
+        },
+        dependencies: [
+          "validation_rules",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Validate errors without rules",
+          "Skip validation checks",
+          "Ignore validation errors",
+          "Bypass validation requirements",
+        ],
+      },
+      {
+        component_id: "pattern_detector",
+        name: "Pattern Detector",
+        type: "detection_engine",
+        tier: 1,
+        description: "Detects patterns in error data",
+        ports: {
+          input: [
+            "error_data",
+            "pattern_rules",
+          ],
+          output: [
+            "detected_patterns",
+            "pattern_confidence",
+          ],
+        },
+        dependencies: [
+          "pattern_rules",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Detect patterns without validation",
+          "Skip pattern rules",
+          "Ignore pattern confidence",
+          "Bypass pattern validation",
+        ],
+      },
+      {
+        component_id: "severity_analyzer",
+        name: "Severity Analyzer",
+        type: "analysis_engine",
+        tier: 1,
+        description: "Analyzes error severity and impact",
+        ports: {
+          input: [
+            "error_data",
+            "severity_rules",
+          ],
+          output: [
+            "severity_analysis",
+            "impact_assessment",
+          ],
+        },
+        dependencies: [
+          "severity_rules",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Analyze severity without validation",
+          "Skip severity rules",
+          "Ignore impact assessment",
+          "Bypass severity validation",
+        ],
+      },
+      {
+        component_id: "similarity_analyzer",
+        name: "Similarity Analyzer",
+        type: "analysis_engine",
+        tier: 1,
+        description: "Analyzes error similarity for clustering",
+        ports: {
+          input: [
+            "error_data",
+            "similarity_rules",
+          ],
+          output: [
+            "similarity_analysis",
+            "similarity_scores",
+          ],
+        },
+        dependencies: [
+          "similarity_rules",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Analyze similarity without validation",
+          "Skip similarity rules",
+          "Ignore similarity scores",
+          "Bypass similarity validation",
+        ],
+      },
+    ],
+  },
+  boundary_tendrils: {
+    input_ports: [
+      {
+        port_id: "error_data_input",
+        name: "Error Data Input",
+        type: "data_input",
+        protocol: "json",
+        description: "Receives error data from system components",
+        required: true,
+        validation: "error_data_schema",
+      },
+      {
+        port_id: "capture_rules_input",
+        name: "Capture Rules Input",
+        type: "data_input",
+        protocol: "json",
+        description: "Receives capture rules for error processing",
+        required: true,
+        validation: "capture_rules_schema",
+      },
+      {
+        port_id: "analysis_rules_input",
+        name: "Analysis Rules Input",
+        type: "data_input",
+        protocol: "json",
+        description: "Receives analysis rules for error analysis",
+        required: true,
+        validation: "analysis_rules_schema",
+      },
+    ],
+    output_ports: [
+      {
+        port_id: "error_analysis_output",
+        name: "Error Analysis Output",
+        type: "data_output",
+        protocol: "json",
+        description: "Outputs error analysis results",
+        required: true,
+        validation: "error_analysis_schema",
+      },
+      {
+        port_id: "error_insights_output",
+        name: "Error Insights Output",
+        type: "data_output",
+        protocol: "json",
+        description: "Outputs error insights and recommendations",
+        required: true,
+        validation: "error_insights_schema",
+      },
+      {
+        port_id: "error_clusters_output",
+        name: "Error Clusters Output",
+        type: "data_output",
+        protocol: "json",
+        description: "Outputs error clusters and analysis",
+        required: true,
+        validation: "error_clusters_schema",
+      },
+    ],
+  },
+  data_flow: {
+    primary_flow: [
+      {
+        step: 1,
+        component: "error_parser",
+        action: "Parse error data",
+        input: [
+          "raw_error_data",
+          "parsing_rules",
+        ],
+        output: [
+          "parsed_errors",
+          "parsing_errors",
+        ],
+      },
+      {
+        step: 2,
+        component: "error_validator",
+        action: "Validate error data",
+        input: [
+          "error_data",
+          "validation_rules",
+        ],
+        output: [
+          "validation_result",
+          "validation_errors",
+        ],
+      },
+      {
+        step: 3,
+        component: "error_classifier",
+        action: "Classify errors",
+        input: [
+          "error_data",
+          "classification_rules",
+        ],
+        output: [
+          "error_classification",
+          "severity_assessment",
+        ],
+      },
+      {
+        step: 4,
+        component: "error_clusterer",
+        action: "Cluster errors",
+        input: [
+          "error_data",
+          "clustering_rules",
+        ],
+        output: [
+          "error_clusters",
+          "cluster_analysis",
+        ],
+      },
+      {
+        step: 5,
+        component: "error_analyzer",
+        action: "Analyze errors",
+        input: [
+          "error_data",
+          "analysis_rules",
+        ],
+        output: [
+          "error_analysis",
+          "pattern_reports",
+        ],
+      },
+      {
+        step: 6,
+        component: "error_intelligence_engine",
+        action: "Generate intelligence",
+        input: [
+          "error_analysis",
+          "intelligence_rules",
+        ],
+        output: [
+          "error_insights",
+          "resolution_recommendations",
+        ],
+      },
+    ],
+    secondary_flows: [
+      {
+        flow_name: "error_processing",
+        components: [
+          "error_parser",
+          "error_validator",
+          "error_capture_engine",
+        ],
+        description: "Processes and validates error data",
+      },
+      {
+        flow_name: "error_analysis",
+        components: [
+          "error_analyzer",
+          "pattern_detector",
+          "error_classifier",
+        ],
+        description: "Analyzes errors and identifies patterns",
+      },
+      {
+        flow_name: "error_clustering",
+        components: [
+          "error_clusterer",
+          "similarity_analyzer",
+        ],
+        description: "Clusters similar errors together",
+      },
+    ],
+  },
+  security_boundaries: {
+    tier_0: {
+      components: [
+        "error_parser",
+        "error_validator",
+        "pattern_detector",
+        "severity_analyzer",
+        "similarity_analyzer",
+      ],
+      description: "Supporting components with basic security requirements",
+    },
+    tier_1: {
+      components: [
+        "error_capture_engine",
+        "error_classifier",
+        "error_clusterer",
+      ],
+      description: "Processing components with standard security requirements",
+    },
+    tier_2: {
+      components: [
+        "error_analyzer",
+        "error_intelligence_engine",
+      ],
+      description: "Core components with comprehensive security requirements",
+    },
+  },
+  performance_characteristics: {
+    latency: {
+      error_capture: "< 1 second",
+      error_analysis: "< 5 seconds",
+      error_classification: "< 2 seconds",
+      error_clustering: "< 10 seconds",
+    },
+    throughput: {
+      errors_per_minute: 5000,
+      analyses_per_hour: 1000,
+      classifications_per_hour: 2000,
+      clusters_per_hour: 500,
+    },
+    resource_usage: {
+      cpu_usage: "< 40%",
+      memory_usage: "< 300MB",
+      disk_usage: "< 1.5GB",
+    },
+  },
+  monitoring_points: [
+    {
+      point_id: "error_capture_rate",
+      name: "Error Capture Rate",
+      type: "counter",
+      description: "Number of errors captured per minute",
+    },
+    {
+      point_id: "error_analysis_time",
+      name: "Error Analysis Time",
+      type: "duration",
+      description: "Time taken for error analysis",
+    },
+    {
+      point_id: "error_classification_accuracy",
+      name: "Error Classification Accuracy",
+      type: "percentage",
+      description: "Percentage of correctly classified errors",
+    },
+    {
+      point_id: "error_clustering_quality",
+      name: "Error Clustering Quality",
+      type: "gauge",
+      description: "Quality of error clustering",
+    },
+  ],
+  error_handling: {
+    retry_policies: {
+      error_capture: "3 retries with exponential backoff",
+      error_analysis: "2 retries with linear backoff",
+      error_classification: "3 retries with exponential backoff",
+    },
+    circuit_breakers: {
+      intelligence_service: "Open after 5 consecutive failures",
+      analysis_service: "Open after 3 consecutive failures",
+    },
+    fallback_strategies: {
+      error_capture_failure: "Use cached error data",
+      error_analysis_failure: "Use simplified analysis",
+      error_classification_failure: "Use basic classification",
+    },
+  },
+  deployment_considerations: {
+    scalability: {
+      horizontal_scaling: "Supported via load balancer",
+      vertical_scaling: "Supported via resource allocation",
+      auto_scaling: "Supported via metrics-based scaling",
+    },
+    availability: {
+      target_uptime: "99.9%",
+      redundancy: "Multi-instance deployment",
+      failover: "Automatic failover to standby instances",
+    },
+    maintenance: {
+      rolling_updates: "Supported",
+      downtime: "Minimal during updates",
+      rollback: "Supported via version management",
+    },
+  },
+  metadata: {
+    created: "2025-01-27T20:50:00Z",
+    updated: "2025-11-02T17:05:00Z",
+    author: "aether",
+    status: "production",
+    version: "1.0.0",
+  },
+  confidenceRouting: {
+    high: "Read T0 executive summary (100 words) or code directly",
+    medium: "Read T0 + T1 overview (500 words) + T2 architecture (2k words)",
+    low: "Read T0 + T1 + T2 + T3 detailed (10k words)",
+    veryLow: "Read T0 + T1 + T2 + T3 + T4 complete (15k+ words) or ask for help",
+  },
+  relatedSystems: [
+    {
+      system: "cas",
+      relationship: "Error Intelligence System provides error analysis to CAS for cognitive patterns",
+      whenToUse: "When implementing cognitive analysis or understanding error patterns",
+      docs: [
+        "systems/cognitive_analysis/T2_architecture.md#error-intelligence",
+      ],
+      priority: "required",
+    },
+    {
+      system: "cmc",
+      relationship: "Error Intelligence System stores error data in CMC",
+      whenToUse: "When implementing error storage or understanding memory persistence",
+      docs: [
+        "systems/cmc/T2_architecture.md#error-intelligence",
+      ],
+      priority: "required",
+    },
+    {
+      system: "sdfcvf",
+      relationship: "Error Intelligence System uses SDF-CVF for quality validation",
+      whenToUse: "When implementing quality gates or understanding error impact analysis",
+      docs: [
+        "systems/sdfcvf/T2_architecture.md#error-intelligence",
+      ],
+      priority: "required",
+    },
+  ],
+  documentation: {
+    T0: "knowledge_architecture/systems/error_intelligence_system/T0_executive.md",
+    T1: "knowledge_architecture/systems/error_intelligence_system/T1_overview.md",
+    T2: "knowledge_architecture/systems/error_intelligence_system/T2_architecture.md",
+    T3: "knowledge_architecture/systems/error_intelligence_system/T3_detailed.md",
+    T4: "knowledge_architecture/systems/error_intelligence_system/T4_complete.md",
+  },
+}

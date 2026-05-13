@@ -1,0 +1,31 @@
+{
+  "system_slug": "nginx",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-08",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "INFERRED",
+      "notes": "Typical deployments on Linux server hosts."
+    },
+    {
+      "type": "competes_with",
+      "target": "haproxy",
+      "evidence_tier": "INFERRED",
+      "notes": "Overlapping reverse-proxy and LB deployments."
+    },
+    {
+      "type": "competes_with",
+      "target": "envoy",
+      "evidence_tier": "INFERRED",
+      "notes": "Overlapping L7 edge patterns in cloud-native stacks."
+    },
+    {
+      "type": "integrates_with",
+      "target": "http3",
+      "evidence_tier": "INFERRED",
+      "notes": "HTTP/3 support depends on NGINX edition and build; verify per product line."
+    }
+  ]
+}

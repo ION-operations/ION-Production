@@ -1,0 +1,83 @@
+{
+  "formatVersion": 1,
+  "kind": "ion-terrain-forcing-atlas",
+  "createdAt": "2026-02-25T17:15:13.978Z",
+  "source": {
+    "engine": "ION-LucidEngine",
+    "script": "src/scripts/bake-terrain-atlas.ts",
+    "seed": 42,
+    "seaLevel": 0.38,
+    "width": 32,
+    "height": 16,
+    "quality": "normal",
+    "analysisToggles": [
+      "climate",
+      "coastal",
+      "atmospheric",
+      "vegetation"
+    ]
+  },
+  "uvConvention": {
+    "u": "longitude wrap [0,1)",
+    "v": "latitude [0,1]",
+    "latFormula": "(v - 0.5) * PI",
+    "lonFormula": "(u - 0.5) * 2*PI",
+    "orientationStatus": "verify with ION_CODEX Weather debug mode 12"
+  },
+  "terrainFlipY": true,
+  "sampling": {
+    "terrainFlipY": true
+  },
+  "width": 32,
+  "height": 16,
+  "files": {
+    "uTerrainForcingA": "terrain_forcing_A.png",
+    "uTerrainForcingB": "terrain_forcing_B.png"
+  },
+  "channelOrder": {
+    "uTerrainForcingA": "R=elevationNorm,G=landMask,B=coastDistNorm,A=roughnessDrag",
+    "uTerrainForcingB": "R=evapPotential,G=heatCapacity,B=orographicBase,A=leeShadowBase"
+  },
+  "normalization": {
+    "coastDistance": "normalized CoastalAnalysis.coastDistance",
+    "roughnessDrag": "normalized ROUGHNESS field",
+    "evapPotential": "heuristic from ocean/land + HUMIDITY field if available",
+    "heatCapacity": "ocean=0.85, land=0.25 heuristic",
+    "orographicBase": "derived from SLOPE + RELIEF_LOCAL",
+    "leeShadowBase": "normalized ClimateAnalysis.rainShadow"
+  },
+  "stats": {
+    "heightField": {
+      "min": 0.3987908959388733,
+      "max": 0.5565463304519653
+    },
+    "elevNorm": {
+      "min": 0.030307896435260773,
+      "max": 0.28475216031074524
+    },
+    "coastDist": {
+      "min": 0,
+      "max": 0
+    },
+    "roughDrag": {
+      "min": 0,
+      "max": 1
+    },
+    "evapPotential": {
+      "min": 0.04169802367687225,
+      "max": 0.2728523313999176
+    },
+    "heatCapacity": {
+      "min": 0.25,
+      "max": 0.25
+    },
+    "orographicBase": {
+      "min": 0.43064191937446594,
+      "max": 1
+    },
+    "leeShadowBase": {
+      "min": 0,
+      "max": 1
+    }
+  }
+}

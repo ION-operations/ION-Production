@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIM-OS — Joint Operations Center</title>
+    <meta name="description" content="AIM-OS JOC — Full OS Command Center">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div id="app">
+        <!-- Header Bar -->
+        <header id="header">
+            <div class="header-left">
+                <div class="logo">
+                    <span class="logo-icon">◈</span>
+                    <span class="logo-text">AIM-OS</span>
+                    <span class="logo-version">JOC v2.0</span>
+                </div>
+            </div>
+            <div class="header-center">
+                <div id="state-indicator" class="state-badge state-idle">
+                    <span class="state-dot"></span>
+                    <span class="state-text">IDLE</span>
+                </div>
+            </div>
+            <div class="header-right">
+                <button id="btn-kill" class="btn btn-danger" title="Kill Switch (Ctrl+Shift+F12)">
+                    <span class="btn-icon">⚡</span> KILL
+                </button>
+                <button id="btn-status" class="btn btn-secondary" title="System Status">
+                    <span class="btn-icon">◉</span> STATUS
+                </button>
+            </div>
+        </header>
+
+        <!-- Tab Navigation -->
+        <nav id="tab-bar">
+            <button class="tab active" data-tab="dashboard">
+                <span class="tab-icon">⬡</span> Dashboard
+            </button>
+            <button class="tab" data-tab="services">
+                <span class="tab-icon">⚙</span> Services
+            </button>
+            <button class="tab" data-tab="agents">
+                <span class="tab-icon">◈</span> Agents
+            </button>
+            <button class="tab" data-tab="console">
+                <span class="tab-icon">▸</span> Console
+            </button>
+            <button class="tab" data-tab="vault">
+                <span class="tab-icon">🔐</span> Vault
+            </button>
+            <button class="tab" data-tab="seer">
+                <span class="tab-icon">👁</span> SEER
+            </button>
+        </nav>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- TAB: Dashboard (Overview)                   -->
+        <!-- ═══════════════════════════════════════════ -->
+        <div id="tab-dashboard" class="tab-content active">
+            <div class="dashboard-grid">
+                <!-- System Summary -->
+                <div class="dash-card dash-card-wide">
+                    <div class="dash-card-header">
+                        <h3>System Overview</h3>
+                        <span class="dash-badge online">OPERATIONAL</span>
+                    </div>
+                    <div class="dash-metrics">
+                        <div class="dash-metric">
+                            <span class="dash-metric-value" id="dash-services-up">0</span>
+                            <span class="dash-metric-label">Services Online</span>
+                        </div>
+                        <div class="dash-metric">
+                            <span class="dash-metric-value" id="dash-agents-active">0</span>
+                            <span class="dash-metric-label">Active Agents</span>
+                        </div>
+                        <div class="dash-metric">
+                            <span class="dash-metric-value" id="dash-vault-keys">0</span>
+                            <span class="dash-metric-label">Vault Credentials</span>
+                        </div>
+                        <div class="dash-metric">
+                            <span class="dash-metric-value" id="dash-seer-elements">0</span>
+                            <span class="dash-metric-label">SEER Elements</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Service Status -->
+                <div class="dash-card">
+                    <div class="dash-card-header">
+                        <h3>Service Health</h3>
+                    </div>
+                    <div id="dash-service-list" class="dash-service-list">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="dash-card">
+                    <div class="dash-card-header">
+                        <h3>Recent Activity</h3>
+                    </div>
+                    <div id="dash-activity" class="dash-activity">
+                        <div class="activity-item">
+                            <span class="activity-dot dot-cyan"></span>
+                            <span class="activity-text">JOC initialized</span>
+                            <span class="activity-time">now</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- TAB: Services                               -->
+        <!-- ═══════════════════════════════════════════ -->
+        <div id="tab-services" class="tab-content">
+            <div class="services-header">
+                <h2>Service Management</h2>
+                <div class="services-actions">
+                    <button id="btn-refresh-all" class="btn btn-primary btn-sm">↻ Refresh All</button>
+                    <button id="btn-start-all" class="btn btn-sm">▸ Start All</button>
+                </div>
+            </div>
+            <div id="services-grid" class="services-grid">
+                <!-- Service cards populated by JS -->
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- TAB: Agents                                 -->
+        <!-- ═══════════════════════════════════════════ -->
+        <div id="tab-agents" class="tab-content">
+            <div class="agents-layout">
+                <!-- Agent Fleet Panel -->
+                <aside id="fleet-panel">
+                    <div class="panel-header">
+                        <h2>Agent Fleet</h2>
+                        <button id="btn-add-webview" class="btn btn-primary btn-sm">+ Add Agent</button>
+                    </div>
+                    <div id="webview-list" class="fleet-list">
+                        <div class="fleet-empty">
+                            <p>No agents deployed.</p>
+                            <p class="hint">Click "Add Agent" to spawn an LLM webview.</p>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Agent Detail / Console -->
+                <section id="agent-detail">
+                    <div class="panel-header">
+                        <h2>Agent Communication</h2>
+                    </div>
+                    <div id="agent-messages" class="agent-messages">
+                        <div class="fleet-empty">
+                            <p>Select an agent to view messages.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Agent Roster -->
+                <aside id="agent-roster">
+                    <div class="panel-header">
+                        <h2>Team Roster</h2>
+                    </div>
+                    <div class="roster-list">
+                        <div class="roster-agent">
+                            <span class="roster-dot dot-cyan"></span>
+                            <span class="roster-name">Opus</span>
+                            <span class="roster-role">COO</span>
+                        </div>
+                        <div class="roster-agent">
+                            <span class="roster-dot dot-green"></span>
+                            <span class="roster-name">Sev</span>
+                            <span class="roster-role">GPT-5.2</span>
+                        </div>
+                        <div class="roster-agent">
+                            <span class="roster-dot dot-purple"></span>
+                            <span class="roster-name">Codex</span>
+                            <span class="roster-role">Backend</span>
+                        </div>
+                        <div class="roster-agent">
+                            <span class="roster-dot dot-amber"></span>
+                            <span class="roster-name">Gemini</span>
+                            <span class="roster-role">Vision</span>
+                        </div>
+                        <div class="roster-agent">
+                            <span class="roster-dot dot-red"></span>
+                            <span class="roster-name">Composer</span>
+                            <span class="roster-role">Audit</span>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- TAB: Console                                -->
+        <!-- ═══════════════════════════════════════════ -->
+        <div id="tab-console" class="tab-content">
+            <section id="console-panel">
+                <div class="panel-header">
+                    <h2>Command Console</h2>
+                    <div class="console-controls">
+                        <button id="btn-clear" class="btn btn-ghost btn-sm">Clear</button>
+                    </div>
+                </div>
+                <div id="console-output" class="console-output">
+                    <div class="console-line system">
+                        <span class="timestamp">[BOOT]</span>
+                        <span class="message">AIM-OS JOC v2.0 — Joint Operations Center</span>
+                    </div>
+                    <div class="console-line system">
+                        <span class="timestamp">[BOOT]</span>
+                        <span class="message">Kill Switch: Ctrl+Shift+F12 | Services: polling</span>
+                    </div>
+                    <div class="console-line system">
+                        <span class="timestamp">[BOOT]</span>
+                        <span class="message">Ready for operations.</span>
+                    </div>
+                </div>
+                <div class="console-input-wrapper">
+                    <span class="console-prompt">JOC&gt;</span>
+                    <input type="text" id="console-input" class="console-input"
+                        placeholder="Enter command or natural language task..." autocomplete="off" spellcheck="false">
+                    <button id="btn-send" class="btn btn-primary">⏎</button>
+                </div>
+            </section>
+        </div>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- TAB: Credential Vault                       -->
+        <!-- ═══════════════════════════════════════════ -->
+        <div id="tab-vault" class="tab-content">
+            <div class="vault-layout">
+                <div class="vault-header">
+                    <div>
+                        <h2>Credential Vault</h2>
+                        <p class="vault-subtitle">Encrypted server-side storage. Values never returned to UI after
+                            creation.</p>
+                    </div>
+                    <div class="vault-actions">
+                        <button id="btn-vault-refresh" class="btn btn-sm">↻ Refresh</button>
+                        <button id="btn-vault-add" class="btn btn-primary btn-sm">+ Add Credential</button>
+                    </div>
+                </div>
+
+                <!-- Credential List -->
+                <div id="vault-list" class="vault-list">
+                    <div class="vault-empty">
+                        <p>No credentials stored.</p>
+                        <p class="hint">Add API keys, tokens, and service credentials.</p>
+                    </div>
+                </div>
+
+                <!-- Usage Stats -->
+                <div class="vault-stats">
+                    <div class="panel-header">
+                        <h2>Usage & Limits</h2>
+                    </div>
+                    <div id="vault-usage" class="vault-usage-grid">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- TAB: SEER                                   -->
+        <!-- ═══════════════════════════════════════════ -->
+        <div id="tab-seer" class="tab-content">
+            <div class="seer-layout">
+                <div class="seer-header">
+                    <h2>SEER — Desktop Automation</h2>
+                    <div class="seer-actions">
+                        <button id="btn-seer-discover" class="btn btn-primary btn-sm">🔍 Discover Elements</button>
+                        <button id="btn-seer-screenshot" class="btn btn-sm">📸 Screenshot</button>
+                    </div>
+                </div>
+
+                <div class="seer-grid">
+                    <!-- Element Library Stats -->
+                    <div class="seer-card">
+                        <div class="dash-card-header">
+                            <h3>Element Library</h3>
+                        </div>
+                        <div class="seer-stats">
+                            <div class="dash-metric">
+                                <span class="dash-metric-value" id="seer-apps">0</span>
+                                <span class="dash-metric-label">Applications</span>
+                            </div>
+                            <div class="dash-metric">
+                                <span class="dash-metric-value" id="seer-pages">0</span>
+                                <span class="dash-metric-label">Pages</span>
+                            </div>
+                            <div class="dash-metric">
+                                <span class="dash-metric-value" id="seer-elements">0</span>
+                                <span class="dash-metric-label">Elements</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Gemini Integration -->
+                    <div class="seer-card">
+                        <div class="dash-card-header">
+                            <h3>Gemini Integration</h3>
+                        </div>
+                        <div class="gemini-status">
+                            <div class="gemini-path">
+                                <span class="gemini-label">API</span>
+                                <span id="gemini-api-status" class="status-indicator status-unknown">Unknown</span>
+                            </div>
+                            <div class="gemini-path">
+                                <span class="gemini-label">CLI</span>
+                                <span id="gemini-cli-status" class="status-indicator status-unknown">Unknown</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Automations -->
+                    <div class="seer-card">
+                        <div class="dash-card-header">
+                            <h3>Automations</h3>
+                        </div>
+                        <div id="seer-automations" class="seer-automations">
+                            <div class="fleet-empty">
+                                <p>No automations yet.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Actions -->
+                    <div class="seer-card">
+                        <div class="dash-card-header">
+                            <h3>Action Log</h3>
+                        </div>
+                        <div id="seer-log" class="seer-log">
+                            <div class="activity-item">
+                                <span class="activity-dot dot-cyan"></span>
+                                <span class="activity-text">SEER engine ready</span>
+                                <span class="activity-time">now</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Credential Modal -->
+    <div id="modal-add-credential" class="modal hidden">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <h2>Add Credential</h2>
+            <div class="form-group">
+                <label for="vault-provider">Provider</label>
+                <select id="vault-provider">
+                    <option value="gemini">Gemini</option>
+                    <option value="openai">OpenAI</option>
+                    <option value="anthropic">Anthropic</option>
+                    <option value="elevenlabs">ElevenLabs</option>
+                    <option value="chatgpt">ChatGPT</option>
+                    <option value="meshy">Meshy</option>
+                    <option value="custom">Custom</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="vault-label">Label</label>
+                <input type="text" id="vault-label" placeholder="e.g., gemini-pro-key" autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label for="vault-api-key">API Key / Token</label>
+                <input type="password" id="vault-api-key" placeholder="sk-..." autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label for="vault-email">Email (optional)</label>
+                <input type="email" id="vault-email" placeholder="user@example.com" autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label for="vault-limit-hour">Max Calls / Hour (optional)</label>
+                <input type="number" id="vault-limit-hour" placeholder="100" autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label for="vault-limit-day">Max Calls / Day (optional)</label>
+                <input type="number" id="vault-limit-day" placeholder="1000" autocomplete="off">
+            </div>
+            <div class="modal-actions">
+                <button id="btn-vault-cancel" class="btn btn-ghost">Cancel</button>
+                <button id="btn-vault-save" class="btn btn-primary">Save Credential</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Webview Modal -->
+    <div id="modal-add-webview" class="modal hidden">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <h2>Deploy Agent</h2>
+            <div class="form-group">
+                <label for="input-webview-id">Agent ID</label>
+                <input type="text" id="input-webview-id" placeholder="e.g., gemini-1, chatgpt-1" autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label for="select-provider">Provider</label>
+                <select id="select-provider">
+                    <option value="https://chatgpt.com">ChatGPT</option>
+                    <option value="https://gemini.google.com/app">Gemini</option>
+                    <option value="custom">Custom URL...</option>
+                </select>
+            </div>
+            <div class="form-group hidden" id="custom-url-group">
+                <label for="input-custom-url">Custom URL</label>
+                <input type="text" id="input-custom-url" placeholder="https://..." autocomplete="off">
+            </div>
+            <div class="form-group">
+                <label for="select-role">Role</label>
+                <select id="select-role">
+                    <option value="general">General</option>
+                    <option value="architect">Architect (Reasoning/Planning)</option>
+                    <option value="executor">Executor (Code/Syntax)</option>
+                </select>
+            </div>
+            <div class="modal-actions">
+                <button id="btn-modal-cancel" class="btn btn-ghost">Cancel</button>
+                <button id="btn-modal-deploy" class="btn btn-primary">Deploy Agent</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+
+</html>

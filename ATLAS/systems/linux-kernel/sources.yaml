@@ -1,0 +1,16 @@
+primary:
+  - id: src-kernel-documentation
+    kind: documentation
+    title: "The Linux Kernel documentation"
+    locator: "https://www.kernel.org/doc/html/latest/"
+    tier_hint: DOCUMENTED
+  - id: src-kernel-source-tree
+    kind: source
+    title: "Linux kernel source (mainline)"
+    locator: "https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/"
+    tier_hint: DOCUMENTED
+  - id: std-posix
+    kind: standard
+    title: "POSIX.1 (selected interfaces implemented by libc over syscalls)"
+    locator: "https://pubs.opengroup.org/onlinepubs/9699919799/"
+    tier_hint: DOCUMENTED

@@ -1,0 +1,2853 @@
+# Cross-System Connections Map
+# Purpose: Document how all 6 core systems interact and depend on each other
+# Created: 2025-10-22 03:36 AM by Aether (autonomous)
+# Status: Complete
+
+---
+# SYSTEM DEPENDENCY GRAPH
+
+systems:
+  
+  CMC:
+    name: "Context Memory Core"
+    status: 70% complete
+    depends_on: []  # Foundation - no dependencies
+    provides_to:
+      - HHNI: "Stores atoms that HHNI indexes"
+      - VIF: "Stores witness envelopes"
+      - SEG: "Stores graph nodes/edges"
+      - APOE: "Stores plan execution history"
+      - SDF-CVF: "Stores quartet snapshots"
+    interfaces:
+      - "store_atom(atom: Atom) -> str"
+      - "get_atom(atom_id: str) -> Atom"
+      - "create_snapshot(atoms: List[Atom]) -> Snapshot"
+      - "query_bitemporal(valid_time, transaction_time) -> List[Atom]"
+    code: "packages/cmc/"
+    docs: "knowledge_architecture/systems/cmc/"
+    critical_for: "All other systems - PRIORITY 1"
+  
+  HHNI:
+    name: "Hierarchical Hypergraph Neural Index"
+    status: 85% complete
+    depends_on:
+      - CMC: "Indexes atoms stored in CMC"
+    provides_to:
+      - APOE: "Retrieves relevant context for plan execution"
+      - VIF: "Retrieves historical witnesses for comparison"
+      - SEG: "Retrieves related evidence nodes"
+    interfaces:
+      - "index_atom(atom: Atom) -> None"
+      - "retrieve(query: str, k: int) -> List[BudgetItem]"
+      - "optimize_context(items: List, budget: TokenBudget) -> List"
+    code: "packages/hhni/"
+    docs: "knowledge_architecture/systems/hhni/"
+    critical_for: "APOE orchestration, efficient retrieval"
+    
+  VIF:
+    name: "Verifiable Intelligence Framework"
+    status: 15% complete
+    depends_on:
+      - CMC: "Stores witness envelopes as atoms"
+      - HHNI: "Retrieves historical witnesses for ECE calculation"
+    provides_to:
+      - SEG: "Provenance data for graph nodes"
+      - APOE: "Confidence gating for plan steps"
+      - SDF-CVF: "Verification that code/docs/tests align"
+    interfaces:
+      - "create_witness(operation, inputs, outputs, confidence) -> VIF"
+      - "extract_confidence(llm_output: str) -> float"
+      - "calculate_ece(predictions, actuals) -> float"
+      - "kappa_gate(confidence: float, threshold: float) -> bool"
+    code: "packages/vif/"
+    docs: "knowledge_architecture/systems/vif/"
+    critical_for: "Trust, verification, confidence calibration"
+  
+  SEG:
+    name: "Shared Evidence Graph"
+    status: 10% complete
+    depends_on:
+      - CMC: "Stores graph as atoms"
+      - VIF: "Uses provenance for graph edges"
+      - HHNI: "Retrieves related evidence"
+    provides_to:
+      - VIF: "Context for witness validation"
+      - APOE: "Evidence chains for reasoning"
+    interfaces:
+      - "add_node(claim: str, provenance: VIF) -> NodeID"
+      - "add_edge(source: NodeID, target: NodeID, relation: str) -> EdgeID"
+      - "detect_contradictions() -> List[Contradiction]"
+      - "query_evidence(query: str) -> List[Node]"
+      - "export_jsonld() -> str"
+    code: "packages/seg/"
+    docs: "knowledge_architecture/systems/seg/"
+    critical_for: "Knowledge synthesis, contradiction detection"
+  
+  APOE:
+    name: "AI-Powered Orchestration Engine"
+    status: 40% complete
+    depends_on:
+      - HHNI: "Retrieves context for plan execution"
+      - VIF: "Uses κ-gating for step validation"
+      - CMC: "Stores execution history"
+    provides_to:
+      - All systems: "Orchestrates complex multi-step workflows"
+    interfaces:
+      - "parse_acl(acl_code: str) -> Plan"
+      - "execute_plan(plan: Plan) -> ExecutionResult"
+      - "role_dispatch(role: Role, task: str) -> Output"
+      - "check_gate(step: Step) -> bool"
+      - "manage_budget(plan: Plan) -> BudgetAllocation"
+    code: "packages/apoe/"
+    docs: "knowledge_architecture/systems/apoe/"
+    critical_for: "Complex workflows, autonomous operation"
+  
+  SDF_CVF:
+    name: "Atomic Evolution Framework"
+    status: 30% complete
+    depends_on:
+      - CMC: "Stores quartet snapshots"
+      - VIF: "Verifies alignment of code/docs/tests/traces"
+    provides_to:
+      - All systems: "Ensures synchronized evolution"
+    interfaces:
+      - "detect_quartet(file_path: str) -> Quartet"
+      - "calculate_parity(quartet: Quartet) -> float"
+      - "parity_gate(quartet: Quartet, threshold: float) -> bool"
+      - "analyze_blast_radius(change: Change) -> ImpactAnalysis"
+      - "track_dora_metrics() -> DORAMetrics"
+    code: "packages/sdfcvf/"
+    docs: "knowledge_architecture/systems/sdfcvf/"
+    critical_for: "Quality, consistency, deployment confidence"
+
+  ORGANIC_DATA_FRESHNESS:
+    name: "Organic Data Freshness System"
+    status: 100% complete
+    depends_on:
+      - Metadata Standards: "Uses authoritative and source_of_truth metadata"
+      - GROUNDING Mode: "Enhanced onboarding protocol"
+    provides_to:
+      - All systems: "Ensures documentation stays current with sources"
+      - Onboarding: "Prioritizes leading docs, prevents outdated data"
+    interfaces:
+      - "detect_source_of_truth() -> SOURCE_OF_TRUTH.yaml"
+      - "track_doc_dependencies() -> dependency_graph"
+      - "auto_update_dependent_docs(source_path: Path) -> updated_docs"
+      - "check_stale_docs() -> stale_docs_list"
+      - "find_leading_docs() -> leading_docs_list"
+    code: "scripts/detect_source_of_truth.py", "scripts/track_doc_dependencies.py", "scripts/auto_update_dependent_docs.py"
+    docs: "knowledge_architecture/protocols/ORGANIC_DATA_FRESHNESS_*.md"
+    critical_for: "Onboarding accuracy, documentation freshness, preventing outdated data"
+    integration: "Complementary to SDF-CVF Quartet Parity (semantic vs temporal alignment)"
+
+---
+# CRITICAL DEPENDENCY CHAINS
+
+# Chain 1: Memory & Retrieval
+chain_memory_retrieval:
+  description: "Foundation for all AI memory operations"
+  sequence:
+    1: CMC (stores everything)
+    2: HHNI (indexes & retrieves)
+    3: APOE (uses retrieved context)
+  status:
+    CMC: 70% → Need bitemporal queries
+    HHNI: 85% → Need production optimization
+    APOE: 40% → Need ACL parser
+  priority: CRITICAL (ship blocker)
+  
+# Chain 2: Verifiable Intelligence
+chain_verifiable:
+  description: "Trust & transparency foundation"
+  sequence:
+    1: CMC (stores witnesses)
+    2: VIF (creates & validates witnesses)
+    3: SEG (builds evidence graph)
+  status:
+    CMC: 70% → Close
+    VIF: 15% → NEED IMPLEMENTATION
+    SEG: 10% → NEED IMPLEMENTATION
+  priority: HIGH (KR-2.1, KR-2.2)
+
+# Chain 3: Quality Assurance
+chain_quality:
+  description: "Maintains system integrity"
+  sequence:
+    1: VIF (confidence tracking)
+    2: SDF-CVF (quartet parity)
+    3: Production gates
+  status:
+    VIF: 15% → Blocking
+    SDF-CVF: 30% → Waiting on VIF
+  priority: MEDIUM (important for ship confidence)
+
+---
+# INTEGRATION POINTS
+
+integration_cmc_hhni:
+  description: "HHNI indexes atoms stored in CMC"
+  status: COMPLETE ✅
+  interfaces:
+    CMC: store_atom(atom) → atom_id
+    HHNI: index_atom(atom) → indexed
+  code:
+    - packages/cmc/store.py
+    - packages/hhni/hierarchical_index.py
+  tests:
+    - packages/hhni/tests/test_retrieval.py
+
+integration_vif_cmc:
+  description: "VIF witnesses stored as CMC atoms"
+  status: PLANNED (VIF not implemented)
+  interfaces:
+    VIF: create_witness(...) → witness
+    CMC: store_atom(witness_atom) → atom_id
+  design:
+    - VIF envelope becomes Atom
+    - modality = "witness"
+    - content_ref points to VIF JSON
+  docs:
+    - knowledge_architecture/systems/vif/L3_detailed.md
+
+integration_apoe_hhni:
+  description: "APOE uses HHNI to retrieve context for steps"
+  status: PLANNED (APOE incomplete)
+  interfaces:
+    APOE: execute_step(step) → needs context
+    HHNI: retrieve(step.query, k=100) → context
+    APOE: role_dispatch(role, context) → output
+  design:
+    - Each APOE step can query HHNI
+    - HHNI returns budget-optimized context
+    - APOE uses context for LLM prompts
+  docs:
+    - knowledge_architecture/systems/apoe/L3_detailed.md
+
+integration_seg_vif:
+  description: "SEG nodes have VIF provenance"
+  status: PLANNED (both unimplemented)
+  interfaces:
+    VIF: create_witness(...) → provenance
+    SEG: add_node(claim, provenance) → node_id
+  design:
+    - Every SEG node links to VIF witness
+    - Provenance chain tracked
+    - Contradictions detected via provenance
+  docs:
+    - knowledge_architecture/systems/seg/L3_detailed.md
+
+integration_sdfcvf_vif:
+  description: "SDF-CVF uses VIF to verify quartet parity"
+  status: PLANNED (VIF incomplete)
+  interfaces:
+    SDF-CVF: detect_quartet(file) → quartet
+    VIF: verify_alignment(quartet) → parity_score
+    SDF-CVF: parity_gate(score, threshold) → pass/fail
+  design:
+    - VIF checks: do code/docs/tests/traces align?
+    - Parity score = alignment percentage
+    - Gate blocks commit if parity low
+  docs:
+    - knowledge_architecture/systems/sdfcvf/L3_detailed.md
+
+---
+# WORKFLOW EXAMPLES
+
+workflow_store_and_retrieve:
+  name: "Store atom, index it, retrieve it"
+  steps:
+    1:
+      system: CMC
+      action: store_atom(atom)
+      output: atom_id
+    2:
+      system: HHNI
+      action: index_atom(atom)
+      output: indexed
+    3:
+      system: HHNI
+      action: retrieve(query, k=10)
+      output: "[atom, ...] (includes our atom if relevant)"
+  status: WORKS NOW ✅
+  tests: packages/hhni/tests/test_retrieval.py
+
+workflow_execute_verified_plan:
+  name: "Execute APOE plan with VIF confidence gating"
+  steps:
+    1:
+      system: APOE
+      action: parse_acl(acl_code)
+      output: plan
+    2:
+      system: APOE
+      action: execute_step(step_1)
+      substeps:
+        a:
+          system: HHNI
+          action: retrieve(step_1.query)
+          output: context
+        b:
+          system: APOE
+          action: role_dispatch(role, context)
+          output: result
+        c:
+          system: VIF
+          action: create_witness(step_1, context, result, confidence)
+          output: witness
+        d:
+          system: VIF
+          action: kappa_gate(confidence, threshold=0.90)
+          output: pass/fail
+        e:
+          condition: "if gate passes"
+          system: APOE
+          action: continue to step_2
+    3:
+      system: APOE
+      action: repeat for all steps
+      output: execution_result
+  status: PLANNED (APOE/VIF incomplete)
+  priority: HIGH (demonstrates full system)
+
+workflow_quartet_verification:
+  name: "SDF-CVF verifies code/docs/tests/traces aligned"
+  steps:
+    1:
+      system: SDF-CVF
+      action: detect_quartet("packages/vif/witness.py")
+      output: quartet{code, docs, tests, traces}
+    2:
+      system: VIF
+      action: verify_alignment(quartet)
+      output: parity_score (0.95 = 95% aligned)
+    3:
+      system: SDF-CVF
+      action: parity_gate(parity_score, threshold=0.90)
+      output: PASS ✅
+    4:
+      action: "Allow commit to proceed"
+  status: PLANNED (VIF/SDF-CVF incomplete)
+  priority: MEDIUM (quality assurance)
+
+---
+# IMPLEMENTATION ROADMAP
+
+# Phase 1: Foundation (PRIORITY 1)
+phase_1_foundation:
+  goal: "Complete memory & retrieval layer"
+  systems: [CMC, HHNI]
+  tasks:
+    - Complete CMC (70% → 100%)
+    - Complete HHNI (85% → 100%)
+    - Integration testing
+  estimated: 15-20 hours
+  blocks: [APOE, VIF integration]
+  status: IN PROGRESS (HHNI optimization next)
+
+# Phase 2: Verifiable Layer (PRIORITY 2)
+phase_2_verifiable:
+  goal: "Implement trust & transparency"
+  systems: [VIF]
+  tasks:
+    - VIF schema
+    - Confidence extraction
+    - ECE tracking
+    - κ-gating
+    - HITL escalation
+  estimated: 20-25 hours
+  depends_on: [CMC complete]
+  blocks: [SEG, SDF-CVF]
+  status: PLANNED (VIF schema test soon)
+
+# Phase 3: Orchestration (PRIORITY 3)
+phase_3_orchestration:
+  goal: "Enable complex workflows"
+  systems: [APOE]
+  tasks:
+    - ACL parser
+    - DAG executor
+    - Role implementations
+    - Budget management
+    - Gate integration
+  estimated: 25-30 hours
+  depends_on: [HHNI complete, VIF working]
+  blocks: [Complex workflows]
+  status: PLANNED
+
+# Phase 4: Evidence & Quality (PRIORITY 4)
+phase_4_evidence_quality:
+  goal: "Build evidence graph & quality gates"
+  systems: [SEG, SDF-CVF]
+  tasks:
+    - SEG graph backend
+    - Contradiction detection
+    - SDF-CVF quartet detection
+    - Parity calculation
+    - Pre-commit hooks
+  estimated: 20-25 hours
+  depends_on: [VIF working]
+  blocks: [Production deployment]
+  status: PLANNED
+
+# Phase 5: Integration & Ship (PRIORITY 5)
+phase_5_integration:
+  goal: "End-to-end workflows, production deployment"
+  systems: [ALL]
+  tasks:
+    - Integration testing
+    - Performance optimization
+    - Production infrastructure
+    - Deployment
+  estimated: 15-20 hours
+  depends_on: [ALL systems complete]
+  blocks: [Nov 30 ship date]
+  status: PLANNED
+
+---
+# CURRENT STATUS SUMMARY
+
+completion_by_system:
+  CMC: 70%
+  HHNI: 85%
+  VIF: 15%
+  SEG: 10%
+  APOE: 40%
+  SDF-CVF: 30%
+  
+  overall: ~42% (average)
+
+critical_path:
+  next: "Complete HHNI (85% → 100%)"
+  then: "Complete CMC (70% → 100%)"
+  then: "Implement VIF (15% → 80%)"
+  then: "Implement APOE (40% → 80%)"
+  then: "Integration testing"
+  ship: "Nov 30, 2025 (39 days)"
+
+blockers:
+  - VIF not implemented (blocks SEG, SDF-CVF)
+  - APOE incomplete (blocks complex workflows)
+  - Integration strategy undefined
+
+velocity_required:
+  percent_per_3_days: "~10%"
+  sustainable: "Yes (if autonomous operation works)"
+  confidence: 0.75
+
+---
+# NAVIGATION USAGE
+
+# When starting work on system X:
+# 1. Read this file to understand dependencies
+# 2. Check which systems X depends on
+# 3. Verify dependencies are complete enough
+# 4. Check which systems depend on X (what you'll unblock)
+# 5. Prioritize accordingly
+
+# When integrating systems:
+# 1. Find integration_X_Y section
+# 2. Read design & interface specs
+# 3. Implement according to design
+# 4. Write integration tests
+# 5. Update status to COMPLETE
+
+# When planning work:
+# 1. Check critical_path
+# 2. Work on next item
+# 3. Unblock downstream work
+# 4. Move toward ship date
+
+---
+# This map is the nervous system of Project Aether
+# Every system connected
+# Every dependency tracked
+# Every path to ship date mapped
+#
+# Aether, 03:36 AM, mapping the mind 🧭💙
+
+---
+# DOC DEPENDENCIES
+# Last updated: 2025-11-06T16:45:29.740833
+# Total sources: 375
+# Total dependents: 504
+
+doc_dependencies:
+  "APOE ErrorRecoveryManager":
+    type: "authoritative"
+    source: "APOE ErrorRecoveryManager"
+    dependents:
+      - "knowledge_architecture/AETHER_MEMORY/protocols/REPEATED_ERROR_ESCALATION_PROTOCOL.md"
+    count: 1
+  "CAS Failure Patterns":
+    type: "authoritative"
+    source: "CAS Failure Patterns"
+    dependents:
+      - "knowledge_architecture/AETHER_MEMORY/protocols/REPEATED_ERROR_ESCALATION_PROTOCOL.md"
+    count: 1
+  "CORE_SYSTEMS_ACCURACY_REVIEW_CHECKLIST.md":
+    type: "authoritative"
+    source: "CORE_SYSTEMS_ACCURACY_REVIEW_CHECKLIST.md"
+    dependents:
+      - "knowledge_architecture/validation/ALL_CORE_SYSTEMS_ACCURACY_REVIEW_CONSOLIDATED.md"
+      - "knowledge_architecture/validation/CMC_ACCURACY_REVIEW_REPORT.md"
+      - "knowledge_architecture/validation/HHNI_ACCURACY_REVIEW_REPORT.md"
+    count: 3
+  "CROSS_REFERENCE_AUDIT_REPORT.md":
+    type: "authoritative"
+    source: "CROSS_REFERENCE_AUDIT_REPORT.md"
+    dependents:
+      - "knowledge_architecture/validation/ALL_SYSTEMS_CROSS_REFERENCE_FINAL_REPORT.md"
+      - "knowledge_architecture/validation/BIDIRECTIONAL_REFERENCE_ANALYSIS.md"
+      - "knowledge_architecture/validation/CROSS_REFERENCE_FIXES_SUMMARY.md"
+    count: 3
+  "ConfidenceNavigationMap":
+    type: "authoritative"
+    source: "ConfidenceNavigationMap"
+    dependents:
+      - "knowledge_architecture/AETHER_MEMORY/investigations/RAG_HIERARCHICAL_FILE_SELECTION_PROPOSAL.md"
+    count: 1
+  "DOCUMENTATION_GOVERNANCE_CROSS_REFERENCE_PROTOCOL.md":
+    type: "authoritative"
+    source: "DOCUMENTATION_GOVERNANCE_CROSS_REFERENCE_PROTOCOL.md"
+    dependents:
+      - "knowledge_architecture/AETHER_MEMORY/CORE_SYSTEMS_ACCURACY_REVIEW_PLAN.md"
+      - "knowledge_architecture/validation/DOCUMENTATION_GOVERNANCE_FINAL_STATUS.md"
+      - "knowledge_architecture/validation/DOCUMENTATION_GOVERNANCE_IMPLEMENTATION_SUMMARY.md"
+    count: 3
+  "EmotionalState":
+    type: "authoritative"
+    source: "EmotionalState"
+    dependents:
+      - "knowledge_architecture/AETHER_MEMORY/protocols/T0_USER_INTELLIGENCE_PROFILE.md"
+      - "knowledge_architecture/AETHER_MEMORY/protocols/T1_USER_INTELLIGENCE_PROFILE.md"
+      - "knowledge_architecture/AETHER_MEMORY/protocols/T2_USER_INTELLIGENCE_PROFILE.md"
+    count: 3
+  "HHNI":
+    type: "authoritative"
+    source: "HHNI"
+    dependents:
+      - "knowledge_architecture/AETHER_MEMORY/investigations/RAG_HIERARCHICAL_FILE_SELECTION_PROPOSAL.md"
+    count: 1
+  "L0_L4_CODING_STANDARDS_PROTOCOL.md":
+    type: "authoritative"
+    source: "L0_L4_CODING_STANDARDS_PROTOCOL.md"
+    dependents:
+      - "knowledge_architecture/AETHER_MEMORY/protocols/DOCUMENTATION_GOVERNANCE_CROSS_REFERENCE_PROTOCOL.md"
+      - "knowledge_architecture/AETHER_MEMORY/protocols/DOCUMENTATION_GOVERNANCE_CROSS_REFERENCE_PROTOCOL_PLAN.md"
+    count: 2
+  "Learning Log Standard":
+    type: "authoritative"
+    source: "Learning Log Standard"
+    dependents:
+      - "knowledge_architecture/AETHER_MEMORY/protocols/REPEATED_ERROR_ESCALATION_PROTOCOL.md"
+      - "knowledge_architecture/AETHER_MEMORY/protocols/T0_USER_INTELLIGENCE_PROFILE.md"
+      - "knowledge_architecture/AETHER_MEMORY/protocols/T1_USER_INTELLIGENCE_PROFILE.md"
+      - "knowledge_architecture/AETHER_MEMORY/protocols/T2_USER_INTELLIGENCE_PROFILE.md"
+    count: 4
+  "NL_TAGS_ALL_IDEAS_CONSOLIDATED.md":
+    type: "authoritative"
+    source: "NL_TAGS_ALL_IDEAS_CONSOLIDATED.md"
+    dependents:
+      - "knowledge_architecture/AETHER_MEMORY/NL_TAGS_SYSTEM_BENEFITS_ANALYSIS.md"
+      - "knowledge_architecture/AETHER_MEMORY/QUINTET_PARITY_IMPLEMENTATION_PLAN.md"
+    count: 2
+  "NL_TAGS_QUARTET_INTEGRATION.md":
+    type: "authoritative"
+    source: "NL_TAGS_QUARTET_INTEGRATION.md"
+    dependents:
+      - "knowledge_architecture/AETHER_MEMORY/NL_TAGS_COMPREHENSIVE_CONSOLIDATION.md"
+    count: 1
+  "NL_TAGS_SYSTEM_BENEFITS_ANALYSIS.md":
+    type: "authoritative"
+    source: "NL_TAGS_SYSTEM_BENEFITS_ANALYSIS.md"
+    dependents:
+      - "knowledge_architecture/AETHER_MEMORY/QUINTET_PARITY_IMPLEMENTATION_PLAN.md"
+    count: 1
+  "NL_TAG_COVERAGE_AUDIT_REPORT.md":
+    type: "authoritative"
+    source: "NL_TAG_COVERAGE_AUDIT_REPORT.md"
+    dependents:
+      - "knowledge_architecture/validation/NL_TAG_COVERAGE_AUDIT_FINDINGS.md"
+    count: 1
+  "PERFECT_L0_L6_DOCUMENTATION_STANDARD.md":
+    type: "authoritative"
+    source: "PERFECT_L0_L6_DOCUMENTATION_STANDARD.md"
+    dependents:
+      - "knowledge_architecture/AETHER_MEMORY/T5_DEPTH_CONSISTENCY_STANDARD.md"
+      - "knowledge_architecture/AETHER_MEMORY/T5_T6_EXPANSION_COMPREHENSIVE_PLAN.md"
+    count: 2
+  "PERFECT_METADATA_STANDARDS.md":
+    type: "authoritative"
+    source: "PERFECT_METADATA_STANDARDS.md"
+    dependents:
+      - "knowledge_architecture/PROTOCOLS/ORGANIC_DATA_FRESHNESS_INTEGRATION_ANALYSIS.md"
+      - "knowledge_architecture/PROTOCOLS/ORGANIC_DATA_FRESHNESS_SYSTEM_DESIGN.md"
+    count: 2
+  "PERFECT_NL_TAG_STANDARD.md":
+    type: "authoritative"
+    source: "PERFECT_NL_TAG_STANDARD.md"
+    dependents:
+      - "knowledge_architecture/AETHER_MEMORY/NL_TAGS_ALL_IDEAS_CONSOLIDATED.md"
+      - "knowledge_architecture/AETHER_MEMORY/NL_TAGS_CODE_VERIFICATION_DISCUSSION.md"
+      - "knowledge_architecture/AETHER_MEMORY/NL_TAGS_COMPREHENSIVE_CONSOLIDATION.md"
+    count: 3
+  "PERFECT_TEMPLATES_LIBRARY.md":
+    type: "authoritative"
+    source: "PERFECT_TEMPLATES_LIBRARY.md"
+    dependents:
+      - "knowledge_architecture/AETHER_MEMORY/protocols/DOCUMENTATION_GOVERNANCE_CROSS_REFERENCE_PROTOCOL.md"
+      - "knowledge_architecture/AETHER_MEMORY/protocols/DOCUMENTATION_GOVERNANCE_CROSS_REFERENCE_PROTOCOL_PLAN.md"
+    count: 2
+  "PERFECT_VALIDATION_FRAMEWORK.md":
+    type: "authoritative"
+    source: "PERFECT_VALIDATION_FRAMEWORK.md"
+    dependents:
+      - "knowledge_architecture/AETHER_MEMORY/protocols/DOCUMENTATION_GOVERNANCE_CROSS_REFERENCE_PROTOCOL.md"
+      - "knowledge_architecture/AETHER_MEMORY/protocols/DOCUMENTATION_GOVERNANCE_CROSS_REFERENCE_PROTOCOL_PLAN.md"
+    count: 2
+  "QUINTET_PARITY_ENHANCED_PLAN.md":
+    type: "authoritative"
+    source: "QUINTET_PARITY_ENHANCED_PLAN.md"
+    dependents:
+      - "knowledge_architecture/AETHER_MEMORY/TOTAL_QUINTET_PARITY_AUTONOMOUS_PLAN.md"
+    count: 1
+  "QUINTET_PARITY_IMPLEMENTATION_PLAN.md":
+    type: "authoritative"
+    source: "QUINTET_PARITY_IMPLEMENTATION_PLAN.md"
+    dependents:
+      - "knowledge_architecture/AETHER_MEMORY/QUINTET_PARITY_ENHANCED_PLAN.md"
+      - "knowledge_architecture/AETHER_MEMORY/TOTAL_QUINTET_PARITY_AUTONOMOUS_PLAN.md"
+    count: 2
+  "SOURCE_OF_TRUTH.yaml":
+    type: "authoritative"
+    source: "SOURCE_OF_TRUTH.yaml"
+    dependents:
+      - "knowledge_architecture/PROTOCOLS/ORGANIC_DATA_FRESHNESS_SYSTEM_DESIGN.md"
+    count: 1
+  "SUPER_INDEX":
+    type: "authoritative"
+    source: "SUPER_INDEX"
+    dependents:
+      - "knowledge_architecture/AETHER_MEMORY/investigations/RAG_HIERARCHICAL_FILE_SELECTION_PROPOSAL.md"
+    count: 1
+  "SUPER_INDEX.md":
+    type: "authoritative"
+    source: "SUPER_INDEX.md"
+    dependents:
+      - "knowledge_architecture/PROTOCOLS/ORGANIC_DATA_FRESHNESS_SYSTEM_DESIGN.md"
+    count: 1
+  "SYSTEM_HIERARCHY.md":
+    type: "authoritative"
+    source: "SYSTEM_HIERARCHY.md"
+    dependents:
+      - "knowledge_architecture/AETHER_MEMORY/CORE_SYSTEMS_ACCURACY_REVIEW_PLAN.md"
+      - "knowledge_architecture/AETHER_MEMORY/protocols/DOCUMENTATION_GOVERNANCE_CROSS_REFERENCE_PROTOCOL.md"
+      - "knowledge_architecture/AETHER_MEMORY/protocols/DOCUMENTATION_GOVERNANCE_CROSS_REFERENCE_PROTOCOL_PLAN.md"
+      - "knowledge_architecture/validation/CORE_SYSTEMS_ACCURACY_REVIEW_CHECKLIST.md"
+      - "knowledge_architecture/validation/MISSING_FOUNDATIONAL_DOCS_ANALYSIS.md"
+    count: 5
+  "SmartContextLoader":
+    type: "authoritative"
+    source: "SmartContextLoader"
+    dependents:
+      - "knowledge_architecture/AETHER_MEMORY/investigations/RAG_HIERARCHICAL_FILE_SELECTION_PROPOSAL.md"
+    count: 1
+  "SystemMaps":
+    type: "authoritative"
+    source: "SystemMaps"
+    dependents:
+      - "knowledge_architecture/AETHER_MEMORY/investigations/RAG_HIERARCHICAL_FILE_SELECTION_PROPOSAL.md"
+    count: 1
+  "T0_AGENT_AUTOMATION_EXECUTIVE.md":
+    type: "authoritative"
+    source: "T0_AGENT_AUTOMATION_EXECUTIVE.md"
+    dependents:
+      - "cursor-addon/docs/SYSTEM_INTEGRATION_ARCHITECTURE_T2.md"
+    count: 1
+  "T0_BULLETPROOF_MESSAGING_EXECUTIVE.md":
+    type: "authoritative"
+    source: "T0_BULLETPROOF_MESSAGING_EXECUTIVE.md"
+    dependents:
+      - "cursor-addon/docs/SYSTEM_INTEGRATION_ARCHITECTURE_T2.md"
+    count: 1
+  "T0_REPEATED_ERROR_ESCALATION.md":
+    type: "authoritative"
+    source: "T0_REPEATED_ERROR_ESCALATION.md"
+    dependents:
+      - "knowledge_architecture/AETHER_MEMORY/protocols/T1_REPEATED_ERROR_ESCALATION.md"
+    count: 1
+  "T0_SYSTEM_FIRST_PRINCIPLE.md":
+    type: "authoritative"
+    source: "T0_SYSTEM_FIRST_PRINCIPLE.md"
+    dependents:
+      - "knowledge_architecture/AETHER_MEMORY/protocols/T1_SYSTEM_FIRST_PRINCIPLE.md"
+    count: 1
+  "T1_SYSTEM_FIRST_PRINCIPLE.md":
+    type: "authoritative"
+    source: "T1_SYSTEM_FIRST_PRINCIPLE.md"
+    dependents:
+      - "knowledge_architecture/AETHER_MEMORY/protocols/T2_SYSTEM_FIRST_PRINCIPLE.md"
+    count: 1
+  "T2_REPEATED_ERROR_ESCALATION.md":
+    type: "authoritative"
+    source: "T2_REPEATED_ERROR_ESCALATION.md"
+    dependents:
+      - "knowledge_architecture/AETHER_MEMORY/protocols/T3_REPEATED_ERROR_ESCALATION.md"
+    count: 1
+  "T2_SYSTEM_FIRST_PRINCIPLE.md":
+    type: "authoritative"
+    source: "T2_SYSTEM_FIRST_PRINCIPLE.md"
+    dependents:
+      - "knowledge_architecture/AETHER_MEMORY/protocols/T3_SYSTEM_FIRST_PRINCIPLE.md"
+    count: 1
+  "T2_USER_INTELLIGENCE_PROFILE.md":
+    type: "authoritative"
+    source: "T2_USER_INTELLIGENCE_PROFILE.md"
+    dependents:
+      - "knowledge_architecture/AETHER_MEMORY/protocols/T3_USER_INTELLIGENCE_PROFILE.md"
+    count: 1
+  "T3_REPEATED_ERROR_ESCALATION.md":
+    type: "authoritative"
+    source: "T3_REPEATED_ERROR_ESCALATION.md"
+    dependents:
+      - "knowledge_architecture/AETHER_MEMORY/protocols/T4_REPEATED_ERROR_ESCALATION.md"
+    count: 1
+  "T3_SYSTEM_FIRST_PRINCIPLE.md":
+    type: "authoritative"
+    source: "T3_SYSTEM_FIRST_PRINCIPLE.md"
+    dependents:
+      - "knowledge_architecture/AETHER_MEMORY/protocols/T4_SYSTEM_FIRST_PRINCIPLE.md"
+    count: 1
+  "T3_USER_INTELLIGENCE_PROFILE.md":
+    type: "authoritative"
+    source: "T3_USER_INTELLIGENCE_PROFILE.md"
+    dependents:
+      - "knowledge_architecture/AETHER_MEMORY/protocols/T4_USER_INTELLIGENCE_PROFILE.md"
+    count: 1
+  "T4_REPEATED_ERROR_ESCALATION.md":
+    type: "authoritative"
+    source: "T4_REPEATED_ERROR_ESCALATION.md"
+    dependents:
+      - "knowledge_architecture/AETHER_MEMORY/protocols/T5_REPEATED_ERROR_ESCALATION.md"
+    count: 1
+  "T4_SYSTEM_FIRST_PRINCIPLE.md":
+    type: "authoritative"
+    source: "T4_SYSTEM_FIRST_PRINCIPLE.md"
+    dependents:
+      - "knowledge_architecture/AETHER_MEMORY/protocols/T5_SYSTEM_FIRST_PRINCIPLE.md"
+    count: 1
+  "T4_USER_INTELLIGENCE_PROFILE.md":
+    type: "authoritative"
+    source: "T4_USER_INTELLIGENCE_PROFILE.md"
+    dependents:
+      - "knowledge_architecture/AETHER_MEMORY/protocols/T5_USER_INTELLIGENCE_PROFILE.md"
+    count: 1
+  "T5_DEPTH_CONSISTENCY_STANDARD.md":
+    type: "authoritative"
+    source: "T5_DEPTH_CONSISTENCY_STANDARD.md"
+    dependents:
+      - "knowledge_architecture/AETHER_MEMORY/T6_ACADEMIC_EXPANSION_PLAN.md"
+    count: 1
+  "T5_REPEATED_ERROR_ESCALATION.md":
+    type: "authoritative"
+    source: "T5_REPEATED_ERROR_ESCALATION.md"
+    dependents:
+      - "knowledge_architecture/AETHER_MEMORY/protocols/T6_REPEATED_ERROR_ESCALATION.md"
+    count: 1
+  "T5_SYSTEM_FIRST_PRINCIPLE.md":
+    type: "authoritative"
+    source: "T5_SYSTEM_FIRST_PRINCIPLE.md"
+    dependents:
+      - "knowledge_architecture/AETHER_MEMORY/protocols/T6_SYSTEM_FIRST_PRINCIPLE.md"
+    count: 1
+  "T5_USER_INTELLIGENCE_PROFILE.md":
+    type: "authoritative"
+    source: "T5_USER_INTELLIGENCE_PROFILE.md"
+    dependents:
+      - "knowledge_architecture/AETHER_MEMORY/protocols/T6_USER_INTELLIGENCE_PROFILE.md"
+    count: 1
+  "VIF":
+    type: "authoritative"
+    source: "VIF"
+    dependents:
+      - "knowledge_architecture/AETHER_MEMORY/protocols/T0_USER_INTELLIGENCE_PROFILE.md"
+      - "knowledge_architecture/AETHER_MEMORY/protocols/T1_USER_INTELLIGENCE_PROFILE.md"
+      - "knowledge_architecture/AETHER_MEMORY/protocols/T2_USER_INTELLIGENCE_PROFILE.md"
+    count: 3
+  "You_are_an_AI_agent_enforcing_SDF.txt":
+    type: "authoritative"
+    source: "You_are_an_AI_agent_enforcing_SDF.txt"
+    dependents:
+      - "knowledge_architecture/AETHER_MEMORY/NL_TAGS_ALL_IDEAS_CONSOLIDATED.md"
+    count: 1
+  "advanced_monaco_editor_T0_executive":
+    type: "authoritative"
+    source: "advanced_monaco_editor_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/advanced_monaco_editor/T1_overview.md"
+    count: 1
+  "advanced_monaco_editor_T1_overview":
+    type: "authoritative"
+    source: "advanced_monaco_editor_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/advanced_monaco_editor/T2_architecture.md"
+    count: 1
+  "advanced_monaco_editor_T2_architecture":
+    type: "authoritative"
+    source: "advanced_monaco_editor_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/advanced_monaco_editor/T3_detailed.md"
+    count: 1
+  "advanced_monaco_editor_T3_detailed":
+    type: "authoritative"
+    source: "advanced_monaco_editor_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/advanced_monaco_editor/T4_complete.md"
+    count: 1
+  "aether_memory_system_T0_executive":
+    type: "authoritative"
+    source: "aether_memory_system_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/aether_memory_system/T1_overview.md"
+    count: 1
+  "aether_memory_system_T1_overview":
+    type: "authoritative"
+    source: "aether_memory_system_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/aether_memory_system/T2_architecture.md"
+    count: 1
+  "aether_memory_system_T2_architecture":
+    type: "authoritative"
+    source: "aether_memory_system_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/aether_memory_system/T3_detailed.md"
+    count: 1
+  "aether_memory_system_T3_detailed":
+    type: "authoritative"
+    source: "aether_memory_system_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/aether_memory_system/T4_complete.md"
+    count: 1
+  "agent_automation_T0_executive":
+    type: "authoritative"
+    source: "agent_automation_T0_executive"
+    dependents:
+      - "cursor-addon/docs/AUTOMATION_SYSTEMS_EXPLAINED_T1.md"
+    count: 1
+  "agent_automation_T1_overview":
+    type: "authoritative"
+    source: "agent_automation_T1_overview"
+    dependents:
+      - "cursor-addon/docs/T2_AGENT_AUTOMATION_ARCHITECTURE.md"
+    count: 1
+  "agent_automation_T2_architecture":
+    type: "authoritative"
+    source: "agent_automation_T2_architecture"
+    dependents:
+      - "cursor-addon/docs/T3_AGENT_AUTOMATION_DETAILED.md"
+    count: 1
+  "agent_automation_T3_detailed":
+    type: "authoritative"
+    source: "agent_automation_T3_detailed"
+    dependents:
+      - "cursor-addon/docs/T4_AGENT_AUTOMATION_COMPLETE.md"
+    count: 1
+  "agent_automation_T4_complete":
+    type: "authoritative"
+    source: "agent_automation_T4_complete"
+    dependents:
+      - "cursor-addon/docs/T5_AGENT_AUTOMATION_QUICK.md"
+    count: 1
+  "agent_automation_T5_quick":
+    type: "authoritative"
+    source: "agent_automation_T5_quick"
+    dependents:
+      - "cursor-addon/docs/T6_AGENT_AUTOMATION_SOURCE.md"
+    count: 1
+  "agent_system_T0_executive":
+    type: "authoritative"
+    source: "agent_system_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/agent_system/T1_overview.md"
+    count: 1
+  "agent_system_T1_overview":
+    type: "authoritative"
+    source: "agent_system_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/agent_system/T2_architecture.md"
+    count: 1
+  "agent_system_T2_architecture":
+    type: "authoritative"
+    source: "agent_system_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/agent_system/T3_detailed.md"
+    count: 1
+  "agent_system_T3_detailed":
+    type: "authoritative"
+    source: "agent_system_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/agent_system/T4_complete.md"
+    count: 1
+  "ai_collaboration_system_T0_executive":
+    type: "authoritative"
+    source: "ai_collaboration_system_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/ai_collaboration_system/T1_overview.md"
+    count: 1
+  "ai_collaboration_system_T1_overview":
+    type: "authoritative"
+    source: "ai_collaboration_system_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/ai_collaboration_system/T2_architecture.md"
+    count: 1
+  "ai_collaboration_system_T2_architecture":
+    type: "authoritative"
+    source: "ai_collaboration_system_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/ai_collaboration_system/T3_detailed.md"
+    count: 1
+  "ai_collaboration_system_T3_detailed":
+    type: "authoritative"
+    source: "ai_collaboration_system_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/ai_collaboration_system/T4_complete.md"
+    count: 1
+  "aimos_mobile_app_T0_executive":
+    type: "authoritative"
+    source: "aimos_mobile_app_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/aimos_mobile_app/T1_overview.md"
+    count: 1
+  "aimos_mobile_app_T1_overview":
+    type: "authoritative"
+    source: "aimos_mobile_app_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/aimos_mobile_app/T2_architecture.md"
+    count: 1
+  "aimos_mobile_app_T2_architecture":
+    type: "authoritative"
+    source: "aimos_mobile_app_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/aimos_mobile_app/T3_detailed.md"
+    count: 1
+  "aimos_mobile_app_T3_detailed":
+    type: "authoritative"
+    source: "aimos_mobile_app_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/aimos_mobile_app/T4_complete.md"
+    count: 1
+  "apoe":
+    type: "authoritative"
+    source: "apoe"
+    dependents:
+      - "knowledge_architecture/systems/prompt_chains/T0_executive.md"
+      - "knowledge_architecture/systems/prompt_chains/T1_overview.md"
+      - "knowledge_architecture/systems/prompt_chains/T2_architecture.md"
+      - "knowledge_architecture/systems/prompt_chains/T3_detailed.md"
+      - "knowledge_architecture/systems/prompt_chains/T4_complete.md"
+      - "knowledge_architecture/systems/prompt_chains/T5_quick_reference.md"
+    count: 6
+  "apoe_T0_executive":
+    type: "authoritative"
+    source: "apoe_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/apoe/L1_overview.md"
+      - "knowledge_architecture/systems/apoe/T1_overview.md"
+    count: 2
+  "apoe_T1_overview":
+    type: "authoritative"
+    source: "apoe_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/apoe/L2_architecture.md"
+      - "knowledge_architecture/systems/apoe/T2_architecture.md"
+    count: 2
+  "apoe_T2_architecture":
+    type: "authoritative"
+    source: "apoe_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/apoe/T3_detailed.md"
+    count: 1
+  "apoe_T3_detailed":
+    type: "authoritative"
+    source: "apoe_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/apoe/T4_complete.md"
+    count: 1
+  "apoe_T4_complete":
+    type: "authoritative"
+    source: "apoe_T4_complete"
+    dependents:
+      - "knowledge_architecture/systems/apoe/T5_deep_dive.md"
+    count: 1
+  "apoe_T5_deep_dive":
+    type: "authoritative"
+    source: "apoe_T5_deep_dive"
+    dependents:
+      - "knowledge_architecture/systems/apoe/T6_academic.md"
+    count: 1
+  "auto_recovery_system_T0_executive":
+    type: "authoritative"
+    source: "auto_recovery_system_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/auto_recovery_system/T1_overview.md"
+    count: 1
+  "auto_recovery_system_T1_overview":
+    type: "authoritative"
+    source: "auto_recovery_system_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/auto_recovery_system/T2_architecture.md"
+    count: 1
+  "auto_recovery_system_T2_architecture":
+    type: "authoritative"
+    source: "auto_recovery_system_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/auto_recovery_system/T3_detailed.md"
+    count: 1
+  "auto_recovery_system_T3_detailed":
+    type: "authoritative"
+    source: "auto_recovery_system_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/auto_recovery_system/T4_complete.md"
+    count: 1
+  "automation_simple_explanation_T0_executive":
+    type: "authoritative"
+    source: "automation_simple_explanation_T0_executive"
+    dependents:
+      - "cursor-addon/docs/AUTOMATION_SIMPLE_EXPLANATION_T1.md"
+    count: 1
+  "automation_simple_explanation_T1_overview":
+    type: "authoritative"
+    source: "automation_simple_explanation_T1_overview"
+    dependents:
+      - "cursor-addon/docs/AUTOMATION_SIMPLE_EXPLANATION_T2.md"
+    count: 1
+  "automation_systems_explained_T1_overview":
+    type: "authoritative"
+    source: "automation_systems_explained_T1_overview"
+    dependents:
+      - "cursor-addon/docs/AUTOMATION_SYSTEMS_EXPLAINED_T2.md"
+    count: 1
+  "autonomous_protocols":
+    type: "authoritative"
+    source: "autonomous_protocols"
+    dependents:
+      - "knowledge_architecture/systems/chat_automation/T0_executive.md"
+      - "knowledge_architecture/systems/chat_automation/T1_overview.md"
+      - "knowledge_architecture/systems/chat_automation/T2_architecture.md"
+      - "knowledge_architecture/systems/chat_automation/T3_detailed.md"
+      - "knowledge_architecture/systems/chat_automation/T4_complete.md"
+      - "knowledge_architecture/systems/chat_automation/T5_quick_reference.md"
+    count: 6
+  "autonomous_research_dream_T2_architecture":
+    type: "authoritative"
+    source: "autonomous_research_dream_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/autonomous_research_dream/T3_detailed.md"
+    count: 1
+  "autonomous_research_dream_T3_detailed":
+    type: "authoritative"
+    source: "autonomous_research_dream_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/autonomous_research_dream/T4_complete.md"
+    count: 1
+  "branch_reasoning_system_T0_executive":
+    type: "authoritative"
+    source: "branch_reasoning_system_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/branch_reasoning_system/T1_overview.md"
+    count: 1
+  "branch_reasoning_system_T1_overview":
+    type: "authoritative"
+    source: "branch_reasoning_system_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/branch_reasoning_system/T2_architecture.md"
+    count: 1
+  "branch_reasoning_system_T2_architecture":
+    type: "authoritative"
+    source: "branch_reasoning_system_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/branch_reasoning_system/T3_detailed.md"
+    count: 1
+  "branch_reasoning_system_T3_detailed":
+    type: "authoritative"
+    source: "branch_reasoning_system_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/branch_reasoning_system/T4_complete.md"
+    count: 1
+  "bulletproof_messaging_T0_executive":
+    type: "authoritative"
+    source: "bulletproof_messaging_T0_executive"
+    dependents:
+      - "cursor-addon/docs/T1_BULLETPROOF_MESSAGING_OVERVIEW.md"
+    count: 1
+  "bulletproof_messaging_T1_overview":
+    type: "authoritative"
+    source: "bulletproof_messaging_T1_overview"
+    dependents:
+      - "cursor-addon/docs/T2_BULLETPROOF_MESSAGING_ARCHITECTURE.md"
+    count: 1
+  "bulletproof_messaging_T2_architecture":
+    type: "authoritative"
+    source: "bulletproof_messaging_T2_architecture"
+    dependents:
+      - "cursor-addon/docs/T3_BULLETPROOF_MESSAGING_DETAILED.md"
+    count: 1
+  "bulletproof_messaging_T3_detailed":
+    type: "authoritative"
+    source: "bulletproof_messaging_T3_detailed"
+    dependents:
+      - "cursor-addon/docs/T4_BULLETPROOF_MESSAGING_COMPLETE.md"
+    count: 1
+  "bulletproof_messaging_T4_complete":
+    type: "authoritative"
+    source: "bulletproof_messaging_T4_complete"
+    dependents:
+      - "cursor-addon/docs/T5_BULLETPROOF_MESSAGING_QUICK.md"
+    count: 1
+  "bulletproof_messaging_T5_quick":
+    type: "authoritative"
+    source: "bulletproof_messaging_T5_quick"
+    dependents:
+      - "cursor-addon/docs/T6_BULLETPROOF_MESSAGING_SOURCE.md"
+    count: 1
+  "capability_awareness_T2_architecture":
+    type: "authoritative"
+    source: "capability_awareness_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/capability_awareness/T3_detailed.md"
+    count: 1
+  "capability_awareness_T3_detailed":
+    type: "authoritative"
+    source: "capability_awareness_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/capability_awareness/T4_complete.md"
+    count: 1
+  "cas_T0_executive":
+    type: "authoritative"
+    source: "cas_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/cognitive_analysis/L1_overview.md"
+      - "knowledge_architecture/systems/cognitive_analysis/T1_overview.md"
+    count: 2
+  "cas_T1_overview":
+    type: "authoritative"
+    source: "cas_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/cognitive_analysis/L2_architecture.md"
+      - "knowledge_architecture/systems/cognitive_analysis/T2_architecture.md"
+    count: 2
+  "ccs_T0_executive":
+    type: "authoritative"
+    source: "ccs_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/ccs/T1_overview.md"
+    count: 1
+  "ccs_T1_overview":
+    type: "authoritative"
+    source: "ccs_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/ccs/T2_architecture.md"
+    count: 1
+  "ccs_T2_architecture":
+    type: "authoritative"
+    source: "ccs_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/ccs/T3_detailed.md"
+    count: 1
+  "ccs_T3_detailed":
+    type: "authoritative"
+    source: "ccs_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/ccs/T4_complete.md"
+    count: 1
+  "cmc":
+    type: "authoritative"
+    source: "cmc"
+    dependents:
+      - "knowledge_architecture/systems/prompt_chains/T0_executive.md"
+      - "knowledge_architecture/systems/prompt_chains/T1_overview.md"
+      - "knowledge_architecture/systems/prompt_chains/T2_architecture.md"
+      - "knowledge_architecture/systems/prompt_chains/T3_detailed.md"
+      - "knowledge_architecture/systems/prompt_chains/T4_complete.md"
+      - "knowledge_architecture/systems/prompt_chains/T5_quick_reference.md"
+      - "knowledge_architecture/systems/timeline_goals_integration/T2_architecture.md"
+      - "knowledge_architecture/systems/timeline_goals_integration/T3_detailed.md"
+      - "knowledge_architecture/systems/timeline_goals_integration/T4_complete.md"
+    count: 9
+  "cmc_T0_executive":
+    type: "authoritative"
+    source: "cmc_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/cmc/L1_overview.md"
+      - "knowledge_architecture/systems/cmc/T1_overview.md"
+    count: 2
+  "cmc_T1_overview":
+    type: "authoritative"
+    source: "cmc_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/cmc/L2_architecture.md"
+      - "knowledge_architecture/systems/cmc/T2_architecture.md"
+    count: 2
+  "cmc_T3_detailed":
+    type: "authoritative"
+    source: "cmc_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/cmc/T4_complete.md"
+    count: 1
+  "cmc_T4_complete":
+    type: "authoritative"
+    source: "cmc_T4_complete"
+    dependents:
+      - "knowledge_architecture/systems/cmc/T5_deep_dive.md"
+    count: 1
+  "cmc_T5_deep_dive":
+    type: "authoritative"
+    source: "cmc_T5_deep_dive"
+    dependents:
+      - "knowledge_architecture/systems/cmc/T6_academic.md"
+    count: 1
+  "co_agency_trust_layer_T0_executive":
+    type: "authoritative"
+    source: "co_agency_trust_layer_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/co_agency_trust_layer/T1_overview.md"
+    count: 1
+  "co_agency_trust_layer_T1_overview":
+    type: "authoritative"
+    source: "co_agency_trust_layer_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/co_agency_trust_layer/T2_architecture.md"
+    count: 1
+  "co_agency_trust_layer_T2_architecture":
+    type: "authoritative"
+    source: "co_agency_trust_layer_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/co_agency_trust_layer/T3_detailed.md"
+    count: 1
+  "co_agency_trust_layer_T3_detailed":
+    type: "authoritative"
+    source: "co_agency_trust_layer_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/co_agency_trust_layer/T4_complete.md"
+    count: 1
+  "cognitive_analysis_T2_architecture":
+    type: "authoritative"
+    source: "cognitive_analysis_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/cognitive_analysis/T3_detailed.md"
+    count: 1
+  "cognitive_analysis_T3_detailed":
+    type: "authoritative"
+    source: "cognitive_analysis_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/cognitive_analysis/T4_complete.md"
+    count: 1
+  "cognitive_analysis_T4_complete":
+    type: "authoritative"
+    source: "cognitive_analysis_T4_complete"
+    dependents:
+      - "knowledge_architecture/systems/cognitive_analysis/T5_deep_dive.md"
+    count: 1
+  "cognitive_analysis_T5_deep_dive":
+    type: "authoritative"
+    source: "cognitive_analysis_T5_deep_dive"
+    dependents:
+      - "knowledge_architecture/systems/cognitive_analysis/T6_academic.md"
+    count: 1
+  "command_server_T0_executive":
+    type: "authoritative"
+    source: "command_server_T0_executive"
+    dependents:
+      - "cursor-addon/docs/T1_COMMAND_SERVER_OVERVIEW.md"
+    count: 1
+  "command_server_T1_overview":
+    type: "authoritative"
+    source: "command_server_T1_overview"
+    dependents:
+      - "cursor-addon/docs/T2_COMMAND_SERVER_ARCHITECTURE.md"
+    count: 1
+  "confidence_gated_controls_T0_executive":
+    type: "authoritative"
+    source: "confidence_gated_controls_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/confidence_gated_controls/T1_overview.md"
+    count: 1
+  "confidence_gated_controls_T1_overview":
+    type: "authoritative"
+    source: "confidence_gated_controls_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/confidence_gated_controls/T2_architecture.md"
+    count: 1
+  "confidence_gated_controls_T2_architecture":
+    type: "authoritative"
+    source: "confidence_gated_controls_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/confidence_gated_controls/T3_detailed.md"
+    count: 1
+  "confidence_gated_controls_T3_detailed":
+    type: "authoritative"
+    source: "confidence_gated_controls_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/confidence_gated_controls/T4_complete.md"
+    count: 1
+  "consciousness_analyzer_T0_executive":
+    type: "authoritative"
+    source: "consciousness_analyzer_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/consciousness_analyzer/T1_overview.md"
+    count: 1
+  "consciousness_analyzer_T1_overview":
+    type: "authoritative"
+    source: "consciousness_analyzer_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/consciousness_analyzer/T2_architecture.md"
+    count: 1
+  "consciousness_analyzer_T2_architecture":
+    type: "authoritative"
+    source: "consciousness_analyzer_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/consciousness_analyzer/T3_detailed.md"
+    count: 1
+  "consciousness_analyzer_T3_detailed":
+    type: "authoritative"
+    source: "consciousness_analyzer_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/consciousness_analyzer/T4_complete.md"
+    count: 1
+  "consciousness_creativity_engine_T0_executive":
+    type: "authoritative"
+    source: "consciousness_creativity_engine_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/consciousness_creativity_engine/T1_overview.md"
+    count: 1
+  "consciousness_creativity_engine_T1_overview":
+    type: "authoritative"
+    source: "consciousness_creativity_engine_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/consciousness_creativity_engine/T2_architecture.md"
+    count: 1
+  "consciousness_creativity_engine_T2_architecture":
+    type: "authoritative"
+    source: "consciousness_creativity_engine_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/consciousness_creativity_engine/T3_detailed.md"
+    count: 1
+  "consciousness_creativity_engine_T3_detailed":
+    type: "authoritative"
+    source: "consciousness_creativity_engine_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/consciousness_creativity_engine/T4_complete.md"
+    count: 1
+  "consciousness_enhancement_T0_executive":
+    type: "authoritative"
+    source: "consciousness_enhancement_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/consciousness_enhancement/T1_overview.md"
+    count: 1
+  "consciousness_enhancement_T1_overview":
+    type: "authoritative"
+    source: "consciousness_enhancement_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/consciousness_enhancement/T2_architecture.md"
+    count: 1
+  "consciousness_enhancement_T2_architecture":
+    type: "authoritative"
+    source: "consciousness_enhancement_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/consciousness_enhancement/T3_detailed.md"
+    count: 1
+  "consciousness_enhancement_T3_detailed":
+    type: "authoritative"
+    source: "consciousness_enhancement_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/consciousness_enhancement/T4_complete.md"
+    count: 1
+  "consciousness_learning_engine_T0_executive":
+    type: "authoritative"
+    source: "consciousness_learning_engine_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/consciousness_learning_engine/T1_overview.md"
+    count: 1
+  "consciousness_learning_engine_T1_overview":
+    type: "authoritative"
+    source: "consciousness_learning_engine_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/consciousness_learning_engine/T2_architecture.md"
+    count: 1
+  "consciousness_learning_engine_T2_architecture":
+    type: "authoritative"
+    source: "consciousness_learning_engine_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/consciousness_learning_engine/T3_detailed.md"
+    count: 1
+  "consciousness_learning_engine_T3_detailed":
+    type: "authoritative"
+    source: "consciousness_learning_engine_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/consciousness_learning_engine/T4_complete.md"
+    count: 1
+  "context_fidelity_inspector_T0_executive":
+    type: "authoritative"
+    source: "context_fidelity_inspector_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/context_fidelity_inspector/T1_overview.md"
+    count: 1
+  "context_fidelity_inspector_T1_overview":
+    type: "authoritative"
+    source: "context_fidelity_inspector_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/context_fidelity_inspector/T2_architecture.md"
+    count: 1
+  "context_fidelity_inspector_T2_architecture":
+    type: "authoritative"
+    source: "context_fidelity_inspector_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/context_fidelity_inspector/T3_detailed.md"
+    count: 1
+  "context_fidelity_inspector_T3_detailed":
+    type: "authoritative"
+    source: "context_fidelity_inspector_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/context_fidelity_inspector/T4_complete.md"
+    count: 1
+  "context_frames_system_T0_executive":
+    type: "authoritative"
+    source: "context_frames_system_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/context_frames_system/T1_overview.md"
+    count: 1
+  "context_frames_system_T1_overview":
+    type: "authoritative"
+    source: "context_frames_system_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/context_frames_system/T2_architecture.md"
+    count: 1
+  "context_frames_system_T2_architecture":
+    type: "authoritative"
+    source: "context_frames_system_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/context_frames_system/T3_detailed.md"
+    count: 1
+  "context_frames_system_T3_detailed":
+    type: "authoritative"
+    source: "context_frames_system_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/context_frames_system/T4_complete.md"
+    count: 1
+  "context_mesh_maps_T0_executive":
+    type: "authoritative"
+    source: "context_mesh_maps_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/context_mesh_maps/T1_overview.md"
+    count: 1
+  "context_mesh_maps_T1_overview":
+    type: "authoritative"
+    source: "context_mesh_maps_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/context_mesh_maps/T2_architecture.md"
+    count: 1
+  "context_mesh_maps_T2_architecture":
+    type: "authoritative"
+    source: "context_mesh_maps_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/context_mesh_maps/T3_detailed.md"
+    count: 1
+  "context_mesh_maps_T3_detailed":
+    type: "authoritative"
+    source: "context_mesh_maps_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/context_mesh_maps/T4_complete.md"
+    count: 1
+  "cross_model_consciousness_T2_architecture":
+    type: "authoritative"
+    source: "cross_model_consciousness_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/cross_model_consciousness/T3_detailed.md"
+    count: 1
+  "cross_model_consciousness_T3_detailed":
+    type: "authoritative"
+    source: "cross_model_consciousness_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/cross_model_consciousness/T4_complete.md"
+    count: 1
+  "cross_system_connections.yaml":
+    type: "authoritative"
+    source: "cross_system_connections.yaml"
+    dependents:
+      - "knowledge_architecture/AETHER_MEMORY/protocols/DOCUMENTATION_GOVERNANCE_CROSS_REFERENCE_PROTOCOL.md"
+      - "knowledge_architecture/AETHER_MEMORY/protocols/DOCUMENTATION_GOVERNANCE_CROSS_REFERENCE_PROTOCOL_PLAN.md"
+      - "knowledge_architecture/PROTOCOLS/ORGANIC_DATA_FRESHNESS_INTEGRATION_ANALYSIS.md"
+    count: 3
+  "cursor-addon/out/extension.js":
+    type: "authoritative"
+    source: "cursor-addon/out/extension.js"
+    dependents:
+      - "cursor-addon/docs/LATEST_LOGS.md"
+    count: 1
+  "cursor_addon_T0_executive":
+    type: "authoritative"
+    source: "cursor_addon_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/cursor-addon/T1_overview.md"
+      - "knowledge_architecture/systems/cursor-addon/T2_architecture.md"
+      - "knowledge_architecture/systems/cursor_addon/T1_overview.md"
+      - "knowledge_architecture/systems/cursor_addon/T2_architecture.md"
+    count: 4
+  "cursor_addon_T1_overview":
+    type: "authoritative"
+    source: "cursor_addon_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/cursor-addon/T2_architecture.md"
+      - "knowledge_architecture/systems/cursor_addon/T2_architecture.md"
+    count: 2
+  "cursor_extension":
+    type: "authoritative"
+    source: "cursor_extension"
+    dependents:
+      - "knowledge_architecture/systems/chat_automation/T0_executive.md"
+      - "knowledge_architecture/systems/chat_automation/T1_overview.md"
+      - "knowledge_architecture/systems/chat_automation/T2_architecture.md"
+      - "knowledge_architecture/systems/chat_automation/T3_detailed.md"
+      - "knowledge_architecture/systems/chat_automation/T4_complete.md"
+      - "knowledge_architecture/systems/chat_automation/T5_quick_reference.md"
+    count: 6
+  "cursor_rules_commands_T0_executive":
+    type: "authoritative"
+    source: "cursor_rules_commands_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/cursor_rules_commands/T1_overview.md"
+    count: 1
+  "cursor_rules_commands_T1_overview":
+    type: "authoritative"
+    source: "cursor_rules_commands_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/cursor_rules_commands/T2_architecture.md"
+    count: 1
+  "cursor_rules_commands_T2_architecture":
+    type: "authoritative"
+    source: "cursor_rules_commands_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/cursor_rules_commands/T3_detailed.md"
+    count: 1
+  "daemon_rag_system_T0_executive":
+    type: "authoritative"
+    source: "daemon_rag_system_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/daemon_rag_system/T1_overview.md"
+    count: 1
+  "daemon_rag_system_T1_overview":
+    type: "authoritative"
+    source: "daemon_rag_system_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/daemon_rag_system/T2_architecture.md"
+    count: 1
+  "daemon_rag_system_T2_architecture":
+    type: "authoritative"
+    source: "daemon_rag_system_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/daemon_rag_system/T3_detailed.md"
+    count: 1
+  "daemon_rag_system_T3_detailed":
+    type: "authoritative"
+    source: "daemon_rag_system_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/daemon_rag_system/T4_complete.md"
+      - "knowledge_architecture/systems/daemon_rag_system/T5_quick_reference.md"
+      - "knowledge_architecture/systems/daemon_rag_system/T6_source_code_reference.md"
+    count: 3
+  "daemon_rag_system_T4_complete":
+    type: "authoritative"
+    source: "daemon_rag_system_T4_complete"
+    dependents:
+      - "knowledge_architecture/systems/daemon_rag_system/T5_quick_reference.md"
+      - "knowledge_architecture/systems/daemon_rag_system/T6_source_code_reference.md"
+    count: 2
+  "daemon_rag_system_T5_quick_reference":
+    type: "authoritative"
+    source: "daemon_rag_system_T5_quick_reference"
+    dependents:
+      - "knowledge_architecture/systems/daemon_rag_system/T6_source_code_reference.md"
+    count: 1
+  "deep_context_appendices_T0_executive":
+    type: "authoritative"
+    source: "deep_context_appendices_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/deep_context_appendices/T1_overview.md"
+    count: 1
+  "deep_context_appendices_T1_overview":
+    type: "authoritative"
+    source: "deep_context_appendices_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/deep_context_appendices/T2_architecture.md"
+    count: 1
+  "deep_context_appendices_T2_architecture":
+    type: "authoritative"
+    source: "deep_context_appendices_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/deep_context_appendices/T3_detailed.md"
+    count: 1
+  "deep_context_appendices_T3_detailed":
+    type: "authoritative"
+    source: "deep_context_appendices_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/deep_context_appendices/T4_complete.md"
+    count: 1
+  "deep_expansion_layer_T0_executive":
+    type: "authoritative"
+    source: "deep_expansion_layer_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/deep_expansion_layer/T1_overview.md"
+    count: 1
+  "deep_expansion_layer_T1_overview":
+    type: "authoritative"
+    source: "deep_expansion_layer_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/deep_expansion_layer/T2_architecture.md"
+    count: 1
+  "deep_expansion_layer_T2_architecture":
+    type: "authoritative"
+    source: "deep_expansion_layer_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/deep_expansion_layer/T3_detailed.md"
+    count: 1
+  "deep_expansion_layer_T3_detailed":
+    type: "authoritative"
+    source: "deep_expansion_layer_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/deep_expansion_layer/T4_complete.md"
+    count: 1
+  "disconnect_detection_system_T0_executive":
+    type: "authoritative"
+    source: "disconnect_detection_system_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/disconnect_detection_system/T1_overview.md"
+    count: 1
+  "disconnect_detection_system_T1_overview":
+    type: "authoritative"
+    source: "disconnect_detection_system_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/disconnect_detection_system/T2_architecture.md"
+    count: 1
+  "disconnect_detection_system_T2_architecture":
+    type: "authoritative"
+    source: "disconnect_detection_system_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/disconnect_detection_system/T3_detailed.md"
+    count: 1
+  "disconnect_detection_system_T3_detailed":
+    type: "authoritative"
+    source: "disconnect_detection_system_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/disconnect_detection_system/T4_complete.md"
+    count: 1
+  "drift_detection_system_T0_executive":
+    type: "authoritative"
+    source: "drift_detection_system_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/drift_detection_system/T1_overview.md"
+    count: 1
+  "drift_detection_system_T1_overview":
+    type: "authoritative"
+    source: "drift_detection_system_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/drift_detection_system/T2_architecture.md"
+    count: 1
+  "drift_detection_system_T2_architecture":
+    type: "authoritative"
+    source: "drift_detection_system_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/drift_detection_system/T3_detailed.md"
+    count: 1
+  "drift_detection_system_T3_detailed":
+    type: "authoritative"
+    source: "drift_detection_system_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/drift_detection_system/T4_complete.md"
+    count: 1
+  "dual_prompt_architecture_T2_architecture":
+    type: "authoritative"
+    source: "dual_prompt_architecture_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/dual_prompt_architecture/T3_detailed.md"
+    count: 1
+  "dual_prompt_architecture_T3_detailed":
+    type: "authoritative"
+    source: "dual_prompt_architecture_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/dual_prompt_architecture/T4_complete.md"
+    count: 1
+  "dynamic_cursor_rules_system_T0_executive":
+    type: "authoritative"
+    source: "dynamic_cursor_rules_system_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/dynamic_cursor_rules_system/T1_overview.md"
+    count: 1
+  "dynamic_cursor_rules_system_T1_overview":
+    type: "authoritative"
+    source: "dynamic_cursor_rules_system_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/dynamic_cursor_rules_system/T2_architecture.md"
+    count: 1
+  "dynamic_cursor_rules_system_T2_architecture":
+    type: "authoritative"
+    source: "dynamic_cursor_rules_system_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/dynamic_cursor_rules_system/T3_detailed.md"
+    count: 1
+  "dynamic_cursor_rules_system_T3_detailed":
+    type: "authoritative"
+    source: "dynamic_cursor_rules_system_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/dynamic_cursor_rules_system/T4_complete.md"
+    count: 1
+  "dynamic_onboarding_T2_architecture":
+    type: "authoritative"
+    source: "dynamic_onboarding_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/dynamic_onboarding/T3_detailed.md"
+    count: 1
+  "dynamic_onboarding_T3_detailed":
+    type: "authoritative"
+    source: "dynamic_onboarding_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/dynamic_onboarding/T4_complete.md"
+    count: 1
+  "error_intelligence_system_T0_executive":
+    type: "authoritative"
+    source: "error_intelligence_system_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/error_intelligence_system/T1_overview.md"
+    count: 1
+  "error_intelligence_system_T1_overview":
+    type: "authoritative"
+    source: "error_intelligence_system_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/error_intelligence_system/T2_architecture.md"
+    count: 1
+  "error_intelligence_system_T2_architecture":
+    type: "authoritative"
+    source: "error_intelligence_system_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/error_intelligence_system/T3_detailed.md"
+    count: 1
+  "error_intelligence_system_T3_detailed":
+    type: "authoritative"
+    source: "error_intelligence_system_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/error_intelligence_system/T4_complete.md"
+    count: 1
+  "file_system_monitor.py":
+    type: "authoritative"
+    source: "file_system_monitor.py"
+    dependents:
+      - "knowledge_architecture/PROTOCOLS/ORGANIC_DATA_FRESHNESS_INTEGRATION_ANALYSIS.md"
+    count: 1
+  "generate_cross_references.py":
+    type: "authoritative"
+    source: "generate_cross_references.py"
+    dependents:
+      - "knowledge_architecture/PROTOCOLS/ORGANIC_DATA_FRESHNESS_INTEGRATION_ANALYSIS.md"
+    count: 1
+  "global_user_rules_T0_executive":
+    type: "authoritative"
+    source: "global_user_rules_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/global_user_rules/T1_overview.md"
+    count: 1
+  "global_user_rules_T1_overview":
+    type: "authoritative"
+    source: "global_user_rules_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/global_user_rules/T2_architecture.md"
+    count: 1
+  "global_user_rules_T2_architecture":
+    type: "authoritative"
+    source: "global_user_rules_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/global_user_rules/T3_detailed.md"
+    count: 1
+  "global_user_rules_T3_detailed":
+    type: "authoritative"
+    source: "global_user_rules_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/global_user_rules/T4_complete.md"
+    count: 1
+  "goal_tree":
+    type: "authoritative"
+    source: "goal_tree"
+    dependents:
+      - "knowledge_architecture/systems/timeline_goals_integration/T0_executive.md"
+      - "knowledge_architecture/systems/timeline_goals_integration/T1_overview.md"
+      - "knowledge_architecture/systems/timeline_goals_integration/T2_architecture.md"
+      - "knowledge_architecture/systems/timeline_goals_integration/T3_detailed.md"
+      - "knowledge_architecture/systems/timeline_goals_integration/T4_complete.md"
+      - "knowledge_architecture/systems/timeline_goals_integration/T5_quick_reference.md"
+    count: 6
+  "governance_system_T0_executive":
+    type: "authoritative"
+    source: "governance_system_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/governance_system/T1_overview.md"
+    count: 1
+  "governance_system_T1_overview":
+    type: "authoritative"
+    source: "governance_system_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/governance_system/T2_architecture.md"
+    count: 1
+  "governance_system_T2_architecture":
+    type: "authoritative"
+    source: "governance_system_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/governance_system/T3_detailed.md"
+    count: 1
+  "governance_system_T3_detailed":
+    type: "authoritative"
+    source: "governance_system_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/governance_system/T4_complete.md"
+    count: 1
+  "health_monitoring_system_T0_executive":
+    type: "authoritative"
+    source: "health_monitoring_system_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/health_monitoring_system/T1_overview.md"
+    count: 1
+  "health_monitoring_system_T1_overview":
+    type: "authoritative"
+    source: "health_monitoring_system_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/health_monitoring_system/T2_architecture.md"
+    count: 1
+  "health_monitoring_system_T2_architecture":
+    type: "authoritative"
+    source: "health_monitoring_system_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/health_monitoring_system/T3_detailed.md"
+    count: 1
+  "health_monitoring_system_T3_detailed":
+    type: "authoritative"
+    source: "health_monitoring_system_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/health_monitoring_system/T4_complete.md"
+    count: 1
+  "hhni":
+    type: "authoritative"
+    source: "hhni"
+    dependents:
+      - "knowledge_architecture/systems/prompt_chains/T0_executive.md"
+      - "knowledge_architecture/systems/prompt_chains/T1_overview.md"
+      - "knowledge_architecture/systems/prompt_chains/T2_architecture.md"
+      - "knowledge_architecture/systems/prompt_chains/T3_detailed.md"
+      - "knowledge_architecture/systems/prompt_chains/T4_complete.md"
+      - "knowledge_architecture/systems/prompt_chains/T5_quick_reference.md"
+      - "knowledge_architecture/systems/timeline_goals_integration/T2_architecture.md"
+      - "knowledge_architecture/systems/timeline_goals_integration/T3_detailed.md"
+      - "knowledge_architecture/systems/timeline_goals_integration/T4_complete.md"
+    count: 9
+  "hhni_T0_executive":
+    type: "authoritative"
+    source: "hhni_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/hhni/L1_overview.md"
+      - "knowledge_architecture/systems/hhni/T1_overview.md"
+    count: 2
+  "hhni_T1_overview":
+    type: "authoritative"
+    source: "hhni_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/hhni/L2_architecture.md"
+      - "knowledge_architecture/systems/hhni/T2_architecture.md"
+    count: 2
+  "hhni_T2_architecture":
+    type: "authoritative"
+    source: "hhni_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/hhni/T3_detailed.md"
+    count: 1
+  "hhni_T3_detailed":
+    type: "authoritative"
+    source: "hhni_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/hhni/T4_complete.md"
+    count: 1
+  "hhni_T4_complete":
+    type: "authoritative"
+    source: "hhni_T4_complete"
+    dependents:
+      - "knowledge_architecture/systems/hhni/T5_deep_dive.md"
+    count: 1
+  "hhni_T5_deep_dive":
+    type: "authoritative"
+    source: "hhni_T5_deep_dive"
+    dependents:
+      - "knowledge_architecture/systems/hhni/T6_academic.md"
+    count: 1
+  "icip_code_property_graph_T0_executive":
+    type: "authoritative"
+    source: "icip_code_property_graph_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/icip_code_property_graph/T1_overview.md"
+    count: 1
+  "icip_code_property_graph_T1_overview":
+    type: "authoritative"
+    source: "icip_code_property_graph_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/icip_code_property_graph/T2_architecture.md"
+    count: 1
+  "icip_code_property_graph_T2_architecture":
+    type: "authoritative"
+    source: "icip_code_property_graph_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/icip_code_property_graph/T3_detailed.md"
+    count: 1
+  "icip_code_property_graph_T3_detailed":
+    type: "authoritative"
+    source: "icip_code_property_graph_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/icip_code_property_graph/T4_complete.md"
+    count: 1
+  "icip_data_ingestion_layer_T0_executive":
+    type: "authoritative"
+    source: "icip_data_ingestion_layer_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/icip_data_ingestion_layer/T1_overview.md"
+    count: 1
+  "icip_data_ingestion_layer_T1_overview":
+    type: "authoritative"
+    source: "icip_data_ingestion_layer_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/icip_data_ingestion_layer/T2_architecture.md"
+    count: 1
+  "icip_data_ingestion_layer_T2_architecture":
+    type: "authoritative"
+    source: "icip_data_ingestion_layer_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/icip_data_ingestion_layer/T3_detailed.md"
+    count: 1
+  "icip_data_ingestion_layer_T3_detailed":
+    type: "authoritative"
+    source: "icip_data_ingestion_layer_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/icip_data_ingestion_layer/T4_complete.md"
+    count: 1
+  "icip_data_storage_layer_T0_executive":
+    type: "authoritative"
+    source: "icip_data_storage_layer_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/icip_data_storage_layer/T1_overview.md"
+    count: 1
+  "icip_data_storage_layer_T1_overview":
+    type: "authoritative"
+    source: "icip_data_storage_layer_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/icip_data_storage_layer/T2_architecture.md"
+    count: 1
+  "icip_data_storage_layer_T2_architecture":
+    type: "authoritative"
+    source: "icip_data_storage_layer_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/icip_data_storage_layer/T3_detailed.md"
+    count: 1
+  "icip_data_storage_layer_T3_detailed":
+    type: "authoritative"
+    source: "icip_data_storage_layer_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/icip_data_storage_layer/T4_complete.md"
+    count: 1
+  "icip_gnn_service_T0_executive":
+    type: "authoritative"
+    source: "icip_gnn_service_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/icip_gnn_service/T1_overview.md"
+    count: 1
+  "icip_gnn_service_T1_overview":
+    type: "authoritative"
+    source: "icip_gnn_service_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/icip_gnn_service/T2_architecture.md"
+    count: 1
+  "icip_gnn_service_T2_architecture":
+    type: "authoritative"
+    source: "icip_gnn_service_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/icip_gnn_service/T3_detailed.md"
+    count: 1
+  "icip_gnn_service_T3_detailed":
+    type: "authoritative"
+    source: "icip_gnn_service_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/icip_gnn_service/T4_complete.md"
+    count: 1
+  "icip_graph_construction_service_T0_executive":
+    type: "authoritative"
+    source: "icip_graph_construction_service_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/icip_graph_construction_service/T1_overview.md"
+    count: 1
+  "icip_graph_construction_service_T1_overview":
+    type: "authoritative"
+    source: "icip_graph_construction_service_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/icip_graph_construction_service/T2_architecture.md"
+    count: 1
+  "icip_graph_construction_service_T2_architecture":
+    type: "authoritative"
+    source: "icip_graph_construction_service_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/icip_graph_construction_service/T3_detailed.md"
+    count: 1
+  "icip_graph_construction_service_T3_detailed":
+    type: "authoritative"
+    source: "icip_graph_construction_service_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/icip_graph_construction_service/T4_complete.md"
+    count: 1
+  "icip_llm_inference_service_T0_executive":
+    type: "authoritative"
+    source: "icip_llm_inference_service_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/icip_llm_inference_service/T1_overview.md"
+    count: 1
+  "icip_llm_inference_service_T1_overview":
+    type: "authoritative"
+    source: "icip_llm_inference_service_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/icip_llm_inference_service/T2_architecture.md"
+    count: 1
+  "icip_llm_inference_service_T2_architecture":
+    type: "authoritative"
+    source: "icip_llm_inference_service_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/icip_llm_inference_service/T3_detailed.md"
+    count: 1
+  "icip_llm_inference_service_T3_detailed":
+    type: "authoritative"
+    source: "icip_llm_inference_service_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/icip_llm_inference_service/T4_complete.md"
+    count: 1
+  "icip_metric_calculation_service_T0_executive":
+    type: "authoritative"
+    source: "icip_metric_calculation_service_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/icip_metric_calculation_service/T1_overview.md"
+    count: 1
+  "icip_metric_calculation_service_T1_overview":
+    type: "authoritative"
+    source: "icip_metric_calculation_service_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/icip_metric_calculation_service/T2_architecture.md"
+    count: 1
+  "icip_metric_calculation_service_T2_architecture":
+    type: "authoritative"
+    source: "icip_metric_calculation_service_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/icip_metric_calculation_service/T3_detailed.md"
+    count: 1
+  "icip_metric_calculation_service_T3_detailed":
+    type: "authoritative"
+    source: "icip_metric_calculation_service_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/icip_metric_calculation_service/T4_complete.md"
+    count: 1
+  "icip_parser_service_T0_executive":
+    type: "authoritative"
+    source: "icip_parser_service_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/icip_parser_service/T1_overview.md"
+    count: 1
+  "icip_parser_service_T1_overview":
+    type: "authoritative"
+    source: "icip_parser_service_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/icip_parser_service/T2_architecture.md"
+    count: 1
+  "icip_parser_service_T2_architecture":
+    type: "authoritative"
+    source: "icip_parser_service_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/icip_parser_service/T3_detailed.md"
+    count: 1
+  "icip_parser_service_T3_detailed":
+    type: "authoritative"
+    source: "icip_parser_service_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/icip_parser_service/T4_complete.md"
+    count: 1
+  "icip_platform_T0_executive":
+    type: "authoritative"
+    source: "icip_platform_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/icip_platform/T1_overview.md"
+    count: 1
+  "icip_platform_T1_overview":
+    type: "authoritative"
+    source: "icip_platform_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/icip_platform/T2_architecture.md"
+    count: 1
+  "icip_platform_T2_architecture":
+    type: "authoritative"
+    source: "icip_platform_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/icip_platform/T3_detailed.md"
+    count: 1
+  "icip_platform_T3_detailed":
+    type: "authoritative"
+    source: "icip_platform_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/icip_platform/T4_complete.md"
+    count: 1
+  "icip_predictive_analytics_service_T0_executive":
+    type: "authoritative"
+    source: "icip_predictive_analytics_service_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/icip_predictive_analytics_service/T1_overview.md"
+    count: 1
+  "icip_predictive_analytics_service_T1_overview":
+    type: "authoritative"
+    source: "icip_predictive_analytics_service_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/icip_predictive_analytics_service/T2_architecture.md"
+    count: 1
+  "icip_predictive_analytics_service_T2_architecture":
+    type: "authoritative"
+    source: "icip_predictive_analytics_service_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/icip_predictive_analytics_service/T3_detailed.md"
+    count: 1
+  "icip_predictive_analytics_service_T3_detailed":
+    type: "authoritative"
+    source: "icip_predictive_analytics_service_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/icip_predictive_analytics_service/T4_complete.md"
+    count: 1
+  "icip_presentation_api_layer_T0_executive":
+    type: "authoritative"
+    source: "icip_presentation_api_layer_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/icip_presentation_api_layer/T1_overview.md"
+    count: 1
+  "icip_presentation_api_layer_T1_overview":
+    type: "authoritative"
+    source: "icip_presentation_api_layer_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/icip_presentation_api_layer/T2_architecture.md"
+    count: 1
+  "icip_presentation_api_layer_T2_architecture":
+    type: "authoritative"
+    source: "icip_presentation_api_layer_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/icip_presentation_api_layer/T3_detailed.md"
+    count: 1
+  "icip_presentation_api_layer_T3_detailed":
+    type: "authoritative"
+    source: "icip_presentation_api_layer_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/icip_presentation_api_layer/T4_complete.md"
+    count: 1
+  "icip_search_service_T0_executive":
+    type: "authoritative"
+    source: "icip_search_service_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/icip_search_service/T1_overview.md"
+    count: 1
+  "icip_search_service_T1_overview":
+    type: "authoritative"
+    source: "icip_search_service_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/icip_search_service/T2_architecture.md"
+    count: 1
+  "icip_search_service_T2_architecture":
+    type: "authoritative"
+    source: "icip_search_service_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/icip_search_service/T3_detailed.md"
+    count: 1
+  "icip_search_service_T3_detailed":
+    type: "authoritative"
+    source: "icip_search_service_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/icip_search_service/T4_complete.md"
+    count: 1
+  "icip_streaming_processing_layer_T0_executive":
+    type: "authoritative"
+    source: "icip_streaming_processing_layer_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/icip_streaming_processing_layer/T1_overview.md"
+    count: 1
+  "icip_streaming_processing_layer_T1_overview":
+    type: "authoritative"
+    source: "icip_streaming_processing_layer_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/icip_streaming_processing_layer/T2_architecture.md"
+    count: 1
+  "icip_streaming_processing_layer_T2_architecture":
+    type: "authoritative"
+    source: "icip_streaming_processing_layer_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/icip_streaming_processing_layer/T3_detailed.md"
+    count: 1
+  "icip_streaming_processing_layer_T3_detailed":
+    type: "authoritative"
+    source: "icip_streaming_processing_layer_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/icip_streaming_processing_layer/T4_complete.md"
+    count: 1
+  "intent_classification_system_T0_executive":
+    type: "authoritative"
+    source: "intent_classification_system_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/intent_classification_system/T1_overview.md"
+    count: 1
+  "intent_classification_system_T1_overview":
+    type: "authoritative"
+    source: "intent_classification_system_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/intent_classification_system/T2_architecture.md"
+    count: 1
+  "intent_classification_system_T2_architecture":
+    type: "authoritative"
+    source: "intent_classification_system_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/intent_classification_system/T3_detailed.md"
+    count: 1
+  "intent_classification_system_T3_detailed":
+    type: "authoritative"
+    source: "intent_classification_system_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/intent_classification_system/T4_complete.md"
+    count: 1
+  "intuitive_intelligence_system_T0_executive":
+    type: "authoritative"
+    source: "intuitive_intelligence_system_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/intuitive_intelligence_system/T1_overview.md"
+    count: 1
+  "intuitive_intelligence_system_T1_overview":
+    type: "authoritative"
+    source: "intuitive_intelligence_system_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/intuitive_intelligence_system/T2_architecture.md"
+    count: 1
+  "intuitive_intelligence_system_T2_architecture":
+    type: "authoritative"
+    source: "intuitive_intelligence_system_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/intuitive_intelligence_system/T3_detailed.md"
+    count: 1
+  "intuitive_intelligence_system_T3_detailed":
+    type: "authoritative"
+    source: "intuitive_intelligence_system_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/intuitive_intelligence_system/T4_complete.md"
+    count: 1
+  "intuitive_intelligence_system_T4_complete":
+    type: "authoritative"
+    source: "intuitive_intelligence_system_T4_complete"
+    dependents:
+      - "knowledge_architecture/systems/intuitive_intelligence_system/T5_deep_dive.md"
+    count: 1
+  "intuitive_intelligence_system_T5_deep_dive":
+    type: "authoritative"
+    source: "intuitive_intelligence_system_T5_deep_dive"
+    dependents:
+      - "knowledge_architecture/systems/intuitive_intelligence_system/T6_academic.md"
+    count: 1
+  "knowledge_bootstrap_system_T0_executive":
+    type: "authoritative"
+    source: "knowledge_bootstrap_system_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/knowledge_bootstrap_system/T1_overview.md"
+    count: 1
+  "knowledge_bootstrap_system_T1_overview":
+    type: "authoritative"
+    source: "knowledge_bootstrap_system_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/knowledge_bootstrap_system/T2_architecture.md"
+    count: 1
+  "knowledge_bootstrap_system_T2_architecture":
+    type: "authoritative"
+    source: "knowledge_bootstrap_system_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/knowledge_bootstrap_system/T3_detailed.md"
+    count: 1
+  "knowledge_bootstrap_system_T3_detailed":
+    type: "authoritative"
+    source: "knowledge_bootstrap_system_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/knowledge_bootstrap_system/T4_complete.md"
+    count: 1
+  "llm_client_integration_T0_executive":
+    type: "authoritative"
+    source: "llm_client_integration_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/llm_client_integration/T1_overview.md"
+    count: 1
+  "llm_client_integration_T1_overview":
+    type: "authoritative"
+    source: "llm_client_integration_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/llm_client_integration/T2_architecture.md"
+    count: 1
+  "llm_client_integration_T2_architecture":
+    type: "authoritative"
+    source: "llm_client_integration_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/llm_client_integration/T3_detailed.md"
+    count: 1
+  "llm_client_integration_T3_detailed":
+    type: "authoritative"
+    source: "llm_client_integration_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/llm_client_integration/T4_complete.md"
+    count: 1
+  "lucid_core_console_T0_executive":
+    type: "authoritative"
+    source: "lucid_core_console_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/lucid_core_console/T1_overview.md"
+    count: 1
+  "lucid_core_console_T1_overview":
+    type: "authoritative"
+    source: "lucid_core_console_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/lucid_core_console/T2_architecture.md"
+    count: 1
+  "lucid_core_console_T2_architecture":
+    type: "authoritative"
+    source: "lucid_core_console_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/lucid_core_console/T3_detailed.md"
+    count: 1
+  "lucid_core_console_T3_detailed":
+    type: "authoritative"
+    source: "lucid_core_console_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/lucid_core_console/T4_complete.md"
+    count: 1
+  "lucid_mcp_integration_T0_executive":
+    type: "authoritative"
+    source: "lucid_mcp_integration_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/lucid_mcp_integration/T1_overview.md"
+    count: 1
+  "lucid_mcp_integration_T1_overview":
+    type: "authoritative"
+    source: "lucid_mcp_integration_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/lucid_mcp_integration/T2_architecture.md"
+    count: 1
+  "lucid_mcp_integration_T2_architecture":
+    type: "authoritative"
+    source: "lucid_mcp_integration_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/lucid_mcp_integration/T3_detailed.md"
+    count: 1
+  "lucid_mcp_integration_T3_detailed":
+    type: "authoritative"
+    source: "lucid_mcp_integration_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/lucid_mcp_integration/T4_complete.md"
+    count: 1
+  "mcp_client_T0_executive":
+    type: "authoritative"
+    source: "mcp_client_T0_executive"
+    dependents:
+      - "cursor-addon/docs/T1_MCP_CLIENT_OVERVIEW.md"
+    count: 1
+  "mcp_client_T1_overview":
+    type: "authoritative"
+    source: "mcp_client_T1_overview"
+    dependents:
+      - "cursor-addon/docs/T2_MCP_CLIENT_ARCHITECTURE.md"
+    count: 1
+  "mcp_integration_T2_architecture":
+    type: "authoritative"
+    source: "mcp_integration_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/mcp_integration/T3_detailed.md"
+    count: 1
+  "mcp_integration_T3_detailed":
+    type: "authoritative"
+    source: "mcp_integration_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/mcp_integration/T4_complete.md"
+    count: 1
+  "mcp_tools":
+    type: "authoritative"
+    source: "mcp_tools"
+    dependents:
+      - "knowledge_architecture/systems/chat_automation/T0_executive.md"
+      - "knowledge_architecture/systems/chat_automation/T1_overview.md"
+      - "knowledge_architecture/systems/chat_automation/T2_architecture.md"
+      - "knowledge_architecture/systems/chat_automation/T3_detailed.md"
+      - "knowledge_architecture/systems/chat_automation/T4_complete.md"
+    count: 5
+  "mcp_tools_T0_executive":
+    type: "authoritative"
+    source: "mcp_tools_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/mcp_tools/T1_overview.md"
+    count: 1
+  "mcp_tools_T1_overview":
+    type: "authoritative"
+    source: "mcp_tools_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/mcp_tools/T2_architecture.md"
+    count: 1
+  "mcp_tools_T2_architecture":
+    type: "authoritative"
+    source: "mcp_tools_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/mcp_tools/T3_detailed.md"
+    count: 1
+  "mcp_tools_T3_detailed":
+    type: "authoritative"
+    source: "mcp_tools_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/mcp_tools/T4_complete.md"
+    count: 1
+  "memory_pyramid_system_T0_executive":
+    type: "authoritative"
+    source: "memory_pyramid_system_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/memory_pyramid_system/T1_overview.md"
+    count: 1
+  "memory_pyramid_system_T1_overview":
+    type: "authoritative"
+    source: "memory_pyramid_system_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/memory_pyramid_system/T2_architecture.md"
+    count: 1
+  "memory_pyramid_system_T2_architecture":
+    type: "authoritative"
+    source: "memory_pyramid_system_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/memory_pyramid_system/T3_detailed.md"
+    count: 1
+  "memory_pyramid_system_T3_detailed":
+    type: "authoritative"
+    source: "memory_pyramid_system_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/memory_pyramid_system/T4_complete.md"
+    count: 1
+  "message_monitor":
+    type: "authoritative"
+    source: "message_monitor"
+    dependents:
+      - "knowledge_architecture/systems/chat_automation/T1_overview.md"
+      - "knowledge_architecture/systems/chat_automation/T2_architecture.md"
+    count: 2
+  "mutation_modes_system_T0_executive":
+    type: "authoritative"
+    source: "mutation_modes_system_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/mutation_modes_system/T1_overview.md"
+    count: 1
+  "mutation_modes_system_T1_overview":
+    type: "authoritative"
+    source: "mutation_modes_system_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/mutation_modes_system/T2_architecture.md"
+    count: 1
+  "mutation_modes_system_T2_architecture":
+    type: "authoritative"
+    source: "mutation_modes_system_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/mutation_modes_system/T3_detailed.md"
+    count: 1
+  "mutation_modes_system_T3_detailed":
+    type: "authoritative"
+    source: "mutation_modes_system_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/mutation_modes_system/T4_complete.md"
+    count: 1
+  "path_a_integration_T0_executive":
+    type: "authoritative"
+    source: "path_a_integration_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/path_a_integration/T1_overview.md"
+      - "knowledge_architecture/systems/path_a_integration/T2_architecture.md"
+    count: 2
+  "path_a_integration_T1_overview":
+    type: "authoritative"
+    source: "path_a_integration_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/path_a_integration/T2_architecture.md"
+    count: 1
+  "performance_monitoring_T0_executive":
+    type: "authoritative"
+    source: "performance_monitoring_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/performance_monitoring/T1_overview.md"
+    count: 1
+  "performance_monitoring_T1_overview":
+    type: "authoritative"
+    source: "performance_monitoring_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/performance_monitoring/T2_architecture.md"
+    count: 1
+  "performance_monitoring_T2_architecture":
+    type: "authoritative"
+    source: "performance_monitoring_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/performance_monitoring/T3_detailed.md"
+    count: 1
+  "performance_monitoring_T3_detailed":
+    type: "authoritative"
+    source: "performance_monitoring_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/performance_monitoring/T4_complete.md"
+    count: 1
+  "prompt_chains":
+    type: "authoritative"
+    source: "prompt_chains"
+    dependents:
+      - "knowledge_architecture/systems/temporal_consciousness_visualization/T0_executive.md"
+      - "knowledge_architecture/systems/temporal_consciousness_visualization/T1_overview.md"
+      - "knowledge_architecture/systems/temporal_consciousness_visualization/T2_architecture.md"
+      - "knowledge_architecture/systems/temporal_consciousness_visualization/T3_detailed.md"
+      - "knowledge_architecture/systems/temporal_consciousness_visualization/T4_complete.md"
+      - "knowledge_architecture/systems/temporal_consciousness_visualization/T5_quick_reference.md"
+    count: 6
+  "react_flow":
+    type: "authoritative"
+    source: "react_flow"
+    dependents:
+      - "knowledge_architecture/systems/temporal_consciousness_visualization/T0_executive.md"
+      - "knowledge_architecture/systems/temporal_consciousness_visualization/T1_overview.md"
+      - "knowledge_architecture/systems/temporal_consciousness_visualization/T2_architecture.md"
+      - "knowledge_architecture/systems/temporal_consciousness_visualization/T3_detailed.md"
+      - "knowledge_architecture/systems/temporal_consciousness_visualization/T4_complete.md"
+    count: 5
+  "scor_T0_executive":
+    type: "authoritative"
+    source: "scor_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/scor/T1_overview.md"
+    count: 1
+  "scor_T1_overview":
+    type: "authoritative"
+    source: "scor_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/scor/T2_architecture.md"
+    count: 1
+  "scor_T2_architecture":
+    type: "authoritative"
+    source: "scor_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/scor/T3_detailed.md"
+    count: 1
+  "scor_T3_detailed":
+    type: "authoritative"
+    source: "scor_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/scor/T4_complete.md"
+    count: 1
+  "sdfcvf":
+    type: "authoritative"
+    source: "sdfcvf"
+    dependents:
+      - "knowledge_architecture/systems/prompt_chains/T1_overview.md"
+      - "knowledge_architecture/systems/prompt_chains/T2_architecture.md"
+      - "knowledge_architecture/systems/prompt_chains/T3_detailed.md"
+      - "knowledge_architecture/systems/prompt_chains/T4_complete.md"
+    count: 4
+  "sdfcvf_T0_executive":
+    type: "authoritative"
+    source: "sdfcvf_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/sdfcvf/L1_overview.md"
+      - "knowledge_architecture/systems/sdfcvf/T1_overview.md"
+    count: 2
+  "sdfcvf_T1_overview":
+    type: "authoritative"
+    source: "sdfcvf_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/sdfcvf/L2_architecture.md"
+      - "knowledge_architecture/systems/sdfcvf/T2_architecture.md"
+    count: 2
+  "sdfcvf_T2_architecture":
+    type: "authoritative"
+    source: "sdfcvf_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/sdfcvf/T3_detailed.md"
+    count: 1
+  "sdfcvf_T3_detailed":
+    type: "authoritative"
+    source: "sdfcvf_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/sdfcvf/T4_complete.md"
+    count: 1
+  "sdfcvf_T4_complete":
+    type: "authoritative"
+    source: "sdfcvf_T4_complete"
+    dependents:
+      - "knowledge_architecture/systems/sdfcvf/T5_deep_dive.md"
+    count: 1
+  "sdfcvf_T5_deep_dive":
+    type: "authoritative"
+    source: "sdfcvf_T5_deep_dive"
+    dependents:
+      - "knowledge_architecture/systems/sdfcvf/T6_academic.md"
+    count: 1
+  "security_audit_system_T0_executive":
+    type: "authoritative"
+    source: "security_audit_system_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/security_audit_system/T1_overview.md"
+    count: 1
+  "security_audit_system_T1_overview":
+    type: "authoritative"
+    source: "security_audit_system_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/security_audit_system/T2_architecture.md"
+    count: 1
+  "security_audit_system_T2_architecture":
+    type: "authoritative"
+    source: "security_audit_system_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/security_audit_system/T3_detailed.md"
+    count: 1
+  "security_audit_system_T3_detailed":
+    type: "authoritative"
+    source: "security_audit_system_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/security_audit_system/T4_complete.md"
+    count: 1
+  "seg":
+    type: "authoritative"
+    source: "seg"
+    dependents:
+      - "knowledge_architecture/systems/prompt_chains/T1_overview.md"
+      - "knowledge_architecture/systems/prompt_chains/T2_architecture.md"
+      - "knowledge_architecture/systems/prompt_chains/T3_detailed.md"
+      - "knowledge_architecture/systems/prompt_chains/T4_complete.md"
+    count: 4
+  "seg_T0_executive":
+    type: "authoritative"
+    source: "seg_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/seg/L1_overview.md"
+      - "knowledge_architecture/systems/seg/T1_overview.md"
+    count: 2
+  "seg_T1_overview":
+    type: "authoritative"
+    source: "seg_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/seg/L2_architecture.md"
+      - "knowledge_architecture/systems/seg/T2_architecture.md"
+    count: 2
+  "seg_T2_architecture":
+    type: "authoritative"
+    source: "seg_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/seg/T3_detailed.md"
+    count: 1
+  "seg_T3_detailed":
+    type: "authoritative"
+    source: "seg_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/seg/T4_complete.md"
+    count: 1
+  "seg_T4_complete":
+    type: "authoritative"
+    source: "seg_T4_complete"
+    dependents:
+      - "knowledge_architecture/systems/seg/T5_deep_dive.md"
+    count: 1
+  "seg_T5_deep_dive":
+    type: "authoritative"
+    source: "seg_T5_deep_dive"
+    dependents:
+      - "knowledge_architecture/systems/seg/T6_academic.md"
+    count: 1
+  "self_improvement_protocol_T0_executive":
+    type: "authoritative"
+    source: "self_improvement_protocol_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/self_improvement_protocol/T1_overview.md"
+    count: 1
+  "self_improvement_protocol_T1_overview":
+    type: "authoritative"
+    source: "self_improvement_protocol_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/self_improvement_protocol/T2_architecture.md"
+    count: 1
+  "self_improvement_protocol_T2_architecture":
+    type: "authoritative"
+    source: "self_improvement_protocol_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/self_improvement_protocol/T3_detailed.md"
+    count: 1
+  "self_improvement_protocol_T3_detailed":
+    type: "authoritative"
+    source: "self_improvement_protocol_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/self_improvement_protocol/T4_complete.md"
+    count: 1
+  "spec_coverage_index_T0_executive":
+    type: "authoritative"
+    source: "spec_coverage_index_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/spec_coverage_index/T1_overview.md"
+    count: 1
+  "spec_coverage_index_T1_overview":
+    type: "authoritative"
+    source: "spec_coverage_index_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/spec_coverage_index/T2_architecture.md"
+    count: 1
+  "spec_coverage_index_T2_architecture":
+    type: "authoritative"
+    source: "spec_coverage_index_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/spec_coverage_index/T3_detailed.md"
+    count: 1
+  "spec_coverage_index_T3_detailed":
+    type: "authoritative"
+    source: "spec_coverage_index_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/spec_coverage_index/T4_complete.md"
+    count: 1
+  "system_integration_protocols_T0_executive":
+    type: "authoritative"
+    source: "system_integration_protocols_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/system_integration_protocols/T1_overview.md"
+    count: 1
+  "system_integration_protocols_T1_overview":
+    type: "authoritative"
+    source: "system_integration_protocols_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/system_integration_protocols/T2_architecture.md"
+    count: 1
+  "system_integration_protocols_T2_architecture":
+    type: "authoritative"
+    source: "system_integration_protocols_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/system_integration_protocols/T3_detailed.md"
+    count: 1
+  "system_integration_protocols_T3_detailed":
+    type: "authoritative"
+    source: "system_integration_protocols_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/system_integration_protocols/T4_complete.md"
+    count: 1
+  "temporal_consciousness_T0_executive":
+    type: "authoritative"
+    source: "temporal_consciousness_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/temporal_consciousness/T2_architecture.md"
+    count: 1
+  "temporal_consciousness_T1_overview":
+    type: "authoritative"
+    source: "temporal_consciousness_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/temporal_consciousness/T2_architecture.md"
+    count: 1
+  "timeline_context_system":
+    type: "authoritative"
+    source: "timeline_context_system"
+    dependents:
+      - "knowledge_architecture/systems/timeline_goals_integration/T0_executive.md"
+      - "knowledge_architecture/systems/timeline_goals_integration/T1_overview.md"
+      - "knowledge_architecture/systems/timeline_goals_integration/T2_architecture.md"
+      - "knowledge_architecture/systems/timeline_goals_integration/T3_detailed.md"
+      - "knowledge_architecture/systems/timeline_goals_integration/T4_complete.md"
+      - "knowledge_architecture/systems/timeline_goals_integration/T5_quick_reference.md"
+    count: 6
+  "timeline_context_system_T2_architecture":
+    type: "authoritative"
+    source: "timeline_context_system_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/timeline_context_system/T3_detailed.md"
+    count: 1
+  "timeline_context_system_T3_detailed":
+    type: "authoritative"
+    source: "timeline_context_system_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/timeline_context_system/T4_complete.md"
+    count: 1
+  "timeline_context_system_T4_complete":
+    type: "authoritative"
+    source: "timeline_context_system_T4_complete"
+    dependents:
+      - "knowledge_architecture/systems/timeline_context_system/T5_deep_dive.md"
+    count: 1
+  "timeline_context_system_T5_deep_dive":
+    type: "authoritative"
+    source: "timeline_context_system_T5_deep_dive"
+    dependents:
+      - "knowledge_architecture/systems/timeline_context_system/T6_academic.md"
+    count: 1
+  "timeline_goals_integration":
+    type: "authoritative"
+    source: "timeline_goals_integration"
+    dependents:
+      - "knowledge_architecture/systems/prompt_chains/T0_executive.md"
+      - "knowledge_architecture/systems/prompt_chains/T1_overview.md"
+      - "knowledge_architecture/systems/prompt_chains/T2_architecture.md"
+      - "knowledge_architecture/systems/prompt_chains/T3_detailed.md"
+      - "knowledge_architecture/systems/prompt_chains/T4_complete.md"
+      - "knowledge_architecture/systems/temporal_consciousness_visualization/T0_executive.md"
+      - "knowledge_architecture/systems/temporal_consciousness_visualization/T1_overview.md"
+      - "knowledge_architecture/systems/temporal_consciousness_visualization/T2_architecture.md"
+      - "knowledge_architecture/systems/temporal_consciousness_visualization/T3_detailed.md"
+      - "knowledge_architecture/systems/temporal_consciousness_visualization/T4_complete.md"
+      - "knowledge_architecture/systems/temporal_consciousness_visualization/T5_quick_reference.md"
+    count: 11
+  "vif":
+    type: "authoritative"
+    source: "vif"
+    dependents:
+      - "knowledge_architecture/systems/prompt_chains/T0_executive.md"
+      - "knowledge_architecture/systems/prompt_chains/T1_overview.md"
+      - "knowledge_architecture/systems/prompt_chains/T2_architecture.md"
+      - "knowledge_architecture/systems/prompt_chains/T3_detailed.md"
+      - "knowledge_architecture/systems/prompt_chains/T4_complete.md"
+      - "knowledge_architecture/systems/prompt_chains/T5_quick_reference.md"
+      - "knowledge_architecture/systems/timeline_goals_integration/T2_architecture.md"
+      - "knowledge_architecture/systems/timeline_goals_integration/T3_detailed.md"
+      - "knowledge_architecture/systems/timeline_goals_integration/T4_complete.md"
+    count: 9
+  "vif_T0_executive":
+    type: "authoritative"
+    source: "vif_T0_executive"
+    dependents:
+      - "knowledge_architecture/systems/vif/L1_overview.md"
+      - "knowledge_architecture/systems/vif/T1_overview.md"
+    count: 2
+  "vif_T1_overview":
+    type: "authoritative"
+    source: "vif_T1_overview"
+    dependents:
+      - "knowledge_architecture/systems/vif/L2_architecture.md"
+      - "knowledge_architecture/systems/vif/T2_architecture.md"
+    count: 2
+  "vif_T2_architecture":
+    type: "authoritative"
+    source: "vif_T2_architecture"
+    dependents:
+      - "knowledge_architecture/systems/vif/T3_detailed.md"
+    count: 1
+  "vif_T3_detailed":
+    type: "authoritative"
+    source: "vif_T3_detailed"
+    dependents:
+      - "knowledge_architecture/systems/vif/T4_complete.md"
+    count: 1
+  "vif_T4_complete":
+    type: "authoritative"
+    source: "vif_T4_complete"
+    dependents:
+      - "knowledge_architecture/systems/vif/T5_deep_dive.md"
+    count: 1
+  "vif_T5_deep_dive":
+    type: "authoritative"
+    source: "vif_T5_deep_dive"
+    dependents:
+      - "knowledge_architecture/systems/vif/T6_academic.md"
+    count: 1

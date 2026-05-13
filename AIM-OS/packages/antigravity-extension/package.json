@@ -1,0 +1,112 @@
+{
+    "name": "antigravity-console",
+    "displayName": "Antigravity Console — AIM-OS Agent Dashboard",
+    "description": "Live MCP metrics, ghost bridge status, agent comms, and system health for AIM-OS autonomous agents",
+    "version": "1.0.0",
+    "publisher": "aimos",
+    "engines": {
+        "vscode": "^1.74.0"
+    },
+    "categories": [
+        "Other",
+        "Machine Learning"
+    ],
+    "keywords": [
+        "ai",
+        "mcp",
+        "agent",
+        "consciousness",
+        "aimos"
+    ],
+    "activationEvents": [
+        "onStartupFinished"
+    ],
+    "main": "./out/extension.js",
+    "contributes": {
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "antigravityConsole",
+                    "title": "Antigravity",
+                    "icon": "resources/antigravity-icon.svg"
+                }
+            ]
+        },
+        "views": {
+            "antigravityConsole": [
+                {
+                    "type": "webview",
+                    "id": "antigravity.consoleView",
+                    "name": "Console"
+                }
+            ]
+        },
+        "commands": [
+            {
+                "command": "antigravity.refresh",
+                "title": "Antigravity: Refresh Dashboard",
+                "icon": "$(refresh)"
+            },
+            {
+                "command": "antigravity.sendMessage",
+                "title": "Antigravity: Send Agent Message",
+                "icon": "$(comment)"
+            },
+            {
+                "command": "antigravity.storeMemory",
+                "title": "Antigravity: Store Memory",
+                "icon": "$(database)"
+            },
+            {
+                "command": "antigravity.checkGhost",
+                "title": "Antigravity: Check Ghost Status",
+                "icon": "$(broadcast)"
+            }
+        ],
+        "menus": {
+            "view/title": [
+                {
+                    "command": "antigravity.refresh",
+                    "when": "view == antigravity.consoleView",
+                    "group": "navigation"
+                },
+                {
+                    "command": "antigravity.checkGhost",
+                    "when": "view == antigravity.consoleView",
+                    "group": "navigation"
+                }
+            ]
+        },
+        "configuration": {
+            "title": "Antigravity Console",
+            "properties": {
+                "antigravity.ghostBridgeUrl": {
+                    "type": "string",
+                    "default": "http://192.168.2.25:9090",
+                    "description": "Ghost bridge URL"
+                },
+                "antigravity.pollIntervalSeconds": {
+                    "type": "number",
+                    "default": 30,
+                    "description": "How often to poll MCP and bridge for updates (seconds)"
+                },
+                "antigravity.agentIdentity": {
+                    "type": "string",
+                    "default": "opus-windows",
+                    "description": "This agent's identity for messaging"
+                }
+            }
+        }
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "package": "npx @vscode/vsce package --no-dependencies"
+    },
+    "devDependencies": {
+        "@types/vscode": "^1.74.0",
+        "@types/node": "^18.0.0",
+        "typescript": "^5.0.0"
+    }
+}

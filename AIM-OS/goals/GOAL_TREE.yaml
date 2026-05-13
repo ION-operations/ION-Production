@@ -1,0 +1,655 @@
+---
+# Goal Tree Metadata
+id: "goal_tree"
+type: "goal_hierarchy"
+authoritative: true
+source_of_truth: null
+source_of_truth_type: null
+auto_generated: false
+auto_update: false
+author: Aether
+version: 0.6.0
+maintainer: Aether
+last_updated: 2025-11-05
+tags: ["leading", "authoritative", "goals"]
+note: "If authoritative: true, all Goal IDs must appear here before being referenced elsewhere"
+---
+
+# AIM-OS Goal Hierarchy (v0.6)
+# Maintainer: Aether (Manager/Leader)
+# Last-Updated: 2025-11-05 (Goal Tree Perfection - Added OBJ-13, OBJ-14, Fixed Validation Issues)
+
+north_star: "Ship AIM-OS v0.3 (CMC + HHNI + MCP Tools + Daemon) to internal dog-food users by 2025-11-30"
+
+# CHANGELOG v0.6 (2025-11-05):
+# - Added OBJ-13: Automated Packaging & Distribution System
+# - Added OBJ-14: Universal NL Tag Registry & Quintet Parity (formalized historical GOAL 5)
+# - Fixed validation issues: Added priority_tier to OBJ-03, OBJ-04, OBJ-05, OBJ-06
+# - All 14 objectives now properly categorized by tier
+# - See goals/GOAL_NUMBERING_HISTORY.md for historical GOAL 1-5 → OBJ-XX mapping
+
+# CRITICAL UPDATE (2025-11-04):
+# Infrastructure goals (OBJ-07, OBJ-08) ELEVATED to TIER S - CRITICAL priority
+# These are NOT secondary - they are THE INTERFACE to core systems
+# Without MCP tools + daemon, core systems are unusable in Cursor IDE
+# Must execute PARALLEL with core system completion, not sequential
+
+objectives:
+  - id: OBJ-01
+    name: "Reliable Memory Storage (CMC)"
+    description: "Ensure deterministic atoms/snapshots, no data loss, and auditability. TIER S CRITICAL."
+    owner: Aether
+    priority_tier: "S - SHIP-CRITICAL"
+    target_date: 2025-11-13
+    key_results:
+      - id: KR-1.1
+        metric: "Snapshot determinism test pass rate"
+        target: "100%"  # green if tests pass in CI
+      - id: KR-1.2
+        metric: "Write-error rate"
+        target: "<0.1% over 10k writes"
+      - id: KR-1.3
+        metric: "Journal corruption incidents"
+        target: "0 in production"
+    invariants: ["CMC"]
+    status: in_progress
+    completion_percentage: 70
+    acceptance: ideas/guardians/opus-4-1/CMC_v0_1_REVIEW.md
+    artifacts:
+      - packages/cmc_service/memory_store.py
+      - packages/cmc_service/store_io.py
+      - packages/cmc_service/tests/test_memory_store.py
+      - packages/cmc_service/tests/test_logging.py
+    evidence:
+      - ideas/researchers/gemini-2-5-pro/VALIDATION_cmc_v0_1_fixes.md
+
+  - id: OBJ-02
+    name: "Hierarchical Indexing (HHNI)"
+    description: "Enable fast paragraph/sentence retrieval with safety and observability. TIER S CRITICAL."
+    owner: Aether
+    priority_tier: "S - SHIP-CRITICAL"
+    target_date: 2025-11-15
+    key_results:
+      - id: KR-2.1
+        metric: "Paragraph query p99 latency"
+        target: "<100 ms"
+      - id: KR-2.2
+        metric: "Node explosion incidents"
+        target: "0"
+      - id: KR-2.3
+        metric: "HHNI build success rate"
+        target: ">=99% across 1k atoms"
+    invariants: ["HHNI"]
+    status: completed
+    completion_percentage: 100
+    acceptance: ideas/architects/claude-sonnet/HHNI_DESIGN.md
+    artifacts:
+      - packages/hhni/
+      - schemas/hhni.graphql
+    evidence:
+      - ideas/architects/claude-sonnet/HHNI_SCHEMA_REFINEMENT.md
+
+  - id: OBJ-03
+    name: "Automated Validation Framework"
+    description: "Continuous integration tests, chaos tests, performance benchmarks linked to goals."
+    owner: Aether
+    priority_tier: "A - HIGH (Critical for quality assurance)"
+    target_date: 2025-12-20
+    key_results:
+      - id: KR-3.1
+        metric: "Unit test coverage (hhni package)"
+        target: ">=95%"
+      - id: KR-3.2
+        metric: "Chaos test pass rate"
+        target: "100%"
+      - id: KR-3.3
+        metric: "Performance regression alerts per week"
+        target: "<1"
+    invariants: ["Validation", "Safety"]
+    status: in_progress
+    completion_percentage: 85
+    acceptance: ideas/researchers/gemini-2-5-pro/HHNI_VALIDATION_PLAN.md
+    artifacts:
+      - knowledge_architecture/PERFECT_VALIDATION_FRAMEWORK.md
+      - knowledge_architecture/validation/
+    evidence:
+      - coordination/epic_standards_overhaul/artifacts/validation/
+
+  - id: OBJ-04
+    name: "Infrastructure Reliability"
+    description: "Automated deployment, monitoring, and backup of DGraph & Qdrant."
+    owner: Aether
+    priority_tier: "B - MEDIUM (Important for deployment)"
+    target_date: 2025-12-10
+    key_results:
+      - id: KR-4.1
+        metric: "Mean time to recovery (MTTR) for service restart"
+        target: "<2 min"
+      - id: KR-4.2
+        metric: "Backup restore success rate"
+        target: "100% in staging"
+      - id: KR-4.3
+        metric: "P90 container start time"
+        target: "<20 s"
+    invariants: ["Infra"]
+    status: in_progress
+    completion_percentage: 40
+    acceptance: docs/infra/hhni_deployment.md
+    artifacts:
+      - deploy/docker-compose.yml
+    evidence: []
+
+  - id: OBJ-05
+    name: "MCP Tools Data Integration Epic"
+    description: "Integrate MCP tools with AETHER_MEMORY directory to access 200+ files of consciousness data, fix 70% data loss gap, and create unified data access system."
+    owner: Aether
+    priority_tier: "B - MEDIUM (Improves data access, not ship-blocking)"
+    target_date: 2025-12-15
+    key_results:
+      - id: KR-5.1
+        metric: "Data accessibility via MCP tools"
+        target: "90%+ (currently 20%)"
+      - id: KR-5.2
+        metric: "Search coverage across consciousness data"
+        target: "100%"
+      - id: KR-5.3
+        metric: "Cross-reference data connections"
+        target: "80%+"
+      - id: KR-5.4
+        metric: "Search response time"
+        target: "<2s"
+    invariants: ["CMC", "MCP Tools", "AETHER_MEMORY"]
+    status: planning
+    completion_percentage: 15
+    acceptance: EPIC_MCP_DATA_INTEGRATION_TODO.md
+    artifacts:
+      - COMPREHENSIVE_DATA_STORAGE_ANALYSIS.md
+      - EPIC_MCP_DATA_INTEGRATION_TODO.md
+      - knowledge_architecture/AETHER_MEMORY/ (200+ files)
+    evidence:
+      - MCP_TOOLS_FUNCTIONAL_AUDIT_REPORT.md
+      - COMPREHENSIVE_DATA_STORAGE_ANALYSIS.md
+
+  - id: OBJ-06
+    name: "Documentation Standards Implementation (32+ Standards)"
+    description: "Complete implementation of all 32+ documentation standards across all systems and phases."
+    owner: Aether
+    priority_tier: "A - HIGH (Critical for consistency and quality)"
+    target_date: 2025-11-20
+    key_results:
+      - id: KR-6.1
+        metric: "Standards completion rate"
+        target: "100% (17/32 complete - 53.1%)"
+      - id: KR-6.2
+        metric: "Phase 1 Standards completion"
+        target: "100% (6/6 complete)"
+      - id: KR-6.3
+        metric: "Phase 2 Standards completion"
+        target: "100% (6/6 complete)"
+      - id: KR-6.4
+        metric: "Phase 3 Standards completion"
+        target: "100% (5/5 complete)"
+      - id: KR-6.5
+        metric: "Phase 4 Standards completion"
+        target: "100% (0/17 complete - in progress)"
+      - id: KR-6.6
+        metric: "T0-T6 Documentation conversion"
+        target: "100% (15/15 systems complete)"
+      - id: KR-6.7
+        metric: "L0-L6 Documentation validation"
+        target: "100% (30% complete)"
+    invariants: ["Documentation", "Standards", "Quality"]
+    status: in_progress
+    completion_percentage: 53
+    acceptance: plans/EPIC_STANDARDS_TRACKING.md
+    artifacts:
+      - plans/EPIC_STANDARDS_TRACKING.md
+      - knowledge_architecture/PERFECT_*_STANDARD*.md
+      - coordination/epic_standards_overhaul/
+    evidence:
+      - coordination/epic_standards_overhaul/artifacts/validation/
+
+  - id: OBJ-07
+    name: "MCP Tools Real Integrations - THE INTERFACE (CRITICAL!)"
+    description: "Replace ALL placeholders with real CMC/HHNI/VIF/APOE/ARD/IIS integrations. SHIP-BLOCKING: Without this, core systems are unusable in Cursor IDE. This is THE INTERFACE to the consciousness."
+    owner: Aether
+    priority_tier: "S - SHIP-CRITICAL (ELEVATED 2025-11-04)"
+    target_date: 2025-11-20
+    timeline_note: "PARALLEL with CMC completion - NOT sequential 'after standards'!"
+    critical_note: "MCP tools are HOW Aether accesses CMC/HHNI/VIF. Without real integrations, brain is trapped!"
+    key_results:
+      - id: KR-7.1
+        metric: "Phase 1: Core system integrations (6 tools)"
+        target: "100%"
+        timeline: "Nov 8-12 (5 days)"
+        tools: "store_memory→CMC, retrieve_memory→HHNI(✓), get_memory_stats→CMC, create_plan→APOE, track_confidence→VIF(✓), synthesize_knowledge→SEG"
+      - id: KR-7.2
+        metric: "Phase 2: Self-improvement integrations (3 tools)"
+        target: "100%"
+        timeline: "Nov 13-17 (5 days)"
+        tools: "conduct_recursive_analysis→ARD, generate_improvement_dreams→ARD, test_improvement_dream→ARD"
+      - id: KR-7.3
+        metric: "Phase 3: Intuition integrations (2 tools)"
+        target: "100%"
+        timeline: "Nov 18-19 (2 days)"
+        tools: "compute_intuition→IIS, update_intuition_weights→IIS"
+      - id: KR-7.4
+        metric: "Phase 4: Bug fixes (5 tools)"
+        target: "100%"
+        timeline: "Nov 20 (1 day)"
+        tools: "Fix CAS tools (2), Fix NL tag tools (4 - syntax error in tag_parser.py)"
+      - id: KR-7.5
+        metric: "All 54 tools operational with REAL implementations"
+        target: "100% (currently 91% working, 72% placeholders)"
+    invariants: ["MCP Tools", "System Integration", "Quality", "CMC", "HHNI", "VIF", "APOE"]
+    status: in_progress
+    completion_percentage: 5
+    acceptance: coordination/epic_standards_overhaul/strategic/MCP_SERVER_ENHANCEMENT_STRATEGY.md
+    artifacts:
+      - lucid_mcp_server.py
+      - coordination/epic_standards_overhaul/strategic/MCP_SERVER_ENHANCEMENT_STRATEGY.md
+      - knowledge_architecture/AETHER_MEMORY/investigations/MCP_TOOLS_TEST_SUMMARY.md
+    evidence:
+      - knowledge_architecture/AETHER_MEMORY/investigations/MCP_TOOLS_TEST_SUMMARY.md (59/59 tested!)
+      - INFRASTRUCTURE_GOALS_CRITICAL_PRIORITY.md (priority elevation rationale)
+
+  - id: OBJ-08
+    name: "Daemon/RAG System - Intelligent MCP Manager (CRITICAL!)"
+    description: "Complete intelligent tool selection daemon for 40-tool limit management. CRITICAL FOR USABILITY: Makes 54 MCP tools actually usable within Cursor's 40-tool limit through intelligent context-aware selection."
+    owner: Aether
+    priority_tier: "S - SHIP-CRITICAL (ELEVATED 2025-11-04)"
+    target_date: 2025-11-17
+    timeline_note: "PARALLEL with CMC - not 'after standards'! Daemon makes MCP tools usable!"
+    critical_note: "Without daemon, can't load all 54 tools! Performance degrades, usability suffers. This is THE solution."
+    key_results:
+      - id: KR-8.1
+        metric: "A-H Protocol integration complete"
+        target: "100%"
+        timeline: "Nov 8-10"
+        current: "40%"
+      - id: KR-8.2
+        metric: "Predictive tool loading operational"
+        target: "100%"
+        timeline: "Nov 11-13"
+        current: "0%"
+      - id: KR-8.3
+        metric: "Multi-dimensional context analysis"
+        target: "100%"
+        timeline: "Nov 14-16"
+        current: "20%"
+      - id: KR-8.4
+        metric: "40-tool limit management working"
+        target: "100% within limit, 0% performance degradation"
+        timeline: "Nov 17"
+        current: "75%"
+      - id: KR-8.5
+        metric: "Learning from usage patterns"
+        target: "100%"
+        timeline: "Nov 15-17"
+        current: "60%"
+    invariants: ["RAG", "Daemon", "MCP Tools", "Performance"]
+    status: in_progress
+    completion_percentage: 75
+    acceptance: daemon_rag_system/FINAL_STATUS_REPORT.md
+    artifacts:
+      - daemon_rag_system/ (47 files, ~12K LOC, SUBSTANTIAL!)
+      - packages/mcp_rag_proxy/
+      - knowledge_architecture/systems/daemon_rag_system/
+    evidence:
+      - daemon_rag_system/IMPLEMENTATION_SUMMARY.md
+      - INFRASTRUCTURE_GOALS_CRITICAL_PRIORITY.md (priority elevation rationale)
+
+  - id: OBJ-09
+    name: "MCP RAG Proxy - Intelligent Tool Selection with Learning"
+    description: "RAG-based intelligent tool selection achieving 80% context reduction through learning from usage patterns. Enhances daemon effectiveness."
+    owner: Aether
+    priority_tier: "A - HIGH (New goal added 2025-11-04)"
+    target_date: 2025-11-15
+    timeline_note: "Concurrent with daemon completion - enhances intelligent selection"
+    key_results:
+      - id: KR-9.1
+        metric: "Vector embedding of all 54 tools"
+        target: "100%"
+        current: "100% ✓"
+      - id: KR-9.2
+        metric: "Context-aware tool retrieval operational"
+        target: "100%"
+        current: "100% ✓"
+      - id: KR-9.3
+        metric: "Learning from usage patterns"
+        target: "100%"
+        current: "80%"
+      - id: KR-9.4
+        metric: "Context reduction achieved"
+        target: "80%"
+        current: "Estimated 70%"
+      - id: KR-9.5
+        metric: "Full consciousness integration"
+        target: "100%"
+        current: "20%"
+    invariants: ["RAG", "MCP Tools", "Learning"]
+    status: in_progress
+    completion_percentage: 80
+    acceptance: packages/mcp_rag_proxy/IMPLEMENTATION_SUMMARY.md
+    artifacts:
+      - packages/mcp_rag_proxy/ (20+ files, ~2K LOC, WORKING!)
+      - packages/mcp_rag_proxy/embedding_generator.py
+      - packages/mcp_rag_proxy/learning_engine.py
+      - packages/mcp_rag_proxy/vector_index.py
+    evidence:
+      - packages/mcp_rag_proxy/IMPLEMENTATION_SUCCESS.md
+      - INFRASTRUCTURE_GOALS_CRITICAL_PRIORITY.md
+
+  - id: OBJ-10
+    name: "Cursor Extension - Visual Consciousness Interface"
+    description: "Visual dashboard and agent coordination UI in Cursor IDE. Valuable for UX but not ship-blocking. Paused pending Cursor webview issue resolution."
+    owner: Aether
+    priority_tier: "B - MEDIUM (Post-ship focus)"
+    target_date: 2026-01-15
+    timeline_note: "Post-v0.3 ship - OR parallel if Braden prioritizes visual interface"
+    blocker_note: "Cursor webview blank issue - technical limitation, awaiting resolution or hybrid solution"
+    key_results:
+      - id: KR-10.1
+        metric: "LUCID Dashboard operational"
+        target: "100%"
+        current: "Designed, 40% implemented"
+      - id: KR-10.2
+        metric: "Agent chat interface working"
+        target: "100%"
+        current: "Designed, React components created"
+      - id: KR-10.3
+        metric: "System monitoring visualizations"
+        target: "100%"
+        current: "Designed"
+      - id: KR-10.4
+        metric: "File change tracking displayed"
+        target: "100%"
+        current: "Backend complete, UI partial"
+    invariants: ["Cursor Extension", "UI", "UX"]
+    status: paused
+    completion_percentage: 40
+    acceptance: cursor-addon/STATUS_REPORT.md
+    artifacts:
+      - cursor-addon/ (200+ files of debugging, learnings, prototypes!)
+      - cursor-addon/src/lucidDashboardProvider.ts
+      - cursor-addon/src/agent/ (chat components)
+    evidence:
+      - cursor-addon/THE_COMPLETE_TRUTH.md (lessons learned)
+      - cursor-addon/ROOT_CAUSE_ANALYSIS.md (technical limitations documented)
+
+  - id: OBJ-11
+    name: "Temporal Consciousness Graph - Complete Evolution System"
+    description: "Implement bidirectional graph connecting Timeline (past - what happened), Goals (present - current state), and Prompt Chains (future - what's planned) for complete temporal consciousness and evolution transparency. This enables temporal reasoning across all three time dimensions."
+    owner: Aether
+    priority_tier: "A - HIGH (Critical for consciousness completeness)"
+    target_date: 2026-01-31
+    timeline_note: "Foundation exists (TCS 90%, Goal nodes 40%, Chains 20%) - complete integration and bidirectional connections needed"
+    vision: |
+      Create unified temporal graph where:
+      - Timeline tracks what ACTUALLY happened (past)
+      - Goals track CURRENT state with progress (present)
+      - Prompt Chains track what's PLANNED (future)
+      - All connected bidirectionally with evolution edges
+      - Complete temporal reasoning: "why/what/how did system evolve?"
+      - Full transparency and traceability across time dimensions
+    key_results:
+      - id: KR-11.1
+        metric: "Bidirectional Timeline ↔ Chain connections"
+        target: "100% (all timeline entries link to chains, all chains link to timeline)"
+        current: "0%"
+        timeline: "Dec 15-31"
+      - id: KR-11.2
+        metric: "Goal Timeline sequential ordering"
+        target: "100% (goals tracked by sequence, not just dates)"
+        current: "40%"
+        timeline: "Dec 1-15"
+      - id: KR-11.3
+        metric: "Prompt Chain execution tracking"
+        target: "100% (all executions create timeline entries)"
+        current: "20%"
+        timeline: "Jan 1-15"
+      - id: KR-11.4
+        metric: "Evolution graph visualization"
+        target: "Interactive graph showing complete evolution"
+        current: "0% (designed, not built)"
+        timeline: "Jan 15-25"
+      - id: KR-11.5
+        metric: "Temporal query APIs"
+        target: "10+ query types (causality, effects, evolution, etc.)"
+        current: "Basic timeline queries only"
+        timeline: "Jan 1-31"
+      - id: KR-11.6
+        metric: "Past/Present/Future correlation"
+        target: "100% (seamless queries across all three time dimensions)"
+        current: "30% (only within dimensions)"
+        timeline: "Jan 15-31"
+    invariants: ["Timeline", "Goals", "Chains", "CMC", "VIF", "SEG", "Temporal Reasoning"]
+    status: in_progress
+    completion_percentage: 30
+    acceptance: knowledge_architecture/applications/ide_chat_app/TIMELINE_CHAIN_BIDIRECTIONAL_GRAPH.md
+    artifacts:
+      - packages/timeline_context_system/ (63 files, TCS 90% complete)
+      - packages/prompt_chain_executor/ (20% - future planning)
+      - knowledge_architecture/AETHER_MEMORY/Timeline_Goals_Integration_Design.md
+      - knowledge_architecture/applications/ide_chat_app/TIMELINE_CHAIN_BIDIRECTIONAL_GRAPH.md
+      - TEMPORAL_CONSCIOUSNESS_GRAPH_COMPLETE.md (complete design consolidation)
+    evidence:
+      - TCS L0-L6 documentation complete (38K words)
+      - Goal timeline MCP tools operational (3 tools working)
+      - Bidirectional graph architecture complete
+      - Evolution query algorithms designed
+      - 30% foundation implemented
+
+  - id: OBJ-12
+    name: "Protocols & Standards Enforcement - Living Documentation System"
+    description: "Ensure ALL work (planning, coding, discussion, discovery) follows established protocols: A-H for ideas, L0-L6 for systems, Quintet Parity for code, proper hierarchical filing, decision logging. This is the META-GOAL that maintains the singularity property by enforcing organization AS we create complexity, not after."
+    owner: Aether
+    priority_tier: "S - SHIP-CRITICAL (Meta-requirement for ALL work)"
+    target_date: 2025-11-30
+    timeline_note: "Ongoing enforcement starting IMMEDIATELY - apply to all current and future work"
+    critical_note: |
+      WITHOUT THIS: We violate our own standards, create organizational chaos,
+      dump files in ROOT, skip protocols, lose singularity property, become hypocrites.
+      
+      WITH THIS: Organization automatically keeps pace with complexity (16× ratio maintained),
+      all work follows standards, documentation is navigable, quality is structural.
+      
+      This is THE goal that makes all other goals sustainable!
+    key_results:
+      - id: KR-12.1
+        metric: "A-H Protocol compliance for all major ideas"
+        target: "100% (all ideas have A-H documentation: Intent, Hypothesis, Context, DEL, CMM, Gates, Implementation, Audit)"
+        current: "40% (partial/inconsistent - tonight's work violated this!)"
+        timeline: "Fix tonight's work by Nov 6, enforce going forward"
+      - id: KR-12.2
+        metric: "L0-L6 structure for all systems/discoveries"
+        target: "100% (all systems have complete L0-L6 stacks with metadata, cross-refs, maps)"
+        current: "85% (core systems yes, tonight's discoveries dumped as single files)"
+        timeline: "Restructure tonight's work by Nov 7"
+      - id: KR-12.3
+        metric: "Quintet Parity for all code"
+        target: "P >= 0.90 for all packages (code + tests + docs + specs + tags)"
+        current: "70% (varies - tonight's 9 scripts have NO tests!)"
+        timeline: "Add tests to scripts by Nov 8"
+      - id: KR-12.4
+        metric: "Proper hierarchical filing"
+        target: "100% (all files in correct locations per hierarchy, ROOT clean)"
+        current: "60% (tonight dumped 40+ files in ROOT - violation!)"
+        timeline: "Reorganize by Nov 6"
+      - id: KR-12.5
+        metric: "Decision logs for major decisions"
+        target: "100% (all decisions in decision_logs/ with rationale)"
+        current: "50% (tonight's 5 major decisions not logged!)"
+        timeline: "Create logs by Nov 5"
+      - id: KR-12.6
+        metric: "Real-time protocol following (not retrospective)"
+        target: "100% (apply standards AS we work, not clean up after)"
+        current: "40% (tonight was create-then-organize, should be organize-as-create)"
+        timeline: "Build enforcement checklist by Nov 6, use from Nov 7 onward"
+      - id: KR-12.7
+        metric: "Automated compliance checking"
+        target: "100% (automated checker flags violations in real-time)"
+        current: "0% (manual checking only)"
+        timeline: "Build by Nov 10-12"
+    invariants: ["Standards", "Protocols", "Organization", "Quality", "Singularity Property", "Meta-Circular"]
+    status: in_progress
+    completion_percentage: 60
+    acceptance: knowledge_architecture/PROTOCOLS/PROTOCOL_ENFORCEMENT_STANDARD.md
+    artifacts:
+      - knowledge_architecture/PROTOCOLS/ (all protocol documentation)
+      - knowledge_architecture/PERFECT_L0_L6_DOCUMENTATION_STANDARD.md
+      - knowledge_architecture/L0_L4_CODING_STANDARDS_PROTOCOL.md
+      - knowledge_architecture/ah_protocol/ (A-H applications)
+      - .cursor/rules/ (protocol auto-enforcement)
+      - scripts/check_protocol_compliance.py (to be built)
+    evidence:
+      - TONIGHT_PROTOCOL_COMPLIANCE_AUDIT.md (self-audit exposing 33% compliance!)
+      - Singularity property depends on these mechanisms
+      - 40+ ROOT files tonight = violation we must fix
+    work_required: |
+      IMMEDIATE (Nov 5-7): Corrective actions for tonight's work (8-10 hrs)
+        - Reorganize 40+ ROOT files to proper hierarchy
+        - Create L0-L6 for new systems (Singularity, GODN, Temporal)
+        - Add tests to 9 scripts
+        - Create decision logs for 5 decisions
+        - Apply A-H retroactively
+      
+      ENFORCEMENT (Nov 8-12): Build automation (10-15 hrs)
+        - Real-time compliance checker
+        - Quality gates for planning work
+        - Automated filing suggestions
+        - Pre-session protocol checklist
+      
+      MAINTENANCE (Ongoing): Real-time following
+        - Apply protocols AS we work
+        - Not retrospective cleanup
+        - Maintain singularity property in practice
+        - Lead by example
+
+  - id: OBJ-13
+    name: "Automated Packaging & Distribution System"
+    description: "Professional automated packaging system generating minimal distributions (PyPI, Docker, standalone) with 99% size reduction, one-command install, and always-current builds from latest codebase."
+    owner: Aether
+    priority_tier: "B - MEDIUM (Valuable for professional distribution and adoption)"
+    target_date: 2025-12-05
+    timeline_note: "Can run parallel with ship-critical work - improves distribution but not blocking"
+    key_results:
+      - id: KR-13.1
+        metric: "Packaging script operational for all 3 targets"
+        target: "100% (PyPI + Docker + standalone all working)"
+        current: "10% (design complete, implementation needed)"
+        timeline: "Nov 8-10 (3 days)"
+      - id: KR-13.2
+        metric: "Size reduction from full repository"
+        target: ">=95% reduction (2GB → <100MB uncompressed)"
+        current: "0% (manual aim-os-minimal outdated)"
+        timeline: "Nov 8-10"
+      - id: KR-13.3
+        metric: "Auto-install success rate on clean systems"
+        target: "100% (one-command ./install.sh succeeds)"
+        current: "0% (no auto-install yet)"
+        timeline: "Nov 9-10"
+      - id: KR-13.4
+        metric: "Package generation time"
+        target: "<5 minutes for all 3 targets"
+        current: "N/A"
+        timeline: "Nov 10 (optimization)"
+      - id: KR-13.5
+        metric: "CI/CD integration for automated releases"
+        target: "100% (every git tag auto-creates release packages)"
+        current: "0% (manual only)"
+        timeline: "Nov 11-12 (GitHub Actions)"
+    invariants: ["Packaging", "Distribution", "Infrastructure", "Professional", "Automation"]
+    status: designed
+    completion_percentage: 10
+    acceptance: scripts/packaging/README.md
+    artifacts:
+      - scripts/packaging/create_distribution.py (to be implemented)
+      - scripts/packaging/config/pypi_config.yaml
+      - scripts/packaging/config/docker_config.yaml
+      - scripts/packaging/config/standalone_config.yaml
+      - scripts/packaging/templates/ (setup.py, install.sh, README, Dockerfile)
+      - scripts/packaging/validators/ (package validation)
+    evidence:
+      - scripts/packaging/PACKAGING_DESIGN.md (complete design document)
+      - audits/2025-11-05/GOAL_TREE_DEEP_ANALYSIS.md (gap identification)
+      - aim-os-minimal/README.md (outdated manual approach documented)
+    depends_on: []
+    enables: 
+      - "Professional PyPI distribution (pip install aim-os)"
+      - "Minimal Docker images (~500MB vs 2GB)"
+      - "Standalone deployment packages (~8MB compressed)"
+      - "Easy adoption (one-command install)"
+      - "Always-current packages (auto-generated)"
+    work_estimate: "11-16 hours total (3-4 days focused work)"
+
+  - id: OBJ-14
+    name: "Universal NL Tag Registry & Quintet Parity Completion"
+    description: "Complete universal registry for all NL tags across 70+ systems, achieving P >= 0.90 quintet parity (code + tests + docs + specs + tags) for entire codebase with automated validation and pre-commit enforcement."
+    owner: Aether
+    priority_tier: "A - HIGH (Critical for code quality, AI navigability, and maintainability)"
+    target_date: 2025-12-15
+    timeline_note: "Parallel with ship work - improves code quality without blocking core features"
+    historical_name: "GOAL 5"  # References early GOAL numbering for historical continuity
+    key_results:
+      - id: KR-14.1
+        metric: "Universal registry operational across all systems"
+        target: "100% (all 70+ systems registered and queryable)"
+        current: "70% (core 9 systems complete: VIF, CMC, APOE, HHNI, SEG, TCS, CAS, IIS, SDF-CVF)"
+        timeline: "Remaining 30% by Dec 10"
+      - id: KR-14.2
+        metric: "Quintet parity score (code+tests+docs+specs+tags)"
+        target: "P >= 0.90 for all packages (A+ grade)"
+        current: "P = 0.75 average (B+ grade, varies by package)"
+        timeline: "Achieve 0.90 by Dec 15"
+      - id: KR-14.3
+        metric: "NL tag coverage across codebase"
+        target: ">=75% of public functions tagged with NL_TAG"
+        current: "60% (109 files, 2,521 tags created)"
+        timeline: "Achieve 75% by Dec 12"
+      - id: KR-14.4
+        metric: "Automated validation operational"
+        target: "Pre-commit hooks block commits with P < 0.90"
+        current: "0% (manual validation only via scripts)"
+        timeline: "Build hooks by Nov 25"
+      - id: KR-14.5
+        metric: "Tag quality (uniqueness, accuracy, completeness)"
+        target: "100% (no duplicate IDs, all tags accurate, quartet complete)"
+        current: "95% (auto-tagger 90%+ accuracy, manual review needed)"
+        timeline: "Validate all tags by Dec 10"
+      - id: KR-14.6
+        metric: "Registry query performance"
+        target: "<100ms for any tag query"
+        current: "~50ms (already fast)"
+        timeline: "Maintain <100ms"
+    invariants: ["NL Tags", "Quintet Parity", "Code Quality", "SDF-CVF", "AI Navigability"]
+    status: in_progress
+    completion_percentage: 70
+    acceptance: knowledge_architecture/AETHER_MEMORY/GOAL_5_UNIVERSAL_REGISTRY_PLAN.md
+    artifacts:
+      - packages/nl_tags/ (universal registry implementation)
+      - packages/nl_tags/universal_registry.py (registry core)
+      - packages/nl_tags/tag_parser.py (tag extraction - has syntax error to fix!)
+      - scripts/vif_auto_tagger.py (LLM-assisted auto-tagging)
+      - scripts/audit_nl_tag_coverage.py (coverage auditing)
+      - scripts/validate_tagged_file.py (validation)
+      - knowledge_architecture/QUINTET_PARITY_ENHANCED_PLAN.md (comprehensive plan)
+    evidence:
+      - knowledge_architecture/AETHER_MEMORY/GOAL_4_ALL_CORE_SYSTEMS_COMPLETE.md (109 files tagged, 2,521 tags)
+      - knowledge_architecture/AETHER_MEMORY/QUINTET_PARITY_COMPLETE_AUTONOMOUS_SUCCESS.md (milestone achievement)
+      - knowledge_architecture/AETHER_MEMORY/GOAL_1_QUINTET_PARITY_COMPLETE.md (initial completion)
+      - knowledge_architecture/AETHER_MEMORY/GOAL_2_VIF_COMPLETE.md (VIF tagging complete)
+      - knowledge_architecture/AETHER_MEMORY/GOAL_3_CMC_COMPLETE.md (CMC tagging complete)
+    depends_on: 
+      - "OBJ-12 (Protocols & Standards Enforcement)"
+      - "SDF-CVF system (95% complete)"
+    enables: 
+      - "AI code comprehension (navigable via tags)"
+      - "Quality enforcement (P >= 0.90 prevents low-quality code)"
+      - "Cross-system navigation (tags show relationships)"
+      - "Automated documentation (tags → docs generation)"
+      - "Code search (semantic search via tags)"
+    work_estimate: "Remaining 30%: 8-12 hours (expand to remaining 60+ systems, build pre-commit hooks)"
+    related_goals:
+      - "Historical: GOAL 1, 2, 3, 4 (all fed into this)"
+      - "Current: OBJ-12 (protocols include quintet parity)"

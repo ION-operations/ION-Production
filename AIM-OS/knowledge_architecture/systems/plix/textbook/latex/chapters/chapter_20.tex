@@ -1,0 +1,420 @@
+% Chapter 20 converted from Markdown
+% Auto-generated - do not edit manually
+
+
+
+
+\section*{Section 20.1: Intent Timeline}
+
+Intent timeline tracks intent history over time, enabling temporal reasoning about intent evolution and achievement.
+
+\textbf{Intent Timeline Concept}
+
+Intent timeline provides:
+
+\begin{itemize}
+\item \textbf{Intent History:} Complete history of intents over time
+\item \textbf{Intent Changes:} Tracking how intents evolved
+\item \textbf{Intent Versions:} Versioning of intent contracts
+\item \textbf{Temporal Queries:} Queries about intent at specific times
+\end{itemize}
+
+Intent timeline enables temporal reasoning about intent evolution.
+
+\textbf{Timeline Tracking}
+
+PLIx enables timeline tracking:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# PLIx enables timeline tracking
+def track_intent_timeline(contract, tcs):
+    # Store intent in timeline
+    timeline_entry = {
+        "entry_type": "plix_intent",
+        "content": {
+            "intent": contract.intent,
+            "contract": contract.to_dict(),
+            "timestamp": datetime.now()
+        },
+        "valid_from": datetime.now(),
+        "valid_to": None  # Current intent
+    }
+    
+    # Store in TCS
+    entry_id = tcs.add_entry(**timeline_entry)
+    
+    return entry_id
+
+# Timeline tracking enables temporal queries
+entry_id = track_intent_timeline(contract, tcs)
+\end{lstlisting}
+
+Timeline tracking enables temporal queries about intent history.
+
+\textbf{Intent Versioning}
+
+PLIx enables intent versioning:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# PLIx enables intent versioning
+def version_intent(contract, changes):
+    # Create new version
+    new_contract = contract.copy()
+    new_contract.apply_changes(changes)
+    new_contract.version = contract.version + 1
+    
+    # Link versions
+    new_contract.parent_version = contract.version
+    
+    # Store in timeline
+    track_intent_timeline(new_contract, tcs)
+    
+    return new_contract
+
+# Intent versioning enables evolution tracking
+new_contract = version_intent(contract, changes)
+\end{lstlisting}
+
+Intent versioning enables evolution tracking, supporting temporal reasoning.
+
+\textbf{Temporal Queries}
+
+PLIx enables temporal queries:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# PLIx enables temporal queries
+def query_intent_at_time(intent_id, timestamp, tcs):
+    # Query intent at specific time
+    intent_entry = tcs.query_entries(
+        entry_type="plix_intent",
+        intent_id=intent_id,
+        valid_at=timestamp
+    )
+    
+    return intent_entry
+
+# Temporal queries enable time-travel reasoning
+intent_at_time = query_intent_at_time(intent_id, timestamp, tcs)
+\end{lstlisting}
+
+Temporal queries enable time-travel reasoning about intent evolution.
+
+\textbf{Intent Timeline Benefits}
+
+Intent timeline provides:
+
+\begin{itemize}
+\item \textbf{History Tracking:} Complete intent history
+\item \textbf{Version Management:} Intent versioning and evolution
+\item \textbf{Temporal Queries:} Time-travel queries about intent
+\item \textbf{Evolution Analysis:} Analysis of intent evolution
+\end{itemize}
+
+These benefits enable temporal reasoning about intent evolution.
+
+\section*{Section 20.2: Intent Evolution}
+
+Intent evolution tracks how intents change over time, enabling understanding of intent refinement and adaptation.
+
+\textbf{Evolution Patterns}
+
+Intent evolution patterns:
+
+\begin{enumerate}
+\item \textbf{Refinement:} Intent becomes more specific
+\item \textbf{Expansion:} Intent adds new requirements
+\item \textbf{Contraction:} Intent removes requirements
+\item \textbf{Transformation:} Intent changes fundamentally
+\end{enumerate}
+
+Understanding evolution patterns enables prediction and optimization.
+
+\textbf{Refinement Pattern}
+
+Refinement pattern example:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# Intent refinement: More specific
+contract_v1 = PLIxContract(
+    intent="Book a room",
+    contract={"post": ["room_reserved == true"]}
+)
+
+contract_v2 = PLIxContract(
+    intent="Book a meeting room",
+    contract={"post": ["room_reserved == true", "room_type == 'meeting'"]}
+)
+
+# Evolution: More specific intent
+evolution = track_evolution(contract_v1, contract_v2)
+# Evolution type: "refinement"
+\end{lstlisting}
+
+Refinement pattern shows intent becoming more specific over time.
+
+\textbf{Expansion Pattern}
+
+Expansion pattern example:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# Intent expansion: New requirements
+contract_v1 = PLIxContract(
+    intent="Book a meeting room",
+    contract={"post": ["room_reserved == true"]}
+)
+
+contract_v2 = PLIxContract(
+    intent="Book a meeting room",
+    contract={
+        "post": [
+            "room_reserved == true",
+            "calendar_event_created == true",
+            "notification_sent == true"
+        ]
+    }
+)
+
+# Evolution: Expanded requirements
+evolution = track_evolution(contract_v1, contract_v2)
+# Evolution type: "expansion"
+\end{lstlisting}
+
+Expansion pattern shows intent adding new requirements over time.
+
+\textbf{Evolution Tracking}
+
+PLIx enables evolution tracking:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# PLIx enables evolution tracking
+def track_evolution(old_contract, new_contract, seg):
+    # Store evolution relationship
+    evolution_entity = Entity(
+        type="intent_evolution",
+        name=f"Evolution: {old_contract.intent} \textrightarrow{} {new_contract.intent}",
+        attributes={
+            "old_version": old_contract.version,
+            "new_version": new_contract.version,
+            "evolution_type": detect_evolution_type(old_contract, new_contract),
+            "changes": calculate_changes(old_contract, new_contract)
+        }
+    )
+    
+    # Store in SEG
+    evolution_id = seg.add_entity(evolution_entity)
+    
+    # Link versions
+    seg.add_relation(Relation(
+        source_id=get_intent_entity_id(old_contract, seg),
+        target_id=get_intent_entity_id(new_contract, seg),
+        relation_type=RelationType.EVOLVES_TO
+    ))
+    
+    return evolution_id
+
+# Evolution tracking enables understanding of intent changes
+evolution_id = track_evolution(contract_v1, contract_v2, seg)
+\end{lstlisting}
+
+Evolution tracking enables understanding of intent changes over time.
+
+\textbf{Evolution Benefits}
+
+Intent evolution provides:
+
+\begin{itemize}
+\item \textbf{Adaptation:} Intents adapt to changing requirements
+\item \textbf{Refinement:} Intents become more specific
+\item \textbf{Learning:} Learning from evolution patterns
+\item \textbf{Optimization:} Optimizing intent achievement
+\end{itemize}
+
+These benefits enable continuous improvement through intent evolution.
+
+\section*{Section 20.3: Temporal Queries}
+
+Temporal queries enable reasoning about intent at specific times, supporting time-travel reasoning and evolution analysis.
+
+\textbf{Time-Travel Queries}
+
+PLIx enables time-travel queries:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# PLIx enables time-travel queries
+def query_intent_history(intent_id, start_time, end_time, tcs):
+    # Query intent history over time range
+    history = tcs.query_entries(
+        entry_type="plix_intent",
+        intent_id=intent_id,
+        valid_from=start_time,
+        valid_to=end_time
+    )
+    
+    return history
+
+# Time-travel queries enable historical analysis
+history = query_intent_history(intent_id, start_time, end_time, tcs)
+\end{lstlisting}
+
+Time-travel queries enable historical analysis of intent evolution.
+
+\textbf{Evolution Queries}
+
+PLIx enables evolution queries:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# PLIx enables evolution queries
+def query_evolution_chain(intent_id, seg):
+    # Query evolution chain
+    evolution_chain = seg.query_lineage(
+        entity_id=intent_id,
+        relation_type=RelationType.EVOLVES_TO,
+        direction="forward"
+    )
+    
+    return evolution_chain
+
+# Evolution queries enable understanding of intent changes
+evolution_chain = query_evolution_chain(intent_id, seg)
+\end{lstlisting}
+
+Evolution queries enable understanding of intent changes over time.
+
+\textbf{Temporal Reasoning}
+
+PLIx enables temporal reasoning:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# PLIx enables temporal reasoning
+def reason_about_evolution(intent_id, seg, tcs):
+    # Get evolution chain
+    evolution_chain = query_evolution_chain(intent_id, seg)
+    
+    # Analyze evolution patterns
+    patterns = analyze_evolution_patterns(evolution_chain)
+    
+    # Predict future evolution
+    predicted_evolution = predict_evolution(patterns)
+    
+    return {
+        "evolution_chain": evolution_chain,
+        "patterns": patterns,
+        "predicted_evolution": predicted_evolution
+    }
+
+# Temporal reasoning enables prediction and optimization
+reasoning_result = reason_about_evolution(intent_id, seg, tcs)
+\end{lstlisting}
+
+Temporal reasoning enables prediction and optimization based on evolution patterns.
+
+\textbf{Temporal Query Benefits}
+
+Temporal queries provide:
+
+\begin{itemize}
+\item \textbf{Historical Analysis:} Analysis of intent history
+\item \textbf{Evolution Understanding:} Understanding of intent changes
+\item \textbf{Pattern Recognition:} Recognition of evolution patterns
+\item \textbf{Prediction:} Prediction of future evolution
+\end{itemize}
+
+These benefits enable temporal reasoning about intent evolution.
+
+\section*{Section 20.4: TCS Integration}
+
+TCS (Timeline Context System) integration enables complete temporal reasoning about intent evolution and achievement.
+
+\textbf{TCS Intent Tracking}
+
+TCS enables intent tracking:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# TCS enables intent tracking
+def track_intent_in_tcs(contract, outcome, tcs):
+    # Track intent creation
+    tcs.add_entry(
+        entry_type="plix_intent_created",
+        content={
+            "intent": contract.intent,
+            "contract": contract.to_dict()
+        }
+    )
+    
+    # Track intent execution
+    tcs.add_entry(
+        entry_type="plix_intent_executed",
+        content={
+            "intent": contract.intent,
+            "plan": execution_plan.to_dict()
+        }
+    )
+    
+    # Track intent achievement
+    tcs.add_entry(
+        entry_type="plix_intent_achieved",
+        content={
+            "intent": contract.intent,
+            "outcome": outcome,
+            "intent_achieved": verify_contract(contract, outcome)
+        }
+    )
+
+# TCS tracking enables complete temporal reasoning
+track_intent_in_tcs(contract, outcome, tcs)
+\end{lstlisting}
+
+TCS tracking enables complete temporal reasoning about intent lifecycle.
+
+\textbf{Temporal Reasoning Integration}
+
+TCS enables temporal reasoning:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# TCS enables temporal reasoning
+def reason_temporally(intent_id, tcs, seg):
+    # Query intent timeline
+    timeline = tcs.query_entries(
+        entry_type="plix_intent",
+        intent_id=intent_id
+    )
+    
+    # Query evolution chain
+    evolution_chain = query_evolution_chain(intent_id, seg)
+    
+    # Combine for temporal reasoning
+    temporal_context = {
+        "timeline": timeline,
+        "evolution": evolution_chain,
+        "patterns": analyze_temporal_patterns(timeline, evolution_chain)
+    }
+    
+    return temporal_context
+
+# Temporal reasoning enables understanding of intent evolution
+temporal_context = reason_temporally(intent_id, tcs, seg)
+\end{lstlisting}
+
+Temporal reasoning enables understanding of intent evolution over time.
+
+\textbf{TCS Integration Benefits}
+
+TCS integration provides:
+
+\begin{itemize}
+\item \textbf{Complete Timeline:} Complete intent timeline tracking
+\item \textbf{Evolution Tracking:} Intent evolution tracking
+\item \textbf{Temporal Queries:} Time-travel queries about intent
+\item \textbf{Temporal Reasoning:} Reasoning about intent evolution
+\end{itemize}
+
+These benefits enable comprehensive temporal reasoning about intent evolution.
+
+\section*{Chapter 20 Summary}
+
+Temporal reasoning enables understanding of intent evolution over time. Intent timeline tracks intent history, enabling temporal queries. Intent evolution tracks how intents change, enabling understanding of refinement and adaptation. Temporal queries enable time-travel reasoning and evolution analysis. TCS integration enables complete temporal reasoning about intent lifecycle and evolution.
+
+\textbf{Next:} Part V Philosophy complete. Part VI explores the future—PLIx as operating system language, multi-agent systems, and the path forward.
+
+\textbf{Word Count:} \textasciitilde{}2,200 words  
+

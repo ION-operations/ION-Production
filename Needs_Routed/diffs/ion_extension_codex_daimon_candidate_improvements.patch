@@ -1,0 +1,182 @@
+--- a/ION/09_integrations/browser_extension/ion_chatops_bridge/src/content.ts
++++ b/ION/09_integrations/browser_extension/ion_chatops_bridge/src/content.ts
+@@ -1237,6 +1237,26 @@
+ 
+ function renderChatgptAssetCaptureButtons(): void {
+   clearAssetCaptureButtons();
++  const candidates = chatgptAssetCandidates();
++  if (!candidates.length) return;
++  ensureAssetCaptureStyle();
++  candidates.forEach((candidate, index) => {
++    const rect = candidate.getBoundingClientRect();
++    const button = document.createElement("button");
++    button.type = "button";
++    button.className = ASSET_CAPTURE_BUTTON_CLASS;
++    button.textContent = "ION";
++    button.title = `Capture ChatGPT asset for ION: ${assetCaptureLabel(candidate) || assetSourceUrl(candidate) || `asset ${index + 1}`}`;
++    button.dataset.assetCaptureIndex = String(index);
++    button.style.left = `${Math.max(8, Math.min(window.innerWidth - 36, rect.right - 22))}px`;
++    button.style.top = `${Math.max(8, Math.min(window.innerHeight - 36, rect.top + 8))}px`;
++    button.addEventListener("click", (event) => {
++      event.preventDefault();
++      event.stopPropagation();
++      void captureChatgptAsset(candidate);
++    });
++    document.documentElement.appendChild(button);
++  });
+ }
+ 
+ function ensureCaptureFrameStyle(): void {
+@@ -1709,6 +1729,35 @@
+     setBridgeAgentDetail(detail);
+     setBridgeStatus(response?.ok ? `${label} submitted` : `${label} blocked`, detail.split("\n")[0] ?? "", response?.ok ? "success" : "error");
+     if (response?.ok) await copyBridgeResult(label, detail);
++  });
++}
++
++function requestAgentSelectedStart(): void {
++  const raw = window.prompt("Start selected Codex request by request_id or queue file path. Leave blank to cancel.");
++  const selected = String(raw ?? "").trim();
++  if (!selected) {
++    setBridgeStatus("Selected request start cancelled", "No request id or path was provided.", "idle");
++    return;
++  }
++  const payload = selected.includes("/") || selected.endsWith(".json")
++    ? { request_path: selected, selected_request: selected }
++    : { request_id: selected, selected_request: selected };
++  setBridgeStatus("Agent start selected", `Requesting approval to start selected request: ${selected}`, "working");
++  chrome.runtime.sendMessage({ type: "ion_chatops_agent_start_selected", payload }, async (response) => {
++    const detail = response?.ok ? compactJson(response.result) : blockedDetail(response);
++    setBridgeAgentDetail(detail);
++    setBridgeStatus(response?.ok ? "Selected request start submitted" : "Selected request start blocked", detail.split("\n")[0] ?? "", response?.ok ? "success" : "error");
++    if (response?.ok) await copyBridgeResult("Agent start selected", detail);
++  });
++}
++
++function requestDaimonVisibility(): void {
++  setBridgeStatus("dAimon visibility", "Reading bounded dAimon/Google-agent visibility from the Action Gateway.", "working");
++  chrome.runtime.sendMessage({ type: "ion_chatops_daimon_visibility", payload: {} }, async (response) => {
++    const detail = response?.ok ? compactJson(response.result) : blockedDetail(response);
++    setBridgeAgentDetail(detail);
++    setBridgeStatus(response?.ok ? "dAimon visibility ready" : "dAimon visibility blocked", detail.split("\n")[0] ?? "", response?.ok ? "success" : "error");
++    if (response?.ok) await copyBridgeResult("dAimon visibility", detail);
+   });
+ }
+ 
+@@ -6255,7 +6304,7 @@
+         setBridgeStatus("ION action submitted", summary, "success");
+       });
+     }
+-    clearAssetCaptureButtons();
++    renderChatgptAssetCaptureButtons();
+     return processed;
+   } catch (error) {
+     const detail = error instanceof Error ? error.message : String(error);
+@@ -6458,6 +6507,12 @@
+ });
+ window.addEventListener("ion-chatops-agent-start", () => {
+   requestAgentMutation("ion_chatops_agent_start_one", "Agent start one");
++});
++window.addEventListener("ion-chatops-agent-start-selected", () => {
++  requestAgentSelectedStart();
++});
++window.addEventListener("ion-chatops-daimon-visibility", () => {
++  requestDaimonVisibility();
+ });
+ window.addEventListener("ion-chatops-gateway-auto-accept-toggle", () => {
+   const operation = browserQueueAutoAcceptActive ? "auto_accept_off" : "auto_accept_on";
+--- a/ION/09_integrations/browser_extension/ion_chatops_bridge/src/background.ts
++++ b/ION/09_integrations/browser_extension/ion_chatops_bridge/src/background.ts
+@@ -152,6 +152,16 @@
+       sendResponse({ ok: Boolean(result?.ok), stage: "agent_receipts_recent", result });
+     })().catch((error: Error) => {
+       sendResponse({ ok: false, stage: "agent_receipts_recent_exception", error: error.message });
++    });
++    return true;
++  }
++
++  if (message.type === "ion_chatops_daimon_visibility") {
++    (async () => {
++      const result = await actionGatewayJson("GET", "/daimon/visibility");
++      sendResponse({ ok: Boolean(result?.ok), stage: "daimon_visibility", result });
++    })().catch((error: Error) => {
++      sendResponse({ ok: false, stage: "daimon_visibility_exception", error: error.message });
+     });
+     return true;
+   }
+@@ -575,6 +585,29 @@
+     return true;
+   }
+ 
++  if (message.type === "ion_chatops_agent_start_selected") {
++    (async () => {
++      const selected = String(message.payload?.selected_request ?? message.payload?.request_id ?? message.payload?.request_path ?? "").trim();
++      const approved = await requestBridgeApproval(
++        sender,
++        "agent_start_selected",
++        selected
++          ? `Start one bounded Codex queue runner worker for selected request: ${selected}.`
++          : "Start one bounded Codex queue runner worker for a selected request.",
++        "local_execution_approval_required"
++      );
++      if (!approved) {
++        sendResponse({ ok: false, stage: "approval", finding: "USER_APPROVAL_REJECTED" });
++        return;
++      }
++      const result = await postJson("/agent/process-one", approvedPayload({ ...(message.payload ?? {}), start: true, selection_mode: "selected_request" }));
++      sendResponse({ ok: Boolean(result?.ok), stage: "agent_start_selected", result });
++    })().catch((error: Error) => {
++      sendResponse({ ok: false, stage: "agent_start_selected_exception", error: error.message });
++    });
++    return true;
++  }
++
+   if (message.type === "ion_chatops_agent_start_one") {
+     (async () => {
+       const approved = await requestBridgeApproval(sender, "agent_start_one", "Start one bounded Codex queue runner worker for the next queued ION work request.", "local_execution_approval_required");
+--- a/ION/09_integrations/browser_extension/ion_chatops_bridge/src/approval_ui.ts
++++ b/ION/09_integrations/browser_extension/ion_chatops_bridge/src/approval_ui.ts
+@@ -2854,6 +2854,8 @@
+             <button type="button" class="ion-tool" data-tool="agent-receipts">Receipts</button>
+             <button type="button" class="ion-tool" data-tool="agent-prepare">Prepare Next</button>
+             <button type="button" class="ion-tool" data-tool="agent-start">Start One</button>
++            <button type="button" class="ion-tool" data-tool="agent-start-selected">Start Selected</button>
++            <button type="button" class="ion-tool" data-tool="daimon-visibility">dAimon Visibility</button>
+           </div>
+         </div>
+         <div class="ion-tab-panel" data-panel="codex">
+@@ -3232,6 +3234,12 @@
+   panel.querySelector('[data-tool="agent-start"]')?.addEventListener("click", () => {
+     window.dispatchEvent(new CustomEvent("ion-chatops-agent-start"));
+   });
++  panel.querySelector('[data-tool="agent-start-selected"]')?.addEventListener("click", () => {
++    window.dispatchEvent(new CustomEvent("ion-chatops-agent-start-selected"));
++  });
++  panel.querySelector('[data-tool="daimon-visibility"]')?.addEventListener("click", () => {
++    window.dispatchEvent(new CustomEvent("ion-chatops-daimon-visibility"));
++  });
+   panel.querySelector('[data-tool="codex-refresh"]')?.addEventListener("click", () => {
+     window.dispatchEvent(new CustomEvent("ion-chatops-codex-refresh"));
+   });
+--- a/ION/09_integrations/browser_extension/ion_chatops_bridge/README.md
++++ b/ION/09_integrations/browser_extension/ion_chatops_bridge/README.md
+@@ -22,6 +22,10 @@
+   `ION CODE #N` and `ION YAML #N · valid`;
+ - show Codex queue runner status/queue and approval-gated prepare/start controls
+   backed by `kernel.ion_codex_queue_runner`;
++- start a specific selected Codex request by `request_id` or queue path instead
++  of only starting the queue head;
++- read bounded dAimon/Google-agent visibility through the Action Gateway before
++  any future agent invocation/mutation lane is exposed;
+ - request pasteable context packs and approval-gated package ZIPs backed by the
+   existing lifecycle and safe full-project packagers;
+ - select discovered ION project context packages from the top rail and request
+@@ -30,6 +34,8 @@
+   Codex review queueing through the sandbox return intake owner;
+ - list attachable local package/inbox artifacts and request approval-gated
+   browser drop tickets from the local daemon;
++- render per-asset ION capture buttons over visible ChatGPT image/download
++  artifacts so visual/page assets can be routed into the local ION asset lane;
+ - preview and calibrate the ChatGPT page/composer drop zone used by `Drop
+   Latest`; this is now the primary browser upload path because ChatGPT accepts
+   ordinary drag/drop over broad page regions;

@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "docker",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Documentation describes sandboxed execution using Docker (and alternatives); verify current defaults in docs."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "Enterprise/self-hosted options reference Kubernetes-style deployments in marketing/docs; pin primary doc."
+    },
+    {
+      "type": "integrates_with",
+      "target": "model-context-protocol",
+      "evidence_tier": "INFERRED",
+      "notes": "Ecosystem may bridge MCP; confirm explicit OpenHands+MCP documentation before upgrading tier."
+    },
+    {
+      "type": "competes_with",
+      "target": "anthropic-claude-code-agent-sdk",
+      "evidence_tier": "INFERRED",
+      "notes": "Overlapping 'coding agent' product class."
+    }
+  ]
+}

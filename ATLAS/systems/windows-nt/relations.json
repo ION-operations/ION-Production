@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "competes_with",
+      "target": "linux-kernel",
+      "evidence_tier": "INFERRED",
+      "notes": "General-purpose OS substitution in desktop/server markets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "vscode",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "VS Code ships for Windows; integration is product-level."
+    },
+    {
+      "type": "integrates_with",
+      "target": "msvc-vcruntime",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "UCRT and VCRUNTIME DLLs are part of the Windows user-mode runtime surface for MSVC-hosted native binaries."
+    },
+    {
+      "type": "integrates_with",
+      "target": "msvcprt",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "MSVC C++ standard library DLLs (msvcp*.dll) load in Win32 processes on Windows NT-class systems."
+    }
+  ]
+}

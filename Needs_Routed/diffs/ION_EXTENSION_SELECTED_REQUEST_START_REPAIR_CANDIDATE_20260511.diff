@@ -1,0 +1,156 @@
+--- a/ion_chatops_bridge/src/background.ts
++++ b/ion_chatops_bridge/src/background.ts
+@@ -510,6 +510,32 @@
+     return true;
+   }
+ 
++  if (message.type === "ion_chatops_agent_start_selected") {
++    (async () => {
++      const payload = (message.payload ?? {}) as Record<string, unknown>;
++      const requestPath = String(payload.request_path ?? payload.requestPath ?? "").trim();
++      if (!requestPath) {
++        sendResponse({ ok: false, stage: "agent_start_selected_validation", finding: "REQUEST_PATH_REQUIRED" });
++        return;
++      }
++      const approved = await requestBridgeApproval(
++        sender,
++        "agent_start_selected",
++        `Start selected Codex queue request.\n\nrequest_path: ${requestPath}\n\nThis does not grant production or live execution authority.`,
++        "local_execution_approval_required"
++      );
++      if (!approved) {
++        sendResponse({ ok: false, stage: "approval", finding: "USER_APPROVAL_REJECTED" });
++        return;
++      }
++      const result = await postJson("/agent/process-one", approvedPayload({ ...payload, request_path: requestPath, start: true }));
++      sendResponse({ ok: Boolean(result?.ok), stage: "agent_start_selected", result });
++    })().catch((error: Error) => {
++      sendResponse({ ok: false, stage: "agent_start_selected_exception", error: error.message });
++    });
++    return true;
++  }
++
+   if (message.type === "ion_chatops_compact_zip") {
+     (async () => {
+       const approved = await requestBridgeApproval(sender, "compact_runtime_zip", "Create an ION COMPACT_RUNTIME ZIP package using the existing lifecycle packager.");
+
+--- a/ion_chatops_bridge/src/content.ts
++++ b/ion_chatops_bridge/src/content.ts
+@@ -1494,6 +1494,31 @@
+   });
+ }
+ 
++function requestAgentStartSelected(requestPath: string): void {
++  const trimmed = requestPath.trim();
++  if (!trimmed) {
++    setBridgeStatus("Start selected blocked", "Paste a request_path before starting selected Codex work.", "error");
++    setBridgeAgentDetail("REQUEST_PATH_REQUIRED\nUse Agent → Queue or a copied receipt to paste the exact codex_work_requests/*.json path.");
++    return;
++  }
++  const detail = [
++    "Start selected Codex request",
++    `request_path: ${trimmed}`,
++    "",
++    "This starts the selected request path, not the queue head.",
++    "Production authority: false",
++    "Live execution authority: false",
++  ].join("\n");
++  setBridgeAgentDetail(detail);
++  setBridgeStatus("Start selected request", trimmed, "approval");
++  chrome.runtime.sendMessage({ type: "ion_chatops_agent_start_selected", payload: { request_path: trimmed } }, async (response) => {
++    const resultDetail = response?.ok ? compactJson(response.result) : blockedDetail(response);
++    setBridgeAgentDetail(resultDetail);
++    setBridgeStatus(response?.ok ? "Start selected submitted" : "Start selected blocked", resultDetail.split("\n")[0] ?? "", response?.ok ? "success" : "error");
++    if (response?.ok) await copyBridgeResult("Start selected Codex request", resultDetail);
++  });
++}
++
+ function inactiveQueueStatus(status: string): boolean {
+   return /SUPERSEDED|FULFILLED|INVALID|ARCHIVE_ONLY|SETTLED|DUPLICATE|BLOCKED|CANCELLED/i.test(status);
+ }
+@@ -4481,7 +4506,11 @@
+   requestAgentMutation("ion_chatops_agent_prepare_next", "Agent prepare next");
+ });
+ window.addEventListener("ion-chatops-agent-start", () => {
+-  requestAgentMutation("ion_chatops_agent_start_one", "Agent start one");
++  requestAgentMutation("ion_chatops_agent_start_one", "Agent start queue head");
++});
++window.addEventListener("ion-chatops-agent-start-selected", (event) => {
++  const detail = (event as CustomEvent<{ request_path?: string }>).detail ?? {};
++  requestAgentStartSelected(detail.request_path ?? "");
+ });
+ window.addEventListener("ion-chatops-context-pack", () => {
+   requestContextPack();
+
+--- a/ion_chatops_bridge/src/approval_ui.ts
++++ b/ion_chatops_bridge/src/approval_ui.ts
+@@ -775,6 +775,37 @@
+       color: #ffd2b0;
+       background: rgba(255,112,28,0.16);
+       border-color: rgba(255,112,28,0.95);
++    }
++    #${PANEL_ID} .ion-selected-request {
++      display: grid;
++      gap: 4px;
++      margin: 6px 0;
++    }
++    #${PANEL_ID} .ion-label {
++      font-size: 11px;
++      opacity: 0.78;
++    }
++    #${PANEL_ID} .ion-agent-request-path {
++      width: 100%;
++      min-height: 44px;
++      max-height: 96px;
++      resize: vertical;
++      box-sizing: border-box;
++      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
++      font-size: 11px;
++      border: 1px solid rgba(245, 158, 11, 0.65);
++      border-radius: 8px;
++      background: rgba(15, 23, 42, 0.92);
++      color: #f8fafc;
++      padding: 6px;
++    }
++    #${PANEL_ID} .ion-small-note {
++      font-size: 10px;
++      color: rgba(226, 232, 240, 0.72);
++      line-height: 1.3;
++    }
++    #${PANEL_ID} .ion-danger-tool {
++      border-color: rgba(248, 113, 113, 0.8);
+     }
+     #${PANEL_ID} .ion-detail {
+       margin-top: 0;
+@@ -2265,13 +2296,19 @@
+         <div class="ion-tab-panel" data-panel="action"><div class="ion-detail" data-field="action"></div></div>
+         <div class="ion-tab-panel" data-panel="agent">
+           <div class="ion-detail" data-field="agent"></div>
++          <div class="ion-selected-request">
++            <label class="ion-label" for="ion-agent-selected-request">Selected request_path</label>
++            <textarea id="ion-agent-selected-request" class="ion-agent-request-path" data-agent="selected-request-path" placeholder="Paste ION/05_context/current/chatgpt_connector/codex_work_requests/...json"></textarea>
++            <div class="ion-small-note">Start Selected uses this exact request_path. Start Queue Head uses queue order and may run older work.</div>
++          </div>
+           <div class="ion-toolbar-actions">
+             <button type="button" class="ion-tool" data-tool="agent-status">Status</button>
+             <button type="button" class="ion-tool" data-tool="agent-queue">Queue</button>
+             <button type="button" class="ion-tool" data-tool="agent-preview">Preview Next</button>
+             <button type="button" class="ion-tool" data-tool="agent-latest">Latest Runs</button>
+             <button type="button" class="ion-tool" data-tool="agent-prepare">Prepare Next</button>
+-            <button type="button" class="ion-tool" data-tool="agent-start">Start One</button>
++            <button type="button" class="ion-tool" data-tool="agent-start-selected">Start Selected</button>
++            <button type="button" class="ion-tool ion-danger-tool" data-tool="agent-start">Start Queue Head</button>
+           </div>
+         </div>
+         <div class="ion-tab-panel" data-panel="codex">
+@@ -2534,6 +2571,10 @@
+   panel.querySelector('[data-tool="agent-prepare"]')?.addEventListener("click", () => {
+     window.dispatchEvent(new CustomEvent("ion-chatops-agent-prepare"));
+   });
++  panel.querySelector('[data-tool="agent-start-selected"]')?.addEventListener("click", () => {
++    const requestPath = panel.querySelector<HTMLTextAreaElement>('[data-agent="selected-request-path"]')?.value ?? "";
++    window.dispatchEvent(new CustomEvent("ion-chatops-agent-start-selected", { detail: { request_path: requestPath } }));
++  });
+   panel.querySelector('[data-tool="agent-start"]')?.addEventListener("click", () => {
+     window.dispatchEvent(new CustomEvent("ion-chatops-agent-start"));
+   });

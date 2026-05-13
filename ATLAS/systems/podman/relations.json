@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "depends_on",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Linux cgroups/namespaces; rootless mode documented on Linux."
+    },
+    {
+      "type": "competes_with",
+      "target": "docker",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable CLI/workflow for OCI containers on Linux; not a code fork claim."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "Local clusters (e.g. KIND) and tooling may use Podman; not the dominant production CRI path."
+    },
+    {
+      "type": "integrates_with",
+      "target": "runc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Typical low-level OCI runtime invoked by Podman on Linux; configurable alternatives exist."
+    },
+    {
+      "type": "integrates_with",
+      "target": "crun",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Podman supports crun as a low-level OCI runtime option on Linux."
+    },
+    {
+      "type": "integrates_with",
+      "target": "oci-distribution-spec",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "podman push/pull interoperates with OCI-compatible registries per distribution-class HTTP APIs."
+    },
+    {
+      "type": "integrates_with",
+      "target": "oci-runtime-spec",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Runs containers as OCI bundles using a low-level runtime that implements the OCI Runtime Spec."
+    }
+  ]
+}

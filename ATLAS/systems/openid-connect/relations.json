@@ -1,0 +1,19 @@
+{
+  "system_slug": "openid-connect",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-03",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "http3",
+      "evidence_tier": "INFERRED",
+      "notes": "Deployments may terminate OIDC/OAuth HTTP at HTTP/3-capable edges (implementation-dependent)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "Cluster auth integrations (OIDC with kube-apiserver) are common patterns."
+    }
+  ]
+}

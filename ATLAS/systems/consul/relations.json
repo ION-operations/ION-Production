@@ -1,0 +1,37 @@
+{
+  "system_slug": "consul",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-06",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "Consul on Kubernetes is a common deployment pattern (Helm / operators)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "grpc",
+      "evidence_tier": "INFERRED",
+      "notes": "Consul uses gRPC in internal RPC paths per HashiCorp documentation."
+    },
+    {
+      "type": "competes_with",
+      "target": "istio",
+      "evidence_tier": "INFERRED",
+      "notes": "Overlapping service connectivity / mesh-class concerns; not drop-in equivalent."
+    },
+    {
+      "type": "competes_with",
+      "target": "linkerd",
+      "evidence_tier": "INFERRED",
+      "notes": "Kubernetes-native mesh alternatives in some orgs."
+    },
+    {
+      "type": "integrates_with",
+      "target": "envoy",
+      "evidence_tier": "INFERRED",
+      "notes": "Consul service mesh dataplane options have included Envoy-class integration in documented architectures."
+    }
+  ]
+}

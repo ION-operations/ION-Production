@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "windows-nt",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "UCRT and VCRUNTIME DLLs are Windows user-mode components on the NT kernel with Win32 subsystem."
+    },
+    {
+      "type": "integrates_with",
+      "target": "c-language",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Hosted MSVC C programs link CRT entry points provided by UCRT/VCRUNTIME-class DLLs per Microsoft documentation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "clang",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang targeting Windows can link MSVC-compatible CRT layouts when using Windows SDK and MSVC-style linking."
+    },
+    {
+      "type": "integrates_with",
+      "target": "msvcprt",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "MSVC C++ standard library DLLs (msvcp*.dll) load in the same process and depend on CRT support DLLs."
+    }
+  ]
+}

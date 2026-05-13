@@ -1,0 +1,393 @@
+{
+  "systemId": "lucid-chat.advancedAIChat",
+  "humanName": "Lucid Chat Advanced AI System",
+  "version": "v0.9.2",
+  "status": "production_ready",
+  
+  "intent": {
+    "purpose": "Enable sophisticated AI chat beyond simple Q&A by orchestrating 8 APOE roles, performing multi-source search, enabling branch reasoning, and coordinating specialized AI agents with full consciousness substrate integration",
+    "must_not_regress": [
+      "Must not expose API keys",
+      "Must not allow unauthorized access",
+      "Must not skip input validation",
+      "Must not bypass quality gates",
+      "Must not exceed budget without warning",
+      "Must not return unvalidated output",
+      "Must not lose chat history",
+      "Must not skip error recovery"
+    ],
+    "why_it_exists": "Transforms simple AI chat into sophisticated cognitive orchestration, enabling humans to collaborate with AI that can orchestrate complex workflows, research autonomously, and improve itself over time with full consciousness substrate integration."
+  },
+  
+  "classification": {
+    "security_level": "critical",
+    "perf_sensitivity": "high",
+    "ownership": "lucid-ide",
+    "sideEffects": [
+      "Calls external LLM providers",
+      "Performs web crawling and search",
+      "Stores chat history in CMC",
+      "Indexes context in HHNI",
+      "Creates VIF witnesses",
+      "Synthesizes knowledge via SEG",
+      "Executes APOE workflows",
+      "Coordinates multiple AI agents"
+    ]
+  },
+  
+  "internalNodes": [
+    {
+      "id": "advancedLLMService",
+      "responsibility": "Advanced LLM service with thinking modes, prompt building, and output configuration",
+      "must_never": [
+        "Expose API keys",
+        "Allow unauthorized access",
+        "Skip input validation",
+        "Return unvalidated output"
+      ],
+      "perf_budget_ms": 30000,
+      "status": "production"
+    },
+    {
+      "id": "workflowExecutor",
+      "responsibility": "APOE workflow execution with DAG parallel processing",
+      "must_never": [
+        "Skip dependency validation",
+        "Allow circular dependencies",
+        "Exceed budget without warning",
+        "Bypass quality gates"
+      ],
+      "perf_budget_ms": 60000,
+      "status": "production"
+    },
+    {
+      "id": "searchOrchestrator",
+      "responsibility": "Orchestrates multi-provider search (DEEPSEARCH, ICIP, Perplexity, Tavily, Web)",
+      "must_never": [
+        "Expose API keys",
+        "Skip result validation",
+        "Allow unauthorized search"
+      ],
+      "perf_budget_ms": 5000,
+      "status": "production"
+    },
+    {
+      "id": "branchReasoningService",
+      "responsibility": "Multi-path branch reasoning with parallel hypothesis exploration",
+      "must_never": [
+        "Skip hypothesis validation",
+        "Allow infinite recursion",
+        "Return unvalidated solutions"
+      ],
+      "perf_budget_ms": 30000,
+      "status": "production"
+    },
+    {
+      "id": "ardService",
+      "responsibility": "Autonomous Research Dream with multi-source gathering and recursive research",
+      "must_never": [
+        "Skip research validation",
+        "Allow infinite recursion",
+        "Return unvalidated findings"
+      ],
+      "perf_budget_ms": 120000,
+      "status": "production"
+    },
+    {
+      "id": "multiAgentOrchestrator",
+      "responsibility": "Coordinates 4 specialized agents with multiple orchestration strategies",
+      "must_never": [
+        "Allow agent conflicts",
+        "Skip agent validation",
+        "Expose agent internals"
+      ],
+      "perf_budget_ms": 60000,
+      "status": "production"
+    },
+    {
+      "id": "contextManager",
+      "responsibility": "Context window management with 4 strategies and HHNI integration",
+      "must_never": [
+        "Exceed context budget",
+        "Skip context validation",
+        "Return inconsistent context"
+      ],
+      "perf_budget_ms": 500,
+      "status": "production"
+    },
+    {
+      "id": "qualityGates",
+      "responsibility": "Enforces quality gates (κ-gating, VIF validation, SEG consistency)",
+      "must_never": [
+        "Skip quality validation",
+        "Allow low-quality output",
+        "Bypass gate thresholds"
+      ],
+      "perf_budget_ms": 50,
+      "status": "production"
+    }
+  ],
+  
+  "systemMap": {
+    "mapFile": "./system.map.lucid.json5"
+  },
+  
+  "foresight": {
+    "predictedRisks": [
+      {
+        "risk_id": "api_key_exposure",
+        "description": "API keys could be exposed in error messages or logs",
+        "likelihood": "medium",
+        "blast_radius_if_real": "provider_account_compromise",
+        "mitigation": "Sanitize error messages, secure logging, use environment variables",
+        "watchpoint": "if api_key_in_log detected, alert immediately"
+      },
+      {
+        "risk_id": "budget_exhaustion",
+        "description": "Unlimited budget could exhaust API quotas or exceed cost limits",
+        "likelihood": "medium",
+        "blast_radius_if_real": "api_quota_exhausted_or_cost_overrun",
+        "mitigation": "Enforce budget limits, track usage, alert on thresholds",
+        "watchpoint": "if budget > 80% for 1 hour, alert and throttle"
+      },
+      {
+        "risk_id": "recursive_research_infinite_loop",
+        "description": "ARD recursive research could enter infinite loop",
+        "likelihood": "low",
+        "blast_radius_if_real": "system_hang_or_resource_exhaustion",
+        "mitigation": "Enforce recursion depth limits, timeout protection",
+        "watchpoint": "if recursion_depth > 5, halt and alert"
+      },
+      {
+        "risk_id": "context_window_exceeded",
+        "description": "Context window could exceed LLM provider limits",
+        "likelihood": "medium",
+        "blast_radius_if_real": "api_errors_or_truncated_responses",
+        "mitigation": "Validate context size, truncate if needed, summarize old context",
+        "watchpoint": "if context_tokens > provider_limit, alert and truncate"
+      }
+    ],
+    "killSwitch": "lucid-chat.enabled=false",
+    "emergencyProcedures": [
+      "Disable all LLM provider calls immediately",
+      "Switch to read-only mode",
+      "Preserve chat history",
+      "Notify all dependent systems",
+      "Log emergency state for analysis"
+    ]
+  },
+  
+  "lineage": {
+    "parentSystemId": "lucid-ide.backendApiSystem",
+    "childSystems": [],
+    "maturity": "production_ready"
+  },
+  
+  "connections": [
+    {
+      "viaPort": "commandServer",
+      "direction": "bidirectional",
+      "connectsToSystemId": "cursor-addon.commandServer",
+      "protocol": "HTTP",
+      "data": ["mcp_tool_requests", "mcp_tool_responses", "ai_messages"],
+      "security_level": "high",
+      "governanceRequired": true
+    },
+    {
+      "viaPort": "aimosIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "cmc.contextMemoryCore",
+      "protocol": "MCP",
+      "data": ["memory_storage_requests", "memory_retrieval_responses", "atom_data"],
+      "security_level": "critical",
+      "governanceRequired": true
+    },
+    {
+      "viaPort": "aimosIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "hhni.hierarchicalHypergraph",
+      "protocol": "MCP",
+      "data": ["retrieval_queries", "hierarchical_paths", "indexing_requests"],
+      "security_level": "high",
+      "governanceRequired": true
+    },
+    {
+      "viaPort": "aimosIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "vif.verifiableIntelligence",
+      "protocol": "MCP",
+      "data": ["confidence_scores", "witness_storage", "verification_requests"],
+      "security_level": "critical",
+      "governanceRequired": true
+    },
+    {
+      "viaPort": "aimosIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "seg.sharedEvidenceGraph",
+      "protocol": "MCP",
+      "data": ["knowledge_synthesis_requests", "evidence_graph_updates", "synthesis_results"],
+      "security_level": "high",
+      "governanceRequired": true
+    },
+    {
+      "viaPort": "aimosIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "apoe.aiPoweredOrchestration",
+      "protocol": "MCP",
+      "data": ["workflow_execution_requests", "plan_artifacts", "execution_traces"],
+      "security_level": "high",
+      "governanceRequired": true
+    },
+    {
+      "viaPort": "llmProviders",
+      "direction": "unidirectional",
+      "connectsToSystemId": "external.anthropic",
+      "protocol": "HTTP",
+      "data": ["chat_completion_requests", "chat_completion_responses"],
+      "security_level": "critical",
+      "governanceRequired": false
+    },
+    {
+      "viaPort": "llmProviders",
+      "direction": "unidirectional",
+      "connectsToSystemId": "external.googleGemini",
+      "protocol": "HTTP",
+      "data": ["chat_completion_requests", "chat_completion_responses"],
+      "security_level": "critical",
+      "governanceRequired": false
+    },
+    {
+      "viaPort": "searchProviders",
+      "direction": "unidirectional",
+      "connectsToSystemId": "external.perplexity",
+      "protocol": "HTTP",
+      "data": ["search_queries", "search_results"],
+      "security_level": "high",
+      "governanceRequired": false
+    },
+    {
+      "viaPort": "searchProviders",
+      "direction": "unidirectional",
+      "connectsToSystemId": "external.tavily",
+      "protocol": "HTTP",
+      "data": ["research_queries", "research_results"],
+      "security_level": "high",
+      "governanceRequired": false
+    }
+  ],
+  
+  "performance_summary": {
+    "expected_latency": {
+      "simple_query": "500-2000ms",
+      "complex_query": "10000-30000ms",
+      "autonomous_research": "60000-120000ms"
+    },
+    "throughput": {
+      "requests_per_second": "10-50",
+      "concurrent_workflows": "5-20"
+    },
+    "resource_usage": {
+      "memory": "100-500MB",
+      "cpu": "low-medium"
+    },
+    "optimization": [
+      "Caching for repeated queries",
+      "Parallel execution where possible",
+      "Budget tracking and enforcement",
+      "Rate limiting for external APIs"
+    ],
+    "monitoring": [
+      "Request latency",
+      "Budget usage",
+      "Error rates",
+      "Quality gate pass rates",
+      "Context window usage"
+    ]
+  },
+  
+  "documentation_status": {
+    "t0_executive": "knowledge_architecture/systems/lucid-chat/T0_executive.md",
+    "t1_overview": "knowledge_architecture/systems/lucid-chat/T1_overview.md",
+    "t2_architecture": "knowledge_architecture/systems/lucid-chat/T2_architecture.md",
+    "t3_detailed": "knowledge_architecture/systems/lucid-chat/T3_detailed.md",
+    "system_map": "knowledge_architecture/systems/lucid-chat/system.map.lucid.json5",
+    "system_index": "knowledge_architecture/systems/lucid-chat/system.index.lucid.json5",
+    "api_documentation": "knowledge_architecture/systems/lucid-chat/API_DOCUMENTATION.md",
+    "usage_examples": "knowledge_architecture/systems/lucid-chat/USAGE_EXAMPLES.md",
+    "deployment_guide": "knowledge_architecture/systems/lucid-chat/DEPLOYMENT_GUIDE.md",
+    "testing_guide": "knowledge_architecture/systems/lucid-chat/TESTING_GUIDE.md",
+    "completion": "100%",
+    "last_updated": "2025-01-27T26:50:00Z"
+  },
+  
+  "integration_points": {
+    "aim_os_systems": [
+      {
+        "system": "CMC",
+        "purpose": "Memory storage and retrieval",
+        "integration_method": "MCP tool: store_memory, retrieve_memory",
+        "status": "production"
+      },
+      {
+        "system": "HHNI",
+        "purpose": "Hierarchical retrieval and indexing",
+        "integration_method": "MCP tool: retrieve_memory (semantic search)",
+        "status": "production"
+      },
+      {
+        "system": "VIF",
+        "purpose": "Confidence tracking and witness creation",
+        "integration_method": "MCP tool: track_confidence",
+        "status": "production"
+      },
+      {
+        "system": "SEG",
+        "purpose": "Knowledge synthesis",
+        "integration_method": "MCP tool: synthesize_knowledge",
+        "status": "production"
+      },
+      {
+        "system": "APOE",
+        "purpose": "Workflow orchestration patterns",
+        "integration_method": "MCP tool: create_plan, workflow execution patterns",
+        "status": "production"
+      }
+    ],
+    "external_apis": [
+      {
+        "provider": "Anthropic",
+        "purpose": "Claude LLM chat completion",
+        "integration_method": "HTTP API",
+        "status": "production"
+      },
+      {
+        "provider": "Google Gemini",
+        "purpose": "Gemini LLM chat completion",
+        "integration_method": "HTTP API",
+        "status": "production"
+      },
+      {
+        "provider": "Perplexity",
+        "purpose": "AI web search with citations",
+        "integration_method": "HTTP API",
+        "status": "production"
+      },
+      {
+        "provider": "Tavily",
+        "purpose": "Deep research search",
+        "integration_method": "HTTP API",
+        "status": "production"
+      }
+    ]
+  },
+  
+  "exceptions": [],
+  
+  "lastUpdated": "2025-01-27T26:50:00Z",
+  "atlasHealth": {
+    "undeclaredConnections": [],
+    "performanceAlerts": [],
+    "securityAlerts": []
+  }
+}
+

@@ -1,0 +1,14 @@
+{"claim": "VIF wraps outputs in cryptographic witness envelopes containing provenance and confidence.", "tier": "A", "source": "knowledge_architecture/systems/vif/T0_executive.md", "anchor": "overview"}
+{"claim": "VIF enforces κ-gating to prevent low-confidence responses (abstain if confidence < 0.70).", "tier": "A", "source": "knowledge_architecture/systems/vif/T2_architecture.md", "anchor": "kappa_gating"}
+{"claim": "VIF consists of four core components: Witness Generator, κ-Gating Module, Confidence Calibrator, and Provenance Tracker.", "tier": "A", "source": "knowledge_architecture/systems/vif/T2_architecture.md", "anchor": "components"}
+{"claim": "VIF integrates with CMC for witness storage, HHNI for retrieval witnessing, APOE for execution gates, SEG for provenance chains.", "tier": "A", "source": "knowledge_architecture/systems/vif/T2_architecture.md", "anchor": "integrations"}
+{"claim": "VIF provides deterministic replay through complete witness envelopes and provenance chains.", "tier": "A", "source": "knowledge_architecture/systems/vif/T2_architecture.md", "anchor": "replay"}
+{"claim": "Confidence thresholds: Tier S (0.95), Tier A (0.90), Tier B (0.85), Tier C (0.80).", "tier": "A", "source": "knowledge_architecture/systems/vif/T2_architecture.md", "anchor": "thresholds"}
+{"claim": "VIF witness envelopes include: model ID, weights hash, prompt template ID, tool IDs, writer, confidence band, entropy.", "tier": "A", "source": "knowledge_architecture/systems/vif/T2_architecture.md", "anchor": "witness_schema"}
+{"claim": "VIF confidence calibration uses historical accuracy data to improve confidence score accuracy.", "tier": "A", "source": "knowledge_architecture/systems/vif/T2_architecture.md", "anchor": "calibration"}
+{"claim": "VIF enables human-in-the-loop escalation when confidence drops below threshold.", "tier": "A", "source": "knowledge_architecture/systems/vif/T0_executive.md", "anchor": "escalation"}
+{"claim": "VIF provides replay protection through cryptographic witness envelopes and deterministic replay.", "tier": "A", "source": "knowledge_architecture/systems/vif/T0_executive.md", "anchor": "replay_protection"}
+{"claim": "Calibration CLI computes expected calibration error (ECE) and logs deltas for audit.", "tier": "A", "source": "packages/vif/calibration.py", "anchor": "main"}
+{"claim": "Witness APIs store provenance and enforce Tier A thresholds via command server hooks.", "tier": "A", "source": "packages/vif/witness.py", "anchor": "create_witness"}
+{"claim": "READY_TO_EXECUTE.md records the Wave 1 confidence workflow (Ch01→Ch02→Ch04 order).", "tier": "A", "source": "north_star_project/READY_TO_EXECUTE.md", "anchor": "Wave 1 plan"}
+{"claim": "Command server validates persona authority before executing `track_confidence`.", "tier": "A", "source": "cursor-addon/src/commandServer.ts", "anchor": "handleTrackConfidence"}

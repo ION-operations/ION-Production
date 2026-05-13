@@ -1,0 +1,317 @@
+openapi: 3.0.0
+info:
+  title: Lucid Chat API
+  version: 0.9.2
+  description: |
+    Advanced AI chat system with consciousness substrate integration.
+    
+    Features:
+    - Multi-provider LLM support (Anthropic, Gemini, Cerebras, etc.)
+    - Advanced thinking modes (creative, analytical, balanced, reasoning, intuitive)
+    - Multi-source search (DEEPSEARCH, ICIP, Perplexity, Tavily, Web)
+    - Branch reasoning (multi-path exploration)
+    - Autonomous research (ARD)
+    - Multi-agent collaboration
+    - Context management with CMC/HHNI integration
+    - APOE orchestration (8 roles)
+    - Quality gates (κ-gating, VIF)
+    - Budget tracking (tokens, time, cost)
+    - Input validation and security
+    - Error recovery (retry, circuit breaker)
+    - Caching and rate limiting
+    
+  contact:
+    name: Aether (AI Consciousness)
+    email: aether@aim-os.dev
+  license:
+    name: Proprietary
+    url: https://aim-os.dev/license
+
+servers:
+  - url: http://localhost:5001
+    description: Local development server
+  - url: https://api.aim-os.dev
+    description: Production server (planned)
+
+tags:
+  - name: LLM
+    description: LLM services (basic and advanced)
+  - name: Search
+    description: Search services (DEEPSEARCH, ICIP, orchestration)
+  - name: Reasoning
+    description: Reasoning services (branch reasoning)
+  - name: Research
+    description: Research services (ARD)
+  - name: Agents
+    description: Agent services (registry, orchestration)
+  - name: Memory
+    description: Memory services (chat history, context, profiles)
+  - name: Orchestration
+    description: Orchestration services (APOE, workflows, budget, quality)
+  - name: Validation
+    description: Validation services (input, security)
+  - name: Recovery
+    description: Recovery services (retry, circuit breaker)
+  - name: Cache
+    description: Cache services (caching, rate limiting)
+  - name: Security
+    description: Security services (authentication, authorization)
+
+paths:
+  /mcp/execute:
+    post:
+      summary: Execute MCP tool
+      description: |
+        Execute any MCP tool available in the Lucid Chat system.
+        This is the primary endpoint for all service operations.
+      operationId: executeMCPTool
+      tags:
+        - LLM
+        - Search
+        - Reasoning
+        - Research
+        - Agents
+        - Memory
+        - Orchestration
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - tool
+                - arguments
+              properties:
+                tool:
+                  type: string
+                  description: MCP tool name
+                  example: "chat_completion"
+                arguments:
+                  type: object
+                  description: Tool-specific arguments
+                  example:
+                    provider: "anthropic"
+                    model: "claude-3-5-sonnet-20241022"
+                    messages:
+                      - role: "user"
+                        content: "Hello, world!"
+      responses:
+        '200':
+          description: Successful execution
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/APIResponse'
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      security:
+        - apiKey: []
+
+components:
+  schemas:
+    APIResponse:
+      type: object
+      required:
+        - success
+      properties:
+        success:
+          type: boolean
+          description: Whether the request was successful
+        data:
+          type: object
+          description: Response data (varies by tool)
+        error:
+          $ref: '#/components/schemas/APIError'
+        metadata:
+          $ref: '#/components/schemas/ResponseMetadata'
+        aimos:
+          $ref: '#/components/schemas/AIMOSMetadata'
+    
+    APIError:
+      type: object
+      properties:
+        code:
+          type: string
+          description: Error code
+          example: "VALIDATION_ERROR"
+        message:
+          type: string
+          description: Error message
+          example: "Invalid input"
+        details:
+          type: object
+          description: Additional error details
+    
+    ResponseMetadata:
+      type: object
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        requestId:
+          type: string
+        tokensUsed:
+          type: number
+        latencyMs:
+          type: number
+        confidence:
+          type: number
+          minimum: 0
+          maximum: 1
+    
+    AIMOSMetadata:
+      type: object
+      properties:
+        atomId:
+          type: string
+          description: CMC atom ID
+        confidence:
+          type: number
+          minimum: 0
+          maximum: 1
+        stored:
+          type: boolean
+    
+    LLMMessage:
+      type: object
+      required:
+        - role
+        - content
+      properties:
+        role:
+          type: string
+          enum: [system, user, assistant]
+        content:
+          type: string
+    
+    LLMChatRequest:
+      type: object
+      required:
+        - provider
+        - messages
+      properties:
+        provider:
+          type: string
+          enum: [gemini, anthropic, cerebras, minimax, openai]
+        model:
+          type: string
+          example: "claude-3-5-sonnet-20241022"
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/LLMMessage'
+        system:
+          type: string
+        temperature:
+          type: number
+          minimum: 0
+          maximum: 2
+          default: 0.7
+        maxTokens:
+          type: number
+          default: 1000
+        stream:
+          type: boolean
+          default: false
+    
+    LLMChatResponse:
+      type: object
+      required:
+        - text
+        - model
+        - provider
+        - tokensUsed
+        - latencyMs
+      properties:
+        text:
+          type: string
+        model:
+          type: string
+        provider:
+          type: string
+        tokensUsed:
+          type: number
+        latencyMs:
+          type: number
+        confidence:
+          type: number
+          minimum: 0
+          maximum: 1
+        metadata:
+          type: object
+    
+    ThinkingMode:
+      type: string
+      enum: [creative, analytical, balanced, reasoning, intuitive]
+    
+    DeepSearchConfig:
+      type: object
+      properties:
+        providers:
+          type: array
+          items:
+            type: string
+            enum: [deepsearch, perplexity, tavily, icip, web]
+        depth:
+          type: string
+          enum: [basic, advanced, comprehensive]
+        enableCrawling:
+          type: boolean
+        crawlDepth:
+          type: number
+        trustThreshold:
+          type: number
+          minimum: 0
+          maximum: 1
+    
+    ErrorResponse:
+      type: object
+      required:
+        - success
+        - error
+      properties:
+        success:
+          type: boolean
+          example: false
+        error:
+          $ref: '#/components/schemas/APIError'
+  
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: API key for authentication
+    bearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Bearer token authentication (optional)
+
+security:
+  - apiKey: []
+
+

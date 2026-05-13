@@ -1,0 +1,33 @@
+{
+  "package": "ai_engine",
+  "classes": [
+    {
+      "name": "AIEngine",
+      "methods": ["execute", "execute_chain", "swarm_execute", "status"],
+      "file": "scripts/ai_engine/engine.py"
+    },
+    {
+      "name": "GeminiCLIProvider",
+      "methods": ["complete", "stream", "vision", "generate_image", "status"],
+      "file": "scripts/ai_engine/providers/gemini_cli_provider.py"
+    },
+    {
+      "name": "AgentRegistry",
+      "methods": ["register", "get", "find_best_for", "update_performance"],
+      "file": "scripts/ai_engine/registry.py"
+    },
+    {
+      "name": "VIFGate",
+      "methods": ["check", "propose_risky_action"],
+      "file": "scripts/ai_engine/safety/vif_gates.py"
+    }
+  ],
+  "dependencies": [
+    "packages.intent_classification",
+    "packages.specialist_system",
+    "packages.prompt_chain_executor",
+    "packages.safety_systems",
+    "packages.meta_reasoning",
+    "packages.router"
+  ]
+}

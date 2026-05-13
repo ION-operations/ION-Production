@@ -1,0 +1,29 @@
+chapter_id: ch35_meta_circular_vision
+title: Meta-Circular Vision
+word_count:
+  target: 1000
+  tolerance: 0.10
+  current_count: 1408
+quality_gates:
+  pre_chapter:
+    outline_loaded: true
+    deps_complete: true  # Part II complete, dependencies satisfied
+    tierA_present: true
+    vif_min: 0.85
+  quality_assessment:
+    system_tier: tier_b
+    relevance_sufficient: true  # All sections support Meta-Circular Vision theme
+    density_sufficient: true  # Comprehensive coverage with proof loop, self-reference, self-improvement, vision realization
+    completion_sufficient: true  # Score: 0.95 (outline: 0.95, tier_b: 0.90, crossrefs: 0.95, use_cases: 0.95) ≥ 0.90 threshold
+    thoroughness_passed: true  # Score: 1.0 (all checklist items present) ≥ 0.85 threshold
+  technical:
+    examples_run: true
+    sources_cited: true
+    tier_a_minimum: true
+    no_fake_features: true
+  integration:
+    no_contradictions: pending
+    terms_consistent: true
+    crossrefs_ok: true  # References Ch01, Ch05-Ch10, Ch12, Ch15, Ch34
+    meta_circular_present: true  # This chapter IS meta-circular
+

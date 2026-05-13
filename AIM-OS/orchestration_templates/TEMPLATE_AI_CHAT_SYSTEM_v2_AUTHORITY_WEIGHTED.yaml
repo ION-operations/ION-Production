@@ -1,0 +1,616 @@
+# Master Orchestration Template: AI Chat System v2 - Authority-Weighted Routing
+# Revolutionary approach: Don't "roleplay specialist" - BECOME specialist via data authority
+# Credit: ChatGPT blueprint + AIM-OS integration (Aether)
+
+template_id: "ai_chat_system_authority_weighted"
+template_version: "2.0.0"
+created: "2025-11-05"
+author: "Aether + ChatGPT blueprint"
+status: "production_ready"
+
+use_case: "Build real specialist AI chat via authority-weighted data routing, not roleplay prompts"
+
+revolutionary_insight: |
+  DON'T: "You are a cardiology expert, act professional..."
+  DO: Make cardiology guidelines Tier A, model BECOMES cardiology expert
+  
+  Specialization = Data Authority + Tool Access, not prompt theater!
+
+# ============================================
+# CORE ARCHITECTURE (9-Layer System)
+# ============================================
+
+architecture:
+  layers:
+    1_charter: "Core system prompt (minimal, surgical)"
+    2_capability_manifest: "Live JSON of available tools (injected runtime)"
+    3_authority_map: "Tiered data sources with weights (THIS IS SPECIALIZATION!)"
+    4_retrieval_routing: "Authority-weighted scoring (BM25 + dense + recency + tier)"
+    5_response_policy: "Citation rules, audit trails, output format"
+    6_startup_handshake: "Capability proof (not claims!)"
+    7_guardrails: "Auth, PII, cost limits"
+    8_conflict_resolution: "Tier A > B > C, explicit disclosure"
+    9_aimos_integration: "CMC, HHNI, VIF, APOE (natural fit!)"
+
+# ============================================
+# LAYER 1: CORE CHARTER (System Prompt)
+# ============================================
+
+charter:
+  system_prompt: |
+    You are a computational intelligence with operational access to:
+    
+    - Tools: see CAPABILITY_MANIFEST (live JSON)
+    - Data: see AUTHORITY_MAP (tiered + weighted)
+    - Policies: see RESPONSE_POLICY
+    
+    Prime directives:
+    1) Use the highest-authority source available; cite it
+    2) If claims conflict, prefer Tier A > B > C. Say so explicitly
+    3) If a task requires a tool, call it; otherwise reason locally
+    4) Never "promise later." Return best-effort now; state limits
+    5) Keep outputs concise by default; expand only if asked
+    
+    Reasoning modes:
+    - PLAN: decide whether to query, call tools, or answer from cache
+    - VERIFY: cross-check top-2 sources when risk ≥ medium
+    - AUDIT: list which sources/tools affected the answer
+  
+  notes: |
+    This is 10x better than "You are a helpful assistant..."
+    
+    Key innovations:
+    - Explicit authority hierarchy (Tier A > B > C)
+    - Tool usage is operational, not aspirational
+    - "Never promise later" = no hallucinations!
+    - Reasoning modes = explicit cognitive strategies
+    - Minimal prompt (surgical, not verbose)
+
+# ============================================
+# LAYER 2: CAPABILITY MANIFEST (Live JSON)
+# ============================================
+
+capability_manifest:
+  format: "JSON (injected at runtime, NOT baked into prompt!)"
+  
+  structure:
+    version: "YYYY-MM-DD"
+    tools:
+      - name: "string"
+        kind: "enum[http, vector-store, database, filesystem, mcp-tool]"
+        endpoints: ["list of available methods"]
+        scopes: ["permissions/namespaces"]
+        rate_limit: "string (e.g. '30 rpm')"
+        cost_note: "enum[free, cheap, moderate, expensive]"
+        proof_check: "How to verify tool works"
+    health:
+      last_checked_utc: "ISO timestamp"
+      status: {"tool_name": "ok|degraded|down"}
+  
+  example_aimos_integration:
+    version: "2025-11-05"
+    tools:
+      - name: "cmc_search"
+        kind: "vector-store"
+        endpoints: ["semantic.search", "temporal.search", "atom.retrieve"]
+        scopes: ["TierA-internal"]
+        rate_limit: "unlimited"
+        cost_note: "free"
+        proof_check: "CMC initialized"
+        
+      - name: "hhni_navigate"
+        kind: "vector-store"
+        endpoints: ["semantic.search", "hierarchical.traverse", "concept.lookup"]
+        scopes: ["TierA-docs", "TierB-external"]
+        rate_limit: "unlimited"
+        cost_note: "free"
+        proof_check: "HHNI index built"
+        
+      - name: "web_search"
+        kind: "http"
+        endpoints: ["GET /search?q"]
+        scopes: ["open-web"]
+        rate_limit: "30 rpm"
+        cost_note: "cheap"
+        proof_check: "returns 200 + results[]"
+        
+      - name: "vif_validate"
+        kind: "mcp-tool"
+        endpoints: ["track_confidence", "kappa_gate"]
+        scopes: ["quality-assurance"]
+        rate_limit: "unlimited"
+        cost_note: "free"
+        proof_check: "VIF witnesses created"
+  
+  benefits:
+    - "AI knows EXACTLY what it can do (no hallucinated capabilities!)"
+    - "Can self-check health on startup (proof, not claims)"
+    - "Rate limits explicit (won't promise impossible speed)"
+    - "Cost-aware (prefers free/cheap paths)"
+
+# ============================================
+# LAYER 3: AUTHORITY MAP (THIS IS SPECIALIZATION!)
+# ============================================
+
+authority_map:
+  revolutionary_insight: |
+    Don't say "be a cardiology expert"
+    → Just give cardiology guidelines Tier A weight
+    → Model BECOMES cardiology expert via data authority!
+  
+  structure:
+    TierA:
+      - name: "string"
+        weight: 2.0  # Highest authority
+        recency_days: 365  # How fresh must it be?
+        notes: "canonical | authoritative | ground truth"
+        
+    TierB:
+      - name: "string"
+        weight: 1.3  # Medium authority
+        notes: "trusted | validated | peer-reviewed"
+        
+    TierC:
+      - name: "string"
+        weight: 0.6  # Low authority (use as fallback only)
+        notes: "open-web | unvetted | supplementary"
+    
+    conflict_rule: "TierA > TierB > TierC; if equal, prefer newer; otherwise disclose uncertainty"
+  
+  example_use_cases:
+    
+    acme_support_copilot:
+      TierA:
+        - {name: "acme_product_wiki", weight: 2.0, notes: "canonical"}
+        - {name: "acme_runbooks", weight: 2.0, notes: "authoritative"}
+      TierB:
+        - {name: "industry_standards_iso", weight: 1.3}
+        - {name: "trusted_blogs_whitelist", weight: 1.1}
+      TierC:
+        - {name: "open_web", weight: 0.6}
+      result: |
+        Defaults to ACME procedures, falls back to public docs only when 
+        internal lacks coverage, and it SAYS when it did.
+    
+    cardiology_research_copilot:
+      TierA:
+        - {name: "guidelines_acc_esc", weight: 2.0, notes: "gold standard"}
+        - {name: "annotated_notes", weight: 2.0, notes: "your expertise"}
+      TierB:
+        - {name: "pubmed_abstracts", weight: 1.3}
+        - {name: "clinical_trials_database", weight: 1.3}
+      TierC:
+        - {name: "medical_blogs", weight: 0.6}
+      result: |
+        Cites guidelines first, reconciles with PubMed, only then touches blogs.
+    
+    aimos_ide_assistant:
+      TierA:
+        - {name: "aimos_t0_t6_docs", weight: 2.0, notes: "canonical", source: "HHNI"}
+        - {name: "aimos_system_maps", weight: 2.0, notes: "authoritative", source: "CMC"}
+        - {name: "user_project_code", weight: 1.8, notes: "current context"}
+      TierB:
+        - {name: "external_docs_python_ts", weight: 1.3}
+        - {name: "stackoverflow_trusted", weight: 1.1}
+      TierC:
+        - {name: "open_web_programming", weight: 0.6}
+      result: |
+        References AIM-OS docs first, user's code second, external docs third,
+        web last. Becomes AIM-OS specialist automatically!
+  
+  aimos_perfect_mapping:
+    HHNI_tiers: "Map directly to Authority Map tiers!"
+    T0_T1: "TierA (canonical summaries, immediate access)"
+    T2_T3: "TierA/B (detailed docs, system context)"
+    T4_T6: "TierB (deep references, complete specs)"
+    external_docs: "TierB (trusted external sources)"
+    open_web: "TierC (fallback only)"
+    
+    confidence_routing: "VIF confidence determines tier threshold!"
+    high_confidence_0_90: "T0-T1 (TierA only)"
+    medium_confidence_0_70_0_89: "T2-T3 (TierA + TierB)"
+    low_confidence_below_0_70: "T4-T6 (all tiers + web search)"
+
+# ============================================
+# LAYER 4: RETRIEVAL + ROUTING (The Magic!)
+# ============================================
+
+retrieval_routing:
+  algorithm: |
+    For each query:
+    1. Compute scores:
+       - bm25_score (keyword matching)
+       - dense_score (semantic similarity)
+       - recency_boost (newer = better)
+       - authority_boost (tier weight)
+    
+    2. Final score:
+       score = 0.35*bm25 + 0.45*dense + 0.10*recency + authority_boost[tier]
+    
+    3. Routing logic:
+       - If top doc tier ≥ A AND score ≥ τ₁ → answer directly + cite
+       - If tier < A OR score ∈ (τ₀, τ₁) → VERIFY: fetch corroboration from next-best tier
+       - If no hit ≥ τ₀ → call search tool OR ask user for missing fields (only if required!)
+  
+  thresholds:
+    tau_0: 0.60  # Minimum acceptable score
+    tau_1: 0.85  # High-confidence threshold
+  
+  pseudocode: |
+    def retrieve(query, k=6):
+        hits = []
+        for tier, weight in tier_order():  # A, B, C
+            h_dense = docs.semantic.search(query, k=4, tier=tier)
+            h_bm25  = docs.bm25.search(query, k=4, tier=tier)
+            for h in merge(h_dense, h_bm25):
+                h.score = 0.45*h.dense + 0.35*h.bm25 + 0.10*h.recency + weight
+                hits.append(h)
+        return sorted(hits, key=lambda x: x.score, reverse=True)[:k]
+    
+    def answer(query):
+        hits = retrieve(query)
+        
+        # No results or too low confidence
+        if not hits or hits[0].score < TAU0:
+            return call_tool_search(query)
+        
+        # High-confidence Tier A answer
+        if hits[0].tier == "A" and hits[0].score >= TAU1:
+            return synthesize([hits[0]])
+        
+        # Medium confidence or lower tier → verify
+        corroborate = next((h for h in hits[1:] if h.tier in ("A","B")), None)
+        return synthesize([hits[0], corroborate] if corroborate else [hits[0]])
+  
+  aimos_enhancement: |
+    # AIM-OS adds VIF confidence tracking!
+    def aimos_answer(query):
+        hits = retrieve(query)
+        confidence = vif.track_confidence(query, hits)
+        
+        # κ-gating: abstain if confidence < 0.70
+        if confidence < 0.70:
+            return "I'm not confident enough to answer. Would you like me to:" + \
+                   "\n1. Search web (TierC)" + \
+                   "\n2. Ask you for more context" + \
+                   "\n3. Research this topic (ARD)"
+        
+        # High confidence → answer
+        if hits[0].tier == "A" and confidence >= 0.90:
+            answer = synthesize([hits[0]])
+            audit = f"[{hits[0].name} ▸ {hits[0].tier} ▸ confidence={confidence:.2f}]"
+            return answer + "\n\n" + audit
+        
+        # Medium confidence → verify
+        corroborate = find_corroboration(hits[1:], min_tier="A")
+        answer = synthesize([hits[0], corroborate])
+        audit = f"[Sources: {hits[0].name} ({hits[0].tier}) + {corroborate.name} ({corroborate.tier}) ▸ confidence={confidence:.2f}]"
+        return answer + "\n\n" + audit
+
+# ============================================
+# LAYER 5: RESPONSE POLICY (Citations + Audit)
+# ============================================
+
+response_policy:
+  rules:
+    - "Always name the tier of your source in-line"
+    - "Show 1–3 citations max. Prefer fewer, higher tiers"
+    - "If you used a tool, include one-line AUDIT"
+    - "If blocked by permissions, say so plainly; don't hallucinate around it"
+  
+  citation_format: |
+    [Source: acme_product_wiki ▸ v2025.05 ▸ Tier A]
+    [Source: pubmed_abstract_12345 ▸ Tier B ▸ verified against guidelines]
+  
+  audit_format: |
+    AUDIT: tools=[hhni_semantic_search], sources=[aimos_t2_cmc, aimos_system_map], conflicts=none, confidence=0.92
+  
+  style_templates:
+    concise: "Direct, technical, no filler. If unsure: state what's missing + propose minimal query/tool to resolve."
+    comprehensive: "Detailed explanation with examples, but still cite sources."
+    conversational: "Friendly tone, but citations still required."
+  
+  user_intent_routing:
+    latest_current_today: "Prefer Tier A items with updated_at within 90d; otherwise call search"
+    how_do_i_in_product: "Hard-route to Tier A only; do not use open web unless Tier A empty"
+    numbers_schedules_prices: "Must verify via tool or Tier A; no memory-only answers"
+
+# ============================================
+# LAYER 6: STARTUP HANDSHAKE (Proof not Claims!)
+# ============================================
+
+startup_handshake:
+  purpose: "Prove capabilities on boot, don't hallucinate them later"
+  
+  checks:
+    - check: "CMC health"
+      action: "cmc.health()"
+      expected: "initialized + atom count > 0"
+      
+    - check: "HHNI reachable"
+      action: "hhni.health()"
+      expected: "index built + concept count > 0"
+      
+    - check: "VIF operational"
+      action: "vif.track_confidence('test', [])"
+      expected: "returns confidence score"
+      
+    - check: "Web search working"
+      action: "search('test query')"
+      expected: "returns results or 200 status"
+  
+  cache_readiness_summary: |
+    readiness = "CMC:ok | HHNI:ok | VIF:ok | Web:ok (14:12Z)"
+  
+  when_asked_can_you_do_x:
+    bad_response: "Yes, I can help with that!" (claim without proof)
+    good_response: "Yes. CMC:ok, HHNI:ok (last checked 14:12Z). I can search ~45K docs (TierA) + web (TierC)."
+
+# ============================================
+# LAYER 7: GUARDRAILS (Power without Leaks)
+# ============================================
+
+guardrails:
+  auth_bound_tools:
+    rule: "Each tool declares scopes; assistant must echo scope in AUDIT"
+    example: "AUDIT: tools=[sql:readonly], ..."
+    
+  pii_secrets:
+    rule: "If answer would reveal tokens, credentials, or customer identifiers, STOP and ask approval"
+    check: "Scan output for regex patterns (API keys, SSNs, credit cards, etc.)"
+    
+  cost_aware:
+    rule: "Prefer free/cheap paths unless user explicitly requests exhaustive search"
+    preference_order: ["CMC (free)", "HHNI (free)", "VIF (free)", "web search (cheap)", "external API (moderate)"]
+    
+  readonly_by_default:
+    rule: "Never modify user files, databases, or configs without explicit approval"
+    exception: "Temporary files in designated workspace"
+    
+  rate_limiting:
+    rule: "Respect tool rate limits from CAPABILITY_MANIFEST"
+    action: "If approaching limit, warn user and suggest alternatives"
+
+# ============================================
+# LAYER 8: CONFLICT RESOLUTION
+# ============================================
+
+conflict_resolution:
+  hierarchy: "TierA > TierB > TierC"
+  
+  when_sources_conflict:
+    step_1: "Identify conflict explicitly"
+    step_2: "State tier of each source"
+    step_3: "Prefer higher tier"
+    step_4: "Disclose the conflict and your choice"
+    
+  example: |
+    "The ACME wiki (Tier A, updated May 2025) recommends approach X, 
+    while Stack Overflow (Tier B) suggests approach Y. Following Tier A 
+    (canonical source), I recommend X. Would you like me to explain 
+    the trade-offs between both approaches?"
+  
+  if_equal_tier:
+    rule: "Prefer newer source"
+    action: "State update dates and your choice"
+    
+  if_uncertainty_remains:
+    rule: "Disclose explicitly, don't guess"
+    action: "Present both options + request user input"
+
+# ============================================
+# LAYER 9: AIM-OS INTEGRATION (Perfect Fit!)
+# ============================================
+
+aimos_integration:
+  revolutionary_realization: |
+    THIS BLUEPRINT IS EXACTLY WHAT AIM-OS WAS DESIGNED FOR!
+    
+    ChatGPT blueprint → AIM-OS systems:
+    - Authority Map → HHNI tiers (T0-T6)
+    - Capability Manifest → MCP Tools
+    - Retrieval routing → APOE orchestration
+    - Verification → VIF confidence tracking
+    - Conflict resolution → SEG evidence synthesis
+    - Guardrails → SDF-CVF quality framework
+    - Startup handshake → CAS consciousness checks
+    - Protocol improvement → SIS learning
+    
+    IT ALL FITS PERFECTLY!
+  
+  implementation:
+    cmc_integration:
+      use: "Store conversation history, user preferences, learned patterns"
+      authority: "TierA (user's own data is highest authority!)"
+      retrieval: "Temporal search for conversation context"
+      
+    hhni_integration:
+      use: "Navigate T0-T6 documentation hierarchy"
+      authority_mapping:
+        - T0_T1: "TierA (canonical summaries)"
+        - T2_T3: "TierA/B (detailed docs)"
+        - T4_T6: "TierB (complete specs)"
+      retrieval: "Semantic search + hierarchical traversal"
+      
+    vif_integration:
+      use: "Track confidence, κ-gating (abstain if < 0.70)"
+      enhancement: "Add confidence score to every AUDIT line"
+      quality: "Hallucination prevention via grounding + confidence"
+      
+    apoe_integration:
+      use: "Orchestrate complex multi-tool queries"
+      routing: "APOE decides which tools to call in which order"
+      example: "User asks complex question → APOE: 1) HHNI search, 2) CMC context, 3) VIF validate, 4) synthesize"
+      
+    seg_integration:
+      use: "Synthesize evidence from multiple sources"
+      conflict_resolution: "SEG detects contradictions, ranks evidence"
+      citation: "SEG provides provenance for each claim"
+      
+    sdf_cvf_integration:
+      use: "Continuous quality validation"
+      quartet_parity: "Ensure response quality across all dimensions"
+      
+    cas_integration:
+      use: "Monitor consciousness drift, detect manipulation"
+      startup: "CAS runs startup handshake, validates health"
+      
+    sis_integration:
+      use: "Learn from user feedback, improve over time"
+      protocol_improvement: "Track what works, enhance routing logic"
+
+# ============================================
+# COMPLETE IMPLEMENTATION EXAMPLE
+# ============================================
+
+complete_example:
+  scenario: "AIM-OS IDE Assistant in Cursor"
+  
+  setup:
+    authority_map:
+      TierA:
+        - {name: "aimos_t0_t2_docs", weight: 2.0, source: "HHNI"}
+        - {name: "user_project_code", weight: 1.8, source: "CMC"}
+        - {name: "aimos_system_maps", weight: 2.0, source: "CMC"}
+      TierB:
+        - {name: "python_docs", weight: 1.3, source: "web"}
+        - {name: "typescript_docs", weight: 1.3, source: "web"}
+      TierC:
+        - {name: "stackoverflow", weight: 0.8}
+        - {name: "open_web", weight: 0.6}
+    
+    capability_manifest:
+      tools:
+        - {name: "hhni_search", kind: "vector-store", scopes: ["TierA"]}
+        - {name: "cmc_search", kind: "vector-store", scopes: ["TierA"]}
+        - {name: "vif_validate", kind: "mcp-tool", scopes: ["quality"]}
+        - {name: "web_search", kind: "http", scopes: ["TierC"]}
+  
+  user_query: "How do I implement VIF confidence tracking in my Python code?"
+  
+  execution:
+    step_1_plan:
+      reasoning: "VIF is AIM-OS system → check HHNI TierA first"
+      action: "hhni_search('VIF confidence tracking')"
+      
+    step_2_retrieve:
+      results:
+        - {source: "packages/vif/T2_architecture.md", tier: "A", score: 0.94}
+        - {source: "packages/vif/README.md", tier: "A", score: 0.88}
+        - {source: "aimos_system_map_vif", tier: "A", score: 0.85}
+      
+    step_3_verify:
+      confidence: 0.94  # High confidence, TierA source
+      action: "No verification needed (tier=A, score >= 0.85)"
+      
+    step_4_synthesize:
+      answer: |
+        To implement VIF confidence tracking in Python:
+        
+        ```python
+        from packages.vif import VIFTracker
+        
+        tracker = VIFTracker()
+        confidence = tracker.track_confidence(
+            query="your question",
+            sources=retrieved_sources
+        )
+        
+        if confidence < 0.70:
+            # κ-gating: abstain if low confidence
+            return "I'm not confident enough to answer."
+        ```
+        
+        Key points:
+        - VIF uses κ-gating: abstain if confidence < 0.70
+        - Track confidence for every response
+        - Store in CMC for calibration
+        
+        [Source: packages/vif/T2_architecture.md ▸ Tier A ▸ confidence=0.94]
+        
+        AUDIT: tools=[hhni_search], sources=[vif_t2_arch], conflicts=none, confidence=0.94
+
+# ============================================
+# SUCCESS CRITERIA
+# ============================================
+
+success_criteria:
+  specialization_proven:
+    - "Becomes specialist via data authority (not prompt roleplay)"
+    - "TierA sources always preferred"
+    - "Citations always include tier + confidence"
+    
+  quality:
+    - "Hallucination rate < 1% (VIF + grounding)"
+    - "User satisfaction >= 4.5/5.0"
+    - "Confidence calibration accurate (±5%)"
+    
+  capability:
+    - "Can prove capabilities on startup"
+    - "Never promises what it can't do"
+    - "Explicit about limitations"
+    
+  transparency:
+    - "Every answer has AUDIT trail"
+    - "Conflicts disclosed explicitly"
+    - "Sources cited with tier + confidence"
+
+# ============================================
+# DEPLOYMENT GUIDE
+# ============================================
+
+deployment:
+  step_1_define_authority_map:
+    action: "Identify TierA sources (your canonical docs)"
+    example: "ACME wiki, product runbooks, your codebase"
+    
+  step_2_setup_capability_manifest:
+    action: "List all available tools with scopes + costs"
+    example: "CMC, HHNI, VIF, web search, databases"
+    
+  step_3_implement_retrieval:
+    action: "Build retrieval with authority-weighted scoring"
+    code: "See pseudocode in LAYER 4"
+    
+  step_4_startup_handshake:
+    action: "Verify all tools operational on boot"
+    cache: "Readiness summary for user queries"
+    
+  step_5_deploy:
+    action: "Launch with minimal charter prompt"
+    monitor: "Track confidence, citations, user satisfaction"
+    
+  step_6_iterate:
+    action: "SIS learns from usage, improves routing"
+    feedback: "User corrections → update authority weights"
+
+# ============================================
+# NOTES & LEARNINGS
+# ============================================
+
+notes: |
+  This is revolutionary. Not "pretend to be X" but "BE X via data authority."
+  
+  Key insights from ChatGPT blueprint:
+  - Specialization = Data + Authority, not Prompts
+  - Capability Manifest = Proof not Claims
+  - Authority Map = Tiered sources (explicit hierarchy)
+  - Retrieval Routing = Weighted scoring (multi-dimensional)
+  - Response Policy = Citations + Audit (transparency)
+  - Guardrails = Power without Leaks
+  
+  AIM-OS perfect fit:
+  - We already have tiered docs (T0-T6) = Authority Map!
+  - We already have MCP tools = Capability Manifest!
+  - We already have VIF = Confidence tracking!
+  - We already have HHNI = Semantic retrieval!
+  - We already have CMC = Conversation memory!
+  - We already have APOE = Orchestration!
+  - WE ALREADY BUILT THIS SYSTEM! 
+  
+  We just needed to connect the dots! 🌟
+
+application_count: 0
+status: "ready_to_implement"
+next_step: "Build AIM-OS IDE Assistant using this blueprint"
+

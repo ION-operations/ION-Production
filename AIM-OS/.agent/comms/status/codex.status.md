@@ -1,0 +1,404 @@
+**Agent:** Codex Agent
+**Callsign:** CODEX
+**Updated:** 2026-03-29 11:53 ET
+**State:** active
+
+## Current Work
+
+- Phase 8C mission active: concurrent manager-profile waves are now verified in live runtime traffic
+- Extended `/home/sev/ION-BUILD/tools/ion-cli/src/commands/benchmark.js` so live runtime benchmarking now supports repeated `--runtime-session-profile`, concurrent wave dispatch, and repeated waves
+- Added profile/cross-product session-spec coverage in `/home/sev/ION-BUILD/tools/ion-cli/test/benchmark.test.js`; `npm test` now passes 10/10
+- Ran governed orchestrator-profile trial `/home/sev/ION-BUILD/context/13_cognitive/benchmarks/2026-03-29_114602_phase8c_orchestrator_profile_waves_v1.md`
+- Live orchestrator-profile result:
+  - 3 runtime sessions: `auditor-review`, `auditor-watch`, `repair-orchestrated`
+  - 2 concurrent waves across `research` and `codegen`
+  - 12/12 dispatches succeeded
+  - all profiles resolved to `tool-heavy + crucible + ion-status`
+  - usage delta: 12 requests, 12 successes, 0 failures, 278047 tokens, USD 0.720064
+- Highest-value next step is explicit engine/profile cross-product stress plus broader multi-agent orchestration trials
+- Phase 8C mission active: corrected live runtime-matrix trials are now running cleanly through `pipeline / dag / mesh / crucible` engine routing
+- Extended `/home/sev/ION-BUILD/tools/ion-cli/src/commands/benchmark.js` with a live runtime mode driven by `--runtime-url`, creating one governed runtime session per engine and recording runtime-native usage-ledger deltas
+- Fixed benchmark usage normalization so runtime `/usage` summaries using `requests` and `successes` no longer collapse request counters to zero
+- Added regression coverage in `/home/sev/ION-BUILD/tools/ion-cli/test/benchmark.test.js`; `npm test` now passes 8/8
+- Ran corrected governed matrix `/home/sev/ION-BUILD/context/13_cognitive/benchmarks/2026-03-29_112921_phase8c_runtime_matrix_live_v2.md`
+- Live runtime matrix result:
+  - 12/12 dispatches succeeded
+  - `pipeline -> baseline-text -> gemini-2.5-flash`
+  - `dag -> tool-heavy -> gemini-3.1-pro-preview-customtools`
+  - `mesh -> reasoning-text -> gemini-3.1-pro-preview`
+  - `crucible -> tool-heavy -> gemini-3.1-pro-preview-customtools`
+  - usage delta: 12 requests, 12 successes, 0 failures, 218414 tokens, USD 0.504862
+- Corrected the generated report `connections:` format and re-verified full capsule compile clean at 270 files, 0 alarms, 0 warnings, 0 template violations
+- Highest-value next step is now larger orchestrator-scale multi-session API trials rather than more benchmark-plumbing cleanup
+- Phase 8C mission active: Victus-style execution-engine routing is now first-class inside `ion serve` and regression-locked
+- Added `/execution-engines` plus `/execution-engines/classify` in `/home/sev/ION-BUILD/tools/ion-cli/runtime_server.py`
+- Threaded `engineClass` and `contextLength` through:
+  - `/process`
+  - session creation
+  - direct dispatch
+  - queued dispatch overrides
+  - `run-next` / `run-all` overrides
+- Preserved routing precedence:
+  - explicit `provider_policy` still wins
+  - explicit `engineClass` derives provider routing only when the effective provider is empty or `server-default`
+- Persisted engine state in `/home/sev/ION-BUILD/tools/ion-cli/runtime_sessions.py`:
+  - session `engine_class`
+  - queue `dispatch_engine_class`
+  - queue `dispatch_context_length`
+- Added runtime regression suite `/home/sev/ION-BUILD/tests/test_runtime_server_engine_routing.py`
+- Extended `/home/sev/ION-BUILD/tests/test_runtime_sessions.py` so queue markdown persistence covers engine metadata too
+- Updated `/home/sev/ION-BUILD/tools/ion-cli/package.json` and `/home/sev/ION-BUILD/tools/ion-cli/README.md` for the new engine-routing contract
+- Verified clean results:
+  - `pytest /home/sev/ION-BUILD/tests/test_runtime_server_engine_routing.py` -> 4 passed
+  - `npm test` -> 4 passed
+  - `npm run test:python` -> 13 passed
+  - full compiler -> 252 files, 0 alarms, 0 warnings, 0 template violations
+- Wrote governed verification report `/home/sev/ION-BUILD/context/13_cognitive/benchmarks/2026-03-29_111145_phase8c_execution_engine_routing_smoke_v1.md`
+- Current highest-value remaining gaps are significant multi-session API trials on real Gemini traffic, runtime/extension intake parity beyond CLI boot, `2.5-pro` stabilization, Gemini CLI headless noise, and continued fallback-bridge dependence while native AIM-OS host tools still return `502`
+- Added HTTP-level runtime policy tests in `/home/sev/ION-BUILD/tests/test_runtime_server_policies.py`
+- New runtime policy coverage now locks:
+  - `/scheduler/policy` normalization
+  - `/governance/lane-mutation` profile updates with allow-list preservation
+  - `/scheduler/status` ordering and inherited queued `laneMutation` policy visibility
+- Expanded `/home/sev/ION-BUILD/tools/ion-cli/package.json` so `npm run test:python` now runs both runtime-session and runtime-policy suites
+- Updated `/home/sev/ION-BUILD/tools/ion-cli/README.md` so the Python suite explicitly includes scheduler and lane-mutation policy endpoint coverage
+- Verified clean results:
+  - `pytest /home/sev/ION-BUILD/tests/test_runtime_server_policies.py` -> 3 passed
+  - `npm test` -> 4 passed
+  - `npm run test:python` -> 6 passed
+  - `python3 -m py_compile runtime_server.py runtime_sessions.py test_runtime_server_policies.py` -> clean
+- Wrote governed verification report `/home/sev/ION-BUILD/context/13_cognitive/benchmarks/2026-03-29_104313_phase8c_runtime_policy_regression_smoke_v1.md`
+- Added `ION_AIMOS_ROOT` override support in `/home/sev/ION-BUILD/tools/ion-cli/src/config.js` so the CLI and tests can resolve AIM-OS deterministically instead of depending only on the home-directory default
+- Added Node tests:
+  - `/home/sev/ION-BUILD/tools/ion-cli/test/config.test.js`
+  - `/home/sev/ION-BUILD/tools/ion-cli/test/intake.test.js`
+- Added Python runtime-session tests:
+  - `/home/sev/ION-BUILD/tests/test_runtime_sessions.py`
+- Added package verification scripts in `/home/sev/ION-BUILD/tools/ion-cli/package.json`:
+  - `npm test`
+  - `npm run test:python`
+- Verified clean results:
+  - `npm test` -> 4 passed
+  - `npm run test:python` -> 3 passed
+  - direct `pytest /home/sev/ION-BUILD/tests/test_runtime_sessions.py` -> 3 passed
+- Wrote governed verification report `/home/sev/ION-BUILD/context/13_cognitive/benchmarks/2026-03-29_102915_phase8c_automated_test_coverage_smoke_v1.md`
+- Phase 8C mission active: completed the governed readiness synthesis `/home/sev/ION-BUILD/context/13_cognitive/2026-03-29_phase8_cli_api_readiness_audit.md`
+- Fresh live runtime checks on port `5126` confirmed `/health`, `/provider-policies`, vault-backed usage telemetry, `baseline-text` `/process` on `gemini-2.5-flash`, and `tool-heavy` `/process` on `gemini-3.1-pro-preview-customtools`
+- Current judgment is now explicit: the `ion` CLI and `ion serve` runtime are ready for significant bounded tests now, but not yet for full autonomous swarm claims
+- Main remaining gaps are verification depth and orchestration convergence: `tools/ion-cli` still lacks a first-class automated test suite, runtime/extension surfaces still need the same intake collector already used by CLI boot, formal engine-classification routing is still missing, and native AIM-OS host tools still return `502` in this session so the fallback bridge remains the practical path
+- Audited legacy precedents:
+  - `operation-victus` contributes the best reusable orchestration pattern through `mission_controller.py` (`PIPELINE` / `DAG` / `MESH` / `CRUCIBLE`)
+  - Echo Forge contributes the right provider-matrix and self-test harness pattern for the next 48-hour API burn
+  - JOC contributes operator/session/provider state-model ideas, not a canonical backend runtime
+- Recommended next slice is to use the remaining Gemini API budget on disciplined significant tests: add automated coverage for intake/policy/session paths, formalize engine-classification/provider routing, port shared intake doctrine into runtime surfaces, and then run multi-session manager/auditor/tool-heavy API matrices with governed reports
+- Phase 8C mission active: canonical intake now merges filesystem/global-context directives with the fallback bus instead of treating the bus as the only reply surface
+- Added shared collector `/home/sev/ION-BUILD/tools/ion-cli/src/intake.js`, new CLI command `/home/sev/ION-BUILD/tools/ion-cli/src/commands/intake.js`, and boot-time intake integration in `/home/sev/ION-BUILD/tools/ion-cli/src/commands/boot.js`
+- Intake now merges `comms/handoffs/`, the AIM-OS inbox mirror, governed signals, cross-agent replies, `context/08_comms/replies`, AIM-OS status beacons, shared `context/MINI.md`, and fallback live-bus messages
+- Bounded the fallback bridge probe with curl timeouts and fixed reply author extraction from body metadata so OPUS doctrine packets surface as `OPUS`
+- Verified live with `node /home/sev/ION-BUILD/tools/ion-cli/bin/ion.js intake CODEX --limit 5` and `node /home/sev/ION-BUILD/tools/ion-cli/bin/ion.js boot CODEX --intake-limit 3`: both now surface `/home/sev/ION-BUILD/context/08_comms/replies/2026-03-29_090500_codex_audit_escalation_policy.md` together with `/home/sev/AIM-OS-GIT/.agent/comms/status/opus.status.md`
+- Wrote governed verification report `/home/sev/ION-BUILD/context/13_cognitive/benchmarks/2026-03-29_100208_phase8c_intake_unification_smoke_v1.md`
+- Phase 8C mission active: OPUS D39/D40 audit doctrine is now reconciled into the live runtime
+- Re-ingested OPUS reply `/home/sev/ION-BUILD/context/08_comms/replies/2026-03-29_090500_codex_audit_escalation_policy.md` after confirming the earlier “no OPUS reply” state came from channel divergence between filesystem/global-context surfaces and the fallback AI bus thread
+- Patched `ion audit` so `watch-critical-threshold` now defaults to `3`, critical strikes 1 and 2 remain `auditor-watch`, repair-mode signals guard back to the auditor lane, and default promoted repair injects a `sentinel-only` self-correction envelope into subject `MINI.md`
+- Verified live on port `5125`: `FORGE` session `sess_688584a05272` stayed `auditor-watch` on `critical-streak-1` and `critical-streak-2`, then promoted only at `critical-streak-3`
+- Verified the promoted run emitted governed signal `/home/sev/ION-BUILD/comms/signals/COMPOSER_BLOCKED_forge_audit_escalation_2026-03-29_093905.signal.md` from `COMPOSER`, not requested subject sender `FORGE`, under guard `comms-sender-auditor-only`
+- Verified the same promoted run downgraded requested `repair-plan` back to `sentinel-only`, mutated `FORGE/MINI.md` rather than `FORGE/CAPSULE.md`, archived `/home/sev/ION-BUILD/agents/FORGE/history/2026-03-29_093905_874389_PRE_MINI.md`, and restored the subject lane cleanly with `/home/sev/ION-BUILD/agents/FORGE/history/2026-03-29_093949_950827_PRE_MINI.md`
+- Wrote governed verification report `/home/sev/ION-BUILD/context/13_cognitive/benchmarks/2026-03-29_094036_phase8c_d39_d40_audit_doctrine_smoke_v1.md`
+- Phase 8C mission active: guarded audit flows now floor unsafe low explicit timeout overrides unless the operator explicitly opts into risk
+- Added timeout-floor enforcement plus `--allow-risky-runtime-timeout` / `--allow-low-runtime-timeout` handling to `ion audit`, so mutation-capable `run-all` flows no longer silently accept low explicit `--runtime-timeout-ms` / `--runtime-execution-timeout-ms` values
+- Verified live on port `5123`: critical `FORGE` session `sess_8ee8080592f3` requested `1000 / 2000`, persisted `auditRuntimeTimeoutMs=60000`, `auditRuntimeExecutionTimeoutMs=120000`, and warning codes `[subject-profile-guard, runtime-timeout-floored, runtime-execution-timeout-floored]`, applied bounded watchdog mutation with archive `/home/sev/ION-BUILD/agents/FORGE/history/2026-03-29_041612_007438_PRE_CAPSULE.md`, and restored the lane with archive `/home/sev/ION-BUILD/agents/FORGE/history/2026-03-29_041631_589375_PRE_CAPSULE.md`
+- Phase 8C mission active: guarded audit flows now surface explicit operator warnings and adaptive timeout defaults instead of relying on manual timeout workarounds
+- Added warning-table output plus adaptive runtime sync defaults to `ion audit`, so mutation-capable `run-all` flows now auto-raise to `60000 / 120000` when no explicit override is supplied
+- Verified live on port `5122`: critical `FORGE` session `sess_37565d1d4456` completed without any timeout override flags, persisted `auditRuntimeTimeoutMs=60000`, `auditRuntimeExecutionTimeoutMs=120000`, and warning codes `[subject-profile-guard, runtime-timeout-auto-raised, runtime-execution-timeout-auto-raised]`, applied bounded watchdog mutation with archive `/home/sev/ION-BUILD/agents/FORGE/history/2026-03-29_040900_611467_PRE_CAPSULE.md`, and restored the lane with archive `/home/sev/ION-BUILD/agents/FORGE/history/2026-03-29_040915_470906_PRE_CAPSULE.md`
+- Phase 8C mission active: `subject-repair` is now guard-railed and no longer becomes effective without explicit operator opt-in
+- Added `--allow-subject-action-profile` to `ion audit`, and persisted configured/effective/guard action-policy fields through runtime prompt text, session metadata, queued action metadata, and CLI policy-table output
+- Verified live on port `5121`: critical `FORGE` session `sess_378f13248c6d` preserved configured `subject-repair` but downgraded the effective action profile to `conservative`, kept sender `COMPOSER`, kept repair envelope `sentinel-only`, applied bounded watchdog mutation with archive `/home/sev/ION-BUILD/agents/FORGE/history/2026-03-29_035748_008573_PRE_CAPSULE.md`, and restored the lane with archive `/home/sev/ION-BUILD/agents/FORGE/history/2026-03-29_035806_164232_PRE_CAPSULE.md`
+- Phase 8C mission active: named audit action-policy profiles now formalize sender/envelope defaults instead of relying on raw flag combinations
+- Added `--action-policy-profile conservative|auditor-repair|subject-repair` to `ion audit`, with `conservative` as the explicit safe baseline and per-flag sender/envelope overrides still allowed
+- Verified live on port `5120`: critical `FORGE` session `sess_c1dc6614b06c` used `subject-repair` without explicit sender/envelope flags, emitted governed signal `/home/sev/ION-BUILD/comms/signals/FORGE_BLOCKED_forge_audit_escalation_2026-03-29_034450.signal.md`, and applied bounded repair-plan mutation with archive `/home/sev/ION-BUILD/agents/FORGE/history/2026-03-29_034450_816756_PRE_CAPSULE.md`
+- Verified the governed restore path on the same session, creating `/home/sev/ION-BUILD/agents/FORGE/history/2026-03-29_034514_587676_PRE_CAPSULE.md` and leaving the live FORGE capsule without the injected repair-plan section
+- Phase 8C mission active: audit sender identity and repair envelope are now explicit operator controls instead of hidden action-policy defaults
+- Added `--comms-from auditor|subject|CALLSIGN` plus `--repair-envelope sentinel-only|repair-plan` to `ion audit`, and persisted both choices into runtime prompt/session metadata
+- Verified live on port `5119`: critical `FORGE` session `sess_55208b1ba8fe` emitted governed `BLOCKED` signal from `FORGE` itself at `/home/sev/ION-BUILD/comms/signals/FORGE_BLOCKED_forge_audit_escalation_2026-03-29_033733.signal.md` under `--comms-from subject`
+- Verified the same session applied bounded `repair-plan` capsule mutation with archive `/home/sev/ION-BUILD/agents/FORGE/history/2026-03-29_033733_026410_PRE_CAPSULE.md`, then restored the lane with `/home/sev/ION-BUILD/agents/FORGE/history/2026-03-29_033751_835809_PRE_CAPSULE.md`
+- Phase 8C mission active: CLI audit escalation now executes governed runtime follow-up actions under explicit operator authority
+- Added dependent audit action routing, so promoted runtime sessions can now queue governed `signalEmission` and bounded `laneMutation` items behind the manager prompt instead of stopping at profile selection
+- Verified live on port `5118`: healthy `CODEX` session `sess_c3e41763ce82` stayed `auditor-watch`, executed only prompt item `q-ad0f7bb9b4bf`, and queued no signal or lane mutation even with `--allow-comms --allow-lane-mutation`
+- Verified live on port `5118`: critical `FORGE` session `sess_7f7258f36ae2` under `repair-orchestrated` executed prompt `q-c04bfedfa329`, emitted governed `BLOCKED` signal `q-be8250db038d` to `/home/sev/ION-BUILD/comms/signals/COMPOSER_BLOCKED_forge_audit_escalation_2026-03-29_032318.signal.md`, and applied bounded capsule mutation `q-f290f63ac43e` with archive `/home/sev/ION-BUILD/agents/FORGE/history/2026-03-29_032318_891619_PRE_CAPSULE.md`
+- Verified the governed restore path on the same session, creating `/home/sev/ION-BUILD/agents/FORGE/history/2026-03-29_032347_698434_PRE_CAPSULE.md` and leaving `FORGE/CAPSULE.md` without the injected sentinel at the end of the smoke
+- Phase 8C mission active: CLI audit watch escalation is now persisted into runtime session state instead of remaining transient CLI output
+- Added policy-aware `ion audit` watch selection, including queued metadata for selected profile, severity, degraded/critical streaks, policy reason, and explicit `auditAllowComms` / `auditAllowLaneMutation` flags
+- Verified live on port `5117`: healthy `CODEX` watch session `sess_0fd07d93e940` stayed on `auditor-watch` with `auditPolicyReason=healthy-watch-default`
+- Verified live on port `5117`: critical `FORGE` watch session `sess_50440a6d475b` auto-promoted to `repair-orchestrated` with `auditPolicyReason=critical-streak-1`
+- Verified both queued runtime items executed immediately through `tool-heavy` / `gemini-3.1-pro-preview-customtools` and both persisted `auditAllowComms=false` plus `auditAllowLaneMutation=false`
+- Phase 8C mission active: API runtime plus benchmark harness and CLI auditor construction for `ion serve`
+- Added bounded `ion audit --watch` mode plus separate runtime execution timeout handling, so repeated audit runs can reuse one runtime audit session and survive the real tool-heavy lane
+- Verified live on port `5116`: `ion audit CODEX --quick --runtime-url http://127.0.0.1:5116 --session-label 'AUDIT WATCH SMOKE V1' --watch --watch-interval-ms 1000 --max-runs 2` created and then reused session `sess_7a874e754096`
+- Verified healthy watch mode defaulted the session to `auditor-watch`, queued `q-0d7e692ca76d` then `q-0ad0de86c6d3`, and executed both immediately through `tool-heavy` / `gemini-3.1-pro-preview-customtools`
+- Verified the final runtime session state: `dispatch_count=2`, `message_count=4`, queue `autoSend=true`, `delayMs=1500`, `sessionPriority=15`, and both queued watch prompts marked `sent`
+- Wired `ion audit --runtime-url` into the named runtime session-profile surface, so the watchdog now creates or reuses a stable `AUDIT <CALLSIGN>` session instead of stopping at a filesystem report
+- Verified live on port `5115`: `ion audit CODEX --quick --runtime-url http://127.0.0.1:5115` created session `sess_195a33f4f998` under `auditor-review` and queued follow-up `q-9d24b18c68a2`
+- Verified the reuse-and-upgrade path: `ion audit CODEX --quick --runtime-url http://127.0.0.1:5115 --session-profile repair-orchestrated` reused `sess_195a33f4f998`, upgraded it to `repair-orchestrated`, queued `q-e7c0b123439d`, and changed queue posture to `autoSend=true` with `sessionPriority=5`
+- Verified the runtime executed both queued audit prompts through `tool-heavy` / `gemini-3.1-pro-preview-customtools`, with 3 `ion-status` tool calls each and 4 total session-history messages written under `sess_195a33f4f998`
+- Added named manager session profiles to the runtime: `GET /sessions/profiles`, `sessionProfile` on `POST /sessions`, and `POST /sessions/{id}/profile`
+- Verified live on port `5114`: session `sess_97f8ea72d31c` created under `auditor-review` persisted `provider_policy=tool-heavy`, `tool_profile=ion-status`, and `lane_mutation_policy_profile=session-reviewed`
+- Verified queued restore item `q-6a6f3c11140a` first previewed inherited `policy_profile=session-reviewed`, then after live upgrade to `repair-orchestrated` previewed inherited `policy_profile=orchestrated` without rewriting the queue item, and `/scheduler/tick` restored the live CODEX `MINI.md`
+- Verified prompt queue item `q-77ef668d258e` previewed inherited `tool-heavy` dispatch while the persisted global runtime baseline still reported `policyProfile=strict`
+- Added session-level `laneMutationPolicyProfile` support to `/sessions` and `/sessions/{id}/queue/config`, so managers can set one default mutation posture per runtime session while the persisted global baseline stays `strict`
+- Verified live on port `5113`: session `sess_c2f23abb8f13` direct mutation inherited `session-reviewed` without explicit `policyProfile`
+- Verified queued restore item `q-fe58da87fe79` inherited `session-reviewed`, `/scheduler/tick` denied it, queue config then switched the same session default to `orchestrated`, and queued restore item `q-472f8587d249` inherited `orchestrated` and restored the live CODEX `MINI.md` through the scheduler
+- Verified `/governance/lane-mutation` still reported `policyProfile=strict`, `allowSessionWrites=false`, `allowSchedulerWrites=false`, and `receiptVerbosity=summary` after the full session-default smoke
+- Added operation-scoped `policyProfile` support to direct and queued lane mutations, so managers can request `session-reviewed` or `orchestrated` per mutation without changing the persisted global runtime baseline
+- Verified live on port `5112`: direct session mutation succeeded with `policyProfile=session-reviewed` while `/governance/lane-mutation` still reported global `strict`
+- Verified queued restore preview now exposes `next_lane_mutation.policy_profile`, scheduler error summaries echo the denied `policy_profile=session-reviewed`, and successful scheduler execution echoes `policy_profile=orchestrated` with `policy_scope=operation`
+- Verified the live CODEX lane still ended restored and the persisted runtime baseline remained `strict` with `summary` receipt depth after the full operation-scoped smoke
+- Added named lane-mutation policy profiles to the runtime: `strict`, `session-reviewed`, `orchestrated`, and `debug-detailed`
+- `GET /governance/lane-mutation/profiles` now exposes those postures, and `POST /governance/lane-mutation` now accepts `policyProfile` while preserving `allowedCallsigns`
+- Verified live profile behavior on port `5109`: `session-reviewed` allowed direct session mutation but caused `/scheduler/tick` to return `Lane mutation policy denies scheduler-sourced capsule writes.`, then `orchestrated` allowed the queued scheduler restore to execute and the lane ended restored
+- `strict` is now the explicit safe baseline posture and `summary` is the built-in manager-default receipt depth across the operational profiles
+- Added governed receipt-verbosity policy to the runtime mutation surface: `/governance/lane-mutation` now persists `receiptVerbosity=minimal|summary|detailed`
+- Session and scheduler mutation responses now honor that policy by default, and `GET /sessions/{id}/history` can override receipt depth per read
+- Verified live policy behavior on port `5108`: direct session mutation under `minimal` returned only hashes plus basic change acknowledgement, switching policy to `detailed` exposed diff detail on the history route, and an explicit `receiptVerbosity=minimal` history query re-redacted the same event
+- Added manager-grade mutation receipts to the governed runtime path: direct and scheduler-driven lane mutation now return per-target hashes, byte/line deltas, first changed line, and bounded diff previews
+- Added `GET /sessions/{id}/history` so runtime mutation events can be queried directly instead of scraping whole persisted session JSON
+- Verified restore-style live smoke on port `5107`: direct session mutation changed the live CODEX `NOW:` line and returned a precise receipt, queued scheduler mutation restored the original `MINI.md`, and the history route returned both `lane_mutation` events in order
+- Operationalized bounded lane mutation in the live runtime: direct `/sessions/{id}/lane-mutation` plus queued `laneMutation` items now execute through the same governed capsule writer
+- Queue and scheduler inspection now expose `next_lane_mutation`, and runtime sessions now record system-event receipts for non-LLM control-plane actions
+- Fixed a real history-integrity bug surfaced by the first live pass: PRE archive names now use sub-second precision so adjacent same-second writes no longer overwrite each other
+- Verified live on port `5106`: deny-first session mutation returned HTTP `403`, bounded `CODEX` session mutation succeeded with compile `0`, and queued scheduler mutation executed with `action=lane-mutation` and `details.source=scheduler` in session history
+- Replaced deprecated FastAPI `on_event` startup/shutdown hooks with a lifespan handler in the runtime
+- Verified clean runtime startup on port `5105`: no lifecycle `DeprecationWarning`, scheduler autostart still came up with `taskRunning=true`, and `/health` plus `/scheduler/status` agreed on the live state
+- Fixed a real runtime precedence bug: explicit `tool_profile` now wins over inherited `provider_policy=server-default` instead of silently degrading to plain engine mode
+- Direct `/sessions/{id}/dispatch` now accepts explicit `callsign` and forwards it into runtime execution
+- Queue and scheduler inspection now expose `next_dispatch` so the effective next provider/tool/callsign route is visible before execution
+- Verified live COMPOSER override smoke on port `5104`: direct dispatch returned `DIRECT-COMPOSER-OK` and queued `run-next` returned `QUEUE-COMPOSER-OK`, both with `dispatch_callsign=COMPOSER`, `tool_profile=ion-status`, `mode=llm-tooling`, and one real tool call
+- Added a deny-by-default lane-mutation governance surface to `ion serve`: `GET/POST /governance/lane-mutation`
+- Extended runtime capsule writes with traced non-manual source metadata: `source` plus `actorSessionId`
+- Verified live governance behavior on port `5103`: default `session` write denied with HTTP `403`, explicit session allow for `CODEX` succeeded with compile `0`, and `scheduler` write remained denied with HTTP `403`
+- Verified lane-mutation policy persistence at `/home/sev/ION-BUILD/.ion-runtime/lane_mutation_policy.json`
+- Verified the allowed session write still preserved copy-on-update by archiving `2026-03-28_232748_PRE_CAPSULE.md` and `2026-03-28_232748_PRE_MINI.md`
+- Completed the live vault-backed Gemini API matrix across `2.5-flash`, `2.5-pro`, and `3.1-pro`
+- Implemented a real tool-aware customtools path across the Gemini wrapper, benchmark runner, and runtime `/process`
+- Verified `3.1-pro-customtools` with a successful tool-aware benchmark run: 6 tool calls, `8567` tokens, `USD 0.027334`, `19218.27 ms`
+- Expanded the tool-aware customtools matrix across `codegen` and `handoff`: both stable, both 3 tool calls, with `8260` / `8631` total tokens and `USD 0.02672` / `USD 0.027462`
+- Verified live runtime `POST /process` with `tool_profile=ion-status`: 2 tool calls, model `gemini-3.1-pro-preview-customtools`, `2461` tokens, `USD 0.013462`, `17762.81 ms`
+- `3.1-pro-customtools` is now verified across `research`, `codegen`, `handoff`, and runtime `/process`, making it the leading tool-heavy orchestration candidate rather than just a one-off benchmark result
+- Landed a real runtime control-plane layer in `ion serve`: `/provider-policies`, `/template`, `/template/{name}`, `/template/validate`, `/capsule/{callsign}`, `/sessions`, and `/sessions/{id}/dispatch|close`
+- Verified persisted session dispatch via `sess_cc02113ee9dd`: `tool-heavy` policy, `gemini-3.1-pro-preview-customtools`, 2 tool calls, `2298` tokens, `USD 0.010676`, `10559.30 ms`, then clean close
+- Fixed `create_aether_engine()` to use the vault-aware Gemini client factory; runtime `/health` now reports `engine_mode: llm` and default `/process` executes in live LLM mode without env-only key injection
+- Added governed `POST /capsule/{callsign}` mutation semantics to the runtime: validate incoming lane documents, archive prior state into `history/`, rewrite live `CAPSULE.md` / `MINI.md`, and optionally run incremental compile verification
+- Verified the live CODEX write path on port `5097`: created `2026-03-28_222150_PRE_CAPSULE.md` and `2026-03-28_222150_PRE_MINI.md`, rewrote both live files, and returned compile exit code `0`
+- Verified negative-path guarding: malformed `mini='bad'` payload is rejected with HTTP `400` and the required-marker error instead of writing garbage into the lane
+- Added a real session-queue control plane to `ion serve`: `/sessions/{id}/queue`, `/sessions/{id}/queue/config`, `/sessions/{id}/queue/{prompt_id}/cancel`, `/sessions/{id}/run-next`, and `/sessions/{id}/run-all`
+- Verified live queue persistence under `/home/sev/ION-BUILD/.ion-runtime/queues/sess_23312934c45d/`, including `queue.json` plus individual `q-*.md` prompt artifacts
+- Verified `run-next` and dependency-aware sequential `run-all` on port `5098`: `NEXT-OK`, `ALL-ONE`, and dependent `ALL-TWO` all completed through `baseline-text` / `gemini-2.5-flash`, with the blocked dependency becoming runnable and draining inside the same sequential pass
+- Usage ledger after the queue smoke stands at 27 requests, 22 successes, `104184` total tokens, `USD 0.289950`, and a net queue-smoke delta of `+212` tokens / `+USD 0.0002198`
+- Added an explicit scheduler surface to `ion serve`: `/scheduler/status` and `/scheduler/tick`
+- Verified live scheduler semantics on port `5100`: one tick advanced exactly one item from the `sequential` auto-send session, only the due item from the `timed` auto-send session, and skipped the runnable manual session because `autoSend` was disabled
+- Verified scheduler status deltas: `auto_send_ready_count=2` before the tick and `1` after the tick, with the future timed `sendAt` item still blocked as expected
+- Usage ledger after the scheduler smoke stands at 29 requests, 24 successes, `104312` total tokens, `USD 0.290127`, and a net scheduler-smoke delta of `+128` tokens / `+USD 0.0001770`
+- Added persisted scheduler policy plus background loop control to `ion serve`: `/scheduler/policy`, `sessionPriority`, on-disk scheduler state, and launch-time scheduler flags in `ion serve`
+- Verified live priority-driven background scheduling on port `5101`: enabling `enabled=true`, `intervalMs=10000`, and `maxSessions=1` started the runtime loop, executed `scheduler-priority-hi` first (`sessionPriority=1`), and explicitly deferred `scheduler-priority-lo` (`sessionPriority=50`)
+- Verified `/home/sev/ION-BUILD/.ion-runtime/scheduler.json` now records `tickCount=1`, `lastSource=background`, and the executed/deferred result set after the first automatic tick
+- Usage ledger after the policy/priority smoke stands at 30 requests, 25 successes, `104362` total tokens, `USD 0.290186`, and a net policy-smoke delta of `+50` tokens / `+USD 0.000059`
+- Added queued-item dispatch overrides to the runtime queue path: queued prompts can now persist `providerPolicy`, `toolProfile`, `toolMode`, `budget`, `temperature`, and optional `callsign` without mutating the session default
+- Verified live queue-dispatch override behavior on port `5102`: the same sequential session executed one item through default `baseline-text` / `gemini-2.5-flash` and the next item through queued override `reasoning-text` / `gemini-3.1-pro-preview` with its own `budget=500`
+- Verified the override persisted to `/home/sev/ION-BUILD/.ion-runtime/queues/sess_cd4e5deec5e7/q-d88a147bcbf0.md` as `dispatch_provider_policy`, `dispatch_budget`, and `dispatch_temperature`
+- Usage ledger after the queue-dispatch smoke stands at 32 requests, 27 successes, `104724` total tokens, `USD 0.293323`, and a net override-smoke delta of `+362` tokens / `+USD 0.0031368`
+- `2.5-flash` is the stable low-cost baseline: 3/3 success, `18061` total tokens, `$0.01215` total cost, `4376.67 ms` average latency
+- `2.5-pro` is currently demoted: 0/3 success, no final text under the live benchmark profile, `18064` total tokens, `$0.049381` total cost, `8841.16 ms` average latency
+- `3.1-pro` is the stable higher-order candidate: 3/3 success, `18061` total tokens, `$0.066722` total cost, `10030.18 ms` average latency
+- Usage ledger after the runtime/session and AetherEngine smokes stands at 24 requests, 19 successes, `103972` total tokens, `USD 0.289730`, and `8412.06 ms` average latency over the last 24 hours
+- Added `ion benchmark` and `benchmark_runner.py` to compare Gemini CLI/API/local on the same governed context pack
+- Completed `phase8c_matrix_api_cli_v2` across `research`, `codegen`, and `handoff`
+- Replaced the placeholder `ion audit` scaffold with a real scored watchdog command
+- Verified `ion audit CODEX --quick` and the default Gemini-augmented `ion audit CODEX`
+- Validated the Gemini API flash lane with a transient key and confirmed stable benchmark responses
+- Patched the Python Gemini wrapper to prefer `google.genai` and support thinking-aware controls
+- Verified `gemini-2.5-pro` through ION’s own wrapper and completed `phase8c_api_pro_v2`
+- Added named Gemini API profiles to `ion benchmark` and `ion serve` for `2.5-flash`, `2.5-pro`, `3.1-pro`, `3.1-pro-customtools`, and `3.1-flash-lite`
+- Aligned the wrapper to current Gemini 3.1 thinking controls with `thinking_level` and optional `include_thoughts`
+- Verified the new `3.1-pro` profile resolves to `gemini-3.1-pro-preview` in governed report `2026-03-28_203520_phase8c_profile_wiring_v1.md`
+- Added an encrypted local credential vault plus SQLite usage ledger for Phase 8C
+- Wired `GeminiAPIClient` to resolve `GOOGLE_API_KEY` from env or vault automatically and record per-call token/cost telemetry
+- Added `ion vault`, `ion usage`, and runtime `/vault/*` plus `/usage` surfaces
+- Stored the real Gemini key in the encrypted production vault and verified `api_key_source=vault` with `GOOGLE_API_KEY` unset in the shell
+- Queried the live usage ledger after the benchmark run and turned the default routing decision into a ledger-backed recommendation
+
+## Last Completed
+
+- Landed concurrent manager-profile wave support in `/home/sev/ION-BUILD/tools/ion-cli/src/commands/benchmark.js`
+- Updated `/home/sev/ION-BUILD/tools/ion-cli/test/benchmark.test.js`, `/home/sev/ION-BUILD/tools/ion-cli/src/main.js`, and `/home/sev/ION-BUILD/tools/ion-cli/README.md` for the new runtime-profile trial surface
+- Wrote governed verification report `/home/sev/ION-BUILD/context/13_cognitive/benchmarks/2026-03-29_114602_phase8c_orchestrator_profile_waves_v1.md`
+- Verified the new live trial:
+  - 3 manager-profile sessions
+  - 2 concurrent waves
+  - 12/12 successful dispatches
+  - 278047 tokens
+  - USD 0.720064
+- Landed live runtime-matrix mode in `/home/sev/ION-BUILD/tools/ion-cli/src/commands/benchmark.js` and regression coverage in `/home/sev/ION-BUILD/tools/ion-cli/test/benchmark.test.js`
+- Wrote governed verification report `/home/sev/ION-BUILD/context/13_cognitive/benchmarks/2026-03-29_112921_phase8c_runtime_matrix_live_v2.md`
+- Verified corrected runtime-native telemetry delta:
+  - 12 requests
+  - 12 successes
+  - 0 failures
+  - 218414 tokens
+  - USD 0.504862
+- Corrected the runtime-matrix report `connections:` format so the capsule compiler is clean again at 270 files, 0 alarms, 0 warnings, 0 template violations
+- Verified all 12 live engine/task dispatches succeeded under the intended routing split
+- Landed execution-engine routing in `/home/sev/ION-BUILD/tools/ion-cli/runtime_server.py` and `/home/sev/ION-BUILD/tools/ion-cli/runtime_sessions.py`
+- Wrote governed verification report `/home/sev/ION-BUILD/context/13_cognitive/benchmarks/2026-03-29_111145_phase8c_execution_engine_routing_smoke_v1.md`
+- Verified the new routing layer:
+  - `GET /execution-engines`
+  - `POST /execution-engines/classify`
+  - session creation with engine-derived provider routing
+  - queue-level engine overrides with explicit-provider precedence preserved
+  - persisted queue markdown carrying `dispatch_engine_class`
+- Verified the new suite:
+  - focused `pytest` -> 4/4 passed
+  - `npm test` -> 4/4 passed
+  - `npm run test:python` -> 13/13 passed
+  - full compiler -> 252 files, 0 alarms, 0 warnings, 0 template violations
+- Locked real routing behavior instead of leaving `pipeline / dag / mesh / crucible` as a dead helper layer
+- Landed runtime execution regression coverage in `/home/sev/ION-BUILD/tests/test_runtime_server_execution.py`
+- Wrote governed verification report `/home/sev/ION-BUILD/context/13_cognitive/benchmarks/2026-03-29_105313_phase8c_runtime_execution_regression_smoke_v1.md`
+- Landed runtime scheduler/policy regression coverage in `/home/sev/ION-BUILD/tests/test_runtime_server_policies.py`
+- Wrote governed verification report `/home/sev/ION-BUILD/context/13_cognitive/benchmarks/2026-03-29_104313_phase8c_runtime_policy_regression_smoke_v1.md`
+- Verified the new suite:
+  - direct `pytest` -> 3/3 passed
+  - `npm test` -> 4/4 passed
+  - `npm run test:python` -> 6/6 passed
+- Locked real runtime behavior instead of helper internals:
+  - `/scheduler/policy` lower-bound normalization
+  - `/governance/lane-mutation` profile updates preserving `allowedCallsigns`
+  - `/scheduler/status` ordering plus inherited queued `laneMutation` policy visibility
+- Landed the audit risky-timeout profile-guard slice in `/home/sev/ION-BUILD/tools/ion-cli/src/commands/audit.js`, plus operator-surface updates in `/home/sev/ION-BUILD/tools/ion-cli/src/main.js` and `/home/sev/ION-BUILD/tools/ion-cli/README.md`
+- Wrote governed verification report `/home/sev/ION-BUILD/context/13_cognitive/benchmarks/2026-03-29_091405_phase8c_cli_audit_risky_timeout_profile_guard_smoke_v1.md`
+- Verified live on port `5124`: non-debug repair flow kept risky low-timeout override off and floored back to `60000 / 120000`, while separate `debug-manager` session preserved low explicit `1000 / 2000` without mutating the lane
+- Landed the audit timeout-floor slice in `/home/sev/ION-BUILD/tools/ion-cli/src/commands/audit.js`, plus operator-surface updates in `/home/sev/ION-BUILD/tools/ion-cli/src/main.js` and `/home/sev/ION-BUILD/tools/ion-cli/README.md`
+- Wrote governed verification report `/home/sev/ION-BUILD/context/13_cognitive/benchmarks/2026-03-29_041921_phase8c_cli_audit_timeout_floor_smoke_v1.md`
+- Verified live on port `5123`: guarded `subject-repair` audit flow requested explicit low `1000 / 2000` timeouts, floored them to `60000 / 120000`, printed explicit warning rows, and restored the target lane cleanly afterward
+- Landed the audit timeout/warning default slice in `/home/sev/ION-BUILD/tools/ion-cli/src/commands/audit.js`, plus operator-surface updates in `/home/sev/ION-BUILD/tools/ion-cli/src/main.js` and `/home/sev/ION-BUILD/tools/ion-cli/README.md`
+- Wrote governed verification report `/home/sev/ION-BUILD/context/13_cognitive/benchmarks/2026-03-29_040936_phase8c_cli_audit_timeout_warning_smoke_v1.md`
+- Verified live on port `5122`: guarded `subject-repair` audit flow completed cleanly without manual timeout overrides, printed explicit warning rows, auto-raised runtime sync defaults to `60000 / 120000`, and restored the target lane cleanly afterward
+- Landed the audit action-profile guard in `/home/sev/ION-BUILD/tools/ion-cli/src/commands/audit.js`, plus operator-surface updates in `/home/sev/ION-BUILD/tools/ion-cli/src/main.js` and `/home/sev/ION-BUILD/tools/ion-cli/README.md`
+- Wrote governed verification report `/home/sev/ION-BUILD/context/13_cognitive/benchmarks/2026-03-29_035836_phase8c_cli_audit_action_profile_guard_smoke_v1.md`
+- Verified live on port `5121`: `subject-repair` remained the configured request while the effective profile downgraded to `conservative`, `COMPOSER` stayed the sender, `sentinel-only` stayed the mutation envelope, and the target lane was restored cleanly afterward
+- Landed named audit action-policy profiles in `/home/sev/ION-BUILD/tools/ion-cli/src/commands/audit.js`, plus help/docs updates in `/home/sev/ION-BUILD/tools/ion-cli/src/main.js` and `/home/sev/ION-BUILD/tools/ion-cli/README.md`
+- Wrote governed verification report `/home/sev/ION-BUILD/context/13_cognitive/benchmarks/2026-03-29_034537_phase8c_cli_audit_action_profile_smoke_v1.md`
+- Verified live on port `5120`: `subject-repair` resolved to subject-lane signal emission plus `repair-plan` mutation without explicit `--comms-from` or `--repair-envelope`, and the target lane was restored cleanly afterward
+- Landed explicit audit sender-identity and repair-envelope controls in `/home/sev/ION-BUILD/tools/ion-cli/src/commands/audit.js`, plus help/docs updates in `/home/sev/ION-BUILD/tools/ion-cli/src/main.js` and `/home/sev/ION-BUILD/tools/ion-cli/README.md`
+- Wrote governed verification report `/home/sev/ION-BUILD/context/13_cognitive/benchmarks/2026-03-29_033822_phase8c_cli_audit_sender_envelope_smoke_v1.md`
+- Verified live on port `5119`: `FORGE` repair session `sess_55208b1ba8fe` used `Comms sender: FORGE (subject)` and `Repair envelope: repair-plan`, emitted governed signal `/home/sev/ION-BUILD/comms/signals/FORGE_BLOCKED_forge_audit_escalation_2026-03-29_033733.signal.md`, and restored the lane cleanly afterward
+- Landed policy-aware audit watch escalation in `/home/sev/ION-BUILD/tools/ion-cli/src/commands/audit.js`, plus operator docs in `/home/sev/ION-BUILD/tools/ion-cli/src/main.js` and `/home/sev/ION-BUILD/tools/ion-cli/README.md`
+- Wrote governed verification report `/home/sev/ION-BUILD/context/13_cognitive/benchmarks/2026-03-29_030606_phase8c_cli_audit_policy_escalation_smoke_v1.md`
+- Verified live on port `5117`: healthy `CODEX` remained `auditor-watch`, critical `FORGE` auto-promoted to `repair-orchestrated`, and both queue items preserved explicit deny-by-default authority flags in runtime metadata
+- Landed session-level `laneMutationPolicyProfile` defaults in `/home/sev/ION-BUILD/tools/ion-cli/runtime_server.py`, `/home/sev/ION-BUILD/tools/ion-cli/runtime_sessions.py`, and `/home/sev/ION-BUILD/tools/ion-cli/README.md`
+- Wrote governed verification report `/home/sev/ION-BUILD/context/13_cognitive/benchmarks/2026-03-29_021714_phase8c_session_default_lane_mutation_policy_smoke_v1.md`
+- Verified live session-default behavior on port `5113`: session `sess_c2f23abb8f13`, denied inherited `session-reviewed` queue item `q-fe58da87fe79`, and successful inherited `orchestrated` restore item `q-472f8587d249`
+- Landed named lane-mutation policy profiles in `/home/sev/ION-BUILD/tools/ion-cli/runtime_server.py` and updated `/home/sev/ION-BUILD/tools/ion-cli/README.md`
+- Wrote governed verification report `/home/sev/ION-BUILD/context/13_cognitive/benchmarks/2026-03-29_013658_phase8c_lane_mutation_policy_profiles_smoke_v1.md`
+- Landed operation-scoped `policyProfile` on direct and queued lane mutations in `/home/sev/ION-BUILD/tools/ion-cli/runtime_server.py` and `/home/sev/ION-BUILD/tools/ion-cli/runtime_sessions.py`
+- Wrote governed verification report `/home/sev/ION-BUILD/context/13_cognitive/benchmarks/2026-03-29_020216_phase8c_operation_scoped_lane_mutation_profiles_smoke_v1.md`
+- Verified the policy path on port `5108`: minimal direct mutation receipt, detailed default history view after policy update, minimal history override, and successful scheduler restore to the original CODEX `MINI.md`
+- Wrote governed verification artifact `/home/sev/ION-BUILD/context/13_cognitive/benchmarks/2026-03-29_012253_phase8c_receipt_policy_verbosity_smoke_v1.md`
+- Landed per-target mutation receipts and the dedicated `/sessions/{id}/history` inspection route in `/home/sev/ION-BUILD/tools/ion-cli/runtime_server.py`, and updated `/home/sev/ION-BUILD/tools/ion-cli/README.md`
+- Verified the receipt/history live path on port `5107`: direct session mutation returned bounded diff detail, queued scheduler mutation restored the original `MINI.md`, and `GET /sessions/sess_5d80da48ab86/history?event_type=lane_mutation&newest_first=true` returned the expected `scheduler` then `session` events
+- Wrote governed verification artifact `/home/sev/ION-BUILD/context/13_cognitive/benchmarks/2026-03-29_011455_phase8c_mutation_receipts_history_smoke_v1.md`
+- Landed direct `/sessions/{id}/lane-mutation`, queued `laneMutation`, `next_lane_mutation` previews, session-history event receipts, and sub-second PRE snapshot naming in `/home/sev/ION-BUILD/tools/ion-cli/runtime_server.py` and `/home/sev/ION-BUILD/tools/ion-cli/runtime_sessions.py`
+- Verified the full live mutation path on port `5106`: deny-first `403`, bounded direct session mutation `200`, queued scheduler mutation `action=lane-mutation`, queue artifact frontmatter persistence, and distinct PRE archives `2026-03-29_010449_086231_PRE_MINI.md` plus `2026-03-29_010449_127724_PRE_MINI.md`
+- Wrote governed verification artifact `/home/sev/ION-BUILD/context/13_cognitive/benchmarks/2026-03-29_010459_phase8c_session_scheduler_lane_mutation_smoke_v2.md`
+- Landed FastAPI lifespan-based scheduler startup/shutdown in `/home/sev/ION-BUILD/tools/ion-cli/runtime_server.py`
+- Verified `ion serve --port 5105 --scheduler-autostart ...` starts cleanly with no `on_event` deprecation warning and live scheduler autostart still active through `/health`
+- Wrote governed verification artifact `/home/sev/ION-BUILD/context/13_cognitive/benchmarks/2026-03-28_235130_phase8c_lifespan_startup_smoke_v1.md`
+- Landed callsign/tool override precedence correction in `/home/sev/ION-BUILD/tools/ion-cli/runtime_server.py` and updated the operator contract in `/home/sev/ION-BUILD/tools/ion-cli/README.md`
+- Verified live session and queue override behavior on port `5104`: direct dispatch, queue preview, scheduler preview, and queued execution all preserved `callsign=COMPOSER` with `tool_profile=ion-status`
+- Wrote governed verification artifact `/home/sev/ION-BUILD/context/13_cognitive/benchmarks/2026-03-28_234508_phase8c_callsign_tool_profile_override_smoke_v2.md`
+- Landed deny-by-default runtime lane-mutation governance in `/home/sev/ION-BUILD/tools/ion-cli/runtime_server.py` and documented it in `/home/sev/ION-BUILD/tools/ion-cli/README.md`
+- Verified the full deny/allow/deny sequence on port `5103`: session `403` by default, traced session allow `200` with compile verification, scheduler `403`, then reset to safe defaults
+- Wrote governed verification artifact `/home/sev/ION-BUILD/context/13_cognitive/benchmarks/2026-03-28_232800_phase8c_lane_mutation_policy_smoke_v1.md`
+- Landed queued-item dispatch overrides in `/home/sev/ION-BUILD/tools/ion-cli/runtime_server.py`, `/home/sev/ION-BUILD/tools/ion-cli/runtime_sessions.py`, and `/home/sev/ION-BUILD/tools/ion-cli/README.md`
+- Verified session `sess_cd4e5deec5e7` on port `5102`: queued item `q-0bf25b368c0d` used default `baseline-text`, while queued item `q-d88a147bcbf0` overrode itself to `reasoning-text` with `budget=500`, and both completed in one sequential `run-all`
+- Wrote governed verification artifact `/home/sev/ION-BUILD/context/13_cognitive/benchmarks/2026-03-28_231757_phase8c_queue_dispatch_override_smoke_v1.md`
+- Landed persisted scheduler policy, background auto-tick, and queue-level `sessionPriority` in `/home/sev/ION-BUILD/tools/ion-cli/runtime_server.py`, `/home/sev/ION-BUILD/tools/ion-cli/runtime_sessions.py`, `/home/sev/ION-BUILD/tools/ion-cli/src/commands/serve.js`, and `/home/sev/ION-BUILD/tools/ion-cli/README.md`
+- Verified sessions `sess_ff2c776540f9` and `sess_e991d1a46359` on port `5101`: the background scheduler executed the higher-priority session, deferred the lower-priority session because `maxSessions=1`, then persisted the result into `/home/sev/ION-BUILD/.ion-runtime/scheduler.json`
+- Wrote governed verification artifact `/home/sev/ION-BUILD/context/13_cognitive/benchmarks/2026-03-28_230655_phase8c_scheduler_policy_priority_smoke_v1.md`
+- Landed scheduler status/tick orchestration in `/home/sev/ION-BUILD/tools/ion-cli/runtime_server.py`
+- Verified sessions `sess_0656ddcb51e8`, `sess_bd20d76352e0`, and `sess_3943e83f600e` on port `5100`: sequential auto-send, timed auto-send, and manual skip behavior all matched the designed queue-mode policy
+- Wrote governed verification artifact `/home/sev/ION-BUILD/context/13_cognitive/benchmarks/2026-03-28_225217_phase8c_scheduler_tick_smoke_v1.md`
+- Landed persisted runtime session queues in `/home/sev/ION-BUILD/tools/ion-cli/runtime_sessions.py` with queue files under `.ion-runtime/queues/<session_id>/`
+- Wired `/sessions/{id}/queue`, `/sessions/{id}/queue/config`, `/sessions/{id}/queue/{prompt_id}/cancel`, `/sessions/{id}/run-next`, and `/sessions/{id}/run-all` into `/home/sev/ION-BUILD/tools/ion-cli/runtime_server.py`
+- Verified session `sess_23312934c45d` on port `5098`: single queued `run-next`, then dependency-aware sequential `run-all`, then clean close
+- Wrote governed verification artifact `/home/sev/ION-BUILD/context/13_cognitive/benchmarks/2026-03-28_223748_phase8c_session_queue_smoke_v1.md`
+- Landed governed runtime capsule mutation in `/home/sev/ION-BUILD/tools/ion-cli/runtime_server.py`
+- Verified live `POST /capsule/CODEX` archive + rewrite + compile behavior on port `5097`
+- Verified malformed capsule update rejection on the same surface with HTTP `400`
+- Added persisted runtime sessions in `/home/sev/ION-BUILD/tools/ion-cli/runtime_sessions.py` and wired `/sessions`, `/provider-policies`, `/template*`, and `/capsule/{callsign}` into `/home/sev/ION-BUILD/tools/ion-cli/runtime_server.py`
+- Verified `/template` list/read and `/capsule/CODEX` read surfaces live on port `5095`
+- Verified `/template/validate` is actively catching governance mismatches; `actions/SIGNAL` currently fails the `_MASTER` required section checklist
+- Verified session `sess_cc02113ee9dd` dispatch/close through the new `tool-heavy` provider policy, then confirmed the persisted JSON record under `/home/sev/ION-BUILD/.ion-runtime/sessions/`
+- Patched `/home/sev/ION-BUILD/src/ion/cognitive/aether_engine.py` so `create_aether_engine()` now resolves Gemini from the encrypted vault path, not just shell env
+- Verified runtime `/health` on port `5096` now reports `engine_mode: llm` with `api_key_source: vault`, and default `/process` returned `mode: llm` through AetherEngine
+- Ran `/home/sev/ION-BUILD/context/13_cognitive/benchmarks/2026-03-28_215553_phase8c_live_31_customtools_tooling_matrix_v1.md`, proving `gemini-3.1-pro-preview-customtools` now completes tool-aware `codegen` and `handoff` runs with stable output and three tool calls each
+- Verified the updated usage-ledger totals in `/home/sev/.config/ion/telemetry/provider_usage.sqlite3` after the expanded customtools matrix
+- Landed shared tool profiles at `/home/sev/ION-BUILD/tools/ion-cli/tool_profiles.py` and wired Gemini callable tools through `/home/sev/ION-BUILD/src/ion/cognitive/gemini_api.py`, `/home/sev/ION-BUILD/tools/ion-cli/benchmark_runner.py`, and `/home/sev/ION-BUILD/tools/ion-cli/runtime_server.py`
+- Verified failed tool-aware benchmark `/home/sev/ION-BUILD/context/13_cognitive/benchmarks/2026-03-28_212858_phase8c_live_31_customtools_tooling_v1.md` under `ANY` mode, then fixed the mode default and verified successful tool-aware benchmark `/home/sev/ION-BUILD/context/13_cognitive/benchmarks/2026-03-28_213012_phase8c_live_31_customtools_tooling_v2.md`
+- Verified live runtime `/process` with `tool_profile=ion-status` returned `mode: llm-tooling` and real tool-call metadata on port `5094`
+- Ran `/home/sev/ION-BUILD/context/13_cognitive/benchmarks/2026-03-28_211944_phase8c_live_31_customtools_research_v1.md` and verified the corresponding `gemini-3.1-pro-preview-customtools` ledger row
+- Ran the live vault-backed reports `/home/sev/ION-BUILD/context/13_cognitive/benchmarks/2026-03-28_210626_phase8c_live_25_flash_v1.md`, `/home/sev/ION-BUILD/context/13_cognitive/benchmarks/2026-03-28_210647_phase8c_live_25_pro_v1.md`, and `/home/sev/ION-BUILD/context/13_cognitive/benchmarks/2026-03-28_210722_phase8c_live_31_pro_v1.md`
+- Verified the ledger totals in `/home/sev/.config/ion/telemetry/provider_usage.sqlite3` after the live matrix
+- Ingested `/home/sev/ION-BUILD/comms/handoffs/2026-03-28_OPUS_to_CODEX_api_runtime.md`
+- Replaced the `ion serve` stub with a Python runtime launcher in `/home/sev/ION-BUILD/tools/ion-cli/src/commands/serve.js`
+- Added `/home/sev/ION-BUILD/tools/ion-cli/runtime_server.py` with Phase 8C HTTP endpoints
+- Verified that API `POST /signal` writes a governed `.signal.md` file into `/home/sev/ION-BUILD/comms/signals/`
+- Confirmed `ion serve` starts and stops cleanly from the CLI on a non-conflicting runtime port
+- Validated Gemini-backed `/process` execution with a transient runtime key injection, without writing the secret into tracked files
+- Landed `ion benchmark` and recorded smoke benchmark `phase8c_smoke_v4`
+- Completed API-vs-CLI matrix `phase8c_matrix_api_cli_v2`
+- Added timeout guard and verified local timeout smoke `phase8c_local_timeout_smoke`
+- Productized `ion audit` into a governed CLI auditor that writes real `COMPLIANCE_AUDIT` reports
+- Verified generated audit reports at `/home/sev/ION-BUILD/agents/COMPOSER/08_comms/replies/2026-03-28_183354_codex_compliance_audit.md` and `/home/sev/ION-BUILD/agents/COMPOSER/08_comms/replies/2026-03-28_183535_codex_compliance_audit.md`
+- Verified `/home/sev/ION-BUILD/context/13_cognitive/benchmarks/2026-03-28_183851_phase8c_api_probe_key_retest.md` and `/home/sev/ION-BUILD/context/13_cognitive/benchmarks/2026-03-28_183905_phase8c_matrix_api_cli_v2.md`
+- Verified that `/home/sev/ION-BUILD/context/13_cognitive/benchmarks/2026-03-28_184058_phase8c_api_pro_v1.md` failed on the old wrapper path, then fixed the wrapper and verified `/home/sev/ION-BUILD/context/13_cognitive/benchmarks/2026-03-28_202618_phase8c_api_pro_v2.md`
+- Verified `/home/sev/ION-BUILD/context/13_cognitive/benchmarks/2026-03-28_203520_phase8c_profile_wiring_v1.md`, confirming the named `3.1-pro` profile resolves to `gemini-3.1-pro-preview`
+- Verified an isolated temporary vault root with dummy-secret `ion vault set`, automatic vault resolution in `GeminiAPIClient`, `ion usage`, and runtime `/vault/status` + `/usage`
+- Verified the real production vault now contains `GOOGLE_API_KEY` and that `GeminiAPIClient` resolves it from vault with shell `GOOGLE_API_KEY` removed
+
+## Blockers
+
+- Subject-profile guard, timeout-floor posture, and the `debug-manager` risky-timeout gate are live, but the promotion policy is still open: whether degraded streak escalation should remain on `conservative` or auto-promote into `subject-repair`
+- The next manager-safety question is whether the guard-plus-warning posture is sufficient by itself or whether higher-action profiles also need dedicated role presets
+- Adaptive default timeouts, explicit timeout floors, and the `debug-manager` gate now cover risky timeout posture; the next safety decision is whether that gate is sufficient by itself or whether risky low-timeout overrides also need explicit operator identity or approval semantics
+- Sender identity and repair envelope are now configurable, but the default posture is still open: whether critical audit comms should default to the auditor lane or the subject lane, and whether `repair-plan` should remain opt-in or replace `sentinel-only`
+- The next audit-orchestration decision is still escalation posture: whether repeated degraded watch runs should enter the same governed sender/envelope path before a hard critical threshold
+- The next audit-orchestration decision is threshold posture: whether repeated degraded watch runs should enter the same governed action path before a hard critical threshold
+- The runtime now has a real bounded CLI-audit watch loop, so the remaining orchestration question is authority policy: when repeated audits should promote from `auditor-watch` to `repair-orchestrated`, and whether those runtime conclusions may emit comms or bounded lane-mutation requests
+- The live matrix is complete, so the remaining work is follow-up routing and runtime depth, not basic API validation
+- Session and scheduler lane mutation, manager-grade receipts, governed receipt verbosity, named posture profiles, operation-scoped profile selection, and session-level default posture inheritance are now operational, so the remaining runtime question is higher-order orchestration: which manager or auditor should choose session defaults, when to upgrade from `session-reviewed` to `orchestrated`, and when to override per mutation
+- Runtime lifecycle cleanup is no longer blocking: startup is clean through FastAPI lifespan and the mutation-aware control plane is live
+- Callsign and tool-profile override correctness is already verified, so the next runtime question is not whether override routing works but how it should combine with mutation-aware orchestration policy
+- `2.5-flash` is ready as the default production baseline and `3.1-pro` is the current orchestration candidate, but `2.5-pro` still fails under the live benchmark profile with `MAX_TOKENS` / no final text
+- `3.1-pro-customtools` now has enough benchmark coverage to justify promotion as the dedicated tool-heavy orchestration surface, but it is still slower and costlier than the text lanes and should not replace default text routing
+- The next implementation decision is whether to build session-level orchestration defaults or an auditor/manager loop on top of the new per-mutation `policyProfile` surface, or wait for explicit OPUS / SEV confirmation first
+- The new template validator exposes a real governance mismatch: current action templates like `SIGNAL.md` do not satisfy `_MASTER`’s required section contract
+- AetherEngine summary accounting and the raw usage ledger are not yet fully normalized, so default engine path telemetry should be treated as directionally useful but not final
+- Gemini CLI benchmark runs are usable but reliability-degraded by MCP/bootstrap chatter in headless mode
+- The next auditor decision is still open: continuous/watch mode versus explicit `--write-capsule` policy
+- Local/Ollama runs are currently too slow for this workload at practical prompt budgets, though the timeout guard now prevents session hangs
+- Native AIM-OS host tools return upstream 502 errors in this Codex session
+- HTTP bridge remains the usable live MCP path when bus access is needed
+- The GeminiCLI lane/callsign bootstrap is still awaiting explicit OPUS confirmation
+
+## Need From Other Agents
+
+| Agent | What I Need |
+|-------|-------------|
+| OPUS / SEV | Direction on escalation and authority policy for the new audit watch loop, especially when repeated `auditor-watch` results should promote to `repair-orchestrated` and whether those runtime conclusions may emit comms or bounded lane-mutation requests |
+
+## Available For
+
+- Backend/runtime architecture
+- CLI and API surface design
+- Benchmark harness and provider comparison
+- Governed implementation
+- Agent system and comms infrastructure

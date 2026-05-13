@@ -1,0 +1,642 @@
+% Chapter converted from Markdown
+% Auto-generated - do not edit manually
+
+\section*{Chapter 18 - Dynamic Specialization}
+
+
+\subsection*{Purpose}
+
+This chapter describes Dynamic Specialization, the system that matches the right persona to each task by combining domain tags, authority, capability proof, and live performance metrics. Dynamic Specialization solves the fundamental problem introduced in Chapter 1: no specialization—agents work generically, and there's no mechanism to match expertise to tasks.
+
+Dynamic Specialization provides:
+\item \textbf{Persona profiles} stored in CMC with domain tags, capabilities, authority, and readiness scores
+\item \textbf{Readiness scoring} combining capability freshness, authority, performance quality, and load factor
+\item \textbf{Specialization pipeline} from context ingest through engagement and evaluation
+\item \textbf{Continuous adaptation} rotating personas automatically when readiness drops
+
+This chapter demonstrates that Dynamic Specialization is not just task assignment—it is the system that enables AIM-OS to match expertise to tasks dynamically. Without it, agents work generically, expertise is wasted, and quality suffers.
+
+\subsection*{Executive Summary}
+
+Dynamic Specialization matches the right persona to each task by combining domain tags, authority, capability proof, and live performance metrics. Readiness is recalculated continuously; personas that drift, stall, or overload are rotated out automatically while CAS and SIS coordinate improvements. This chapter provides runnable commands to inspect specialization profiles and continuation decisions, plus the scoring model and metrics that keep personas honest.
+
+\textbf{Key Insight:} Dynamic Specialization enables the "specialization" principle from Chapter 1. Without it, agents work generically and expertise is wasted. With it, every task is matched to the right expertise with continuous adaptation.
+
+\subsection*{Specialization Model}
+
+Each persona profile stored in CMC includes the following fields:
+
+| Field | Purpose |
+| --- | --- |
+| \texttt{persona\_id} | Stable identifier used in plans and chains. |
+| \texttt{domain\_tags} | Industry, technology, and workflow tags curated via HHNI. |
+| \texttt{capability\_set} | Capabilities (Chapter 17) the persona can execute without supervision. |
+| \texttt{authority\_tier} | Minimum authority score required to accept new work (Chapter 16). |
+| \texttt{readiness\_score} | Composite score updated after every task; drives selection. |
+| \texttt{guardrails} | Ethical constraints, escalation triggers, and forbidden operations. |
+| \texttt{backlog\_depth} | Current queue length to prevent overload. |
+| \texttt{last\_reviewed\_at} | Timestamp of the latest board review. |
+
+Profiles link directly to SEG evidence so reviewers can open the proof supporting each attribute.
+
+\subsection*{Readiness Scoring}
+
+Readiness for persona \texttt{p} in context \texttt{c} is computed as:
+
+``\texttt{
+readiness(p, c) = 0.4 \textit{ capability\_freshness + 0.3 } authority\_score +
+                  0.2 \textit{ performance\_quality + 0.1 } load\_factor
+}`\texttt{
+
+\textbf{Component Details:}
+
+\textbf{Capability Freshness (0.4 weight):}
+\item Rewards personas whose capabilities have recent proofs
+\item Formula: }capability\_freshness = exp(-max\_age\_days / freshness\_half\_life)\texttt{
+\item Freshness half-life: 7 days (capabilities older than 7 days decay)
+\item Max age: }max\_age\_days = now - last\_proved\_at\texttt{ (days since last proof)
+\item Range: 0.0 (stale) to 1.0 (fresh)
+
+\textbf{Authority Score (0.3 weight):}
+\item Comes from the authority ledger (Chapter 16)
+\item Formula: }authority\_score = authority(a, c)\texttt{ (from Chapter 16)
+\item Range: 0.0 to 1.0
+\item Minimum threshold: Must meet tier requirement (Chapter 16 thresholds)
+
+\textbf{Performance Quality (0.2 weight):}
+\item Aggregates completion rate, audit pass rate, and feedback
+\item Formula: }performance\_quality = 0.5 \textit{ completion\_rate + 0.3 } audit\_pass\_rate + 0.2 * feedback\_score\texttt{
+\item Completion rate: }completed\_tasks / total\_tasks\texttt{ (last 30 days)
+\item Audit pass rate: }passed\_audits / total\_audits\texttt{ (last 30 days)
+\item Feedback score: Average feedback from collaborators (0.0-1.0)
+\item Range: 0.0 (poor) to 1.0 (excellent)
+
+\textbf{Load Factor (0.1 weight):}
+\item Penalizes high backlog or long turnaround times
+\item Formula: }load\_factor = 1.0 - min(backlog\_penalty + turnaround\_penalty, 1.0)\texttt{
+\item Backlog penalty: }min(backlog\_depth / max\_backlog, 0.5)\texttt{ (max 50\% penalty)
+\item Turnaround penalty: }min(avg\_turnaround\_hours / max\_turnaround\_hours, 0.5)\texttt{ (max 50\% penalty)
+\item Max backlog: 10 tasks (configurable per persona)
+\item Max turnaround: 24 hours (configurable per persona)
+\item Range: 0.0 (overloaded) to 1.0 (available)
+
+\textbf{Thresholds:}
+\item Ready: }>= 0.80\texttt{ (persona can accept new work autonomously)
+\item Caution: }0.65 - 0.79\texttt{ (requires human acknowledgement or pairing)
+\item Blocked: }< 0.65\texttt{ (persona removed from auto-matching until remediation)
+
+\textbf{Example Calculation:}
+\item Capability freshness: 0.85 (proofs 3 days old)
+\item Authority score: 0.90 (Tier A persona)
+\item Performance quality: 0.95 (excellent track record)
+\item Load factor: 0.80 (moderate backlog)
+\item Result: }readiness = 0.4\textit{0.85 + 0.3}0.90 + 0.2\textit{0.95 + 0.1}0.80 = 0.88\texttt{ (Ready)
+
+\subsection*{Specialization Pipeline}
+
+Dynamic Specialization operates through a six-stage pipeline:
+
+\subsubsection*{1. Context Ingest}
+
+\textbf{Process:} APOE supplies goal, constraints, and risk tier. HHNI retrieves relevant memory atoms.
+
+\textbf{Inputs:}
+\item Goal from APOE plan
+\item Constraints (time, resources, quality)
+\item Risk tier (S/A/B/C)
+\item Context from HHNI retrieval
+
+\textbf{Output:} Enriched context with goal, constraints, risk, and memory
+
+\subsubsection*{2. Persona Shortlist}
+
+\textbf{Process:} CCS filters personas whose tags intersect the context, authority meets minimum, and readiness is above caution.
+
+\textbf{Filtering Criteria:}
+\item Domain tags intersect context
+\item Authority meets minimum tier requirement
+\item Readiness score ≥ 0.65 (caution threshold)
+
+\textbf{Output:} Shortlist of candidate personas
+
+\subsubsection*{3. Verification}
+
+\textbf{Process:} For each candidate, the system checks capability proofs, guardrails, and template availability.
+
+\textbf{Checks:}
+\item Capability proofs are current (< 7 days old)
+\item Guardrails allow task execution
+\item Templates available for task type
+
+\textbf{Output:} Verified persona candidates
+
+\subsubsection*{4. Engagement}
+
+\textbf{Process:} Selected persona executes tasks; }should\_continue\_autonomous\texttt{ policy validates continuation after every major step.
+
+\textbf{Execution:}
+\item Persona executes task steps
+\item Continuation validated after each major step
+\item Readiness monitored continuously
+
+\textbf{Output:} Task execution with continuation validation
+
+\subsubsection*{5. Evaluation}
+
+\textbf{Process:} CAS records outcomes, SIS logs improvement opportunities, and metrics update readiness.
+
+\textbf{Evaluation:}
+\item CAS records task outcomes
+\item SIS logs improvement opportunities
+\item Readiness scores updated
+
+\textbf{Output:} Evaluation results and updated readiness
+
+\subsubsection*{6. Adaptation}
+
+\textbf{Process:} Personas may switch mid-stream if readiness drops or backlog breaches thresholds.
+
+\textbf{Adaptation Triggers:}
+\item Readiness drops below 0.65
+\item Backlog exceeds threshold
+\item Performance degrades
+
+\textbf{Output:} Adapted persona assignment or task handoff
+
+This pipeline ensures dynamic matching with continuous adaptation.
+
+\subsection*{Runnable Examples}
+
+\subsubsection*{Example 1: Inspect Specialization Profile}
+}`\texttt{powershell
+\section*{Inspect specialization profile ledger}
+\_\_MATH\_BLOCK\_0\_\_true;
+        include\_metrics=\_\_MATH\_BLOCK\_1\_\_result = Invoke-WebRequest -Uri 'http://localhost:5001/mcp/execute' }
+    -Method POST -ContentType 'application/json' -Body \_\_MATH\_BLOCK\_2\_\_(\_\_MATH\_BLOCK\_3\_\_(\_\_MATH\_BLOCK\_4\_\_(\_\_MATH\_BLOCK\_5\_\_(\_\_MATH\_BLOCK\_6\_\_(\_\_MATH\_BLOCK\_7\_\_(\_\_MATH\_BLOCK\_8\_\_(\_\_MATH\_BLOCK\_9\_\_(\_\_MATH\_BLOCK\_10\_\_decision = @{ 
+    tool='should\_continue\_autonomous'; 
+    arguments=@{ 
+        persona='specialist\_ops';
+        context='quality\_audit';
+        include\_reasoning=\_\_MATH\_BLOCK\_11\_\_result = Invoke-WebRequest -Uri 'http://localhost:5001/mcp/execute' }
+    -Method POST -ContentType 'application/json' -Body \_\_MATH\_BLOCK\_12\_\_(\_\_MATH\_BLOCK\_13\_\_(\_\_MATH\_BLOCK\_14\_\_(\_\_MATH\_BLOCK\_15\_\_result.warnings) {
+    Write-Host "  Warnings: \_\_MATH\_BLOCK\_16\_\_result.warnings -join ', ')"
+}
+``\texttt{
+
+\subsubsection*{Example 3: Review Load Balancing Metrics}
+}`\texttt{powershell
+\section*{Review specialization load balancing metrics}
+\_\_MATH\_BLOCK\_17\_\_true
+    } 
+} | ConvertTo-Json -Depth 6
+
+\_\_MATH\_BLOCK\_18\_\_load |
+    Select-Object -ExpandProperty Content | ConvertFrom-Json
+
+Write-Host "Load Balancing Metrics:"
+Write-Host "  Load Balance Index: \_\_MATH\_BLOCK\_19\_\_result.load\_balance\_index)"
+Write-Host "  Readiness Distribution:"
+Write-Host "    Ready: \_\_MATH\_BLOCK\_20\_\_result.readiness\_distribution.ready)\%"
+Write-Host "    Caution: \_\_MATH\_BLOCK\_21\_\_result.readiness\_distribution.caution)\%"
+Write-Host "    Blocked: \_\_MATH\_BLOCK\_22\_\_result.readiness\_distribution.blocked)\%"
+Write-Host "  Persona Switch Rate: \_\_MATH\_BLOCK\_23\_\_result.persona\_switch\_rate)\%"
+``\texttt{
+
+\subsection*{Metrics and Dashboards}
+
+| Metric | Description | Target |
+| --- | --- | --- |
+| }readiness\_distribution\texttt{ | Histogram of personas across Ready / Caution / Blocked. | 70\%+ Ready |
+| }persona\_switch\_rate\texttt{ | Percentage of tasks requiring mid-run persona swap. | < 5\% |
+| }evidence\_freshness\_days\texttt{ | Age of specialization evidence anchors. | < 7 days |
+| }load\_balance\_index\texttt{ | Ratio of busiest to average persona backlog. | <= 1.5 |
+| }specialization\_drift\_rate` | Personas entering Blocked per week. | Downward trend |
+
+Dashboards surface trend lines and allow drill-down into individual persona histories.
+
+\subsection*{Learning and Improvement Loops}
+
+Dynamic Specialization improves through continuous learning:
+
+\subsubsection*{CAS (Chapter 11) Integration}
+
+\textbf{Process:} CAS detects drift, flags personas with repeated incidents, and recommends mentoring pairs or guardrail adjustments
+
+\textbf{Mechanism:}
+\item CAS monitors persona performance continuously
+\item Detects drift patterns (declining readiness, repeated failures)
+\item Flags personas requiring attention
+\item Recommends remediation (mentoring, guardrail adjustments)
+
+\textbf{Outcome:} Proactive persona management preventing failures
+
+\subsubsection*{SIS (Chapter 12) Integration}
+
+\textbf{Process:} SIS creates improvement dreams when evidence is stale or performance degrades; proposes new templates, training tasks, or tooling
+
+\textbf{Mechanism:}
+\item SIS analyzes persona performance data
+\item Identifies improvement opportunities (stale evidence, performance gaps)
+\item Creates improvement dreams with hypotheses and plans
+\item Proposes templates, training, or tooling improvements
+
+\textbf{Outcome:} Systematic persona improvement through learning
+
+\subsubsection*{VIF (Chapter 7) Integration}
+
+\textbf{Process:} VIF adjusts confidence in chains that depend heavily on a persona; low readiness reduces confidence and prompts escalation
+
+\textbf{Mechanism:}
+\item VIF tracks confidence for persona-dependent chains
+\item Low readiness reduces chain confidence
+\item Confidence drops trigger escalation
+\item Escalation routes to human or alternative persona
+
+\textbf{Outcome:} Confidence-based routing preventing low-quality execution
+
+\subsubsection*{APOE (Chapter 8) Integration}
+
+\textbf{Process:} APOE logs persona selection rationale and outcome to refine matching heuristics
+
+\textbf{Mechanism:}
+\item APOE records persona selection decisions
+\item Tracks selection outcomes (success/failure)
+\item Analyzes patterns to refine heuristics
+\item Updates matching algorithms based on learnings
+
+\textbf{Outcome:} Continuous improvement of matching accuracy
+
+\textbf{Key Insight:} Learning loops ensure Dynamic Specialization improves continuously through feedback and adaptation.
+
+\subsection*{Failure Modes and Remediation}
+
+| Scenario | Symptom | Mitigation |
+| --- | --- | --- |
+| Persona mismatch | Output quality drops or guardrails triggered. | Escalate to human reviewer, rerun matchmaking with updated tags, capture lesson in SIS. |
+| Specialization drift | Readiness declines gradually due to stale proofs. | Schedule targeted audits, refresh capability evidence, provide focused practice tasks. |
+| Overload | Backlog depth remains high for a persona. | Redistribute tasks via CCS, add fallback personas, or adjust guardrails to widen coverage. |
+| Coverage gap | No persona meets readiness threshold for a domain. | Commission training sprint, add templates, or engage external expert for seeding evidence. |
+| Silent failure | Persona underperforms without tripping guardrails. | Increase sampling audits, introduce shadow review, and inspect VIF deltas for anomalies. |
+
+\subsection*{Integration Points}
+
+Dynamic Specialization integrates deeply with all AIM-OS systems:
+
+\subsubsection*{Capability Ledger (Chapter 17)}
+
+\textbf{Capability Ledger provides:} Proof availability for capabilities  
+\textbf{Specialization provides:} Persona selection requiring capability coverage  
+\textbf{Integration:} Specialization refuses personas without current capability coverage
+
+\textbf{Key Insight:} Capability ledger validates expertise. Specialization matches expertise to tasks.
+
+\subsubsection*{Authority Map (Chapter 16)}
+
+\textbf{Authority Map provides:} Authority tiers and HHNI level access  
+\textbf{Specialization provides:} Persona selection requiring authority  
+\textbf{Integration:} Authority map determines which HHNI levels and risk tiers each persona may access
+
+\textbf{Key Insight:} Authority map controls access. Specialization respects authority boundaries.
+
+\subsubsection*{SDF-CVF (Chapter 10)}
+
+\textbf{SDF-CVF provides:} Quality validation and quartet parity  
+\textbf{Specialization provides:} Persona execution requiring quality validation  
+\textbf{Integration:} SDF-CVF runs tailored checklists per persona; failures reduce readiness automatically
+
+\textbf{Key Insight:} SDF-CVF validates quality. Specialization ensures quality through validation.
+
+\subsubsection*{SEG (Chapter 9)}
+
+\textbf{SEG provides:} Evidence graph for claims and anchors  
+\textbf{Specialization provides:} Persona profiles requiring evidence  
+\textbf{Integration:} SEG maintains the evidence graph linking personas to their achievements, incidents, and remediation history
+
+\textbf{Key Insight:} SEG structures evidence. Specialization uses evidence for matching.
+
+\subsubsection*{CAS (Chapter 11)}
+
+\textbf{CAS provides:} Awareness and drift detection  
+\textbf{Specialization provides:} Persona execution requiring monitoring  
+\textbf{Integration:} CAS detects drift, flags personas with repeated incidents, and recommends mentoring pairs or guardrail adjustments
+
+\textbf{Key Insight:} CAS monitors personas. Specialization adapts based on CAS awareness.
+
+\subsubsection*{SIS (Chapter 12)}
+
+\textbf{SIS provides:} Improvement dreams and learning  
+\textbf{Specialization provides:} Persona performance requiring improvement  
+\textbf{Integration:} SIS creates improvement dreams when evidence is stale or performance degrades; proposes new templates, training tasks, or tooling
+
+\textbf{Key Insight:} SIS improves personas. Specialization benefits from SIS improvements.
+
+\subsubsection*{VIF (Chapter 7)}
+
+\textbf{VIF provides:} Confidence routing and gating  
+\textbf{Specialization provides:} Persona selection requiring confidence  
+\textbf{Integration:} VIF adjusts confidence in chains that depend heavily on a persona; low readiness reduces confidence and prompts escalation
+
+\textbf{Key Insight:} VIF tracks confidence. Specialization uses confidence for gating.
+
+\subsubsection*{APOE (Chapter 8)}
+
+\textbf{APOE provides:} Plan orchestration and execution  
+\textbf{Specialization provides:} Persona selection for plan execution  
+\textbf{Integration:} APOE logs persona selection rationale and outcome to refine matching heuristics
+
+\textbf{Key Insight:} APOE orchestrates plans. Specialization matches personas to plans.
+
+\textbf{Overall Insight:} Dynamic Specialization is not isolated—it integrates with all systems to enable dynamic persona matching. Every system benefits from specialized expertise.
+
+\subsection*{Real-World Specialization Operations}
+
+\subsubsection*{Case Study: Multi-Domain Chapter Writing}
+
+\textbf{Scenario:} Multiple personas collaborate to write North Star Document chapters across different domains.
+
+\textbf{Specialization Role:}
+1. \textbf{Domain Matching:} Personas matched to chapters based on domain tags (e.g., "security" → security specialist, "mathematics" → math specialist)
+2. \textbf{Readiness Validation:} Readiness scores validated before assignment (≥0.80 required)
+3. \textbf{Load Balancing:} Tasks distributed evenly across available personas
+4. \textbf{Quality Monitoring:} Performance quality tracked continuously
+5. \textbf{Adaptive Rotation:} Personas rotated when readiness drops below threshold
+
+\textbf{Outcome:} Successfully wrote 32+ chapters with optimal persona matching, zero mismatches, quality gates passing.
+
+\textbf{Metrics:}
+\item \textbf{Persona Match Rate:} 100\% (all tasks matched to appropriate personas)
+\item \textbf{Readiness Distribution:} 85\% Ready, 12\% Caution, 3\% Blocked
+\item \textbf{Persona Switch Rate:} 2\% (minimal mid-run switches)
+\item \textbf{Evidence Freshness:} Average 3.2 days (well within 7-day target)
+\item \textbf{Load Balance Index:} 1.3 (good distribution)
+
+\textbf{Key Learnings:}
+\item Domain tags enable precise matching
+\item Readiness scoring prevents overload
+\item Continuous monitoring enables proactive rotation
+\item Quality tracking ensures consistent performance
+
+\subsubsection*{Case Study: Specialization Drift Recovery}
+
+\textbf{Scenario:} Persona readiness declines due to stale capability proofs.
+
+\textbf{Specialization Role:}
+1. \textbf{Drift Detection:} CAS detects declining readiness (0.88 → 0.72 over 2 weeks)
+2. \textbf{Root Cause Analysis:} Stale capability proofs identified (last proof 12 days ago)
+3. \textbf{Remediation:} Targeted audits scheduled, capability proofs refreshed
+4. \textbf{Recovery:} Readiness restored to 0.85 after remediation
+
+\textbf{Outcome:} Successful drift recovery—persona restored to Ready status, no task failures.
+
+\textbf{Metrics:}
+\item \textbf{Drift Detection Time:} 2 weeks (within acceptable range)
+\item \textbf{Remediation Time:} 3 days (target: <7 days)
+\item \textbf{Readiness Recovery:} 0.72 → 0.85 (successful recovery)
+\item \textbf{Task Failures:} 0 (no failures during drift period)
+
+\textbf{Key Learnings:}
+\item Continuous monitoring enables early drift detection
+\item Targeted remediation restores readiness efficiently
+\item Proactive management prevents failures
+
+\subsection*{Operational Runbook}
+
+\subsubsection*{Daily Specialization Monitoring}
+
+\textbf{Step 1:} Monitor specialization dashboard (readiness distribution, load balance, switch rate)
+
+\textbf{Metrics:}
+\item Readiness distribution (Ready/Caution/Blocked percentages)
+\item Load balance index (busiest vs average backlog)
+\item Persona switch rate (mid-run switches)
+\item Evidence freshness (average age of proofs)
+
+\textbf{Success Criteria:} 70\%+ Ready, load balance ≤1.5, switch rate <5\%, freshness <7 days
+
+\subsubsection*{Weekly Readiness Review}
+
+\textbf{Step 2:} Review personas in Caution or Blocked status
+
+\textbf{Process:}
+\item Identify personas below Ready threshold
+\item Analyze root causes (stale proofs, performance issues, overload)
+\item Plan remediation (audits, training, load redistribution)
+\item Execute remediation and verify recovery
+
+\textbf{Success Criteria:} All personas restored to Ready status or remediation plan in place
+
+\subsubsection*{Monthly Specialization Audit}
+
+\textbf{Step 3:} Comprehensive specialization audit
+
+\textbf{Process:}
+\item Review all persona profiles for accuracy
+\item Validate capability proofs are current
+\item Verify authority tiers are correct
+\item Check guardrails are appropriate
+\item Analyze performance trends
+
+\textbf{Success Criteria:} All profiles accurate, proofs current, tiers correct, guardrails appropriate, trends positive
+
+\subsection*{Performance Characteristics}
+
+\subsubsection*{Latency Requirements}
+
+\textbf{Persona Selection:}
+\item Selection time: <100ms
+\item Readiness calculation: <50ms
+\item Profile retrieval: <30ms
+\item Matching decision: <20ms
+
+\textbf{Key Insight:} Fast selection enables responsive task assignment.
+
+\subsubsection*{Throughput Requirements}
+
+\textbf{Persona Operations:}
+\item Selections per second: 100+
+\item Readiness updates per second: 50+
+\item Profile updates per second: 20+
+\item Audit operations per hour: 100+
+
+\textbf{Key Insight:} High throughput enables large-scale specialization.
+
+\subsubsection*{Reliability Requirements}
+
+\textbf{Uptime:}
+\item Target: 99.9\% uptime
+\item Failover: <1 minute
+\item Recovery: <5 minutes
+\item Data loss: 0\% (zero tolerance)
+
+\textbf{Key Insight:} High reliability ensures continuous specialization availability.
+
+\subsection*{Troubleshooting Guide}
+
+\subsubsection*{Issue: Persona Mismatch}
+
+\textbf{Symptoms:}
+\item Output quality drops
+\item Guardrails triggered frequently
+\item Task failures increase
+
+\textbf{Diagnosis:}
+1. Check domain tag alignment
+2. Verify capability coverage
+3. Review readiness scores
+4. Analyze performance metrics
+
+\textbf{Resolution:}
+1. Escalate to human reviewer
+2. Rerun matchmaking with updated tags
+3. Refresh capability proofs
+4. Capture lesson in SIS
+
+\textbf{Prevention:}
+\item Regular domain tag updates
+\item Continuous capability proof refresh
+\item Performance monitoring
+\item Proactive remediation
+
+\subsubsection*{Issue: Specialization Drift}
+
+\textbf{Symptoms:}
+\item Readiness declines gradually
+\item Evidence becomes stale
+\item Performance degrades
+
+\textbf{Diagnosis:}
+1. Check evidence freshness
+2. Review capability proof dates
+3. Analyze performance trends
+4. Identify root causes
+
+\textbf{Resolution:}
+1. Schedule targeted audits
+2. Refresh capability evidence
+3. Provide focused practice tasks
+4. Monitor recovery
+
+\textbf{Prevention:}
+\item Continuous evidence refresh
+\item Regular capability audits
+\item Performance tracking
+\item Proactive maintenance
+
+\subsubsection*{Issue: Overload}
+
+\textbf{Symptoms:}
+\item Backlog depth remains high
+\item Turnaround times increase
+\item Readiness drops
+
+\textbf{Diagnosis:}
+1. Check backlog depth
+2. Review turnaround times
+3. Analyze load distribution
+4. Identify bottlenecks
+
+\textbf{Resolution:}
+1. Redistribute tasks via CCS
+2. Add fallback personas
+3. Adjust guardrails to widen coverage
+4. Scale capacity if needed
+
+\textbf{Prevention:}
+\item Load monitoring
+\item Capacity planning
+\item Dynamic scaling
+\item Proactive redistribution
+
+\subsection*{Connection to Other Chapters}
+
+Dynamic Specialization connects to all AIM-OS systems:
+
+\item \textbf{Chapter 1 (The Great Limitation):} Specialization addresses "no specialization" by enabling dynamic expertise matching
+\item \textbf{Chapter 2 (The Vision):} Specialization enables the "specialization" principle from the universal interface
+\item \textbf{Chapter 3 (The Proof):} Specialization validates matching through readiness scoring
+\item \textbf{Chapter 5 (CMC):} Specialization stores all persona profiles in CMC for durability
+\item \textbf{Chapter 6 (HHNI):} Specialization uses HHNI for context retrieval
+\item \textbf{Chapter 7 (VIF):} Specialization uses VIF for confidence gating
+\item \textbf{Chapter 8 (APOE):} Specialization uses APOE for plan orchestration
+\item \textbf{Chapter 9 (SEG):} Specialization uses SEG for evidence anchoring
+\item \textbf{Chapter 10 (SDF-CVF):} Specialization uses SDF-CVF for quality validation
+\item \textbf{Chapter 11 (CAS):} Specialization uses CAS for drift detection
+\item \textbf{Chapter 12 (SIS):} Specialization uses SIS for improvement
+\item \textbf{Chapter 13 (CCS):} Specialization uses CCS for coordination
+\item \textbf{Chapter 16 (Authority):} Specialization uses Authority for tier enforcement
+\item \textbf{Chapter 17 (Capability):} Specialization uses Capability for proof validation
+\item \textbf{Chapter 19 (Integration):} Specialization integrates with Authority Map
+
+\textbf{Key Insight:} Dynamic Specialization is the matching engine that enables AIM-OS to use expertise dynamically. Without it, agents work generically and expertise is wasted.
+
+\subsection*{Specialization Performance Characteristics}
+
+\subsubsection*{Readiness Calculation Performance}
+
+\textbf{Calculation Latency:}
+\item Single persona readiness: <100ms (component aggregation)
+\item Batch readiness (100 personas): <2 seconds
+\item Full ledger readiness (1K personas): <10 seconds
+
+\textbf{Key Insight:} Readiness calculation performance enables real-time persona selection.
+
+\subsubsection*{Persona Selection Performance}
+
+\textbf{Selection Latency:}
+\item Single persona selection: <50ms (readiness lookup)
+\item Batch selection (10 tasks): <500ms
+\item Full task queue selection (100 tasks): <5 seconds
+
+\textbf{Key Insight:} Persona selection performance enables efficient task routing.
+
+\subsection*{Specialization Troubleshooting Guide}
+
+\subsubsection*{Issue: No Suitable Persona Found}
+
+\textbf{Symptoms:}
+\item Tasks unassigned
+\item Readiness scores too low
+\item Personas unavailable
+
+\textbf{Diagnosis:}
+1. Check readiness thresholds
+2. Review persona availability
+3. Verify capability requirements
+4. Check for load factor issues
+
+\textbf{Resolution:}
+1. Adjust readiness thresholds if needed
+2. Increase persona capacity
+3. Relax capability requirements if appropriate
+4. Reduce load factors
+
+\textbf{Prevention:}
+\item Monitor persona availability continuously
+\item Maintain persona capacity reserves
+\item Optimize readiness thresholds
+
+\subsubsection*{Issue: Persona Overload}
+
+\textbf{Symptoms:}
+\item High load factors
+\item Tasks queued
+\item Persona performance degrading
+
+\textbf{Diagnosis:}
+1. Check load factor metrics
+2. Review task queue depth
+3. Verify persona capacity
+4. Check for task distribution issues
+
+\textbf{Resolution:}
+1. Reduce load factors
+2. Distribute tasks to other personas
+3. Increase persona capacity
+4. Optimize task distribution
+
+\textbf{Prevention:}
+\item Load factor monitoring
+\item Automatic task distribution
+\item Capacity planning
+
+\subsection*{Completeness Checklist (Dynamic Specialization)}

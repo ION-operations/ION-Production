@@ -1,0 +1,910 @@
+--- a/.codex/config.toml
++++ b/.codex/config.toml
+@@ -13,6 +13,7 @@
+ - Capsule is minimum working context; Mini is a lookup/receipt index only.
+ - Shared Codex solo context is read-only base memory for parallel agents; do not write CAPSULE.md, MINI.md, HOT_CONTEXT.md, STATUS.json, ROUTE.json, or assign C-numbers directly.
+ - For material work, create or mount a unique branch capsule under ION/05_context/current/agent_context_branches/, run/satisfy `kernel.ion_agent_branch_capsule preflight`, and route candidate updates through ION/05_context/current/context_settlement/inbox/.
++- Before asking the context settler to review material branch results, run/satisfy `kernel.ion_agent_branch_capsule settlement-intake` so guard evidence, branch identity, and workload diff are present.
+ - Do not create or use the old /home/sev/ION - Production/ION_CODEX path without explicit operator approval.
+ - Do not claim ION identity, STEWARD authority, RELAY authority, PERSONA authority, production authority, live execution authority, or secrets authority.
+ - After material work, record an explicit Codex Solo capsule post through kernel.ion_codex_solo_context with confirmation token ION_BOUNDED_WRITE_CONFIRMED.
+--- /dev/null
++++ b/ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_SETTLEMENT_INTAKE_PROTOCOL_V0_1.md
+@@ -0,0 +1,169 @@
++# ION Agent Branch Capsule Settlement Intake Protocol v0.1
++
++Status: active provisional protocol
++Created: 2026-05-11
++Authority: branch return admissibility and context-settlement intake only
++Production authority: false
++Live execution authority: false
++
++## Purpose
++
++This protocol closes the gap between branch-capsule creation and context
++settlement. A branch may produce useful work, receipts, diffs, and task returns,
++but those outputs are still candidates until the context settler accepts them.
++
++Settlement intake is the read-only gate that decides whether a branch return is
++structurally admissible for review.
++
++```text
++branch capsule
++-> material-work preflight guard
++-> task return / workload diff
++-> settlement intake preflight
++-> context settler review
++-> accepted / conflict / deferred
++```
++
++## Core law
++
++Material branch returns must carry guard evidence.
++
++A settlement packet for material work is not admissible unless it includes:
++
++```text
++branch_identity
++requested_write_scope
++material_work_guard evidence
++workload_diff
++source_refs
++non_claims
++```
++
++The guard evidence must show:
++
++```text
++ok: true
++verdict: ION_AGENT_BRANCH_CAPSULE_READY
++branch identity matches the settlement packet
++requested write scope was declared in the branch
++no shared Capsule/Mini/HOT_CONTEXT/STATUS/ROUTE write
++no agent-assigned C-number
++```
++
++## Non-admissible settlement packets
++
++A context-settlement inbox packet is blocked from intake when it:
++
++```text
++has no branch identity
++has mismatched branch identity
++claims accepted shared state
++writes shared Codex solo context directly
++assigns a C-number/checkpoint directly
++omits material-work guard evidence for material work
++contains guard findings
++omits workload diff for material work
++points source_refs at shared context surfaces as the branch output
++```
++
++## Runtime helper
++
++The runtime helper is:
++
++```text
++ION/04_packages/kernel/ion_agent_branch_capsule.py
++```
++
++It exposes:
++
++```text
++python -m kernel.ion_agent_branch_capsule --ion-root . settlement-intake --packet <SETTLEMENT_PACKET.json>
++```
++
++Optional branch-record cross-check:
++
++```text
++python -m kernel.ion_agent_branch_capsule --ion-root . settlement-intake \
++  --packet <SETTLEMENT_PACKET.json> \
++  --branch-record <BRANCH_RECORD.json>
++```
++
++The command is read-only. It does not merge, promote, write shared context, or
++assign checkpoints.
++
++## Packet shape for material task returns
++
++```json
++{
++  "schema_id": "ion.context_settlement.inbox_packet.v1",
++  "status": "CANDIDATE_PENDING_SETTLEMENT",
++  "source_type": "agent_branch_task_return",
++  "branch_identity": {
++    "context_instance_id": "ctx_...",
++    "branch_id": "branch_...",
++    "conversation_tag": "project_or_session",
++    "agent_tag": "codex_worker",
++    "task_tag": "bounded_task",
++    "parent_context_id": "ctx_shared_codex_solo_current"
++  },
++  "requested_write_scope": [
++    "ION/04_packages/kernel/example.py"
++  ],
++  "material_work_guard": {
++    "schema_id": "ion.agent_branch_capsule.material_work_preflight.v1",
++    "ok": true,
++    "verdict": "ION_AGENT_BRANCH_CAPSULE_READY",
++    "branch_identity": {},
++    "requested_write_scope": [],
++    "findings": []
++  },
++  "workload_diff": {
++    "present": true,
++    "touched_paths": [],
++    "diff_refs": [],
++    "validation_refs": []
++  }
++}
++```
++
++## Settlement outcomes
++
++Settlement intake does not choose the final outcome. It only says whether a
++packet may be reviewed.
++
++Final outcomes remain settler-owned:
++
++```text
++ACCEPTED_AS_WITNESS
++ACCEPTED_AS_CANON
++MERGE_PROPOSAL_REQUIRED
++CONFLICT_RECORDED
++DEFERRED
++REJECTED
++```
++
++## Non-claims
++
++This protocol does not:
++
++```text
++settle branch work
++promote the branch capsule law
++update Capsule/Mini/HOT_CONTEXT/STATUS/ROUTE
++assign a C-number
++run scanners
++reload services
++grant production or live execution authority
++```
++
++## Required next implementation lane
++
++Future work should connect this intake preflight to:
++
++```text
++context_settlement inbox scanner
++branch task-return submitter
++cockpit branch settlement drawer
++Codex queue return contract validation
++automatic conflict packet creation for blocked intake
++```
+--- a/ION/03_registry/ion_skill_registry.yaml
++++ b/ION/03_registry/ion_skill_registry.yaml
+@@ -456,3 +456,37 @@
+       drawer_visible: true
+       user_chore: false
+ 
++
++  - skill_id: agent-branch-capsule-settlement-intake
++    display_name: Agent Branch Capsule Settlement Intake
++    class: guard
++    purpose: "Verify branch settlement packets before context-settler review."
++    trigger_summary: "Use when a branch task return, workload diff, or material settlement packet is ready for review."
++    selection_priority: 116
++    model_stage_id: context_settlement_guard
++    preferred_model: deterministic_local
++    default_reasoning_effort: low
++    activates_templates:
++      - ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_SETTLEMENT_INTAKE_PROTOCOL_V0_1.md
++    template_bindings: []
++    context_mount:
++      required_packages:
++        - agent_branch_capsule_bootstrap_package
++        - active_authority_package
++      route_deeper_packages:
++        - route_depth_package
++        - evidence_receipt_package
++    allowed_authority:
++      read_context: true
++      queue_work: false
++      write_files: false
++      production_authority: false
++      live_execution_authority: false
++      secrets_authority: false
++    proof_contract:
++      context_proof_required: true
++      template_action_proof_required: true
++      receipt_required: true
++    runtime:
++      command: "python -m kernel.ion_agent_branch_capsule --ion-root . settlement-intake --packet <SETTLEMENT_PACKET.json>"
++      mutates_shared_context: false
+--- a/ION/04_packages/kernel/ion_agent_branch_capsule.py
++++ b/ION/04_packages/kernel/ion_agent_branch_capsule.py
+@@ -25,6 +25,7 @@
+ CURRENT_ROOT = Path("ION/05_context/current")
+ BRANCH_ROOT = CURRENT_ROOT / "agent_context_branches"
+ BRANCH_REGISTRY_PATH = BRANCH_ROOT / "BRANCH_CAPSULE_REGISTRY_V0_1.json"
++BRANCH_CAPSULE_SETTLEMENT_INTAKE_PROTOCOL_PATH = Path("ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_SETTLEMENT_INTAKE_PROTOCOL_V0_1.md")
+ SETTLEMENT_INBOX = CURRENT_ROOT / "context_settlement" / "inbox"
+ SETTLEMENT_CLAIMS = CURRENT_ROOT / "context_settlement" / "claims"
+ 
+@@ -42,6 +43,12 @@
+     "ION/05_context/current/codex_solo/CAPSULE.md",
+     "ION/02_architecture/ION_MULTI_AGENT_CONTEXT_AND_WORKPACKET_SETTLEMENT_PROTOCOL_V0_1.md",
+     "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_PROTOCOL_V0_1.md",
++)
++
++MATERIAL_SETTLEMENT_SOURCE_TYPES: tuple[str, ...] = (
++    "agent_branch_task_return",
++    "workload_diff",
++    "material_work_candidate",
+ )
+ 
+ 
+@@ -459,6 +466,231 @@
+         "requested_write_scope": list(requested_scope),
+         "findings": findings,
+         "validation": validation,
++        "production_authority": False,
++        "live_execution_authority": False,
++        "mutates_shared_context": False,
++    }
++
++
++
++def _branch_identity(data: dict[str, Any]) -> dict[str, Any]:
++    return {
++        "context_instance_id": data.get("context_instance_id"),
++        "branch_id": data.get("branch_id"),
++        "conversation_tag": data.get("conversation_tag"),
++        "agent_tag": data.get("agent_tag"),
++        "task_tag": data.get("task_tag"),
++        "parent_context_id": data.get("parent_context_id"),
++    }
++
++
++def build_task_return_settlement_packet(
++    record: BranchCapsuleRecord | dict[str, Any],
++    *,
++    preflight_result: dict[str, Any],
++    task_return_id: str | None = None,
++    touched_paths: Iterable[str] | None = None,
++    diff_refs: Iterable[str] | None = None,
++    validation_refs: Iterable[str] | None = None,
++    result_summary: str = "branch material work candidate ready for settlement intake",
++    requested_outcome: str = "MERGE_PROPOSAL_REQUIRED",
++) -> dict[str, Any]:
++    """Build a material-work settlement candidate with guard evidence.
++
++    This helper does not accept or merge the branch output. It creates the
++    packet shape the context settler can intake and review.
++    """
++
++    data = asdict(record) if isinstance(record, BranchCapsuleRecord) else dict(record)
++    branch_identity = _branch_identity(data)
++    requested_scope = tuple(_rel_path(p) for p in (preflight_result.get("requested_write_scope") or ()))
++    touched = tuple(_rel_path(p) for p in (touched_paths or requested_scope))
++    diffs = tuple(_rel_path(p) for p in (diff_refs or ()))
++    validations = tuple(_rel_path(p) for p in (validation_refs or ()))
++    packet_id = task_return_id or f"SETTLE_TASK_RETURN_{data['branch_id']}"
++    source_refs = [
++        data["branch_path"] + "/BRANCH_RECORD.json",
++        data["branch_path"] + "/STATUS.json",
++        data["branch_path"] + "/LOADED_REFS.json",
++    ]
++    source_refs.extend(diffs)
++    source_refs.extend(validations)
++
++    return {
++        "schema_id": "ion.context_settlement.inbox_packet.v1",
++        "packet_id": packet_id,
++        "created_at": _now(),
++        "status": "CANDIDATE_PENDING_SETTLEMENT",
++        "source_type": "agent_branch_task_return",
++        "domain": "context_settlement",
++        "risk_class": "branch_material_work_candidate",
++        "source_refs": source_refs,
++        "requested_outcome": requested_outcome,
++        "reason": result_summary,
++        "branch_identity": branch_identity,
++        "requested_write_scope": list(requested_scope),
++        "material_work_guard": {
++            "schema_id": preflight_result.get("schema_id"),
++            "ok": preflight_result.get("ok"),
++            "verdict": preflight_result.get("verdict"),
++            "branch_record_path": preflight_result.get("branch_record_path"),
++            "branch_identity": preflight_result.get("branch_identity"),
++            "requested_write_scope": preflight_result.get("requested_write_scope") or [],
++            "findings": preflight_result.get("findings") or [],
++        },
++        "workload_diff": {
++            "present": bool(diffs or touched),
++            "touched_paths": list(touched),
++            "diff_refs": list(diffs),
++            "validation_refs": list(validations),
++        },
++        "acceptance_gates": [
++            "branch identity fields are complete",
++            "material-work preflight guard evidence is present and accepted",
++            "requested write scope is declared in the branch",
++            "workload diff is present",
++            "no shared context surfaces are written directly",
++            "no agent-assigned C-number is present",
++            "context settler performs final merge/promotion decision",
++        ],
++        "non_claims": [
++            "This packet does not update shared Capsule/Mini/HOT_CONTEXT/STATUS/ROUTE.",
++            "This packet does not assign a C-number.",
++            "This packet does not promote branch output to accepted state.",
++            "This packet does not grant production or live execution authority.",
++        ],
++        "authority": {
++            "production_authority": False,
++            "live_execution_authority": False,
++            "secrets_authority": False,
++            "browser_control_authority": False,
++        },
++    }
++
++
++def _settlement_packet_material(packet: dict[str, Any]) -> bool:
++    source_type = packet.get("source_type")
++    return (
++        source_type in MATERIAL_SETTLEMENT_SOURCE_TYPES
++        or bool(packet.get("requested_write_scope"))
++        or bool(packet.get("workload_diff"))
++    )
++
++
++def settlement_intake_preflight(
++    root: str | Path,
++    *,
++    settlement_packet_path: str | Path | None = None,
++    packet: dict[str, Any] | None = None,
++    branch_record_path: str | Path | None = None,
++) -> dict[str, Any]:
++    """Read-only intake guard for branch settlement packets.
++
++    The context settler can use this before considering any branch material
++    return. The guard never merges, assigns checkpoints, or mutates shared
++    context; it only classifies whether the packet is structurally admissible.
++    """
++
++    findings: list[str] = []
++    packet_data: dict[str, Any] | None = None
++
++    if packet is not None:
++        packet_data = dict(packet)
++    elif settlement_packet_path:
++        try:
++            packet_data = _read_json(_shell_root(root) / settlement_packet_path, {})
++            if not packet_data:
++                findings.append(f"settlement_packet_empty:{_rel_path(settlement_packet_path)}")
++        except json.JSONDecodeError:
++            findings.append(f"settlement_packet_invalid_json:{_rel_path(settlement_packet_path)}")
++        except OSError:
++            findings.append(f"settlement_packet_missing:{_rel_path(settlement_packet_path)}")
++    else:
++        findings.append("settlement_packet_required")
++
++    branch_record: dict[str, Any] | None = None
++    if branch_record_path:
++        try:
++            branch_record = load_branch_record(root, branch_record_path)
++        except FileNotFoundError:
++            findings.append(f"branch_record_missing:{_rel_path(branch_record_path)}")
++        except json.JSONDecodeError:
++            findings.append(f"branch_record_invalid_json:{_rel_path(branch_record_path)}")
++
++    material = False
++    branch_identity: dict[str, Any] = {}
++    if packet_data is not None:
++        if packet_data.get("schema_id") != "ion.context_settlement.inbox_packet.v1":
++            findings.append(f"settlement_packet_schema_unexpected:{packet_data.get('schema_id')}")
++        if packet_data.get("status") != "CANDIDATE_PENDING_SETTLEMENT":
++            findings.append(f"settlement_packet_status_unexpected:{packet_data.get('status')}")
++
++        branch_identity = packet_data.get("branch_identity") or {}
++        for field_name in ("context_instance_id", "branch_id", "conversation_tag", "agent_tag", "task_tag", "parent_context_id"):
++            if not branch_identity.get(field_name):
++                findings.append(f"branch_identity_missing:{field_name}")
++
++        checkpoint = packet_data.get("checkpoint_request") or {}
++        direct_c_number = (
++            packet_data.get("assigned_c_number")
++            or packet_data.get("agent_assigned_c_number")
++            or checkpoint.get("assigned_c_number")
++            or checkpoint.get("agent_assigned_c_number")
++        )
++        if direct_c_number:
++            findings.append(f"agent_checkpoint_assignment_forbidden:{direct_c_number}")
++
++        for ref in packet_data.get("source_refs") or ():
++            rel = _rel_path(ref)
++            if _is_shared_context_surface(rel):
++                findings.append(f"settlement_source_ref_shared_context_surface_forbidden:{rel}")
++
++        requested_scope = tuple(_rel_path(p) for p in (packet_data.get("requested_write_scope") or ()))
++        findings.extend(_scope_forbidden_findings(requested_scope, prefix="settlement_requested_write_scope"))
++
++        material = _settlement_packet_material(packet_data)
++        if material:
++            guard = packet_data.get("material_work_guard") or packet_data.get("guard_evidence")
++            if not guard:
++                findings.append("material_work_guard_evidence_required")
++            else:
++                if guard.get("ok") is not True or guard.get("verdict") != READY_VERDICT:
++                    findings.append(f"material_work_guard_not_ready:{guard.get('verdict')}")
++                if guard.get("findings"):
++                    findings.append("material_work_guard_has_findings")
++                guard_identity = guard.get("branch_identity") or {}
++                for field_name, value in branch_identity.items():
++                    if field_name in guard_identity and guard_identity.get(field_name) != value:
++                        findings.append(f"guard_branch_identity_mismatch:{field_name}")
++                guard_scope = set(_rel_path(p) for p in (guard.get("requested_write_scope") or ()))
++                packet_scope = set(requested_scope)
++                if packet_scope and guard_scope and not packet_scope.issubset(guard_scope):
++                    missing = ",".join(sorted(packet_scope - guard_scope))
++                    findings.append(f"requested_scope_not_covered_by_guard:{missing}")
++
++            workload_diff = packet_data.get("workload_diff") or {}
++            if workload_diff.get("present") is not True:
++                findings.append("workload_diff_required_for_material_settlement")
++            if not workload_diff.get("touched_paths"):
++                findings.append("workload_diff_touched_paths_required")
++
++    if branch_record is not None and branch_identity:
++        record_identity = _branch_identity(branch_record)
++        for field_name, value in branch_identity.items():
++            if record_identity.get(field_name) != value:
++                findings.append(f"branch_record_identity_mismatch:{field_name}")
++
++    ok = not findings
++    return {
++        "schema_id": "ion.agent_branch_capsule.settlement_intake_preflight.v1",
++        "ok": ok,
++        "verdict": READY_VERDICT if ok else BLOCKED_VERDICT,
++        "required_action": "context_settler_review_admissible_packet" if ok else "repair_branch_settlement_packet_before_review",
++        "settlement_packet_path": _rel_path(settlement_packet_path) if settlement_packet_path else None,
++        "branch_record_path": _rel_path(branch_record_path) if branch_record_path else None,
++        "material_settlement": material,
++        "branch_identity": branch_identity or None,
++        "findings": findings,
+         "production_authority": False,
+         "live_execution_authority": False,
+         "mutates_shared_context": False,
+@@ -676,6 +908,10 @@
+     preflight.add_argument("--branch-record", default=None)
+     preflight.add_argument("--write-scope", action="append", default=None)
+ 
++    settlement_intake = sub.add_parser("settlement-intake")
++    settlement_intake.add_argument("--packet", required=True)
++    settlement_intake.add_argument("--branch-record", default=None)
++
+     args = parser.parse_args(argv)
+ 
+     if args.command == "create":
+@@ -706,6 +942,15 @@
+         print(json.dumps(result, indent=2, sort_keys=True))
+         return 0 if result["ok"] else 1
+ 
++    if args.command == "settlement-intake":
++        result = settlement_intake_preflight(
++            args.ion_root,
++            settlement_packet_path=args.packet,
++            branch_record_path=args.branch_record,
++        )
++        print(json.dumps(result, indent=2, sort_keys=True))
++        return 0 if result["ok"] else 1
++
+     record = json.loads(Path(args.record_json).read_text(encoding="utf-8"))
+     result = validate_branch_record(args.ion_root, record)
+     print(json.dumps(result, indent=2, sort_keys=True))
+--- a/ION/04_packages/kernel/ion_codex_solo_context.py
++++ b/ION/04_packages/kernel/ion_codex_solo_context.py
+@@ -37,6 +37,7 @@
+ BRANCH_CAPSULE_PROTOCOL_PATH = Path("ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_PROTOCOL_V0_1.md")
+ BRANCH_CAPSULE_BOOTSTRAP_PROTOCOL_PATH = Path("ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_BOOTSTRAP_BINDING_PROTOCOL_V0_1.md")
+ BRANCH_CAPSULE_GUARD_PROTOCOL_PATH = Path("ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_MATERIAL_WORK_GUARD_PROTOCOL_V0_1.md")
++BRANCH_CAPSULE_SETTLEMENT_INTAKE_PROTOCOL_PATH = Path("ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_SETTLEMENT_INTAKE_PROTOCOL_V0_1.md")
+ BRANCH_CAPSULE_REGISTRY_PATH = Path("ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json")
+ CONTEXT_SETTLEMENT_REGISTRY_PATH = Path("ION/05_context/current/context_settlement/CONTEXT_SETTLEMENT_REGISTRY_V0_1.json")
+ AGENT_BRANCH_CAPSULE_HELPER_PATH = Path("ION/04_packages/kernel/ion_agent_branch_capsule.py")
+@@ -197,6 +198,12 @@
+         "required": True,
+         "classification": "active_context_material_work_guard_protocol",
+         "why": "Defines preflight guard requirements before branch-scoped material writes.",
++    },
++    {
++        "path": BRANCH_CAPSULE_SETTLEMENT_INTAKE_PROTOCOL_PATH.as_posix(),
++        "required": True,
++        "classification": "active_context_settlement_intake_protocol",
++        "why": "Defines read-only intake checks before branch task returns can enter context-settler review.",
+     },
+     {
+         "path": BRANCH_CAPSULE_REGISTRY_PATH.as_posix(),
+@@ -676,6 +683,7 @@
+                 BRANCH_CAPSULE_PROTOCOL_PATH.as_posix(),
+                 BRANCH_CAPSULE_BOOTSTRAP_PROTOCOL_PATH.as_posix(),
+                 BRANCH_CAPSULE_GUARD_PROTOCOL_PATH.as_posix(),
++                BRANCH_CAPSULE_SETTLEMENT_INTAKE_PROTOCOL_PATH.as_posix(),
+                 BRANCH_CAPSULE_REGISTRY_PATH.as_posix(),
+                 CONTEXT_SETTLEMENT_REGISTRY_PATH.as_posix(),
+                 AGENT_BRANCH_CAPSULE_HELPER_PATH.as_posix(),
+@@ -1062,6 +1070,7 @@
+         "protocol": (shell_root / BRANCH_CAPSULE_PROTOCOL_PATH).is_file(),
+         "bootstrap_protocol": (shell_root / BRANCH_CAPSULE_BOOTSTRAP_PROTOCOL_PATH).is_file(),
+         "material_work_guard_protocol": (shell_root / BRANCH_CAPSULE_GUARD_PROTOCOL_PATH).is_file(),
++        "settlement_intake_protocol": (shell_root / BRANCH_CAPSULE_SETTLEMENT_INTAKE_PROTOCOL_PATH).is_file(),
+         "branch_registry": (shell_root / BRANCH_CAPSULE_REGISTRY_PATH).is_file(),
+         "settlement_registry": (shell_root / CONTEXT_SETTLEMENT_REGISTRY_PATH).is_file(),
+         "runtime_helper": (shell_root / AGENT_BRANCH_CAPSULE_HELPER_PATH).is_file(),
+@@ -1079,6 +1088,7 @@
+             "- Required identity fields: context_instance_id, branch_id, conversation_tag, agent_tag, task_tag, parent_context_id, loaded_refs, write_scope.",
+             "- Agents must not directly edit CAPSULE.md, MINI.md, HOT_CONTEXT.md, STATUS.json, ROUTE.json, or assign C-numbers.",
+             "- Before material writes, run or satisfy the branch-capsule material-work preflight guard.",
++            "- Before context-settler review, material branch returns must pass settlement-intake preflight.",
+             "- Candidate branch results go to branch SETTLEMENT_REQUESTS/ and ION/05_context/current/context_settlement/inbox/.",
+             "- Only context settlement may promote branch outputs into shared context.",
+             "",
+@@ -1086,6 +1096,7 @@
+             f"- {BRANCH_CAPSULE_PROTOCOL_PATH.as_posix()}",
+             f"- {BRANCH_CAPSULE_BOOTSTRAP_PROTOCOL_PATH.as_posix()}",
+             f"- {BRANCH_CAPSULE_GUARD_PROTOCOL_PATH.as_posix()}",
++            f"- {BRANCH_CAPSULE_SETTLEMENT_INTAKE_PROTOCOL_PATH.as_posix()}",
+             f"- {BRANCH_CAPSULE_REGISTRY_PATH.as_posix()}",
+             f"- {CONTEXT_SETTLEMENT_REGISTRY_PATH.as_posix()}",
+             f"- {AGENT_BRANCH_CAPSULE_HELPER_PATH.as_posix()}",
+--- a/ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json
++++ b/ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json
+@@ -46,5 +46,15 @@
+     "ION/05_context/current/codex_solo/ROUTE.json"
+   ],
+   "status": "ACTIVE_PROVISIONAL",
+-  "updated_at": "2026-05-11T17:03:00+00:00"
++  "updated_at": "2026-05-11T18:04:00+00:00",
++  "settlement_intake": {
++    "protocol": "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_SETTLEMENT_INTAKE_PROTOCOL_V0_1.md",
++    "runtime_helper": "ION/04_packages/kernel/ion_agent_branch_capsule.py",
++    "preflight_command": "python -m kernel.ion_agent_branch_capsule --ion-root . settlement-intake --packet <SETTLEMENT_PACKET.json>",
++    "material_work_guard_evidence_required": true,
++    "workload_diff_required_for_material_work": true,
++    "shared_context_write": false,
++    "settlement_required": true,
++    "status": "ACTIVE_PROVISIONAL"
++  }
+ }
+--- a/ION/05_context/current/agent_context_branches/README.md
++++ b/ION/05_context/current/agent_context_branches/README.md
+@@ -26,3 +26,18 @@
+ shared context write = false
+ settlement required = true
+ ```
++
++
++## Settlement intake
++
++Material branch returns must pass the settlement-intake preflight before a
++context settler reviews them.
++
++```bash
++python -m kernel.ion_agent_branch_capsule --ion-root . settlement-intake --packet <SETTLEMENT_PACKET.json>
++```
++
++A material settlement packet must include branch identity, accepted
++material-work guard evidence, requested write scope, and workload diff evidence.
++This is a read-only admissibility check; it does not merge branch output or
++assign C-numbers.
+--- a/ION/05_context/current/codex_solo/CONTEXT_PACKAGES.json
++++ b/ION/05_context/current/codex_solo/CONTEXT_PACKAGES.json
+@@ -1,5 +1,5 @@
+ {
+-  "generated_at": "2026-05-11T17:03:00+00:00",
++  "generated_at": "2026-05-11T18:04:00+00:00",
+   "live_execution_authority": false,
+   "package_count": 10,
+   "packages": [
+@@ -52,6 +52,7 @@
+         "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_PROTOCOL_V0_1.md",
+         "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_BOOTSTRAP_BINDING_PROTOCOL_V0_1.md",
+         "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_MATERIAL_WORK_GUARD_PROTOCOL_V0_1.md",
++        "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_SETTLEMENT_INTAKE_PROTOCOL_V0_1.md",
+         "ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json",
+         "ION/05_context/current/context_settlement/CONTEXT_SETTLEMENT_REGISTRY_V0_1.json",
+         "ION/04_packages/kernel/ion_agent_branch_capsule.py"
+@@ -103,6 +104,7 @@
+         "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_PROTOCOL_V0_1.md",
+         "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_BOOTSTRAP_BINDING_PROTOCOL_V0_1.md",
+         "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_MATERIAL_WORK_GUARD_PROTOCOL_V0_1.md",
++        "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_SETTLEMENT_INTAKE_PROTOCOL_V0_1.md",
+         "ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json",
+         "ION/05_context/current/context_settlement/CONTEXT_SETTLEMENT_REGISTRY_V0_1.json",
+         "ION/04_packages/kernel/ion_agent_branch_capsule.py"
+@@ -144,6 +146,7 @@
+         "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_PROTOCOL_V0_1.md",
+         "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_BOOTSTRAP_BINDING_PROTOCOL_V0_1.md",
+         "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_MATERIAL_WORK_GUARD_PROTOCOL_V0_1.md",
++        "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_SETTLEMENT_INTAKE_PROTOCOL_V0_1.md",
+         "ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json",
+         "ION/05_context/current/context_settlement/CONTEXT_SETTLEMENT_REGISTRY_V0_1.json",
+         "ION/04_packages/kernel/ion_agent_branch_capsule.py"
+--- a/ION/05_context/current/codex_solo/ROUTE.json
++++ b/ION/05_context/current/codex_solo/ROUTE.json
+@@ -296,6 +296,17 @@
+       "required": true,
+       "sha256": "83ab6f2d357d6dd4d65562b4916c97ff63f8a7459eb04fcf3a60c9888ff651c6",
+       "why": "Defines preflight guard requirements before branch-scoped material writes."
++    },
++    {
++      "path": "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_SETTLEMENT_INTAKE_PROTOCOL_V0_1.md",
++      "required": true,
++      "classification": "active_context_settlement_intake_protocol",
++      "why": "Defines read-only intake checks before branch task returns can enter context-settler review.",
++      "exists": true,
++      "is_file": true,
++      "repo_relative": true,
++      "bytes": 4048,
++      "sha256": "503c69faff8c819bb55e52127b63069bbca0597992eb5e96aeed0c6ca18dddd6"
+     }
+   ],
+   "live_execution_authority": false,
+@@ -609,5 +620,6 @@
+     "route_path": "ION/05_context/current/codex_solo/ROUTE.json",
+     "schema_id": "ion.codex_solo_route_validation.v1"
+   },
+-  "witness_policy": "Capsule is the minimum working context. Mini is a lookup/receipt index for capsule history. Neither overrides current repo authority, tests, receipts, or explicit operator instructions."
++  "witness_policy": "Capsule is the minimum working context. Mini is a lookup/receipt index for capsule history. Neither overrides current repo authority, tests, receipts, or explicit operator instructions.",
++  "generated_at": null
+ }
+--- a/ION/05_context/current/context_settlement/CONTEXT_SETTLEMENT_REGISTRY_V0_1.json
++++ b/ION/05_context/current/context_settlement/CONTEXT_SETTLEMENT_REGISTRY_V0_1.json
+@@ -2,7 +2,8 @@
+   "active_claims": [
+     "ION/05_context/current/context_settlement/claims/claim_20260511_agent_branch_capsule_runtime_001.json",
+     "ION/05_context/current/context_settlement/claims/claim_20260511_agent_branch_capsule_bootstrap_002.json",
+-    "ION/05_context/current/context_settlement/claims/claim_20260511_agent_branch_capsule_guard_003.json"
++    "ION/05_context/current/context_settlement/claims/claim_20260511_agent_branch_capsule_guard_003.json",
++    "ION/05_context/current/context_settlement/claims/claim_20260511_agent_branch_capsule_settlement_intake_004.json"
+   ],
+   "active_conflicts": [
+     "ION/05_context/current/context_settlement/conflicts/CHECKPOINT_COLLISION_C088_20260511.json"
+@@ -47,7 +48,8 @@
+     "ION/05_context/current/context_settlement/inbox/SETTLE_WORKPACKETS_DIFFS_INGESTION_002_20260510T234208.json",
+     "ION/05_context/current/context_settlement/inbox/SETTLE_AGENT_BRANCH_CAPSULE_RUNTIME_001_20260511.json",
+     "ION/05_context/current/context_settlement/inbox/SETTLE_AGENT_BRANCH_CAPSULE_BOOTSTRAP_002_20260511.json",
+-    "ION/05_context/current/context_settlement/inbox/SETTLE_AGENT_BRANCH_CAPSULE_GUARD_003_20260511.json"
++    "ION/05_context/current/context_settlement/inbox/SETTLE_AGENT_BRANCH_CAPSULE_GUARD_003_20260511.json",
++    "ION/05_context/current/context_settlement/inbox/SETTLE_AGENT_BRANCH_CAPSULE_SETTLEMENT_INTAKE_004_20260511.json"
+   ],
+   "protocol": "ION/02_architecture/ION_MULTI_AGENT_CONTEXT_AND_WORKPACKET_SETTLEMENT_PROTOCOL_V0_1.md",
+   "purpose": "Serialize shared ION context updates while allowing parallel agents to produce candidate receipts, workpackets, diffs, and task returns.",
+@@ -84,5 +86,13 @@
+     }
+   ],
+   "status": "ACTIVE_PROVISIONAL",
+-  "updated_at": "2026-05-11"
++  "updated_at": "2026-05-11T18:04:00+00:00",
++  "settlement_intake_candidates": [
++    {
++      "artifact_id": "agent_branch_capsule_settlement_intake_004",
++      "path": "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_SETTLEMENT_INTAKE_PROTOCOL_V0_1.md",
++      "role": "candidate settlement intake guard requiring branch identity, guard evidence, and workload diff before context-settler review",
++      "authority": "candidate intake guard; no shared context promotion"
++    }
++  ]
+ }
+--- /dev/null
++++ b/ION/05_context/current/context_settlement/claims/claim_20260511_agent_branch_capsule_settlement_intake_004.json
+@@ -0,0 +1,23 @@
++{
++  "schema_id": "ion.context_settlement.claim.v1",
++  "claim_id": "claim_20260511_agent_branch_capsule_settlement_intake_004",
++  "created_at": "2026-05-11T18:04:00+00:00",
++  "status": "CANDIDATE_PENDING_SETTLEMENT",
++  "claim": "Branch material returns now have a read-only settlement intake preflight requiring branch identity, guard evidence, and workload diff before context-settler review.",
++  "source_refs": [
++    "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_SETTLEMENT_INTAKE_PROTOCOL_V0_1.md",
++    "ION/04_packages/kernel/ion_agent_branch_capsule.py",
++    "ION/tests/test_kernel_ion_agent_branch_capsule.py"
++  ],
++  "non_claims": [
++    "This claim does not promote the protocol to settled canon.",
++    "This claim does not update shared Capsule/Mini/HOT_CONTEXT/STATUS/ROUTE.",
++    "This claim does not assign a checkpoint."
++  ],
++  "authority": {
++    "production_authority": false,
++    "live_execution_authority": false,
++    "secrets_authority": false,
++    "browser_control_authority": false
++  }
++}
+--- /dev/null
++++ b/ION/05_context/current/context_settlement/inbox/SETTLE_AGENT_BRANCH_CAPSULE_SETTLEMENT_INTAKE_004_20260511.json
+@@ -0,0 +1,47 @@
++{
++  "schema_id": "ion.context_settlement.inbox_packet.v1",
++  "packet_id": "SETTLE_AGENT_BRANCH_CAPSULE_SETTLEMENT_INTAKE_004_20260511",
++  "created_at": "2026-05-11T18:04:00+00:00",
++  "status": "CANDIDATE_PENDING_SETTLEMENT",
++  "source_type": "governance_protocol",
++  "domain": "context_settlement",
++  "risk_class": "governance_protocol_candidate",
++  "settlement_batch": "C00_active_agent_claim_review_then_C01_checkpoint_assignment_and_shared_context_settlement",
++  "source_refs": [
++    "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_SETTLEMENT_INTAKE_PROTOCOL_V0_1.md",
++    "ION/04_packages/kernel/ion_agent_branch_capsule.py",
++    "ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json",
++    "ION/05_context/current/codex_solo/CONTEXT_PACKAGES.json",
++    "ION/05_context/current/codex_solo/ROUTE.json"
++  ],
++  "requested_outcome": "ACCEPTED_AS_WITNESS",
++  "checkpoint_request": {
++    "assign_c_number": true,
++    "agent_assigned_c_number": null,
++    "preferred_settlement": "record settlement intake protocol as active provisional governance only after context-settler review"
++  },
++  "required_review": [
++    "context_settler",
++    "ION protocol steward",
++    "Codex solo context steward"
++  ],
++  "acceptance_gates": [
++    "does not mutate shared Capsule/Mini/HOT_CONTEXT/STATUS directly",
++    "does not assign C-number directly",
++    "material branch return intake requires guard evidence",
++    "branch identity and workload diff requirements are explicit",
++    "settlement-only merge path is preserved"
++  ],
++  "non_claims": [
++    "This packet does not settle or promote the protocol.",
++    "This packet does not merge any branch return.",
++    "This packet does not update shared context.",
++    "This packet does not grant production or live execution authority."
++  ],
++  "authority": {
++    "production_authority": false,
++    "live_execution_authority": false,
++    "secrets_authority": false,
++    "browser_control_authority": false
++  }
++}
+--- a/ION/tests/test_kernel_ion_agent_branch_capsule.py
++++ b/ION/tests/test_kernel_ion_agent_branch_capsule.py
+@@ -8,8 +8,10 @@
+     SETTLEMENT_INBOX,
+     SHARED_CONTEXT_SURFACES,
+     build_branch_capsule_record,
++    build_task_return_settlement_packet,
+     create_branch_capsule,
+     material_work_preflight,
++    settlement_intake_preflight,
+     render_identity_card,
+     validate_branch_record,
+ )
+@@ -184,3 +186,97 @@
+     assert result["required_action"] == "proceed_with_branch_scope"
+     assert result["branch_identity"]["branch_id"] == created["record"]["branch_id"]
+     assert result["mutates_shared_context"] is False
++
++
++def test_task_return_settlement_intake_accepts_guarded_material_packet(tmp_path: Path):
++    _seed_root(tmp_path)
++    created = create_branch_capsule(
++        tmp_path,
++        conversation_tag="Demo",
++        agent_tag="Codex Worker",
++        task_tag="Runtime Guard",
++        write_scope=["ION/04_packages/kernel/allowed.py"],
++        emitted_at="2026-05-11T16:30:00+00:00",
++    )
++    record_path = Path(created["record"]["branch_path"]) / "BRANCH_RECORD.json"
++    preflight = material_work_preflight(
++        tmp_path,
++        branch_record_path=record_path,
++        requested_write_scope=["ION/04_packages/kernel/allowed.py"],
++    )
++    assert preflight["ok"] is True
++
++    packet = build_task_return_settlement_packet(
++        created["record"],
++        preflight_result=preflight,
++        touched_paths=["ION/04_packages/kernel/allowed.py"],
++        diff_refs=[created["record"]["branch_path"] + "/TASK_RETURNS/latest.diff"],
++        validation_refs=[created["record"]["branch_path"] + "/TASK_RETURNS/validation.json"],
++    )
++    result = settlement_intake_preflight(
++        tmp_path,
++        packet=packet,
++        branch_record_path=record_path,
++    )
++
++    assert result["ok"] is True
++    assert result["verdict"] == READY_VERDICT
++    assert result["material_settlement"] is True
++    assert result["required_action"] == "context_settler_review_admissible_packet"
++
++
++def test_settlement_intake_blocks_material_packet_without_guard_or_diff(tmp_path: Path):
++    _seed_root(tmp_path)
++    packet = {
++        "schema_id": "ion.context_settlement.inbox_packet.v1",
++        "packet_id": "SETTLE_BAD_MATERIAL",
++        "created_at": "2026-05-11T17:15:00+00:00",
++        "status": "CANDIDATE_PENDING_SETTLEMENT",
++        "source_type": "agent_branch_task_return",
++        "branch_identity": {
++            "context_instance_id": "ctx_demo",
++            "branch_id": "branch_demo",
++            "conversation_tag": "demo",
++            "agent_tag": "codex_worker",
++            "task_tag": "runtime_guard",
++            "parent_context_id": "ctx_shared_codex_solo_current",
++        },
++        "requested_write_scope": ["ION/04_packages/kernel/allowed.py"],
++        "workload_diff": {"present": False, "touched_paths": []},
++    }
++
++    result = settlement_intake_preflight(tmp_path, packet=packet)
++
++    assert result["ok"] is False
++    assert "material_work_guard_evidence_required" in result["findings"]
++    assert "workload_diff_required_for_material_settlement" in result["findings"]
++    assert "workload_diff_touched_paths_required" in result["findings"]
++
++
++def test_settlement_intake_blocks_checkpoint_assignment_and_shared_source_ref(tmp_path: Path):
++    _seed_root(tmp_path)
++    packet = {
++        "schema_id": "ion.context_settlement.inbox_packet.v1",
++        "packet_id": "SETTLE_BAD_CHECKPOINT",
++        "created_at": "2026-05-11T17:15:00+00:00",
++        "status": "CANDIDATE_PENDING_SETTLEMENT",
++        "source_type": "governance_protocol",
++        "source_refs": [SHARED_CONTEXT_SURFACES[0]],
++        "checkpoint_request": {
++            "agent_assigned_c_number": "C-091",
++        },
++        "branch_identity": {
++            "context_instance_id": "ctx_demo",
++            "branch_id": "branch_demo",
++            "conversation_tag": "demo",
++            "agent_tag": "codex_worker",
++            "task_tag": "runtime_guard",
++            "parent_context_id": "ctx_shared_codex_solo_current",
++        },
++    }
++
++    result = settlement_intake_preflight(tmp_path, packet=packet)
++
++    assert result["ok"] is False
++    assert "agent_checkpoint_assignment_forbidden:C-091" in result["findings"]
++    assert f"settlement_source_ref_shared_context_surface_forbidden:{SHARED_CONTEXT_SURFACES[0]}" in result["findings"]
+--- a/ION/tests/test_kernel_ion_codex_solo_context.py
++++ b/ION/tests/test_kernel_ion_codex_solo_context.py
+@@ -34,6 +34,7 @@
+         "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_PROTOCOL_V0_1.md": "# branch capsule protocol\n",
+         "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_BOOTSTRAP_BINDING_PROTOCOL_V0_1.md": "# branch capsule bootstrap protocol\n",
+         "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_MATERIAL_WORK_GUARD_PROTOCOL_V0_1.md": "# branch capsule material work guard protocol\n",
++        "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_SETTLEMENT_INTAKE_PROTOCOL_V0_1.md": "# branch capsule settlement intake protocol\n",
+         "ION/02_architecture/ION_CODEX_CHAT_ENGINE_PROTOCOL.md": "# chat engine protocol\n",
+         "ION/02_architecture/CODEX_CARRIER_LIMITS_CONTEXT_PROTOCOL.md": "# codex carrier limits protocol\n",
+         "ION/03_registry/codex_carrier_limits_registry.yaml": "schema_id: ion.codex_carrier_limits_registry.v1\nstatus: ACTIVE\n",
+@@ -92,6 +93,7 @@
+     assert "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_PROTOCOL_V0_1.md" in route_paths
+     assert "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_BOOTSTRAP_BINDING_PROTOCOL_V0_1.md" in route_paths
+     assert "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_MATERIAL_WORK_GUARD_PROTOCOL_V0_1.md" in route_paths
++    assert "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_SETTLEMENT_INTAKE_PROTOCOL_V0_1.md" in route_paths
+     assert "ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json" in route_paths
+ 
+ 
+@@ -177,6 +179,7 @@
+     assert "## Branch Capsule Bootstrap Law" in result["context"]
+     assert "Every active agent/conversation/task doing material work needs a unique branch capsule identity" in result["context"]
+     assert "material-work preflight guard" in result["context"]
++    assert "settlement-intake preflight" in result["context"]
+     assert "## Loaded HOT_CONTEXT" in result["context"]
+     assert "## MINIMUM WORKING CAPSULE" in result["context"]
+     assert history_after == history_before

@@ -1,0 +1,459 @@
+% Chapter 9 converted from Markdown
+% Auto-generated - do not edit manually
+
+
+
+
+\section*{Section 9.1: Before PLIx: Fact Storage}
+
+Before PLIx, CMC (Context Memory Core) stores facts, events, and states—execution artifacts that record what happened, not what was intended.
+
+\textbf{CMC's Original Purpose}
+
+CMC was designed to store:
+
+\begin{itemize}
+\item \textbf{Facts:} Immutable facts about the world
+\item \textbf{Events:} Things that happened at specific times
+\item \textbf{States:} System states at specific points in time
+\item \textbf{Atoms:} Fundamental units of memory with bitemporal tracking
+\end{itemize}
+
+CMC's strength lies in its bitemporal versioning: it tracks both when facts were recorded (transaction time) and when they were valid (valid time), enabling temporal queries like "what was known at time T?"
+
+\textbf{Fact Storage Example}
+
+Before PLIx, CMC stores execution artifacts:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# Store execution fact
+atom = cmc.create_atom({
+    content: {
+        "action": "book_room",
+        "result": "success",
+        "room_id": "A101",
+        "timestamp": "2025-12-01T10:00:00Z"
+    },
+    tags: ["execution", "room_booking"]
+})
+
+# Query: What happened?
+facts = cmc.query({
+    tags: ["execution", "room_booking"],
+    valid_at: "2025-12-01T10:00:00Z"
+})
+# Returns: Execution facts, not intent
+\end{lstlisting}
+
+CMC stores what happened (execution facts) but not what was intended (intent contracts). This limits CMC's ability to reason about purpose and verify intent achievement.
+
+\textbf{Limitations of Fact Storage}
+
+Fact storage has limitations:
+
+\begin{itemize}
+\item \textbf{No Intent Awareness:} CMC doesn't know what was intended, only what happened
+\item \textbf{No Intent Queries:} Can't query "what was the intent behind this action?"
+\item \textbf{No Intent Verification:} Can't verify "did this outcome satisfy the intent?"
+\item \textbf{No Intent Lineage:} Can't trace outcomes back to intents
+\end{itemize}
+
+These limitations prevent CMC from supporting intent-driven reasoning, verification, and learning.
+
+\textbf{Bitemporal Versioning}
+
+CMC's bitemporal versioning enables temporal queries:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# Bitemporal query: What was known at time T?
+facts = cmc.query({
+    valid_at: "2025-12-01T09:00:00Z",  # Valid time
+    transaction_at: "2025-12-01T10:00:00Z"  # Transaction time
+})
+
+# Returns: Facts that were valid at 09:00 and recorded by 10:00
+\end{lstlisting}
+
+Bitemporal versioning enables temporal reasoning, but without intent awareness, CMC can't reason about intent evolution or intent-outcome relationships.
+
+\textbf{Before PLIx Summary}
+
+Before PLIx, CMC is execution-focused:
+\begin{itemize}
+\item Stores what happened (facts, events, states)
+\item Enables temporal queries (what was known when)
+\item Lacks intent awareness (no intent storage or queries)
+\item Lacks intent verification (can't verify intent achievement)
+\end{itemize}
+
+This execution focus limits CMC's ability to support intent-driven systems.
+
+\section*{Section 9.2: After PLIx: Intent Memory}
+
+After PLIx, CMC stores intent contracts, plans, and evidence—intent artifacts that record what was intended, enabling intent-aware memory and reasoning.
+
+\textbf{Intent-Aware Storage}
+
+With PLIx, CMC stores intent contracts:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# Store PLIx contract
+contract = PLIxContract(
+    intent="Book a meeting room",
+    contract={
+        "pre": ["room_available == true"],
+        "post": ["room_reserved == true"]
+    }
+)
+
+atom = cmc.create_atom({
+    content: {
+        "type": "plix_contract",
+        "contract": contract,
+        "intent": contract.intent
+    },
+    tags: ["intent", "plix_contract", "room_booking"]
+})
+
+# Query: What was intended?
+intents = cmc.query({
+    tags: ["intent", "plix_contract"],
+    valid_at: "2025-12-01T10:00:00Z"
+})
+# Returns: Intent contracts, not just execution facts
+\end{lstlisting}
+
+CMC now stores what was intended (intent contracts) in addition to what happened (execution facts), enabling intent-aware memory.
+
+\textbf{Intent Queries}
+
+With PLIx, CMC enables intent queries:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# Query: What intents led to this outcome?
+intents = cmc.query({
+    tags: ["intent", "plix_contract"],
+    content_filter: {
+        "contract.post": {"$contains": "room_reserved == true"}
+    }
+})
+# Returns: All intents that intended to reserve a room
+
+# Query: What was the intent behind this action?
+intent = cmc.query({
+    tags: ["intent", "plix_contract"],
+    content_filter: {
+        "execution.action": "book_room"
+    }
+})
+# Returns: Intent contract that led to this action
+\end{lstlisting}
+
+Intent queries enable reasoning about purpose: we can query what was intended, trace outcomes to intents, and understand the relationship between intent and execution.
+
+\textbf{Intent Versioning}
+
+With PLIx, CMC enables intent versioning:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# Store intent version 1
+contract_v1 = PLIxContract(intent="Book a meeting room")
+atom_v1 = cmc.create_atom({
+    content: {"type": "plix_contract", "contract": contract_v1, "version": 1},
+    tags: ["intent", "plix_contract"]
+})
+
+# Store intent version 2 (evolved)
+contract_v2 = PLIxContract(intent="Book a meeting room with catering")
+atom_v2 = cmc.create_atom({
+    content: {"type": "plix_contract", "contract": contract_v2, "version": 2},
+    tags: ["intent", "plix_contract"],
+    parent_atom_id: atom_v1.id  # Link to version 1
+})
+
+# Query: How did intent evolve?
+evolution = cmc.query_lineage(atom_v2.id)
+# Returns: Intent evolution chain (v1 \textrightarrow{} v2)
+\end{lstlisting}
+
+Intent versioning enables temporal reasoning about intent evolution: we can trace how intent evolved over time, understand intent refinement, and reason about intent-outcome relationships across versions.
+
+\textbf{Intent-Outcome Mapping}
+
+With PLIx, CMC enables intent-outcome mapping:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# Store intent
+intent_atom = cmc.create_atom({
+    content: {"type": "plix_contract", "contract": contract},
+    tags: ["intent"]
+})
+
+# Store outcome
+outcome_atom = cmc.create_atom({
+    content: {"type": "execution_result", "room_reserved": True},
+    tags: ["outcome"],
+    parent_atom_id: intent_atom.id  # Link to intent
+})
+
+# Query: Did outcome satisfy intent?
+verification = verifyIntent(intent_atom.content.contract, outcome_atom.content)
+# Returns: True if postconditions satisfied
+\end{lstlisting}
+
+Intent-outcome mapping enables verification: we can check if outcomes satisfied intents, measure intent achievement rates, and learn from intent-outcome relationships.
+
+\textbf{After PLIx Summary}
+
+After PLIx, CMC is intent-aware:
+\begin{itemize}
+\item Stores what was intended (intent contracts, plans, evidence)
+\item Enables intent queries (what was intended, what intents led to outcomes)
+\item Supports intent versioning (tracks intent evolution)
+\item Enables intent-outcome mapping (verifies intent achievement)
+\end{itemize}
+
+This intent awareness transforms CMC from execution-focused memory to intent-aware memory, enabling intent-driven reasoning, verification, and learning.
+
+\section*{Section 9.3: Transformation Details}
+
+The transformation from fact storage to intent memory involves storing PLIx contracts as CMC atoms, enabling intent queries, versioning, and checkpoint integration.
+
+\textbf{PLIx Contract \textrightarrow{} CMC Atom}
+
+PLIx contracts store as CMC atoms:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+def storePLIxContract(contract: PLIxContract, cmc: MemoryStore) -> str:
+    """Store PLIx contract as CMC atom"""
+    atom = cmc.create_atom({
+        content: {
+            "type": "plix_contract",
+            "intent": contract.intent,
+            "contract": contract.to_dict(),
+            "tasks": [task.to_dict() for task in contract.tasks],
+            "constraints": contract.constraints,
+            "evidence": contract.evidence
+        },
+        tags: ["intent", "plix_contract", contract.intent],
+        metadata: {
+            "created_at": datetime.now(),
+            "contract_version": contract.version
+        }
+    })
+    return atom.id
+\end{lstlisting}
+
+This transformation preserves contract semantics while enabling CMC's bitemporal versioning and query capabilities.
+
+\textbf{Intent Metadata}
+
+Intent metadata enables intent queries:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+def addIntentMetadata(atom: Atom, contract: PLIxContract):
+    """Add intent metadata to atom"""
+    atom.metadata.update({
+        "intent": contract.intent,
+        "intent_type": classifyIntent(contract.intent),
+        "intent_domain": extractDomain(contract.intent),
+        "intent_confidence": calculateConfidence(contract)
+    })
+\end{lstlisting}
+
+Intent metadata enables intent classification, domain extraction, and confidence tracking, supporting intent queries and reasoning.
+
+\textbf{Intent Lineage}
+
+Intent lineage tracks intent evolution:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+def trackIntentLineage(contract: PLIxContract, parent_atom_id: str, cmc: MemoryStore):
+    """Track intent lineage"""
+    atom = cmc.create_atom({
+        content: {"type": "plix_contract", "contract": contract},
+        tags: ["intent", "plix_contract"],
+        parent_atom_id: parent_atom_id  # Link to parent intent
+    })
+    
+    # Query lineage
+    lineage = cmc.query_lineage(atom.id)
+    # Returns: Chain of intent evolution
+\end{lstlisting}
+
+Intent lineage enables temporal reasoning about intent evolution, enabling queries like "how did this intent evolve?" and "what intents led to this outcome?"
+
+\textbf{Checkpoint Integration}
+
+Checkpoint integration enables durable execution:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+def createCheckpoint(node_id: str, state: dict, cmc: MemoryStore) -> str:
+    """Create execution checkpoint"""
+    checkpoint_atom = cmc.create_atom({
+        content: {
+            "type": "plix_checkpoint",
+            "node_id": node_id,
+            "state": state,
+            "timestamp": datetime.now()
+        },
+        tags: ["checkpoint", "plix_execution", node_id]
+    })
+    return checkpoint_atom.id
+
+def restoreFromCheckpoint(checkpoint_id: str, cmc: MemoryStore) -> dict:
+    """Restore state from checkpoint"""
+    checkpoint = cmc.get_atom(checkpoint_id)
+    return checkpoint.content["state"]
+\end{lstlisting}
+
+Checkpoint integration enables durable execution: CMC stores execution state, enabling recovery from failures and resuming execution from checkpoints.
+
+\textbf{Transformation Benefits}
+
+The transformation provides:
+
+\begin{itemize}
+\item \textbf{Intent Storage:} CMC stores intent contracts, enabling intent-aware memory
+\item \textbf{Intent Queries:} CMC enables intent queries, enabling intent-driven reasoning
+\item \textbf{Intent Versioning:} CMC tracks intent evolution, enabling temporal reasoning
+\item \textbf{Checkpoint Integration:} CMC stores execution state, enabling durable execution
+\end{itemize}
+
+These benefits transform CMC from execution-focused memory to intent-aware memory, enabling intent-driven systems.
+
+\section*{Section 9.4: Implementation Examples}
+
+Implementation examples demonstrate PLIx contract storage, intent queries, intent versioning, and checkpoint creation in CMC.
+
+\textbf{Example 1: Store PLIx Contract}
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# PLIx contract
+contract = PLIxContract(
+    intent="Book a meeting room",
+    contract={
+        "pre": ["room_available == true"],
+        "post": ["room_reserved == true"]
+    },
+    tasks=[
+        Task(id="check_availability", action="api.check_room_availability"),
+        Task(id="reserve_room", action="api.reserve_room", depends_on=["check_availability"])
+    ]
+)
+
+# Store in CMC
+atom_id = storePLIxContract(contract, cmc)
+print(f"Stored contract: {atom_id}")
+
+# Query intent
+intent_atoms = cmc.query({
+    tags: ["intent", "plix_contract"],
+    content_filter: {"intent": "Book a meeting room"}
+})
+print(f"Found {len(intent_atoms)} intent contracts")
+\end{lstlisting}
+
+This example demonstrates storing PLIx contracts in CMC and querying them by intent.
+
+\textbf{Example 2: Intent Queries}
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# Query: What intents intended to reserve a room?
+intents = cmc.query({
+    tags: ["intent", "plix_contract"],
+    content_filter: {
+        "contract.post": {"$contains": "room_reserved == true"}
+    }
+})
+
+# Query: What was the intent behind this execution?
+execution_atom = cmc.get_atom(execution_atom_id)
+intent_atom = cmc.query({
+    tags: ["intent", "plix_contract"],
+    content_filter: {
+        "execution.action": execution_atom.content["action"]
+    }
+})[0]
+
+print(f"Intent: {intent_atom.content['intent']}")
+print(f"Contract: {intent_atom.content['contract']}")
+\end{lstlisting}
+
+This example demonstrates intent queries: finding intents by postconditions and tracing execution to intent.
+
+\textbf{Example 3: Intent Versioning}
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# Store intent version 1
+contract_v1 = PLIxContract(intent="Book a meeting room")
+atom_v1 = storePLIxContract(contract_v1, cmc)
+
+# Store intent version 2 (evolved)
+contract_v2 = PLIxContract(intent="Book a meeting room with catering")
+atom_v2 = cmc.create_atom({
+    content: {"type": "plix_contract", "contract": contract_v2},
+    tags: ["intent", "plix_contract"],
+    parent_atom_id: atom_v1  # Link to version 1
+})
+
+# Query intent evolution
+lineage = cmc.query_lineage(atom_v2)
+print(f"Intent evolution: {[atom.content['intent'] for atom in lineage]}")
+\end{lstlisting}
+
+This example demonstrates intent versioning: storing evolved intents and querying intent evolution.
+
+\textbf{Example 4: Checkpoint Creation}
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# Create checkpoint before execution
+checkpoint_id = createCheckpoint("reserve_room", {
+    "inputs": {"room_id": "A101", "date": "2025-12-01"},
+    "status": "running"
+}, cmc)
+
+try:
+    # Execute task
+    result = executeTask("reserve_room", {"room_id": "A101"})
+    
+    # Update checkpoint on success
+    cmc.create_atom({
+        content: {
+            "type": "plix_checkpoint",
+            "node_id": "reserve_room",
+            "state": {"inputs": {...}, "outputs": result, "status": "completed"}
+        },
+        tags: ["checkpoint", "plix_execution"],
+        parent_atom_id: checkpoint_id
+    })
+except Exception as e:
+    # Restore from checkpoint on failure
+    state = restoreFromCheckpoint(checkpoint_id, cmc)
+    print(f"Restored state: {state}")
+    raise e
+\end{lstlisting}
+
+This example demonstrates checkpoint creation: storing execution state, updating on success, and restoring on failure.
+
+\textbf{Implementation Benefits}
+
+Implementation examples demonstrate:
+
+\begin{itemize}
+\item \textbf{Contract Storage:} Storing PLIx contracts as CMC atoms
+\item \textbf{Intent Queries:} Querying intents by postconditions and execution
+\item \textbf{Intent Versioning:} Tracking intent evolution
+\item \textbf{Checkpoint Integration:} Enabling durable execution
+\end{itemize}
+
+These examples show how CMC transforms from fact storage to intent-aware memory, enabling intent-driven systems.
+
+\section*{Chapter 9 Summary}
+
+CMC transforms from fact storage to intent-aware memory through PLIx integration. Before PLIx, CMC stores execution facts but lacks intent awareness. After PLIx, CMC stores intent contracts, enables intent queries, supports intent versioning, and integrates checkpoints for durable execution. This transformation enables intent-driven reasoning, verification, and learning, making CMC a foundation for intent-aware systems.
+
+\textbf{Next:} Chapter 10 explores VIF integration—how VIF transforms from execution verification to intent verification.
+
+\textbf{Word Count:} \textasciitilde{}2,200 words  
+

@@ -1,0 +1,597 @@
+{
+  system_id: "mcp_tools",
+  system_name: "MCP Tools",
+  version: "1.0.0",
+  last_updated: "2025-01-27T20:50:00Z",
+  map_type: "system_topology",
+  internal_topology: {
+    core_components: [
+      {
+        component_id: "tool_registry",
+        name: "Tool Registry",
+        type: "registry_engine",
+        tier: 2,
+        description: "Registers and manages all MCP tools",
+        ports: {
+          input: [
+            "tool_registrations",
+            "registry_rules",
+          ],
+          output: [
+            "registered_tools",
+            "registry_status",
+          ],
+        },
+        dependencies: [
+          "registry_rules",
+          "tool_validator",
+        ],
+        blast_radius: "platform",
+        must_never: [
+          "Register tools without validation",
+          "Skip registry rules",
+          "Ignore tool requirements",
+          "Bypass registry validation",
+        ],
+      },
+      {
+        component_id: "tool_executor",
+        name: "Tool Executor",
+        type: "execution_engine",
+        tier: 2,
+        description: "Executes MCP tools and manages their lifecycle",
+        ports: {
+          input: [
+            "execution_requests",
+            "execution_rules",
+          ],
+          output: [
+            "execution_results",
+            "execution_status",
+          ],
+        },
+        dependencies: [
+          "execution_rules",
+          "lifecycle_manager",
+        ],
+        blast_radius: "platform",
+        must_never: [
+          "Execute tools without validation",
+          "Skip execution rules",
+          "Ignore tool requirements",
+          "Bypass execution validation",
+        ],
+      },
+      {
+        component_id: "tool_selector",
+        name: "Tool Selector",
+        type: "selection_engine",
+        tier: 2,
+        description: "Selects appropriate MCP tools based on context",
+        ports: {
+          input: [
+            "selection_requests",
+            "selection_rules",
+          ],
+          output: [
+            "selected_tools",
+            "selection_reasoning",
+          ],
+        },
+        dependencies: [
+          "selection_rules",
+          "context_analyzer",
+        ],
+        blast_radius: "platform",
+        must_never: [
+          "Select tools without validation",
+          "Skip selection rules",
+          "Ignore context requirements",
+          "Bypass selection validation",
+        ],
+      },
+      {
+        component_id: "tool_monitor",
+        name: "Tool Monitor",
+        type: "monitoring_engine",
+        tier: 2,
+        description: "Monitors MCP tool performance and health",
+        ports: {
+          input: [
+            "monitoring_requests",
+            "monitoring_rules",
+          ],
+          output: [
+            "monitoring_reports",
+            "tool_metrics",
+          ],
+        },
+        dependencies: [
+          "monitoring_rules",
+          "metrics_collector",
+        ],
+        blast_radius: "platform",
+        must_never: [
+          "Monitor tools without validation",
+          "Skip monitoring rules",
+          "Ignore tool requirements",
+          "Bypass monitoring validation",
+        ],
+      },
+      {
+        component_id: "tool_optimizer",
+        name: "Tool Optimizer",
+        type: "optimization_engine",
+        tier: 2,
+        description: "Optimizes MCP tool usage and performance",
+        ports: {
+          input: [
+            "optimization_requests",
+            "optimization_rules",
+          ],
+          output: [
+            "optimization_plans",
+            "optimization_results",
+          ],
+        },
+        dependencies: [
+          "optimization_rules",
+          "performance_analyzer",
+        ],
+        blast_radius: "platform",
+        must_never: [
+          "Optimize tools without validation",
+          "Skip optimization rules",
+          "Ignore performance requirements",
+          "Bypass optimization validation",
+        ],
+      },
+    ],
+    supporting_components: [
+      {
+        component_id: "tool_validator",
+        name: "Tool Validator",
+        type: "validation_engine",
+        tier: 1,
+        description: "Validates MCP tools for correctness and safety",
+        ports: {
+          input: [
+            "validation_requests",
+            "validation_rules",
+          ],
+          output: [
+            "validation_results",
+            "validation_status",
+          ],
+        },
+        dependencies: [
+          "validation_rules",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Validate tools without validation",
+          "Skip validation rules",
+          "Ignore validation requirements",
+          "Bypass validation validation",
+        ],
+      },
+      {
+        component_id: "lifecycle_manager",
+        name: "Lifecycle Manager",
+        type: "lifecycle_engine",
+        tier: 1,
+        description: "Manages MCP tool lifecycle and versioning",
+        ports: {
+          input: [
+            "lifecycle_requests",
+            "lifecycle_rules",
+          ],
+          output: [
+            "lifecycle_events",
+            "lifecycle_status",
+          ],
+        },
+        dependencies: [
+          "lifecycle_rules",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Manage lifecycle without validation",
+          "Skip lifecycle rules",
+          "Ignore lifecycle requirements",
+          "Bypass lifecycle validation",
+        ],
+      },
+      {
+        component_id: "context_analyzer",
+        name: "Context Analyzer",
+        type: "analysis_engine",
+        tier: 1,
+        description: "Analyzes context for tool selection",
+        ports: {
+          input: [
+            "context_requests",
+            "analysis_rules",
+          ],
+          output: [
+            "context_analysis",
+            "analysis_status",
+          ],
+        },
+        dependencies: [
+          "analysis_rules",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Analyze context without validation",
+          "Skip analysis rules",
+          "Ignore analysis requirements",
+          "Bypass analysis validation",
+        ],
+      },
+      {
+        component_id: "metrics_collector",
+        name: "Metrics Collector",
+        type: "collection_engine",
+        tier: 1,
+        description: "Collects metrics for tool monitoring",
+        ports: {
+          input: [
+            "collection_requests",
+            "collection_rules",
+          ],
+          output: [
+            "collected_metrics",
+            "collection_status",
+          ],
+        },
+        dependencies: [
+          "collection_rules",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Collect metrics without validation",
+          "Skip collection rules",
+          "Ignore collection requirements",
+          "Bypass collection validation",
+        ],
+      },
+      {
+        component_id: "performance_analyzer",
+        name: "Performance Analyzer",
+        type: "analysis_engine",
+        tier: 1,
+        description: "Analyzes tool performance for optimization",
+        ports: {
+          input: [
+            "performance_requests",
+            "analysis_rules",
+          ],
+          output: [
+            "performance_analysis",
+            "analysis_status",
+          ],
+        },
+        dependencies: [
+          "analysis_rules",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Analyze performance without validation",
+          "Skip analysis rules",
+          "Ignore performance requirements",
+          "Bypass analysis validation",
+        ],
+      },
+    ],
+  },
+  boundary_tendrils: {
+    input_ports: [
+      {
+        port_id: "tool_registrations_input",
+        name: "Tool Registrations Input",
+        type: "data_input",
+        protocol: "json",
+        description: "Receives MCP tool registrations",
+        required: true,
+        validation: "tool_registrations_schema",
+      },
+      {
+        port_id: "execution_requests_input",
+        name: "Execution Requests Input",
+        type: "data_input",
+        protocol: "json",
+        description: "Receives MCP tool execution requests",
+        required: true,
+        validation: "execution_requests_schema",
+      },
+      {
+        port_id: "selection_requests_input",
+        name: "Selection Requests Input",
+        type: "data_input",
+        protocol: "json",
+        description: "Receives tool selection requests",
+        required: true,
+        validation: "selection_requests_schema",
+      },
+    ],
+    output_ports: [
+      {
+        port_id: "execution_results_output",
+        name: "Execution Results Output",
+        type: "data_output",
+        protocol: "json",
+        description: "Outputs MCP tool execution results",
+        required: true,
+        validation: "execution_results_schema",
+      },
+      {
+        port_id: "selected_tools_output",
+        name: "Selected Tools Output",
+        type: "data_output",
+        protocol: "json",
+        description: "Outputs selected MCP tools",
+        required: true,
+        validation: "selected_tools_schema",
+      },
+      {
+        port_id: "tool_metrics_output",
+        name: "Tool Metrics Output",
+        type: "data_output",
+        protocol: "json",
+        description: "Outputs MCP tool metrics",
+        required: true,
+        validation: "tool_metrics_schema",
+      },
+    ],
+  },
+  data_flow: {
+    primary_flow: [
+      {
+        step: 1,
+        component: "tool_registry",
+        action: "Register and manage tools",
+        input: [
+          "tool_registrations",
+          "registry_rules",
+        ],
+        output: [
+          "registered_tools",
+          "registry_status",
+        ],
+      },
+      {
+        step: 2,
+        component: "tool_executor",
+        action: "Execute MCP tools",
+        input: [
+          "execution_requests",
+          "execution_rules",
+        ],
+        output: [
+          "execution_results",
+          "execution_status",
+        ],
+      },
+      {
+        step: 3,
+        component: "tool_selector",
+        action: "Select appropriate tools",
+        input: [
+          "selection_requests",
+          "selection_rules",
+        ],
+        output: [
+          "selected_tools",
+          "selection_reasoning",
+        ],
+      },
+      {
+        step: 4,
+        component: "tool_monitor",
+        action: "Monitor tool performance",
+        input: [
+          "monitoring_requests",
+          "monitoring_rules",
+        ],
+        output: [
+          "monitoring_reports",
+          "tool_metrics",
+        ],
+      },
+      {
+        step: 5,
+        component: "tool_optimizer",
+        action: "Optimize tool usage",
+        input: [
+          "optimization_requests",
+          "optimization_rules",
+        ],
+        output: [
+          "optimization_plans",
+          "optimization_results",
+        ],
+      },
+    ],
+    secondary_flows: [
+      {
+        flow_name: "tool_registration",
+        components: [
+          "tool_registry",
+          "tool_validator",
+        ],
+        description: "Registers and validates MCP tools",
+      },
+      {
+        flow_name: "tool_execution",
+        components: [
+          "tool_executor",
+          "lifecycle_manager",
+        ],
+        description: "Executes MCP tools and manages lifecycle",
+      },
+      {
+        flow_name: "tool_selection",
+        components: [
+          "tool_selector",
+          "context_analyzer",
+        ],
+        description: "Selects appropriate MCP tools based on context",
+      },
+    ],
+  },
+  security_boundaries: {
+    tier_0: {
+      components: [
+        "tool_validator",
+        "lifecycle_manager",
+        "context_analyzer",
+        "metrics_collector",
+        "performance_analyzer",
+      ],
+      description: "Supporting components with basic security requirements",
+    },
+    tier_1: {
+      components: [
+        "tool_registry",
+        "tool_executor",
+        "tool_selector",
+        "tool_monitor",
+      ],
+      description: "Processing components with standard security requirements",
+    },
+    tier_2: {
+      components: [
+        "tool_optimizer",
+      ],
+      description: "Core component with comprehensive security requirements",
+    },
+  },
+  performance_characteristics: {
+    latency: {
+      tool_registration: "< 1 second",
+      tool_execution: "< 3 seconds",
+      tool_selection: "< 2 seconds",
+      tool_monitoring: "< 1 second",
+    },
+    throughput: {
+      tool_registrations_per_minute: 1000,
+      tool_executions_per_minute: 5000,
+      tool_selections_per_minute: 10000,
+      tool_monitoring_checks_per_minute: 20000,
+    },
+    resource_usage: {
+      cpu_usage: "< 40%",
+      memory_usage: "< 300MB",
+      disk_usage: "< 2GB",
+    },
+  },
+  monitoring_points: [
+    {
+      point_id: "tool_registration_rate",
+      name: "Tool Registration Rate",
+      type: "counter",
+      description: "Number of tools registered per minute",
+    },
+    {
+      point_id: "tool_execution_time",
+      name: "Tool Execution Time",
+      type: "duration",
+      description: "Time taken for tool execution",
+    },
+    {
+      point_id: "tool_selection_accuracy",
+      name: "Tool Selection Accuracy",
+      type: "gauge",
+      description: "Accuracy of tool selection",
+    },
+    {
+      point_id: "tool_optimization_effectiveness",
+      name: "Tool Optimization Effectiveness",
+      type: "gauge",
+      description: "Effectiveness of tool optimization",
+    },
+  ],
+  error_handling: {
+    retry_policies: {
+      tool_execution: "3 retries with exponential backoff",
+      tool_selection: "2 retries with linear backoff",
+      tool_optimization: "3 retries with exponential backoff",
+    },
+    circuit_breakers: {
+      tool_service: "Open after 5 consecutive failures",
+      execution_service: "Open after 3 consecutive failures",
+    },
+    fallback_strategies: {
+      tool_execution_failure: "Use cached tool results",
+      tool_selection_failure: "Use basic tool selection",
+      tool_optimization_failure: "Use simple optimization rules",
+    },
+  },
+  deployment_considerations: {
+    scalability: {
+      horizontal_scaling: "Supported via load balancer",
+      vertical_scaling: "Supported via resource allocation",
+      auto_scaling: "Supported via metrics-based scaling",
+    },
+    availability: {
+      target_uptime: "99.9%",
+      redundancy: "Multi-instance deployment",
+      failover: "Automatic failover to standby instances",
+    },
+    maintenance: {
+      rolling_updates: "Supported",
+      downtime: "Minimal during updates",
+      rollback: "Supported via version management",
+    },
+  },
+  metadata: {
+    created: "2025-01-27T20:50:00Z",
+    updated: "2025-11-02T16:55:00Z",
+    author: "aether",
+    status: "production",
+    version: "1.0.0",
+  },
+  confidenceRouting: {
+    high: "Read T0 executive summary (100 words) or code directly",
+    medium: "Read T0 + T1 overview (500 words) + T2 architecture (2k words)",
+    low: "Read T0 + T1 + T2 + T3 detailed (10k words)",
+    veryLow: "Read T0 + T1 + T2 + T3 + T4 complete (15k+ words) or ask for help",
+  },
+  relatedSystems: [
+    {
+      system: "lucid_mcp_integration",
+      relationship: "MCP Tools integrates with LUCID MCP Integration for tool routing",
+      whenToUse: "When implementing tool routing or understanding MCP integration",
+      docs: [
+        "systems/lucid_mcp_integration/T2_architecture.md#mcp-tools",
+      ],
+      priority: "required",
+    },
+    {
+      system: "daemon_rag_system",
+      relationship: "MCP Tools provides tool registry to Daemon/RAG for tool selection",
+      whenToUse: "When implementing tool selection or understanding tool management",
+      docs: [
+        "systems/daemon_rag_system/T2_architecture.md#mcp-tools",
+      ],
+      priority: "required",
+    },
+    {
+      system: "cmc",
+      relationship: "MCP Tools stores tool metadata in CMC",
+      whenToUse: "When implementing tool storage or understanding memory persistence",
+      docs: [
+        "systems/cmc/T2_architecture.md#mcp-tools",
+      ],
+      priority: "required",
+    },
+  ],
+  documentation: {
+    T0: "knowledge_architecture/systems/mcp_tools/T0_executive.md",
+    T1: "knowledge_architecture/systems/mcp_tools/T1_overview.md",
+    T2: "knowledge_architecture/systems/mcp_tools/T2_architecture.md",
+    T3: "knowledge_architecture/systems/mcp_tools/T3_detailed.md",
+    T4: "knowledge_architecture/systems/mcp_tools/T4_complete.md",
+  },
+}

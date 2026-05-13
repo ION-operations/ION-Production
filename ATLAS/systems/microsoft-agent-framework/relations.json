@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "model-context-protocol",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Microsoft Learn documents MCP server/tool integration patterns; pin tutorial URLs in sources.yaml."
+    },
+    {
+      "type": "integrates_with",
+      "target": "openai-agents-chatgpt-public-runtime",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Docs list OpenAI/Azure OpenAI model providers where applicable."
+    },
+    {
+      "type": "integrates_with",
+      "target": "anthropic-claude-code-agent-sdk",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Docs reference Anthropic provider integrations where applicable."
+    }
+  ]
+}

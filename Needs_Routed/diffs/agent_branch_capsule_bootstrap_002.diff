@@ -1,0 +1,884 @@
+--- a/.codex/config.toml
++++ b/.codex/config.toml
+@@ -9,7 +9,10 @@
+ - Before substantive ION work, confirm the shell root contains pyproject.toml and ION/REPO_AUTHORITY.md.
+ - Treat ION/REPO_AUTHORITY.md, ION/02_architecture/ION_MOUNT_CONTRACT.md, carrier profiles, carrier templates, and active packets as authority.
+ - Use ION/05_context/current/codex_solo/HOT_CONTEXT.md as the natural boot context for the standalone Codex lane.
++- Load the branch-capsule bootstrap law from ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_PROTOCOL_V0_1.md and ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_BOOTSTRAP_BINDING_PROTOCOL_V0_1.md before material work.
+ - Capsule is minimum working context; Mini is a lookup/receipt index only.
++- Shared Codex solo context is read-only base memory for parallel agents; do not write CAPSULE.md, MINI.md, HOT_CONTEXT.md, STATUS.json, ROUTE.json, or assign C-numbers directly.
++- For material work, create or mount a unique branch capsule under ION/05_context/current/agent_context_branches/ and route candidate updates through ION/05_context/current/context_settlement/inbox/.
+ - Do not create or use the old /home/sev/ION - Production/ION_CODEX path without explicit operator approval.
+ - Do not claim ION identity, STEWARD authority, RELAY authority, PERSONA authority, production authority, live execution authority, or secrets authority.
+ - After material work, record an explicit Codex Solo capsule post through kernel.ion_codex_solo_context with confirmation token ION_BOUNDED_WRITE_CONFIRMED.
+@@ -51,4 +54,4 @@
+ type = "command"
+ command = 'python3 "$(git rev-parse --show-toplevel)/.codex/hooks/ion_session_start_context.py"'
+ timeout = 10
+-statusMessage = "Loading ION Codex Solo capsule context"
++statusMessage = "Loading ION Codex Solo capsule + branch-capsule bootstrap context"
+--- a/.codex/hooks/ion_session_start_context.py
++++ b/.codex/hooks/ion_session_start_context.py
+@@ -2,7 +2,8 @@
+ """Codex SessionStart hook for ION Codex Solo capsule context.
+ 
+ The hook is intentionally read-only. It injects a bounded HOT_CONTEXT-derived
+-developer context block when Codex starts in the active ION root.
++developer context block plus branch-capsule bootstrap law when Codex starts in
++the active ION root.
+ """
+ from __future__ import annotations
+ 
+@@ -41,7 +42,7 @@
+         "hookSpecificOutput": {
+             "hookEventName": "SessionStart",
+             "additionalContext": (
+-                "ION Codex Solo capsule context was not loaded automatically. "
++                "ION Codex Solo capsule + branch-capsule bootstrap context was not loaded automatically. "
+                 f"{message}"
+             ),
+         },
+--- /dev/null
++++ b/ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_BOOTSTRAP_BINDING_PROTOCOL_V0_1.md
+@@ -0,0 +1,105 @@
++# ION Agent Branch Capsule Bootstrap Binding Protocol v0.1
++
++Status: active provisional protocol
++Created: 2026-05-11
++Authority: Codex terminal startup/context loading only
++Production authority: false
++Live execution authority: false
++
++## Purpose
++
++This protocol makes the Agent Branch Capsule Protocol visible to new Codex
++terminals without directly editing settled shared Capsule, Mini, HOT_CONTEXT, or
++Status surfaces.
++
++The branch-capsule protocol remains settlement-governed. This binding only
++defines how new carrier sessions discover and carry its non-negotiable startup
++law.
++
++## Source protocol
++
++```text
++ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_PROTOCOL_V0_1.md
++```
++
++## Boot-loaded law
++
++Every new Codex terminal should be told:
++
++```text
++Shared Codex solo context is read-only base memory.
++Material work requires a unique branch capsule identity.
++Branch outputs are candidate state only.
++Settlement inbox is the only merge path back into shared context.
++Only a settler assigns checkpoint/C-numbers or mutates shared context.
++```
++
++## Boot surfaces
++
++This law is carried by these boot/load surfaces:
++
++```text
++.codex/config.toml
++.codex/hooks/ion_session_start_context.py
++ION/04_packages/kernel/ion_codex_solo_context.py
++ION/05_context/current/codex_solo/CONTEXT_PACKAGES.json
++ION/05_context/current/codex_solo/ROUTE.json
++ION/03_registry/ion_skill_registry.yaml
++```
++
++## Required default context package
++
++New Codex sessions should include:
++
++```text
++agent_branch_capsule_bootstrap_package
++```
++
++The package should reference:
++
++```text
++ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_PROTOCOL_V0_1.md
++ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_BOOTSTRAP_BINDING_PROTOCOL_V0_1.md
++ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json
++ION/05_context/current/context_settlement/CONTEXT_SETTLEMENT_REGISTRY_V0_1.json
++ION/04_packages/kernel/ion_agent_branch_capsule.py
++```
++
++## Hook behavior
++
++The SessionStart hook remains read-only. It should not create a branch by
++itself. It should inject a short branch-capsule law block and the route paths a
++worker must use to create or validate a branch before material work.
++
++## Canon boundary
++
++This protocol does not by itself settle the branch-capsule protocol into shared
++checkpoint canon. It creates a candidate bootstrap binding so new terminals see
++the law reliably while the context settler reviews promotion.
++
++## Non-claims
++
++This protocol does not:
++
++```text
++edit CAPSULE.md
++edit MINI.md
++edit HOT_CONTEXT.md
++edit STATUS.json
++assign a C-number
++settle candidate branch work
++grant production authority
++grant live execution authority
++create active branches automatically
++```
++
++## Next implementation lane
++
++After settlement, implement:
++
++```text
++branch capsule auto-preflight in queue runner
++active branch visibility in cockpit/drawer
++branch write-scope conflict preflight for task starts
++context settler promotion receipts for accepted branch packets
++```
+--- a/ION/03_registry/ion_skill_registry.yaml
++++ b/ION/03_registry/ion_skill_registry.yaml
+@@ -12,6 +12,7 @@
+     - mini_lookup_index
+     - active_authority_package
+     - mission_active_package
++    - agent_branch_capsule_bootstrap_package
+   route_deeper_packages:
+     - route_depth_package
+     - evidence_receipt_package
+@@ -79,6 +80,7 @@
+         - mini_lookup_index
+         - active_authority_package
+         - mission_active_package
++        - agent_branch_capsule_bootstrap_package
+       route_deeper_packages:
+         - route_depth_package
+         - evidence_receipt_package
+@@ -369,3 +371,44 @@
+       label: Receipt
+       drawer_visible: true
+       user_chore: false
++
++  - skill_id: agent-branch-capsule-bootstrap
++    display_name: Branch Capsule Bootstrap
++    class: system_guard
++    purpose: "Ensure Codex carriers mount unique branch identity and route material work through context settlement."
++    trigger_summary: "Selected before material work, multi-agent fan-out, wrong-context repair, or shared-context write attempts."
++    selection_priority: 105
++    model_stage_id: context_settlement_guard
++    preferred_model: gpt-5.5
++    default_reasoning_effort: medium
++    activates_templates:
++      - ION/07_templates/context/ION_CONTEXT_LOAD_PROOF.md
++      - ION/07_templates/actions/FULL_CARRIER_ACTION_RECEIPT.md
++    template_bindings: []
++    context_mount:
++      required_packages:
++        - minimum_working_capsule
++        - active_authority_package
++        - agent_branch_capsule_bootstrap_package
++      route_deeper_packages:
++        - route_depth_package
++        - evidence_receipt_package
++    allowed_authority:
++      read_context: true
++      queue_work: bounded_branch_or_settlement_packet_only
++      write_files: branch_context_and_settlement_inbox_only
++      shared_context_write: false
++      assign_checkpoint: false
++      production_authority: false
++      live_execution_authority: false
++      secrets_authority: false
++    proof_contract:
++      context_identity_card_required: true
++      context_proof_required: true
++      template_action_proof_required: true
++      receipt_required: true
++      settlement_required_for_shared_context: true
++    ui:
++      label: Branch Guard
++      drawer_visible: true
++      user_chore: false
+--- a/ION/04_packages/kernel/ion_codex_solo_context.py
++++ b/ION/04_packages/kernel/ion_codex_solo_context.py
+@@ -34,6 +34,11 @@
+ HOT_CONTEXT_PATH = SOLO_DIR / "HOT_CONTEXT.md"
+ LONG_HORIZON_PATH = SOLO_DIR / "LONG_HORIZON.json"
+ CONTEXT_PACKAGES_PATH = SOLO_DIR / "CONTEXT_PACKAGES.json"
++BRANCH_CAPSULE_PROTOCOL_PATH = Path("ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_PROTOCOL_V0_1.md")
++BRANCH_CAPSULE_BOOTSTRAP_PROTOCOL_PATH = Path("ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_BOOTSTRAP_BINDING_PROTOCOL_V0_1.md")
++BRANCH_CAPSULE_REGISTRY_PATH = Path("ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json")
++CONTEXT_SETTLEMENT_REGISTRY_PATH = Path("ION/05_context/current/context_settlement/CONTEXT_SETTLEMENT_REGISTRY_V0_1.json")
++AGENT_BRANCH_CAPSULE_HELPER_PATH = Path("ION/04_packages/kernel/ion_agent_branch_capsule.py")
+ MAX_MINI_LINES = 30
+ MAX_CAPSULE_CONTEXT_LINES = 80
+ MAX_CAPSULE_ROWS_PER_EPOCH = 10
+@@ -173,6 +178,36 @@
+         "required": True,
+         "classification": "helixion_joc_orchestration_context_brief",
+         "why": "Human/model-readable briefing for the Helixion/JOC orchestration package.",
++    },
++    {
++        "path": BRANCH_CAPSULE_PROTOCOL_PATH.as_posix(),
++        "required": True,
++        "classification": "active_context_isolation_protocol",
++        "why": "Boot-loaded law: active agents/conversations need unique branch capsules and cannot directly mutate shared Codex solo context.",
++    },
++    {
++        "path": BRANCH_CAPSULE_BOOTSTRAP_PROTOCOL_PATH.as_posix(),
++        "required": True,
++        "classification": "active_context_bootstrap_binding_protocol",
++        "why": "Defines how new Codex terminals inherit branch-capsule law without direct shared-context edits.",
++    },
++    {
++        "path": BRANCH_CAPSULE_REGISTRY_PATH.as_posix(),
++        "required": True,
++        "classification": "active_branch_capsule_registry",
++        "why": "Machine-readable registry for active/provisional branch capsules and write-scope claims.",
++    },
++    {
++        "path": CONTEXT_SETTLEMENT_REGISTRY_PATH.as_posix(),
++        "required": True,
++        "classification": "active_context_settlement_registry",
++        "why": "Settlement lane registry; shared context and C-number assignment must flow through this lane.",
++    },
++    {
++        "path": AGENT_BRANCH_CAPSULE_HELPER_PATH.as_posix(),
++        "required": True,
++        "classification": "active_branch_capsule_runtime_helper",
++        "why": "Runtime helper for branch capsule creation, identity-card rendering, validation, and settlement request generation.",
+     },
+ )
+ 
+@@ -627,6 +662,23 @@
+             "window": {"kind": "explicit_operator_or_blocker_triggered"},
+         },
+         {
++            "package_id": "agent_branch_capsule_bootstrap_package",
++            "context_type": "context_isolation_and_settlement_bootstrap",
++            "load_policy": "always_inline_boot_law_for_material_work",
++            "path_refs": [
++                BRANCH_CAPSULE_PROTOCOL_PATH.as_posix(),
++                BRANCH_CAPSULE_BOOTSTRAP_PROTOCOL_PATH.as_posix(),
++                BRANCH_CAPSULE_REGISTRY_PATH.as_posix(),
++                CONTEXT_SETTLEMENT_REGISTRY_PATH.as_posix(),
++                AGENT_BRANCH_CAPSULE_HELPER_PATH.as_posix(),
++            ],
++            "window": {
++                "kind": "boot_law_summary_plus_route_refs",
++                "shared_context_write": False,
++                "settlement_required": True,
++            },
++        },
++        {
+             "package_id": "helixion_joc_orchestration_package",
+             "context_type": "active_orchestration",
+             "load_policy": "use_for_helixion_joc_daimon_wisdomnet_rebuild_work",
+@@ -652,6 +704,7 @@
+             "long_horizon_capsule_index",
+             "active_authority_package",
+             "mission_active_package",
++            "agent_branch_capsule_bootstrap_package",
+             "route_depth_package",
+         ],
+         "packages": packages,
+@@ -987,6 +1040,48 @@
+     return post
+ 
+ 
++
++def _branch_capsule_bootstrap_summary(shell_root: Path, model: Mapping[str, Any]) -> str:
++    """Return read-only branch-capsule startup law for Codex SessionStart."""
++    packages = ((model.get("context_packages") or {}).get("packages") or [])
++    selected = set((model.get("context_packages") or {}).get("selected_by_default") or [])
++    package_present = any(
++        isinstance(package, Mapping)
++        and package.get("package_id") == "agent_branch_capsule_bootstrap_package"
++        for package in packages
++    )
++    path_state = {
++        "protocol": (shell_root / BRANCH_CAPSULE_PROTOCOL_PATH).is_file(),
++        "bootstrap_protocol": (shell_root / BRANCH_CAPSULE_BOOTSTRAP_PROTOCOL_PATH).is_file(),
++        "branch_registry": (shell_root / BRANCH_CAPSULE_REGISTRY_PATH).is_file(),
++        "settlement_registry": (shell_root / CONTEXT_SETTLEMENT_REGISTRY_PATH).is_file(),
++        "runtime_helper": (shell_root / AGENT_BRANCH_CAPSULE_HELPER_PATH).is_file(),
++        "package_present": package_present,
++        "selected_by_default": "agent_branch_capsule_bootstrap_package" in selected,
++    }
++    return "\n".join(
++        [
++            "Branch-capsule bootstrap status:",
++            json.dumps(path_state, indent=2, sort_keys=True),
++            "",
++            "Material-work law:",
++            "- Shared Codex solo context is read-only base memory.",
++            "- Every active agent/conversation/task doing material work needs a unique branch capsule identity.",
++            "- Required identity fields: context_instance_id, branch_id, conversation_tag, agent_tag, task_tag, parent_context_id, loaded_refs, write_scope.",
++            "- Agents must not directly edit CAPSULE.md, MINI.md, HOT_CONTEXT.md, STATUS.json, ROUTE.json, or assign C-numbers.",
++            "- Candidate branch results go to branch SETTLEMENT_REQUESTS/ and ION/05_context/current/context_settlement/inbox/.",
++            "- Only context settlement may promote branch outputs into shared context.",
++            "",
++            "Route refs:",
++            f"- {BRANCH_CAPSULE_PROTOCOL_PATH.as_posix()}",
++            f"- {BRANCH_CAPSULE_BOOTSTRAP_PROTOCOL_PATH.as_posix()}",
++            f"- {BRANCH_CAPSULE_REGISTRY_PATH.as_posix()}",
++            f"- {CONTEXT_SETTLEMENT_REGISTRY_PATH.as_posix()}",
++            f"- {AGENT_BRANCH_CAPSULE_HELPER_PATH.as_posix()}",
++        ]
++    )
++
++
+ def _truncate_utf8(text: str, *, max_bytes: int) -> tuple[str, bool]:
+     encoded = text.encode("utf-8")
+     if len(encoded) <= max_bytes:
+@@ -1032,8 +1127,13 @@
+         "- Confirm shell root before ION work: `pyproject.toml` and `ION/REPO_AUTHORITY.md` must be siblings.",
+         "- Use `ION/REPO_AUTHORITY.md`, `ION/02_architecture/ION_MOUNT_CONTRACT.md`, and carrier packets as authority.",
+         "- Treat Capsule as minimum working context and Mini as lookup/receipt index only.",
++        "- Treat shared Codex solo context as read-only base memory for branch work; use branch capsules and settlement for material changes.",
+         "- Do not claim ION identity, STEWARD/RELAY/PERSONA authority, production authority, live execution authority, or secrets authority.",
+         "- After material work, record a Codex Solo capsule post with explicit confirmation.",
++        "",
++        "## Branch Capsule Bootstrap Law",
++        "",
++        _branch_capsule_bootstrap_summary(shell_root, model),
+         "",
+         "## Startup Recency Snapshot",
+         "",
+--- a/ION/05_context/current/codex_solo/CONTEXT_PACKAGES.json
++++ b/ION/05_context/current/codex_solo/CONTEXT_PACKAGES.json
+@@ -1,7 +1,7 @@
+ {
+-  "generated_at": "2026-05-11T14:51:35+00:00",
++  "generated_at": "2026-05-11T16:22:51+00:00",
+   "live_execution_authority": false,
+-  "package_count": 9,
++  "package_count": 10,
+   "packages": [
+     {
+       "context_type": "active_short_horizon",
+@@ -48,7 +48,12 @@
+       "path_refs": [
+         "ION/REPO_AUTHORITY.md",
+         "ION/03_registry/agent_context_system_registry.yaml",
+-        "ION/05_context/current/agent_context_systems/LEAD_DEV_ACTIVE_OPERATING_CONTEXT_V105.md"
++        "ION/05_context/current/agent_context_systems/LEAD_DEV_ACTIVE_OPERATING_CONTEXT_V105.md",
++        "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_PROTOCOL_V0_1.md",
++        "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_BOOTSTRAP_BINDING_PROTOCOL_V0_1.md",
++        "ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json",
++        "ION/05_context/current/context_settlement/CONTEXT_SETTLEMENT_REGISTRY_V0_1.json",
++        "ION/04_packages/kernel/ion_agent_branch_capsule.py"
+       ],
+       "window": {
+         "kind": "route_excerpt",
+@@ -93,7 +98,12 @@
+         "ION/02_architecture/HELIXION_JOC_DAIMON_WISDOMNET_MASTER_EVOLUTION_PLAN.md",
+         "ION/02_architecture/HELIXION_JOC_ORCHESTRATION_WORKFLOW_PROTOCOL.md",
+         "ION/05_context/current/helixion_joc_rebuild/HELIXION_JOC_ORCHESTRATION_CONTEXT_PACKAGE.json",
+-        "ION/05_context/current/helixion_joc_rebuild/HELIXION_JOC_ORCHESTRATION_CONTEXT_PACKAGE.md"
++        "ION/05_context/current/helixion_joc_rebuild/HELIXION_JOC_ORCHESTRATION_CONTEXT_PACKAGE.md",
++        "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_PROTOCOL_V0_1.md",
++        "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_BOOTSTRAP_BINDING_PROTOCOL_V0_1.md",
++        "ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json",
++        "ION/05_context/current/context_settlement/CONTEXT_SETTLEMENT_REGISTRY_V0_1.json",
++        "ION/04_packages/kernel/ion_agent_branch_capsule.py"
+       ],
+       "window": {
+         "kind": "validate_before_queue",
+@@ -125,6 +135,23 @@
+       }
+     },
+     {
++      "context_type": "context_isolation_and_settlement_bootstrap",
++      "load_policy": "always_inline_boot_law_for_material_work",
++      "package_id": "agent_branch_capsule_bootstrap_package",
++      "path_refs": [
++        "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_PROTOCOL_V0_1.md",
++        "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_BOOTSTRAP_BINDING_PROTOCOL_V0_1.md",
++        "ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json",
++        "ION/05_context/current/context_settlement/CONTEXT_SETTLEMENT_REGISTRY_V0_1.json",
++        "ION/04_packages/kernel/ion_agent_branch_capsule.py"
++      ],
++      "window": {
++        "kind": "boot_law_summary_plus_route_refs",
++        "settlement_required": true,
++        "shared_context_write": false
++      }
++    },
++    {
+       "context_type": "active_orchestration",
+       "load_policy": "use_for_helixion_joc_daimon_wisdomnet_rebuild_work",
+       "package_id": "helixion_joc_orchestration_package",
+@@ -151,6 +178,7 @@
+     "long_horizon_capsule_index",
+     "active_authority_package",
+     "mission_active_package",
++    "agent_branch_capsule_bootstrap_package",
+     "route_depth_package"
+   ]
+ }
+--- a/ION/05_context/current/codex_solo/ROUTE.json
++++ b/ION/05_context/current/codex_solo/ROUTE.json
+@@ -1,14 +1,14 @@
+ {
+   "entries": [
+     {
+-      "bytes": 51665,
++      "bytes": 52351,
+       "classification": "codex_solo_minimum_working_context",
+       "exists": true,
+       "is_file": true,
+       "path": "ION/05_context/current/codex_solo/CAPSULE.md",
+       "repo_relative": true,
+       "required": true,
+-      "sha256": "e6f358e654ed23b07286c9357d0014e6b50ac27732b15f0abfd152f9d798adda",
++      "sha256": "56b19e7e92ea60466d8689e60013de7edc4e6cdaecf80473c0f919b2898092d6",
+       "why": "Minimum context the standalone Codex lane must always carry."
+     },
+     {
+@@ -100,14 +100,14 @@
+       "why": "Defines skills as activation control while templates remain proof law."
+     },
+     {
+-      "bytes": 13788,
++      "bytes": 15454,
+       "classification": "codex_skill_activation_registry",
+       "exists": true,
+       "is_file": true,
+       "path": "ION/03_registry/ion_skill_registry.yaml",
+       "repo_relative": true,
+       "required": true,
+-      "sha256": "721e5784a88328561204ef949f45d41d6387d85fa85000f43ebe5730b0d0f5f4",
++      "sha256": "9bfb63e446d9dc43b85603b3cc5ba6d89476cf5e081c0097520bc8dc4b6b4a08",
+       "why": "Active skill registry for Codex chat, ION handoff, recovery, template curation, and receipts."
+     },
+     {
+@@ -230,23 +230,78 @@
+       "required": true,
+       "sha256": "926e705ad737cf8873c2915f61d9b48c9da9126f91ab6808355993079dba4faa",
+       "why": "Human/model-readable briefing for the Helixion/JOC orchestration package."
++    },
++    {
++      "bytes": 6751,
++      "classification": "active_context_isolation_protocol",
++      "exists": true,
++      "is_file": true,
++      "path": "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_PROTOCOL_V0_1.md",
++      "repo_relative": true,
++      "required": true,
++      "sha256": "a88d5f2634c2b3327c340ddb1e22e0c3c95026581bb6030b2547057b8dea9280",
++      "why": "Boot-loaded law: active agents/conversations need unique branch capsules and cannot directly mutate shared Codex solo context."
++    },
++    {
++      "bytes": 2911,
++      "classification": "active_context_bootstrap_binding_protocol",
++      "exists": true,
++      "is_file": true,
++      "path": "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_BOOTSTRAP_BINDING_PROTOCOL_V0_1.md",
++      "repo_relative": true,
++      "required": true,
++      "sha256": "e922e5c69a6a660f0a281d0f3418948dca6a3cb9542670a3b7d058c1aae61d39",
++      "why": "Defines how new Codex terminals inherit branch-capsule law without direct shared-context edits."
++    },
++    {
++      "bytes": 1335,
++      "classification": "active_branch_capsule_registry",
++      "exists": true,
++      "is_file": true,
++      "path": "ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json",
++      "repo_relative": true,
++      "required": true,
++      "sha256": "869947049bf7634d255ef8b2f7dfa1675ee4495a2451471714084e4fd5cdce6d",
++      "why": "Machine-readable registry for active/provisional branch capsules and write-scope claims."
++    },
++    {
++      "bytes": 3726,
++      "classification": "active_context_settlement_registry",
++      "exists": true,
++      "is_file": true,
++      "path": "ION/05_context/current/context_settlement/CONTEXT_SETTLEMENT_REGISTRY_V0_1.json",
++      "repo_relative": true,
++      "required": true,
++      "sha256": "1f0dd2476beb97243665b93d7d9e3506db2cbfff605badc8d9476460dc2b7e00",
++      "why": "Settlement lane registry; shared context and C-number assignment must flow through this lane."
++    },
++    {
++      "bytes": 22480,
++      "classification": "active_branch_capsule_runtime_helper",
++      "exists": true,
++      "is_file": true,
++      "path": "ION/04_packages/kernel/ion_agent_branch_capsule.py",
++      "repo_relative": true,
++      "required": true,
++      "sha256": "3e2e4a9714f6778a4eddf8e4803841f56c2e0bf4142edced82d09965ef8e008a",
++      "why": "Runtime helper for branch capsule creation, identity-card rendering, validation, and settlement request generation."
+     }
+   ],
+   "live_execution_authority": false,
+   "production_authority": false,
+   "schema_id": "ion.codex_solo_route.v1",
+-  "updated_at": "2026-05-11T14:51:35+00:00",
++  "updated_at": "2026-05-11T16:22:51+00:00",
+   "validation": {
+     "entries": [
+       {
+-        "bytes": 51665,
++        "bytes": 52351,
+         "classification": "codex_solo_minimum_working_context",
+         "exists": true,
+         "is_file": true,
+         "path": "ION/05_context/current/codex_solo/CAPSULE.md",
+         "repo_relative": true,
+         "required": true,
+-        "sha256": "e6f358e654ed23b07286c9357d0014e6b50ac27732b15f0abfd152f9d798adda",
++        "sha256": "56b19e7e92ea60466d8689e60013de7edc4e6cdaecf80473c0f919b2898092d6",
+         "why": "Minimum context the standalone Codex lane must always carry."
+       },
+       {
+@@ -338,14 +393,14 @@
+         "why": "Defines skills as activation control while templates remain proof law."
+       },
+       {
+-        "bytes": 13788,
++        "bytes": 15454,
+         "classification": "codex_skill_activation_registry",
+         "exists": true,
+         "is_file": true,
+         "path": "ION/03_registry/ion_skill_registry.yaml",
+         "repo_relative": true,
+         "required": true,
+-        "sha256": "721e5784a88328561204ef949f45d41d6387d85fa85000f43ebe5730b0d0f5f4",
++        "sha256": "9bfb63e446d9dc43b85603b3cc5ba6d89476cf5e081c0097520bc8dc4b6b4a08",
+         "why": "Active skill registry for Codex chat, ION handoff, recovery, template curation, and receipts."
+       },
+       {
+@@ -468,6 +523,61 @@
+         "required": true,
+         "sha256": "926e705ad737cf8873c2915f61d9b48c9da9126f91ab6808355993079dba4faa",
+         "why": "Human/model-readable briefing for the Helixion/JOC orchestration package."
++      },
++      {
++        "bytes": 6751,
++        "classification": "active_context_isolation_protocol",
++        "exists": true,
++        "is_file": true,
++        "path": "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_PROTOCOL_V0_1.md",
++        "repo_relative": true,
++        "required": true,
++        "sha256": "a88d5f2634c2b3327c340ddb1e22e0c3c95026581bb6030b2547057b8dea9280",
++        "why": "Boot-loaded law: active agents/conversations need unique branch capsules and cannot directly mutate shared Codex solo context."
++      },
++      {
++        "bytes": 2911,
++        "classification": "active_context_bootstrap_binding_protocol",
++        "exists": true,
++        "is_file": true,
++        "path": "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_BOOTSTRAP_BINDING_PROTOCOL_V0_1.md",
++        "repo_relative": true,
++        "required": true,
++        "sha256": "e922e5c69a6a660f0a281d0f3418948dca6a3cb9542670a3b7d058c1aae61d39",
++        "why": "Defines how new Codex terminals inherit branch-capsule law without direct shared-context edits."
++      },
++      {
++        "bytes": 1335,
++        "classification": "active_branch_capsule_registry",
++        "exists": true,
++        "is_file": true,
++        "path": "ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json",
++        "repo_relative": true,
++        "required": true,
++        "sha256": "869947049bf7634d255ef8b2f7dfa1675ee4495a2451471714084e4fd5cdce6d",
++        "why": "Machine-readable registry for active/provisional branch capsules and write-scope claims."
++      },
++      {
++        "bytes": 3726,
++        "classification": "active_context_settlement_registry",
++        "exists": true,
++        "is_file": true,
++        "path": "ION/05_context/current/context_settlement/CONTEXT_SETTLEMENT_REGISTRY_V0_1.json",
++        "repo_relative": true,
++        "required": true,
++        "sha256": "1f0dd2476beb97243665b93d7d9e3506db2cbfff605badc8d9476460dc2b7e00",
++        "why": "Settlement lane registry; shared context and C-number assignment must flow through this lane."
++      },
++      {
++        "bytes": 22480,
++        "classification": "active_branch_capsule_runtime_helper",
++        "exists": true,
++        "is_file": true,
++        "path": "ION/04_packages/kernel/ion_agent_branch_capsule.py",
++        "repo_relative": true,
++        "required": true,
++        "sha256": "3e2e4a9714f6778a4eddf8e4803841f56c2e0bf4142edced82d09965ef8e008a",
++        "why": "Runtime helper for branch capsule creation, identity-card rendering, validation, and settlement request generation."
+       }
+     ],
+     "findings": [],
+--- a/ION/05_context/current/context_settlement/CONTEXT_SETTLEMENT_REGISTRY_V0_1.json
++++ b/ION/05_context/current/context_settlement/CONTEXT_SETTLEMENT_REGISTRY_V0_1.json
+@@ -1,9 +1,47 @@
+ {
+-  "schema_id": "ion.context_settlement.registry.v1",
++  "active_claims": [
++    "ION/05_context/current/context_settlement/claims/claim_20260511_agent_branch_capsule_runtime_001.json",
++    "ION/05_context/current/context_settlement/claims/claim_20260511_agent_branch_capsule_bootstrap_002.json"
++  ],
++  "active_conflicts": [
++    "ION/05_context/current/context_settlement/conflicts/CHECKPOINT_COLLISION_C088_20260511.json"
++  ],
++  "authority": {
++    "browser_control_authority": false,
++    "live_execution_authority": false,
++    "production_authority": false,
++    "secrets_authority": false
++  },
++  "bootstrap_candidates": [
++    {
++      "artifact_id": "agent_branch_capsule_bootstrap_002",
++      "authority": "candidate bootstrap control artifact; no shared context promotion",
++      "path": "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_BOOTSTRAP_BINDING_PROTOCOL_V0_1.md",
++      "role": "candidate terminal boot/load binding for branch-capsule law"
++    }
++  ],
+   "created_at": "2026-05-11",
+-  "status": "ACTIVE_PROVISIONAL",
++  "folders": {
++    "accepted": "ION/05_context/current/context_settlement/accepted",
++    "claims": "ION/05_context/current/context_settlement/claims",
++    "conflicts": "ION/05_context/current/context_settlement/conflicts",
++    "inbox": "ION/05_context/current/context_settlement/inbox"
++  },
++  "non_claims": [
++    "This registry does not settle or accept any candidate packet.",
++    "This registry does not run the local content-proof scanner.",
++    "This registry does not update Capsule/Mini/HOT_CONTEXT.",
++    "This registry does not resolve the C-088 collision by itself."
++  ],
++  "pending_inbox_packets": [
++    "ION/05_context/current/context_settlement/inbox/SETTLE_UI_RECOVERY_ANCHORED_PAGES_AND_DRAWER_CANON_20260511.json",
++    "ION/05_context/current/context_settlement/inbox/SETTLE_WORKPACKETS_DIFFS_INGESTION_002_20260510T234208.json",
++    "ION/05_context/current/context_settlement/inbox/SETTLE_AGENT_BRANCH_CAPSULE_RUNTIME_001_20260511.json",
++    "ION/05_context/current/context_settlement/inbox/SETTLE_AGENT_BRANCH_CAPSULE_BOOTSTRAP_002_20260511.json"
++  ],
+   "protocol": "ION/02_architecture/ION_MULTI_AGENT_CONTEXT_AND_WORKPACKET_SETTLEMENT_PROTOCOL_V0_1.md",
+   "purpose": "Serialize shared ION context updates while allowing parallel agents to produce candidate receipts, workpackets, diffs, and task returns.",
++  "schema_id": "ion.context_settlement.registry.v1",
+   "settled_surfaces": [
+     "ION/05_context/current/codex_solo/CAPSULE.md",
+     "ION/05_context/current/codex_solo/MINI.md",
+@@ -11,20 +49,6 @@
+     "ION/05_context/current/codex_solo/STATUS.json",
+     "ION/05_context/current/codex_solo/ROUTE.json",
+     "checkpoint indexes / C-number assignment"
+-  ],
+-  "folders": {
+-    "claims": "ION/05_context/current/context_settlement/claims",
+-    "inbox": "ION/05_context/current/context_settlement/inbox",
+-    "accepted": "ION/05_context/current/context_settlement/accepted",
+-    "conflicts": "ION/05_context/current/context_settlement/conflicts"
+-  },
+-  "source_artifacts": [
+-    {
+-      "artifact_id": "ion_workpackets_diffs_ingestion_002_20260510T234208",
+-      "path": "ION_CODEX FULL/workpackets/ion_workpackets_diffs_ingestion_002_20260510T234208.zip",
+-      "role": "candidate workpacket/diff ingestion and settlement batch source law",
+-      "authority": "candidate control artifact; no diff application or state promotion"
+-    }
+   ],
+   "settlement_batches": [
+     "B00_root_and_folder_proof",
+@@ -41,28 +65,14 @@
+     "C01_checkpoint_assignment_and_shared_context_settlement",
+     "C02_generated_capsule_mini_hot_context_update"
+   ],
+-  "active_conflicts": [
+-    "ION/05_context/current/context_settlement/conflicts/CHECKPOINT_COLLISION_C088_20260511.json"
++  "source_artifacts": [
++    {
++      "artifact_id": "ion_workpackets_diffs_ingestion_002_20260510T234208",
++      "authority": "candidate control artifact; no diff application or state promotion",
++      "path": "ION_CODEX FULL/workpackets/ion_workpackets_diffs_ingestion_002_20260510T234208.zip",
++      "role": "candidate workpacket/diff ingestion and settlement batch source law"
++    }
+   ],
+-  "pending_inbox_packets": [
+-    "ION/05_context/current/context_settlement/inbox/SETTLE_UI_RECOVERY_ANCHORED_PAGES_AND_DRAWER_CANON_20260511.json",
+-    "ION/05_context/current/context_settlement/inbox/SETTLE_WORKPACKETS_DIFFS_INGESTION_002_20260510T234208.json",
+-    "ION/05_context/current/context_settlement/inbox/SETTLE_AGENT_BRANCH_CAPSULE_RUNTIME_001_20260511.json"
+-  ],
+-  "authority": {
+-    "production_authority": false,
+-    "live_execution_authority": false,
+-    "secrets_authority": false,
+-    "browser_control_authority": false
+-  },
+-  "non_claims": [
+-    "This registry does not settle or accept any candidate packet.",
+-    "This registry does not run the local content-proof scanner.",
+-    "This registry does not update Capsule/Mini/HOT_CONTEXT.",
+-    "This registry does not resolve the C-088 collision by itself."
+-  ],
+-  "active_claims": [
+-    "ION/05_context/current/context_settlement/claims/claim_20260511_agent_branch_capsule_runtime_001.json"
+-  ],
++  "status": "ACTIVE_PROVISIONAL",
+   "updated_at": "2026-05-11"
+ }
+--- /dev/null
++++ b/ION/05_context/current/context_settlement/claims/claim_20260511_agent_branch_capsule_bootstrap_002.json
+@@ -0,0 +1,36 @@
++{
++  "authority": {
++    "live_execution_authority": false,
++    "production_authority": false,
++    "secrets_authority": false
++  },
++  "claim_id": "claim_20260511_agent_branch_capsule_bootstrap_002",
++  "claim_type": "bootstrap_binding_candidate",
++  "claimed_write_scope": [
++    ".codex/config.toml",
++    ".codex/hooks/ion_session_start_context.py",
++    "ION/04_packages/kernel/ion_codex_solo_context.py",
++    "ION/05_context/current/codex_solo/CONTEXT_PACKAGES.json",
++    "ION/05_context/current/codex_solo/ROUTE.json",
++    "ION/03_registry/ion_skill_registry.yaml",
++    "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_BOOTSTRAP_BINDING_PROTOCOL_V0_1.md",
++    "ION/05_context/current/context_settlement/inbox/SETTLE_AGENT_BRANCH_CAPSULE_BOOTSTRAP_002_20260511.json"
++  ],
++  "created_at": "2026-05-11",
++  "forbidden_write_scope": [
++    "ION/05_context/current/codex_solo/CAPSULE.md",
++    "ION/05_context/current/codex_solo/MINI.md",
++    "ION/05_context/current/codex_solo/HOT_CONTEXT.md",
++    "ION/05_context/current/codex_solo/STATUS.json",
++    "checkpoint indexes / C-number assignment"
++  ],
++  "proof_obligations": [
++    "targeted Codex solo context tests pass",
++    "branch capsule runtime tests pass",
++    "boot context contains Branch Capsule Bootstrap Law",
++    "route and context package selectors include branch-capsule bootstrap paths"
++  ],
++  "schema_id": "ion.context_settlement.claim.v1",
++  "settlement_packet": "ION/05_context/current/context_settlement/inbox/SETTLE_AGENT_BRANCH_CAPSULE_BOOTSTRAP_002_20260511.json",
++  "status": "ACTIVE_CANDIDATE_CLAIM"
++}
+--- /dev/null
++++ b/ION/05_context/current/context_settlement/inbox/SETTLE_AGENT_BRANCH_CAPSULE_BOOTSTRAP_002_20260511.json
+@@ -0,0 +1,46 @@
++{
++  "acceptance_gates": [
++    "new Codex boot context includes branch-capsule law",
++    "context packages include agent_branch_capsule_bootstrap_package by default",
++    "route includes branch protocol, bootstrap binding, branch registry, settlement registry, and helper",
++    "skill registry exposes a branch-capsule bootstrap guard",
++    "shared Capsule/Mini/HOT_CONTEXT/STATUS are not edited by this packet",
++    "no C-number is assigned by the agent"
++  ],
++  "authority": {
++    "browser_control_authority": false,
++    "live_execution_authority": false,
++    "production_authority": false,
++    "secrets_authority": false
++  },
++  "checkpoint_request": {
++    "agent_assigned_c_number": null,
++    "assign_c_number": true,
++    "preferred_settlement": "promote branch-capsule law into Codex terminal boot surfaces only after settler review"
++  },
++  "created_at": "2026-05-11",
++  "domain": "context_settlement",
++  "non_claims": [
++    "This packet does not settle the branch-capsule protocol into shared context.",
++    "This packet does not edit CAPSULE.md, MINI.md, HOT_CONTEXT.md, or STATUS.json.",
++    "This packet does not create active branches automatically.",
++    "This packet does not grant production or live execution authority."
++  ],
++  "packet_id": "SETTLE_AGENT_BRANCH_CAPSULE_BOOTSTRAP_002_20260511",
++  "requested_outcome": "ACCEPTED_AS_BOOTSTRAP_CANDIDATE",
++  "risk_class": "bootstrap_law_candidate",
++  "schema_id": "ion.context_settlement.inbox_packet.v1",
++  "settlement_batch": "C00_active_agent_claim_review_then_C01_checkpoint_assignment_and_shared_context_settlement",
++  "source_refs": [
++    "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_PROTOCOL_V0_1.md",
++    "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_BOOTSTRAP_BINDING_PROTOCOL_V0_1.md",
++    ".codex/config.toml",
++    ".codex/hooks/ion_session_start_context.py",
++    "ION/04_packages/kernel/ion_codex_solo_context.py",
++    "ION/05_context/current/codex_solo/CONTEXT_PACKAGES.json",
++    "ION/05_context/current/codex_solo/ROUTE.json",
++    "ION/03_registry/ion_skill_registry.yaml"
++  ],
++  "source_type": "bootstrap_binding",
++  "status": "CANDIDATE_PENDING_SETTLEMENT"
++}
+--- a/ION/tests/test_kernel_ion_codex_solo_context.py
++++ b/ION/tests/test_kernel_ion_codex_solo_context.py
+@@ -31,14 +31,23 @@
+         "ION/06_intelligence/research/2026-05-07_codex_single_agent_mini_capsule_research.md": "# research\n",
+         "ION/02_architecture/CODEX_CAPSULE_OPERATING_PROTOCOL.md": "# capsule operating protocol\n",
+         "ION/02_architecture/ION_SKILL_ACTIVATION_PROTOCOL.md": "# skill activation protocol\n",
++        "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_PROTOCOL_V0_1.md": "# branch capsule protocol\n",
++        "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_BOOTSTRAP_BINDING_PROTOCOL_V0_1.md": "# branch capsule bootstrap protocol\n",
+         "ION/02_architecture/ION_CODEX_CHAT_ENGINE_PROTOCOL.md": "# chat engine protocol\n",
+         "ION/02_architecture/CODEX_CARRIER_LIMITS_CONTEXT_PROTOCOL.md": "# codex carrier limits protocol\n",
+         "ION/03_registry/codex_carrier_limits_registry.yaml": "schema_id: ion.codex_carrier_limits_registry.v1\nstatus: ACTIVE\n",
+         "ION/05_context/current/codex_solo/CODEX_CARRIER_LIMITS_CONTEXT.json": "{\"schema_id\":\"ion.codex_carrier_limits_context.v1\"}\n",
++        "ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json": "{\"schema_id\":\"ion.agent_branch_capsule.registry.v1\",\"active_branches\":[]}\n",
++        "ION/05_context/current/context_settlement/CONTEXT_SETTLEMENT_REGISTRY_V0_1.json": "{\"schema_id\":\"ion.context_settlement.registry.v1\",\"status\":\"ACTIVE_PROVISIONAL\"}\n",
++        "ION/04_packages/kernel/ion_agent_branch_capsule.py": "# branch helper fixture\n",
+         "ION/03_registry/ion_skill_registry.yaml": "schema_id: ion.skill_registry.v1\nproduction_authority: false\nlive_execution_authority: false\nsecrets_authority: false\nskills: []\n",
+         "ION/03_registry/ion_native_lens_registry.yaml": "schema_id: ion.native_lens_registry.v1\nproduction_authority: false\nlive_execution_authority: false\nsecrets_authority: false\nlenses: []\n",
+         "ION/05_context/current/codex_cli/CODEX_CAPSULE_CHAT_REBUILD_ORCHESTRATION_20260507.md": "# orchestration\n",
+         "ION/05_context/current/codex_cli/CODEX_CAPSULE_CHAT_APP_UI_ORCHESTRATION_20260507.md": "# ui orchestration\n",
++        "ION/02_architecture/HELIXION_JOC_DAIMON_WISDOMNET_MASTER_EVOLUTION_PLAN.md": "# helixion master plan\n",
++        "ION/02_architecture/HELIXION_JOC_ORCHESTRATION_WORKFLOW_PROTOCOL.md": "# helixion workflow\n",
++        "ION/05_context/current/helixion_joc_rebuild/HELIXION_JOC_ORCHESTRATION_CONTEXT_PACKAGE.json": "{\"schema_id\":\"ion.helixion_joc_context_package.v1\"}\n",
++        "ION/05_context/current/helixion_joc_rebuild/HELIXION_JOC_ORCHESTRATION_CONTEXT_PACKAGE.md": "# helixion context package\n",
+     }.items():
+         path = root / rel
+         path.parent.mkdir(parents=True, exist_ok=True)
+@@ -79,6 +88,9 @@
+     assert "ION/02_architecture/CODEX_CARRIER_LIMITS_CONTEXT_PROTOCOL.md" in route_paths
+     assert "ION/03_registry/codex_carrier_limits_registry.yaml" in route_paths
+     assert "ION/05_context/current/codex_solo/CODEX_CARRIER_LIMITS_CONTEXT.json" in route_paths
++    assert "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_PROTOCOL_V0_1.md" in route_paths
++    assert "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_BOOTSTRAP_BINDING_PROTOCOL_V0_1.md" in route_paths
++    assert "ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json" in route_paths
+ 
+ 
+ def test_mini_renderer_enforces_line_limit_and_indexes_capsule_rows():
+@@ -154,12 +166,14 @@
+     initialize_codex_solo_context(tmp_path)
+     history_before = sorted((tmp_path / "ION/05_context/current/codex_solo/history").glob("*"))
+ 
+-    result = build_codex_solo_boot_context(tmp_path, max_bytes=4096)
++    result = build_codex_solo_boot_context(tmp_path, max_bytes=12000)
+ 
+     history_after = sorted((tmp_path / "ION/05_context/current/codex_solo/history").glob("*"))
+     assert result["schema_id"] == "ion.codex_solo_boot_context.v1"
+     assert result["ok"] is True
+     assert "ION Codex Solo Boot Context" in result["context"]
++    assert "## Branch Capsule Bootstrap Law" in result["context"]
++    assert "Every active agent/conversation/task doing material work needs a unique branch capsule identity" in result["context"]
+     assert "## Loaded HOT_CONTEXT" in result["context"]
+     assert "## MINIMUM WORKING CAPSULE" in result["context"]
+     assert history_after == history_before
+@@ -196,6 +210,7 @@
+     output = capsys.readouterr().out
+     assert "ION Codex Solo Boot Context" in output
+     assert "Treat Capsule as minimum working context" in output
++    assert "Branch Capsule Bootstrap Law" in output
+ 
+ 
+ def test_cli_post_requires_confirmation(tmp_path: Path, capsys):

@@ -1,0 +1,101 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "depends_on",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Historical CentOS Linux releases shipped Linux kernel packages for supported architectures as part of the distribution."
+    },
+    {
+      "type": "integrates_with",
+      "target": "glibc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "CentOS Linux on standard ports used glibc as the C library alongside the dynamic linker."
+    },
+    {
+      "type": "integrates_with",
+      "target": "systemd",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "systemd was the default init and service manager on CentOS Linux 7+ releases per project documentation themes."
+    },
+    {
+      "type": "integrates_with",
+      "target": "systemd-unit-model",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "CentOS Linux services were expressed as systemd unit files and drop-ins on default systemd installs where applicable."
+    },
+    {
+      "type": "integrates_with",
+      "target": "elf",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "CentOS Linux userland binaries and shared libraries were ELF on typical Linux targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-gcc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GCC toolchain packages participated in CentOS Linux development and RPM build flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-binutils",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GNU binutils participated in standard CentOS Linux RPM build and link flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-libstdcxx",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "g++-built packages linked GNU libstdc++ above glibc on typical CentOS Linux GNU/Linux flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "clang",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang/LLVM packages could be installed from CentOS Linux repositories where offered."
+    },
+    {
+      "type": "integrates_with",
+      "target": "docker",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Official centos:* OCI images were common glibc-based bases; Docker pulls and runs legacy images where still published."
+    },
+    {
+      "type": "integrates_with",
+      "target": "containerd",
+      "evidence_tier": "INFERRED",
+      "notes": "CRI/containerd nodes ran CentOS Linux-based workload images pulled as OCI artifacts in historical deployments."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "CentOS Linux was a common historical node OS choice for on-prem Kubernetes clusters seeking RHEL-compatible glibc userlands."
+    },
+    {
+      "type": "integrates_with",
+      "target": "oci-image-spec",
+      "evidence_tier": "INFERRED",
+      "notes": "CentOS Linux bases were packaged as OCI image rootfs layers conforming to OCI image layout conventions."
+    },
+    {
+      "type": "competes_with",
+      "target": "alpine-linux",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Linux distribution defaults for containers and servers (glibc/systemd vs musl/OpenRC field patterns)."
+    },
+    {
+      "type": "competes_with",
+      "target": "rocky-linux",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable community RHEL-compatible rebuild distributions; CentOS Linux legacy EOL vs Rocky active maintenance."
+    },
+    {
+      "type": "competes_with",
+      "target": "almalinux",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable community RHEL-compatible rebuild distributions; CentOS Linux legacy EOL vs AlmaLinux active maintenance."
+    }
+  ]
+}

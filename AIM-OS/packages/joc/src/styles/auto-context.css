@@ -1,0 +1,304 @@
+/* ─── Auto-Context Engine ─── */
+
+.ctx-page {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    color: var(--text-primary, #e0e0e0);
+}
+
+.ctx-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border, #2a2a4a);
+    flex-shrink: 0;
+}
+
+.ctx-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.ctx-header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ctx-title {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.ctx-subtitle {
+    font-size: 11px;
+    color: var(--text-dim, #888);
+    font-family: 'SF Mono', 'Fira Code', monospace;
+}
+
+.ctx-action-btn {
+    padding: 4px 10px;
+    font-size: 10px;
+    border: 1px solid var(--border, #2a2a4a);
+    background: var(--bg-elevated, #1e1e3a);
+    color: var(--text-secondary, #aaa);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.12s;
+}
+
+.ctx-action-btn:hover {
+    background: var(--bg-hover, #252550);
+    color: var(--text-primary);
+}
+
+.ctx-attach-btn {
+    padding: 6px 14px;
+    font-size: 11px;
+    font-weight: 600;
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    background: rgba(0, 212, 255, 0.06);
+    color: var(--accent, #00d4ff);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.ctx-attach-btn:hover {
+    background: rgba(0, 212, 255, 0.12);
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.1);
+}
+
+/* ─── Body Layout ─── */
+.ctx-body {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+}
+
+/* ─── File Tree ─── */
+.ctx-tree-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--border, #2a2a4a);
+    min-width: 0;
+}
+
+.ctx-tree-toolbar {
+    display: flex;
+    gap: 6px;
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border, #2a2a4a);
+}
+
+.ctx-search-input {
+    flex: 1;
+    padding: 5px 10px;
+    border-radius: 4px;
+    border: 1px solid var(--border, #2a2a4a);
+    background: var(--bg-elevated, #1e1e3a);
+    color: var(--text-primary);
+    font-size: 11px;
+}
+
+.ctx-search-input:focus {
+    outline: none;
+    border-color: var(--accent, #00d4ff);
+}
+
+.ctx-sort-select {
+    padding: 4px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--border, #2a2a4a);
+    background: var(--bg-elevated, #1e1e3a);
+    color: var(--text-secondary);
+    font-size: 10px;
+}
+
+.ctx-tree-list {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.ctx-tree-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    cursor: pointer;
+    transition: background 0.1s;
+    font-size: 12px;
+}
+
+.ctx-tree-item:hover {
+    background: var(--bg-hover, #252550);
+}
+
+.ctx-tree-item.file.selected {
+    background: rgba(0, 212, 255, 0.06);
+}
+
+.ctx-tree-arrow {
+    font-size: 10px;
+    color: var(--text-dim, #888);
+    width: 12px;
+}
+
+.ctx-tree-icon {
+    font-size: 12px;
+}
+
+.ctx-tree-check {
+    font-size: 12px;
+    color: var(--accent, #00d4ff);
+}
+
+.ctx-tree-lang-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.ctx-tree-name {
+    font-size: 12px;
+}
+
+.ctx-tree-spacer {
+    flex: 1;
+}
+
+.ctx-tree-tokens {
+    font-size: 10px;
+    color: var(--accent, #00d4ff);
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    min-width: 55px;
+    text-align: right;
+}
+
+.ctx-tree-size {
+    font-size: 10px;
+    color: var(--text-dim, #888);
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    min-width: 50px;
+    text-align: right;
+}
+
+/* ─── Budget Panel ─── */
+.ctx-budget-panel {
+    width: 320px;
+    display: flex;
+    flex-direction: column;
+    padding: 12px 14px;
+    overflow-y: auto;
+    flex-shrink: 0;
+}
+
+.ctx-budget-title {
+    font-size: 12px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.ctx-budget-row {
+    margin-bottom: 14px;
+}
+
+.ctx-budget-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.ctx-budget-provider {
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.ctx-budget-numbers {
+    font-size: 10px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+}
+
+.ctx-budget-bar {
+    height: 4px;
+    background: var(--bg-input, #1a1a35);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.ctx-budget-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.3s ease;
+}
+
+.ctx-budget-avail {
+    font-size: 9px;
+    color: var(--text-dim, #888);
+    margin-top: 2px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+}
+
+/* ─── Selected Files ─── */
+.ctx-selected-title {
+    font-size: 11px;
+    font-weight: 700;
+    margin-top: 16px;
+    margin-bottom: 8px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border, #2a2a4a);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.ctx-selected-list {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.ctx-selected-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: rgba(0, 212, 255, 0.04);
+    font-size: 10px;
+}
+
+.ctx-selected-name {
+    color: var(--text-secondary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ctx-selected-remove {
+    border: none;
+    background: none;
+    color: var(--text-dim, #888);
+    font-size: 10px;
+    cursor: pointer;
+    padding: 2px;
+    transition: color 0.1s;
+}
+
+.ctx-selected-remove:hover {
+    color: #ff6b6b;
+}
+
+.ctx-selected-empty {
+    font-size: 11px;
+    color: var(--text-dim, #888);
+    font-style: italic;
+}

@@ -1,0 +1,600 @@
+{
+  system_id: "security_audit_system",
+  system_name: "Security Audit System",
+  version: "1.0.0",
+  last_updated: "2025-01-27T20:50:00Z",
+  map_type: "system_topology",
+  internal_topology: {
+    core_components: [
+      {
+        component_id: "security_audit_engine",
+        name: "Security Audit Engine",
+        type: "audit_engine",
+        tier: 2,
+        description: "Core security audit engine that performs comprehensive security assessments",
+        ports: {
+          input: [
+            "audit_requests",
+            "security_policies",
+          ],
+          output: [
+            "audit_results",
+            "security_reports",
+          ],
+        },
+        dependencies: [
+          "vulnerability_scanner",
+          "compliance_checker",
+        ],
+        blast_radius: "platform",
+        must_never: [
+          "Perform audits without validation",
+          "Skip security policies",
+          "Ignore vulnerability findings",
+          "Bypass audit validation",
+        ],
+      },
+      {
+        component_id: "vulnerability_scanner",
+        name: "Vulnerability Scanner",
+        type: "scanner_engine",
+        tier: 2,
+        description: "Scans systems for security vulnerabilities and weaknesses",
+        ports: {
+          input: [
+            "scan_requests",
+            "vulnerability_rules",
+          ],
+          output: [
+            "vulnerability_reports",
+            "scan_results",
+          ],
+        },
+        dependencies: [
+          "vulnerability_database",
+          "scanning_rules",
+        ],
+        blast_radius: "platform",
+        must_never: [
+          "Scan without validation",
+          "Skip vulnerability checks",
+          "Ignore scan results",
+          "Bypass scanning validation",
+        ],
+      },
+      {
+        component_id: "compliance_checker",
+        name: "Compliance Checker",
+        type: "compliance_engine",
+        tier: 2,
+        description: "Checks compliance with security standards and regulations",
+        ports: {
+          input: [
+            "compliance_requests",
+            "compliance_rules",
+          ],
+          output: [
+            "compliance_reports",
+            "compliance_status",
+          ],
+        },
+        dependencies: [
+          "compliance_rules",
+          "standards_database",
+        ],
+        blast_radius: "platform",
+        must_never: [
+          "Check compliance without validation",
+          "Skip compliance rules",
+          "Ignore compliance violations",
+          "Bypass compliance validation",
+        ],
+      },
+      {
+        component_id: "threat_analyzer",
+        name: "Threat Analyzer",
+        type: "analysis_engine",
+        tier: 2,
+        description: "Analyzes security threats and attack vectors",
+        ports: {
+          input: [
+            "threat_data",
+            "analysis_rules",
+          ],
+          output: [
+            "threat_analysis",
+            "risk_assessment",
+          ],
+        },
+        dependencies: [
+          "threat_database",
+          "analysis_rules",
+        ],
+        blast_radius: "platform",
+        must_never: [
+          "Analyze threats without validation",
+          "Skip threat checks",
+          "Ignore threat findings",
+          "Bypass analysis validation",
+        ],
+      },
+      {
+        component_id: "security_reporter",
+        name: "Security Reporter",
+        type: "reporting_engine",
+        tier: 2,
+        description: "Generates comprehensive security reports and recommendations",
+        ports: {
+          input: [
+            "audit_data",
+            "reporting_rules",
+          ],
+          output: [
+            "security_reports",
+            "recommendations",
+          ],
+        },
+        dependencies: [
+          "reporting_templates",
+          "recommendation_engine",
+        ],
+        blast_radius: "platform",
+        must_never: [
+          "Generate reports without validation",
+          "Skip reporting rules",
+          "Ignore report requirements",
+          "Bypass reporting validation",
+        ],
+      },
+    ],
+    supporting_components: [
+      {
+        component_id: "vulnerability_database",
+        name: "Vulnerability Database",
+        type: "database_engine",
+        tier: 1,
+        description: "Maintains database of known vulnerabilities and security issues",
+        ports: {
+          input: [
+            "vulnerability_data",
+            "update_requests",
+          ],
+          output: [
+            "vulnerability_info",
+            "update_status",
+          ],
+        },
+        dependencies: [
+          "database_rules",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Store vulnerabilities without validation",
+          "Skip database rules",
+          "Ignore data integrity",
+          "Bypass database validation",
+        ],
+      },
+      {
+        component_id: "scanning_rules",
+        name: "Scanning Rules",
+        type: "rules_engine",
+        tier: 1,
+        description: "Provides scanning rules and configurations",
+        ports: {
+          input: [
+            "scanning_requests",
+            "rule_definitions",
+          ],
+          output: [
+            "scanning_rules",
+            "rule_status",
+          ],
+        },
+        dependencies: [
+          "rule_definitions",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Provide rules without validation",
+          "Skip rule definitions",
+          "Ignore rule requirements",
+          "Bypass rule validation",
+        ],
+      },
+      {
+        component_id: "compliance_rules",
+        name: "Compliance Rules",
+        type: "rules_engine",
+        tier: 1,
+        description: "Provides compliance rules and standards",
+        ports: {
+          input: [
+            "compliance_requests",
+            "rule_definitions",
+          ],
+          output: [
+            "compliance_rules",
+            "rule_status",
+          ],
+        },
+        dependencies: [
+          "rule_definitions",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Provide rules without validation",
+          "Skip rule definitions",
+          "Ignore rule requirements",
+          "Bypass rule validation",
+        ],
+      },
+      {
+        component_id: "threat_database",
+        name: "Threat Database",
+        type: "database_engine",
+        tier: 1,
+        description: "Maintains database of known threats and attack patterns",
+        ports: {
+          input: [
+            "threat_data",
+            "update_requests",
+          ],
+          output: [
+            "threat_info",
+            "update_status",
+          ],
+        },
+        dependencies: [
+          "database_rules",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Store threats without validation",
+          "Skip database rules",
+          "Ignore data integrity",
+          "Bypass database validation",
+        ],
+      },
+      {
+        component_id: "reporting_templates",
+        name: "Reporting Templates",
+        type: "template_engine",
+        tier: 1,
+        description: "Provides templates for security reports",
+        ports: {
+          input: [
+            "template_requests",
+            "template_rules",
+          ],
+          output: [
+            "report_templates",
+            "template_status",
+          ],
+        },
+        dependencies: [
+          "template_rules",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Provide templates without validation",
+          "Skip template rules",
+          "Ignore template requirements",
+          "Bypass template validation",
+        ],
+      },
+    ],
+  },
+  boundary_tendrils: {
+    input_ports: [
+      {
+        port_id: "audit_requests_input",
+        name: "Audit Requests Input",
+        type: "data_input",
+        protocol: "json",
+        description: "Receives security audit requests",
+        required: true,
+        validation: "audit_requests_schema",
+      },
+      {
+        port_id: "security_policies_input",
+        name: "Security Policies Input",
+        type: "data_input",
+        protocol: "json",
+        description: "Receives security policies for audit",
+        required: true,
+        validation: "security_policies_schema",
+      },
+      {
+        port_id: "threat_data_input",
+        name: "Threat Data Input",
+        type: "data_input",
+        protocol: "json",
+        description: "Receives threat data for analysis",
+        required: true,
+        validation: "threat_data_schema",
+      },
+    ],
+    output_ports: [
+      {
+        port_id: "audit_results_output",
+        name: "Audit Results Output",
+        type: "data_output",
+        protocol: "json",
+        description: "Outputs security audit results",
+        required: true,
+        validation: "audit_results_schema",
+      },
+      {
+        port_id: "security_reports_output",
+        name: "Security Reports Output",
+        type: "data_output",
+        protocol: "json",
+        description: "Outputs security reports and recommendations",
+        required: true,
+        validation: "security_reports_schema",
+      },
+      {
+        port_id: "vulnerability_reports_output",
+        name: "Vulnerability Reports Output",
+        type: "data_output",
+        protocol: "json",
+        description: "Outputs vulnerability reports",
+        required: true,
+        validation: "vulnerability_reports_schema",
+      },
+    ],
+  },
+  data_flow: {
+    primary_flow: [
+      {
+        step: 1,
+        component: "vulnerability_scanner",
+        action: "Scan for vulnerabilities",
+        input: [
+          "scan_requests",
+          "vulnerability_rules",
+        ],
+        output: [
+          "vulnerability_reports",
+          "scan_results",
+        ],
+      },
+      {
+        step: 2,
+        component: "compliance_checker",
+        action: "Check compliance",
+        input: [
+          "compliance_requests",
+          "compliance_rules",
+        ],
+        output: [
+          "compliance_reports",
+          "compliance_status",
+        ],
+      },
+      {
+        step: 3,
+        component: "threat_analyzer",
+        action: "Analyze threats",
+        input: [
+          "threat_data",
+          "analysis_rules",
+        ],
+        output: [
+          "threat_analysis",
+          "risk_assessment",
+        ],
+      },
+      {
+        step: 4,
+        component: "security_audit_engine",
+        action: "Perform security audit",
+        input: [
+          "audit_requests",
+          "security_policies",
+        ],
+        output: [
+          "audit_results",
+          "security_reports",
+        ],
+      },
+      {
+        step: 5,
+        component: "security_reporter",
+        action: "Generate security reports",
+        input: [
+          "audit_data",
+          "reporting_rules",
+        ],
+        output: [
+          "security_reports",
+          "recommendations",
+        ],
+      },
+    ],
+    secondary_flows: [
+      {
+        flow_name: "vulnerability_scanning",
+        components: [
+          "vulnerability_scanner",
+          "vulnerability_database",
+          "scanning_rules",
+        ],
+        description: "Scans systems for security vulnerabilities",
+      },
+      {
+        flow_name: "compliance_checking",
+        components: [
+          "compliance_checker",
+          "compliance_rules",
+          "standards_database",
+        ],
+        description: "Checks compliance with security standards",
+      },
+      {
+        flow_name: "threat_analysis",
+        components: [
+          "threat_analyzer",
+          "threat_database",
+          "analysis_rules",
+        ],
+        description: "Analyzes security threats and risks",
+      },
+    ],
+  },
+  security_boundaries: {
+    tier_0: {
+      components: [
+        "vulnerability_database",
+        "scanning_rules",
+        "compliance_rules",
+        "threat_database",
+        "reporting_templates",
+      ],
+      description: "Supporting components with basic security requirements",
+    },
+    tier_1: {
+      components: [
+        "vulnerability_scanner",
+        "compliance_checker",
+        "threat_analyzer",
+        "security_reporter",
+      ],
+      description: "Processing components with standard security requirements",
+    },
+    tier_2: {
+      components: [
+        "security_audit_engine",
+      ],
+      description: "Core component with comprehensive security requirements",
+    },
+  },
+  performance_characteristics: {
+    latency: {
+      vulnerability_scanning: "< 30 seconds",
+      compliance_checking: "< 10 seconds",
+      threat_analysis: "< 15 seconds",
+      audit_processing: "< 60 seconds",
+    },
+    throughput: {
+      audits_per_hour: 100,
+      vulnerability_scans_per_hour: 500,
+      compliance_checks_per_hour: 1000,
+      threat_analyses_per_hour: 200,
+    },
+    resource_usage: {
+      cpu_usage: "< 50%",
+      memory_usage: "< 400MB",
+      disk_usage: "< 2GB",
+    },
+  },
+  monitoring_points: [
+    {
+      point_id: "audit_processing_rate",
+      name: "Audit Processing Rate",
+      type: "counter",
+      description: "Number of audits processed per hour",
+    },
+    {
+      point_id: "vulnerability_scan_time",
+      name: "Vulnerability Scan Time",
+      type: "duration",
+      description: "Time taken for vulnerability scans",
+    },
+    {
+      point_id: "compliance_check_time",
+      name: "Compliance Check Time",
+      type: "duration",
+      description: "Time taken for compliance checks",
+    },
+    {
+      point_id: "threat_analysis_time",
+      name: "Threat Analysis Time",
+      type: "duration",
+      description: "Time taken for threat analysis",
+    },
+  ],
+  error_handling: {
+    retry_policies: {
+      vulnerability_scanning: "3 retries with exponential backoff",
+      compliance_checking: "2 retries with linear backoff",
+      threat_analysis: "3 retries with exponential backoff",
+    },
+    circuit_breakers: {
+      audit_service: "Open after 5 consecutive failures",
+      scanning_service: "Open after 3 consecutive failures",
+    },
+    fallback_strategies: {
+      vulnerability_scanning_failure: "Use cached vulnerability data",
+      compliance_checking_failure: "Use basic compliance checks",
+      threat_analysis_failure: "Use simplified threat analysis",
+    },
+  },
+  deployment_considerations: {
+    scalability: {
+      horizontal_scaling: "Supported via load balancer",
+      vertical_scaling: "Supported via resource allocation",
+      auto_scaling: "Supported via metrics-based scaling",
+    },
+    availability: {
+      target_uptime: "99.9%",
+      redundancy: "Multi-instance deployment",
+      failover: "Automatic failover to standby instances",
+    },
+    maintenance: {
+      rolling_updates: "Supported",
+      downtime: "Minimal during updates",
+      rollback: "Supported via version management",
+    },
+  },
+  metadata: {
+    created: "2025-01-27T20:50:00Z",
+    updated: "2025-11-02T17:10:00Z",
+    author: "aether",
+    status: "production",
+    version: "1.0.0",
+  },
+  confidenceRouting: {
+    high: "Read T0 executive summary (100 words) or code directly",
+    medium: "Read T0 + T1 overview (500 words) + T2 architecture (2k words)",
+    low: "Read T0 + T1 + T2 + T3 detailed (10k words)",
+    veryLow: "Read T0 + T1 + T2 + T3 + T4 complete (15k+ words) or ask for help",
+  },
+  relatedSystems: [
+    {
+      system: "scor",
+      relationship: "Security Audit System provides security validation to SCOR",
+      whenToUse: "When implementing safety validation or understanding security checks",
+      docs: [
+        "systems/scor/T2_architecture.md#security-audit",
+      ],
+      priority: "required",
+    },
+    {
+      system: "vif",
+      relationship: "Security Audit System uses VIF for audit provenance",
+      whenToUse: "When implementing audit verification or understanding security proofs",
+      docs: [
+        "systems/vif/T2_architecture.md#security-audit",
+      ],
+      priority: "required",
+    },
+    {
+      system: "cmc",
+      relationship: "Security Audit System stores audit data in CMC",
+      whenToUse: "When implementing audit storage or understanding memory persistence",
+      docs: [
+        "systems/cmc/T2_architecture.md#security-audit",
+      ],
+      priority: "required",
+    },
+  ],
+  documentation: {
+    T0: "knowledge_architecture/systems/security_audit_system/T0_executive.md",
+    T1: "knowledge_architecture/systems/security_audit_system/T1_overview.md",
+    T2: "knowledge_architecture/systems/security_audit_system/T2_architecture.md",
+    T3: "knowledge_architecture/systems/security_audit_system/T3_detailed.md",
+    T4: "knowledge_architecture/systems/security_audit_system/T4_complete.md",
+  },
+}

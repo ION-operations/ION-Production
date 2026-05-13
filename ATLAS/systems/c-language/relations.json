@@ -1,0 +1,131 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Linux kernel is implemented primarily in C (kernel development documentation)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "elf",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GCC/Clang Unix targets predominantly emit ELF object files and executables."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-binutils",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GCC traditionally drives GNU as and ld on Unix-class GNU toolchains."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-lld",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Clang may invoke lld when configured (e.g. -fuse-ld=lld) alongside LLVM codegen."
+    },
+    {
+      "type": "integrates_with",
+      "target": "clang",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Clang is a major production C/C++ compiler implementation alongside GCC."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-gcc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GCC is the GNU reference implementation for C and C++ on many platforms."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-gdb",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GDB is the common source-level debugger for C/C++ in GNU/Linux toolchains."
+    },
+    {
+      "type": "integrates_with",
+      "target": "lldb",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "LLDB is a common debugger for C/C++ in LLVM/Clang-centric toolchains."
+    },
+    {
+      "type": "integrates_with",
+      "target": "glibc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Hosted C environments on GNU/Linux commonly use glibc as the standard C library implementation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "musl",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Hosted C on musl Linux triplets uses musl as the standard C library implementation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "msvc-vcruntime",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Hosted MSVC C on Windows commonly uses UCRT/VCRUNTIME-class DLLs as the standard C runtime implementation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "freebsd-libc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Hosted C on FreeBSD uses the FreeBSD base system libc as the standard C library implementation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "openbsd-libc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Hosted C on OpenBSD uses the OpenBSD base system libc as the standard C library implementation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "netbsd-libc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Hosted C on NetBSD uses the NetBSD base system libc as the standard C library implementation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "dragonfly-libc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Hosted C on DragonFly uses the DragonFly base system libc as the standard C library implementation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "illumos-libc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Hosted C on illumos distributions uses the illumos core libc as the standard C library implementation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "android-bionic",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Hosted C on Android uses Bionic as the standard native C library implementation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "newlib",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Hosted C on many embedded GCC targets uses newlib as the standard C library implementation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-libstdcxx",
+      "evidence_tier": "INFERRED",
+      "notes": "C++ builds interoperate with C via extern C and libc headers; libstdc++ sits above the C library."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-libcxx",
+      "evidence_tier": "INFERRED",
+      "notes": "C++ with libc++ still relies on the platform C library underneath for hosted C services."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-libcxxabi",
+      "evidence_tier": "INFERRED",
+      "notes": "C++ ABI runtime sits above C/POSIX services while supporting compiler-generated C++ machinery."
+    }
+  ]
+}

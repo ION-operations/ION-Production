@@ -1,0 +1,542 @@
+diff -ruN '--exclude=.pytest_cache' '--exclude=__pycache__' "a/ION/03_registry/ion_chatgpt_browser_mcp_tool_policy.yaml" "b/ION/03_registry/ion_chatgpt_browser_mcp_tool_policy.yaml"
+--- "a/ION/03_registry/ion_chatgpt_browser_mcp_tool_policy.yaml"	2026-05-11 23:37:03.638505640 +0000
++++ "b/ION/03_registry/ion_chatgpt_browser_mcp_tool_policy.yaml"	2026-05-11 23:32:37.207968657 +0000
+@@ -17,6 +17,7 @@
+   - ion_receipt_search
+   - ion_git_status_summary
+   - ion_codex_work_queue
++  - ion_codex_queue_duplicate_audit
+   - ion_carrier_message_poll
+   - ion_file_read
+   - ion_file_search
+@@ -56,6 +57,7 @@
+   - ion_agent_cancel
+   - ion_swarm_step_once
+   - ion_codex_runner_reconcile
++  - ion_codex_queue_supersede_duplicates
+   - ion_codex_capsule_message_send
+   - ion_codex_capsule_sync_to_queue
+ forbidden_tools:
+diff -ruN '--exclude=.pytest_cache' '--exclude=__pycache__' "a/ION/04_packages/kernel/ion_chatgpt_browser_mcp_connector_contract.py" "b/ION/04_packages/kernel/ion_chatgpt_browser_mcp_connector_contract.py"
+--- "a/ION/04_packages/kernel/ion_chatgpt_browser_mcp_connector_contract.py"	2026-05-11 23:37:03.640683166 +0000
++++ "b/ION/04_packages/kernel/ion_chatgpt_browser_mcp_connector_contract.py"	2026-05-11 23:35:20.956195889 +0000
+@@ -50,6 +50,8 @@
+ CODEX_WORK_QUEUE_RELATIVE_PATH = Path("ION/05_context/current/ACTIVE_CHATGPT_CONNECTOR_CODEX_WORK_QUEUE.json")
+ CODEX_WORK_REQUEST_IDEMPOTENCY_LEDGER_RELATIVE_PATH = CONNECTOR_STATE_DIR / "runtime" / "codex_work_request_idempotency_ledger.json"
+ BOUNDED_PATCH_APPLY_IDEMPOTENCY_LEDGER_RELATIVE_PATH = CONNECTOR_STATE_DIR / "runtime" / "bounded_patch_apply_idempotency_ledger.json"
++CODEX_QUEUE_DUPLICATE_CLEANUP_IDEMPOTENCY_LEDGER_RELATIVE_PATH = CONNECTOR_STATE_DIR / "runtime" / "codex_queue_duplicate_cleanup_idempotency_ledger.json"
++CODEX_QUEUE_DUPLICATE_CLEANUP_RECEIPT_DIR_RELATIVE_PATH = CONNECTOR_STATE_DIR / "receipts" / "codex_queue_duplicate_cleanup"
+ ACTIVE_CARRIER_MESSAGE_QUEUE_RELATIVE_PATH = Path("ION/05_context/current/ACTIVE_CARRIER_MESSAGE_QUEUE.json")
+ 
+ PROTOCOL_RELATIVE_PATH = Path("ION/02_architecture/ION_CHATGPT_BROWSER_MCP_CONNECTOR_PROTOCOL.md")
+@@ -159,6 +161,7 @@
+     "ion_receipt_search",
+     "ion_git_status_summary",
+     "ion_codex_work_queue",
++    "ion_codex_queue_duplicate_audit",
+     "ion_carrier_message_poll",
+     "ion_file_read",
+     "ion_file_search",
+@@ -195,6 +198,7 @@
+     "ion_carrier_message_send",
+     "ion_carrier_message_ack",
+     "ion_codex_queue_process_once",
++    "ion_codex_queue_supersede_duplicates",
+     "ion_agent_invoke",
+     "ion_agent_cancel",
+     "ion_swarm_step_once",
+@@ -1818,13 +1822,15 @@
+         if len(rows) <= 1:
+             continue
+         duplicate_group_count += 1
+-        canonical = sorted(rows, key=lambda row: str(row.get("created_at") or ""))[0]
++        canonical = sorted(rows, key=lambda row: (str(row.get("created_at") or ""), str(row.get("path") or "")))[0]
+         canonical_id = canonical.get("request_id")
+-        for index, row in enumerate(sorted(rows, key=lambda item: str(item.get("created_at") or ""))):
++        canonical_path = canonical.get("path")
++        for index, row in enumerate(sorted(rows, key=lambda item: (str(item.get("created_at") or ""), str(item.get("path") or "")))):
+             row["duplicate_group_key"] = key
+             row["duplicate_group_count"] = len(rows)
+             row["duplicate_index"] = index
+-            row["duplicate_of_request_id"] = None if row.get("request_id") == canonical_id else canonical_id
++            row["duplicate_of_request_id"] = None if row.get("path") == canonical_path else canonical_id
++            row["duplicate_of_packet_path"] = None if row.get("path") == canonical_path else canonical_path
+     return {
+         "schema_id": "ion.chatgpt_browser_connector_codex_work_queue.v1",
+         "queue_path": CODEX_WORK_QUEUE_RELATIVE_PATH.as_posix(),
+@@ -1843,6 +1849,319 @@
+     return queue
+ 
+ 
++def _codex_work_request_rows(root: Path) -> list[dict[str, Any]]:
++    requests_root = root / CONNECTOR_STATE_DIR / "codex_work_requests"
++    rows: list[dict[str, Any]] = []
++    if not requests_root.exists():
++        return rows
++    for path in sorted(requests_root.glob("*.json")):
++        payload = _load_json_file(path)
++        rel_path = path.relative_to(root).as_posix()
++        request_id = str(payload.get("request_id") or "").strip()
++        objective = str(payload.get("objective") or "")
++        objective_sha256 = str(payload.get("objective_sha256") or _codex_work_request_objective_fingerprint(objective))
++        group_key = str(payload.get("dedupe_key") or objective_sha256).strip()
++        returns = _task_returns_for_request(root, rel_path, request_id)
++        accepted_return_count = sum(1 for item in returns if item["packet"].get("accepted_for_carrier_intake") is True)
++        rows.append({
++            "request_id": request_id or None,
++            "path": rel_path,
++            "objective": objective,
++            "objective_sha256": objective_sha256,
++            "dedupe_key": payload.get("dedupe_key"),
++            "group_key": group_key,
++            "idempotency_source": payload.get("idempotency_source"),
++            "implicit_idempotency_key": payload.get("implicit_idempotency_key"),
++            "status": payload.get("status"),
++            "created_at": payload.get("created_at"),
++            "updated_at": payload.get("updated_at"),
++            "latest_return_packet_path": payload.get("latest_return_packet_path"),
++            "return_packet_paths": payload.get("return_packet_paths", []),
++            "linked_return_count": len(returns),
++            "accepted_return_count": accepted_return_count,
++            "payload": payload,
++            "absolute_path": path,
++        })
++    return rows
++
++
++def _codex_work_request_duplicate_groups(root: Path) -> list[dict[str, Any]]:
++    grouped: dict[str, list[dict[str, Any]]] = {}
++    for row in _codex_work_request_rows(root):
++        key = str(row.get("group_key") or "").strip()
++        if key:
++            grouped.setdefault(key, []).append(row)
++    groups: list[dict[str, Any]] = []
++    for key, rows in grouped.items():
++        if len(rows) <= 1:
++            continue
++        ordered = sorted(rows, key=lambda item: (str(item.get("created_at") or ""), str(item.get("path") or "")))
++        accepted = [row for row in ordered if int(row.get("accepted_return_count") or 0) > 0]
++        canonical = accepted[0] if accepted else ordered[0]
++        canonical_id = canonical.get("request_id")
++        requests: list[dict[str, Any]] = []
++        duplicates: list[dict[str, Any]] = []
++        for index, row in enumerate(ordered):
++            public = {k: v for k, v in row.items() if k not in {"payload", "absolute_path"}}
++            public["duplicate_group_key"] = key
++            public["duplicate_group_count"] = len(ordered)
++            public["duplicate_index"] = index
++            public["duplicate_of_request_id"] = None if row.get("path") == canonical.get("path") else canonical_id
++            public["duplicate_of_packet_path"] = None if row.get("path") == canonical.get("path") else canonical.get("path")
++            requests.append(public)
++            if public["duplicate_of_packet_path"]:
++                duplicates.append(public)
++        groups.append({
++            "group_key": key,
++            "group_count": len(ordered),
++            "canonical_request_id": canonical_id,
++            "canonical_packet_path": canonical.get("path"),
++            "duplicate_count": len(duplicates),
++            "requests": requests,
++            "duplicates": duplicates,
++        })
++    return sorted(
++        groups,
++        key=lambda group: max(str(row.get("created_at") or "") for row in group["requests"]),
++        reverse=True,
++    )
++
++
++def _codex_queue_duplicate_audit(root: Path, args: Mapping[str, Any] | None = None) -> dict[str, Any]:
++    arguments = dict(args or {})
++    try:
++        limit = int(arguments.get("limit") or 25)
++    except (TypeError, ValueError):
++        limit = 25
++    limit = max(1, min(limit, 100))
++    groups = _codex_work_request_duplicate_groups(root)
++    visible_groups = groups[:limit]
++    duplicate_request_count = sum(int(group.get("duplicate_count") or 0) for group in groups)
++    return {
++        "schema_id": "ion.chatgpt_browser_connector_codex_queue_duplicate_audit.v1",
++        "status": "READ_ONLY_DUPLICATE_AUDIT",
++        "queue_path": CODEX_WORK_QUEUE_RELATIVE_PATH.as_posix(),
++        "request_state_dir": (CONNECTOR_STATE_DIR / "codex_work_requests").as_posix(),
++        "duplicate_group_count": len(groups),
++        "duplicate_request_count": duplicate_request_count,
++        "returned_group_count": len(visible_groups),
++        "truncated": len(groups) > limit,
++        "groups": visible_groups,
++        "production_authority": False,
++        "live_execution_authority": False,
++    }
++
++
++def _load_codex_queue_duplicate_cleanup_idempotency_ledger(root: Path) -> dict[str, Any]:
++    path = root / CODEX_QUEUE_DUPLICATE_CLEANUP_IDEMPOTENCY_LEDGER_RELATIVE_PATH
++    payload = _read_json(path)
++    if isinstance(payload, dict):
++        payload.setdefault("schema_id", "ion.chatgpt_browser_connector_codex_queue_duplicate_cleanup_idempotency_ledger.v1")
++        payload.setdefault("entries", {})
++        return payload
++    return {
++        "schema_id": "ion.chatgpt_browser_connector_codex_queue_duplicate_cleanup_idempotency_ledger.v1",
++        "created_at": _now(),
++        "updated_at": _now(),
++        "entries": {},
++        "production_authority": False,
++        "live_execution_authority": False,
++    }
++
++
++def _save_codex_queue_duplicate_cleanup_idempotency_ledger(root: Path, ledger: Mapping[str, Any]) -> None:
++    _write_json(root / CODEX_QUEUE_DUPLICATE_CLEANUP_IDEMPOTENCY_LEDGER_RELATIVE_PATH, dict(ledger))
++
++
++def _codex_queue_duplicate_cleanup_existing(root: Path, idempotency_key: str) -> dict[str, Any] | None:
++    ledger = _load_codex_queue_duplicate_cleanup_idempotency_ledger(root)
++    entries = ledger.get("entries") if isinstance(ledger.get("entries"), Mapping) else {}
++    entry = entries.get(idempotency_key)
++    if isinstance(entry, Mapping):
++        receipt_path = root / str(entry.get("receipt_path") or "")
++        if receipt_path.exists():
++            return dict(entry)
++    return None
++
++
++def _record_codex_queue_duplicate_cleanup_idempotency(
++    root: Path,
++    idempotency_key: str,
++    *,
++    receipt_path: Path,
++    superseded_request_ids: list[str],
++) -> None:
++    ledger = _load_codex_queue_duplicate_cleanup_idempotency_ledger(root)
++    entries = dict(ledger.get("entries") if isinstance(ledger.get("entries"), Mapping) else {})
++    entries[idempotency_key] = {
++        "recorded_at": _now(),
++        "receipt_path": receipt_path.relative_to(root).as_posix(),
++        "superseded_request_ids": superseded_request_ids,
++        "production_authority": False,
++        "live_execution_authority": False,
++    }
++    ledger["entries"] = entries
++    ledger["updated_at"] = _now()
++    _save_codex_queue_duplicate_cleanup_idempotency_ledger(root, ledger)
++
++
++def _codex_queue_duplicate_cleanup_replay_result(root: Path, existing: Mapping[str, Any], idempotency_key: str) -> dict[str, Any]:
++    receipt_path = str(existing.get("receipt_path") or "")
++    receipt = _load_json_file(root / receipt_path) if receipt_path else {}
++    return _ok(
++        "ion_codex_queue_supersede_duplicates",
++        {
++            "schema_id": "ion.chatgpt_browser_connector_codex_queue_supersede_duplicates_result.v1",
++            "status": "IDEMPOTENT_REPLAY",
++            "receipt_path": receipt_path,
++            "receipt": receipt,
++            "idempotent_replay": True,
++            "duplicate_prevented": True,
++            "idempotency_key": idempotency_key,
++            "production_authority": False,
++            "live_execution_authority": False,
++        },
++        mutates_active_state=False,
++    )
++
++
++def _codex_queue_supersede_duplicates(root: Path, args: Mapping[str, Any]) -> dict[str, Any]:
++    tool_name = "ion_codex_queue_supersede_duplicates"
++    if str(args.get("confirmation") or "") != "ION_BOUNDED_WRITE_CONFIRMED":
++        return _blocked(tool_name, "confirmation_required")
++    idempotency_key_raw = str(args.get("idempotency_key") or "").strip()
++    if not idempotency_key_raw:
++        return _blocked(tool_name, "idempotency_key_required")
++    idempotency_key = _normalize_idempotency_token(idempotency_key_raw)
++    if args.get("force_new") is not True:
++        existing = _codex_queue_duplicate_cleanup_existing(root, idempotency_key)
++        if existing:
++            return _codex_queue_duplicate_cleanup_replay_result(root, existing, idempotency_key)
++
++    groups = _codex_work_request_duplicate_groups(root)
++    selected_group_keys: set[str] = set()
++    if args.get("all_duplicates") is True:
++        selected_group_keys = {str(group.get("group_key")) for group in groups}
++    for key_name in ("group_key", "dedupe_key", "objective_sha256"):
++        value = str(args.get(key_name) or "").strip()
++        if value:
++            selected_group_keys.add(value)
++    request_ids = {str(item).strip() for item in (args.get("request_ids") or []) if str(item).strip()}
++    if not selected_group_keys and not request_ids:
++        return _blocked(tool_name, "duplicate_selection_required")
++
++    now = _now()
++    to_update: list[tuple[Path, dict[str, Any], dict[str, Any]]] = []
++    skipped: list[dict[str, Any]] = []
++    for group in groups:
++        group_key = str(group.get("group_key") or "")
++        if selected_group_keys and group_key not in selected_group_keys:
++            if not request_ids:
++                continue
++        canonical_id = str(group.get("canonical_request_id") or "")
++        canonical_path = str(group.get("canonical_packet_path") or "")
++        for row in group.get("duplicates") or []:
++            rid = str(row.get("request_id") or "")
++            if request_ids and rid not in request_ids:
++                continue
++            path = root / str(row.get("path") or "")
++            payload = _load_json_file(path)
++            status = str(payload.get("status") or "")
++            if int(row.get("accepted_return_count") or 0) > 0:
++                skipped.append({"request_id": rid, "path": row.get("path"), "reason": "accepted_return_present"})
++                continue
++            if status in {"CODEX_CLI_RUNNING", "CODEX_QUEUE_RUNNER_WORKER_STARTED"}:
++                skipped.append({"request_id": rid, "path": row.get("path"), "reason": "active_or_running_status"})
++                continue
++            if status == "SUPERSEDED_DUPLICATE":
++                skipped.append({"request_id": rid, "path": row.get("path"), "reason": "already_superseded"})
++                continue
++            to_update.append((path, payload, {
++                "request_id": rid,
++                "path": row.get("path"),
++                "previous_status": status,
++                "duplicate_group_key": group_key,
++                "duplicate_of_request_id": canonical_id,
++                "canonical_packet_path": canonical_path,
++            }))
++
++    if not to_update:
++        return _blocked(
++            tool_name,
++            "no_supersedable_duplicates_found",
++            {
++                "selected_group_keys": sorted(selected_group_keys),
++                "request_ids": sorted(request_ids),
++                "skipped": skipped,
++                "audit": _codex_queue_duplicate_audit(root, {"limit": 25}),
++            },
++        )
++
++    reason = str(args.get("reason") or "Duplicate queued work created by no-receipt/retry/replay boundary; superseded without deleting evidence.").strip()
++    receipt_payload = {
++        "schema_id": "ion.chatgpt_browser_connector_codex_queue_duplicate_cleanup_receipt.v1",
++        "action": tool_name,
++        "status": "DUPLICATES_SUPERSEDED_NOT_DELETED",
++        "created_at": now,
++        "reason": reason,
++        "idempotency_key": idempotency_key,
++        "selected_group_keys": sorted(selected_group_keys),
++        "selected_request_ids": sorted(request_ids),
++        "superseded": [meta for _, _, meta in to_update],
++        "skipped": skipped,
++        "deleted_files": [],
++        "accepted_state": False,
++        "candidate_evidence_preserved": True,
++        "production_authority": False,
++        "live_execution_authority": False,
++    }
++    receipt_path = _write_connector_packet(root, "receipts/codex_queue_duplicate_cleanup", "supersede_duplicates", receipt_payload)
++    receipt_rel = receipt_path.relative_to(root).as_posix()
++    superseded_ids: list[str] = []
++    for path, payload, meta in to_update:
++        superseded_ids.append(str(meta.get("request_id") or ""))
++        payload["previous_status"] = meta.get("previous_status")
++        payload["status"] = "SUPERSEDED_DUPLICATE"
++        payload["updated_at"] = now
++        payload["superseded_at"] = now
++        payload["superseded_by_tool"] = tool_name
++        payload["superseded_reason"] = reason
++        payload["duplicate_group_key"] = meta.get("duplicate_group_key")
++        payload["duplicate_of_request_id"] = meta.get("duplicate_of_request_id")
++        payload["canonical_packet_path"] = meta.get("canonical_packet_path")
++        payload["cleanup_receipt_path"] = receipt_rel
++        payload["blocked_but_preserved"] = True
++        payload["accepted_state"] = False
++        payload["salvage_route"] = "review_canonical_or_create_repair_packet"
++        _write_json(path, payload)
++    queue = _write_codex_work_queue_index(root)
++    _record_codex_queue_duplicate_cleanup_idempotency(
++        root,
++        idempotency_key,
++        receipt_path=receipt_path,
++        superseded_request_ids=superseded_ids,
++    )
++    return _ok(
++        tool_name,
++        {
++            "schema_id": "ion.chatgpt_browser_connector_codex_queue_supersede_duplicates_result.v1",
++            "status": "DUPLICATES_SUPERSEDED_NOT_DELETED",
++            "receipt_path": receipt_rel,
++            "superseded_count": len(superseded_ids),
++            "superseded_request_ids": superseded_ids,
++            "skipped": skipped,
++            "queue_path": CODEX_WORK_QUEUE_RELATIVE_PATH.as_posix(),
++            "queue_duplicate_group_count": queue.get("duplicate_group_count"),
++            "idempotent_replay": False,
++            "duplicate_prevented": False,
++            "production_authority": False,
++            "live_execution_authority": False,
++        },
++        mutates_active_state=True,
++    )
++
++
++
+ def _enqueue_connector_operator_message(root: Path, *, message: str, priority: int) -> dict[str, Any]:
+     path = root / "ION/05_context/current/ACTIVE_OPERATOR_MESSAGE_QUEUE.json"
+     queue = _read_json(path) or {
+@@ -2131,6 +2450,8 @@
+         return _ok(tool_name, _git_status_summary(shell_root))
+     if tool_name == "ion_codex_work_queue":
+         return _ok(tool_name, _codex_work_queue(shell_root, limit=int(args.get("limit") or 50)))
++    if tool_name == "ion_codex_queue_duplicate_audit":
++        return _ok(tool_name, _codex_queue_duplicate_audit(shell_root, args))
+     if tool_name == "ion_carrier_message_poll":
+         return _carrier_message_poll(shell_root, args)
+     if tool_name == "ion_file_read":
+@@ -2247,6 +2568,8 @@
+             timeout_seconds=timeout,
+         )
+         return _ok(tool_name, result, mutates_active_state=True) if result.get("ok") else _blocked(tool_name, str(result.get("finding") or result.get("result") or "codex_queue_process_once_blocked"), result)
++    if tool_name == "ion_codex_queue_supersede_duplicates":
++        return _codex_queue_supersede_duplicates(shell_root, args)
+     if tool_name == "ion_agent_invoke":
+         result = invoke_agent(
+             shell_root,
+@@ -2282,7 +2605,8 @@
+             if existing:
+                 return _codex_work_request_replay_result(shell_root, tool_name, existing, dedupe_key, dedupe_source)
+         now = _now()
+-        request_id = f"codex_req_{now.replace(':', '').replace('+', 'Z')}_{_safe_slug(objective)}"
++        request_stamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H%M%S%fZ")
++        request_id = f"codex_req_{request_stamp}_{_safe_slug(objective)}"
+         objective_sha256 = _codex_work_request_objective_fingerprint(objective)
+         payload = {
+             "schema_id": "ion.chatgpt_browser_connector_codex_work_request.v1",
+diff -ruN '--exclude=.pytest_cache' '--exclude=__pycache__' "a/ION/04_packages/kernel/ion_chatgpt_browser_mcp_http_preview.py" "b/ION/04_packages/kernel/ion_chatgpt_browser_mcp_http_preview.py"
+--- "a/ION/04_packages/kernel/ion_chatgpt_browser_mcp_http_preview.py"	2026-05-11 23:37:03.641455162 +0000
++++ "b/ION/04_packages/kernel/ion_chatgpt_browser_mcp_http_preview.py"	2026-05-11 23:32:12.407786480 +0000
+@@ -268,6 +268,12 @@
+             "properties": {"limit": {"type": "integer", "minimum": 1, "maximum": 100}},
+             "additionalProperties": False,
+         }
++    if name == "ion_codex_queue_duplicate_audit":
++        return {
++            "type": "object",
++            "properties": {"limit": {"type": "integer", "minimum": 1, "maximum": 100}},
++            "additionalProperties": False,
++        }
+     if name == "ion_file_read":
+         return {
+             "type": "object",
+@@ -442,6 +448,23 @@
+             "required": ["confirmation"],
+             "additionalProperties": False,
+         }
++    if name == "ion_codex_queue_supersede_duplicates":
++        return {
++            "type": "object",
++            "properties": {
++                "confirmation": {"type": "string"},
++                "idempotency_key": {"type": "string"},
++                "all_duplicates": {"type": "boolean"},
++                "group_key": {"type": "string"},
++                "dedupe_key": {"type": "string"},
++                "objective_sha256": {"type": "string"},
++                "request_ids": {"type": "array", "items": {"type": "string"}, "maxItems": 100},
++                "reason": {"type": "string"},
++                "force_new": {"type": "boolean"},
++            },
++            "required": ["confirmation", "idempotency_key"],
++            "additionalProperties": False,
++        }
+ 
+     if name in {"ion_bounded_patch_preview", "ion_bounded_patch_apply"}:
+         operation_schema = {
+diff -ruN '--exclude=.pytest_cache' '--exclude=__pycache__' "a/ION/tests/test_kernel_ion_chatgpt_browser_mcp_connector_contract.py" "b/ION/tests/test_kernel_ion_chatgpt_browser_mcp_connector_contract.py"
+--- "a/ION/tests/test_kernel_ion_chatgpt_browser_mcp_connector_contract.py"	2026-05-11 23:37:03.642119237 +0000
++++ "b/ION/tests/test_kernel_ion_chatgpt_browser_mcp_connector_contract.py"	2026-05-11 23:33:07.377597850 +0000
+@@ -218,6 +218,84 @@
+     assert queue["data"]["request_count"] == 2
+     assert queue["data"]["duplicate_group_count"] == 1
+ 
++
++def test_codex_queue_duplicate_audit_and_supersede_preserves_packets(tmp_path):
++    _seed_root(tmp_path)
++    args = {"objective": "B00 duplicated packet family for cleanup"}
++    first = call_chatgpt_connector_tool(tmp_path, "ion_request_codex_work_packet", args)
++    second = call_chatgpt_connector_tool(tmp_path, "ion_request_codex_work_packet", {**args, "force_new": True})
++    third = call_chatgpt_connector_tool(tmp_path, "ion_request_codex_work_packet", {**args, "force_new": True})
++
++    audit = call_chatgpt_connector_tool(tmp_path, "ion_codex_queue_duplicate_audit", {"limit": 10})
++
++    assert first["ok"] is True
++    assert second["ok"] is True
++    assert third["ok"] is True
++    assert audit["ok"] is True
++    assert audit["data"]["duplicate_group_count"] == 1
++    assert audit["data"]["duplicate_request_count"] == 2
++    group = audit["data"]["groups"][0]
++    assert group["canonical_request_id"] == first["data"]["request_id"]
++
++    cleanup = call_chatgpt_connector_tool(
++        tmp_path,
++        "ion_codex_queue_supersede_duplicates",
++        {
++            "confirmation": "ION_BOUNDED_WRITE_CONFIRMED",
++            "idempotency_key": "cleanup-b00-duplicates-001",
++            "all_duplicates": True,
++            "reason": "test duplicate cleanup",
++        },
++    )
++    replay = call_chatgpt_connector_tool(
++        tmp_path,
++        "ion_codex_queue_supersede_duplicates",
++        {
++            "confirmation": "ION_BOUNDED_WRITE_CONFIRMED",
++            "idempotency_key": "cleanup-b00-duplicates-001",
++            "all_duplicates": True,
++            "reason": "test duplicate cleanup",
++        },
++    )
++
++    assert cleanup["ok"] is True
++    assert cleanup["mutates_active_state"] is True
++    assert cleanup["data"]["status"] == "DUPLICATES_SUPERSEDED_NOT_DELETED"
++    assert cleanup["data"]["superseded_count"] == 2
++    assert (tmp_path / cleanup["data"]["receipt_path"]).exists()
++    assert replay["ok"] is True
++    assert replay["mutates_active_state"] is False
++    assert replay["data"]["idempotent_replay"] is True
++    assert replay["data"]["duplicate_prevented"] is True
++    assert replay["data"]["receipt_path"] == cleanup["data"]["receipt_path"]
++
++    request_files = list((tmp_path / "ION/05_context/current/chatgpt_connector/codex_work_requests").glob("*.json"))
++    assert len(request_files) == 3
++    statuses = {json.loads(path.read_text(encoding="utf-8"))["request_id"]: json.loads(path.read_text(encoding="utf-8"))["status"] for path in request_files}
++    assert statuses[first["data"]["request_id"]] == "QUEUED_FOR_CODEX_CARRIER"
++    assert statuses[second["data"]["request_id"]] == "SUPERSEDED_DUPLICATE"
++    assert statuses[third["data"]["request_id"]] == "SUPERSEDED_DUPLICATE"
++
++
++def test_codex_queue_supersede_duplicates_requires_confirmation_and_idempotency(tmp_path):
++    _seed_root(tmp_path)
++    no_confirmation = call_chatgpt_connector_tool(
++        tmp_path,
++        "ion_codex_queue_supersede_duplicates",
++        {"idempotency_key": "missing-confirmation", "all_duplicates": True},
++    )
++    no_key = call_chatgpt_connector_tool(
++        tmp_path,
++        "ion_codex_queue_supersede_duplicates",
++        {"confirmation": "ION_BOUNDED_WRITE_CONFIRMED", "all_duplicates": True},
++    )
++
++    assert no_confirmation["ok"] is False
++    assert no_confirmation["finding"] == "confirmation_required"
++    assert no_key["ok"] is False
++    assert no_key["finding"] == "idempotency_key_required"
++
++
+ def test_task_return_requires_context_and_template_action_proof(tmp_path):
+     _seed_root(tmp_path)
+     receipt = {

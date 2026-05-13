@@ -1,0 +1,600 @@
+{
+  system_id: "deep_context_appendices",
+  system_name: "Deep Context Appendices",
+  version: "1.0.0",
+  last_updated: "2025-01-27T20:50:00Z",
+  map_type: "system_topology",
+  internal_topology: {
+    core_components: [
+      {
+        component_id: "context_archive_manager",
+        name: "Context Archive Manager",
+        type: "archive_engine",
+        tier: 2,
+        description: "Manages deep context appendices as large, optional, lazy-loaded historical mind",
+        ports: {
+          input: [
+            "context_data",
+            "archive_rules",
+          ],
+          output: [
+            "context_archives",
+            "archive_status",
+          ],
+        },
+        dependencies: [
+          "context_parser",
+          "archive_builder",
+        ],
+        blast_radius: "system",
+        must_never: [
+          "Archive context without validation",
+          "Skip archive rules",
+          "Ignore context requirements",
+          "Bypass archive validation",
+        ],
+      },
+      {
+        component_id: "context_parser",
+        name: "Context Parser",
+        type: "parsing_engine",
+        tier: 2,
+        description: "Parses and processes context data for deep appendices",
+        ports: {
+          input: [
+            "context_data",
+            "parsing_rules",
+          ],
+          output: [
+            "parsed_context",
+            "parsing_errors",
+          ],
+        },
+        dependencies: [
+          "parsing_rules",
+          "context_validator",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Parse context without validation",
+          "Skip parsing rules",
+          "Ignore context requirements",
+          "Bypass parsing validation",
+        ],
+      },
+      {
+        component_id: "archive_builder",
+        name: "Archive Builder",
+        type: "building_engine",
+        tier: 2,
+        description: "Builds deep context appendices from parsed context data",
+        ports: {
+          input: [
+            "parsed_context",
+            "archive_rules",
+          ],
+          output: [
+            "context_archives",
+            "building_status",
+          ],
+        },
+        dependencies: [
+          "archive_templates",
+          "validation_engine",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Build archives without validation",
+          "Skip archive rules",
+          "Ignore archive requirements",
+          "Bypass building validation",
+        ],
+      },
+      {
+        component_id: "lazy_loader",
+        name: "Lazy Loader",
+        type: "loading_engine",
+        tier: 2,
+        description: "Provides lazy loading of deep context appendices based on mutation type",
+        ports: {
+          input: [
+            "load_requests",
+            "loading_rules",
+          ],
+          output: [
+            "loaded_context",
+            "loading_status",
+          ],
+        },
+        dependencies: [
+          "loading_rules",
+          "cache_manager",
+        ],
+        blast_radius: "system",
+        must_never: [
+          "Load context without validation",
+          "Skip loading rules",
+          "Ignore loading requirements",
+          "Bypass loading validation",
+        ],
+      },
+      {
+        component_id: "context_indexer",
+        name: "Context Indexer",
+        type: "indexing_engine",
+        tier: 2,
+        description: "Indexes deep context appendices for efficient retrieval and search",
+        ports: {
+          input: [
+            "context_archives",
+            "indexing_rules",
+          ],
+          output: [
+            "context_index",
+            "indexing_status",
+          ],
+        },
+        dependencies: [
+          "indexing_rules",
+          "search_engine",
+        ],
+        blast_radius: "system",
+        must_never: [
+          "Index context without validation",
+          "Skip indexing rules",
+          "Ignore indexing requirements",
+          "Bypass indexing validation",
+        ],
+      },
+    ],
+    supporting_components: [
+      {
+        component_id: "archive_templates",
+        name: "Archive Templates",
+        type: "template_engine",
+        tier: 1,
+        description: "Provides templates for deep context appendix generation",
+        ports: {
+          input: [
+            "template_requests",
+            "template_rules",
+          ],
+          output: [
+            "archive_templates",
+            "template_status",
+          ],
+        },
+        dependencies: [
+          "template_rules",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Provide templates without validation",
+          "Skip template rules",
+          "Ignore template requirements",
+          "Bypass template validation",
+        ],
+      },
+      {
+        component_id: "validation_engine",
+        name: "Validation Engine",
+        type: "validation_engine",
+        tier: 1,
+        description: "Validates deep context appendices for completeness and accuracy",
+        ports: {
+          input: [
+            "context_archives",
+            "validation_rules",
+          ],
+          output: [
+            "validation_result",
+            "validation_errors",
+          ],
+        },
+        dependencies: [
+          "validation_rules",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Validate archives without rules",
+          "Skip validation checks",
+          "Ignore validation errors",
+          "Bypass validation requirements",
+        ],
+      },
+      {
+        component_id: "cache_manager",
+        name: "Cache Manager",
+        type: "cache_engine",
+        tier: 1,
+        description: "Manages caching of deep context appendices for performance",
+        ports: {
+          input: [
+            "cache_requests",
+            "cache_rules",
+          ],
+          output: [
+            "cache_status",
+            "cache_metrics",
+          ],
+        },
+        dependencies: [
+          "cache_rules",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Manage cache without validation",
+          "Skip cache rules",
+          "Ignore cache requirements",
+          "Bypass cache validation",
+        ],
+      },
+      {
+        component_id: "search_engine",
+        name: "Search Engine",
+        type: "search_engine",
+        tier: 1,
+        description: "Provides search capabilities for deep context appendices",
+        ports: {
+          input: [
+            "search_requests",
+            "search_rules",
+          ],
+          output: [
+            "search_results",
+            "search_metrics",
+          ],
+        },
+        dependencies: [
+          "search_rules",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Search context without validation",
+          "Skip search rules",
+          "Ignore search requirements",
+          "Bypass search validation",
+        ],
+      },
+      {
+        component_id: "context_validator",
+        name: "Context Validator",
+        type: "validation_engine",
+        tier: 1,
+        description: "Validates context data before processing",
+        ports: {
+          input: [
+            "context_data",
+            "validation_rules",
+          ],
+          output: [
+            "validation_result",
+            "validation_errors",
+          ],
+        },
+        dependencies: [
+          "validation_rules",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Validate context without rules",
+          "Skip validation checks",
+          "Ignore validation errors",
+          "Bypass validation requirements",
+        ],
+      },
+    ],
+  },
+  boundary_tendrils: {
+    input_ports: [
+      {
+        port_id: "context_data_input",
+        name: "Context Data Input",
+        type: "data_input",
+        protocol: "json",
+        description: "Receives context data for deep appendix generation",
+        required: true,
+        validation: "context_data_schema",
+      },
+      {
+        port_id: "archive_rules_input",
+        name: "Archive Rules Input",
+        type: "data_input",
+        protocol: "json",
+        description: "Receives archive rules for context processing",
+        required: true,
+        validation: "archive_rules_schema",
+      },
+      {
+        port_id: "load_requests_input",
+        name: "Load Requests Input",
+        type: "data_input",
+        protocol: "json",
+        description: "Receives load requests for lazy loading",
+        required: true,
+        validation: "load_requests_schema",
+      },
+    ],
+    output_ports: [
+      {
+        port_id: "context_archives_output",
+        name: "Context Archives Output",
+        type: "data_output",
+        protocol: "json",
+        description: "Outputs generated context archives",
+        required: true,
+        validation: "context_archives_schema",
+      },
+      {
+        port_id: "loaded_context_output",
+        name: "Loaded Context Output",
+        type: "data_output",
+        protocol: "json",
+        description: "Outputs loaded context data",
+        required: true,
+        validation: "loaded_context_schema",
+      },
+      {
+        port_id: "context_index_output",
+        name: "Context Index Output",
+        type: "data_output",
+        protocol: "json",
+        description: "Outputs context index data",
+        required: true,
+        validation: "context_index_schema",
+      },
+    ],
+  },
+  data_flow: {
+    primary_flow: [
+      {
+        step: 1,
+        component: "context_validator",
+        action: "Validate context data",
+        input: [
+          "context_data",
+          "validation_rules",
+        ],
+        output: [
+          "validation_result",
+          "validation_errors",
+        ],
+      },
+      {
+        step: 2,
+        component: "context_parser",
+        action: "Parse context data",
+        input: [
+          "context_data",
+          "parsing_rules",
+        ],
+        output: [
+          "parsed_context",
+          "parsing_errors",
+        ],
+      },
+      {
+        step: 3,
+        component: "archive_builder",
+        action: "Build context archives",
+        input: [
+          "parsed_context",
+          "archive_rules",
+        ],
+        output: [
+          "context_archives",
+          "building_status",
+        ],
+      },
+      {
+        step: 4,
+        component: "context_indexer",
+        action: "Index context archives",
+        input: [
+          "context_archives",
+          "indexing_rules",
+        ],
+        output: [
+          "context_index",
+          "indexing_status",
+        ],
+      },
+      {
+        step: 5,
+        component: "lazy_loader",
+        action: "Load context on demand",
+        input: [
+          "load_requests",
+          "loading_rules",
+        ],
+        output: [
+          "loaded_context",
+          "loading_status",
+        ],
+      },
+    ],
+    secondary_flows: [
+      {
+        flow_name: "context_processing",
+        components: [
+          "context_validator",
+          "context_parser",
+          "archive_builder",
+        ],
+        description: "Processes context data for deep appendices",
+      },
+      {
+        flow_name: "archive_management",
+        components: [
+          "archive_builder",
+          "context_indexer",
+          "cache_manager",
+        ],
+        description: "Manages context archives and indexing",
+      },
+      {
+        flow_name: "lazy_loading",
+        components: [
+          "lazy_loader",
+          "cache_manager",
+          "search_engine",
+        ],
+        description: "Provides lazy loading and search capabilities",
+      },
+    ],
+  },
+  security_boundaries: {
+    tier_0: {
+      components: [
+        "archive_templates",
+        "validation_engine",
+        "cache_manager",
+        "search_engine",
+        "context_validator",
+      ],
+      description: "Supporting components with basic security requirements",
+    },
+    tier_1: {
+      components: [
+        "context_parser",
+        "archive_builder",
+        "lazy_loader",
+      ],
+      description: "Processing components with standard security requirements",
+    },
+    tier_2: {
+      components: [
+        "context_archive_manager",
+        "context_indexer",
+      ],
+      description: "Core components with comprehensive security requirements",
+    },
+  },
+  performance_characteristics: {
+    latency: {
+      context_processing: "< 5 seconds",
+      archive_building: "< 10 seconds",
+      lazy_loading: "< 2 seconds",
+      indexing: "< 15 seconds",
+    },
+    throughput: {
+      contexts_per_minute: 50,
+      archives_per_hour: 100,
+      loads_per_hour: 1000,
+      indexes_per_hour: 50,
+    },
+    resource_usage: {
+      cpu_usage: "< 35%",
+      memory_usage: "< 300MB",
+      disk_usage: "< 2GB",
+    },
+  },
+  monitoring_points: [
+    {
+      point_id: "context_processing_rate",
+      name: "Context Processing Rate",
+      type: "counter",
+      description: "Number of contexts processed per minute",
+    },
+    {
+      point_id: "archive_building_time",
+      name: "Archive Building Time",
+      type: "duration",
+      description: "Time taken to build context archives",
+    },
+    {
+      point_id: "lazy_loading_performance",
+      name: "Lazy Loading Performance",
+      type: "duration",
+      description: "Time taken for lazy loading operations",
+    },
+    {
+      point_id: "index_build_time",
+      name: "Index Build Time",
+      type: "duration",
+      description: "Time taken to build context index",
+    },
+  ],
+  error_handling: {
+    retry_policies: {
+      context_processing: "3 retries with exponential backoff",
+      archive_building: "2 retries with linear backoff",
+      lazy_loading: "3 retries with exponential backoff",
+    },
+    circuit_breakers: {
+      processing_service: "Open after 5 consecutive failures",
+      archive_service: "Open after 3 consecutive failures",
+    },
+    fallback_strategies: {
+      context_processing_failure: "Use simplified processing",
+      archive_building_failure: "Use template-based building",
+      lazy_loading_failure: "Use cached data",
+    },
+  },
+  deployment_considerations: {
+    scalability: {
+      horizontal_scaling: "Supported via load balancer",
+      vertical_scaling: "Supported via resource allocation",
+      auto_scaling: "Supported via metrics-based scaling",
+    },
+    availability: {
+      target_uptime: "99.9%",
+      redundancy: "Multi-instance deployment",
+      failover: "Automatic failover to standby instances",
+    },
+    maintenance: {
+      rolling_updates: "Supported",
+      downtime: "Minimal during updates",
+      rollback: "Supported via version management",
+    },
+  },
+  metadata: {
+    created: "2025-01-27T20:50:00Z",
+    updated: "2025-11-02T18:05:00Z",
+    author: "aether",
+    status: "production",
+    version: "1.0.0",
+  },
+  confidenceRouting: {
+    high: "Read T0 executive summary (100 words) or code directly",
+    medium: "Read T0 + T1 overview (500 words) + T2 architecture (2k words)",
+    low: "Read T0 + T1 + T2 + T3 detailed (10k words)",
+    veryLow: "Read T0 + T1 + T2 + T3 + T4 complete (15k+ words) or ask for help",
+  },
+  relatedSystems: [
+    {
+      system: "hhni",
+      relationship: "Deep Context Appendices uses HHNI for context indexing and retrieval",
+      whenToUse: "When implementing context indexing or understanding hierarchical navigation",
+      docs: [
+        "systems/hhni/T2_architecture.md#deep-context-appendices",
+      ],
+      priority: "required",
+    },
+    {
+      system: "cmc",
+      relationship: "Deep Context Appendices stores context archives in CMC",
+      whenToUse: "When implementing context storage or understanding memory persistence",
+      docs: [
+        "systems/cmc/T2_architecture.md#deep-context-appendices",
+      ],
+      priority: "required",
+    },
+    {
+      system: "context_frames_system",
+      relationship: "Deep Context Appendices integrates with Context Frames for context management",
+      whenToUse: "When implementing context management or understanding frame systems",
+      docs: [
+        "systems/context_frames_system/T2_architecture.md#deep-context-appendices",
+      ],
+      priority: "required",
+    },
+  ],
+  documentation: {
+    T0: "knowledge_architecture/systems/deep_context_appendices/T0_executive.md",
+    T1: "knowledge_architecture/systems/deep_context_appendices/T1_overview.md",
+    T2: "knowledge_architecture/systems/deep_context_appendices/T2_architecture.md",
+    T3: "knowledge_architecture/systems/deep_context_appendices/T3_detailed.md",
+    T4: "knowledge_architecture/systems/deep_context_appendices/T4_complete.md",
+  },
+}

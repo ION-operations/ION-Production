@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "llvm-ir",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "LLVM documents DWARF generation from its pipeline (SourceLevelDebugging.html)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "c-language",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GCC/Clang emit DWARF for typical C/C++ debug builds (-g); see GCC debugging options."
+    },
+    {
+      "type": "integrates_with",
+      "target": "elf",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "DWARF sections (.debug_*) are carried inside ELF objects in typical Unix toolchains."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-binutils",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "objdump and readelf are standard inspectors for DWARF inside ELF objects."
+    },
+    {
+      "type": "integrates_with",
+      "target": "clang",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Clang emits DWARF debug info for typical -g builds on ELF targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-gcc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GCC emits DWARF for typical -g builds on ELF targets (GCC debugging options)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-gdb",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GDB consumes DWARF for source-level debugging."
+    },
+    {
+      "type": "integrates_with",
+      "target": "lldb",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "LLDB consumes DWARF for source-level debugging on typical ELF targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-libstdcxx",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "C++ debug builds using libstdc++ emit DWARF describing STL types and inline code paths."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-libcxx",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "C++ debug builds using libc++ emit DWARF for libc++ types and inline paths alongside Clang."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-libcxxabi",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Exception unwinding and debuggable stack walks interact with DWARF unwind info on ELF targets using libc++abi."
+    }
+  ]
+}

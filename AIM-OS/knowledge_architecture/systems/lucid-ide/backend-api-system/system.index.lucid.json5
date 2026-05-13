@@ -1,0 +1,191 @@
+{
+  "systemId": "lucid-ide.backendApiSystem",
+  "humanName": "Lucid IDE Backend API System",
+  "version": "v1.0.0",
+  "status": "production",
+  
+  "intent": {
+    "purpose": "Provide 42 Next.js API routes enabling AI services, architecture generation, context preview, and real-time tracing with integration to OpenAI, Anthropic, and XAI providers",
+    "must_not_regress": [
+      "Must not expose API keys",
+      "Must not allow unauthorized access",
+      "Must not skip input validation",
+      "Must not exceed 200ms latency for simple routes",
+      "Must not break WebSocket connections"
+    ],
+    "why_it_exists": "Transforms frontend requests into AI provider calls, manages file-based storage, and provides real-time communication channels enabling the IDE's core functionality."
+  },
+  
+  "classification": {
+    "security_level": "critical",
+    "perf_sensitivity": "high",
+    "ownership": "lucid-ide",
+    "sideEffects": [
+      "Calls external AI providers",
+      "Manages file-based storage",
+      "Streams real-time data",
+      "Processes file uploads",
+      "Generates architecture code"
+    ]
+  },
+  
+  "internalNodes": [
+    {
+      "id": "aiRoutes",
+      "responsibility": "25+ AI service routes (agents, chains, embeddings, knowledge-map, models, providers, etc.)",
+      "must_never": [
+        "Expose API keys",
+        "Allow unauthorized access",
+        "Skip input validation"
+      ],
+      "perf_budget_ms": 200,
+      "status": "production"
+    },
+    {
+      "id": "architectRoutes",
+      "responsibility": "Backend architecture generation and suggestion routes",
+      "must_never": [
+        "Generate insecure code",
+        "Skip code validation",
+        "Expose system internals"
+      ],
+      "perf_budget_ms": 5000,
+      "status": "production"
+    },
+    {
+      "id": "contextPreviewRoutes",
+      "responsibility": "Context preview generation for backend architect",
+      "must_never": [
+        "Expose sensitive context",
+        "Break context boundaries",
+        "Cause memory leaks"
+      ],
+      "perf_budget_ms": 1000,
+      "status": "production"
+    },
+    {
+      "id": "traceRoutes",
+      "responsibility": "Real-time tracing and streaming routes",
+      "must_never": [
+        "Stream sensitive data",
+        "Break WebSocket connections",
+        "Cause performance degradation"
+      ],
+      "perf_budget_ms": 100,
+      "status": "production"
+    },
+    {
+      "id": "fileStorage",
+      "responsibility": "File-based JSON storage (⚠️ needs migration to database)",
+      "must_never": [
+        "Lose data integrity",
+        "Allow path traversal",
+        "Exceed file size limits"
+      ],
+      "perf_budget_ms": 50,
+      "status": "production"
+    }
+  ],
+  
+  "systemMap": {
+    "mapFile": "./system.map.lucid.json5"
+  },
+  
+  "foresight": {
+    "predictedRisks": [
+      {
+        "risk_id": "no_authentication",
+        "description": "Most routes lack authentication, allowing unauthorized access",
+        "likelihood": "high",
+        "blast_radius_if_real": "complete_data_breach",
+        "mitigation": "Add authentication middleware to all routes",
+        "watchpoint": "if unauthorized_access detected, halt system"
+      },
+      {
+        "risk_id": "file_storage_vulnerability",
+        "description": "File-based storage vulnerable to path traversal attacks",
+        "likelihood": "high",
+        "blast_radius_if_real": "file_system_compromise",
+        "mitigation": "Migrate to database, add path sanitization",
+        "watchpoint": "if path_traversal detected, reject request"
+      },
+      {
+        "risk_id": "api_key_exposure",
+        "description": "API keys could be exposed in error messages or logs",
+        "likelihood": "medium",
+        "blast_radius_if_real": "provider_account_compromise",
+        "mitigation": "Sanitize error messages, secure logging",
+        "watchpoint": "if api_key_in_log detected, alert immediately"
+      }
+    ],
+    "killSwitch": "api.enabled=false",
+    "emergencyProcedures": [
+      "Disable all API routes immediately",
+      "Revoke all API keys",
+      "Switch to read-only mode",
+      "Notify security team"
+    ]
+  },
+  
+  "integrations": {
+    "frontendSystem": {
+      "protocol": "REST/WebSocket",
+      "whatIsExchanged": ["api_requests", "api_responses", "websocket_messages"],
+      "security": "high",
+      "rateLimit": "unlimited"
+    },
+    "aiProviders": {
+      "protocol": "HTTP",
+      "whatIsExchanged": ["ai_requests", "ai_responses", "streaming_data"],
+      "security": "critical",
+      "rateLimit": "provider-specific"
+    },
+    "fileStorage": {
+      "protocol": "file-io",
+      "whatIsExchanged": ["json_data", "file_uploads"],
+      "security": "critical",
+      "rateLimit": "unlimited"
+    }
+  },
+  
+  "performance": {
+    "metrics": {
+      "api_latency_ms": "target < 200ms",
+      "websocket_latency_ms": "target < 100ms",
+      "throughput_req_per_sec": "target > 100",
+      "error_rate_percent": "target < 1%"
+    },
+    "optimization": [
+      "Database migration",
+      "Caching",
+      "Rate limiting",
+      "Connection pooling"
+    ],
+    "monitoring": ["api_latency", "error_rate", "throughput", "websocket_connections"]
+  },
+  
+  "lineage": {
+    "parentSystemId": null,
+    "childSystems": [
+      {
+        "systemId": "lucid-chat.advancedAIChat",
+        "humanName": "Lucid Chat Advanced AI System",
+        "path": "knowledge_architecture/systems/lucid-chat/",
+        "status": "production_ready",
+        "version": "v0.9.2",
+        "layer": 6
+      }
+    ],
+    "maturity": "production_ready"
+  },
+  "documentation": {
+    "l0_executive": "knowledge_architecture/systems/lucid-ide/backend-api-system/L0_executive.md",
+    "l1_overview": "knowledge_architecture/systems/lucid-ide/backend-api-system/L1_overview.md",
+    "l2_architecture": "knowledge_architecture/systems/lucid-ide/backend-api-system/L2_architecture.md",
+    "l3_detailed": "knowledge_architecture/systems/lucid-ide/backend-api-system/L3_detailed.md",
+    "l4_complete": "knowledge_architecture/systems/lucid-ide/backend-api-system/L4_complete.md",
+    "system_map": "knowledge_architecture/systems/lucid-ide/backend-api-system/system.map.lucid.json5",
+    "usage_envelope": "knowledge_architecture/systems/lucid-ide/backend-api-system/usage.envelope.md"
+  }
+}
+

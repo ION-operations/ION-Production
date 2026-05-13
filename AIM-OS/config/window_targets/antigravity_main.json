@@ -1,0 +1,29 @@
+{
+  "id": "antigravity_main",
+  "display_name": "Antigravity Workspace",
+  "process_hints": ["antigravity.exe", "python.exe"],
+  "title_regex": "Antigravity|AIM-OS",
+  "class_hints": [],
+  "preferred_adapters": ["uia", "keyboard", "visual"],
+  "regions": {
+    "workspaceChat": {
+      "anchor": "bottomRight",
+      "x": -760,
+      "y": -360,
+      "w": 720,
+      "h": 300
+    }
+  },
+  "submit_policy": ["press_enter"],
+  "verification_policy": ["window_visible", "window_active"],
+  "uia": {
+    "max_depth": 18,
+    "panel_class_hints": ["antigravity-agent-side-panel", "component-shared-terminal"],
+    "message_class_hints": ["text-ide-message-block-bot-color", "ide-message-block-bot-color"],
+    "human_message_hints": ["ide-message-block-human-color", "text-ide-message-block-human-color"],
+    "input_automation_id_patterns": ["antigravity.agentSidePanelInputBox"],
+    "input_class_hints": ["agentSidePanelInputBox"],
+    "ignore_offscreen": true,
+    "min_visible_ratio": 0.05
+  }
+}

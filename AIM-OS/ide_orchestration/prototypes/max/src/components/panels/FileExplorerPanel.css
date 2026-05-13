@@ -1,0 +1,106 @@
+.file-explorer-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.file-explorer-header {
+  padding: 8px;
+  border-bottom: 1px solid #3e3e3e;
+}
+
+.file-explorer-search {
+  width: 100%;
+  padding: 6px 8px;
+  background: #2d2d30;
+  border: 1px solid #3e3e3e;
+  border-radius: 3px;
+  color: #cccccc;
+  font-size: 12px;
+}
+
+.file-explorer-search:focus {
+  outline: none;
+  border-color: #007acc;
+}
+
+.file-explorer-tree {
+  flex: 1;
+  overflow: auto;
+  padding: 4px 0;
+}
+
+.file-tree-node {
+  user-select: none;
+}
+
+.file-tree-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+  font-size: 13px;
+  color: #cccccc;
+}
+
+.file-tree-item:hover {
+  background: #2a2d2e;
+}
+
+.file-tree-item.selected {
+  background: #094771;
+}
+
+.file-tree-icon {
+  display: flex;
+  align-items: center;
+  color: #858585;
+  flex-shrink: 0;
+}
+
+.file-tree-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.file-tree-git-status {
+  font-size: 10px;
+  padding: 2px 4px;
+  border-radius: 2px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.git-m {
+  background: #f48771;
+  color: #1e1e1e;
+}
+
+.git-a {
+  background: #89d185;
+  color: #1e1e1e;
+}
+
+.git-d {
+  background: #f48771;
+  color: #1e1e1e;
+}
+
+.git-u {
+  background: #f48771;
+  color: #1e1e1e;
+}
+
+.git-? {
+  background: #858585;
+  color: #1e1e1e;
+}
+
+.file-tree-children {
+  margin-left: 0;
+}
+

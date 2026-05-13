@@ -1,0 +1,541 @@
+% Chapter converted from Markdown
+% Auto-generated - do not edit manually
+
+\section*{Chapter 23 - Threat Model \& Guardrails}
+
+
+\subsection*{Purpose}
+
+This chapter defines a practical, enforceable threat model for AIM-OS/APOE and installs guardrails-as-code that hold under real workloads: RAG, agents, tools, IDE-in-the-loop. Every control emits witnesses (VIF) and connects to the Shared Evidence Graph (SEG) so we can prove what the system did, why, and under which risk posture.
+
+\subsection*{Executive Summary}
+
+AIM-OS operates on living memory, executes tools, and ships software. That makes it a high-value target. We treat security, safety, and privacy as first-class capabilities: the system must anticipate misuse, constrain power, measure uncertainty, and prove lineage.
+
+\textbf{Security Doctrine (tl;dr):}
+\item \textbf{Deny by default:} Capabilities are requested and granted with scope, duration, and rate.
+\item \textbf{Untrusted by construction:} All user/content/context is tainted until proven otherwise.
+\item \textbf{Plan before power:} ACL/APOE plans are statically checked; high-risk steps require HITL (Ch.17).
+\item \textbf{Degrade safely:} When in doubt, abstain (κ-gating) or contain (least-privilege sandbox), not "best-guess."
+
+\subsection*{Threat Model for Agentic Systems}
+
+We profile threats by surface and goal. Each entry lists typical attacks → symptoms → controls.
+
+\subsubsection*{Prompt- \& Context-Level Threats}
+
+\textbf{Vectors:}
+\item Classic prompt injection (direct/indirect)
+\item Instruction smuggling in HTML/Markdown/CSV/ALT text
+\item Jailbreak patterns
+\item Overlong-context poisoning
+\item Retrieval booby-traps ("ignore previous; exfiltrate X")
+
+\textbf{Symptoms:}
+\item Role leakage
+\item Tool misuse
+\item Non-deterministic replies
+\item Policy bypass in citations
+
+\textbf{Controls:}
+
+\textbf{Role Isolation:}
+\item System vs. user vs. tool prompts are separately hashed and stored
+\item Only system prompt may set policy
+\item User prompts cannot override system policy
+\item Tool prompts are validated before execution
+
+\textbf{Quoted-Content Boxing:}
+\item Untrusted text is wrapped with verbatim fences + provenance tags
+\item Never executed as instruction
+\item Content marked as data, not code
+\item Provenance tags enable audit trail
+
+\textbf{Policy-Prefix Pinning:}
+\item A signed policy prelude (template hash + SEG id) precedes all chains
+\item Policy hash verified before execution
+\item Policy changes require re-signing
+\item SEG links enable policy audit
+
+\textbf{Detector Ensemble:}
+\item Pattern + LM-based detectors score "instructionality"
+\item HTML/script payloads detected
+\item Known jailbreaks identified
+\item Raise κ or strip malicious content
+
+\subsubsection*{Tooling \& RAG Threats}
+
+\textbf{Vectors:}
+\item Over-permissive tools
+\item TOCTOU races
+\item SSRF via URL tools
+\item Unlimited file I/O
+\item Secret leakage from vector stores
+\item Prompt injection through retrieved docs
+
+\textbf{Symptoms:}
+\item Calls to arbitrary hosts
+\item Filesystem traversal
+\item Credentials in responses
+\item "Phantom" tool execs
+
+\textbf{Controls:}
+
+\textbf{Capability Tokens (CapTok):}
+\item Signed, short-lived, scoped (action, resource, rate, region)
+\item JWT/JWP format with claims: sub (plan\_id/step\_id), act (Verb), res (Resource pattern), lim (rate/size), exp (TTL ≤ minutes), aud (tool runtime), jti (replay)
+\item Runtime enforcement via sidecar intercepting syscalls/network
+\item Violations raise SEG "violation" edges with packet metadata
+
+\textbf{Tool Sandboxes:}
+\item Per-tool containers with network egress allowlists
+\item Read-only FS by default
+\item CPU/mem/time quotas enforced
+\item Syscall filters prevent dangerous operations
+\item Least power defaults: no shell, no child process, no write, no outbound by default
+
+\textbf{RAG Allow+Deny Lists:}
+\item Per-connector hostname/tenant allowlists
+\item MIME/type guards
+\item Content disinfect (strip scripts/links) before inclusion
+\item Retrieved snippets are data; they cannot alter policy
+
+\textbf{Result Boxing:}
+\item APOE treats RAG outputs as inputs only
+\item RAG results cannot execute code
+\item Results validated before use
+\item Provenance tracked via SEG
+
+\subsubsection*{Network \& SSRF Threats}
+
+\textbf{Vectors:}
+\item URL fetch tools pointed at metadata endpoints
+\item Internal services, cloud IMDS
+\item DNS rebinding
+\item IPv6 literals
+\item file://, gopher:// protocols
+
+\textbf{Controls:}
+
+\textbf{URL Normalizer:}
+\item Reject non-HTTP(S) schemes
+\item Reject IP literals
+\item Reject link-local addresses
+\item Reject private RFC1918 addresses unless explicitly allowed
+\item Validate hostname format
+
+\textbf{Egress Policy:}
+\item Per-tool egress via proxy with hostname pinning
+\item TLS enforcement required
+\item Request recording into SEG
+\item Egress allowlists enforced
+
+\textbf{DNS Hardening:}
+\item Single trusted resolver
+\item Cache poisoning mitigations
+\item SNI/ALPN checks
+\item DNS queries logged
+
+\subsubsection*{Data Exfiltration \& Privacy}
+
+\textbf{Vectors:}
+\item Model answers echo secrets
+\item Embeddings store PII
+\item Logs leak tokens
+\item Oversharing to third parties
+
+\textbf{Controls:}
+
+\textbf{PII/Secret Classifiers:}
+\item Regex+ML classifiers in write paths (CMC ingest)
+\item Classifiers in read paths (render)
+\item Automatic detection and masking
+\item Classification confidence tracked
+
+\textbf{Differential Privacy (DP):}
+\item Event DP for telemetry
+\item ε budgets per tenant/user/feature
+\item Decay (τ) resets budgets
+\item Report DP for metrics dashboards
+\item Laplace/Gaussian noise added
+\item ECE calibration unaffected
+\item SEG nodes store (ε, δ, mech, scope)
+\item Exceeding budget → κ-abstain
+
+\textbf{Segregated Stores:}
+\item PII on RLS-protected tables
+\item Vector store contains redacted/hashed variants
+\item Linkage via SEG only
+\item Access controls enforced
+
+\textbf{Synthetic Labeling:}
+\item Watermark/model tags for generated content (VIF)
+\item Content provenance tracked
+\item Synthetic content marked
+\item Audit trail maintained
+
+\subsubsection*{Supply Chain \& Codegen Threats}
+
+\textbf{Vectors:}
+\item Malicious packages
+\item Typosquatting
+\item Poisoned snippets
+\item License traps
+\item CI secret exposure
+
+\textbf{Controls:}
+
+\textbf{SBOM + License Allowlist:}
+\item Software Bill of Materials (SBOM) gates
+\item License allowlist enforcement
+\item sigstore/SLSA provenance on artifacts
+\item Package validation before use
+
+\textbf{Policy Packs:}
+\item Enforce banned APIs
+\item Dangerous patterns (eval, spawn) blocked in codegen
+\item Policy violations trigger alerts
+\item Policy updates require approval
+
+\textbf{CI Secrets Broker:}
+\item Short-lived OIDC tokens from KMS
+\item Zero plaintext secrets in env/logs
+\item Secret rotation automated
+\item Access audit trail maintained
+
+\subsection*{Guardrails-as-Code (Enforced by APOE/ACL)}
+
+We encode guardrails at plan, step, and tool levels. All checks emit witness events (VIF).
+
+\subsubsection*{ACL Snippets}
+
+\textbf{Capability Tokens \& Sandboxes:}
+``\texttt{yaml
+tool http\_fetch
+  caps { action:"GET", hosts:["docs.example.com"], rate:"60/m", max\_bytes:5e6 }
+  sandbox { net\_egress:["docs.example.com:443"], fs:"ro", cpu\_ms:2000, mem\_mb:256, timeout\_ms:3000 }
+  gate { g\_url\_safe, g\_egress\_allowed, g\_span\_vif }
+
+tool file\_read
+  caps { action:"READ", paths:["/workspace/specs/*.md"], max\_bytes:1e6 }
+  sandbox { fs:"ro", chroot:"/workspace", syscalls\_deny:["execve","mount"] }
+  gate { g\_path\_allow, g\_span\_vif }
+}`\texttt{
+
+\textbf{Prompt Hygiene \& Tainting:}
+}`\texttt{yaml
+step synthesize\_answer
+  in  { query, retrieved[] }
+  policy { taint: ["retrieved"], quote\_untrusted:true, policy\_prefix: "seg://policy/answering@v3" }
+  gate { g\_injection\_scan, g\_policy\_prefix\_signed, g\_kappa\_band }
+}`\texttt{
+
+\textbf{SSRF Defense for URL Tools:}
+}`\texttt{yaml
+gate g\_url\_safe
+  checks { scheme in ["https"], host not\_in private\_ranges, port in [443] }
+}`\texttt{
+
+\subsubsection*{κ-Gating \& Abstention}
+
+At each boundary, compute risk = f(injection\_score, PII\_score, UQ, budget\_drift). If risk ≥ κ, the system:
+
+\textbf{Abstains:}
+\item With rationale + remediation link
+\item Logs decision to SEG
+\item Emits VIF witness
+\item Provides user feedback
+
+\textbf{Contains:}
+\item By downgrading capabilities (read-only tools, masked output)
+\item Limits scope of operation
+\item Reduces risk exposure
+\item Maintains audit trail
+
+\textbf{Routes to HITL:}
+\item Two-key approval required (Ch.17)
+\item Human review for high-risk operations
+\item Approval workflow enforced
+\item Decision recorded in SEG
+
+\subsection*{Tool Sandboxes \& Capability Tokens (CapTok)}
+
+\subsubsection*{Design}
+
+A CapTok is a signed JWT/JWP with claims:
+\item }sub\texttt{ (plan\_id/step\_id): Subject identifier
+\item }act\texttt{ (Verb): Action allowed
+\item }res\texttt{ (Resource pattern): Resource scope
+\item }lim\texttt{ (rate/size): Limits
+\item }exp\texttt{ (TTL ≤ minutes): Expiration
+\item }aud\texttt{ (tool runtime): Audience
+\item }jti\texttt{ (replay): JWT ID for replay prevention
+
+\subsubsection*{Runtime Enforcement}
+
+\textbf{Sidecar Interception:}
+\item Sidecar intercepts all syscalls/network
+\item Matches against CapTok
+\item Violations raise SEG "violation" edges
+\item Packet metadata recorded (no payloads with PII)
+\item Tool outputs labeled with cap\_id for downstream audit
+
+\textbf{Least Power Defaults:}
+\item No shell access
+\item No child process execution
+\item No write access
+\item No outbound network by default
+\item Explicit egress allowlist required
+\item DNS pinned to trusted resolver
+\item TLS cert pinning optional
+
+\subsection*{Redaction, DP, and Output Hygiene}
+
+\subsubsection*{Multi-Stage Redaction}
+
+\textbf{Ingest (CMC):}
+\item Classify and mask secrets/PII
+\item Store pointer to vaulted original (KMS-wrapped)
+\item Redaction metadata tracked
+\item Original accessible under policy
+
+\textbf{Index (HHNI):}
+\item Embeddings computed on redacted content
+\item SEG retains reversible link under policy
+\item Redaction preserves semantic meaning
+\item Access controls enforced
+
+\textbf{Render:}
+\item Re-apply redaction by audience/purpose
+\item Attach VIF explaining masks
+\item Context-aware redaction
+\item Audit trail maintained
+
+\textbf{Mask Formats:}
+\item Deterministic hashes for joinability (hash(email, pepper))
+\item Reversible tokens in secure contexts
+\item DP-protected aggregates for analytics
+\item Format chosen based on use case
+
+\subsubsection*{Differential Privacy (DP)}
+
+\textbf{Event DP:}
+\item For telemetry
+\item ε budgets per tenant/user/feature
+\item Decay (τ) resets budgets
+\item Budget tracking automated
+
+\textbf{Report DP:}
+\item For metrics dashboards
+\item Laplace/Gaussian noise added
+\item ECE calibration unaffected
+\item Privacy-utility tradeoff managed
+
+\textbf{SEG Integration:}
+\item SEG nodes store (ε, δ, mech, scope)
+\item Budget tracking via SEG
+\item Exceeding budget → κ-abstain
+\item Audit trail complete
+
+\subsection*{Abstention \& Containment Patterns}
+
+\subsubsection*{When to Abstain}
+
+\textbf{Conditions:}
+\item UQ high (ECE band breach)
+\item RS low (reliability score)
+\item Policy conflict detected
+\item Privacy budget exhausted
+\item Confidence below threshold
+
+\textbf{Process:}
+1. Risk assessment computes risk score
+2. Compare against κ threshold
+3. If risk ≥ κ, abstain
+4. Log decision to SEG
+5. Emit VIF witness
+6. Provide user feedback
+
+\subsubsection*{When to Contain}
+
+\textbf{Conditions:}
+\item Risk elevated but below abstention threshold
+\item Partial capability acceptable
+\item Degraded operation preferred to failure
+
+\textbf{Process:}
+1. Risk assessment identifies containment opportunity
+2. Downgrade capabilities (read-only, masked output)
+3. Limit scope of operation
+4. Monitor for escalation
+5. Log containment decision to SEG
+
+\subsection*{Runnable Examples (PowerShell)}
+
+\subsubsection*{Example 1: Validate Capability Token}
+}`\texttt{powershell
+\section*{Validate CapTok before tool execution}
+\_\_MATH\_BLOCK\_0\_\_capability\_token;
+        required\_action='GET';
+        required\_resource='docs.example.com';
+        required\_rate='60/m'
+    }
+} | ConvertTo-Json -Depth 6
+
+\_\_MATH\_BLOCK\_1\_\_captok |
+    Select-Object -ExpandProperty Content | ConvertFrom-Json
+
+if (\_\_MATH\_BLOCK\_2\_\_(\_\_MATH\_BLOCK\_3\_\_(\_\_MATH\_BLOCK\_4\_\_(\_\_MATH\_BLOCK\_5\_\_(\_\_MATH\_BLOCK\_6\_\_(\_\_MATH\_BLOCK\_7\_\_(\_\_MATH\_BLOCK\_8\_\_(\_\_MATH\_BLOCK\_9\_\_budget = @{
+    tool='check\_privacy\_budget';
+    arguments=@{
+        tenant\_id='tenant\_123';
+        feature='analytics';
+        epsilon\_required=0.5;
+        delta\_required=1e-5
+    }
+} | ConvertTo-Json -Depth 6
+
+\_\_MATH\_BLOCK\_10\_\_budget |
+    Select-Object -ExpandProperty Content | ConvertFrom-Json
+
+if (\_\_MATH\_BLOCK\_11\_\_(\_\_MATH\_BLOCK\_12\_\_(\_\_MATH\_BLOCK\_13\_\_(\_\_MATH\_BLOCK\_14\_\_(\_\_MATH\_BLOCK\_15\_\_(\_\_MATH\_BLOCK\_16\_\_scan = @{
+    tool='scan\_prompt\_injection';
+    arguments=@{
+        content=\_\_MATH\_BLOCK\_17\_\_result = Invoke-WebRequest -Uri 'http://localhost:5001/mcp/execute' }
+    -Method POST -ContentType 'application/json' -Body \_\_MATH\_BLOCK\_18\_\_result.injection\_detected) {
+    Write-Host "Prompt Injection Detected:"
+    Write-Host "  Score: \_\_MATH\_BLOCK\_19\_\_result.injection\_score)"
+    Write-Host "  Detector: \_\_MATH\_BLOCK\_20\_\_result.detector)"
+    Write-Host "  Pattern: \_\_MATH\_BLOCK\_21\_\_result.pattern)"
+    Write-Host "  Recommendation: Raise κ or strip content"
+} else {
+    Write-Host "No Injection Detected (Score: \_\_MATH\_BLOCK\_22\_\_result.injection\_score))"
+}
+```
+
+\subsection*{Integration Points}
+
+\subsubsection*{VIF Integration}
+
+\textbf{Witness Envelopes:}
+\item All security decisions emit VIF witnesses
+\item Witnesses include risk assessment, decision rationale, remediation links
+\item Witnesses stored in CMC with bitemporal tracking
+\item Witnesses enable deterministic replay
+
+\textbf{Confidence Routing:}
+\item Low confidence triggers security review
+\item High confidence enables automatic processing
+\item Confidence thresholds configurable per operation type
+\item Confidence degradation triggers alerts
+
+\subsubsection*{SEG Integration}
+
+\textbf{Evidence Anchors:}
+\item All security events linked to SEG
+\item Contradiction detection for policy violations
+\item Temporal awareness for threat patterns
+\item Knowledge synthesis for threat intelligence
+
+\textbf{Policy Enforcement:}
+\item Policies stored as SEG claims
+\item Policy changes tracked temporally
+\item Policy violations detected automatically
+\item Policy audit trail complete
+
+\subsubsection*{APOE Integration}
+
+\textbf{Plan Validation:}
+\item Plans statically checked for security violations
+\item High-risk steps require HITL approval
+\item Plan execution monitored for deviations
+\item Plan results validated against security policy
+
+\textbf{Chain Execution:}
+\item Security gates enforced at each step
+\item Capability tokens validated before tool execution
+\item Sandbox enforcement during execution
+\item Results validated before propagation
+
+\subsection*{Failure Modes \& Mitigations}
+
+\subsubsection*{Policy Bypass}
+
+\textbf{Scenario:} Attacker bypasses security policy through novel attack vector.
+
+\textbf{Mitigation:}
+\item Multi-layer defense (defense in depth)
+\item Continuous monitoring for anomalies
+\item Rapid policy updates via SEG
+\item Threat intelligence integration
+
+\subsubsection*{Sandbox Escape}
+
+\textbf{Scenario:} Attacker escapes tool sandbox to access host system.
+
+\textbf{Mitigation:}
+\item Hardened container isolation
+\item Syscall filtering enforced
+\item Resource quotas strictly enforced
+\item Network egress restricted
+\item Regular security audits
+
+\subsubsection*{Privacy Budget Exhaustion}
+
+\textbf{Scenario:} Privacy budget exhausted, preventing legitimate analytics.
+
+\textbf{Mitigation:}
+\item Budget decay mechanisms
+\item Budget allocation optimization
+\item Alternative analysis methods
+\item Human review for critical operations
+
+\subsection*{Ops Runbook}
+
+\subsubsection*{Daily Security Monitoring}
+
+\textbf{Step 1:} Monitor security dashboard (violations, alerts, budget status)
+
+\textbf{Metrics:}
+\item Policy violations per hour
+\item CapTok rejections
+\item Privacy budget utilization
+\item Sandbox escape attempts
+
+\textbf{Success Criteria:} No critical violations, budget utilization <80\%, no escape attempts
+
+\subsubsection*{Weekly Threat Review}
+
+\textbf{Step 2:} Review threat intelligence and update policies
+
+\textbf{Process:}
+\item Analyze SEG violation patterns
+\item Update detector signatures
+\item Adjust κ thresholds
+\item Update policy packs
+
+\textbf{Success Criteria:} Policies updated, detectors improved, threat coverage maintained
+
+\subsubsection*{Monthly Security Audit}
+
+\textbf{Step 3:} Comprehensive security audit
+
+\textbf{Process:}
+\item Review all security events
+\item Validate policy effectiveness
+\item Test sandbox isolation
+\item Verify privacy budget accuracy
+
+\textbf{Success Criteria:} All policies effective, sandboxes secure, privacy budgets accurate
+
+\subsection*{Connection to Other Chapters}
+
+\item \textbf{Chapter 1 (The Great Limitation):} Security addresses "invisible quality" by making security visible
+\item \textbf{Chapter 7 (VIF):} Security uses VIF for confidence routing and witness envelopes
+\item \textbf{Chapter 8 (APOE):} Security uses APOE for plan validation and chain execution
+\item \textbf{Chapter 9 (SEG):} Security uses SEG for evidence anchors and policy enforcement
+\item \textbf{Chapter 10 (SDF-CVF):} Security uses SDF-CVF for quality validation and quartet parity
+\item \textbf{Chapter 17 (Capability as Proof):} Security uses capability proofs for authorization
+
+\textbf{Key Insight:} Security is not isolated—it integrates with all systems to provide comprehensive protection.
+

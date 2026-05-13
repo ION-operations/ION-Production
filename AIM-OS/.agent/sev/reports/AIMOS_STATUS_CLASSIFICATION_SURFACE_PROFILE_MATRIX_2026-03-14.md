@@ -1,0 +1,23 @@
+# AIMOS Status-Classification Surface Profile Matrix - 2026-03-14
+
+Work package: `CONSOLIDATION_WORK_PACKAGE_24_2026-03-14`
+
+This matrix compares visible status-classification families only.
+It records evidence, not status-canon decisions.
+
+| Surface family | Representative local sample | Primary status-classification role | What kind of state words or classes it appears to express | Update pattern visible locally | Strongest interaction with sibling classification surfaces | Strongest visible local ambiguity, contradiction, or drift risk |
+| --- | --- | --- | --- | --- | --- | --- |
+| Broad verdict-map surfaces | `.agent/sev/reports/RUNTIME_TRUTH_MAP_2026-03-13.md` | Summarize large system areas into compact verdict language | Broad classes such as `ALIVE`, `BROKEN`, `FUNCTIONAL but UNUSED`, `DEGRADED`, `EXISTS, needs verification`, `WORKING`, `SLOW/INTERMITTENT`, `UNKNOWN`, and `PARTIAL` | Packet-dated synthesis updated in large evidence passes rather than per-run | Provide the highest-level labels that bounded cards, degraded registers, live fields, and package assertions can later sharpen or contradict | Vocabulary is broad and powerful but can drift fastest against live state; current bridge and memory stats no longer match the map's older numbers and transport framing |
+| Bounded verification-result surfaces | `.agent/sev/reports/AIMOS_CORE_SYSTEM_LIVE_VERIFICATION_CARD_2026-03-13.md` | Classify bounded checks into a compact result vocabulary tied to explicit methods | Result classes such as `live`, `degraded`, and `unavailable`, plus boundary notes defining what each class means | Packet-dated verification snapshots written when bounded probes were executed | Translate package-side and tool-path behavior into disciplined result words that can be compared against live fields and verdict maps | Its vocabulary is tighter than the verdict map, but still dated; a bounded `live` or `degraded` label can be over-read as present truth if the host has shifted since the check |
+| Degraded-register surfaces | `.agent/sev/reports/AIMOS_RUNTIME_DEGRADED_FEATURE_REGISTER_2026-03-13.md` | Preserve failure-shaped or weakness-shaped status language | Terms like `degraded`, `partial`, `weak`, `empty`, `unavailable`, `noisy`, and method-sensitive observation phrasing | Packet-dated register updated during verification passes, then preserved as evidence | Adds weakness nuance that broad verdict maps and verification cards compress | This family is selective by design, so it can understate healthy breadth even while remaining accurate about weak surfaces |
+| Live machine status-field surfaces | `scripts\mcp.cmd status`<br>`get_memory_stats(...)`<br>`get_hhni_status(...)` | Express machine-readable current state fields and counters | Field-level status words and booleans such as `OK`, `READY`, `operational`, `ready=true`, `index_available=false`, `retriever_available=false`, numeric counters, and explicit error fields | Fresh per invocation; strongest current-state evidence exists only for the current run | Constrain every older status vocabulary by exposing the present host state in booleans, counters, and current errors | High field precision does not automatically yield a human verdict; multiple fields can remain semantically ambiguous without sibling interpretation |
+| Package-test or assertion-outcome surfaces | `packages/hhni/tests/test_hierarchical_index.py`<br>`packages/vif/tests/test_kappa_gate.py`<br>`packages/cas/tests/test_activation.py` | Express package-side expected outcomes through assertions and pass/fail logic | Assertion vocabulary such as `assert`, `passed`, `failed`, `pending`, `resolved`, `is_hot`, `is_cold`, `True`, and `False` around package-local behavior | Stable code/test surfaces updated with package work, not with host-runtime state | Preserve the narrowest, most falsifiable package-outcome language that other status surfaces reinterpret into runtime state | Package assertions are semantically sharp but can be over-read into system health even when they only prove local logic or expected invariants |
+
+## Evidence Base
+
+- Findings board: `.agent/sev/reports/CONSOLIDATION_FINDINGS_BOARD_22_2026-03-14.md`
+- Verdict map: `.agent/sev/reports/RUNTIME_TRUTH_MAP_2026-03-13.md`
+- Verification-result surface: `.agent/sev/reports/AIMOS_CORE_SYSTEM_LIVE_VERIFICATION_CARD_2026-03-13.md`
+- Degraded register: `.agent/sev/reports/AIMOS_RUNTIME_DEGRADED_FEATURE_REGISTER_2026-03-13.md`
+- Live fields: `scripts\mcp.cmd status`, `get_memory_stats`, `get_hhni_status`
+- Package assertions: `packages/hhni/tests/test_hierarchical_index.py`, `packages/vif/tests/test_kappa_gate.py`, `packages/cas/tests/test_activation.py`

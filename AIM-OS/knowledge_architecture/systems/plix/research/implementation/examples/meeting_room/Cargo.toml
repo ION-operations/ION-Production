@@ -1,0 +1,41 @@
+[package]
+name = "plix-meeting-room-example"
+version = "0.1.0"
+edition = "2021"
+authors = ["AIM-OS Team"]
+description = "Meeting-room reservation example for Core-PLIx"
+
+[dependencies]
+# Local dependencies
+plix-ref-interpreter = { path = "../../ref-interpreter" }
+plix-verifier = { path = "../../verifier" }
+
+# Core dependencies
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+chrono = { version = "0.4", features = ["serde"] }
+uuid = { version = "1.0", features = ["v4", "serde"] }
+ed25519-dalek = { version = "2.0", features = ["serde"] }
+hex = "0.4"
+rand = "0.8"
+
+[[bin]]
+name = "run-meeting-room-passing"
+path = "bin/passing.rs"
+
+[[bin]]
+name = "run-meeting-room-compensated"
+path = "bin/compensated.rs"
+
+[[bin]]
+name = "generate-evidence-dag"
+path = "bin/generate_dag.rs"
+
+[[bin]]
+name = "verify-evidence-dag"
+path = "bin/verify_dag.rs"
+
+[[bin]]
+name = "visualize-evidence-dag"
+path = "bin/visualize.rs"
+

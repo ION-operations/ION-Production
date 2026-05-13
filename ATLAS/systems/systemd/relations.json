@@ -1,0 +1,107 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "depends_on",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "systemd targets Linux; other OS ports are non-mainline for this package scope."
+    },
+    {
+      "type": "integrates_with",
+      "target": "docker",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Often coexists on container hosts for host services."
+    },
+    {
+      "type": "manages",
+      "target": "kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "kubelet/node services commonly supervised by systemd on Linux nodes; not a hard universal dependency."
+    },
+    {
+      "type": "integrates_with",
+      "target": "systemd-boot",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Same project family; composed with PID 1 on typical systemd-based OS images."
+    },
+    {
+      "type": "integrates_with",
+      "target": "unified-kernel-image",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "systemd ukify builds UKI artifacts per systemd.ukify(1)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "systemd-unit-model",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "PID 1 and related daemons load and interpret unit files per systemd.unit(5) and service-specific manuals."
+    },
+    {
+      "type": "integrates_with",
+      "target": "systemd-portable",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Portable services and portablectl are documented systemd features for attaching portable OS-tree images."
+    },
+    {
+      "type": "integrates_with",
+      "target": "systemd-sysext",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "systemd-sysext merges system extension images into configured hierarchies as part of the systemd suite."
+    },
+    {
+      "type": "integrates_with",
+      "target": "systemd-confext",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "systemd-confext merges configuration extension images into /etc-class hierarchies as part of the systemd suite."
+    },
+    {
+      "type": "integrates_with",
+      "target": "debian",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Debian stable uses systemd as the default init system, running systemd as PID 1 on default installs."
+    },
+    {
+      "type": "integrates_with",
+      "target": "ubuntu",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Ubuntu uses systemd as the default init and service manager, running systemd as PID 1 on default installs."
+    },
+    {
+      "type": "integrates_with",
+      "target": "fedora",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Fedora uses systemd as the default init and service manager, running systemd as PID 1 on default installs."
+    },
+    {
+      "type": "integrates_with",
+      "target": "rhel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "RHEL uses systemd as the default init and service manager, running systemd as PID 1 on default installs."
+    },
+    {
+      "type": "integrates_with",
+      "target": "rocky-linux",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Rocky Linux uses systemd as the default init and service manager, running systemd as PID 1 on default installs."
+    },
+    {
+      "type": "integrates_with",
+      "target": "almalinux",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "AlmaLinux uses systemd as the default init and service manager, running systemd as PID 1 on default installs."
+    },
+    {
+      "type": "integrates_with",
+      "target": "centos-stream",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "CentOS Stream uses systemd as the default init and service manager, running systemd as PID 1 on default installs."
+    },
+    {
+      "type": "integrates_with",
+      "target": "centos-linux",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Historical CentOS Linux used systemd as the default init and service manager on supported releases where systemd applied, running systemd as PID 1 on default installs."
+    }
+  ]
+}

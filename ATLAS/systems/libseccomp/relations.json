@@ -1,0 +1,53 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "seccomp",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "libseccomp builds seccomp BPF programs and applies them via the kernel seccomp uAPI."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Targets Linux prctl/seccomp syscalls and seccomp-filter behavior as documented for the running kernel."
+    },
+    {
+      "type": "integrates_with",
+      "target": "c-language",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "libseccomp is a C library for syscall filtering policies."
+    },
+    {
+      "type": "integrates_with",
+      "target": "glibc",
+      "evidence_tier": "INFERRED",
+      "notes": "Typical GNU/Linux builds link libseccomp against glibc."
+    },
+    {
+      "type": "integrates_with",
+      "target": "musl",
+      "evidence_tier": "INFERRED",
+      "notes": "musl-based Linux userlands may link libseccomp."
+    },
+    {
+      "type": "integrates_with",
+      "target": "clang",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang compiles libseccomp and its consumers."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-gcc",
+      "evidence_tier": "INFERRED",
+      "notes": "GCC compiles libseccomp and its consumers."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "Container runtimes and security profiles may compose seccomp profiles on Linux nodes."
+    }
+  ]
+}

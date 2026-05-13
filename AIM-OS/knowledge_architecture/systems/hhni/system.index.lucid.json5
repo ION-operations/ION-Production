@@ -1,0 +1,489 @@
+{
+  "systemId": "hhni.hierarchicalHypergraph",
+  "humanName": "Hierarchical Hypergraph Neural Index - Physics-Guided Retrieval",
+  "version": "v0.1",
+  "status": "production",
+  
+  "intent": {
+    "purpose": "Provide physics-guided retrieval system that finds information at any granularity using DVNS physics, solving the 'lost in the middle' problem with empirically validated +15% improvement",
+    "must_not_regress": [
+      "Must not lose hierarchical relationships",
+      "Must not break physics conservation laws",
+      "Must not exceed 80ms p95 latency target",
+      "Must not lose information in middle positions",
+      "Must not exceed token budget limits"
+    ],
+    "why_it_exists": "Solves the 'lost in the middle' problem where AI systems lose track of information in long contexts. Combines fractal indexing with physics-guided retrieval for optimal context every time."
+  },
+  
+  "classification": {
+    "security_level": "high",
+    "perf_sensitivity": "critical",
+    "ownership": "core",
+    "sideEffects": [
+      "Indexes all CMC atoms hierarchically",
+      "Provides optimized context for reasoning",
+      "Enables multi-resolution queries",
+      "Solves information loss in long contexts"
+    ]
+  },
+  
+  "internalNodes": [
+    {
+      "id": "hierarchicalIndex",
+      "responsibility": "Manages 6-level fractal indexing (System → Section → Paragraph → Sentence → Word → Subword)",
+      "must_never": [
+        "Lose hierarchical relationships",
+        "Create circular dependencies",
+        "Index content without proper embedding"
+      ],
+      "perf_budget_ms": 20,
+      "status": "production"
+    },
+    {
+      "id": "dvnsPhysicsEngine",
+      "responsibility": "Applies 4 forces (gravity, repulsion, elastic, damping) to optimize context layout",
+      "must_never": [
+        "Allow infinite oscillation",
+        "Break physics conservation laws",
+        "Exceed convergence iteration limit"
+      ],
+      "perf_budget_ms": 50,
+      "status": "production"
+    },
+    {
+      "id": "coarseRetrieval",
+      "responsibility": "Fast KNN semantic search in embedding space (Stage 1)",
+      "must_never": [
+        "Return inconsistent results",
+        "Exceed 10ms latency target",
+        "Miss semantically relevant content"
+      ],
+      "perf_budget_ms": 10,
+      "status": "production"
+    },
+    {
+      "id": "physicsRefinement",
+      "responsibility": "Physics-guided refinement of retrieved candidates (Stage 2)",
+      "must_never": [
+        "Exceed 50ms latency target",
+        "Break semantic relationships",
+        "Return suboptimal results"
+      ],
+      "perf_budget_ms": 50,
+      "status": "production"
+    },
+    {
+      "id": "deduplicationEngine",
+      "responsibility": "Removes semantically similar items to prevent redundancy",
+      "must_never": [
+        "Remove unique information",
+        "Create false duplicates",
+        "Lose important semantic distinctions"
+      ],
+      "perf_budget_ms": 15,
+      "status": "production"
+    },
+    {
+      "id": "conflictResolver",
+      "responsibility": "Detects contradictions and selects best stance",
+      "must_never": [
+        "Lose contradictory information",
+        "Make incorrect conflict decisions",
+        "Break logical consistency"
+      ],
+      "perf_budget_ms": 20,
+      "status": "production"
+    },
+    {
+      "id": "strategicCompressor",
+      "responsibility": "Age-based compression (keep recent detail, summarize old)",
+      "must_never": [
+        "Lose critical information",
+        "Exceed compression ratio limits",
+        "Break semantic coherence"
+      ],
+      "perf_budget_ms": 25,
+      "status": "production"
+    },
+    {
+      "id": "budgetFitter",
+      "responsibility": "Respects token limits and never exceeds context window",
+      "must_never": [
+        "Exceed token budget",
+        "Truncate critical information",
+        "Break context continuity"
+      ],
+      "perf_budget_ms": 10,
+      "status": "production"
+    },
+    {
+      "id": "embeddingManager",
+      "responsibility": "Manages embeddings and vector operations",
+      "must_never": [
+        "Generate inconsistent embeddings",
+        "Lose vector integrity",
+        "Exceed embedding dimension limits"
+      ],
+      "perf_budget_ms": 30,
+      "status": "production"
+    },
+    {
+      "id": "queryProcessor",
+      "responsibility": "Processes queries and coordinates retrieval pipeline",
+      "must_never": [
+        "Lose query context",
+        "Return malformed results",
+        "Break query semantics"
+      ],
+      "perf_budget_ms": 5,
+      "status": "production"
+    },
+    {
+      "id": "morphologicalAnalysis",
+      "responsibility": "Morphological decomposition of words into parts (prefix, root, suffix) for enhanced SUBWORD level indexing",
+      "must_never": [
+        "Lose morphological relationships",
+        "Break word part integrity",
+        "Create incorrect decompositions"
+      ],
+      "perf_budget_ms": 15,
+      "status": "production"
+    },
+    {
+      "id": "semanticBlockOrganizer",
+      "responsibility": "Pre-organizes content into semantic blocks (thematic, narrative, conceptual, morphological) at index time",
+      "must_never": [
+        "Lose semantic relationships",
+        "Break block coherence",
+        "Create incorrect block assignments"
+      ],
+      "perf_budget_ms": 20,
+      "status": "production"
+    },
+    {
+      "id": "crossDocumentRelationshipDetector",
+      "responsibility": "Detects semantic relationships across documents (narrative context, symbolic links, co-occurrence)",
+      "must_never": [
+        "Lose cross-document relationships",
+        "Create false semantic links",
+        "Break narrative continuity"
+      ],
+      "perf_budget_ms": 25,
+      "status": "production"
+    }
+  ],
+  
+  "systemMap": {
+    "mapFile": "./system.map.lucid.json5"
+  },
+  
+  "foresight": {
+    "predictedRisks": [
+      {
+        "risk_id": "physics_simulation_divergence",
+        "description": "DVNS physics simulation could fail to converge",
+        "likelihood": "low",
+        "blast_radius_if_real": "all_retrieval_operations_fail",
+        "mitigation": "Implement convergence limits and fallback to KNN",
+        "watchpoint": "if convergence_iterations > 100, switch to fallback"
+      },
+      {
+        "risk_id": "hierarchical_index_corruption",
+        "description": "6-level index could become corrupted or inconsistent",
+        "likelihood": "low",
+        "blast_radius_if_real": "multi_resolution_queries_unreliable",
+        "mitigation": "Implement index validation and repair mechanisms",
+        "watchpoint": "if index_integrity_check fails, trigger repair"
+      },
+      {
+        "risk_id": "vector_store_inconsistency",
+        "description": "Embedding vectors could become inconsistent with content",
+        "likelihood": "medium",
+        "blast_radius_if_real": "semantic_search_unreliable",
+        "mitigation": "Implement vector-content consistency checks",
+        "watchpoint": "if vector_content_mismatch detected, reindex"
+      },
+      {
+        "risk_id": "token_budget_overflow",
+        "description": "Budget fitting could fail to respect token limits",
+        "likelihood": "low",
+        "blast_radius_if_real": "context_window_exceeded",
+        "mitigation": "Implement strict budget enforcement and truncation",
+        "watchpoint": "if token_count > budget, force truncation"
+      }
+    ],
+    "killSwitch": "hhni.retrieval.enabled=false",
+    "emergencyProcedures": [
+      "Switch to fallback KNN retrieval",
+      "Disable physics refinement",
+      "Use basic deduplication only",
+      "Notify all dependent systems"
+    ]
+  },
+  
+  "lineage": {
+    "parentSystemId": null,
+    "childSystems": [
+      "apoe.aiPoweredOrchestration",
+      "vif.verifiableIntelligence"
+    ],
+    "maturity": "production"
+  },
+  
+  "subsystems": [
+    {
+      "id": "hierarchical_index",
+      "name": "Hierarchical Index Subsystem",
+      "type": "subsystem",
+      "layer": 2,
+      "parent": "hhni.hierarchicalHypergraph",
+      "description": "6-level fractal indexing (System → Section → Paragraph → Sentence → Word → Subword) for multi-resolution queries",
+      "status": "production"
+    },
+    {
+      "id": "dvns",
+      "name": "DVNS Physics Subsystem",
+      "type": "subsystem",
+      "layer": 2,
+      "parent": "hhni.hierarchicalHypergraph",
+      "description": "Physics-guided context optimization using 4 forces (gravity, repulsion, elastic, damping) to solve 'lost in the middle' problem",
+      "status": "production"
+    },
+    {
+      "id": "retrieval",
+      "name": "Retrieval Subsystem",
+      "type": "subsystem",
+      "layer": 2,
+      "parent": "hhni.hierarchicalHypergraph",
+      "description": "Two-stage intelligent retrieval pipeline (coarse KNN → DVNS refinement, deduplication, conflict resolution, compression, budget fitting)",
+      "status": "production"
+    },
+    {
+      "id": "morphological_analysis",
+      "name": "Morphological Analysis Subsystem",
+      "type": "subsystem",
+      "layer": 2,
+      "parent": "hhni.hierarchicalHypergraph",
+      "description": "Morphological decomposition of words into parts (prefix, root, suffix) for enhanced subword indexing",
+      "status": "production"
+    }
+  ],
+  
+  "components": [
+    {
+      "id": "coarseRetrieval",
+      "name": "Coarse Retrieval Component",
+      "type": "component",
+      "layer": 3,
+      "parentSubsystem": "retrieval",
+      "description": "Coarse KNN search (initial candidate selection)",
+      "status": "production",
+      "usage": "main_pipeline"
+    },
+    {
+      "id": "physicsRefinement",
+      "name": "Physics Refinement Component",
+      "type": "component",
+      "layer": 3,
+      "parentSubsystem": "retrieval",
+      "description": "DVNS physics refinement (4 forces optimization)",
+      "status": "production",
+      "usage": "main_pipeline"
+    },
+    {
+      "id": "budgetFitter",
+      "name": "Budget Fitter Component",
+      "type": "component",
+      "layer": 3,
+      "parentSubsystem": "retrieval",
+      "description": "Token budget fitting (ensures content fits within budget)",
+      "status": "production",
+      "usage": "main_pipeline"
+    },
+    {
+      "id": "deduplicationEngine",
+      "name": "Deduplication Engine Component",
+      "type": "component",
+      "layer": 3,
+      "parentSubsystem": "retrieval",
+      "description": "Content deduplication (removes duplicate content)",
+      "status": "available",
+      "usage": "not_integrated"
+    },
+    {
+      "id": "conflictResolver",
+      "name": "Conflict Resolver Component",
+      "type": "component",
+      "layer": 3,
+      "parentSubsystem": "retrieval",
+      "description": "Conflict resolution (resolves contradictory content)",
+      "status": "production",
+      "usage": "baseline_only"
+    },
+    {
+      "id": "strategicCompressor",
+      "name": "Strategic Compressor Component",
+      "type": "component",
+      "layer": 3,
+      "parentSubsystem": "retrieval",
+      "description": "Strategic compression (optimizes content for token budget)",
+      "status": "production",
+      "usage": "baseline_only"
+    }
+  ],
+  
+  "integrations": [
+    {
+      "id": "hhni_cmc_integration",
+      "name": "HHNI ↔ CMC Integration",
+      "type": "integration",
+      "systems": ["hhni", "cmc"],
+      "bidirectional": true,
+      "purpose": "Indexes CMC atoms at all 6 levels, retrieves atoms for context",
+      "subsystems": ["hierarchical_index", "retrieval", "morphological_analysis"],
+      "codeStatus": "implemented",
+      "lastValidated": "2025-01-27"
+    },
+    {
+      "id": "hhni_apoe_integration",
+      "name": "HHNI ↔ APOE Integration",
+      "type": "integration",
+      "systems": ["hhni", "apoe"],
+      "bidirectional": true,
+      "purpose": "Provides optimized context for APOE orchestration (retriever role)",
+      "subsystems": ["retrieval"],
+      "codeStatus": "pattern_only",
+      "lastValidated": "2025-01-27"
+    },
+    {
+      "id": "hhni_vif_integration",
+      "name": "HHNI ↔ VIF Integration",
+      "type": "integration",
+      "systems": ["hhni", "vif"],
+      "bidirectional": true,
+      "purpose": "Retrieval operations witnessed by VIF, RS-lift metrics tracked",
+      "subsystems": ["dvns", "retrieval"],
+      "codeStatus": "partial",
+      "lastValidated": "2025-01-27"
+    },
+    {
+      "id": "hhni_seg_integration",
+      "name": "HHNI ↔ SEG Integration",
+      "type": "integration",
+      "systems": ["hhni", "seg"],
+      "bidirectional": true,
+      "purpose": "Hierarchical paths stored in SEG graph, evidence search",
+      "subsystems": ["hierarchical_index", "retrieval", "morphological_analysis"],
+      "codeStatus": "implemented",
+      "lastValidated": "2025-01-27"
+    },
+    {
+      "id": "hhni_cas_integration",
+      "name": "HHNI ↔ CAS Integration",
+      "type": "integration",
+      "systems": ["hhni", "cas"],
+      "bidirectional": true,
+      "purpose": "CAS activation hooks for indexing, activation tracking for retrieval",
+      "subsystems": ["hierarchical_index", "retrieval"],
+      "codeStatus": "implemented",
+      "lastValidated": "2025-01-28"
+    },
+    {
+      "id": "hhni_tcs_integration",
+      "name": "HHNI ↔ TCS Integration",
+      "type": "integration",
+      "systems": ["hhni", "tcs"],
+      "bidirectional": true,
+      "purpose": "TCS context retrieval for indexing, context management for retrieval (indirect via CMC)",
+      "subsystems": ["hierarchical_index", "retrieval"],
+      "codeStatus": "implemented",
+      "lastValidated": "2025-01-28"
+    },
+    {
+      "id": "hhni_sdfcvf_integration",
+      "name": "HHNI ↔ SDF-CVF Integration",
+      "type": "integration",
+      "systems": ["hhni", "sdfcvf"],
+      "bidirectional": true,
+      "purpose": "SDF-CVF validates hierarchical index consistency and quartet parity",
+      "subsystems": ["hierarchical_index", "dvns", "retrieval"],
+      "codeStatus": "not_implemented",
+      "lastValidated": "2025-01-27"
+    }
+  ],
+  
+  "connections": [
+    {
+      "viaPort": "cmcIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "cmc.contextMemoryCore",
+      "protocol": "internal_api",
+      "data": ["atoms_for_indexing", "hierarchical_paths", "retrieval_queries"],
+      "security_level": "high",
+      "governanceRequired": true,
+      "codeStatus": "implemented",
+      "lastValidated": "2025-01-27"
+    },
+    {
+      "viaPort": "apoeIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "apoe.aiPoweredOrchestration",
+      "protocol": "internal_api",
+      "data": ["context_retrieval_requests", "optimized_context", "multi_step_queries"],
+      "security_level": "high",
+      "governanceRequired": true,
+      "codeStatus": "pattern_only",
+      "lastValidated": "2025-01-27"
+    },
+    {
+      "viaPort": "vifIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "vif.verifiableIntelligence",
+      "protocol": "internal_api",
+      "data": ["retrieval_operations", "rs_lift_metrics", "witness_data"],
+      "security_level": "high",
+      "governanceRequired": true,
+      "codeStatus": "partial",
+      "lastValidated": "2025-01-27"
+    },
+    {
+      "viaPort": "segIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "seg.sharedEvidenceGraph",
+      "protocol": "internal_api",
+      "data": ["morphological_entities", "cross_document_relations", "semantic_block_relations", "evidence_indexing"],
+      "security_level": "high",
+      "governanceRequired": true,
+      "codeStatus": "implemented",
+      "lastValidated": "2025-01-27"
+    },
+    {
+      "viaPort": "vectorStore",
+      "direction": "outbound",
+      "connectsToSystemId": "vector.faiss",
+      "protocol": "faiss_api",
+      "data": ["embedding_vectors", "similarity_queries", "search_results"],
+      "security_level": "medium",
+      "governanceRequired": false
+    },
+    {
+      "viaPort": "embeddingService",
+      "direction": "outbound",
+      "connectsToSystemId": "embedding.sentenceTransformers",
+      "protocol": "local_api",
+      "data": ["text_content", "embedding_requests", "vector_embeddings"],
+      "security_level": "low",
+      "governanceRequired": false
+    }
+  ],
+  
+  "exceptions": [],
+  
+  "lastUpdated": "2025-01-27T14:00:00Z",
+  "atlasHealth": {
+    "undeclaredConnections": [],
+    "performanceAlerts": [],
+    "securityAlerts": []
+  }
+}

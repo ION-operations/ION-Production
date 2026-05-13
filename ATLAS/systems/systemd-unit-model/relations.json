@@ -1,0 +1,107 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "systemd",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Unit files are the primary declarative input interpreted by the systemd service manager suite."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Unit directives map to cgroups, namespaces, and capability policy enforced with Linux kernel facilities."
+    },
+    {
+      "type": "integrates_with",
+      "target": "systemd-boot",
+      "evidence_tier": "INFERRED",
+      "notes": "Boot loader entries and targets coordinate with systemd target units on typical images."
+    },
+    {
+      "type": "integrates_with",
+      "target": "unified-kernel-image",
+      "evidence_tier": "INFERRED",
+      "notes": "UKI-based boots still use standard unit/target activation after init."
+    },
+    {
+      "type": "integrates_with",
+      "target": "docker",
+      "evidence_tier": "INFERRED",
+      "notes": "Container images may ship systemd units for in-container service supervision when used."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "Linux nodes commonly run kubelet, container runtime, and node agents as systemd-managed unit files."
+    },
+    {
+      "type": "integrates_with",
+      "target": "systemd-portable",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Portable service images include unit files interpreted under the same systemd unit model after attach."
+    },
+    {
+      "type": "integrates_with",
+      "target": "systemd-sysext",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Merged system extensions can include unit files and drop-ins under standard unit paths after sysext merge."
+    },
+    {
+      "type": "integrates_with",
+      "target": "systemd-confext",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Merged configuration extensions can supply unit drop-ins and daemon config under /etc after confext merge."
+    },
+    {
+      "type": "integrates_with",
+      "target": "debian",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Debian services on default systemd installs are expressed as unit files under the standard systemd unit model."
+    },
+    {
+      "type": "integrates_with",
+      "target": "ubuntu",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Ubuntu services on default systemd installs are expressed as unit files under the standard systemd unit model."
+    },
+    {
+      "type": "integrates_with",
+      "target": "fedora",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Fedora services on default systemd installs are expressed as unit files under the standard systemd unit model."
+    },
+    {
+      "type": "integrates_with",
+      "target": "rhel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "RHEL services on default systemd installs are expressed as unit files under the standard systemd unit model."
+    },
+    {
+      "type": "integrates_with",
+      "target": "rocky-linux",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Rocky Linux services on default systemd installs are expressed as unit files under the standard systemd unit model."
+    },
+    {
+      "type": "integrates_with",
+      "target": "almalinux",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "AlmaLinux services on default systemd installs are expressed as unit files under the standard systemd unit model."
+    },
+    {
+      "type": "integrates_with",
+      "target": "centos-stream",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "CentOS Stream services on default systemd installs are expressed as unit files under the standard systemd unit model."
+    },
+    {
+      "type": "integrates_with",
+      "target": "centos-linux",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Historical CentOS Linux services on default systemd installs were expressed as unit files under the standard systemd unit model where systemd applied."
+    }
+  ]
+}

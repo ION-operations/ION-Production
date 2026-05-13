@@ -1,0 +1,43 @@
+chapter_id: ch05_memory_cmc
+title: Memory That Never Forgets (CMC)
+word_count:
+  target: 3000
+  tolerance: 0.10
+  current_count: 3300
+quality_gates:
+  pre_chapter:
+    outline_loaded: true
+    deps_complete: true  # ch02 complete
+    tierA_present: true
+    vif_min: 0.90
+  quality_assessment:
+    system_tier: tier_s
+    relevance_sufficient: pending
+    density_sufficient: pending
+    completion_sufficient: pending  # waiting on intelligent completion spec
+    thoroughness_passed: true
+  completeness:
+    coverage_complete: true
+    relevance_sufficient: true
+    subsection_balance: true
+    minimum_substance: true
+  technical:
+    examples_run: true
+    math_verified: pending
+    sources_cited: true
+    tier_a_minimum: true
+  integration:
+    no_contradictions: pending
+    terms_consistent: true
+    crossrefs_ok: true  # References Ch02, Ch03, Ch06-Ch10
+    diagrams_required: true
+    meta_circular_present: suggested
+intelligent_metrics:
+  relevance_score: pending
+  density_score: pending
+  completion_score: pending
+  checklist_score: 0.93
+  notes: "Awaiting intelligent completion metric spec from Aether before locking scores."
+timestamps:
+  outline_prepared_at: ""
+  last_updated_at: "2025-11-06T18:35:00Z"

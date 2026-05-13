@@ -1,0 +1,83 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Linux capabilities (CAP_* sets on thread credentials) are defined by the kernel security/credentials model per documented manuals."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-namespaces",
+      "evidence_tier": "INFERRED",
+      "notes": "User namespaces interact with capability maps; capabilities are privilege decomposition, not namespace view isolation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-cgroups",
+      "evidence_tier": "INFERRED",
+      "notes": "Container stacks compose capability dropping with cgroup resource limits; distinct mechanisms."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-security-modules",
+      "evidence_tier": "INFERRED",
+      "notes": "LSM (SELinux/AppArmor-class) layers MAC policy on top of capability checks; not the same abstraction."
+    },
+    {
+      "type": "integrates_with",
+      "target": "seccomp",
+      "evidence_tier": "INFERRED",
+      "notes": "seccomp filters syscalls; capabilities gate whether privileged operations are permitted when invoked."
+    },
+    {
+      "type": "integrates_with",
+      "target": "docker",
+      "evidence_tier": "INFERRED",
+      "notes": "Docker exposes capability add/drop for Linux containers per common deployment understanding."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "Kubernetes securityContext can adjust Linux capabilities for pods/containers."
+    },
+    {
+      "type": "integrates_with",
+      "target": "containerd",
+      "evidence_tier": "INFERRED",
+      "notes": "containerd passes OCI/Linux capability options when creating containers."
+    },
+    {
+      "type": "integrates_with",
+      "target": "runc",
+      "evidence_tier": "INFERRED",
+      "notes": "runc applies capability-related options from OCI Linux config when starting bundles."
+    },
+    {
+      "type": "integrates_with",
+      "target": "podman",
+      "evidence_tier": "INFERRED",
+      "notes": "Podman configures Linux capabilities for rootless and rootful containers."
+    },
+    {
+      "type": "integrates_with",
+      "target": "cri-o",
+      "evidence_tier": "INFERRED",
+      "notes": "CRI-O applies capability settings for Kubernetes workloads on Linux."
+    },
+    {
+      "type": "integrates_with",
+      "target": "systemd",
+      "evidence_tier": "INFERRED",
+      "notes": "systemd unit and ambient capability settings interact with service credentials on Linux."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-netfilter",
+      "evidence_tier": "INFERRED",
+      "notes": "Installing netfilter firewall rules typically requires network administration capabilities (e.g. CAP_NET_ADMIN) on Linux."
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "depends_on",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Requires KVM (`/dev/kvm`) on supported Linux architectures per Firecracker docs."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-kvm",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Firecracker is a VMM that programs the Linux KVM API on supported hosts per Firecracker documentation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "Used in some Kubernetes-adjacent isolation stacks (e.g., Kata Containers class); cite stack-specific docs per claim."
+    },
+    {
+      "type": "competes_with",
+      "target": "docker",
+      "evidence_tier": "INFERRED",
+      "notes": "Different isolation boundary (microVM vs namespaced process); substitutable only in narrow 'strong isolation' framing—avoid over-claiming."
+    },
+    {
+      "type": "integrates_with",
+      "target": "virtio",
+      "evidence_tier": "INFERRED",
+      "notes": "Firecracker guests use virtio block and network devices; virtio is the interface contract, Firecracker is the VMM."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-vhost",
+      "evidence_tier": "INFERRED",
+      "notes": "Host datapaths for virtio devices may involve vhost-class mechanisms depending on kernel and configuration."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-vfio",
+      "evidence_tier": "INFERRED",
+      "notes": "MicroVM stacks may compose VFIO-class passthrough where supported by platform and VMM configuration (survey-level)."
+    },
+    {
+      "type": "competes_with",
+      "target": "qemu",
+      "evidence_tier": "INFERRED",
+      "notes": "Both are VMM-class stacks with different scope (microVM Firecracker vs general-purpose QEMU); not drop-in substitutes."
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "depends_on",
+      "target": "webassembly",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "WASI defines importable functions for Wasm modules; core Wasm semantics and module format are prerequisite."
+    },
+    {
+      "type": "integrates_with",
+      "target": "wasi-libc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "wasi-libc implements the C library layer that lowers POSIX-style calls to WASI imports for wasm32-wasi toolchains."
+    }
+  ]
+}

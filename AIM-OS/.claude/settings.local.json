@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xargs grep -l \"binding.*UI\\\\|UI.*canon\")",
+      "Bash(xargs grep -l \"UI canon\\\\|binding.*law\\\\|Law 1\\\\|Law 2\\\\|Law 3\\\\|Law 4\\\\|Law 5\")",
+      "Bash(xargs grep -l \"binding.*UI\\\\|UI.*canon\\\\|Law.*1\\\\|Law.*2\")",
+      "Bash(xargs grep -l \"assistant.*rail\\\\|Assistant Rail\\\\|rail.*component\")",
+      "Bash(npm install)",
+      "Bash(npx tsc --noEmit)",
+      "Bash(npx vite build)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(npm --version)"
+    ]
+  }
+}

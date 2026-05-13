@@ -1,0 +1,179 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "depends_on",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Linux: namespaces, cgroups, overlayfs stack per Engine docs; Windows/macOS use different isolation stacks."
+    },
+    {
+      "type": "integrates_with",
+      "target": "systemd",
+      "evidence_tier": "INFERRED",
+      "notes": "docker.service commonly systemd-managed on Linux."
+    },
+    {
+      "type": "integrates_with",
+      "target": "systemd-unit-model",
+      "evidence_tier": "INFERRED",
+      "notes": "Engine host services and some container images express supervision via unit files when systemd is PID 1."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Ecosystem overlap via CRI-compatible runtimes; clusters often use containerd rather than dockerd directly."
+    },
+    {
+      "type": "integrates_with",
+      "target": "containerd",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Modern Docker Engine uses containerd as lower-level runtime component per Engine architecture docs."
+    },
+    {
+      "type": "integrates_with",
+      "target": "oci-image-spec",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Engine builds, stores, and runs OCI-compatible images; format is standardized in OCI Image Spec (separate from Moby/dockerd)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "oci-distribution-spec",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "docker push/pull and registry clients use HTTP APIs aligned with OCI distribution / Docker Registry V2 class semantics."
+    },
+    {
+      "type": "integrates_with",
+      "target": "oci-runtime-spec",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Executed containers are OCI runtime bundles; low-level runtimes implement the OCI Runtime Spec."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gvisor",
+      "evidence_tier": "INFERRED",
+      "notes": "Linux Engine deployments can configure runsc where supported; Docker remains the engine, gVisor is an optional low-level runtime (survey-level)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "buildkit",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Docker Engine uses BuildKit as the default `docker build` backend in modern releases; shared Moby/BuildKit ecosystem."
+    },
+    {
+      "type": "integrates_with",
+      "target": "helm",
+      "evidence_tier": "INFERRED",
+      "notes": "Developer workflows often build images with Docker and deploy workloads with Helm charts (survey-level)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "aws-ecs",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Amazon ECS developer guide names Docker among integrated third-party tools."
+    },
+    {
+      "type": "integrates_with",
+      "target": "azure-container-apps",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Azure Container Apps overview documents pulling images from registries including Docker Hub."
+    },
+    {
+      "type": "integrates_with",
+      "target": "azure-aci",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Azure Container Instances overview documents Linux/Windows images from Docker Hub and other registries."
+    },
+    {
+      "type": "integrates_with",
+      "target": "musl",
+      "evidence_tier": "INFERRED",
+      "notes": "Many pulled OCI images (e.g. Alpine-class bases) ship musl-linked userlands; Docker runs them like other Linux images."
+    },
+    {
+      "type": "competes_with",
+      "target": "systemd-portable",
+      "evidence_tier": "INFERRED",
+      "notes": "OCI/container images vs systemd portable OS-tree bundles address overlapping 'ship a service' goals with different formats."
+    },
+    {
+      "type": "competes_with",
+      "target": "systemd-sysext",
+      "evidence_tier": "INFERRED",
+      "notes": "Container images vs systemd sysext host /usr merge address overlapping delivery goals with different isolation models."
+    },
+    {
+      "type": "competes_with",
+      "target": "systemd-confext",
+      "evidence_tier": "INFERRED",
+      "notes": "Container-delivered configuration vs host confext /etc merge address overlapping goals with different models."
+    },
+    {
+      "type": "integrates_with",
+      "target": "alpine-linux",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Official and community images commonly use Alpine as a minimal musl-based Linux base; Docker pulls and runs them like other OCI images."
+    },
+    {
+      "type": "integrates_with",
+      "target": "debian",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Official debian and debian:slim images are common glibc-based OCI bases; Docker pulls and runs them like other Linux images."
+    },
+    {
+      "type": "integrates_with",
+      "target": "ubuntu",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Official ubuntu images are common glibc-based OCI bases; Docker pulls and runs them like other Linux images."
+    },
+    {
+      "type": "integrates_with",
+      "target": "fedora",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Official fedora images are common glibc-based OCI bases; Docker pulls and runs them like other Linux images."
+    },
+    {
+      "type": "integrates_with",
+      "target": "rhel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "RHEL and UBI-class images are common glibc-based OCI bases where vendors publish them; Docker pulls and runs them like other Linux images."
+    },
+    {
+      "type": "integrates_with",
+      "target": "rocky-linux",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Official rockylinux images are common glibc-based OCI bases; Docker pulls and runs them like other Linux images."
+    },
+    {
+      "type": "integrates_with",
+      "target": "almalinux",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Official almalinux images are common glibc-based OCI bases; Docker pulls and runs them like other Linux images."
+    },
+    {
+      "type": "integrates_with",
+      "target": "centos-stream",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Official CentOS Stream OCI images are common glibc-based bases; Docker pulls and runs them like other Linux images."
+    },
+    {
+      "type": "integrates_with",
+      "target": "centos-linux",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Legacy centos:* OCI images were common glibc-based bases; Docker pulls may still reference historical tags where published."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-netfilter",
+      "evidence_tier": "INFERRED",
+      "notes": "Docker’s Linux bridge/NAT modes commonly install iptables/nftables rules backed by netfilter in typical deployments."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-kvm",
+      "evidence_tier": "INFERRED",
+      "notes": "Docker’s default Linux containers use namespaces/cgroups; KVM is a different virtualization mechanism for VM-class isolation."
+    }
+  ]
+}

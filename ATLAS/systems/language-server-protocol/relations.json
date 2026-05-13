@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "vscode",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "VS Code ships a built-in LSP client; protocol is independent standard."
+    },
+    {
+      "type": "integrates_with",
+      "target": "cursor",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Cursor inherits VS Code–style LSP client architecture; feature parity is version-specific."
+    },
+    {
+      "type": "integrates_with",
+      "target": "model-context-protocol",
+      "evidence_tier": "INFERRED",
+      "notes": "Often co-deployed in modern editor agent stacks; protocols address different surfaces (language intel vs tools)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "debug-adapter-protocol",
+      "evidence_tier": "INFERRED",
+      "notes": "Editor stacks pair LSP (language) with DAP (debug); distinct JSON-RPC contracts."
+    },
+    {
+      "type": "integrates_with",
+      "target": "clang",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "clangd provides LSP for C/C++ using Clang libraries."
+    }
+  ]
+}

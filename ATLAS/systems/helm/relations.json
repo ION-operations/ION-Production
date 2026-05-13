@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "depends_on",
+      "target": "kubernetes",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Helm applies charts to a cluster via the Kubernetes API; upstream Helm is defined around Kubernetes targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "oci-distribution-spec",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Helm supports OCI-based chart registries (registry push/pull) using distribution-class HTTP semantics."
+    },
+    {
+      "type": "integrates_with",
+      "target": "oci-image-spec",
+      "evidence_tier": "INFERRED",
+      "notes": "Chart templates commonly reference workload container images that are pulled as OCI images per workload values."
+    },
+    {
+      "type": "integrates_with",
+      "target": "docker",
+      "evidence_tier": "INFERRED",
+      "notes": "Developer workflows often combine Docker-built images with Helm-deployed charts (survey-level)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "fluxcd",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Flux helm-controller reconciles HelmRepository and HelmRelease resources on the cluster."
+    },
+    {
+      "type": "integrates_with",
+      "target": "argo-cd",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Argo CD can deploy workloads from Helm chart sources per upstream Application source types."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kustomize",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Helm supports Kustomize as a post-renderer for rendered chart output in documented workflows."
+    }
+  ]
+}

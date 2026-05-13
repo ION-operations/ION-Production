@@ -1,0 +1,210 @@
+{
+  "systemId": "cursor_addon.mcpClient",
+  "systemName": "MCP Client - Python MCP Server Connection",
+  "version": "v1.0.0",
+  "status": "production",
+  "layer": 6,
+  "description": "Connects Extension to Python MCP server (lucid_mcp_server.py) via JSON-RPC 2.0 over stdio. Provides access to 59 MCP tools for memory operations, AI collaboration, timeline tracking, and autonomous operation.",
+  
+  "internalNodes": [
+    {
+      "id": "processManager",
+      "kind": "core.component",
+      "responsibility": "Spawns and manages Python MCP server process",
+      "status": "production",
+      "must_never": [
+        "Spawn multiple processes",
+        "Lose process handle",
+        "Crash on process errors",
+        "Exceed process limits"
+      ],
+      "perf_budget_ms": 2000,
+      "security_level": "high"
+    },
+    {
+      "id": "jsonRpcClient",
+      "kind": "protocol.component",
+      "responsibility": "JSON-RPC 2.0 client over stdio (stdin/stdout)",
+      "status": "production",
+      "must_never": [
+        "Break JSON-RPC protocol",
+        "Lose messages",
+        "Corrupt message format",
+        "Exceed timeout limits"
+      ],
+      "perf_budget_ms": 30000,
+      "security_level": "medium"
+    },
+    {
+      "id": "messageParser",
+      "kind": "parsing.component",
+      "responsibility": "Parses JSON-RPC messages from stdout and routes to handlers",
+      "status": "production",
+      "must_never": [
+        "Miss messages",
+        "Parse invalid JSON",
+        "Lose message IDs",
+        "Mismatch request/response"
+      ],
+      "perf_budget_ms": 10,
+      "security_level": "medium"
+    },
+    {
+      "id": "requestManager",
+      "kind": "coordination.component",
+      "responsibility": "Manages pending requests and timeouts",
+      "status": "production",
+      "must_never": [
+        "Lose pending requests",
+        "Timeout prematurely",
+        "Leak request resources",
+        "Exceed request limits"
+      ],
+      "perf_budget_ms": 30000,
+      "security_level": "medium"
+    },
+    {
+      "id": "toolRegistry",
+      "kind": "metadata.component",
+      "responsibility": "Maintains registry of available MCP tools (59 total)",
+      "status": "production",
+      "must_never": [
+        "Return stale tool list",
+        "Miss tool registrations",
+        "Lose tool metadata"
+      ],
+      "perf_budget_ms": 5000,
+      "security_level": "low"
+    }
+  ],
+  
+  "ports": [
+    {
+      "portId": "pythonMcpServer",
+      "direction": "bidirectional",
+      "connectsToSystem": "external.pythonMcpServer",
+      "protocol": "jsonrpc_stdio",
+      "whatIsExchanged": [
+        "jsonrpc_requests",
+        "jsonrpc_responses",
+        "jsonrpc_notifications",
+        "error_messages"
+      ],
+      "security_level": "high"
+    },
+    {
+      "portId": "commandServer",
+      "direction": "bidirectional",
+      "connectsToSystem": "cursor_addon.commandServer",
+      "protocol": "internal_api",
+      "whatIsExchanged": [
+        "tool_execution_requests",
+        "tool_responses",
+        "tool_list_queries"
+      ],
+      "security_level": "high"
+    },
+    {
+      "portId": "extensionHost",
+      "direction": "bidirectional",
+      "connectsToSystem": "vscode.extensionHost",
+      "protocol": "typescript_api",
+      "whatIsExchanged": [
+        "process_management",
+        "workspace_config",
+        "subscription_events"
+      ],
+      "security_level": "high"
+    }
+  ],
+  
+  "internalEdges": [
+    {
+      "from": "processManager",
+      "to": "jsonRpcClient",
+      "type": "provides",
+      "description": "Provides stdio streams for JSON-RPC"
+    },
+    {
+      "from": "jsonRpcClient",
+      "to": "messageParser",
+      "type": "uses",
+      "description": "Parses JSON-RPC messages"
+    },
+    {
+      "from": "jsonRpcClient",
+      "to": "requestManager",
+      "type": "uses",
+      "description": "Manages request lifecycle"
+    },
+    {
+      "from": "toolRegistry",
+      "to": "jsonRpcClient",
+      "type": "uses",
+      "description": "Queries tool list via JSON-RPC"
+    }
+  ],
+  
+  "externalEdges": [
+    {
+      "from": "cursor_addon.mcpClient",
+      "to": "cursor_addon.commandServer",
+      "type": "used_by",
+      "description": "Used by Command Server for MCP tool execution"
+    },
+    {
+      "from": "cursor_addon.mcpClient",
+      "to": "cursor_addon.bulletproofMessaging",
+      "type": "wrapped_by",
+      "description": "MCP tool calls wrapped in envelope protocol"
+    },
+    {
+      "from": "cursor_addon.mcpClient",
+      "to": "external.pythonMcpServer",
+      "type": "connects_to",
+      "description": "Connects to Python MCP server (lucid_mcp_server.py)"
+    }
+  ],
+  
+  "performanceCharacteristics": {
+    "latency": {
+      "target_ms": 500,
+      "p95_ms": 2000,
+      "p99_ms": 10000
+    },
+    "throughput": {
+      "requests_per_second": 10,
+      "concurrent_requests": 10
+    },
+    "reliability": {
+      "delivery_guarantee": "best_effort",
+      "error_handling": "exception_propagation",
+      "process_recovery": "manual_restart"
+    }
+  },
+  
+  "securityCharacteristics": {
+    "authentication": "none_local",
+    "authorization": "tool_based",
+    "encryption": "none_stdio",
+    "audit": "tool_execution_logs"
+  },
+  
+  "deploymentCharacteristics": {
+    "runtime": "extension_host",
+    "storage": "none",
+    "scalability": "single_process",
+    "availability": "95.0%"
+  },
+  
+  "metadata": {
+    "documentation": [
+      "cursor-addon/MCP_INTEGRATION_PLAN.md"
+    ],
+    "code": [
+      "cursor-addon/src/mcp/mcpClient.ts"
+    ],
+    "tests": []
+  }
+}
+

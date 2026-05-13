@@ -1,0 +1,258 @@
+{
+  "name": "aimos-cursor-addon",
+  "displayName": "Lucid UI - AIM-OS",
+  "description": "UI elements and automation for AIM-OS MCP server integration",
+  "icon": "resources/icon.png",
+  "version": "1.2.1",
+  "publisher": "aimos",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other",
+    "Machine Learning",
+    "Productivity"
+  ],
+  "keywords": [
+    "ai",
+    "consciousness",
+    "memory",
+    "mcp",
+    "cross-model",
+    "aimos"
+  ],
+  "activationEvents": [
+    "onStartupFinished",
+    "onView:aimosDashboard",
+    "onView:simpleTestPanel"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "aimos.showDashboard",
+        "title": "Show Dashboard",
+        "icon": "$(dashboard)",
+        "category": "AIM-OS"
+      },
+      {
+        "command": "aimos.debugDashboard",
+        "title": "Debug Dashboard",
+        "category": "AIM-OS"
+      },
+      {
+        "command": "aimos.toggleCrossModel",
+        "title": "Toggle Cross-Model Consciousness",
+        "category": "AIM-OS"
+      },
+      {
+        "command": "aimos.showMemoryStats",
+        "title": "Show Memory Statistics",
+        "category": "AIM-OS"
+      },
+      {
+        "command": "aimos.showModelSelector",
+        "title": "Show Model Selector",
+        "category": "AIM-OS"
+      },
+      {
+        "command": "aimos.showLogs",
+        "title": "Show Extension Logs",
+        "category": "AIM-OS",
+        "icon": "$(output)"
+      },
+      {
+        "command": "aimos.runFullDiagnostic",
+        "title": "Run Full Diagnostic",
+        "category": "AIM-OS",
+        "icon": "$(search-details)"
+      },
+      {
+        "command": "aimos.forceOpenDashboard",
+        "title": "Force Open Dashboard",
+        "category": "AIM-OS",
+        "icon": "$(rocket)"
+      },
+      {
+        "command": "aimos.forceOpenTest",
+        "title": "Force Open Test Panel",
+        "category": "AIM-OS",
+        "icon": "$(beaker)"
+      },
+      {
+        "command": "aimos.storeMemory",
+        "title": "Store Memory",
+        "category": "AIM-OS"
+      },
+      {
+        "command": "aimos.retrieveMemory",
+        "title": "Retrieve Memory",
+        "category": "AIM-OS"
+      },
+      {
+        "command": "aimos.createPlan",
+        "title": "Create Execution Plan",
+        "category": "AIM-OS"
+      },
+      {
+        "command": "aimos.trackConfidence",
+        "title": "Track Confidence",
+        "category": "AIM-OS"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "aimos.showDashboard",
+          "when": "true"
+        },
+        {
+          "command": "aimos.debugDashboard",
+          "when": "true"
+        },
+        {
+          "command": "aimos.toggleCrossModel",
+          "when": "true"
+        },
+        {
+          "command": "aimos.showMemoryStats",
+          "when": "true"
+        },
+        {
+          "command": "aimos.showModelSelector",
+          "when": "true"
+        },
+        {
+          "command": "aimos.storeMemory",
+          "when": "editorHasSelection"
+        },
+        {
+          "command": "aimos.retrieveMemory",
+          "when": "true"
+        },
+        {
+          "command": "aimos.createPlan",
+          "when": "true"
+        },
+        {
+          "command": "aimos.trackConfidence",
+          "when": "true"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "aimos.showDashboard",
+          "when": "view == aimosDashboard",
+          "group": "navigation"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "aimos.storeMemory",
+          "when": "view == aimosDashboard && viewItem == undefined",
+          "group": "aimos"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "aimos.storeMemory",
+          "when": "editorHasSelection",
+          "group": "aimos@1"
+        },
+        {
+          "command": "aimos.retrieveMemory",
+          "when": "editorHasSelection",
+          "group": "aimos@2"
+        }
+      ]
+    },
+    "views": {
+      "aimos": [
+        {
+          "id": "aimosDashboard",
+          "name": "Dashboard (Pure HTML)",
+          "when": "true",
+          "icon": "$(dashboard)",
+          "contextualTitle": "AIM-OS Dashboard - Pure HTML Isolated"
+        }
+      ],
+      "aimosDevTools": [
+        {
+          "id": "simpleTestPanel",
+          "name": "Test Panel",
+          "when": "true",
+          "icon": "$(beaker)",
+          "contextualTitle": "Simple Test Panel"
+        }
+      ]
+    },
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "aimos",
+          "title": "AIM-OS",
+          "icon": "$(sparkle)"
+        }
+      ],
+      "panel": [
+        {
+          "id": "aimosDevTools",
+          "title": "AIM-OS DevTools",
+          "icon": "$(pulse)"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Lucid UI - AIM-OS",
+      "properties": {
+        "aimos.mcpServerPath": {
+          "type": "string",
+          "default": "",
+          "description": "Path to the AIM-OS MCP server executable"
+        },
+        "aimos.crossModelEnabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable cross-model consciousness features"
+        },
+        "aimos.autoModelSelection": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable automatic model selection based on task complexity"
+        },
+        "aimos.memoryAutoStore": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically store important context in memory"
+        },
+        "aimos.confidenceTracking": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable automatic confidence tracking"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run build",
+    "build": "node scripts/build-extension.js",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "npm run build && vsce package --out aimos-cursor-addon.vsix",
+    "install": "npm run package && code --install-extension aimos-cursor-addon.vsix --force",
+    "install:windows": "powershell -ExecutionPolicy Bypass -File scripts/install-to-cursor.ps1",
+    "install:unix": "bash scripts/install-to-cursor.sh"
+  },
+  "devDependencies": {
+    "@types/node": "^16.18.126",
+    "@types/vscode": "^1.74.0",
+    "sharp": "^0.34.4",
+    "typescript": "^4.9.4",
+    "vsce": "^2.15.0"
+  },
+  "dependencies": {
+    "axios": "^1.6.0",
+    "ws": "^8.14.0"
+  }
+}
+

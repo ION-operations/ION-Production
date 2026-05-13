@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Landlock is a Linux Security Module enforcing filesystem access rules from unprivileged processes."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-security-modules",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Landlock is an LSM implementation; it plugs into the LSM framework alongside SELinux/AppArmor-class modules."
+    },
+    {
+      "type": "integrates_with",
+      "target": "c-language",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Userspace uses the documented Landlock syscall ABI and helper patterns from libc."
+    },
+    {
+      "type": "integrates_with",
+      "target": "glibc",
+      "evidence_tier": "INFERRED",
+      "notes": "Typical GNU/Linux programs invoke Landlock syscalls via glibc wrappers."
+    },
+    {
+      "type": "integrates_with",
+      "target": "musl",
+      "evidence_tier": "INFERRED",
+      "notes": "musl-based Linux userlands may use Landlock with musl syscall wrappers."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "Pod security contexts and node policies may interact with LSM classes on Linux workers."
+    }
+  ]
+}

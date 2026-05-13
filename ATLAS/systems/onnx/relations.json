@@ -1,0 +1,19 @@
+{
+  "system_slug": "onnx",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-03",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "llvm-ir",
+      "evidence_tier": "INFERRED",
+      "notes": "Many runtimes lower graphs through LLVM-class codegen paths (implementation-dependent)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "nvidia-cuda",
+      "evidence_tier": "INFERRED",
+      "notes": "GPU inference stacks often consume ONNX or ONNX-derived artifacts."
+    }
+  ]
+}

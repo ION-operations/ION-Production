@@ -1,0 +1,89 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "implements",
+      "target": "kubernetes",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Microsoft documents AKS as a managed Kubernetes service with Azure-managed control plane and Kubernetes objects/worker nodes for applications."
+    },
+    {
+      "type": "competes_with",
+      "target": "aws-eks",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable managed Kubernetes on another hyperscaler; not identical operations or IAM model."
+    },
+    {
+      "type": "competes_with",
+      "target": "gcp-gke",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable managed Kubernetes on another hyperscaler."
+    },
+    {
+      "type": "depends_on",
+      "target": "linux-kernel",
+      "evidence_tier": "INFERRED",
+      "notes": "Linux node pools are common; AKS also documents Windows Server containers — do not collapse to Linux-only."
+    },
+    {
+      "type": "competes_with",
+      "target": "azure-container-apps",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitution among Azure container compute models (full Kubernetes API vs Container Apps surface)."
+    },
+    {
+      "type": "competes_with",
+      "target": "oci-oke",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable managed Kubernetes on another cloud."
+    },
+    {
+      "type": "integrates_with",
+      "target": "azure-aci",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Virtual nodes can schedule AKS pods to run as container groups on Azure Container Instances per Microsoft Learn."
+    },
+    {
+      "type": "competes_with",
+      "target": "ibm-iks",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable managed Kubernetes on another cloud."
+    },
+    {
+      "type": "competes_with",
+      "target": "digitalocean-doks",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable managed Kubernetes on another cloud."
+    },
+    {
+      "type": "competes_with",
+      "target": "civo-kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable managed Kubernetes on another cloud."
+    },
+    {
+      "type": "competes_with",
+      "target": "linode-lke",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable managed Kubernetes on another cloud."
+    },
+    {
+      "type": "competes_with",
+      "target": "vmware-tkg",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Kubernetes platform vs customer-operated TKG in some footprints."
+    },
+    {
+      "type": "competes_with",
+      "target": "red-hat-openshift",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Kubernetes platform vs Red Hat OpenShift in some footprints."
+    },
+    {
+      "type": "competes_with",
+      "target": "openshift-dedicated",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable managed Kubernetes vs Red Hat managed OpenShift in some footprints."
+    }
+  ]
+}

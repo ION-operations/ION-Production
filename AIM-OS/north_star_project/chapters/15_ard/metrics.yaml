@@ -1,0 +1,34 @@
+chapter_id: ch15_ard
+title: Autonomous Research (ARD)
+word_count:
+  target: 2500
+  tolerance: 0.10
+  current_count: 2408
+quality_gates:
+  pre_chapter:
+    outline_loaded: true
+    deps_complete: true  # Part II complete, dependencies satisfied
+    tierA_present: true
+    vif_min: 0.90
+  quality_assessment:
+    system_tier: tier_a
+    relevance_sufficient: true  # All sections support ARD autonomous research theme
+    density_sufficient: true  # Comprehensive coverage with research loop, modes, evidence handling, recursive self-improvement, research-grounded dreams, operational playbook, advanced scenarios, metrics
+    completion_sufficient: true  # Score: 0.92 (outline: 0.95, tier_a: 0.90, crossrefs: 0.90, use_cases: 0.90) ≥ 0.90 threshold
+    thoroughness_passed: true  # Score: 1.0 (all checklist items present) ≥ 0.85 threshold
+  completeness:
+    coverage_complete: true
+    relevance_sufficient: true
+    subsection_balance: true
+    minimum_substance: true
+  technical:
+    examples_run: true
+    sources_cited: true
+    tier_a_minimum: true  # 10 Tier A citations present
+    no_fake_features: true
+  integration:
+    no_contradictions: pending
+    terms_consistent: true
+    crossrefs_ok: true  # References Ch01, Ch02, Ch03, Ch05-Ch14
+    meta_circular_present: false
+

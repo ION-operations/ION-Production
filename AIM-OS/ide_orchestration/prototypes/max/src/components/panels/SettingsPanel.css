@@ -1,0 +1,306 @@
+/* Settings Panel Styles */
+.settings-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #1e1e1e;
+  color: #cccccc;
+}
+
+.settings-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  background-color: #252526;
+  border-bottom: 1px solid #3e3e3e;
+}
+
+.settings-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.settings-header-icon {
+  width: 20px;
+  height: 20px;
+  color: #a78bfa;
+  flex-shrink: 0;
+}
+
+.settings-header-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #a78bfa;
+  margin: 0;
+}
+
+.settings-header-subtitle {
+  font-size: 11px;
+  color: #858585;
+  margin: 2px 0 0 0;
+}
+
+.settings-header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.settings-save-button,
+.settings-reset-button {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  background-color: #2d2d30;
+  border: 1px solid #3e3e3e;
+  border-radius: 4px;
+  color: #858585;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.settings-save-button {
+  background-color: #007acc;
+  border-color: #007acc;
+  color: #ffffff;
+}
+
+.settings-save-button:hover {
+  background-color: #005a9e;
+}
+
+.settings-reset-button:hover {
+  background-color: #323233;
+  color: #cccccc;
+}
+
+.settings-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.settings-categories {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 8px;
+  background-color: #252526;
+  border-bottom: 1px solid #3e3e3e;
+  overflow-x: auto;
+}
+
+.settings-category {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background-color: #1e1e1e;
+  border: 1px solid #3e3e3e;
+  border-radius: 4px;
+  color: #858585;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.settings-category:hover {
+  background-color: #2d2d30;
+  color: #cccccc;
+}
+
+.settings-category.active {
+  background-color: #007acc;
+  border-color: #007acc;
+  color: #ffffff;
+}
+
+.settings-category-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.settings-category-label {
+  white-space: nowrap;
+}
+
+.settings-list {
+  flex: 1;
+  overflow: auto;
+  padding: 8px;
+}
+
+.settings-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  border-bottom: 1px solid #3e3e3e;
+  transition: background-color 0.2s;
+}
+
+.settings-item:hover {
+  background-color: #252526;
+}
+
+.settings-item-left {
+  flex: 1;
+  min-width: 0;
+}
+
+.settings-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #cccccc;
+  margin-bottom: 4px;
+}
+
+.settings-description {
+  font-size: 10px;
+  color: #858585;
+}
+
+.settings-item-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.settings-toggle {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.settings-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.settings-toggle-slider {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #3e3e3e;
+  border-radius: 20px;
+  transition: 0.3s;
+}
+
+.settings-toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  background-color: #cccccc;
+  border-radius: 50%;
+  transition: 0.3s;
+}
+
+.settings-toggle input:checked + .settings-toggle-slider {
+  background-color: #007acc;
+}
+
+.settings-toggle input:checked + .settings-toggle-slider:before {
+  transform: translateX(20px);
+}
+
+.settings-input {
+  padding: 4px 8px;
+  background-color: #1e1e1e;
+  border: 1px solid #3e3e3e;
+  border-radius: 4px;
+  color: #cccccc;
+  font-size: 12px;
+  outline: none;
+  width: 120px;
+}
+
+.settings-input:focus {
+  border-color: #007acc;
+}
+
+.settings-input-number {
+  width: 80px;
+}
+
+.settings-select {
+  padding: 4px 8px;
+  background-color: #1e1e1e;
+  border: 1px solid #3e3e3e;
+  border-radius: 4px;
+  color: #cccccc;
+  font-size: 12px;
+  outline: none;
+  cursor: pointer;
+  min-width: 120px;
+}
+
+.settings-select:focus {
+  border-color: #007acc;
+}
+
+.settings-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+  color: #858585;
+}
+
+.settings-empty-icon {
+  width: 32px;
+  height: 32px;
+  color: #858585;
+  margin-bottom: 12px;
+}
+
+.settings-empty p {
+  margin: 0;
+  font-size: 13px;
+}
+
+.settings-error {
+  padding: 24px;
+  text-align: center;
+  color: #f87171;
+  font-size: 12px;
+}
+
+/* Scrollbar styling */
+.settings-list::-webkit-scrollbar,
+.settings-categories::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.settings-list::-webkit-scrollbar-track,
+.settings-categories::-webkit-scrollbar-track {
+  background: #1e1e1e;
+}
+
+.settings-list::-webkit-scrollbar-thumb,
+.settings-categories::-webkit-scrollbar-thumb {
+  background: #3e3e3e;
+  border-radius: 4px;
+}
+
+.settings-list::-webkit-scrollbar-thumb:hover,
+.settings-categories::-webkit-scrollbar-thumb:hover {
+  background: #4e4e4e;
+}
+

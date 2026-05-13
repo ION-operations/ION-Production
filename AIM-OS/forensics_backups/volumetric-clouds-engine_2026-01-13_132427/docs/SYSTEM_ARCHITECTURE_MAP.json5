@@ -1,0 +1,174 @@
+{
+  // Volumetric Clouds Engine (React/Vite/WebGL2) — System Architecture Map (S.A.M.)
+  // Generated: 2026-01-13
+  // Purpose: Unambiguous architecture + dataflow reference for this dev engine.
+  // Scope: apps/volumetric-clouds-engine/*
+
+  systemId: "volumetric-clouds-engine",
+  systemName: "Volumetric Clouds Engine (React/Vite/WebGL2)",
+  version: "4.1-dev",
+  status: "development",
+  layer: 4, // Application example / dev sandbox
+
+  description:
+    "A React + WebGL2 volumetric sandbox: procedural sky + volumetric clouds + terrain/water/city layers, optional temporal accumulation (TAA-like), and a developer UI. Includes Orbit navigation and an experimental Jet flight mode (pointer-lock mouse aim + inertia).",
+
+  entrypoints: [
+    { file: "index.html", role: "vite_shell", notes: "Vite HTML shell + mount point." },
+    { file: "src/main.tsx", role: "react_entry", notes: "Bootstraps the app and mounts the main page." },
+    { file: "src/VolumetricEnginePage.tsx", role: "app_core", notes: "Shaders, WebGL init, render loop, UI, presets, navigation modes." },
+    { file: "launch.bat", role: "dev_launcher", notes: "Convenience launcher for local dev." },
+  ],
+
+  dependencies: [
+    { name: "React", type: "library", required: true, purpose: "UI + state management." },
+    { name: "Vite", type: "tooling", required: true, purpose: "Dev server + build pipeline." },
+    { name: "WebGL2", type: "browser_api", required: true, purpose: "All rendering." },
+    {
+      name: "EXT_color_buffer_float",
+      type: "webgl_extension",
+      required: false,
+      purpose: "Enables RGBA16F render targets for temporal accumulation; falls back to RGBA8 if unavailable.",
+    },
+    {
+      name: "OES_texture_float_linear / OES_texture_half_float_linear",
+      type: "webgl_extension",
+      required: false,
+      purpose: "Allows LINEAR filtering on float/half-float textures (better upscaling when renderScale < 1).",
+    },
+    { name: "Pointer Lock API", type: "browser_api", required: false, purpose: "Jet mode mouse steering." },
+    { name: "requestAnimationFrame", type: "browser_api", required: true, purpose: "Frame scheduling." },
+    { name: "localStorage", type: "browser_api", required: true, purpose: "Persist custom presets." },
+  ],
+
+  internalNodes: [
+    {
+      nodeId: "ui_shell",
+      name: "Developer UI Shell",
+      type: "ui_shell",
+      file: "src/VolumetricEnginePage.tsx",
+      responsibilities: [
+        "Top bar (play/pause, presets, fullscreen, reset camera)",
+        "Right-side icon bar for settings groups",
+        "Scrollable settings panel contents (per group)",
+        "Preset save/manage dialog",
+      ],
+      interfaces: {
+        inputs: ["User interaction (buttons, sliders, switches)", "localStorage preset store"],
+        outputs: ["Updates to `params`, `renderScale`, `jetSettings`, `navMode` state"],
+      },
+    },
+    {
+      nodeId: "preset_store",
+      name: "Preset Store",
+      type: "configuration",
+      file: "src/VolumetricEnginePage.tsx",
+      responsibilities: [
+        "Built-in default presets (hardcoded object)",
+        "User presets stored in localStorage",
+        "Apply preset -> update `params` state",
+      ],
+      interfaces: { inputs: ["Select preset", "Save/Delete preset"], outputs: ["params state", "localStorage writes"] },
+    },
+    {
+      nodeId: "shader_pack",
+      name: "Shader Pack (Single-pass)",
+      type: "shader_pipeline",
+      file: "src/VolumetricEnginePage.tsx",
+      responsibilities: [
+        "Vertex shader: full-screen quad",
+        "Fragment shader: sky + clouds + terrain/water/city + optional temporal blend",
+        "Present shader: cheap blit of the current render target to the default framebuffer",
+      ],
+      interfaces: { inputs: ["Uniforms from render loop"], outputs: ["Color to framebuffer/texture"] },
+    },
+    {
+      nodeId: "webgl_init",
+      name: "WebGL2 Initialization",
+      type: "gpu_init",
+      file: "src/VolumetricEnginePage.tsx",
+      responsibilities: [
+        "Create WebGL2 context",
+        "Compile/link main program and present program",
+        "Allocate render targets for temporal accumulation",
+        "Bind aPosition attribute location for consistent blit",
+      ],
+      interfaces: { inputs: ["Canvas element"], outputs: ["glRef, programRef, presentProgramRef, fbRef"] },
+    },
+    {
+      nodeId: "render_loop",
+      name: "Frame Loop",
+      type: "frame_loop",
+      file: "src/VolumetricEnginePage.tsx",
+      responsibilities: [
+        "requestAnimationFrame scheduling (stable, ref-driven)",
+        "Resize handling (canvas + TAA targets)",
+        "Fast path (no TAA): render directly to screen",
+        "TAA path: render to FBO -> present pass -> swap history",
+      ],
+      interfaces: { inputs: ["paramsRef, renderScaleRef, cameraRef"], outputs: ["Rendered frame + updated fbRef swaps"] },
+      performanceNotes: [
+        "The TAA path renders clouds once to an offscreen target, then blits via presentProgram.",
+        "renderScale < 1 reduces ray-march cost but upscales via the present pass.",
+      ],
+    },
+    {
+      nodeId: "nav_orbit",
+      name: "Orbit Navigation",
+      type: "input_controller",
+      file: "src/VolumetricEnginePage.tsx",
+      responsibilities: ["Drag-to-rotate, Shift+Drag pan, wheel zoom"],
+      interfaces: { inputs: ["Canvas mouse events"], outputs: ["camera state -> cameraRef sync"] },
+    },
+    {
+      nodeId: "nav_jet",
+      name: "Jet Navigation (Experimental)",
+      type: "input_controller",
+      file: "src/VolumetricEnginePage.tsx",
+      responsibilities: [
+        "Pointer-lock mouse deltas -> target attitude",
+        "PD-controlled yaw/pitch toward target",
+        "Auto-banking + manual roll rate",
+        "Throttle setpoint -> speed with inertia -> position integration",
+      ],
+      interfaces: { inputs: ["Global key/mouse listeners"], outputs: ["cameraRef updates each frame"] },
+      notes: [
+        "Designed as a dev-friendly 'mouse aim' baseline; can be upgraded to full rigid-body / aerodynamic simulation later.",
+      ],
+    },
+  ],
+
+  keyState: [
+    { name: "params", type: "React state", purpose: "All rendering uniforms (cloud/lighting/scene)." },
+    { name: "renderScale", type: "React state", purpose: "Render resolution scaling for performance." },
+    { name: "navMode", type: "React state", purpose: "Orbit vs Jet navigation." },
+    { name: "jetSettings", type: "React state", purpose: "Jet tuning knobs (mouseAim, speeds, gains)." },
+    { name: "cameraRef", type: "ref", purpose: "Authoritative camera pose used by the RAF loop." },
+    { name: "fbRef", type: "ref", purpose: "TAA render targets and sizes." },
+  ],
+
+  troubleshooting: [
+    {
+      symptom: "Viewport draws only in a corner / bands during TAA",
+      likelyCause: "Present pass not using full (dw,dh) viewport",
+      fix: "Ensure TAA renders to rw/rh, then presentProgram blits to dw/dh.",
+    },
+    {
+      symptom: "Jittery clouds when TAA is OFF",
+      likelyCause: "Expected: per-frame ray jitter/dithering without accumulation",
+      fix: "Enable Temporal AA or increase ray steps; consider denoise/temporal reprojection in future iterations.",
+    },
+    {
+      symptom: "Jet mode mouse doesn't steer",
+      likelyCause: "Pointer lock not active",
+      fix: "Click the viewport to lock pointer (Esc to release).",
+    },
+  ],
+
+  nextSteps: [
+    "Add a lightweight HUD (speed/altitude/throttle) and a visible mouse-aim reticle.",
+    "Add higher-fidelity flight dynamics (lift/drag/gravity, stall, afterburner).",
+    "Split VolumetricEnginePage into modules (shader pack, render loop, UI panels) once the feature set stabilizes.",
+  ],
+}
+

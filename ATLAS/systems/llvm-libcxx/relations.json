@@ -1,0 +1,149 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "clang",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Clang selects libc++ as the C++ standard library with -stdlib=libc++ and links against libc++ objects in typical LLVM-oriented builds."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-lld",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "lld links final binaries that pull libc++ (and often libc++abi) from the LLVM toolchain stack."
+    },
+    {
+      "type": "competes_with",
+      "target": "gnu-libstdcxx",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable C++ standard library implementations in Clang/GCC-centric flows (libc++ vs libstdc++)."
+    },
+    {
+      "type": "competes_with",
+      "target": "msvcprt",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable C++ standard library implementations across platforms (LLVM libc++ vs MSVC msvcp*.dll on Windows)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "glibc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "libc++ builds on the platform C library for low-level POSIX/C runtime services on GNU/Linux targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "musl",
+      "evidence_tier": "INFERRED",
+      "notes": "Alpine and other musl-based stacks can ship Clang with libc++ layered on musl."
+    },
+    {
+      "type": "integrates_with",
+      "target": "freebsd-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang with libc++ can target FreeBSD triplets with libc++ layered on FreeBSD libc in consistent sysroots."
+    },
+    {
+      "type": "integrates_with",
+      "target": "openbsd-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang with libc++ may target OpenBSD triplets with libc++ layered on OpenBSD libc where toolchains align."
+    },
+    {
+      "type": "integrates_with",
+      "target": "netbsd-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang with libc++ may target NetBSD triplets with libc++ layered on NetBSD libc where toolchains align."
+    },
+    {
+      "type": "integrates_with",
+      "target": "dragonfly-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang with libc++ may target DragonFly triplets with libc++ layered on DragonFly libc where toolchains align."
+    },
+    {
+      "type": "integrates_with",
+      "target": "illumos-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang with libc++ may target illumos triplets with libc++ layered on illumos libc where toolchains align."
+    },
+    {
+      "type": "integrates_with",
+      "target": "android-bionic",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang with libc++ targets Android NDK triplets with libc++ layered on Bionic in typical NDK C++ flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "newlib",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang with libc++ may target embedded triplets with libc++ layered on newlib in specialized LLVM vendor flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "wasi-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang/LLVM may link libc++ above wasi-libc sysroots in wasm32-wasi and related WASI targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "uclibc",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang libc++ may target uClibc-backed embedded Linux sysroots when configured."
+    },
+    {
+      "type": "integrates_with",
+      "target": "dietlibc",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang libc++ may target dietlibc-backed minimal Linux sysroots in rare custom flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-binutils",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Clang can link libc++-built objects with GNU ld when lld is not used."
+    },
+    {
+      "type": "integrates_with",
+      "target": "elf",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "ELF objects and shared libraries carry libc++ symbols on typical Unix targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "dwarf",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Debug info for libc++-using binaries is expressed in DWARF alongside Clang output."
+    },
+    {
+      "type": "integrates_with",
+      "target": "c-language",
+      "evidence_tier": "INFERRED",
+      "notes": "C++ interoperates with C ABIs provided by the platform C library under libc++-compiled programs."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-gdb",
+      "evidence_tier": "INFERRED",
+      "notes": "GDB debugs binaries linked against libc++ when debug info and sysroot are consistent."
+    },
+    {
+      "type": "integrates_with",
+      "target": "lldb",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "LLDB is the native debugger pairing for Clang + libc++ stacks."
+    },
+    {
+      "type": "integrates_with",
+      "target": "riscv-isa",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "LLVM ships libc++ for RISC-V targets in cross and native LLVM toolchains."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-libcxxabi",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Typical libc++ deployments link libc++abi for Itanium C++ ABI facilities (exceptions, RTTI, static init) on LLVM toolchains."
+    }
+  ]
+}

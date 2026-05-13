@@ -1,0 +1,82 @@
+# Offline Thread Index
+
+Tracks active thread files used during MCP downtime.
+
+| Thread ID | File | Last Update (UTC) | Status |
+|---|---|---|---|
+
+| aimos_recovery_codex_aether_2026-03-04 | `THREAD_aimos_recovery_codex_aether_2026-03-04.md` | 2026-03-04T17:15:11Z | active |
+| aimos_recovery_codex_aether_2026-03-04 | `THREAD_aimos_recovery_codex_aether_2026-03-04.md` | 2026-03-04T17:21:52Z | active |
+| aimos_recovery_codex_aether_2026-03-04 | `THREAD_aimos_recovery_codex_aether_2026-03-04.md` | 2026-03-04T17:23:49Z | active |
+| aimos_recovery_codex_aether_2026-03-04 | `THREAD_aimos_recovery_codex_aether_2026-03-04.md` | 2026-03-04T17:29:30Z | active |
+| aimos_recovery_codex_aether_2026-03-04 | `THREAD_aimos_recovery_codex_aether_2026-03-04.md` | 2026-03-04T17:30:50Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-04T17:54:04Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-04T17:56:19Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-04T17:57:22Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-04T18:04:16Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-04T18:04:34Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-04T18:04:34Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-04T18:04:34Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-04T18:05:31Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-04T18:05:42Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-04T18:06:24Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-04T18:07:55Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-04T18:18:00Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-04T18:20:11Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-04T18:39:43Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-04T18:40:25Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-04T18:40:54Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T00:23:16Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T00:23:36Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T00:30:21Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T00:39:23Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T00:39:59Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T00:40:44Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T00:42:12Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T00:42:13Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T00:42:13Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T00:45:42Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T00:47:08Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T01:14:18Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T01:15:29Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T01:53:22Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T01:58:14Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T01:59:34Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T01:59:44Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T02:00:47Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T02:01:31Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T02:19:53Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T02:21:27Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T02:24:49Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T02:56:43Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T02:56:54Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T02:57:03Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T02:58:09Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T03:11:41Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T03:12:02Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T03:16:05Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T03:16:11Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T03:19:03Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T03:19:17Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T03:19:22Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T03:26:18Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T03:26:24Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T03:28:06Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T03:28:14Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T03:30:43Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T03:30:49Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T03:31:38Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T15:16:45Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T15:25:40Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T15:27:16Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T15:29:22Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-05T15:34:58Z | active |
+| aimos_roundtable_mcp_recovery_audit_2026-03-06 | `THREAD_aimos_roundtable_mcp_recovery_audit_2026-03-06.md` | 2026-03-06T23:15:52Z | active |
+| aimos_roundtable_mcp_recovery_audit_2026-03-06 | `THREAD_aimos_roundtable_mcp_recovery_audit_2026-03-06.md` | 2026-03-06T23:39:21Z | active |
+| aimos_roundtable_mcp_recovery_audit_2026-03-06 | `THREAD_aimos_roundtable_mcp_recovery_audit_2026-03-06.md` | 2026-03-06T23:43:34Z | active |
+| aimos_roundtable_mcp_recovery_audit_2026-03-06 | `THREAD_aimos_roundtable_mcp_recovery_audit_2026-03-06.md` | 2026-03-06T23:46:12Z | active |
+| aimos_roundtable_mcp_recovery_audit_2026-03-06 | `THREAD_aimos_roundtable_mcp_recovery_audit_2026-03-06.md` | 2026-03-07T00:23:22Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-07T00:42:50Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-07T00:55:30Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-07T01:11:08Z | active |
+| aimos_roundtable_operational_convergence_2026-03-04 | `THREAD_aimos_roundtable_operational_convergence_2026-03-04.md` | 2026-03-07T01:18:30Z | active |

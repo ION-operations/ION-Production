@@ -1,0 +1,597 @@
+{
+  system_id: "governance_system",
+  system_name: "Governance System",
+  version: "1.0.0",
+  last_updated: "2025-01-27T20:50:00Z",
+  map_type: "system_topology",
+  internal_topology: {
+    core_components: [
+      {
+        component_id: "governance_engine",
+        name: "Governance Engine",
+        type: "governance_engine",
+        tier: 2,
+        description: "Core governance engine that enforces policies and manages governance workflows",
+        ports: {
+          input: [
+            "governance_requests",
+            "policy_rules",
+          ],
+          output: [
+            "governance_decisions",
+            "policy_enforcement",
+          ],
+        },
+        dependencies: [
+          "policy_engine",
+          "decision_engine",
+        ],
+        blast_radius: "platform",
+        must_never: [
+          "Enforce policies without validation",
+          "Skip governance workflows",
+          "Ignore policy rules",
+          "Bypass governance validation",
+        ],
+      },
+      {
+        component_id: "policy_engine",
+        name: "Policy Engine",
+        type: "policy_engine",
+        tier: 2,
+        description: "Manages and enforces governance policies across the system",
+        ports: {
+          input: [
+            "policy_requests",
+            "policy_definitions",
+          ],
+          output: [
+            "policy_enforcement",
+            "policy_status",
+          ],
+        },
+        dependencies: [
+          "policy_definitions",
+          "enforcement_rules",
+        ],
+        blast_radius: "platform",
+        must_never: [
+          "Enforce policies without validation",
+          "Skip policy definitions",
+          "Ignore enforcement rules",
+          "Bypass policy validation",
+        ],
+      },
+      {
+        component_id: "decision_engine",
+        name: "Decision Engine",
+        type: "decision_engine",
+        tier: 2,
+        description: "Makes governance decisions based on policies and context",
+        ports: {
+          input: [
+            "decision_requests",
+            "decision_rules",
+          ],
+          output: [
+            "governance_decisions",
+            "decision_rationale",
+          ],
+        },
+        dependencies: [
+          "decision_rules",
+          "context_analyzer",
+        ],
+        blast_radius: "platform",
+        must_never: [
+          "Make decisions without validation",
+          "Skip decision rules",
+          "Ignore context analysis",
+          "Bypass decision validation",
+        ],
+      },
+      {
+        component_id: "approval_workflow",
+        name: "Approval Workflow",
+        type: "workflow_engine",
+        tier: 2,
+        description: "Manages approval workflows for governance decisions",
+        ports: {
+          input: [
+            "approval_requests",
+            "workflow_rules",
+          ],
+          output: [
+            "approval_status",
+            "workflow_events",
+          ],
+        },
+        dependencies: [
+          "workflow_rules",
+          "approval_rules",
+        ],
+        blast_radius: "platform",
+        must_never: [
+          "Process approvals without validation",
+          "Skip workflow rules",
+          "Ignore approval requirements",
+          "Bypass workflow validation",
+        ],
+      },
+      {
+        component_id: "compliance_monitor",
+        name: "Compliance Monitor",
+        type: "monitoring_engine",
+        tier: 2,
+        description: "Monitors compliance with governance policies and regulations",
+        ports: {
+          input: [
+            "compliance_requests",
+            "compliance_rules",
+          ],
+          output: [
+            "compliance_status",
+            "compliance_reports",
+          ],
+        },
+        dependencies: [
+          "compliance_rules",
+          "monitoring_rules",
+        ],
+        blast_radius: "platform",
+        must_never: [
+          "Monitor compliance without validation",
+          "Skip compliance rules",
+          "Ignore monitoring requirements",
+          "Bypass compliance validation",
+        ],
+      },
+    ],
+    supporting_components: [
+      {
+        component_id: "policy_definitions",
+        name: "Policy Definitions",
+        type: "definition_engine",
+        tier: 1,
+        description: "Manages policy definitions and rules",
+        ports: {
+          input: [
+            "policy_definitions",
+            "definition_rules",
+          ],
+          output: [
+            "policy_rules",
+            "definition_status",
+          ],
+        },
+        dependencies: [
+          "definition_rules",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Define policies without validation",
+          "Skip definition rules",
+          "Ignore policy requirements",
+          "Bypass definition validation",
+        ],
+      },
+      {
+        component_id: "enforcement_rules",
+        name: "Enforcement Rules",
+        type: "rules_engine",
+        tier: 1,
+        description: "Provides enforcement rules for policy implementation",
+        ports: {
+          input: [
+            "enforcement_requests",
+            "rule_definitions",
+          ],
+          output: [
+            "enforcement_rules",
+            "rule_status",
+          ],
+        },
+        dependencies: [
+          "rule_definitions",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Provide rules without validation",
+          "Skip rule definitions",
+          "Ignore rule requirements",
+          "Bypass rule validation",
+        ],
+      },
+      {
+        component_id: "decision_rules",
+        name: "Decision Rules",
+        type: "rules_engine",
+        tier: 1,
+        description: "Provides decision rules for governance decisions",
+        ports: {
+          input: [
+            "decision_requests",
+            "rule_definitions",
+          ],
+          output: [
+            "decision_rules",
+            "rule_status",
+          ],
+        },
+        dependencies: [
+          "rule_definitions",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Provide rules without validation",
+          "Skip rule definitions",
+          "Ignore rule requirements",
+          "Bypass rule validation",
+        ],
+      },
+      {
+        component_id: "workflow_rules",
+        name: "Workflow Rules",
+        type: "rules_engine",
+        tier: 1,
+        description: "Provides workflow rules for approval processes",
+        ports: {
+          input: [
+            "workflow_requests",
+            "rule_definitions",
+          ],
+          output: [
+            "workflow_rules",
+            "rule_status",
+          ],
+        },
+        dependencies: [
+          "rule_definitions",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Provide rules without validation",
+          "Skip rule definitions",
+          "Ignore rule requirements",
+          "Bypass rule validation",
+        ],
+      },
+      {
+        component_id: "compliance_rules",
+        name: "Compliance Rules",
+        type: "rules_engine",
+        tier: 1,
+        description: "Provides compliance rules for monitoring",
+        ports: {
+          input: [
+            "compliance_requests",
+            "rule_definitions",
+          ],
+          output: [
+            "compliance_rules",
+            "rule_status",
+          ],
+        },
+        dependencies: [
+          "rule_definitions",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Provide rules without validation",
+          "Skip rule definitions",
+          "Ignore rule requirements",
+          "Bypass rule validation",
+        ],
+      },
+    ],
+  },
+  boundary_tendrils: {
+    input_ports: [
+      {
+        port_id: "governance_requests_input",
+        name: "Governance Requests Input",
+        type: "data_input",
+        protocol: "json",
+        description: "Receives governance requests for processing",
+        required: true,
+        validation: "governance_requests_schema",
+      },
+      {
+        port_id: "policy_rules_input",
+        name: "Policy Rules Input",
+        type: "data_input",
+        protocol: "json",
+        description: "Receives policy rules for enforcement",
+        required: true,
+        validation: "policy_rules_schema",
+      },
+      {
+        port_id: "compliance_requests_input",
+        name: "Compliance Requests Input",
+        type: "data_input",
+        protocol: "json",
+        description: "Receives compliance requests for monitoring",
+        required: true,
+        validation: "compliance_requests_schema",
+      },
+    ],
+    output_ports: [
+      {
+        port_id: "governance_decisions_output",
+        name: "Governance Decisions Output",
+        type: "data_output",
+        protocol: "json",
+        description: "Outputs governance decisions and rationale",
+        required: true,
+        validation: "governance_decisions_schema",
+      },
+      {
+        port_id: "policy_enforcement_output",
+        name: "Policy Enforcement Output",
+        type: "data_output",
+        protocol: "json",
+        description: "Outputs policy enforcement results",
+        required: true,
+        validation: "policy_enforcement_schema",
+      },
+      {
+        port_id: "compliance_reports_output",
+        name: "Compliance Reports Output",
+        type: "data_output",
+        protocol: "json",
+        description: "Outputs compliance reports and status",
+        required: true,
+        validation: "compliance_reports_schema",
+      },
+    ],
+  },
+  data_flow: {
+    primary_flow: [
+      {
+        step: 1,
+        component: "policy_engine",
+        action: "Enforce policies",
+        input: [
+          "governance_requests",
+          "policy_rules",
+        ],
+        output: [
+          "policy_enforcement",
+          "policy_status",
+        ],
+      },
+      {
+        step: 2,
+        component: "decision_engine",
+        action: "Make governance decisions",
+        input: [
+          "governance_requests",
+          "decision_rules",
+        ],
+        output: [
+          "governance_decisions",
+          "decision_rationale",
+        ],
+      },
+      {
+        step: 3,
+        component: "approval_workflow",
+        action: "Process approval workflows",
+        input: [
+          "governance_decisions",
+          "workflow_rules",
+        ],
+        output: [
+          "approval_status",
+          "workflow_events",
+        ],
+      },
+      {
+        step: 4,
+        component: "compliance_monitor",
+        action: "Monitor compliance",
+        input: [
+          "governance_decisions",
+          "compliance_rules",
+        ],
+        output: [
+          "compliance_status",
+          "compliance_reports",
+        ],
+      },
+      {
+        step: 5,
+        component: "governance_engine",
+        action: "Coordinate governance",
+        input: [
+          "policy_enforcement",
+          "governance_decisions",
+        ],
+        output: [
+          "governance_decisions",
+          "policy_enforcement",
+        ],
+      },
+    ],
+    secondary_flows: [
+      {
+        flow_name: "policy_enforcement",
+        components: [
+          "policy_engine",
+          "enforcement_rules",
+        ],
+        description: "Enforces governance policies across the system",
+      },
+      {
+        flow_name: "decision_making",
+        components: [
+          "decision_engine",
+          "decision_rules",
+        ],
+        description: "Makes governance decisions based on policies",
+      },
+      {
+        flow_name: "approval_processing",
+        components: [
+          "approval_workflow",
+          "workflow_rules",
+        ],
+        description: "Processes approval workflows for governance",
+      },
+    ],
+  },
+  security_boundaries: {
+    tier_0: {
+      components: [
+        "policy_definitions",
+        "enforcement_rules",
+        "decision_rules",
+        "workflow_rules",
+        "compliance_rules",
+      ],
+      description: "Supporting components with basic security requirements",
+    },
+    tier_1: {
+      components: [
+        "policy_engine",
+        "decision_engine",
+        "approval_workflow",
+        "compliance_monitor",
+      ],
+      description: "Processing components with standard security requirements",
+    },
+    tier_2: {
+      components: [
+        "governance_engine",
+      ],
+      description: "Core component with comprehensive security requirements",
+    },
+  },
+  performance_characteristics: {
+    latency: {
+      policy_enforcement: "< 1 second",
+      decision_making: "< 2 seconds",
+      approval_processing: "< 5 minutes",
+      compliance_monitoring: "< 10 seconds",
+    },
+    throughput: {
+      governance_requests_per_minute: 1000,
+      policy_enforcements_per_hour: 10000,
+      decisions_per_hour: 5000,
+      approvals_per_hour: 1000,
+    },
+    resource_usage: {
+      cpu_usage: "< 40%",
+      memory_usage: "< 250MB",
+      disk_usage: "< 1GB",
+    },
+  },
+  monitoring_points: [
+    {
+      point_id: "governance_request_rate",
+      name: "Governance Request Rate",
+      type: "counter",
+      description: "Number of governance requests processed per minute",
+    },
+    {
+      point_id: "policy_enforcement_rate",
+      name: "Policy Enforcement Rate",
+      type: "counter",
+      description: "Number of policy enforcements per hour",
+    },
+    {
+      point_id: "decision_processing_time",
+      name: "Decision Processing Time",
+      type: "duration",
+      description: "Time taken for governance decisions",
+    },
+    {
+      point_id: "compliance_status",
+      name: "Compliance Status",
+      type: "gauge",
+      description: "Current compliance status across the system",
+    },
+  ],
+  error_handling: {
+    retry_policies: {
+      policy_enforcement: "3 retries with exponential backoff",
+      decision_making: "2 retries with linear backoff",
+      approval_processing: "1 retry with manual intervention",
+    },
+    circuit_breakers: {
+      governance_service: "Open after 5 consecutive failures",
+      policy_service: "Open after 3 consecutive failures",
+    },
+    fallback_strategies: {
+      policy_enforcement_failure: "Use default policies",
+      decision_making_failure: "Escalate to human operator",
+      approval_processing_failure: "Use manual approval",
+    },
+  },
+  deployment_considerations: {
+    scalability: {
+      horizontal_scaling: "Supported via load balancer",
+      vertical_scaling: "Supported via resource allocation",
+      auto_scaling: "Supported via metrics-based scaling",
+    },
+    availability: {
+      target_uptime: "99.9%",
+      redundancy: "Multi-instance deployment",
+      failover: "Automatic failover to standby instances",
+    },
+    maintenance: {
+      rolling_updates: "Supported",
+      downtime: "Minimal during updates",
+      rollback: "Supported via version management",
+    },
+  },
+  metadata: {
+    created: "2025-01-27T20:50:00Z",
+    updated: "2025-11-02T17:25:00Z",
+    author: "aether",
+    status: "production",
+    version: "1.0.0",
+  },
+  confidenceRouting: {
+    high: "Read T0 executive summary (100 words) or code directly",
+    medium: "Read T0 + T1 overview (500 words) + T2 architecture (2k words)",
+    low: "Read T0 + T1 + T2 + T3 detailed (10k words)",
+    veryLow: "Read T0 + T1 + T2 + T3 + T4 complete (15k+ words) or ask for help",
+  },
+  relatedSystems: [
+    {
+      system: "sdfcvf",
+      relationship: "Governance System uses SDF-CVF for quality gates and quartet parity",
+      whenToUse: "When implementing quality gates or understanding governance validation",
+      docs: [
+        "systems/sdfcvf/T2_architecture.md#governance",
+      ],
+      priority: "required",
+    },
+    {
+      system: "scor",
+      relationship: "Governance System integrates with SCOR for safety validation",
+      whenToUse: "When implementing safety gates or understanding policy enforcement",
+      docs: [
+        "systems/scor/T2_architecture.md#governance",
+      ],
+      priority: "required",
+    },
+    {
+      system: "cmc",
+      relationship: "Governance System stores governance data in CMC",
+      whenToUse: "When implementing governance storage or understanding memory persistence",
+      docs: [
+        "systems/cmc/T2_architecture.md#governance",
+      ],
+      priority: "required",
+    },
+  ],
+  documentation: {
+    T0: "knowledge_architecture/systems/governance_system/T0_executive.md",
+    T1: "knowledge_architecture/systems/governance_system/T1_overview.md",
+    T2: "knowledge_architecture/systems/governance_system/T2_architecture.md",
+    T3: "knowledge_architecture/systems/governance_system/T3_detailed.md",
+    T4: "knowledge_architecture/systems/governance_system/T4_complete.md",
+  },
+}

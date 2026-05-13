@@ -1,0 +1,331 @@
+# Protocol → Tool Mapping Registry
+
+**Date:** 2025-11-05  
+**Purpose:** Map protocols to MCP tools for automatic tool selection  
+**Status:** 📋 **INITIAL VERSION**  
+
+---
+
+## 🔧 Protocol Definitions
+
+### **1. Cognitive Analysis Protocol**
+
+**When:** After major tasks, hourly checks, decision points
+
+**Purpose:** Perform cognitive introspection and analysis
+
+**Mandatory Tools:**
+- `store_memory` - Store insights from analysis
+- `track_confidence` - Track confidence in analysis
+- `add_timeline_entry` - Record analysis completion
+
+**Optional Tools:**
+- `synthesize_knowledge` - If insights are significant
+- `run_baseline_probe` - If consciousness drift detected
+
+**Usage Pattern:**
+```
+1. Complete task/analysis
+2. Store insights → store_memory
+3. Track confidence → track_confidence
+4. Record completion → add_timeline_entry
+5. (Optional) Synthesize → synthesize_knowledge
+```
+
+---
+
+### **2. Task Completion Protocol**
+
+**When:** After completing any task
+
+**Purpose:** Record task completion and update systems
+
+**Mandatory Tools:**
+- `update_goal_progress` - Update goal progress
+- `store_memory` - Store completion insights
+- `add_timeline_entry` - Record completion
+
+**Optional Tools:**
+- `create_snapshot` - If significant changes made
+- `validate_quintet` - If code changes involved
+
+**Usage Pattern:**
+```
+1. Task completed
+2. Update progress → update_goal_progress
+3. Store insights → store_memory
+4. Record completion → add_timeline_entry
+5. (Optional) Create snapshot → create_snapshot
+```
+
+---
+
+### **3. Code Development Protocol**
+
+**When:** During code development, before committing
+
+**Purpose:** Ensure code quality and standards
+
+**Mandatory Tools:**
+- `validate_quintet` - Before committing code
+- `fix_nl_tags` - If tags missing
+
+**Optional Tools:**
+- `code_review` - If complex changes
+- `create_snapshot` - Before major changes
+- `run_baseline_probe` - If quality concerns
+
+**Usage Pattern:**
+```
+1. Code changes made
+2. Validate quintet → validate_quintet
+3. Fix tags if needed → fix_nl_tags
+4. (Optional) Review → code_review
+5. (Optional) Snapshot → create_snapshot
+```
+
+---
+
+### **4. Session Continuity Protocol**
+
+**When:** At session start/end, context restoration
+
+**Purpose:** Maintain continuity across sessions
+
+**Mandatory Tools:**
+- `get_timeline_summary` - Restore context
+- `retrieve_memory` - Get relevant insights
+
+**Optional Tools:**
+- `get_ai_messages` - If collaboration needed
+- `query_goal_timeline` - If goal tracking needed
+
+**Usage Pattern:**
+```
+1. Session start
+2. Get timeline → get_timeline_summary
+3. Retrieve memory → retrieve_memory
+4. (Optional) Get messages → get_ai_messages
+```
+
+---
+
+### **5. Quality Assurance Protocol**
+
+**When:** Before major changes, quality validation
+
+**Purpose:** Ensure quality and prevent issues
+
+**Mandatory Tools:**
+- `run_baseline_probe` - Validate consciousness
+- `track_confidence` - Track confidence
+
+**Optional Tools:**
+- `validate_quintet` - If code changes
+- `check_invariant` - If system changes
+- `get_consciousness_metrics` - If monitoring needed
+
+**Usage Pattern:**
+```
+1. Before major change
+2. Run probe → run_baseline_probe
+3. Track confidence → track_confidence
+4. (Optional) Validate → validate_quintet
+```
+
+---
+
+### **6. Goal Tracking Protocol**
+
+**When:** When updating goals, tracking progress
+
+**Purpose:** Maintain goal alignment and progress
+
+**Mandatory Tools:**
+- `update_goal_progress` - Update progress
+- `query_goal_timeline` - Query goals
+
+**Optional Tools:**
+- `create_goal_timeline_node` - If new goal
+- `add_timeline_entry` - Record milestone
+
+**Usage Pattern:**
+```
+1. Goal progress update
+2. Update progress → update_goal_progress
+3. Query goals → query_goal_timeline
+4. (Optional) Create goal → create_goal_timeline_node
+```
+
+---
+
+### **7. Memory Management Protocol**
+
+**When:** When storing/retrieving knowledge
+
+**Purpose:** Manage persistent memory
+
+**Mandatory Tools:**
+- `store_memory` - Store knowledge
+- `retrieve_memory` - Retrieve insights
+
+**Optional Tools:**
+- `synthesize_knowledge` - If synthesis needed
+- `get_memory_stats` - If stats needed
+
+**Usage Pattern:**
+```
+1. Knowledge to store
+2. Store → store_memory
+3. (Optional) Retrieve → retrieve_memory
+4. (Optional) Synthesize → synthesize_knowledge
+```
+
+---
+
+### **8. Snapshot Management Protocol**
+
+**When:** Before major changes, version control
+
+**Purpose:** Create and manage snapshots
+
+**Mandatory Tools:**
+- `create_snapshot` - Create snapshot
+- `list_snapshots` - List available
+
+**Optional Tools:**
+- `restore_snapshot` - If restore needed
+- `archive_snapshot` - If archive needed
+
+**Usage Pattern:**
+```
+1. Before major change
+2. Create snapshot → create_snapshot
+3. (Optional) List → list_snapshots
+4. (Optional) Restore → restore_snapshot
+```
+
+---
+
+## 📊 Tool → Protocol Mapping
+
+### **Core AIM-OS Tools (6)**
+
+**store_memory:**
+- Protocols: cognitive_analysis, task_completion, memory_management
+- Pattern: MANDATORY after major milestones
+- Triggers: task completed, insight learned, decision made
+
+**get_memory_stats:**
+- Protocols: memory_management
+- Pattern: OPTIONAL when stats needed
+- Triggers: memory stats requested, monitoring needed
+
+**retrieve_memory:**
+- Protocols: session_continuity, memory_management
+- Pattern: MANDATORY at session start
+- Triggers: session start, context needed, insight retrieval
+
+**create_plan:**
+- Protocols: task_planning
+- Pattern: OPTIONAL for complex tasks
+- Triggers: complex task, planning needed
+
+**track_confidence:**
+- Protocols: cognitive_analysis, quality_assurance
+- Pattern: MANDATORY during analysis/validation
+- Triggers: analysis started, validation needed, confidence check
+
+**synthesize_knowledge:**
+- Protocols: cognitive_analysis, memory_management
+- Pattern: OPTIONAL if insights significant
+- Triggers: significant insights, knowledge synthesis needed
+
+---
+
+### **Timeline Context Tools (3)**
+
+**add_timeline_entry:**
+- Protocols: cognitive_analysis, task_completion
+- Pattern: MANDATORY after major events
+- Triggers: task completed, milestone reached, event occurred
+
+**get_timeline_summary:**
+- Protocols: session_continuity
+- Pattern: MANDATORY at session start
+- Triggers: session start, context restoration
+
+**get_timeline_entries:**
+- Protocols: session_continuity
+- Pattern: OPTIONAL for detailed history
+- Triggers: detailed history needed, query timeline
+
+---
+
+### **Goal Timeline Tools (3)**
+
+**create_goal_timeline_node:**
+- Protocols: goal_tracking
+- Pattern: OPTIONAL when new goal created
+- Triggers: new goal, goal planning
+
+**update_goal_progress:**
+- Protocols: task_completion, goal_tracking
+- Pattern: MANDATORY after task completion
+- Triggers: task completed, progress update
+
+**query_goal_timeline:**
+- Protocols: goal_tracking, session_continuity
+- Pattern: OPTIONAL for goal queries
+- Triggers: goal query, progress check
+
+---
+
+## 🎯 Usage Pattern Examples
+
+### **Example 1: Task Completion**
+
+```
+User: "I completed the feature implementation"
+Agent follows: task_completion protocol
+  → update_goal_progress (MANDATORY)
+  → store_memory (MANDATORY)
+  → add_timeline_entry (MANDATORY)
+  → create_snapshot (OPTIONAL - if significant changes)
+```
+
+### **Example 2: Session Start**
+
+```
+User: "Let's continue working"
+Agent follows: session_continuity protocol
+  → get_timeline_summary (MANDATORY)
+  → retrieve_memory (MANDATORY)
+  → query_goal_timeline (OPTIONAL - if goal tracking needed)
+```
+
+### **Example 3: Code Development**
+
+```
+User: "I made code changes"
+Agent follows: code_development protocol
+  → validate_quintet (MANDATORY)
+  → fix_nl_tags (MANDATORY - if tags missing)
+  → create_snapshot (OPTIONAL - before committing)
+```
+
+---
+
+## 📝 Next Steps
+
+1. ✅ Create protocol registry (this file)
+2. 🔄 Enhance tool descriptions with protocol references
+3. 🔄 Update RAG metadata with usage guidance
+4. 🔄 Integrate with rules system
+5. 🔄 Test protocol-driven tool selection
+
+---
+
+**Status:** 📋 **INITIAL VERSION**  
+**Next:** Enhance tool descriptions systematically  
+

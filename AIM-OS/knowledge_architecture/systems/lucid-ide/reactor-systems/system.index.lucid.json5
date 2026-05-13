@@ -1,0 +1,157 @@
+{
+  "systemId": "lucid-ide.reactorSystems",
+  "humanName": "Lucid IDE Reactor Systems",
+  "version": "v1.0.0",
+  "status": "production",
+  
+  "intent": {
+    "purpose": "Provide dual visualization engines (2D canvas and 3D WebGL) for interactive system architecture visualization, node relationships, particle effects, and real-time activity monitoring",
+    "must_not_regress": [
+      "Must not break 60fps rendering",
+      "Must not lose reactor state",
+      "Must not exceed GPU memory limits",
+      "Must not break canvas/WebGL rendering",
+      "Must not cause performance degradation"
+    ],
+    "why_it_exists": "Transforms abstract system data into intuitive visual representations enabling developers to understand architecture, relationships, and activity through interactive 2D and 3D visualizations."
+  },
+  
+  "classification": {
+    "security_level": "low",
+    "perf_sensitivity": "critical",
+    "ownership": "lucid-ide",
+    "sideEffects": [
+      "Renders visualizations",
+      "Manages GPU resources",
+      "Processes particle systems",
+      "Handles user interactions"
+    ]
+  },
+  
+  "internalNodes": [
+    {
+      "id": "reactor2D",
+      "responsibility": "2D canvas-based reactor visualization (590+ lines) with particle systems and node visualization",
+      "must_never": [
+        "Lose reactor state",
+        "Break canvas rendering",
+        "Exceed 60fps budget"
+      ],
+      "perf_budget_ms": 16,
+      "status": "production"
+    },
+    {
+      "id": "reactor3D",
+      "responsibility": "3D WebGL-based reactor visualization (560+ lines) with Three.js, spatial positioning, and camera controls",
+      "must_never": [
+        "Lose 3D state",
+        "Break WebGL rendering",
+        "Exceed memory limits"
+      ],
+      "perf_budget_ms": 16,
+      "status": "production"
+    },
+    {
+      "id": "visualEngine2D",
+      "responsibility": "2D visual engine managing canvas rendering, particles, and node layout",
+      "must_never": [
+        "Break rendering loop",
+        "Lose particle state",
+        "Cause memory leaks"
+      ],
+      "perf_budget_ms": 16,
+      "status": "production"
+    },
+    {
+      "id": "visualEngine3D",
+      "responsibility": "3D visual engine managing WebGL rendering, Three.js scene, and spatial positioning",
+      "must_never": [
+        "Break WebGL context",
+        "Lose scene state",
+        "Cause GPU memory leaks"
+      ],
+      "perf_budget_ms": 16,
+      "status": "production"
+    }
+  ],
+  
+  "systemMap": {
+    "mapFile": "./system.map.lucid.json5"
+  },
+  
+  "foresight": {
+    "predictedRisks": [
+      {
+        "risk_id": "gpu_memory_exhaustion",
+        "description": "3D reactor could exhaust GPU memory with large node counts",
+        "likelihood": "medium",
+        "blast_radius_if_real": "3d_reactor_unusable",
+        "mitigation": "Implement node culling, LOD system, memory monitoring",
+        "watchpoint": "if gpu_memory > 80% for 10 seconds, alert"
+      },
+      {
+        "risk_id": "performance_degradation",
+        "description": "Large particle systems could cause frame rate drops",
+        "likelihood": "high",
+        "blast_radius_if_real": "visualization_unusable",
+        "mitigation": "Particle culling, batch rendering, performance monitoring",
+        "watchpoint": "if fps < 30 for 5 seconds, reduce particle count"
+      }
+    ],
+    "killSwitch": "reactor.enabled=false",
+    "emergencyProcedures": [
+      "Stop all rendering loops",
+      "Release GPU resources",
+      "Clear particle systems",
+      "Notify frontend system"
+    ]
+  },
+  
+  "integrations": {
+    "frontendSystem": {
+      "protocol": "react-props",
+      "whatIsExchanged": ["reactor_data", "visualization_state"],
+      "security": "low",
+      "rateLimit": "n/a"
+    },
+    "canvas2D": {
+      "protocol": "Canvas2D",
+      "whatIsExchanged": ["2d_graphics"],
+      "security": "low",
+      "rateLimit": "60fps"
+    },
+    "webgl3D": {
+      "protocol": "WebGL",
+      "whatIsExchanged": ["3d_scene"],
+      "security": "low",
+      "rateLimit": "60fps"
+    }
+  },
+  
+  "performance": {
+    "metrics": {
+      "fps": "target 60fps",
+      "render_time_ms": "target < 16ms",
+      "gpu_memory_mb": "target < 1GB",
+      "particle_count": "target < 10000"
+    },
+    "optimization": [
+      "RequestAnimationFrame optimization",
+      "WebGL batching",
+      "Particle culling",
+      "LOD system"
+    ],
+    "monitoring": ["fps", "render_time", "gpu_memory", "particle_count"]
+  },
+  
+  "documentation": {
+    "l0_executive": "knowledge_architecture/systems/lucid-ide/reactor-systems/L0_executive.md",
+    "l1_overview": "knowledge_architecture/systems/lucid-ide/reactor-systems/L1_overview.md",
+    "l2_architecture": "knowledge_architecture/systems/lucid-ide/reactor-systems/L2_architecture.md",
+    "l3_detailed": "knowledge_architecture/systems/lucid-ide/reactor-systems/L3_detailed.md",
+    "l4_complete": "knowledge_architecture/systems/lucid-ide/reactor-systems/L4_complete.md",
+    "system_map": "knowledge_architecture/systems/lucid-ide/reactor-systems/system.map.lucid.json5",
+    "usage_envelope": "knowledge_architecture/systems/lucid-ide/reactor-systems/usage.envelope.md"
+  }
+}
+

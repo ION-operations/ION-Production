@@ -1,0 +1,140 @@
+.layout {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #1e1e1e;
+  overflow: hidden;
+}
+
+.top-zone {
+  flex-shrink: 0;
+  height: 40px;
+  background-color: #252526;
+  border-bottom: 1px solid #3e3e3e;
+}
+
+.layout-horizontal {
+  flex: 1;
+  display: flex;
+  flex-direction: row;
+}
+
+.layout-vertical {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.zone-panel {
+  background: #1e1e1e;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.left-zone {
+  background: #252526;
+  border-right: 1px solid #3e3e3e;
+}
+
+.right-zone {
+  background: #252526;
+  border-left: 1px solid #3e3e3e;
+}
+
+.bottom-zone {
+  background: #252526;
+  border-top: 1px solid #3e3e3e;
+}
+
+.center-zone {
+  background: #1e1e1e;
+}
+
+.center-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: #1e1e1e;
+}
+
+.center-header {
+  background: #252526;
+  border-bottom: 1px solid #3e3e3e;
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.center-header h2 {
+  font-size: 13px;
+  font-weight: 500;
+  color: #cccccc;
+  margin: 0;
+}
+
+.center-tabs {
+  display: flex;
+  gap: 4px;
+}
+
+.tab {
+  padding: 6px 12px;
+  background: #2d2d30;
+  border: 1px solid #3e3e3e;
+  border-radius: 4px 4px 0 0;
+  font-size: 12px;
+  color: #858585;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tab:hover {
+  background: #323233;
+  color: #cccccc;
+}
+
+.tab.active {
+  background: #1e1e1e;
+  border-bottom-color: #1e1e1e;
+  color: #cccccc;
+}
+
+.editor-placeholder {
+  flex: 1;
+  padding: 16px;
+  overflow: auto;
+  background: #1e1e1e;
+}
+
+.editor-placeholder pre {
+  margin: 0;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #d4d4d4;
+  white-space: pre;
+}
+
+.resize-handle {
+  background: #3e3e3e;
+  transition: background 0.2s;
+  position: relative;
+}
+
+.resize-handle:hover {
+  background: #007acc;
+}
+
+.resize-handle.horizontal {
+  height: 4px;
+  cursor: row-resize;
+}
+
+.resize-handle:not(.horizontal) {
+  width: 4px;
+  cursor: col-resize;
+}
+

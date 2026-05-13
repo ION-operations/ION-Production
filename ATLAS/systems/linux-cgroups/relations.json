@@ -1,0 +1,71 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "cgroups (v2) are Linux kernel resource controllers for CPU, memory, I/O, and related accounting/delegation per kernel documentation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-namespaces",
+      "evidence_tier": "INFERRED",
+      "notes": "Container stacks commonly compose cgroups with namespaces; cgroups are resource control, not namespace views."
+    },
+    {
+      "type": "integrates_with",
+      "target": "docker",
+      "evidence_tier": "INFERRED",
+      "notes": "Docker on Linux uses cgroups for container resource limits per common deployment understanding."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "Kubernetes kubelet and runtimes rely on cgroups for pod/QoS resource boundaries on Linux nodes."
+    },
+    {
+      "type": "integrates_with",
+      "target": "containerd",
+      "evidence_tier": "INFERRED",
+      "notes": "containerd configures cgroups when managing Linux containers."
+    },
+    {
+      "type": "integrates_with",
+      "target": "runc",
+      "evidence_tier": "INFERRED",
+      "notes": "runc applies cgroup paths when starting OCI runtime bundles on Linux."
+    },
+    {
+      "type": "integrates_with",
+      "target": "podman",
+      "evidence_tier": "INFERRED",
+      "notes": "Podman uses cgroups for Linux container resource scopes."
+    },
+    {
+      "type": "integrates_with",
+      "target": "cri-o",
+      "evidence_tier": "INFERRED",
+      "notes": "CRI-O configures cgroups for Kubernetes workloads on Linux."
+    },
+    {
+      "type": "integrates_with",
+      "target": "systemd",
+      "evidence_tier": "INFERRED",
+      "notes": "systemd organizes services and scopes using the cgroup hierarchy on Linux."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-capabilities",
+      "evidence_tier": "INFERRED",
+      "notes": "cgroups limit resources; capabilities gate privilege bits — often composed in container hardening."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-kvm",
+      "evidence_tier": "INFERRED",
+      "notes": "cgroups scope host resource limits for processes; KVM guests are a different abstraction from cgroup-scoped containers."
+    }
+  ]
+}

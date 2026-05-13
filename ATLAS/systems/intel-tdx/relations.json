@@ -1,0 +1,25 @@
+{
+  "system_slug": "intel-tdx",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-07",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "INFERRED",
+      "notes": "Linux KVM/QEMU stacks integrate TDX paths where enabled (pin kernel version)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "tpm2",
+      "evidence_tier": "INFERRED",
+      "notes": "Attestation ecosystems may combine TDX evidence with TPM-style roots (deployment-specific)."
+    },
+    {
+      "type": "competes_with",
+      "target": "amd-sev",
+      "evidence_tier": "INFERRED",
+      "notes": "Alternative x86 confidential VM vendor technology class."
+    }
+  ]
+}

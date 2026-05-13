@@ -1,0 +1,19 @@
+{
+  "system_slug": "uefi",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-03",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "INFERRED",
+      "notes": "Linux boot loaders hand off from UEFI to kernel on UEFI-class machines."
+    },
+    {
+      "type": "integrates_with",
+      "target": "windows-nt",
+      "evidence_tier": "INFERRED",
+      "notes": "Windows boots via UEFI on modern PCs."
+    }
+  ]
+}

@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "vscode",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "VS Code debug UI is a DAP client; protocol is external specification."
+    },
+    {
+      "type": "integrates_with",
+      "target": "cursor",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Cursor inherits VS Code\u2013lineage debug/DAP patterns; parity is version-specific."
+    },
+    {
+      "type": "integrates_with",
+      "target": "language-server-protocol",
+      "evidence_tier": "INFERRED",
+      "notes": "Complementary planes: language intelligence vs debug control in the same stack."
+    },
+    {
+      "type": "integrates_with",
+      "target": "model-context-protocol",
+      "evidence_tier": "INFERRED",
+      "notes": "Agent tool host may coexist with DAP-capable editor; do not merge protocol semantics."
+    },
+    {
+      "type": "integrates_with",
+      "target": "elf",
+      "evidence_tier": "INFERRED",
+      "notes": "Debug sessions resolve symbols from ELF objects; DWARF often lives in ELF sections."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-gdb",
+      "evidence_tier": "INFERRED",
+      "notes": "Many DAP adapters use GDB as the debug engine for C/C++ on Linux."
+    },
+    {
+      "type": "integrates_with",
+      "target": "lldb",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "lldb-dap and CodeLLDB-class adapters expose LLDB through DAP."
+    }
+  ]
+}

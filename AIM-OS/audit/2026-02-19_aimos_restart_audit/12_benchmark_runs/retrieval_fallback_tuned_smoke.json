@@ -1,0 +1,39 @@
+{
+  "timestamp": "2026-02-19T05:21:40.537901+00:00",
+  "config": {
+    "queries": 5,
+    "corpus": 20,
+    "provider": "fallback",
+    "coarse_k": 20,
+    "dvns_iterations": 5,
+    "token_budget": 1200
+  },
+  "results": {
+    "queries": 5,
+    "index_nodes": 800,
+    "mean_latency_ms": 34.534700005315244,
+    "median_latency_ms": 25.49099992029369,
+    "p90_latency_ms": 65.6143999658525,
+    "p95_latency_ms": 65.6143999658525,
+    "p99_latency_ms": 65.6143999658525,
+    "min_latency_ms": 22.757900063879788,
+    "max_latency_ms": 65.6143999658525,
+    "mean_relevance": 0.7666666666666666,
+    "median_relevance": 1.0,
+    "min_relevance": 0.3333333333333333,
+    "max_relevance": 1.0,
+    "mean_tokens": 116.4,
+    "config": {
+      "coarse_k": 20,
+      "token_budget": 1200,
+      "dvns_iterations": 5,
+      "enable_conflict_resolution": true,
+      "enable_compression": true
+    }
+  },
+  "targets": {
+    "p95_latency_ms": 200.0,
+    "mean_relevance": 0.9
+  },
+  "ablation": null
+}

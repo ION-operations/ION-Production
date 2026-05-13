@@ -1,0 +1,69 @@
+{
+  "confidence_gated_controls": {
+    "passed": 8,
+    "failed": 0,
+    "tests": [
+      {
+        "name": "Basic Confidence Packet Creation",
+        "passed": true,
+        "message": "Basic confidence packet creation successful"
+      },
+      {
+        "name": "Mutation Mode Determination",
+        "passed": true,
+        "message": "Mutation mode determination successful"
+      },
+      {
+        "name": "Tier Level Determination",
+        "passed": true,
+        "message": "Tier level determination successful"
+      },
+      {
+        "name": "Confidence Score Calculation",
+        "passed": true,
+        "message": "Confidence score calculation successful"
+      },
+      {
+        "name": "Change Validation",
+        "passed": true,
+        "message": "Change validation successful"
+      },
+      {
+        "name": "Risk Assessment",
+        "passed": true,
+        "message": "Risk assessment successful"
+      },
+      {
+        "name": "Blast Radius Calculation",
+        "passed": true,
+        "message": "Blast radius calculation successful"
+      },
+      {
+        "name": "Validation Proofs",
+        "passed": true,
+        "message": "Validation proofs successful"
+      }
+    ]
+  },
+  "integration": {
+    "passed": 2,
+    "failed": 1,
+    "tests": [
+      {
+        "name": "End-to-End A-H Protocol with CGC",
+        "passed": false,
+        "message": "End-to-end A-H Protocol with CGC failed: "
+      },
+      {
+        "name": "Data Flow Through CGC",
+        "passed": true,
+        "message": "Data flow through CGC successful"
+      },
+      {
+        "name": "Error Handling",
+        "passed": true,
+        "message": "Error handling successful"
+      }
+    ]
+  }
+}

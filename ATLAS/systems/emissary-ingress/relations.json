@@ -1,0 +1,31 @@
+{
+  "system_slug": "emissary-ingress",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-07",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Ingress controller role documented for Kubernetes."
+    },
+    {
+      "type": "integrates_with",
+      "target": "envoy",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Architecture centers on Envoy as data plane in upstream documentation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "grpc",
+      "evidence_tier": "INFERRED",
+      "notes": "gRPC routing is a common ingress use case on Envoy-based stacks."
+    },
+    {
+      "type": "competes_with",
+      "target": "traefik",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable ingress class on Kubernetes in many orgs."
+    }
+  ]
+}

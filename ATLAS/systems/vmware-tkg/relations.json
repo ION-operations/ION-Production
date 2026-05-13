@@ -1,0 +1,77 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "implements",
+      "target": "kubernetes",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Broadcom/VMware documents TKG as an opinionated configuration of open-source Kubernetes with validated binaries and upstream version compatibility goals."
+    },
+    {
+      "type": "competes_with",
+      "target": "digitalocean-doks",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Kubernetes platform vs public managed SKU in some enterprise footprints."
+    },
+    {
+      "type": "competes_with",
+      "target": "civo-kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Kubernetes platform vs public managed SKU in some enterprise footprints."
+    },
+    {
+      "type": "competes_with",
+      "target": "linode-lke",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Kubernetes platform vs public managed SKU in some enterprise footprints."
+    },
+    {
+      "type": "competes_with",
+      "target": "aws-eks",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Kubernetes platform vs hyperscaler-managed control plane in some footprints."
+    },
+    {
+      "type": "competes_with",
+      "target": "azure-aks",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Kubernetes platform vs hyperscaler-managed control plane in some footprints."
+    },
+    {
+      "type": "competes_with",
+      "target": "gcp-gke",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Kubernetes platform vs hyperscaler-managed control plane in some footprints."
+    },
+    {
+      "type": "competes_with",
+      "target": "oci-oke",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Kubernetes platform vs cloud-managed control plane in some footprints."
+    },
+    {
+      "type": "competes_with",
+      "target": "ibm-iks",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Kubernetes platform vs cloud-managed control plane in some footprints."
+    },
+    {
+      "type": "competes_with",
+      "target": "red-hat-openshift",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable enterprise Kubernetes platform vs OpenShift in some hybrid/datacenter footprints."
+    },
+    {
+      "type": "competes_with",
+      "target": "openshift-dedicated",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Kubernetes platform vs Red Hat managed OpenShift on AWS/GCP in some footprints."
+    },
+    {
+      "type": "depends_on",
+      "target": "linux-kernel",
+      "evidence_tier": "INFERRED",
+      "notes": "Typical TKG workload nodes are Linux-class VMs or hosts per Kubernetes-on-vSphere deployment patterns."
+    }
+  ]
+}

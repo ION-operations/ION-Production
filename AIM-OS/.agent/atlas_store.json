@@ -1,0 +1,448 @@
+{
+  "last_indexed": 1773074240.489206,
+  "total_files": 250,
+  "total_lines": 73556,
+  "modules": {
+    "ai_engine": {
+      "path": "scripts/ai_engine",
+      "description": "Core AI Engine \u2014 7-layer pipeline: Context\u2192Agent\u2192Genome\u2192VIF\u2192LLM\u2192Trace\u2192Learn",
+      "purpose": "Orchestrates all AI operations via unified pipeline",
+      "file_count": 91,
+      "total_lines": 31770,
+      "key_classes": [
+        "AffinityEdge",
+        "AgentNode",
+        "AffinityGraph",
+        "ComfortAssessment",
+        "ComfortZone",
+        "CascadeStep",
+        "CascadeTrace",
+        "CascadeProtocol",
+        "MeshContribution",
+        "MeshDiscussion"
+      ],
+      "key_functions": [
+        "check_provider",
+        "check_codex_provider",
+        "check_genomes",
+        "check_registry",
+        "check_strategies",
+        "check_safety",
+        "check_swarm",
+        "check_core_data",
+        "check_engine",
+        "run_health_check"
+      ],
+      "dependencies": [
+        "swarm",
+        "context",
+        "agent_loop",
+        "providers",
+        "safety",
+        "genomes",
+        "learning",
+        "joc"
+      ],
+      "dependents": [
+        "swarm",
+        "context",
+        "agent_loop",
+        "providers",
+        "safety",
+        "learning"
+      ],
+      "tags": [
+        "core",
+        "pipeline",
+        "orchestration"
+      ]
+    },
+    "swarm": {
+      "path": "scripts/ai_engine/swarm",
+      "description": "Gemini CLI worker swarm \u2014 orchestrator, workers, contracts",
+      "purpose": "Multi-agent parallel execution with capability tokens",
+      "file_count": 4,
+      "total_lines": 1299,
+      "key_classes": [
+        "WorkerRole",
+        "JobStatus",
+        "JobPriority",
+        "RiskLevel",
+        "CapabilityToken",
+        "OutputContract",
+        "JobPacket",
+        "ResultPacket",
+        "SwarmTask",
+        "SwarmOrchestrator"
+      ],
+      "key_functions": [],
+      "dependencies": [
+        "context",
+        "ai_engine",
+        "safety"
+      ],
+      "dependents": [
+        "ai_engine",
+        "context",
+        "agent_loop",
+        "providers"
+      ],
+      "tags": [
+        "agents",
+        "parallel",
+        "workers"
+      ]
+    },
+    "context": {
+      "path": "scripts/ai_engine/context",
+      "description": "Context Pack pipeline \u2014 Evidence\u2192Retrieval\u2192Budgeting\u2192Pack",
+      "purpose": "Assembles optimal context windows for LLM calls",
+      "file_count": 3,
+      "total_lines": 699,
+      "key_classes": [
+        "EvidenceType",
+        "EvidenceItem",
+        "ContextProfile",
+        "ContextPack",
+        "ContextPackBuilder",
+        "ToolRecommendation",
+        "ToolAdvice",
+        "ToolAdvisor"
+      ],
+      "key_functions": [],
+      "dependencies": [
+        "ai_engine",
+        "genomes",
+        "swarm"
+      ],
+      "dependents": [
+        "ai_engine",
+        "swarm",
+        "agent_loop",
+        "providers",
+        "learning"
+      ],
+      "tags": [
+        "context",
+        "retrieval",
+        "budgeting"
+      ]
+    },
+    "agent_loop": {
+      "path": "scripts/ai_engine/agent_loop",
+      "description": "Agent loop infrastructure \u2014 strategies, evolution, quality scoring",
+      "purpose": "Manage agent execution cycles and quality assurance",
+      "file_count": 17,
+      "total_lines": 3924,
+      "key_classes": [
+        "BaselineResult",
+        "PhaseMetrics",
+        "DiagnosticsCollector",
+        "StrategyVariant",
+        "VariantScore",
+        "EvolutionManager",
+        "PhaseType",
+        "StrategyType",
+        "LoopConfig",
+        "ContextPack"
+      ],
+      "key_functions": [
+        "run_baseline",
+        "compare_baseline_vs_loop",
+        "run_context_researcher",
+        "run_worker",
+        "run_closeout",
+        "score_context_pack",
+        "compare_quality_scores",
+        "main",
+        "send",
+        "recv"
+      ],
+      "dependencies": [
+        "ai_engine",
+        "context",
+        "providers",
+        "safety",
+        "swarm"
+      ],
+      "dependents": [
+        "ai_engine"
+      ],
+      "tags": [
+        "evolution",
+        "quality",
+        "strategies"
+      ]
+    },
+    "providers": {
+      "path": "scripts/ai_engine/providers",
+      "description": "LLM providers \u2014 GeminiCLIProvider (headless/streaming/vision)",
+      "purpose": "Interface with Gemini CLI for agent execution",
+      "file_count": 6,
+      "total_lines": 2550,
+      "key_classes": [
+        "VaultKeyManager",
+        "APIProvider",
+        "SandboxMode",
+        "CodexCLIProvider",
+        "RequestLog",
+        "CostTracker",
+        "GeminiModel",
+        "OutputFormat",
+        "ProviderResponse",
+        "StreamChunk"
+      ],
+      "key_functions": [
+        "get_tracker",
+        "get_catalog"
+      ],
+      "dependencies": [
+        "ai_engine",
+        "swarm",
+        "context"
+      ],
+      "dependents": [
+        "ai_engine",
+        "agent_loop"
+      ],
+      "tags": [
+        "llm",
+        "gemini",
+        "providers"
+      ]
+    },
+    "safety": {
+      "path": "scripts/ai_engine/safety",
+      "description": "Safety systems \u2014 VIF gates, capability enforcement",
+      "purpose": "Enforce safety constraints on agent operations",
+      "file_count": 2,
+      "total_lines": 375,
+      "key_classes": [
+        "GateVerdict",
+        "GateResult",
+        "ConfidenceGate",
+        "RedZoneGate",
+        "ProposedAction",
+        "TwoPhaseCommitGate",
+        "VIFGate"
+      ],
+      "key_functions": [],
+      "dependencies": [
+        "ai_engine"
+      ],
+      "dependents": [
+        "ai_engine",
+        "swarm",
+        "agent_loop"
+      ],
+      "tags": [
+        "safety",
+        "vif",
+        "capability"
+      ]
+    },
+    "learning": {
+      "path": "scripts/ai_engine/learning",
+      "description": "Learning system \u2014 outcome tracking, model preferences",
+      "purpose": "Track execution outcomes and improve over time",
+      "file_count": 2,
+      "total_lines": 273,
+      "key_classes": [
+        "LearningInsight",
+        "ModelPerformance",
+        "AgentLearner"
+      ],
+      "key_functions": [],
+      "dependencies": [
+        "ai_engine",
+        "context"
+      ],
+      "dependents": [
+        "ai_engine"
+      ],
+      "tags": [
+        "learning",
+        "feedback",
+        "metrics"
+      ]
+    },
+    "genomes": {
+      "path": ".agent/genomes",
+      "description": "Agent genome files \u2014 identity, role, and task overlays",
+      "purpose": "Define agent personalities, capabilities, and constraints",
+      "file_count": 23,
+      "total_lines": 2188,
+      "key_classes": [],
+      "key_functions": [],
+      "dependencies": [],
+      "dependents": [
+        "ai_engine",
+        "context"
+      ],
+      "tags": [
+        "genome",
+        "identity",
+        "configuration"
+      ]
+    },
+    "joc": {
+      "path": "packages/joc",
+      "description": "JOC Dashboard \u2014 React UI for AIM-OS monitoring and control",
+      "purpose": "Visual interface for managing agents, context lab, and system health",
+      "file_count": 102,
+      "total_lines": 30478,
+      "key_classes": [
+        "SurfaceWebGPURenderer",
+        "OracleEventBus"
+      ],
+      "key_functions": [
+        "validChannels",
+        "App",
+        "handleKey",
+        "tag",
+        "SendIcon",
+        "CommsEmptyIcon",
+        "getAgentInitials",
+        "clean",
+        "words",
+        "getAgentClass"
+      ],
+      "dependencies": [],
+      "dependents": [
+        "ai_engine"
+      ],
+      "tags": [
+        "ui",
+        "dashboard",
+        "react"
+      ]
+    }
+  },
+  "relationships": [
+    {
+      "source": "ai_engine",
+      "target": "swarm",
+      "type": "imports"
+    },
+    {
+      "source": "ai_engine",
+      "target": "context",
+      "type": "imports"
+    },
+    {
+      "source": "ai_engine",
+      "target": "agent_loop",
+      "type": "imports"
+    },
+    {
+      "source": "ai_engine",
+      "target": "providers",
+      "type": "imports"
+    },
+    {
+      "source": "ai_engine",
+      "target": "safety",
+      "type": "imports"
+    },
+    {
+      "source": "ai_engine",
+      "target": "genomes",
+      "type": "imports"
+    },
+    {
+      "source": "ai_engine",
+      "target": "learning",
+      "type": "imports"
+    },
+    {
+      "source": "ai_engine",
+      "target": "joc",
+      "type": "imports"
+    },
+    {
+      "source": "swarm",
+      "target": "context",
+      "type": "imports"
+    },
+    {
+      "source": "swarm",
+      "target": "ai_engine",
+      "type": "imports"
+    },
+    {
+      "source": "swarm",
+      "target": "safety",
+      "type": "imports"
+    },
+    {
+      "source": "context",
+      "target": "ai_engine",
+      "type": "imports"
+    },
+    {
+      "source": "context",
+      "target": "genomes",
+      "type": "imports"
+    },
+    {
+      "source": "context",
+      "target": "swarm",
+      "type": "imports"
+    },
+    {
+      "source": "agent_loop",
+      "target": "ai_engine",
+      "type": "imports"
+    },
+    {
+      "source": "agent_loop",
+      "target": "context",
+      "type": "imports"
+    },
+    {
+      "source": "agent_loop",
+      "target": "providers",
+      "type": "imports"
+    },
+    {
+      "source": "agent_loop",
+      "target": "safety",
+      "type": "imports"
+    },
+    {
+      "source": "agent_loop",
+      "target": "swarm",
+      "type": "imports"
+    },
+    {
+      "source": "providers",
+      "target": "ai_engine",
+      "type": "imports"
+    },
+    {
+      "source": "providers",
+      "target": "swarm",
+      "type": "imports"
+    },
+    {
+      "source": "providers",
+      "target": "context",
+      "type": "imports"
+    },
+    {
+      "source": "safety",
+      "target": "ai_engine",
+      "type": "imports"
+    },
+    {
+      "source": "learning",
+      "target": "ai_engine",
+      "type": "imports"
+    },
+    {
+      "source": "learning",
+      "target": "context",
+      "type": "imports"
+    }
+  ]
+}

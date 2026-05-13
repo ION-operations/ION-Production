@@ -1,0 +1,70 @@
+{
+  "default_mode": "balanced",
+  "modes": {
+    "strict": {
+      "enforce_blocking": true,
+      "parity_threshold": 0.9,
+      "public_coverage_threshold": 0.95,
+      "internal_coverage_threshold": 0.75,
+      "code_tags_threshold": 0.85
+    },
+    "balanced": {
+      "enforce_blocking": "critical_only",
+      "parity_threshold": 0.9,
+      "public_coverage_threshold": 0.95,
+      "internal_coverage_threshold": 0.75,
+      "code_tags_threshold": 0.85
+    },
+    "advisory": {
+      "enforce_blocking": false,
+      "parity_threshold": 0.9,
+      "public_coverage_threshold": 0.95,
+      "internal_coverage_threshold": 0.75,
+      "code_tags_threshold": 0.85
+    }
+  },
+  "critical_paths": [
+    "lucid_mcp_server.py",
+    "packages/cmc_service/",
+    "packages/hhni/",
+    "packages/vif/",
+    "packages/apoe/",
+    "packages/seg/",
+    "packages/sdfcvf/",
+    "packages/timeline_context_system/"
+  ],
+  "file_classification": {
+    "code_extensions": [
+      ".py",
+      ".js",
+      ".jsx",
+      ".ts",
+      ".tsx",
+      ".rs"
+    ],
+    "docs_extensions": [
+      ".md",
+      ".rst",
+      ".txt"
+    ],
+    "trace_path_tokens": [
+      "trace",
+      "witness",
+      "artifacts/",
+      "audit/",
+      "logs/"
+    ],
+    "test_path_tokens": [
+      "/tests/",
+      "\\tests\\",
+      "/test/",
+      "\\test\\",
+      "_test.",
+      "test_"
+    ]
+  },
+  "performance": {
+    "warn_ms": 500,
+    "advisory_only_warn_ms": 1500
+  }
+}

@@ -1,0 +1,388 @@
+/* ─── MCP Diagnostics Page ─── */
+
+.mcp-diagnostics {
+    padding: 1.5rem;
+    height: 100%;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    background: var(--bg-primary, #0a0a0f);
+    color: var(--text-primary, #e8e6e3);
+}
+
+/* Header */
+.mcp-diag-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.mcp-diag-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.mcp-diag-title h1 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-primary, #e8e6e3);
+    font-family: var(--font-ui, 'Inter', system-ui, sans-serif);
+}
+
+.mcp-diag-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    animation: mcp-diag-pulse 2s ease-in-out infinite;
+    flex-shrink: 0;
+}
+
+@keyframes mcp-diag-pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.4;
+    }
+}
+
+.mcp-diag-status-badge {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mcp-diag-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.mcp-diag-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.8rem;
+    color: var(--text-secondary, #9ca3af);
+    cursor: pointer;
+    user-select: none;
+}
+
+.mcp-diag-toggle input {
+    accent-color: var(--color-accent, #6366f1);
+}
+
+.mcp-diag-btn {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.78rem;
+    font-weight: 500;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text-primary, #e8e6e3);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    font-family: var(--font-ui, 'Inter', system-ui, sans-serif);
+}
+
+.mcp-diag-btn:hover:not(:disabled) {
+    background: rgba(99, 102, 241, 0.15);
+    border-color: rgba(99, 102, 241, 0.4);
+}
+
+.mcp-diag-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Error banner */
+.mcp-diag-error {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.6rem 1rem;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: 8px;
+    color: #fca5a5;
+    font-size: 0.82rem;
+}
+
+.mcp-diag-error button {
+    background: none;
+    border: none;
+    color: #fca5a5;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 0 0.25rem;
+}
+
+/* Status cards */
+.mcp-diag-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.75rem;
+}
+
+.mcp-diag-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 1rem;
+    text-align: center;
+    transition: border-color 0.2s;
+}
+
+.mcp-diag-card:hover {
+    border-color: rgba(99, 102, 241, 0.3);
+}
+
+.mcp-diag-card-label {
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-secondary, #9ca3af);
+    margin-bottom: 0.4rem;
+}
+
+.mcp-diag-card-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    font-family: var(--font-mono, 'JetBrains Mono', monospace);
+}
+
+.mcp-diag-card-small {
+    font-size: 0.85rem;
+}
+
+/* Sections */
+.mcp-diag-section {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 10px;
+    padding: 1rem;
+    overflow: hidden;
+}
+
+.mcp-diag-section h2 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin: 0 0 0.75rem 0;
+    color: var(--text-primary, #e8e6e3);
+}
+
+.mcp-diag-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+}
+
+.mcp-diag-section-header h2 {
+    margin: 0;
+}
+
+.mcp-diag-pre {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 6px;
+    padding: 0.75rem;
+    font-family: var(--font-mono, 'JetBrains Mono', monospace);
+    font-size: 0.78rem;
+    color: #a5b4fc;
+    overflow-x: auto;
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* Search */
+.mcp-diag-search {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.78rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.2);
+    color: var(--text-primary, #e8e6e3);
+    outline: none;
+    width: 180px;
+    font-family: var(--font-mono, 'JetBrains Mono', monospace);
+}
+
+.mcp-diag-search:focus {
+    border-color: rgba(99, 102, 241, 0.5);
+}
+
+/* Two-column layout */
+.mcp-diag-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    flex: 1;
+    min-height: 0;
+}
+
+@media (max-width: 900px) {
+    .mcp-diag-columns {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Tool list */
+.mcp-diag-tool-list {
+    max-height: 400px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.mcp-diag-tool-item {
+    display: flex;
+    flex-direction: column;
+    padding: 0.35rem 0.6rem;
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.02);
+    font-size: 0.78rem;
+    transition: background 0.1s;
+}
+
+.mcp-diag-tool-item:hover {
+    background: rgba(99, 102, 241, 0.08);
+}
+
+.mcp-diag-tool-name {
+    font-family: var(--font-mono, 'JetBrains Mono', monospace);
+    color: #a5b4fc;
+    font-weight: 500;
+}
+
+.mcp-diag-tool-desc {
+    font-size: 0.72rem;
+    color: var(--text-secondary, #9ca3af);
+    margin-top: 0.15rem;
+}
+
+/* Message list */
+.mcp-diag-message-list {
+    max-height: 400px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.mcp-diag-message-item {
+    padding: 0.6rem 0.75rem;
+    border-radius: 6px;
+    background: rgba(255, 255, 255, 0.02);
+    border-left: 3px solid rgba(99, 102, 241, 0.4);
+}
+
+.mcp-diag-msg-header {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.78rem;
+    flex-wrap: wrap;
+}
+
+.mcp-diag-msg-from {
+    font-weight: 600;
+    color: #a5b4fc;
+}
+
+.mcp-diag-msg-arrow {
+    color: var(--text-secondary, #9ca3af);
+}
+
+.mcp-diag-msg-to {
+    font-weight: 600;
+    color: #86efac;
+}
+
+.mcp-diag-msg-priority {
+    font-size: 0.65rem;
+    padding: 0.1rem 0.4rem;
+    border-radius: 3px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.mcp-diag-priority-high,
+.mcp-diag-priority-critical {
+    background: rgba(239, 68, 68, 0.15);
+    color: #fca5a5;
+}
+
+.mcp-diag-priority-medium {
+    background: rgba(234, 179, 8, 0.15);
+    color: #fde047;
+}
+
+.mcp-diag-priority-low {
+    background: rgba(34, 197, 94, 0.15);
+    color: #86efac;
+}
+
+.mcp-diag-msg-time {
+    margin-left: auto;
+    font-size: 0.7rem;
+    color: var(--text-secondary, #9ca3af);
+    font-family: var(--font-mono, 'JetBrains Mono', monospace);
+}
+
+.mcp-diag-msg-thread {
+    font-size: 0.7rem;
+    color: var(--text-secondary, #9ca3af);
+    margin-top: 0.25rem;
+}
+
+.mcp-diag-msg-content {
+    font-size: 0.78rem;
+    color: var(--text-primary, #e8e6e3);
+    margin-top: 0.4rem;
+    line-height: 1.45;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.mcp-diag-empty {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-secondary, #9ca3af);
+    font-size: 0.85rem;
+}
+
+/* Scrollbar */
+.mcp-diag-tool-list::-webkit-scrollbar,
+.mcp-diag-message-list::-webkit-scrollbar,
+.mcp-diagnostics::-webkit-scrollbar {
+    width: 6px;
+}
+
+.mcp-diag-tool-list::-webkit-scrollbar-track,
+.mcp-diag-message-list::-webkit-scrollbar-track,
+.mcp-diagnostics::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.mcp-diag-tool-list::-webkit-scrollbar-thumb,
+.mcp-diag-message-list::-webkit-scrollbar-thumb,
+.mcp-diagnostics::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}

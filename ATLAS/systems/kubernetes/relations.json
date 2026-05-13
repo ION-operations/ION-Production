@@ -1,0 +1,281 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "depends_on",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Node OS provides kernel; Linux dominates documented deployments."
+    },
+    {
+      "type": "integrates_with",
+      "target": "systemd",
+      "evidence_tier": "INFERRED",
+      "notes": "Kubelet and control plane components often installed as systemd units on Linux; not universal."
+    },
+    {
+      "type": "integrates_with",
+      "target": "systemd-unit-model",
+      "evidence_tier": "INFERRED",
+      "notes": "Node services (kubelet, container runtime, kube-proxy, …) are commonly expressed as systemd unit files on Linux."
+    },
+    {
+      "type": "integrates_with",
+      "target": "docker",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Ecosystem overlap: local clusters, historical CRI-dockerd patterns; production often containerd/CRI-O."
+    },
+    {
+      "type": "integrates_with",
+      "target": "containerd",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "kubelet uses CRI; containerd is a common implementation (CRI-O and others also exist)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "oci-image-spec",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Pod workloads are commonly specified as OCI images pulled and unpacked by the node CRI stack."
+    },
+    {
+      "type": "integrates_with",
+      "target": "oci-distribution-spec",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Image pulls from container registries use distribution-class HTTP APIs at the registry boundary."
+    },
+    {
+      "type": "integrates_with",
+      "target": "oci-runtime-spec",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Linux nodes run pod containers as OCI bundles via CRI and low-level OCI runtimes."
+    },
+    {
+      "type": "integrates_with",
+      "target": "buildkit",
+      "evidence_tier": "INFERRED",
+      "notes": "Cluster and CI image-build pipelines use BuildKit alongside kubelet/CRI; build is not the same as pod execution."
+    },
+    {
+      "type": "integrates_with",
+      "target": "helm",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Helm installs and upgrades Kubernetes workloads from charts via the Kubernetes API; complementary to kubelet/CRI image pulls."
+    },
+    {
+      "type": "integrates_with",
+      "target": "fluxcd",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Flux controllers run on Kubernetes and reconcile Git/OCI sources into cluster state via the Kubernetes API."
+    },
+    {
+      "type": "integrates_with",
+      "target": "argo-cd",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Argo CD runs on Kubernetes and reconciles Git-declared application state into the cluster via the Kubernetes API."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kustomize",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Kustomize builds Kubernetes manifests consumed by kubectl, CI, and GitOps controllers operating against the Kubernetes API."
+    },
+    {
+      "type": "integrates_with",
+      "target": "crun",
+      "evidence_tier": "INFERRED",
+      "notes": "Nodes configured with crun-backed CRI stacks run workloads through the same kubelet/CRI path."
+    },
+    {
+      "type": "integrates_with",
+      "target": "cri-o",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "CRI-O is a common alternative CRI implementation on Linux (especially OpenShift-class deployments)."
+    },
+    {
+      "type": "competes_with",
+      "target": "nomad",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable orchestrator class in some on-prem and edge deployments; not mutually exclusive in knowledge model."
+    },
+    {
+      "type": "competes_with",
+      "target": "aws-ecs",
+      "evidence_tier": "INFERRED",
+      "notes": "Managed cloud orchestrator substitution for container workloads; different API and portability model."
+    },
+    {
+      "type": "competes_with",
+      "target": "apache-mesos",
+      "evidence_tier": "HISTORICAL",
+      "notes": "Parallel-era cluster managers; Mesos retired — comparative framing only."
+    },
+    {
+      "type": "integrates_with",
+      "target": "aws-eks",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Amazon EKS runs Kubernetes-conformant clusters and installs Kubernetes APIs per AWS documentation (managed offering)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "azure-aks",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Microsoft documents AKS as a managed Kubernetes service with Azure-operated control plane (managed offering)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gcp-gke",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Google documents GKE as Kubernetes clusters with Google-managed control plane (managed offering)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "azure-container-apps",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Microsoft documents Azure Container Apps as powered by Kubernetes (without exposing the Kubernetes API directly)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "oci-oke",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Oracle documents OKE as CNCF-conformant Kubernetes on OCI (managed offering)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "ibm-iks",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "IBM documents IBM Cloud Kubernetes Service as a certified managed Kubernetes offering (managed relationship)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "azure-aci",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Microsoft documents AKS virtual nodes that run pods as Azure Container Instances container groups (Kubernetes workload backing)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "digitalocean-doks",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "DigitalOcean documents DOKS as a Kubernetes service with a fully managed control plane (managed offering relationship)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "civo-kubernetes",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Civo documents managed Kubernetes certified conformant by CNCF (managed offering relationship)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linode-lke",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Akamai documents LKE as a managed Kubernetes engine built on Kubernetes (managed offering relationship)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "vmware-tkg",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Broadcom documents Tanzu Kubernetes Grid as an opinionated open-source Kubernetes configuration with validated binaries (distribution relationship to upstream Kubernetes)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "red-hat-openshift",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Red Hat documents OpenShift Container Platform with Kubernetes as a core component and a fully accessible Kubernetes API to the cluster (platform relationship to upstream Kubernetes)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "openshift-dedicated",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Red Hat documents OpenShift Dedicated as offering OpenShift Container Platform clusters as a managed service on AWS or Google Cloud (managed offering relationship)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "alpine-linux",
+      "evidence_tier": "INFERRED",
+      "notes": "Pod workloads on Linux nodes frequently use Alpine-class OCI images; not exclusive to Alpine."
+    },
+    {
+      "type": "integrates_with",
+      "target": "debian",
+      "evidence_tier": "INFERRED",
+      "notes": "Pod workloads and node OS choices frequently use Debian-class glibc userlands; not exclusive to Debian."
+    },
+    {
+      "type": "integrates_with",
+      "target": "ubuntu",
+      "evidence_tier": "INFERRED",
+      "notes": "Pod workloads and node OS choices frequently use Ubuntu-class glibc userlands; not exclusive to Ubuntu."
+    },
+    {
+      "type": "integrates_with",
+      "target": "fedora",
+      "evidence_tier": "INFERRED",
+      "notes": "Pod workloads and node OS choices frequently use Fedora-class or RHEL-family glibc userlands; not exclusive to Fedora."
+    },
+    {
+      "type": "integrates_with",
+      "target": "rhel",
+      "evidence_tier": "INFERRED",
+      "notes": "Pod workloads and node OS choices frequently use RHEL-class glibc userlands on enterprise Kubernetes footprints; not exclusive to RHEL."
+    },
+    {
+      "type": "integrates_with",
+      "target": "rocky-linux",
+      "evidence_tier": "INFERRED",
+      "notes": "Pod workloads and node OS choices frequently use Rocky Linux-class glibc userlands; not exclusive to Rocky Linux."
+    },
+    {
+      "type": "integrates_with",
+      "target": "almalinux",
+      "evidence_tier": "INFERRED",
+      "notes": "Pod workloads and node OS choices frequently use AlmaLinux-class glibc userlands; not exclusive to AlmaLinux."
+    },
+    {
+      "type": "integrates_with",
+      "target": "centos-stream",
+      "evidence_tier": "INFERRED",
+      "notes": "Pod workloads and node OS choices frequently use CentOS Stream-class glibc userlands; not exclusive to CentOS Stream."
+    },
+    {
+      "type": "integrates_with",
+      "target": "centos-linux",
+      "evidence_tier": "INFERRED",
+      "notes": "Pod workloads and node OS choices historically used CentOS Linux-class glibc userlands; not exclusive to CentOS Linux."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-netfilter",
+      "evidence_tier": "INFERRED",
+      "notes": "Linux nodes commonly use kube-proxy iptables/nftables modes that program netfilter unless replaced by other datapaths."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-kvm",
+      "evidence_tier": "INFERRED",
+      "notes": "Some stacks run VM-class workloads (KVM-backed) alongside or instead of default OCI containers; distinct from kubelet’s default pod sandbox."
+    },
+    {
+      "type": "integrates_with",
+      "target": "libvirt",
+      "evidence_tier": "INFERRED",
+      "notes": "KubeVirt-class stacks may compose libvirt/QEMU/KVM on nodes; cite product-specific docs per claim."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubevirt",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "KubeVirt extends Kubernetes with VM CRDs and controllers; Kubernetes remains the orchestration plane for those objects per KubeVirt documentation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kata-containers",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Kata Containers integrates with Kubernetes via RuntimeClass and CRI paths for VM-isolated OCI workloads per Kata documentation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gvisor",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "gVisor’s runsc integrates with Kubernetes via RuntimeClass and CRI paths for syscall-interposed OCI workloads per gVisor documentation."
+    }
+  ]
+}

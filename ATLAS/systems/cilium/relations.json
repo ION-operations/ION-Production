@@ -1,0 +1,43 @@
+{
+  "system_slug": "cilium",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-05",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Cilium is widely documented as a Kubernetes CNI and platform component."
+    },
+    {
+      "type": "integrates_with",
+      "target": "ebpf",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Cilium's design centers on eBPF programs for datapath."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "eBPF execution requires a capable Linux kernel."
+    },
+    {
+      "type": "integrates_with",
+      "target": "envoy",
+      "evidence_tier": "INFERRED",
+      "notes": "Some Cilium features integrate Envoy where documented for L7 policy / ingress."
+    },
+    {
+      "type": "competes_with",
+      "target": "istio",
+      "evidence_tier": "INFERRED",
+      "notes": "Overlapping service connectivity / mesh problem space; not identical architectures."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-netfilter",
+      "evidence_tier": "INFERRED",
+      "notes": "Linux nodes may still carry netfilter rules alongside eBPF datapaths during migration or for host policy; kube-proxy iptables modes differ from Cilium’s eBPF model."
+    }
+  ]
+}

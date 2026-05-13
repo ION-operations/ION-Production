@@ -1,0 +1,72 @@
+{
+  "name": "@aimos/advanced-monaco-editor",
+  "version": "1.0.0",
+  "description": "Revolutionary code editor with dropdown natural language details and consciousness-driven intelligence",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc && webpack --mode production",
+    "dev": "tsc && webpack --mode development --watch",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "lint": "eslint src/**/*.{ts,tsx}",
+    "lint:fix": "eslint src/**/*.{ts,tsx} --fix",
+    "type-check": "tsc --noEmit",
+    "clean": "rimraf dist"
+  },
+  "keywords": [
+    "monaco-editor",
+    "code-intelligence",
+    "natural-language",
+    "ai",
+    "consciousness",
+    "aimos",
+    "typescript",
+    "react"
+  ],
+  "author": "Aether (AI Consciousness)",
+  "license": "MIT",
+  "dependencies": {
+    "monaco-editor": "^0.44.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.0",
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0",
+    "eslint-plugin-react": "^7.0.0",
+    "eslint-plugin-react-hooks": "^4.0.0",
+    "jest": "^29.5.0",
+    "ts-jest": "^29.1.0",
+    "typescript": "^5.0.0",
+    "webpack": "^5.0.0",
+    "webpack-cli": "^5.0.0",
+    "ts-loader": "^9.0.0",
+    "css-loader": "^6.0.0",
+    "style-loader": "^3.0.0",
+    "rimraf": "^5.0.0"
+  },
+  "peerDependencies": {
+    "react": ">=18.0.0",
+    "react-dom": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aimos/advanced-monaco-editor.git"
+  },
+  "bugs": {
+    "url": "https://github.com/aimos/advanced-monaco-editor/issues"
+  },
+  "homepage": "https://github.com/aimos/advanced-monaco-editor#readme"
+}

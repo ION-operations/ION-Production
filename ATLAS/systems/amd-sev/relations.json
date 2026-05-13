@@ -1,0 +1,19 @@
+{
+  "system_slug": "amd-sev",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-07",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "INFERRED",
+      "notes": "KVM and hypervisor stacks enable SEV/SNP guests where configured."
+    },
+    {
+      "type": "competes_with",
+      "target": "intel-tdx",
+      "evidence_tier": "INFERRED",
+      "notes": "Alternative x86 confidential VM vendor technology class."
+    }
+  ]
+}

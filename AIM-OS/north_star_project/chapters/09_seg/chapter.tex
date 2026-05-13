@@ -1,0 +1,503 @@
+% Chapter converted from Markdown
+% Auto-generated - do not edit manually
+
+\section*{Chapter 9 - SEG (Semantic Evidence Graph)}
+
+
+\subsection*{Purpose}
+
+This chapter describes the Semantic Evidence Graph (SEG), the system that maintains trustworthy evidence by linking claims to authoritative anchors and provenance. SEG solves the fundamental problem introduced in Chapter 1: claims lack anchors, so contradictions go unnoticed until users complain.
+
+SEG provides:
+\item \textbf{Graph-based evidence model} linking claims, anchors, artifacts, and provenance
+\item \textbf{Contradiction detection} using semantic similarity and stance analysis
+\item \textbf{Bitemporal storage} enabling temporal queries and historical analysis
+\item \textbf{Knowledge synthesis} combining multiple sources into coherent understanding
+\item \textbf{Integration with CMC} making evidence durable and searchable
+
+This chapter demonstrates that SEG is not just a database—it is the evidence system that makes AIM-OS trustworthy. Without it, claims cannot be validated, contradictions go undetected, and knowledge cannot be synthesized.
+
+\subsection*{Executive Summary}
+
+SEG models evidence as a graph linking claims to authoritative anchors and provenance. The graph enables tag validation, contradiction detection, and review workflows. Bitemporal storage enables temporal queries ("what was true at time T?"). Knowledge synthesis combines multiple sources into coherent understanding. Integration with CMC makes evidence durable and searchable.
+
+\textbf{Key Insight:} SEG enables the "evidence graph" principle from Chapter 1. Without it, AIM-OS cannot detect contradictions, validate claims, or synthesize knowledge. With it, every claim is anchored, every contradiction is detected, and every synthesis is traceable.
+
+\subsection*{System Architecture}
+
+SEG consists of four core components that work together to provide evidence graph management:
+
+\subsubsection*{1. Graph Builder}
+\textbf{Purpose:} Build and maintain the shared evidence graph structure
+
+\textbf{Responsibilities:}
+\item Create nodes (claims, sources, derivations, agents)
+\item Create edges (supports, contradicts, derives, witnesses)
+\item Maintain graph connectivity
+\item Ensure graph consistency
+
+\textbf{Key Operations:}
+\item \texttt{add\_node()} - Create new graph node
+\item \texttt{add\_edge()} - Create new graph edge
+\item \texttt{update\_node()} - Update node properties
+\item \texttt{validate\_graph()} - Check graph consistency
+
+\subsubsection*{2. Contradiction Detector}
+\textbf{Purpose:} Detect contradictions and conflicts in the evidence graph
+
+\textbf{Responsibilities:}
+\item Semantic similarity analysis (embedding-based)
+\item Stance detection (positive/negative/neutral)
+\item Contradiction identification (high similarity + opposite polarity)
+\item Conflict flagging (create \texttt{contradicts} edges)
+
+\textbf{Key Operations:}
+\item \texttt{detect\_contradictions()} - Find conflicting claims
+\item \texttt{compute\_similarity()} - Calculate semantic similarity
+\item \texttt{analyze\_stance()} - Determine claim polarity
+\item \texttt{flag\_conflicts()} - Mark contradictions in graph
+
+\subsubsection*{3. Conflict Resolver}
+\textbf{Purpose:} Resolve conflicts using evidence strength and provenance
+
+\textbf{Responsibilities:}
+\item Evidence weighting (Tier A > Tier B > Tier C)
+\item Provenance analysis (source authority)
+\item Resolution recommendation (select best stance)
+\item Resolution tracking (record resolution reasoning)
+
+\textbf{Key Operations:}
+\item \texttt{resolve\_conflict()} - Resolve contradiction
+\item \texttt{weight\_evidence()} - Calculate evidence strength
+\item \texttt{recommend\_resolution()} - Suggest best stance
+\item \texttt{track\_resolution()} - Record resolution reasoning
+
+\subsubsection*{4. Knowledge Synthesizer}
+\textbf{Purpose:} Synthesize knowledge from multiple sources
+
+\textbf{Responsibilities:}
+\item Multi-source integration (combine evidence from multiple sources)
+\item Pattern detection (find patterns in evidence)
+\item Gap identification (identify missing evidence)
+\item Synthesis generation (create coherent understanding)
+
+\textbf{Key Operations:}
+\item \texttt{synthesize\_knowledge()} - Combine multiple sources
+\item \texttt{detect\_patterns()} - Find evidence patterns
+\item \texttt{identify\_gaps()} - Find missing evidence
+\item \texttt{generate\_synthesis()} - Create unified understanding
+
+\subsection*{Graph Model}
+
+SEG uses a graph structure to represent evidence relationships. This enables powerful queries and contradiction detection.
+
+\subsubsection*{Node Types}
+
+SEG defines four node types:
+
+\item \textbf{\texttt{claim}:} Statements in chapters or plans that require evidence support
+\item \textbf{\texttt{source}:} Tier A source references that provide authoritative backing
+\item \textbf{\texttt{derivation}:} Intermediate reasoning steps linking sources to claims
+\item \textbf{\texttt{agent}:} Agent, tool, timestamp metadata tracking origin
+
+\subsubsection*{Edge Types}
+
+Edges connect nodes with semantic meaning:
+
+\item \textbf{\texttt{supports} (source → claim):} Source supports claim
+\item \textbf{\texttt{contradicts} (claim → claim, symmetric):} Claims contradict each other
+\item \textbf{\texttt{derives} (claim → claim):} Claim is derived from another claim
+\item \textbf{\texttt{witnesses} (agent → claim):} Agent witnessed claim creation
+\item \textbf{\texttt{cites} (claim → source):} Claim cites source
+
+This graph structure enables powerful queries: "Show all claims supported by this source" or "Find all contradictions related to this topic."
+
+\subsubsection*{Graph Schema (illustrative)}
+``\texttt{json
+{
+  "nodes": [
+    {"id":"claim:cmc-durability","type":"claim"},
+    {"id":"anchor:cmc-t2","type":"anchor"}
+  ],
+  "edges": [
+    ["claim:cmc-durability","anchor:cmc-t2","supported\_by"]
+  ],
+  "provenance": {"author":"Codex","timestamp":"ISO-8601"}
+}
+}`\texttt{
+
+\subsection*{Queries and Tooling}
+
+SEG provides powerful queries for evidence management:
+
+\subsubsection*{Coverage Queries}
+
+\textbf{Purpose:} Ensure every Tier A requirement has ≥1 claim and ≥1 anchor
+
+\textbf{Use case:} "Show all Tier A requirements without supporting claims"
+
+\textbf{Mechanism:} Graph traversal finds requirements without }supported\_by\texttt{ edges
+
+\subsubsection*{Contradiction Detection}
+
+\textbf{Purpose:} Detect conflicting claims with high semantic overlap but opposite polarity
+
+\textbf{Use case:} "Find all contradictions related to memory systems"
+
+\textbf{Mechanism:} Semantic similarity + stance analysis identifies contradictory pairs
+
+\subsubsection*{Drift Monitoring}
+
+\textbf{Purpose:} Time-based queries surface aging anchors or claims awaiting refresh
+
+\textbf{Use case:} "Show all anchors older than 6 months"
+
+\textbf{Mechanism:} Temporal queries filter by }valid\_time\texttt{ or }tx\_time\texttt{
+
+These queries enable proactive evidence management and quality assurance.
+
+\subsection*{Runnable Examples (PowerShell)}
+}`\texttt{powershell
+\section*{Check tag coverage for this chapter}
+\_\_MATH\_BLOCK\_0\_\_cov |
+  Select-Object -ExpandProperty Content
+
+\section*{Validate tags for consistency}
+\_\_MATH\_BLOCK\_1\_\_val |
+  Select-Object -ExpandProperty Content
+}`\texttt{
+
+\subsection*{Contradiction Detection Workflow}
+
+SEG automatically detects contradictions using semantic analysis:
+
+\subsubsection*{Detection Algorithm}
+
+1. \textbf{Embed claims:} Convert all claims to embeddings using semantic models
+2. \textbf{Compute polarity:} Analyze stance (positive, negative, neutral) for each claim
+3. \textbf{Group by topic:} Cluster claims by semantic similarity
+4. \textbf{Flag contradictions:} Identify pairs exceeding similarity threshold with opposite polarity
+5. \textbf{Raise review task:} Create remediation task for authors
+6. \textbf{Reconcile:} Authors reconcile contradictions, update evidence, mark resolution in SEG
+
+\subsubsection*{Contradiction Types}
+
+SEG identifies three contradiction types:
+
+\item \textbf{Direct contradictions:} Opposite claims about the same topic (e.g., "CMC is immutable" vs "CMC allows updates")
+\item \textbf{Temporal contradictions:} Claims true at different times (e.g., "System supports X" before vs after feature removal)
+\item \textbf{Contextual contradictions:} Claims true in different contexts (e.g., "Feature X works" in dev vs prod)
+
+\subsubsection*{Resolution Workflow}
+
+When contradictions detected:
+1. SEG raises review task with full context
+2. Authors investigate both claims
+3. Authors reconcile: update one claim, mark both as resolved, or add qualifying context
+4. Resolution recorded in SEG with provenance
+5. Contradiction edge removed or marked as resolved
+
+This workflow ensures contradictions are caught early and resolved systematically.
+
+\subsection*{Integration with Chapters and CMC}
+
+SEG integrates seamlessly with chapter authoring and CMC storage:
+
+\subsubsection*{Chapter Integration}
+
+Each chapter includes }evidence.jsonl\texttt{ entries referencing SEG anchors:
+\item Claims in chapter prose link to anchors via }supported\_by\texttt{ edges
+\item Artifacts (files, examples) link to claims via }implements\texttt{ edges
+\item Provenance links claims to authors via }authored\_by\texttt{ edges
+
+\subsubsection*{CMC Integration}
+
+CMC atoms store raw support material; SEG edges include atom IDs for drill-down:
+\item SEG nodes reference CMC atom IDs
+\item CMC atoms tagged with SEG node IDs
+\item Bidirectional linking enables navigation: SEG → CMC (details) and CMC → SEG (structure)
+
+\subsubsection*{Review Workflow}
+
+During review, SEG queries confirm:
+\item Every claim has live anchors (coverage query)
+\item No contradictions exist (contradiction query)
+\item Evidence is fresh (drift monitoring query)
+
+This integration makes evidence management automatic and auditable.
+
+\subsection*{Governance}
+
+SEG includes governance procedures to maintain evidence quality:
+
+\subsubsection*{Weekly Audit}
+
+\textbf{Process:}
+1. Sample five claims per tier (S, A, B, C)
+2. Verify anchors still valid (check source files exist, content matches)
+3. Refresh aging sources (update anchors if sources changed)
+4. Record audit results in CMC with SEG tags
+
+\textbf{Purpose:} Ensure evidence remains current and accurate
+
+\subsubsection*{Release Checklist}
+
+\textbf{Process:}
+1. Run coverage query (all Tier A requirements have claims/anchors)
+2. Run contradiction query (no unresolved contradictions)
+3. Block release on failures
+4. Record checklist results in CMC
+
+\textbf{Purpose:} Prevent release with missing or contradictory evidence
+
+\subsubsection*{Change Logging}
+
+\textbf{Process:}
+\item All SEG changes logged with reviewer, timestamp, and reason
+\item Changes stored in CMC with tags }{system:"seg", type:"change"}\texttt{
+\item Audit trail enables tracking who changed what and why
+
+\textbf{Purpose:} Maintain complete auditability of evidence changes
+
+These governance procedures ensure SEG remains trustworthy and auditable.
+
+\subsection*{Knowledge Synthesis \& Integration}
+SEG synthesizes knowledge from multiple sources:
+
+\item \textbf{Multi-Source Synthesis:} SEG synthesizes knowledge from VIF witnesses, APOE plans, documents, and user inputs. Multiple sources combined to create comprehensive understanding.
+
+\item \textbf{Evidence Weighting:} SEG weights evidence based on source authority (Tier A > Tier B > Tier C), recency, and agreement. Higher-weighted evidence influences synthesis more strongly.
+
+\item \textbf{Derivation Tracking:} SEG tracks how claims are derived from sources. Derivation chains enable lineage queries ("where did this claim come from?") and validation of reasoning.
+
+\item \textbf{Synthesis Algorithms:} SEG uses semantic similarity, stance analysis, and temporal reasoning to synthesize knowledge. Algorithms detect patterns, contradictions, and gaps in evidence.
+
+\subsection*{Bitemporal Storage \& Temporal Queries}
+
+SEG enables temporal awareness through bitemporal storage, similar to CMC:
+
+\subsubsection*{Transaction Time}
+
+\textbf{Purpose:} Records when claims were added to SEG (transaction\_time)  
+\textbf{Use case:} "When was this claim first recorded?"  
+\textbf{Enables:} Audit trails and debugging
+
+\subsubsection*{Valid Time}
+
+\textbf{Purpose:} Records when claims were true in reality (valid\_time)  
+\textbf{Use case:} "What was true on 2025-02-01?"  
+\textbf{Enables:} Historical queries and temporal analysis
+
+\subsubsection*{Temporal Queries}
+
+SEG supports powerful temporal queries:
+\item \textbf{As-of queries:} "What was known at time T?" (replay graph as of that time)
+\item \textbf{Evolution queries:} "When did this claim become true?" (track valid\_time changes)
+\item \textbf{Historical analysis:} "How did our understanding of X change over time?"
+
+\subsubsection*{Temporal Snapshots}
+
+SEG can reconstruct exact state at any moment:
+\item \textbf{Snapshot creation:} Capture graph state at specific transaction\_time
+\item \textbf{Snapshot queries:} Query "as of snapshot N" to see historical state
+\item \textbf{Perfect debugging:} Reconstruct exact state when bug occurred
+
+This bitemporal capability enables perfect audit trails and historical analysis.
+
+\subsection*{Contradiction Detection \& Resolution}
+
+SEG automatically detects and resolves contradictions to maintain evidence integrity:
+
+\subsubsection*{Detection Algorithm}
+
+SEG detects contradictions using:
+\item \textbf{Semantic similarity:} Embed claims and compute similarity scores
+\item \textbf{Stance analysis:} Detect positive/negative/neutral polarity
+\item \textbf{Threshold matching:} Flag pairs exceeding similarity threshold with opposite polarity
+
+\subsubsection*{Contradiction Types}
+
+SEG identifies three contradiction types:
+
+\item \textbf{Direct contradictions:} Opposite claims about the same topic
+  - Example: "CMC is immutable" vs "CMC allows updates"
+  - Resolution: Clarify scope or update incorrect claim
+
+\item \textbf{Temporal contradictions:} Claims true at different times
+  - Example: "System supports X" before vs after feature removal
+  - Resolution: Update valid\_time or add temporal context
+
+\item \textbf{Contextual contradictions:} Claims true in different contexts
+  - Example: "Feature X works" in dev vs prod
+  - Resolution: Add context qualifiers or reconcile environments
+
+\subsubsection*{Resolution Workflow}
+
+When contradictions detected:
+1. SEG raises review task with full context (both claims, similarity score, contradiction type)
+2. Authors investigate both claims (check sources, verify accuracy)
+3. Authors reconcile: update one claim, mark both as resolved, or add qualifying context
+4. Resolution recorded in SEG with provenance (who resolved, when, why)
+5. Contradiction edge removed or marked as resolved
+
+\subsubsection*{Prevention}
+
+SEG prevents contradictions proactively:
+\item \textbf{Pre-insertion check:} New claims checked against existing graph before insertion
+\item \textbf{Similarity scanning:} Periodic scans detect new contradictions
+\item \textbf{Authority weighting:} Higher-authority sources override lower-authority contradictions
+
+This workflow ensures contradictions are caught early and resolved systematically.
+
+\subsection*{Real-World Workflow Examples}
+
+\subsubsection*{Workflow 1: Evidence Validation Pipeline}
+
+\textbf{Scenario:} Validate evidence for a North Star chapter before release
+
+\textbf{PowerShell Workflow:}
+}`\texttt{powershell
+\section*{Step 1: Check evidence coverage}
+\_\_MATH\_BLOCK\_2\_\_coverage\_result = Invoke-WebRequest -Uri 'http://localhost:5001/mcp/execute' }
+    -Method POST -ContentType 'application/json' -Body \_\_MATH\_BLOCK\_3\_\_(\_\_MATH\_BLOCK\_4\_\_(\_\_MATH\_BLOCK\_5\_\_(\_\_MATH\_BLOCK\_6\_\_contradictions = @{
+    tool='query\_dataset';
+    arguments=@{
+        dataset\_id='seg\_evidence';
+        query='contradictions';
+        filters=@{
+            chapter\_id='ch09\_seg';
+            similarity\_threshold=0.85;
+            include\_resolved=\_\_MATH\_BLOCK\_7\_\_contradiction\_result = Invoke-WebRequest -Uri 'http://localhost:5001/mcp/execute' \texttt{
+    -Method POST -ContentType 'application/json' -Body \_\_MATH\_BLOCK\_8\_\_(\_\_MATH\_BLOCK\_9\_\_contradiction\_result.contradictions | ForEach-Object {
+    Write-Host "  Claim 1: \_\_MATH\_BLOCK\_10\_\_\_.claim1\_id)"
+    Write-Host "  Claim 2: \_\_MATH\_BLOCK\_11\_\_\_.claim2\_id)"
+    Write-Host "  Similarity: \_\_MATH\_BLOCK\_12\_\_\_.similarity)"
+    Write-Host "  Type: \_\_MATH\_BLOCK\_13\_\_\_.contradiction\_type)"
+}
+
+\section*{Step 3: Synthesize knowledge}
+\_\_MATH\_BLOCK\_14\_\_synthesis\_result = Invoke-WebRequest -Uri 'http://localhost:5001/mcp/execute' }
+    -Method POST -ContentType 'application/json' -Body \_\_MATH\_BLOCK\_15\_\_(\_\_MATH\_BLOCK\_16\_\_(\_\_MATH\_BLOCK\_17\_\_(\_\_MATH\_BLOCK\_18\_\_contradiction = @{
+    tool='query\_dataset';
+    arguments=@{
+        dataset\_id='seg\_evidence';
+        query='contradiction\_details';
+        filters=@{
+            contradiction\_id='contradiction-001';
+            include\_provenance=\_\_MATH\_BLOCK\_19\_\_true
+        }
+    }
+} | ConvertTo-Json -Depth 6
+
+\_\_MATH\_BLOCK\_20\_\_contradiction |
+    Select-Object -ExpandProperty Content | ConvertFrom-Json
+
+Write-Host "Contradiction Details:"
+Write-Host "  Claim 1: \_\_MATH\_BLOCK\_21\_\_details.claim1.text)"
+Write-Host "  Claim 1 Source: \_\_MATH\_BLOCK\_22\_\_details.claim1.source)"
+Write-Host "  Claim 2: \_\_MATH\_BLOCK\_23\_\_details.claim2.text)"
+Write-Host "  Claim 2 Source: \_\_MATH\_BLOCK\_24\_\_details.claim2.source)"
+Write-Host "  Similarity: \_\_MATH\_BLOCK\_25\_\_details.similarity)"
+Write-Host "  Type: \_\_MATH\_BLOCK\_26\_\_details.contradiction\_type)"
+
+\section*{Step 2: Weight evidence}
+Write-Host "Evidence Weighting:"
+Write-Host "  Claim 1 Weight: \_\_MATH\_BLOCK\_27\_\_details.claim1.weight) (Tier: \_\_MATH\_BLOCK\_28\_\_details.claim1.tier))"
+Write-Host "  Claim 2 Weight: \_\_MATH\_BLOCK\_29\_\_details.claim2.weight) (Tier: \_\_MATH\_BLOCK\_30\_\_details.claim2.tier))"
+
+\section*{Step 3: Resolve contradiction}
+\_\_MATH\_BLOCK\_31\_\_resolution\_result = Invoke-WebRequest -Uri 'http://localhost:5001/mcp/execute' \texttt{
+    -Method POST -ContentType 'application/json' -Body \_\_MATH\_BLOCK\_32\_\_(\_\_MATH\_BLOCK\_33\_\_(\_\_MATH\_BLOCK\_34\_\_(\_\_MATH\_BLOCK\_35\_\_temporal\_query = @{
+    tool='query\_dataset';
+    arguments=@{
+        dataset\_id='seg\_evidence';
+        query='temporal\_snapshot';
+        filters=@{
+            as\_of\_time='2025-11-01T00:00:00Z';
+            chapter\_id='ch09\_seg';
+            include\_claims=\_\_MATH\_BLOCK\_36\_\_true;
+            include\_contradictions=\_\_MATH\_BLOCK\_37\_\_snapshot = Invoke-WebRequest -Uri 'http://localhost:5001/mcp/execute' }
+    -Method POST -ContentType 'application/json' -Body \_\_MATH\_BLOCK\_38\_\_(\_\_MATH\_BLOCK\_39\_\_(\_\_MATH\_BLOCK\_40\_\_(\_\_MATH\_BLOCK\_41\_\_(\_\_MATH\_BLOCK\_42\_\_(\_\_MATH\_BLOCK\_43\_\_audit = @{
+    tool='query\_dataset';
+    arguments=@{
+        dataset\_id='seg\_evidence';
+        query='weekly\_audit';
+        filters=@{
+            sample\_size=5;
+            tiers=@('S', 'A', 'B', 'C');
+            check\_anchors=\_\_MATH\_BLOCK\_44\_\_true;
+            detect\_contradictions=\_\_MATH\_BLOCK\_45\_\_audit\_result = Invoke-WebRequest -Uri 'http://localhost:5001/mcp/execute' }
+    -Method POST -ContentType 'application/json' -Body \_\_MATH\_BLOCK\_46\_\_(\_\_MATH\_BLOCK\_47\_\_(\_\_MATH\_BLOCK\_48\_\_(\_\_MATH\_BLOCK\_49\_\_(\_\_MATH\_BLOCK\_50\_\_(\_\_MATH\_BLOCK\_51\_\_store\_audit = @{
+    tool='store\_memory';
+    arguments=@{
+        content=(\_\_MATH\_BLOCK\_52\_\_store\_audit |
+    Select-Object -ExpandProperty Content | ConvertFrom-Json
+}``
+
+\subsection*{Performance Characteristics}
+
+\textbf{Graph Operations:}
+\item Node creation: \textasciitilde{}10ms per node
+\item Edge creation: \textasciitilde{}5ms per edge
+\item Contradiction detection: \textasciitilde{}100ms per claim pair
+\item Knowledge synthesis: \textasciitilde{}500ms per topic
+
+\textbf{Query Performance:}
+\item Coverage queries: \textasciitilde{}50ms per chapter
+\item Contradiction queries: \textasciitilde{}200ms per chapter
+\item Temporal queries: \textasciitilde{}100ms per snapshot
+\item Lineage tracing: \textasciitilde{}30ms per claim
+
+\textbf{Storage:}
+\item Graph size: \textasciitilde{}1KB per node, \textasciitilde{}500B per edge
+\item Bitemporal overhead: \textasciitilde{}20\% storage increase
+\item CMC integration: \textasciitilde{}10KB per evidence atom
+
+\subsection*{Connection to Other Systems}
+
+SEG integrates deeply with all AIM-OS foundation systems:
+
+\subsubsection*{CMC (Chapter 5)}
+
+\textbf{SEG provides:} Evidence graph structure linking CMC atoms  
+\textbf{CMC provides:} Storage for SEG nodes and edges  
+\textbf{Integration:} SEG nodes reference CMC atom IDs; CMC atoms tagged with SEG node IDs
+
+\textbf{Key Insight:} Without CMC, SEG has no durable storage. Without SEG, CMC atoms lack evidence structure. They are symbiotic.
+
+\subsubsection*{HHNI (Chapter 6)}
+
+\textbf{SEG provides:} Evidence indexing via hierarchical paths  
+\textbf{HHNI provides:} Retrieval context for evidence synthesis  
+\textbf{Integration:} HHNI retrieves evidence atoms; SEG structures evidence relationships
+
+\textbf{Key Insight:} HHNI makes evidence searchable. SEG makes evidence structured.
+
+\subsubsection*{VIF (Chapter 7)}
+
+\textbf{SEG provides:} Provenance chains for VIF witnesses  
+\textbf{VIF provides:} Witness envelopes with confidence scores  
+\textbf{Integration:} VIF witnesses link to SEG claims; SEG tracks witness provenance
+
+\textbf{Key Insight:} VIF provides confidence. SEG provides evidence structure.
+
+\subsubsection*{APOE (Chapter 8)}
+
+\textbf{SEG provides:} Evidence tracking for APOE plans  
+\textbf{APOE provides:} Execution plans and outcomes  
+\textbf{Integration:} APOE plans reference SEG claims; SEG tracks plan evidence
+
+\textbf{Key Insight:} APOE executes plans. SEG validates plan evidence.
+
+\subsubsection*{SDF-CVF (Chapter 10)}
+
+\textbf{SEG provides:} Evidence validation for quartet parity  
+\textbf{SDF-CVF provides:} Quality validation and parity enforcement  
+\textbf{Integration:} SDF-CVF checks SEG for evidence completeness; SEG ensures quartet parity
+
+\textbf{Key Insight:} SDF-CVF ensures quality. SEG provides evidence validation.
+
+\textbf{Overall Insight:} SEG is not isolated—it is the evidence layer that makes all other systems trustworthy. Every system benefits from structured evidence.
+
+
+

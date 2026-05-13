@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "competes_with",
+      "target": "linux-kernel",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable kernel in desktop/server class for Apple hardware ecosystem."
+    },
+    {
+      "type": "influences",
+      "target": "freebsd",
+      "evidence_tier": "HISTORICAL",
+      "notes": "XNU incorporates BSD lineage components; not a fork of modern FreeBSD — directional shared ancestry."
+    },
+    {
+      "type": "integrates_with",
+      "target": "vscode",
+      "evidence_tier": "INFERRED",
+      "notes": "VS Code runs on macOS; host OS relationship."
+    }
+  ]
+}

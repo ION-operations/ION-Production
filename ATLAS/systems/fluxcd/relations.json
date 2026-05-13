@@ -1,0 +1,41 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "depends_on",
+      "target": "kubernetes",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Flux controllers run on Kubernetes and reconcile sources (Git, Helm, OCI) into the cluster via controllers and CRDs."
+    },
+    {
+      "type": "integrates_with",
+      "target": "helm",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Flux reconciles Helm repositories and Helm releases via HelmRepository/HelmRelease CRDs per upstream documentation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "oci-image-spec",
+      "evidence_tier": "INFERRED",
+      "notes": "Image automation CRDs reconcile workload image references against OCI image tags and digests."
+    },
+    {
+      "type": "integrates_with",
+      "target": "oci-distribution-spec",
+      "evidence_tier": "INFERRED",
+      "notes": "Registry-facing controllers interact with distribution-class HTTP APIs for image manifests and blobs."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kustomize",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Flux Kustomization CRD reconciles kustomize-built manifests from Git sources per upstream documentation."
+    },
+    {
+      "type": "competes_with",
+      "target": "argo-cd",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable GitOps controller class for Kubernetes continuous delivery; different architecture and UX than Argo CD."
+    }
+  ]
+}

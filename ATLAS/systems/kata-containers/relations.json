@@ -1,0 +1,53 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "depends_on",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Kata Containers targets Linux hosts for KVM/QEMU-class lightweight VM sandboxes around OCI workloads per upstream documentation."
+    },
+    {
+      "type": "implements",
+      "target": "oci-runtime-spec",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Provides an OCI-compatible runtime path for executing bundles with VM-level isolation per project documentation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Documented Kubernetes integration patterns (e.g., RuntimeClass) for selecting VM-isolated runtimes on nodes."
+    },
+    {
+      "type": "integrates_with",
+      "target": "containerd",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Commonly composed with containerd/CRI stacks as the low-level VM-backed runtime alternative to default runc-class runtimes."
+    },
+    {
+      "type": "integrates_with",
+      "target": "qemu",
+      "evidence_tier": "INFERRED",
+      "notes": "QEMU is used in typical Linux VM sandbox paths; QEMU is the VMM component, Kata is the container runtime integration layer."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-kvm",
+      "evidence_tier": "INFERRED",
+      "notes": "KVM accelerates guest VMs on Linux nodes; KVM is the kernel API, Kata composes it for OCI execution."
+    },
+    {
+      "type": "competes_with",
+      "target": "runc",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable low-level isolation boundary for OCI bundles: namespace-isolated runc vs VM-backed Kata—different threat models."
+    },
+    {
+      "type": "competes_with",
+      "target": "gvisor",
+      "evidence_tier": "INFERRED",
+      "notes": "Different isolation mechanisms for OCI bundles: VM-backed Kata vs gVisor userspace syscall interposition (not equivalent threat models)."
+    }
+  ]
+}

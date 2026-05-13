@@ -1,0 +1,83 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "hosts",
+      "target": "systemd",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "systemd is commonly PID 1 on Linux distributions; not exclusive."
+    },
+    {
+      "type": "hosts",
+      "target": "docker",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Docker Engine historically targeted Linux namespaces/cgroups."
+    },
+    {
+      "type": "competes_with",
+      "target": "windows-nt",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable as general-purpose OS kernel in many deployment classes; not a technical 'competition' claim about quality."
+    },
+    {
+      "type": "influences",
+      "target": "android-aosp",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "AOSP devices ship a Linux kernel fork; see `android-aosp` package."
+    },
+    {
+      "type": "integrates_with",
+      "target": "elf",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Linux user-space exec path loads ELF binaries; kernel itself is commonly built as ELF-shaped image before packaging."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-binutils",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Kernel build documentation references GNU assembler and linker in standard GNU/Linux build flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-lld",
+      "evidence_tier": "INFERRED",
+      "notes": "LLVM=1 / lld-based kernel build paths exist but are not the only documented flow."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-gcc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Kernel build documentation traditionally centers on GCC as the C compiler."
+    },
+    {
+      "type": "integrates_with",
+      "target": "glibc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Userland on GNU/Linux relies on glibc (or another libc) for syscall wrappers and POSIX/C API atop the kernel."
+    },
+    {
+      "type": "integrates_with",
+      "target": "musl",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "musl-based Linux userlands use musl syscall wrappers and POSIX/C API atop the kernel."
+    },
+    {
+      "type": "integrates_with",
+      "target": "systemd-sysext",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "systemd system extensions rely on Linux overlay/mount facilities documented for systemd-sysext merge."
+    },
+    {
+      "type": "integrates_with",
+      "target": "systemd-confext",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "systemd configuration extensions rely on Linux overlay/mount facilities documented for systemd-confext merge."
+    },
+    {
+      "type": "integrates_with",
+      "target": "android-bionic",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Android devices ship a Linux-based kernel with Bionic as the native userspace C library."
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Rust as a supported language for Linux kernel modules (kernel Rust documentation)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-lld",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "rustc uses lld by default on many targets (platform and linker documentation)."
+    }
+  ]
+}

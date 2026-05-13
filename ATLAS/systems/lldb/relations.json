@@ -1,0 +1,77 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "clang",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "LLDB shares LLVM/Clang infrastructure for expression parsing and types."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-ir",
+      "evidence_tier": "INFERRED",
+      "notes": "LLVM debugger lives in the LLVM project; shares toolchain release and some IR-era internals (implementation-specific)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "dwarf",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "LLDB reads DWARF for source-level debugging on ELF targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "elf",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "LLDB loads ELF binaries and shared libraries on Linux."
+    },
+    {
+      "type": "integrates_with",
+      "target": "c-language",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Common companion debugger for Clang-built C/C++ projects."
+    },
+    {
+      "type": "integrates_with",
+      "target": "debug-adapter-protocol",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "lldb-dap and community adapters expose LLDB through DAP for editors."
+    },
+    {
+      "type": "competes_with",
+      "target": "gnu-gdb",
+      "evidence_tier": "INFERRED",
+      "notes": "LLDB and GDB are substitutable debuggers for many C/C++ workflows on Linux."
+    },
+    {
+      "type": "integrates_with",
+      "target": "glibc",
+      "evidence_tier": "INFERRED",
+      "notes": "LLDB on Linux commonly debugs processes linked against glibc similarly to GDB workflows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "musl",
+      "evidence_tier": "INFERRED",
+      "notes": "LLDB may debug musl-linked programs on musl-based Linux setups (environment-dependent)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-libstdcxx",
+      "evidence_tier": "INFERRED",
+      "notes": "LLDB may debug binaries linked against libstdc++ on Linux when configured for that environment."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-libcxx",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "LLDB is commonly used with Clang-built binaries linked against libc++ in LLVM-centric stacks."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-libcxxabi",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "LLDB debugs exception propagation and RTTI paths that involve libc++abi in LLVM C++ stacks."
+    }
+  ]
+}

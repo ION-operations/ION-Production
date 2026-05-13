@@ -1,0 +1,31 @@
+{
+  "system_slug": "metal",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-03",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "xnu-macos",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Metal is Apple's GPU API on macOS, iOS, iPadOS, and related Apple platforms built on XNU-based stacks."
+    },
+    {
+      "type": "competes_with",
+      "target": "vulkan",
+      "evidence_tier": "INFERRED",
+      "notes": "Overlapping low-overhead GPU graphics/compute API space; different primary platforms (Apple vs cross-vendor)."
+    },
+    {
+      "type": "competes_with",
+      "target": "opengl",
+      "evidence_tier": "INFERRED",
+      "notes": "Apple deprecated OpenGL in favor of Metal on Apple platforms for new GPU development."
+    },
+    {
+      "type": "competes_with",
+      "target": "direct3d",
+      "evidence_tier": "INFERRED",
+      "notes": "Overlapping GPU API space in cross-platform ports (Apple/Metal vs Windows/Direct3D is a common engine matrix)."
+    }
+  ]
+}

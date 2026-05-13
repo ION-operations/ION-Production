@@ -1,0 +1,972 @@
+{
+  "domain_hash": "91d13212e49067b580b238cc4c6222a0",
+  "timestamp": "2026-03-09T09:32:00",
+  "nodes": [
+    {
+      "id": "cmc",
+      "name": "AGENT-CMC",
+      "vocab_size": 1569,
+      "rank": "command",
+      "tier": 1,
+      "priority": 1.0
+    },
+    {
+      "id": "seg",
+      "name": "AGENT-SEG",
+      "vocab_size": 1405,
+      "rank": "lead",
+      "tier": 3,
+      "priority": 0.8
+    },
+    {
+      "id": "hhni",
+      "name": "AGENT-HHNI",
+      "vocab_size": 1500,
+      "rank": "executive",
+      "tier": 2,
+      "priority": 0.9
+    },
+    {
+      "id": "vif",
+      "name": "AGENT-VIF",
+      "vocab_size": 1740,
+      "rank": "executive",
+      "tier": 2,
+      "priority": 0.9
+    },
+    {
+      "id": "sdfcvf",
+      "name": "AGENT-SDFCVF",
+      "vocab_size": 1372,
+      "rank": "lead",
+      "tier": 3,
+      "priority": 0.8
+    },
+    {
+      "id": "apoe",
+      "name": "AGENT-APOE",
+      "vocab_size": 1941,
+      "rank": "lead",
+      "tier": 3,
+      "priority": 0.8
+    },
+    {
+      "id": "cas",
+      "name": "AGENT-CAS",
+      "vocab_size": 1360,
+      "rank": "lead",
+      "tier": 3,
+      "priority": 0.8
+    },
+    {
+      "id": "tcs",
+      "name": "AGENT-TCS",
+      "vocab_size": 1130,
+      "rank": "specialist",
+      "tier": 4,
+      "priority": 0.7
+    },
+    {
+      "id": "iis",
+      "name": "AGENT-IIS",
+      "vocab_size": 837,
+      "rank": "specialist",
+      "tier": 4,
+      "priority": 0.7
+    },
+    {
+      "id": "docs",
+      "name": "AGENT-DOCS",
+      "vocab_size": 546,
+      "rank": "specialist",
+      "tier": 4,
+      "priority": 0.7
+    },
+    {
+      "id": "context",
+      "name": "AGENT-CONTEXT",
+      "vocab_size": 621,
+      "rank": "specialist",
+      "tier": 4,
+      "priority": 0.7
+    },
+    {
+      "id": "mcp",
+      "name": "AGENT-MCP",
+      "vocab_size": 837,
+      "rank": "specialist",
+      "tier": 4,
+      "priority": 0.7
+    }
+  ],
+  "edges": [
+    {
+      "source": "cmc",
+      "target": "seg",
+      "weight": 0.4462,
+      "shared_terms": 930,
+      "top_shared": [
+        "evidence",
+        "graph",
+        "witness",
+        "atoms",
+        "context"
+      ]
+    },
+    {
+      "source": "cmc",
+      "target": "hhni",
+      "weight": 0.3882,
+      "shared_terms": 819,
+      "top_shared": [
+        "context",
+        "retrieval",
+        "atoms",
+        "evidence",
+        "storage"
+      ]
+    },
+    {
+      "source": "cmc",
+      "target": "vif",
+      "weight": 0.3666,
+      "shared_terms": 836,
+      "top_shared": [
+        "confidence",
+        "witness",
+        "evidence",
+        "context",
+        "atoms"
+      ]
+    },
+    {
+      "source": "cmc",
+      "target": "sdfcvf",
+      "weight": 0.2768,
+      "shared_terms": 645,
+      "top_shared": [
+        "parity",
+        "quartet",
+        "atoms",
+        "storage",
+        "docs"
+      ]
+    },
+    {
+      "source": "cmc",
+      "target": "apoe",
+      "weight": 0.2613,
+      "shared_terms": 606,
+      "top_shared": [
+        "execution",
+        "context",
+        "plan",
+        "witness",
+        "budget"
+      ]
+    },
+    {
+      "source": "cmc",
+      "target": "cas",
+      "weight": 0.2772,
+      "shared_terms": 604,
+      "top_shared": [
+        "cognitive",
+        "atoms",
+        "context",
+        "witness",
+        "storage"
+      ]
+    },
+    {
+      "source": "cmc",
+      "target": "tcs",
+      "weight": 0.2372,
+      "shared_terms": 449,
+      "top_shared": [
+        "context",
+        "timeline",
+        "atoms",
+        "storage",
+        "evidence"
+      ]
+    },
+    {
+      "source": "cmc",
+      "target": "iis",
+      "weight": 0.2312,
+      "shared_terms": 475,
+      "top_shared": [
+        "context",
+        "witness",
+        "storage",
+        "confidence",
+        "docs"
+      ]
+    },
+    {
+      "source": "cmc",
+      "target": "docs",
+      "weight": 0.2561,
+      "shared_terms": 545,
+      "top_shared": [
+        "atoms",
+        "evidence",
+        "storage",
+        "context",
+        "atom"
+      ]
+    },
+    {
+      "source": "cmc",
+      "target": "context",
+      "weight": 0.1939,
+      "shared_terms": 470,
+      "top_shared": [
+        "atoms",
+        "context",
+        "witness",
+        "atom",
+        "memory"
+      ]
+    },
+    {
+      "source": "cmc",
+      "target": "mcp",
+      "weight": 0.2645,
+      "shared_terms": 520,
+      "top_shared": [
+        "atoms",
+        "context",
+        "witness",
+        "atom",
+        "memory"
+      ]
+    },
+    {
+      "source": "seg",
+      "target": "hhni",
+      "weight": 0.3584,
+      "shared_terms": 798,
+      "top_shared": [
+        "evidence",
+        "graph",
+        "retrieval",
+        "context",
+        "witness"
+      ]
+    },
+    {
+      "source": "seg",
+      "target": "vif",
+      "weight": 0.3629,
+      "shared_terms": 809,
+      "top_shared": [
+        "evidence",
+        "confidence",
+        "witness",
+        "graph",
+        "provenance"
+      ]
+    },
+    {
+      "source": "seg",
+      "target": "sdfcvf",
+      "weight": 0.2787,
+      "shared_terms": 640,
+      "top_shared": [
+        "evidence",
+        "graph",
+        "parity",
+        "quartet",
+        "witness"
+      ]
+    },
+    {
+      "source": "seg",
+      "target": "apoe",
+      "weight": 0.2525,
+      "shared_terms": 582,
+      "top_shared": [
+        "evidence",
+        "graph",
+        "execution",
+        "context",
+        "witness"
+      ]
+    },
+    {
+      "source": "seg",
+      "target": "cas",
+      "weight": 0.2701,
+      "shared_terms": 588,
+      "top_shared": [
+        "evidence",
+        "graph",
+        "cognitive",
+        "witness",
+        "analysis"
+      ]
+    },
+    {
+      "source": "seg",
+      "target": "tcs",
+      "weight": 0.2167,
+      "shared_terms": 427,
+      "top_shared": [
+        "context",
+        "evidence",
+        "graph",
+        "timeline",
+        "witness"
+      ]
+    },
+    {
+      "source": "seg",
+      "target": "iis",
+      "weight": 0.2345,
+      "shared_terms": 472,
+      "top_shared": [
+        "evidence",
+        "graph",
+        "context",
+        "witness",
+        "confidence"
+      ]
+    },
+    {
+      "source": "seg",
+      "target": "docs",
+      "weight": 0.2454,
+      "shared_terms": 546,
+      "top_shared": [
+        "evidence",
+        "graph",
+        "witness",
+        "context",
+        "provenance"
+      ]
+    },
+    {
+      "source": "seg",
+      "target": "context",
+      "weight": 0.1782,
+      "shared_terms": 458,
+      "top_shared": [
+        "evidence",
+        "witness",
+        "context",
+        "provenance",
+        "confidence"
+      ]
+    },
+    {
+      "source": "seg",
+      "target": "mcp",
+      "weight": 0.2405,
+      "shared_terms": 498,
+      "top_shared": [
+        "evidence",
+        "witness",
+        "context",
+        "confidence",
+        "provenance"
+      ]
+    },
+    {
+      "source": "hhni",
+      "target": "vif",
+      "weight": 0.3005,
+      "shared_terms": 692,
+      "top_shared": [
+        "confidence",
+        "witness",
+        "retrieval",
+        "evidence",
+        "context"
+      ]
+    },
+    {
+      "source": "hhni",
+      "target": "sdfcvf",
+      "weight": 0.3309,
+      "shared_terms": 725,
+      "top_shared": [
+        "parity",
+        "quartet",
+        "retrieval",
+        "docs",
+        "context"
+      ]
+    },
+    {
+      "source": "hhni",
+      "target": "apoe",
+      "weight": 0.2584,
+      "shared_terms": 645,
+      "top_shared": [
+        "execution",
+        "context",
+        "plan",
+        "retrieval",
+        "budget"
+      ]
+    },
+    {
+      "source": "hhni",
+      "target": "cas",
+      "weight": 0.2213,
+      "shared_terms": 469,
+      "top_shared": [
+        "retrieval",
+        "analysis",
+        "context",
+        "pattern",
+        "evidence"
+      ]
+    },
+    {
+      "source": "hhni",
+      "target": "tcs",
+      "weight": 0.2245,
+      "shared_terms": 410,
+      "top_shared": [
+        "context",
+        "timeline",
+        "retrieval",
+        "evidence",
+        "analysis"
+      ]
+    },
+    {
+      "source": "hhni",
+      "target": "iis",
+      "weight": 0.191,
+      "shared_terms": 362,
+      "top_shared": [
+        "context",
+        "retrieval",
+        "evidence",
+        "analysis",
+        "docs"
+      ]
+    },
+    {
+      "source": "hhni",
+      "target": "docs",
+      "weight": 0.2748,
+      "shared_terms": 546,
+      "top_shared": [
+        "retrieval",
+        "evidence",
+        "context",
+        "index",
+        "graph"
+      ]
+    },
+    {
+      "source": "hhni",
+      "target": "context",
+      "weight": 0.2023,
+      "shared_terms": 458,
+      "top_shared": [
+        "retrieval",
+        "context",
+        "index",
+        "evidence",
+        "dvns"
+      ]
+    },
+    {
+      "source": "hhni",
+      "target": "mcp",
+      "weight": 0.2095,
+      "shared_terms": 404,
+      "top_shared": [
+        "retrieval",
+        "context",
+        "evidence",
+        "index",
+        "docs"
+      ]
+    },
+    {
+      "source": "vif",
+      "target": "sdfcvf",
+      "weight": 0.2893,
+      "shared_terms": 630,
+      "top_shared": [
+        "confidence",
+        "witness",
+        "parity",
+        "quartet",
+        "docs"
+      ]
+    },
+    {
+      "source": "vif",
+      "target": "apoe",
+      "weight": 0.3085,
+      "shared_terms": 692,
+      "top_shared": [
+        "witness",
+        "confidence",
+        "execution",
+        "context",
+        "plan"
+      ]
+    },
+    {
+      "source": "vif",
+      "target": "cas",
+      "weight": 0.3091,
+      "shared_terms": 692,
+      "top_shared": [
+        "confidence",
+        "witness",
+        "cognitive",
+        "attention",
+        "analysis"
+      ]
+    },
+    {
+      "source": "vif",
+      "target": "tcs",
+      "weight": 0.2415,
+      "shared_terms": 524,
+      "top_shared": [
+        "context",
+        "confidence",
+        "witness",
+        "timeline",
+        "evidence"
+      ]
+    },
+    {
+      "source": "vif",
+      "target": "iis",
+      "weight": 0.2442,
+      "shared_terms": 565,
+      "top_shared": [
+        "confidence",
+        "witness",
+        "context",
+        "provenance",
+        "cognitive"
+      ]
+    },
+    {
+      "source": "vif",
+      "target": "docs",
+      "weight": 0.1581,
+      "shared_terms": 410,
+      "top_shared": [
+        "witness",
+        "evidence",
+        "provenance",
+        "context",
+        "graph"
+      ]
+    },
+    {
+      "source": "vif",
+      "target": "context",
+      "weight": 0.1144,
+      "shared_terms": 337,
+      "top_shared": [
+        "confidence",
+        "witness",
+        "provenance",
+        "evidence",
+        "context"
+      ]
+    },
+    {
+      "source": "vif",
+      "target": "mcp",
+      "weight": 0.2102,
+      "shared_terms": 516,
+      "top_shared": [
+        "confidence",
+        "witness",
+        "context",
+        "provenance",
+        "evidence"
+      ]
+    },
+    {
+      "source": "sdfcvf",
+      "target": "apoe",
+      "weight": 0.3384,
+      "shared_terms": 865,
+      "top_shared": [
+        "execution",
+        "parity",
+        "quartet",
+        "plan",
+        "context"
+      ]
+    },
+    {
+      "source": "sdfcvf",
+      "target": "cas",
+      "weight": 0.3134,
+      "shared_terms": 716,
+      "top_shared": [
+        "parity",
+        "quartet",
+        "cognitive",
+        "analysis",
+        "attention"
+      ]
+    },
+    {
+      "source": "sdfcvf",
+      "target": "tcs",
+      "weight": 0.2943,
+      "shared_terms": 628,
+      "top_shared": [
+        "context",
+        "timeline",
+        "parity",
+        "quartet",
+        "analysis"
+      ]
+    },
+    {
+      "source": "sdfcvf",
+      "target": "iis",
+      "weight": 0.2418,
+      "shared_terms": 443,
+      "top_shared": [
+        "parity",
+        "quartet",
+        "context",
+        "docs",
+        "analysis"
+      ]
+    },
+    {
+      "source": "sdfcvf",
+      "target": "docs",
+      "weight": 0.1646,
+      "shared_terms": 354,
+      "top_shared": [
+        "parity",
+        "quartet",
+        "docs",
+        "evidence",
+        "analysis"
+      ]
+    },
+    {
+      "source": "sdfcvf",
+      "target": "context",
+      "weight": 0.2116,
+      "shared_terms": 514,
+      "top_shared": [
+        "parity",
+        "quartet",
+        "docs",
+        "execution",
+        "analysis"
+      ]
+    },
+    {
+      "source": "sdfcvf",
+      "target": "mcp",
+      "weight": 0.2201,
+      "shared_terms": 459,
+      "top_shared": [
+        "parity",
+        "quartet",
+        "docs",
+        "analysis",
+        "execution"
+      ]
+    },
+    {
+      "source": "apoe",
+      "target": "cas",
+      "weight": 0.3023,
+      "shared_terms": 767,
+      "top_shared": [
+        "execution",
+        "context",
+        "plan",
+        "cognitive",
+        "attention"
+      ]
+    },
+    {
+      "source": "apoe",
+      "target": "tcs",
+      "weight": 0.3167,
+      "shared_terms": 747,
+      "top_shared": [
+        "context",
+        "execution",
+        "timeline",
+        "plan",
+        "budget"
+      ]
+    },
+    {
+      "source": "apoe",
+      "target": "iis",
+      "weight": 0.2607,
+      "shared_terms": 559,
+      "top_shared": [
+        "context",
+        "execution",
+        "witness",
+        "confidence",
+        "analysis"
+      ]
+    },
+    {
+      "source": "apoe",
+      "target": "docs",
+      "weight": 0.0964,
+      "shared_terms": 238,
+      "top_shared": [
+        "execution",
+        "context",
+        "plan",
+        "budget",
+        "evidence"
+      ]
+    },
+    {
+      "source": "apoe",
+      "target": "context",
+      "weight": 0.1189,
+      "shared_terms": 390,
+      "top_shared": [
+        "execution",
+        "plan",
+        "context",
+        "budget",
+        "witness"
+      ]
+    },
+    {
+      "source": "apoe",
+      "target": "mcp",
+      "weight": 0.2003,
+      "shared_terms": 506,
+      "top_shared": [
+        "execution",
+        "context",
+        "plan",
+        "witness",
+        "budget"
+      ]
+    },
+    {
+      "source": "cas",
+      "target": "tcs",
+      "weight": 0.3382,
+      "shared_terms": 733,
+      "top_shared": [
+        "context",
+        "timeline",
+        "cognitive",
+        "analysis",
+        "attention"
+      ]
+    },
+    {
+      "source": "cas",
+      "target": "iis",
+      "weight": 0.3514,
+      "shared_terms": 624,
+      "top_shared": [
+        "cognitive",
+        "context",
+        "attention",
+        "analysis",
+        "pattern"
+      ]
+    },
+    {
+      "source": "cas",
+      "target": "docs",
+      "weight": 0.1055,
+      "shared_terms": 210,
+      "top_shared": [
+        "analysis",
+        "pattern",
+        "context",
+        "evidence",
+        "docs"
+      ]
+    },
+    {
+      "source": "cas",
+      "target": "context",
+      "weight": 0.1395,
+      "shared_terms": 374,
+      "top_shared": [
+        "cognitive",
+        "analysis",
+        "pattern",
+        "context",
+        "execution"
+      ]
+    },
+    {
+      "source": "cas",
+      "target": "mcp",
+      "weight": 0.2681,
+      "shared_terms": 557,
+      "top_shared": [
+        "cognitive",
+        "analysis",
+        "context",
+        "meta",
+        "witness"
+      ]
+    },
+    {
+      "source": "tcs",
+      "target": "iis",
+      "weight": 0.3584,
+      "shared_terms": 595,
+      "top_shared": [
+        "context",
+        "timeline",
+        "analysis",
+        "intuition",
+        "cognitive"
+      ]
+    },
+    {
+      "source": "tcs",
+      "target": "docs",
+      "weight": 0.1192,
+      "shared_terms": 192,
+      "top_shared": [
+        "context",
+        "timeline",
+        "evidence",
+        "analysis",
+        "execution"
+      ]
+    },
+    {
+      "source": "tcs",
+      "target": "context",
+      "weight": 0.1522,
+      "shared_terms": 365,
+      "top_shared": [
+        "context",
+        "timeline",
+        "execution",
+        "analysis",
+        "docs"
+      ]
+    },
+    {
+      "source": "tcs",
+      "target": "mcp",
+      "weight": 0.2177,
+      "shared_terms": 446,
+      "top_shared": [
+        "context",
+        "timeline",
+        "analysis",
+        "execution",
+        "mcp"
+      ]
+    },
+    {
+      "source": "iis",
+      "target": "docs",
+      "weight": 0.1434,
+      "shared_terms": 180,
+      "top_shared": [
+        "context",
+        "evidence",
+        "witness",
+        "pattern",
+        "docs"
+      ]
+    },
+    {
+      "source": "iis",
+      "target": "context",
+      "weight": 0.1335,
+      "shared_terms": 193,
+      "top_shared": [
+        "context",
+        "confidence",
+        "witness",
+        "cognitive",
+        "analysis"
+      ]
+    },
+    {
+      "source": "iis",
+      "target": "mcp",
+      "weight": 0.2915,
+      "shared_terms": 368,
+      "top_shared": [
+        "context",
+        "witness",
+        "confidence",
+        "cognitive",
+        "analysis"
+      ]
+    },
+    {
+      "source": "docs",
+      "target": "context",
+      "weight": 0.5569,
+      "shared_terms": 429,
+      "top_shared": [
+        "evidence",
+        "context",
+        "execution",
+        "docs",
+        "compress"
+      ]
+    },
+    {
+      "source": "docs",
+      "target": "mcp",
+      "weight": 0.2446,
+      "shared_terms": 286,
+      "top_shared": [
+        "context",
+        "evidence",
+        "witness",
+        "docs",
+        "execution"
+      ]
+    },
+    {
+      "source": "context",
+      "target": "mcp",
+      "weight": 0.3885,
+      "shared_terms": 466,
+      "top_shared": [
+        "context",
+        "execution",
+        "witness",
+        "docs",
+        "plan"
+      ]
+    }
+  ],
+  "stats": {
+    "agents": 12,
+    "edges": 66,
+    "avg_affinity": 0.2547527786460718,
+    "max_affinity": 0.5568978955572876,
+    "min_affinity": 0.09641154780106125,
+    "strong_edges": 18,
+    "medium_edges": 40,
+    "weak_edges": 8
+  }
+}

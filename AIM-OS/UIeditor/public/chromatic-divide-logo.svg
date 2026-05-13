@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  OmniBuilder Logo — "Chromatic Divide"
+  4-quadrant radial gradient with center convergence.
+  Rose, emerald, teal, violet — separated by dark seams.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" width="1000" height="1000">
+  <defs>
+    <radialGradient id="gradTop" cx="500" cy="500" r="450" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="15%" stop-color="#ebccce"/>
+      <stop offset="35%" stop-color="#a34455"/>
+      <stop offset="65%" stop-color="#470b14"/>
+      <stop offset="100%" stop-color="#000000"/>
+    </radialGradient>
+    <radialGradient id="gradRight" cx="500" cy="500" r="450" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="15%" stop-color="#d8e6c4"/>
+      <stop offset="35%" stop-color="#6e9447"/>
+      <stop offset="65%" stop-color="#1e3811"/>
+      <stop offset="100%" stop-color="#000000"/>
+    </radialGradient>
+    <radialGradient id="gradBottom" cx="500" cy="500" r="450" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="15%" stop-color="#c0e6e6"/>
+      <stop offset="35%" stop-color="#419a9e"/>
+      <stop offset="65%" stop-color="#0d4041"/>
+      <stop offset="100%" stop-color="#000000"/>
+    </radialGradient>
+    <radialGradient id="gradLeft" cx="500" cy="500" r="450" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="15%" stop-color="#cec2e8"/>
+      <stop offset="35%" stop-color="#66459e"/>
+      <stop offset="65%" stop-color="#27104f"/>
+      <stop offset="100%" stop-color="#000000"/>
+    </radialGradient>
+    <filter id="seamBlur" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="45"/>
+    </filter>
+    <radialGradient id="centerGlow" cx="500" cy="500" r="50" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="1"/>
+      <stop offset="15%" stop-color="#ffffff" stop-opacity="0.9"/>
+      <stop offset="40%" stop-color="#ffffff" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="100%" height="100%" fill="#000000"/>
+
+  <!-- Four quadrants -->
+  <polygon points="500,500 0,0 1000,0" fill="url(#gradTop)"/>
+  <polygon points="500,500 1000,0 1000,1000" fill="url(#gradRight)"/>
+  <polygon points="500,500 1000,1000 0,1000" fill="url(#gradBottom)"/>
+  <polygon points="500,500 0,1000 0,0" fill="url(#gradLeft)"/>
+
+  <!-- Dark seams between quadrants -->
+  <g filter="url(#seamBlur)">
+    <line x1="0" y1="0" x2="1000" y2="1000" stroke="#000" stroke-width="110" stroke-opacity="0.55"/>
+    <line x1="1000" y1="0" x2="0" y2="1000" stroke="#000" stroke-width="110" stroke-opacity="0.55"/>
+    <line x1="0" y1="0" x2="1000" y2="1000" stroke="#000" stroke-width="45"/>
+    <line x1="1000" y1="0" x2="0" y2="1000" stroke="#000" stroke-width="45"/>
+  </g>
+
+  <!-- Center glow -->
+  <circle cx="500" cy="500" r="60" fill="url(#centerGlow)"/>
+  <circle cx="500" cy="500" r="2.5" fill="#ffffff"/>
+</svg>

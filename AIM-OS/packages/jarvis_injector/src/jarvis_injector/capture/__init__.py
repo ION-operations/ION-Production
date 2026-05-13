@@ -1,0 +1,2 @@
+"""Structured response capture subsystem."""
+

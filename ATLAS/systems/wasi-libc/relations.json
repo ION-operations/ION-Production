@@ -1,0 +1,125 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "c-language",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "wasi-libc provides C/POSIX-oriented libc for wasm32-wasi and related WASI targets in LLVM-class toolchains."
+    },
+    {
+      "type": "integrates_with",
+      "target": "wasi",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "wasi-libc implements C library shims that lower to WASI import APIs expected by conforming Wasm hosts."
+    },
+    {
+      "type": "integrates_with",
+      "target": "webassembly",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "wasi-libc produces object code and archives linked into Wasm modules."
+    },
+    {
+      "type": "integrates_with",
+      "target": "clang",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Clang wasm32-wasi targets consume wasi-libc sysroots in standard LLVM distributions."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-lld",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "wasm-ld links wasi-libc objects into final Wasm modules."
+    },
+    {
+      "type": "integrates_with",
+      "target": "wasm-component-model",
+      "evidence_tier": "INFERRED",
+      "notes": "Wasm component tooling shares LLVM wasm link flows where distributions package both."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-libstdcxx",
+      "evidence_tier": "INFERRED",
+      "notes": "Uncommon paths may layer libstdc++ on wasi-libc for experimental wasm triplets; most C++ on Wasm uses libc++."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-libcxx",
+      "evidence_tier": "INFERRED",
+      "notes": "libc++ may target wasi-libc-backed sysroots in Clang wasm environments."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-libcxxabi",
+      "evidence_tier": "INFERRED",
+      "notes": "libc++abi pairs with libc++ on wasm WASI targets where configured."
+    },
+    {
+      "type": "competes_with",
+      "target": "glibc",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable C library role for Wasm WASI vs native GNU/Linux glibc (not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "musl",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable C library role for Wasm WASI vs Linux musl (not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "freebsd-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct libc implementations (wasi-libc vs BSD base libcs)."
+    },
+    {
+      "type": "competes_with",
+      "target": "openbsd-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct libc implementations (wasi-libc vs BSD base libcs)."
+    },
+    {
+      "type": "competes_with",
+      "target": "netbsd-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct libc implementations (wasi-libc vs BSD base libcs)."
+    },
+    {
+      "type": "competes_with",
+      "target": "dragonfly-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct libc implementations (wasi-libc vs BSD base libcs)."
+    },
+    {
+      "type": "competes_with",
+      "target": "illumos-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct libc implementations (wasi-libc vs illumos libc)."
+    },
+    {
+      "type": "competes_with",
+      "target": "android-bionic",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct libc implementations (wasi-libc vs Android Bionic)."
+    },
+    {
+      "type": "competes_with",
+      "target": "newlib",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct embedded/minimal libc lineages (GCC embedded newlib vs LLVM WASI wasi-libc)."
+    },
+    {
+      "type": "competes_with",
+      "target": "uclibc",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct libc implementations (Wasm WASI wasi-libc vs Linux uClibc)."
+    },
+    {
+      "type": "competes_with",
+      "target": "dietlibc",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct libc implementations (Wasm WASI wasi-libc vs Linux dietlibc)."
+    }
+  ]
+}

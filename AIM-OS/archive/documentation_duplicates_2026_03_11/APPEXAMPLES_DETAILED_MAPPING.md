@@ -1,0 +1,104 @@
+# AppExamples Detailed Mapping
+
+**Date:** 2026-01-10  
+**Status:** IN PROGRESS - MAPPING EACH APP INDIVIDUALLY  
+**Focus:** Only Documentation/appexamples/, excluding node_modules
+
+---
+
+## 🎯 **MAPPING APPROACH**
+
+Since `Documentation/` is ignored by git, using `list_dir` to map each app folder individually.
+
+---
+
+## 📊 **APPS IN APPEXAMPLES**
+
+[TO BE POPULATED - mapping each app now]
+
+---
+
+## 📁 **STANDALONEWAVES**
+
+### **Docs Folder:**
+Found 40+ documentation files in `standalonewaves/docs/`:
+- AUDIT_PROGRESS_SUMMARY.md
+- BATCHING_IMPLEMENTATION_STATUS.md
+- BATCHING_INTEGRATION_COMPLETE.md
+- BATCHING_INTEGRATION_VERIFICATION.md
+- BATCHING_PHASE2_COMPLETE.md
+- BATCHING_PHASE2_STATUS.md
+- BATCHING_VERIFICATION_AND_FIXES.md
+- CLEANUP_LOG.md
+- COMPLETE_OPTIMIZATION_PLAN.md
+- COMPREHENSIVE_IMPROVEMENT_PLAN.md
+- COMPREHENSIVE_SAM_MAPPING.md
+- CRITICAL_FINDINGS_SUMMARY.md
+- DEEP_PHYSICS_ANALYSIS.md
+- DIAGNOSTIC_REPORT.md
+- GIT_ISSUES_DIAGNOSTIC.md
+- GPT_INTEGRATION_RESPONSE.md
+- GPU_READBACK_BATCHING_PLAN.md
+- HOW_TO_ENABLE_STATS.md
+- MASTER_IMPROVEMENT_CONSOLIDATION.md
+- MISSING_DRAWERS_REPORT.md
+- MOUSE_CONTROL_ANALYSIS.md
+- MOUSE_CONTROL_BUGS_ANALYSIS.md
+- MOUSE_CONTROL_EXPLANATION.md
+- MOUSE_CONTROL_FIXES_APPLIED.md
+- MOUSE_CONTROL_REDESIGN_COMPLETE.md
+- MOUSE_CONTROL_REDESIGN.md
+- OPTIMIZATION_PROGRESS.md
+- PHASE1_COLOR_WIRING_COMPLETE.md
+- QUICK_DIAGNOSTIC.md
+- SAM_AUDIT_PLAN.md
+- SAM_FINAL_REPORT.md
+- SAM_MASTER_INDEX.md
+- STAGE1_CODEBASE_DISCOVERY.md
+- STAGE2_UPDATE_LOOP_ANALYSIS.md
+- STAGE3_SPHERE_PHYSICS_MAPPING.md
+- STAGE4_SETTINGS_AUDIT.md
+- STAGE5_PERFORMANCE_BOTTLENECKS.md
+- STATUS_CLARIFICATION.md
+- TASK_MANAGER_SYSTEM_PLAN.md
+- VISUAL_SYSTEMS_AUDIT.md
+- And more...
+
+### **Other Docs:**
+- BACKUP_INFO.md (root)
+- CLEANUP_ANALYSIS.md (root)
+- CLEANUP_CAREFUL.md (root)
+- CLEANUP_SUMMARY_2026_01_08.md (root)
+- CLEANUP_SUMMARY.md (root)
+- LAUNCH_IT.md (root)
+- README_LAUNCHER.md (root)
+- README.md (root)
+- caustics/T2_architecture.md
+
+---
+
+## 📁 **LUCIDIMAGE**
+
+[Mapping in progress...]
+
+---
+
+## 📁 **WATER-SHOWCASE-UNIFIED**
+
+[Mapping in progress...]
+
+---
+
+## 📁 **OCEANSIM**
+
+[Mapping in progress...]
+
+---
+
+## 📁 **GPTWAVES**
+
+[Mapping in progress...]
+
+---
+
+**Status:** MAPPING IN PROGRESS - NO CHANGES MADE

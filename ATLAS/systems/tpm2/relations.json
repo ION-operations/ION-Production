@@ -1,0 +1,19 @@
+{
+  "system_slug": "tpm2",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-03",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "uefi",
+      "evidence_tier": "INFERRED",
+      "notes": "Measured boot and firmware trust chains commonly involve TPM + UEFI-class firmware."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "INFERRED",
+      "notes": "Linux TPM driver stack exposes TPM 2.0 to userspace (kernel-dependent)."
+    }
+  ]
+}

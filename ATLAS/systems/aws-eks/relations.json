@@ -1,0 +1,83 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "implements",
+      "target": "kubernetes",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "AWS documents Kubernetes-conformant clusters and installation of Kubernetes APIs; AWS manages the Kubernetes control plane in standard EKS."
+    },
+    {
+      "type": "competes_with",
+      "target": "aws-ecs",
+      "evidence_tier": "INFERRED",
+      "notes": "Both are AWS first-party container orchestration surfaces; different API models (Kubernetes vs ECS)."
+    },
+    {
+      "type": "depends_on",
+      "target": "linux-kernel",
+      "evidence_tier": "INFERRED",
+      "notes": "Typical EC2-backed and hybrid node footprints use Linux-class worker hosts; do not assert internal Fargate-style layouts without AWS citations."
+    },
+    {
+      "type": "competes_with",
+      "target": "azure-aks",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable managed Kubernetes on another hyperscaler."
+    },
+    {
+      "type": "competes_with",
+      "target": "gcp-gke",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable managed Kubernetes on another hyperscaler."
+    },
+    {
+      "type": "competes_with",
+      "target": "oci-oke",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable managed Kubernetes on another cloud."
+    },
+    {
+      "type": "competes_with",
+      "target": "ibm-iks",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable managed Kubernetes on another cloud."
+    },
+    {
+      "type": "competes_with",
+      "target": "digitalocean-doks",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable managed Kubernetes on another cloud."
+    },
+    {
+      "type": "competes_with",
+      "target": "civo-kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable managed Kubernetes on another cloud."
+    },
+    {
+      "type": "competes_with",
+      "target": "linode-lke",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable managed Kubernetes on another cloud."
+    },
+    {
+      "type": "competes_with",
+      "target": "vmware-tkg",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Kubernetes platform vs customer-operated TKG in some footprints."
+    },
+    {
+      "type": "competes_with",
+      "target": "red-hat-openshift",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Kubernetes platform vs Red Hat OpenShift in some footprints."
+    },
+    {
+      "type": "competes_with",
+      "target": "openshift-dedicated",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable managed Kubernetes vs Red Hat managed OpenShift on AWS/GCP in some footprints."
+    }
+  ]
+}

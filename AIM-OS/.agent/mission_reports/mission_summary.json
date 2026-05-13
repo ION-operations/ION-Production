@@ -1,0 +1,36 @@
+{
+  "mission": "self_audit",
+  "timestamp": 1772818488.3670928,
+  "agents": 3,
+  "succeeded": 1,
+  "total_time_ms": 348889.9999999994,
+  "results": [
+    {
+      "role": "researcher",
+      "worker_id": "ew_5cfe7102",
+      "success": false,
+      "latency_ms": 125156.00000000268,
+      "context_tokens": 3743,
+      "genome_tokens": 2269,
+      "output_length": 0
+    },
+    {
+      "role": "auditor",
+      "worker_id": "ew_c53182d9",
+      "success": true,
+      "latency_ms": 99077.99999999406,
+      "context_tokens": 3743,
+      "genome_tokens": 2284,
+      "output_length": 6206
+    },
+    {
+      "role": "architect",
+      "worker_id": "ew_c1588c1c",
+      "success": false,
+      "latency_ms": 124656.00000000268,
+      "context_tokens": 3743,
+      "genome_tokens": 2289,
+      "output_length": 0
+    }
+  ]
+}

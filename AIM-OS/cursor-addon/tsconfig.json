@@ -1,0 +1,38 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "ES2020",
+    "outDir": "out",
+    "lib": [
+      "ES2020",
+      "DOM"
+    ],
+    "sourceMap": true,
+    "rootDir": "src",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "typeRoots": ["./node_modules/@types"],
+    "noEmitOnError": false
+  },
+  "exclude": [
+    "node_modules",
+    "**/node_modules",
+    "../../node_modules",
+    "../../../node_modules",
+    "../../../../node_modules",
+    ".vscode-test",
+    "ARCHIVE_COMPLETE",
+    "**/ARCHIVE_COMPLETE/**",
+    "out",
+    "src/chatParticipant.ts",
+    "src/commands/showLogs.ts",
+    "src/commandServer.ts",
+    "src/cursorStateReader.ts",
+    "src/diagnosticCommand.ts",
+    "src/lucidDashboardProvider.ts",
+    "src/pureHtmlDashboardProvider.ts",
+    "src/simpleTestProvider.ts"
+  ]
+}

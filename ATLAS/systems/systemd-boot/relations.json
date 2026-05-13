@@ -1,0 +1,31 @@
+{
+  "system_slug": "systemd-boot",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-05",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "uefi",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "systemd-boot is a UEFI boot loader."
+    },
+    {
+      "type": "competes_with",
+      "target": "grub",
+      "evidence_tier": "INFERRED",
+      "notes": "Alternative boot loader on many Linux distributions."
+    },
+    {
+      "type": "integrates_with",
+      "target": "systemd",
+      "evidence_tier": "INFERRED",
+      "notes": "Same project family; init system typically follows loader on systemd-based OS images."
+    },
+    {
+      "type": "integrates_with",
+      "target": "systemd-unit-model",
+      "evidence_tier": "INFERRED",
+      "notes": "Boot loader entries hand off to systemd target units using the standard unit/target model."
+    }
+  ]
+}

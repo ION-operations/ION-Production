@@ -1,0 +1,64 @@
+# ATLAS tag taxonomy — curated dimensions
+schema_version: "1.0"
+
+dimensions:
+  architecture_role:
+    description: Primary structural role of the system in a stack.
+    tags:
+      - id: kernel
+        description: Core privileged execution and resource mediation layer.
+      - id: service-manager
+        description: PID 1 / daemon lifecycle / dependency orchestration on a single host.
+      - id: container-runtime
+        description: Isolation and packaging of processes/images on a host.
+      - id: cluster-orchestrator
+        description: Distributed scheduling and desired-state reconciliation.
+      - id: declarative-os
+        description: System configuration primarily from declarative specs (e.g. Nix model).
+      - id: linux-distribution
+        description: Linux distribution identity (packaging, release policy, default libc/init/tooling) distinct from linux-kernel source tree and from libc/compiler packages alone.
+      - id: dev-environment
+        description: Developer-facing editing, debugging, extension tooling.
+      - id: ai-runtime
+        description: Model inference, agent loop, or tool-calling execution context.
+      - id: protocol
+        description: Normative wire/format/behavior specification.
+      - id: extension-platform
+        description: Third-party code hosted inside a host application.
+      - id: control-plane
+        description: Management APIs and controllers separate from data plane.
+      - id: public-runtime-surface
+        description: Publicly documented API/product behavior without internal datacenter claims.
+      - id: programming-language
+        description: Programming language specification, standard, or multi-vendor family.
+      - id: toolchain
+        description: Assembler, linker, archiver, and object inspection tools for compiled artifacts (distinct from language spec and object format spec).
+      - id: c-runtime
+        description: C/POSIX userland runtime and dynamic loader on a host ABI (e.g. glibc) — distinct from compiler, static linker, object format spec, and kernel.
+      - id: cxx-runtime
+        description: C++ standard library implementation (e.g. GNU libstdc++, LLVM libc++) — distinct from C libc, compiler front end, object format spec, and split low-level C++ ABI runtime (e.g. libc++abi) when modeled separately.
+      - id: cxx-abi-runtime
+        description: Low-level C++ language runtime support (exceptions, RTTI, ctor/dtor helpers) — distinct from full C++ standard library surface and from the C libc; often linked alongside libc++ on LLVM stacks.
+      - id: research-os
+        description: Research or experimental OS — distinct from general-purpose commodity kernels in primary framing.
+
+  deployment_shape:
+    tags:
+      - id: desktop-os
+      - id: mobile-os
+      - id: distributed-system
+      - id: historical-system
+
+  virtualization:
+    description: Hardware-virtualized or VMM-mediated isolation distinct from process-only containers.
+    tags:
+      - id: microvm
+        description: Minimal virtual machines via a VMM (e.g. KVM-backed microVMs).
+      - id: vmm
+        description: Userspace virtual machine monitor or system emulator composing hypervisor APIs, device models, and I/O back ends (e.g. QEMU on KVM hosts).
+
+# Application rules (curatorial)
+rules:
+  - A system may hold multiple tags across dimensions.
+  - Tags not listed here require taxonomy PR before use.
+  - Prefer specific tags; use notes in tags.yaml for edge cases.

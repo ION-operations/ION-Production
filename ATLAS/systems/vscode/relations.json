@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "model-context-protocol",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "MCP client support documented in VS Code release notes / docs; pin exact subsection in sources.yaml when curating."
+    },
+    {
+      "type": "competes_with",
+      "target": "cursor",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable editor/agent-augmented workflow class; not a technical fork claim."
+    },
+    {
+      "type": "integrates_with",
+      "target": "language-server-protocol",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Built-in LSP client; protocol is external specification (`language-server-protocol` package)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "debug-adapter-protocol",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Built-in DAP client for debug sessions; protocol is external specification (`debug-adapter-protocol` package)."
+    }
+  ]
+}

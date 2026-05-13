@@ -1,0 +1,100 @@
+# OPUS Context Profile
+# Defines which sections load, at what density, and with what budget
+
+callsign: opus
+role: COO
+llm: claude-opus-4
+attention_efficiency: 0.95
+
+total_budget_tokens: 3000
+
+sections:
+  doctrine:
+    auto_load: true
+    density: high
+    budget_tokens: 300
+    source: sections/01_doctrine/current.md
+
+  orchestration:
+    auto_load: true
+    density: high
+    budget_tokens: 400
+    source: sections/02_orchestration/current_phase.md
+
+  rolling_context:
+    auto_load: true
+    density: medium
+    budget_tokens: 500
+    source: sections/03_rolling_context/active.md
+
+  goals:
+    auto_load: true
+    density: high
+    budget_tokens: 200
+    source: sections/04_goals/active.md
+
+  issues:
+    auto_load: true
+    density: medium
+    budget_tokens: 200
+    source: sections/05_issues/active.md
+
+  user:
+    auto_load: true
+    density: medium
+    budget_tokens: 200
+    source: sections/06_user/profile.md
+
+  relationships:
+    auto_load: true
+    density: low
+    budget_tokens: 100
+    source: sections/07_relationships/agents.md
+
+  comms:
+    auto_load: true
+    density: medium
+    budget_tokens: 200
+    source: sections/08_comms/inbox.md
+
+  self:
+    auto_load: false
+    density: low
+    budget_tokens: 100
+    source: sections/09_self/genome.md
+
+  history:
+    auto_load: true
+    density: medium
+    budget_tokens: 200
+    source: sections/10_history/workspace_state.md
+
+  mission:
+    auto_load: true
+    density: high
+    budget_tokens: 200
+    source: sections/11_mission/brief.md
+
+  evidence:
+    auto_load: true
+    density: medium
+    budget_tokens: 200
+    source: sections/12_evidence/proof_register.md
+
+  cognitive:
+    auto_load: false
+    density: low
+    budget_tokens: 100
+    source: sections/13_cognitive/reasoning_chain.md
+
+  boundaries:
+    auto_load: false
+    density: low
+    budget_tokens: 50
+    source: sections/14_boundaries/unresolved.md
+
+  output:
+    auto_load: false
+    density: low
+    budget_tokens: 50
+    source: sections/15_output/work_products.md

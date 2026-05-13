@@ -1,0 +1,53 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "implements",
+      "target": "oci-runtime-spec",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "crun executes OCI bundles on Linux per the Runtime Specification."
+    },
+    {
+      "type": "depends_on",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Linux cgroups, namespaces, and related primitives for OCI execution."
+    },
+    {
+      "type": "integrates_with",
+      "target": "containerd",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "containerd can invoke crun as the low-level OCI runtime where configured."
+    },
+    {
+      "type": "integrates_with",
+      "target": "podman",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Podman supports crun as a runtime option on Linux."
+    },
+    {
+      "type": "integrates_with",
+      "target": "cri-o",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "CRI-O can use crun as the low-level OCI runtime where configured."
+    },
+    {
+      "type": "integrates_with",
+      "target": "oci-image-spec",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "OCI images unpack into bundles executed by crun-class runtimes."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "Linux nodes using CRI with crun-backed runtimes participate in typical cluster pull-and-run paths."
+    },
+    {
+      "type": "competes_with",
+      "target": "runc",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable low-level OCI runtime on Linux stacks."
+    }
+  ]
+}

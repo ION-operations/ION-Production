@@ -1,0 +1,34 @@
+{
+  "id": "edge_chatgpt_main",
+  "display_name": "ChatGPT in Edge",
+  "process_hints": ["msedge.exe"],
+  "title_regex": "ChatGPT|OpenAI",
+  "class_hints": [],
+  "preferred_adapters": ["cdp", "keyboard", "visual"],
+  "regions": {
+    "composerZone": {
+      "anchor": "bottomRight",
+      "x": -700,
+      "y": -260,
+      "w": 680,
+      "h": 220
+    }
+  },
+  "submit_policy": ["press_enter"],
+  "verification_policy": ["window_visible", "window_active"],
+  "cdp": {
+    "remote_debugging_port": 9222,
+    "host": "127.0.0.1",
+    "user_data_dir": "%LOCALAPPDATA%/AIMOS/edge-chatgpt-profile",
+    "url_patterns": ["chatgpt.com", "chat.openai.com"],
+    "avoid_url_patterns": [
+      "accounts.google.com",
+      "chrome://",
+      "edge://",
+      "devtools://",
+      "about:blank",
+      "google.com/chrome"
+    ],
+    "title_patterns": ["ChatGPT", "OpenAI"]
+  }
+}

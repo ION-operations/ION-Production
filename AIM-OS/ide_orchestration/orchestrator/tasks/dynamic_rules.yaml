@@ -1,0 +1,50 @@
+version: 1
+description: >
+  Rules that generate follow-up tasks when telemetry/context indicates gaps.
+rules:
+  - id: dynamic_task_capability_registry_gap
+    conditions:
+      - path: signals.capability_registry.missing_entries
+        operator: gt
+        value: 0
+    context_snapshot:
+      - signals.capability_registry.missing_entries
+      - signals.capability_registry.last_updated
+    task:
+      id: task_dynamic_capability_backfill
+      description: "Backfill agent capability registry entries flagged by HHNI scan"
+      phase: build_phase
+      workstream: ws_dynamic_tasking
+      ai_modes: ["ide", "analysis"]
+      gate_refs: ["task.spec_integrity", "task.policy_alignment"]
+      dependencies: ["task_agent_registry"]
+
+  - id: dynamic_task_gate_failure_analysis
+    conditions:
+      - path: signals.gates.failed_gate_id
+        operator: exists
+    context_snapshot:
+      - signals.gates.failed_gate_id
+      - signals.gates.failure_reason
+    task:
+      id: task_dynamic_gate_failure_review
+      description: "Review gate failure and produce remediation plan"
+      phase: build_phase
+      workstream: ws_dynamic_tasking
+      ai_modes: ["ide", "chat"]
+      gate_refs: ["task.spec_integrity", "task.evidence_logged"]
+      dependencies: ["task_gate_runner_impl"]
+
+  - id: dynamic_task_missing_telemetry
+    conditions:
+      - path: telemetry.progress_tracker.present
+        operator: equals
+        value: false
+    task:
+      id: task_dynamic_progress_tracker_spike
+      description: "Investigate missing telemetry signals for progress tracker"
+      phase: build_phase
+      workstream: ws_progress_tracking
+      ai_modes: ["ide"]
+      gate_refs: ["task.spec_integrity"]
+      dependencies: ["task_progress_tracker_service"]

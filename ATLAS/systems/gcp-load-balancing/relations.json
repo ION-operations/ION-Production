@@ -1,0 +1,31 @@
+{
+  "system_slug": "gcp-load-balancing",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-09",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "gcp-gke",
+      "evidence_tier": "INFERRED",
+      "notes": "GKE Services and Ingress commonly use GCP load balancers."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "Cloud LB integration for Kubernetes on GCP."
+    },
+    {
+      "type": "integrates_with",
+      "target": "grpc",
+      "evidence_tier": "INFERRED",
+      "notes": "gRPC-friendly backends depend on LB type and configuration."
+    },
+    {
+      "type": "competes_with",
+      "target": "aws-elastic-load-balancing",
+      "evidence_tier": "INFERRED",
+      "notes": "Cross-cloud managed load balancing class."
+    }
+  ]
+}

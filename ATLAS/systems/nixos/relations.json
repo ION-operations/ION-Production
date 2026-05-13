@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "depends_on",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Default NixOS ships Linux kernel from nixpkgs; other kernels/platforms are out-of-default scope unless sourced."
+    },
+    {
+      "type": "integrates_with",
+      "target": "docker",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "OCI tools packaged; docker/podman modules/services exist in nixpkgs—deployment-specific."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "K8s nodes can be NixOS-managed; not exclusive pairing."
+    }
+  ]
+}

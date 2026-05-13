@@ -1,0 +1,25 @@
+{
+  "system_slug": "envoy",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-04",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "Common as ingress or mesh data plane on Kubernetes."
+    },
+    {
+      "type": "integrates_with",
+      "target": "grpc",
+      "evidence_tier": "INFERRED",
+      "notes": "Envoy supports gRPC routing and observability features."
+    },
+    {
+      "type": "integrates_with",
+      "target": "http3",
+      "evidence_tier": "INFERRED",
+      "notes": "HTTP/3 support depends on build and deployment (check Envoy release notes)."
+    }
+  ]
+}

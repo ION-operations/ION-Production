@@ -1,0 +1,589 @@
+﻿epic:
+  id: ide_chat_orchestration
+  name: "IDE Orchestration Build Plan"
+  version: "1.0.0"
+  owner: "Codex-Agent"
+  coordinator: "Aether"
+  description: >-
+    Multi-phase program that turns AIM-OS research, orchestration patterns, and IDE
+    capabilities into a production-grade AI chat/IDE platform with deep API
+    mediation, quality gates, and telemetry.
+  systems:
+    - IDE_UI
+    - API_Mediation
+    - KnowledgeOps
+    - QualityGates
+    - ProgressTracking
+  quality_targets:
+    relevance: 0.90
+    density: 0.88
+    completion: pending_spec
+    thoroughness: 0.92
+  telemetry:
+    cmc_prefix: orchestration_task
+    dashboards:
+      - id: wave_status
+        description: "Phase/workstream completion + blockers"
+      - id: gate_health
+        description: "Task/phase/epic gate pass rates"
+      - id: progress_predictive
+        description: "Predictive completion + rollback risk analytics"
+  # Enhanced: Dynamic task generation (from Rev's research synthesis)
+  dynamic_tasks:
+    enabled: true
+    generator: "apoe_dynamic_plan"
+    context_source: "hhni"
+    quality_gates: ["vif_confidence", "sdf_cvf_quality"]
+    dependencies: "multi_level"  # task → phase → epic
+    rule_catalog: ide_orchestration/orchestrator/tasks/dynamic_rules.yaml
+  # Enhanced: API management configuration (from Rev's research synthesis)
+  api_management:
+    routing:
+      strategy: "task_based"
+      capability_matching: true
+      quality_history: true
+    enhancement:
+      pre_processing: ["context_injection", "prompt_engineering"]
+      post_processing: ["validation", "synthesis"]
+    orchestration:
+      parallel_execution: true
+      consensus_building: true
+      conflict_resolution: "seg_contradiction_detection"
+      adapters:
+        - ide_orchestration/orchestrator/api/adapter_chatgpt.py
+        - ide_orchestration/orchestrator/api/adapter_gemini.py
+  # Enhanced: Rollback mechanisms (from Rev's research synthesis)
+  rollback:
+    enabled: true
+    state_storage: "cmc_bitemporal"
+    recovery_strategies:
+      - "retry"
+      - "fallback"
+      - "escalate"
+    checkpoint_frequency: "per_task"
+    engine: ide_orchestration/orchestrator/recovery.py
+    playbook: ide_orchestration/runbooks/ROLLBACK_PLAYBOOK.md
+  # Enhanced: Progress tracking + predictive analytics
+  progress_tracking:
+    tracker: ide_orchestration/orchestrator/progress_tracker.py
+    telemetry_assets:
+      - ide_orchestration/telemetry/predictive_metrics.json
+      - ide_orchestration/telemetry/PROGRESS_DASHBOARD.md
+    dashboards:
+      - wave_status
+      - gate_health
+      - progress_predictive
+    predictive_analytics: true
+  # Enhanced: Capability registry settings
+  capability_registry:
+    path: ide_orchestration/agents/registry.json
+    capability_fields: ["ai_modes", "domain_strengths", "api_contracts"]
+    matching_strategy: "task_type + quality_history"
+    used_by: ["ws_agent_registry", "ws_dynamic_tasking", "ws_api_mediation"]
+  phases:
+    - id: research_phase
+      title: "Phase 1 - Research & Analysis"
+      objective: "Catalog external systems + internal assets to feed architecture"
+      dependencies: []
+      entry_gates: ["policy.ready"]
+      exit_gates: ["phase.research_complete"]
+      parallel_groups:
+        - name: external_analysis
+          workstreams: [ws_cursor_analysis, ws_codex_analysis, ws_chatgpt_browser]
+        - name: internal_catalog
+          workstreams: [ws_internal_systems]
+    - id: architecture_phase
+      title: "Phase 2 - Architecture & ChainSpec"
+      objective: "Author ChainSpec, gates, and orchestrator blueprint"
+      dependencies: [research_phase]
+      entry_gates: ["phase.research_complete"]
+      exit_gates: ["phase.architecture_lock"]
+      parallel_groups:
+        - name: spec_and_policy
+          workstreams: [ws_chainspec_authoring, ws_gates_policy]
+        - name: orchestrator_design
+          workstreams: [ws_engine_scaffolding]
+    - id: build_phase
+      title: "Phase 3 - Build & Integration"
+      objective: "Implement orchestrator, agent coordination, and API mediation"
+      dependencies: [architecture_phase]
+      entry_gates: ["phase.architecture_lock"]
+      exit_gates: ["phase.build_ready_for_qa"]
+      parallel_groups:
+        - name: orchestrator_core
+          workstreams: [ws_orchestrator_core]
+        - name: agent_api_layer
+          workstreams: [ws_agent_registry, ws_api_mediation]
+        - name: dynamic_coordination
+          workstreams: [ws_dynamic_tasking, ws_progress_tracking, ws_recovery_layer]
+    - id: qa_phase
+      title: "Phase 4 - Quality & Drills"
+      objective: "Run SDF-CVF suites, remediation loops, and live drills"
+      dependencies: [build_phase]
+      entry_gates: ["phase.build_ready_for_qa"]
+      exit_gates: ["phase.qa_signoff"]
+      parallel_groups:
+        - name: quality_suites
+          workstreams: [ws_quality_validation]
+    - id: launch_phase
+      title: "Phase 5 - Launch & Operationalization"
+      objective: "Deploy into IDE, enable dashboards, finalize runbooks"
+      dependencies: [qa_phase]
+      entry_gates: ["phase.qa_signoff"]
+      exit_gates: ["epic.launch_ready"]
+      parallel_groups:
+        - name: rollout
+          workstreams: [ws_launch_enablement]
+
+workstreams:
+  - id: ws_cursor_analysis
+    title: "Cursor System Deep Dive"
+    phase: research_phase
+    owner: "Sam"
+    agents: ["Sam"]
+    sla_hours: 3
+    deliverables:
+      - ide_orchestration/research/EXTERNAL_SYSTEMS_CURSOR_ANALYSIS.md
+    tasks:
+      - id: task_cursor_landscape
+        description: "Document Cursor architecture, MCP layers, quality flows"
+        ai_modes: ["research"]
+        api_contracts: []
+        gate_refs: ["task.research_artifact_quality", "task.evidence_logged"]
+        evidence_targets:
+          - ide_orchestration/research/EXTERNAL_SYSTEMS_CURSOR_ANALYSIS.md
+        outputs:
+          - type: report
+            path: ide_orchestration/research/EXTERNAL_SYSTEMS_CURSOR_ANALYSIS.md
+        dependencies: []
+
+  - id: ws_codex_analysis
+    title: "Codex / ChatGPT Browser Benchmark"
+    phase: research_phase
+    owner: "Lex"
+    agents: ["Lex"]
+    sla_hours: 3
+    deliverables:
+      - ide_orchestration/research/EXTERNAL_SYSTEMS_Codex_ANALYSIS.md
+    tasks:
+      - id: task_codex_capabilities
+        description: "Map Codex/Cursor enhancements over base APIs"
+        ai_modes: ["research"]
+        api_contracts: []
+        gate_refs: ["task.research_artifact_quality", "task.evidence_logged"]
+        evidence_targets:
+          - ide_orchestration/research/EXTERNAL_SYSTEMS_Codex_ANALYSIS.md
+        dependencies: []
+
+  - id: ws_chatgpt_browser
+    title: "ChatGPT Browser Research"
+    phase: research_phase
+    owner: "Lex"
+    agents: ["Lex", "Sam"]
+    sla_hours: 3
+    deliverables:
+      - ide_orchestration/research/EXTERNAL_SYSTEMS_ANALYSIS_CHATGPT.md
+    tasks:
+      - id: task_chatgpt_browser_patterns
+        description: "Document ChatGPT Browser architecture, integrations, and QA loops"
+        ai_modes: ["research"]
+        gate_refs: ["task.research_artifact_quality", "task.evidence_logged"]
+        evidence_targets:
+          - ide_orchestration/research/EXTERNAL_SYSTEMS_ANALYSIS_CHATGPT.md
+        outputs:
+          - type: report
+            path: ide_orchestration/research/EXTERNAL_SYSTEMS_ANALYSIS_CHATGPT.md
+        dependencies: []
+
+  - id: ws_internal_systems
+    title: "Internal Systems Catalog"
+    phase: research_phase
+    owner: "Rev"
+    agents: ["Rev", "Max"]
+    sla_hours: 3
+    deliverables:
+      - ide_orchestration/research/INTERNAL_SYSTEMS_CATALOG.md
+    tasks:
+      - id: task_internal_catalog
+        description: "Inventory AIM-OS IDE/chat assets, APIs, backend systems"
+        ai_modes: ["research"]
+        gate_refs: ["task.research_artifact_quality", "task.evidence_logged"]
+        evidence_targets:
+          - ide_orchestration/research/INTERNAL_SYSTEMS_CATALOG.md
+        dependencies: []
+
+  - id: ws_research_synthesis
+    title: "Integrated Research Synthesis"
+    phase: research_phase
+    owner: "Rev"
+    agents: ["Rev"]
+    sla_hours: 2
+    deliverables:
+      - ide_orchestration/research/RESEARCH_SYNTHESIS.md
+    tasks:
+      - id: task_research_synthesis
+        description: "Consolidate Lex/Max/Sam research into actionable orchestration guidance"
+        ai_modes: ["research", "analysis"]
+        gate_refs: ["task.research_artifact_quality", "task.evidence_logged"]
+        outputs:
+          - type: report
+            path: ide_orchestration/research/RESEARCH_SYNTHESIS.md
+        evidence_targets:
+          - ide_orchestration/research/RESEARCH_SYNTHESIS.md
+        dependencies: [task_cursor_landscape, task_codex_capabilities, task_internal_catalog]
+
+  - id: ws_chainspec_authoring
+    title: "ChainSpec Authoring"
+    phase: architecture_phase
+    owner: "Codex-Agent"
+    agents: ["Codex-Agent"]
+    sla_hours: 4
+    deliverables:
+      - ide_orchestration/chains/ChainSpec.yaml
+    tasks:
+      - id: task_chainspec_wave1
+        description: "Draft epic/phase/workstream/task hierarchy"
+        ai_modes: ["ide", "chat"]
+        api_contracts: ["chatgpt:gpt-4.1", "coder_agent:v2"]
+        gate_refs: ["task.spec_integrity", "task.evidence_logged"]
+        outputs:
+          - type: file
+            path: ide_orchestration/chains/ChainSpec.yaml
+        dependencies: [task_cursor_landscape, task_internal_catalog]
+        evidence_targets:
+          - ide_orchestration/chains/ChainSpec.yaml
+      - id: task_chainspec_wave2
+        description: "Integrate research insights + agent assignments into ChainSpec"
+        ai_modes: ["ide"]
+        gate_refs: ["task.spec_integrity", "task.policy_alignment"]
+        outputs:
+          - type: file
+            path: ide_orchestration/chains/ChainSpec.yaml
+        dependencies: [task_chainspec_wave1, task_codex_capabilities, task_chatgpt_browser_patterns, task_research_synthesis]
+        evidence_targets:
+          - ide_orchestration/chains/ChainSpec.yaml
+      - id: task_chainspec_wave3
+        description: "Publish readiness cues + telemetry hooks for each phase"
+        ai_modes: ["ide", "chat"]
+        gate_refs: ["task.spec_integrity", "task.evidence_logged"]
+        outputs:
+          - type: file
+            path: ide_orchestration/chains/ChainSpec.yaml
+        dependencies: [task_chainspec_wave2, task_gate_policy]
+        evidence_targets:
+          - ide_orchestration/chains/ChainSpec.yaml
+
+  - id: ws_gates_policy
+    title: "Quality Gates Policy"
+    phase: architecture_phase
+    owner: "Codex-Agent"
+    agents: ["Codex-Agent"]
+    sla_hours: 2
+    deliverables:
+      - ide_orchestration/policy/gates.json
+    tasks:
+      - id: task_gate_policy
+        description: "Author task/phase/epic gate definitions tied to AIM-OS systems"
+        ai_modes: ["ide"]
+        gate_refs: ["task.policy_alignment", "task.evidence_logged"]
+        outputs:
+          - type: file
+            path: ide_orchestration/policy/gates.json
+        dependencies: [task_chainspec_wave1]
+
+  - id: ws_engine_scaffolding
+    title: "Orchestrator Engine Design"
+    phase: architecture_phase
+    owner: "Codex-Agent"
+    agents: ["Codex-Agent"]
+    sla_hours: 3
+    deliverables:
+      - ide_orchestration/orchestrator/README.md
+    tasks:
+      - id: task_engine_blueprint
+        description: "Document module breakdown (graph manager, scheduler, gate runner)"
+        ai_modes: ["ide"]
+        gate_refs: ["task.spec_integrity", "task.evidence_logged"]
+        outputs:
+          - type: file
+            path: ide_orchestration/orchestrator/README.md
+        dependencies: [task_chainspec_wave1]
+
+  - id: ws_orchestrator_core
+    title: "Orchestrator Core Build"
+    phase: build_phase
+    owner: "Codex-Agent"
+    agents: ["Codex-Agent", "Dac"]
+    sla_hours: 6
+    deliverables:
+      - ide_orchestration/orchestrator/run.py
+      - ide_orchestration/orchestrator/graph_manager.py
+      - ide_orchestration/orchestrator/scheduler.py
+      - ide_orchestration/orchestrator/gate_runner.py
+      - ide_orchestration/orchestrator/utils/telemetry.py
+    tasks:
+      - id: task_graph_manager_impl
+        description: "Implement ChainSpec loader + dependency resolver"
+        ai_modes: ["ide"]
+        api_contracts: ["coder_agent:v2"]
+        gate_refs: ["task.unit_tests", "task.code_reviews"]
+        outputs:
+          - type: file
+            path: ide_orchestration/orchestrator/graph_manager.py
+        dependencies: [task_chainspec_wave1]
+      - id: task_scheduler_impl
+        description: "Build scheduler to compute ready queues and capability matches"
+        ai_modes: ["ide"]
+        gate_refs: ["task.unit_tests", "task.code_reviews"]
+        outputs:
+          - type: file
+            path: ide_orchestration/orchestrator/scheduler.py
+        dependencies: [task_graph_manager_impl]
+      - id: task_gate_runner_impl
+        description: "Implement gate runner wiring policy checks into task execution"
+        ai_modes: ["ide"]
+        gate_refs: ["task.policy_alignment", "task.unit_tests"]
+        outputs:
+          - type: file
+            path: ide_orchestration/orchestrator/gate_runner.py
+        dependencies: [task_scheduler_impl, task_gate_policy]
+      - id: task_cli_runner
+        description: "Extend CLI runner to orchestrate scheduler + gate runner loops"
+        ai_modes: ["ide"]
+        gate_refs: ["task.spec_integrity", "task.code_reviews"]
+        outputs:
+          - type: file
+            path: ide_orchestration/orchestrator/run.py
+        dependencies: [task_gate_runner_impl]
+      - id: task_telemetry_hooks
+        description: "Wire telemetry utils + dashboards into orchestrator entrypoints"
+        ai_modes: ["ide"]
+        gate_refs: ["task.policy_alignment", "task.evidence_logged"]
+        outputs:
+          - type: file
+            path: ide_orchestration/orchestrator/utils/telemetry.py
+        dependencies: [task_cli_runner]
+
+  - id: ws_agent_registry
+    title: "Agent Registry"
+    phase: build_phase
+    owner: "Codex-Agent"
+    agents: ["Codex-Agent"]
+    sla_hours: 2
+    deliverables:
+      - ide_orchestration/agents/registry.json
+    tasks:
+      - id: task_agent_registry
+        description: "Author agent capability + API mode registry"
+        ai_modes: ["ide"]
+        gate_refs: ["task.policy_alignment"]
+        outputs:
+          - type: file
+            path: ide_orchestration/agents/registry.json
+        dependencies: [task_gate_policy]
+
+  - id: ws_api_mediation
+    title: "API Mediation Layer"
+    phase: build_phase
+    owner: "Codex-Agent"
+    agents: ["Codex-Agent"]
+    sla_hours: 4
+    deliverables:
+      - ide_orchestration/orchestrator/api/adapter_chatgpt.py
+      - ide_orchestration/orchestrator/api/adapter_gemini.py
+      - ide_orchestration/orchestrator/api/tests/test_adapters.py
+    tasks:
+      - id: task_chatgpt_adapter
+        description: "Implement adapter with logging + policy tags"
+        ai_modes: ["ide"]
+        api_contracts: ["chatgpt:gpt-4.1"]
+        gate_refs: ["task.api_contracts", "task.unit_tests"]
+        outputs:
+          - type: file
+            path: ide_orchestration/orchestrator/api/adapter_chatgpt.py
+        evidence_targets:
+          - ide_orchestration/orchestrator/api/adapter_chatgpt.py
+        dependencies: [task_agent_registry]
+      - id: task_gemini_adapter
+        description: "Implement Gemini adapter with parity logging + retries"
+        ai_modes: ["ide"]
+        api_contracts: ["gemini:1.5-pro"]
+        gate_refs: ["task.api_contracts", "task.unit_tests"]
+        outputs:
+          - type: file
+            path: ide_orchestration/orchestrator/api/adapter_gemini.py
+        evidence_targets:
+          - ide_orchestration/orchestrator/api/adapter_gemini.py
+        dependencies: [task_chatgpt_adapter]
+      - id: task_adapter_contract_tests
+        description: "Author adapter contract tests + policy tag assertions"
+        ai_modes: ["ide"]
+        gate_refs: ["task.unit_tests", "task.qa_suite"]
+        outputs:
+          - type: file
+            path: ide_orchestration/orchestrator/api/tests/test_adapters.py
+        evidence_targets:
+          - ide_orchestration/orchestrator/api/tests/test_adapters.py
+        dependencies: [task_gemini_adapter]
+
+  - id: ws_dynamic_tasking
+    title: "Dynamic Task Generation"
+    phase: build_phase
+    owner: "Codex-Agent"
+    agents: ["Codex-Agent", "Rev"]
+    sla_hours: 4
+    deliverables:
+      - ide_orchestration/orchestrator/dynamic_task_generator.py
+      - ide_orchestration/orchestrator/tasks/dynamic_rules.yaml
+      - ide_orchestration/orchestrator/tests/test_dynamic_tasks.py
+    tasks:
+      - id: task_dynamic_task_generator
+        description: "Implement APOE-backed generator with HHNI context + gate hooks"
+        ai_modes: ["ide"]
+        gate_refs: ["task.spec_integrity", "task.unit_tests"]
+        outputs:
+          - type: file
+            path: ide_orchestration/orchestrator/dynamic_task_generator.py
+        dependencies: [task_chainspec_wave3, task_gate_runner_impl]
+      - id: task_dynamic_rules_catalog
+        description: "Document HHNI contexts + gating rules for generated tasks"
+        ai_modes: ["research", "ide"]
+        gate_refs: ["task.policy_alignment", "task.evidence_logged"]
+        outputs:
+          - type: file
+            path: ide_orchestration/orchestrator/tasks/dynamic_rules.yaml
+        dependencies: [task_dynamic_task_generator]
+      - id: task_dynamic_task_tests
+        description: "Author generator contract tests for dependencies + gate behaviors"
+        ai_modes: ["ide"]
+        gate_refs: ["task.unit_tests", "task.qa_suite"]
+        outputs:
+          - type: file
+            path: ide_orchestration/orchestrator/tests/test_dynamic_tasks.py
+        dependencies: [task_dynamic_rules_catalog]
+
+  - id: ws_progress_tracking
+    title: "Real-Time Progress Tracking"
+    phase: build_phase
+    owner: "Codex-Agent"
+    agents: ["Codex-Agent", "Sam"]
+    sla_hours: 4
+    deliverables:
+      - ide_orchestration/orchestrator/progress_tracker.py
+      - ide_orchestration/telemetry/predictive_metrics.json
+      - ide_orchestration/telemetry/PROGRESS_DASHBOARD.md
+    tasks:
+      - id: task_progress_tracker_service
+        description: "Build progress tracker using CMC updates + HHNI indexing"
+        ai_modes: ["ide"]
+        gate_refs: ["task.spec_integrity", "task.unit_tests"]
+        outputs:
+          - type: file
+            path: ide_orchestration/orchestrator/progress_tracker.py
+        dependencies: [task_telemetry_hooks]
+      - id: task_predictive_metrics
+        description: "Compute predictive metrics + completion estimates"
+        ai_modes: ["ide", "analysis"]
+        gate_refs: ["task.qa_suite", "task.evidence_logged"]
+        outputs:
+          - type: file
+            path: ide_orchestration/telemetry/predictive_metrics.json
+        dependencies: [task_progress_tracker_service]
+      - id: task_progress_dashboard_doc
+        description: "Document dashboards + alert wiring for progress telemetry"
+        ai_modes: ["ide", "chat"]
+        gate_refs: ["task.policy_alignment", "task.evidence_logged"]
+        outputs:
+          - type: file
+            path: ide_orchestration/telemetry/PROGRESS_DASHBOARD.md
+        dependencies: [task_predictive_metrics]
+
+  - id: ws_recovery_layer
+    title: "Rollback & Recovery"
+    phase: build_phase
+    owner: "Codex-Agent"
+    agents: ["Codex-Agent", "Max"]
+    sla_hours: 3
+    deliverables:
+      - ide_orchestration/orchestrator/recovery.py
+      - ide_orchestration/runbooks/ROLLBACK_PLAYBOOK.md
+      - ide_orchestration/orchestrator/tests/test_recovery.py
+    tasks:
+      - id: task_recovery_engine
+        description: "Implement recovery engine using CMC bitemporal storage"
+        ai_modes: ["ide"]
+        gate_refs: ["task.spec_integrity", "task.unit_tests"]
+        outputs:
+          - type: file
+            path: ide_orchestration/orchestrator/recovery.py
+        dependencies: [task_progress_tracker_service, task_gate_runner_impl]
+      - id: task_recovery_playbook
+        description: "Author rollback playbook w/ retry, fallback, escalate paths"
+        ai_modes: ["ide", "chat"]
+        gate_refs: ["task.policy_alignment", "task.evidence_logged"]
+        outputs:
+          - type: file
+            path: ide_orchestration/runbooks/ROLLBACK_PLAYBOOK.md
+        dependencies: [task_recovery_engine]
+      - id: task_recovery_tests
+        description: "Write recovery regression tests + checkpoint coverage"
+        ai_modes: ["ide"]
+        gate_refs: ["task.unit_tests", "task.qa_suite"]
+        outputs:
+          - type: file
+            path: ide_orchestration/orchestrator/tests/test_recovery.py
+        dependencies: [task_recovery_playbook]
+
+  - id: ws_quality_validation
+    title: "Quality Validation"
+    phase: qa_phase
+    owner: "Rev"
+    agents: ["Rev", "Sam"]
+    sla_hours: 3
+    deliverables:
+      - ide_orchestration/quality/QA_REPORT.md
+      - ide_orchestration/quality/DRILL_LOG.md
+    tasks:
+      - id: task_gate_runner_drill
+        description: "Run gate runner dry-run with simulated tasks + adapters"
+        ai_modes: ["ide", "automation"]
+        gate_refs: ["task.qa_suite", "task.evidence_logged"]
+        outputs:
+          - type: report
+            path: ide_orchestration/quality/DRILL_LOG.md
+        dependencies: [task_gate_runner_impl, task_adapter_contract_tests, task_dynamic_task_tests, task_recovery_tests]
+      - id: task_sdf_cvf_suite
+        description: "Run SDF-CVF suite + remediation logging"
+        ai_modes: ["ide", "automation"]
+        gate_refs: ["task.qa_suite", "task.evidence_logged"]
+        outputs:
+          - type: report
+            path: ide_orchestration/quality/QA_REPORT.md
+        dependencies: [task_gate_runner_drill]
+
+  - id: ws_launch_enablement
+    title: "Launch Enablement"
+    phase: launch_phase
+    owner: "Aether"
+    agents: ["Aether", "Codex-Agent"]
+    sla_hours: 2
+    deliverables:
+      - ide_orchestration/runbooks/LAUNCH_CHECKLIST.md
+      - SHARED_MESSAGE_BOARD updates
+    tasks:
+      - id: task_launch_checklist
+        description: "Create launch checklist + dashboards"
+        ai_modes: ["ide", "chat"]
+        gate_refs: ["task.policy_alignment", "task.evidence_logged"]
+        outputs:
+          - type: file
+            path: ide_orchestration/runbooks/LAUNCH_CHECKLIST.md
+        dependencies: [task_sdf_cvf_suite]
+      - id: task_dashboard_activation
+        description: "Publish rollout updates + dashboard links to SHARED_MESSAGE_BOARD"
+        ai_modes: ["ide", "chat"]
+        gate_refs: ["task.policy_alignment", "task.evidence_logged"]
+        outputs:
+          - type: file
+            path: coordination/epic_standards_overhaul/comms/SHARED_MESSAGE_BOARD.md
+        dependencies: [task_launch_checklist, task_progress_dashboard_doc]

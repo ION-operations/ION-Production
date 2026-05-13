@@ -1,0 +1,383 @@
+% Chapter converted from Markdown
+% Auto-generated - do not edit manually
+
+\section*{Chapter 31 - Data Schemas}
+
+
+\subsection*{Purpose}
+
+This chapter provides reference documentation for AIM-OS data schemas including CMC atom schema, HHNI node schema, VIF witness schema, SEG graph schema, and APOE plan schema. Schemas enable developers to understand data structures and integrate with AIM-OS.
+
+\subsection*{Executive Summary}
+
+\item Data schemas define structure for all AIM-OS data: atoms, nodes, witnesses, graphs, and plans.
+\item Schema validation: schemas enable validation and ensure data integrity.
+\item Integration: schemas enable external systems to integrate with AIM-OS.
+
+\subsection*{CMC Atom Schema}
+
+``\texttt{json
+{
+  "atom\_id": "uuid",
+  "modality": "text|image|binary|reference",
+  "content": "string|uri",
+  "embedding": "vector[1536]",
+  "tags": ["string"],
+  "tx\_time": "timestamp",
+  "valid\_time": "timestamp",
+  "vif\_witness": {
+    "model\_id": "string",
+    "prompt": "string",
+    "tools": ["string"],
+    "confidence": 0.0-1.0
+  },
+  "predecessor\_id": "uuid|null"
+}
+}`\texttt{
+
+\textbf{Fields:}
+\item }atom\_id\texttt{: Unique identifier (UUID)
+\item }modality\texttt{: Content type (text, image, binary, reference)
+\item }content\texttt{: Inline content or URI reference
+\item }embedding\texttt{: Vector embedding for retrieval
+\item }tags\texttt{: Metadata tags for filtering
+\item }tx\_time\texttt{: Transaction time (when recorded)
+\item }valid\_time\texttt{: Valid time (when true)
+\item }vif\_witness\texttt{: VIF witness envelope
+\item }predecessor\_id\texttt{: Link to predecessor atom (bitemporal)
+
+\subsection*{HHNI Node Schema}
+
+}`\texttt{json
+{
+  "node\_id": "uuid",
+  "level": 0-5,
+  "content": "string",
+  "embedding": "vector[1536]",
+  "children": ["uuid"],
+  "parents": ["uuid"],
+  "metadata": {
+    "tier": "S|A|B|C",
+    "authority": 0.0-1.0,
+    "tags": ["string"]
+  }
+}
+}`\texttt{
+
+\textbf{Fields:}
+\item }node\_id\texttt{: Unique identifier (UUID)
+\item }level\texttt{: HHNI level (0-5)
+\item }content\texttt{: Node content
+\item }embedding\texttt{: Vector embedding
+\item }children\texttt{: Child node IDs
+\item }parents\texttt{: Parent node IDs
+\item }metadata\texttt{: Node metadata (tier, authority, tags)
+
+\subsection*{VIF Witness Schema}
+
+}`\texttt{json
+{
+  "witness\_id": "uuid",
+  "operation\_id": "uuid",
+  "model\_id": "string",
+  "prompt": "string",
+  "tools": ["string"],
+  "output": "string",
+  "confidence": 0.0-1.0,
+  "timestamp": "timestamp",
+  "hash": "sha256"
+}
+}`\texttt{
+
+\textbf{Fields:}
+\item }witness\_id\texttt{: Unique identifier (UUID)
+\item }operation\_id\texttt{: Operation identifier
+\item }model\_id\texttt{: Model identifier
+\item }prompt\texttt{: Input prompt
+\item }tools\texttt{: Tools used
+\item }output\texttt{: Operation output
+\item }confidence\texttt{: Confidence score (0.0-1.0)
+\item }timestamp\texttt{: Operation timestamp
+\item }hash\texttt{: Cryptographic hash for validation
+
+\subsection*{SEG Graph Schema}
+
+}`\texttt{json
+{
+  "graph\_id": "uuid",
+  "nodes": [
+    {
+      "node\_id": "uuid",
+      "type": "claim|source|derivation|agent",
+      "content": "string",
+      "tx\_time": "timestamp",
+      "valid\_time": "timestamp"
+    }
+  ],
+  "edges": [
+    {
+      "edge\_id": "uuid",
+      "source": "uuid",
+      "target": "uuid",
+      "type": "supports|contradicts|derives|witnesses",
+      "weight": 0.0-1.0
+    }
+  ]
+}
+}`\texttt{
+
+\textbf{Fields:}
+\item }graph\_id\texttt{: Unique identifier (UUID)
+\item }nodes\texttt{: Graph nodes (claims, sources, derivations, agents)
+\item }edges\texttt{: Graph edges (supports, contradicts, derives, witnesses)
+\item }tx\_time\texttt{: Transaction time (bitemporal)
+\item }valid\_time\texttt{: Valid time (bitemporal)
+
+\subsection*{APOE Plan Schema}
+
+}`\texttt{json
+{
+  "plan\_id": "uuid",
+  "steps": [
+    {
+      "step\_id": "uuid",
+      "role": "planner|retriever|reasoner|verifier|builder|critic|operator|witness",
+      "action": "string",
+      "inputs": {},
+      "outputs": {},
+      "budget": {
+        "tokens": 0,
+        "cost": 0.0,
+        "time": 0
+      },
+      "gates": ["string"]
+    }
+  ],
+  "dependencies": ["uuid"],
+  "budget": {
+    "total\_tokens": 0,
+    "total\_cost": 0.0,
+    "total\_time": 0
+  }
+}
+}`\texttt{
+
+\textbf{Fields:}
+\item }plan\_id\texttt{: Unique identifier (UUID)
+\item }steps\texttt{: Plan steps with roles, actions, budgets, gates
+\item }dependencies\texttt{: Step dependencies
+\item }budget\texttt{: Total plan budget
+
+\subsection*{Runnable Examples}
+
+\subsubsection*{Example 1: Create CMC Atom}
+}`\texttt{powershell
+\section*{Create CMC atom with complete schema}
+\_\_MATH\_BLOCK\_0\_\_(New-Guid)"
+    modality = "text"
+    content = "AIM-OS enables AI consciousness"
+    embedding = @(0.1, 0.2, 0.3)  \# Simplified - actual is 1536 dimensions
+    tags = @("consciousness", "ai", "aimos")
+    tpv = @{
+        priority = 0.9
+        relevance = 0.85
+        decay = 0.1
+    }
+    hhni\_path = "System/AIM-OS/Chapter/Paragraph"
+    tx\_time = "2025-11-06T17:00:00Z"
+    valid\_time = @{
+        valid\_from = "2025-11-06T17:00:00Z"
+        valid\_to = \_\_MATH\_BLOCK\_1\_\_null
+    snapshot\_id = "snapshot\_\_\_MATH\_BLOCK\_2\_\_atom | ConvertTo-Json -Depth 10
+}`\texttt{
+
+\subsubsection*{Example 2: Create HHNI Node}
+}`\texttt{powershell
+\section*{Create HHNI node with complete schema}
+\_\_MATH\_BLOCK\_3\_\_(New-Guid)"
+    level = 2
+    content = "AIM-OS enables AI consciousness through persistent memory"
+    embedding = @(0.1, 0.2, 0.3)  \# Simplified - actual is 1536 dimensions
+    children = @("node\_child\_1", "node\_child\_2")
+    parents = @("node\_parent\_1")
+    metadata = @{
+        tier = "A"
+        authority = 0.95
+        tags = @("consciousness", "memory")
+        atom\_ids = @("atom\_1", "atom\_2")
+    }
+}
+
+\_\_MATH\_BLOCK\_4\_\_witness = @{
+    witness\_id = "witness\_\_\_MATH\_BLOCK\_5\_\_(New-Guid)"
+    model\_id = "gpt-4"
+    prompt = "Expand chapter on AIM-OS consciousness"
+    tools = @("store\_memory", "retrieve\_memory", "track\_confidence")
+    output = "Chapter expanded with detailed content"
+    confidence = 0.90
+    confidence\_type = "execution"
+    timestamp = "2025-11-06T17:00:00Z"
+    hash = "sha256\_hash\_of\_output"
+    metadata = @{
+        task = "chapter\_expansion"
+        chapter = "ch31\_data\_schemas"
+    }
+}
+
+\_\_MATH\_BLOCK\_6\_\_atom)
+    
+    \_\_MATH\_BLOCK\_7\_\_atom.atom\_id -match '\textasciicircum{}[a-f0-9-]{36}\_\_MATH\_BLOCK\_8\_\_errors += "Invalid atom\_id format"
+    }
+    
+    if (\_\_MATH\_BLOCK\_9\_\_errors += "Invalid modality: \_\_MATH\_BLOCK\_10\_\_atom.modality)"
+    }
+    
+    if (\_\_MATH\_BLOCK\_11\_\_errors += "Invalid embedding dimension: \_\_MATH\_BLOCK\_12\_\_atom.embedding.Count) (expected 1536)"
+    }
+    
+    if (\_\_MATH\_BLOCK\_13\_\_atom.vif\_witness.confidence -gt 1.0) {
+        \_\_MATH\_BLOCK\_14\_\_(\_\_MATH\_BLOCK\_15\_\_errors
+}
+
+\section*{Validate HHNI node schema}
+function Validate-HHNINode {
+    param(\_\_MATH\_BLOCK\_16\_\_errors = @()
+    
+    if (\_\_MATH\_BLOCK\_17\_\_node.level -gt 5) {
+        \_\_MATH\_BLOCK\_18\_\_(\_\_MATH\_BLOCK\_19\_\_node.metadata.tier -notin @('S', 'A', 'B', 'C')) {
+        \_\_MATH\_BLOCK\_20\_\_(\_\_MATH\_BLOCK\_21\_\_node.metadata.authority -lt 0.0 -or \_\_MATH\_BLOCK\_22\_\_errors += "Invalid authority: \_\_MATH\_BLOCK\_23\_\_node.metadata.authority)"
+    }
+    
+    return \_\_MATH\_BLOCK\_24\_\_witness = @{
+    witness\_id = "witness\_\_\_MATH\_BLOCK\_25\_\_(New-Guid)"
+    model\_id = "gpt-4"
+    prompt = "Expand chapter on AIM-OS"
+    tools = @("store\_memory", "retrieve\_memory")
+    output = "Chapter expanded successfully"
+    confidence = 0.90
+    timestamp = (Get-Date -Format "o")
+    hash = "sha256\_hash\_here"
+}
+
+\_\_MATH\_BLOCK\_26\_\_(New-Guid)"
+    modality = "text"
+    content = "AIM-OS enables AI consciousness through persistent memory"
+    embedding = @(0.1, 0.2, 0.3)  \# Simplified
+    tags = @("consciousness", "memory")
+    tx\_time = (Get-Date -Format "o")
+    valid\_time = @{
+        valid\_from = (Get-Date -Format "o")
+        valid\_to = \_\_MATH\_BLOCK\_27\_\_witness
+    predecessor\_id = \_\_MATH\_BLOCK\_28\_\_response = Invoke-WebRequest -Uri 'http://localhost:5001/cmc/store' }
+    -Method POST -ContentType 'application/json' \texttt{
+    -Body (\_\_MATH\_BLOCK\_29\_\_query = @{
+    query = "AIM-OS consciousness"
+    limit = 10
+    validate\_schema = \_\_MATH\_BLOCK\_30\_\_response = Invoke-WebRequest -Uri 'http://localhost:5001/hhni/query' }
+    -Method POST -ContentType 'application/json' \texttt{
+    -Body (\_\_MATH\_BLOCK\_31\_\_results = \_\_MATH\_BLOCK\_32\_\_atom in \_\_MATH\_BLOCK\_33\_\_errors = Validate-CMCAtom -atom \_\_MATH\_BLOCK\_34\_\_errors.Count -gt 0) {
+        Write-Warning "Invalid atom \_\_MATH\_BLOCK\_35\_\_atom.atom\_id): \_\_MATH\_BLOCK\_36\_\_errors -join ', ')"
+    }
+}
+}`\texttt{
+
+\subsubsection*{Pattern 3: Schema Migration}
+
+\textbf{Use Case:} Migrate schemas when versions change
+
+\textbf{Steps:}
+1. Detect schema version mismatch
+2. Transform old schema to new schema
+3. Validate new schema
+4. Store migrated atom
+
+\textbf{Example:}
+}`\texttt{powershell
+\section*{Migrate atom schema v1.0 → v2.0}
+function Migrate-AtomSchema {
+    param(\_\_MATH\_BLOCK\_37\_\_targetVersion)
+    
+    \_\_MATH\_BLOCK\_38\_\_oldAtom.atom\_id
+        schema\_version = \_\_MATH\_BLOCK\_39\_\_oldAtom.modality
+        content = \_\_MATH\_BLOCK\_40\_\_oldAtom.embedding
+        tags = \_\_MATH\_BLOCK\_41\_\_oldAtom.tx\_time
+        valid\_time = @{
+            valid\_from = \_\_MATH\_BLOCK\_42\_\_oldAtom.valid\_to
+        }
+        vif\_witness = \_\_MATH\_BLOCK\_43\_\_oldAtom.predecessor\_id
+        \# New fields in v2.0
+        hhni\_path = \_\_MATH\_BLOCK\_44\_\_oldAtom.snapshot\_id
+        metadata = \_\_MATH\_BLOCK\_45\_\_errors = Validate-CMCAtom -atom \_\_MATH\_BLOCK\_46\_\_errors.Count -gt 0) {
+        throw "Migration failed: \_\_MATH\_BLOCK\_47\_\_errors -join ', ')"
+    }
+    
+    return $newAtom
+}
+}`\texttt{
+
+\subsection*{Schema Evolution}
+
+AIM-OS schemas evolve over time with versioning:
+
+\subsubsection*{Versioning Strategy}
+
+\textbf{Semantic Versioning:}
+\item \textbf{MAJOR:} Breaking changes (require migration)
+\item \textbf{MINOR:} New fields (backward compatible)
+\item \textbf{PATCH:} Bug fixes (backward compatible)
+
+\textbf{Migration Rules:}
+\item Old schemas remain valid (backward compatibility)
+\item New fields optional (default values)
+\item Breaking changes require explicit migration
+\item Migration scripts provided for major versions
+
+\subsubsection*{Version History}
+
+\textbf{CMC Atom Schema:}
+\item v1.0.0: Initial schema (2025-10-01)
+\item v1.1.0: Added }hhni\_path\texttt{ field (2025-10-15)
+\item v2.0.0: Added }snapshot\_id\texttt{, }metadata\texttt{ fields (2025-11-01)
+
+\textbf{HHNI Node Schema:}
+\item v1.0.0: Initial schema (2025-10-01)
+\item v1.1.0: Added }atom\_ids\texttt{ to metadata (2025-10-20)
+
+\textbf{VIF Witness Schema:}
+\item v1.0.0: Initial schema (2025-10-01)
+\item v1.1.0: Added }confidence\_type` field (2025-10-25)
+
+\subsection*{Integration Points}
+
+Data schemas integrate deeply with all AIM-OS systems:
+
+\subsubsection*{CMC (Chapter 5)}
+
+\textbf{CMC provides:} Atom storage and retrieval  
+\textbf{Schemas provide:} Structure for CMC atoms  
+\textbf{Integration:} CMC validates atom schemas on store/retrieve
+
+\subsubsection*{HHNI (Chapter 6)}
+
+\textbf{HHNI provides:} Hierarchical indexing  
+\textbf{Schemas provide:} Structure for HHNI nodes  
+\textbf{Integration:} HHNI validates node schemas on index/query
+
+\subsubsection*{VIF (Chapter 7)}
+
+\textbf{VIF provides:} Confidence tracking  
+\textbf{Schemas provide:} Structure for VIF witnesses  
+\textbf{Integration:} VIF validates witness schemas on create/verify
+
+\subsubsection*{SEG (Chapter 9)}
+
+\textbf{SEG provides:} Evidence graph  
+\textbf{Schemas provide:} Structure for graph nodes/edges  
+\textbf{Integration:} SEG validates graph schemas on add/query
+
+\subsubsection*{APOE (Chapter 8)}
+
+\textbf{APOE provides:} Orchestration  
+\textbf{Schemas provide:} Structure for APOE plans  
+\textbf{Integration:} APOE validates plan schemas on create/execute
+

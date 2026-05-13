@@ -1,0 +1,43 @@
+{
+  "system_slug": "webgpu",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-03",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "webassembly",
+      "evidence_tier": "INFERRED",
+      "notes": "Portable engine stacks often combine WebAssembly modules with WebGPU for browser GPU workloads."
+    },
+    {
+      "type": "integrates_with",
+      "target": "vulkan",
+      "evidence_tier": "INFERRED",
+      "notes": "Many implementations use Vulkan as a native backend on supported platforms (browser/engine dependent)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "metal",
+      "evidence_tier": "INFERRED",
+      "notes": "WebKit/Safari-class stacks may target Metal on Apple platforms (product-dependent)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "direct3d",
+      "evidence_tier": "INFERRED",
+      "notes": "Chromium-derived stacks commonly use D3D12/D3D11 backends on Windows (implementation-dependent)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "spir-v",
+      "evidence_tier": "INFERRED",
+      "notes": "WGSL lowering toolchains (e.g. Tint) commonly target SPIR-V for Vulkan backends (implementation-dependent)."
+    },
+    {
+      "type": "competes_with",
+      "target": "webgl",
+      "evidence_tier": "INFERRED",
+      "notes": "Overlapping browser GPU API space; WebGL is the legacy OpenGL ES-style API (GLSL ES) vs WebGPU/WGSL."
+    }
+  ]
+}

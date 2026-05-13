@@ -1,0 +1,53 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "systemd",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "systemd-sysext and systemd-sysext.service are part of the systemd suite on Linux."
+    },
+    {
+      "type": "integrates_with",
+      "target": "systemd-unit-model",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Extensions can ship unit files under merged hierarchies interpreted by systemd after merge."
+    },
+    {
+      "type": "integrates_with",
+      "target": "systemd-portable",
+      "evidence_tier": "INFERRED",
+      "notes": "Both are systemd-native ways to layer additional OS-tree content; portable services vs sysext merge differ in workflow and manuals."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Overlay-based merge relies on Linux mount and overlay filesystem support per systemd documentation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "unified-kernel-image",
+      "evidence_tier": "INFERRED",
+      "notes": "Some boot/initrd flows document or deploy sysext alongside UKI-based systemd-centric images (distro-specific)."
+    },
+    {
+      "type": "competes_with",
+      "target": "docker",
+      "evidence_tier": "INFERRED",
+      "notes": "Host /usr merge vs OCI container delivery address overlapping 'ship extra software' goals with different isolation and tooling."
+    },
+    {
+      "type": "competes_with",
+      "target": "oci-image-spec",
+      "evidence_tier": "INFERRED",
+      "notes": "OCI image layers target container runtimes; sysext targets systemd-managed host hierarchy merge."
+    },
+    {
+      "type": "integrates_with",
+      "target": "systemd-confext",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Confext is the sibling extension merge path for configuration trees alongside sysext for system hierarchies."
+    }
+  ]
+}

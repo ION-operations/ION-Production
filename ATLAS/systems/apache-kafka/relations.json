@@ -1,0 +1,19 @@
+{
+  "system_slug": "apache-kafka",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-04",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "Kafka operators and Helm charts are common on Kubernetes."
+    },
+    {
+      "type": "integrates_with",
+      "target": "grpc",
+      "evidence_tier": "INFERRED",
+      "notes": "Some ecosystem components use gRPC alongside Kafka deployments."
+    }
+  ]
+}

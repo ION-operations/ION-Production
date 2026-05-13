@@ -1,0 +1,575 @@
+% Chapter converted from Markdown
+% Auto-generated - do not edit manually
+
+\section*{Chapter 12 - Self-Improvement (SIS)}
+
+
+\subsection*{Purpose}
+
+This chapter describes the Self-Improvement System (SIS), the system that turns observations into action. SIS solves the fundamental problem introduced in Chapter 1: no learning—every failure repeats, and there's no mechanism to improve.
+
+SIS provides:
+\item \textbf{Improvement loop} sensing signals, dreaming improvements, experimenting safely, integrating successes
+\item \textbf{Dream catalog} storing candidate improvements with hypotheses, plans, risks, and metrics
+\item \textbf{Experimentation guidelines} ensuring safe testing before production integration
+\item \textbf{Learning integration} enabling continuous improvement through pattern recognition and meta-learning
+
+This chapter demonstrates that SIS is not just change management—it is the improvement engine that enables AIM-OS to evolve. Without it, AIM-OS cannot learn from failures, adapt to new requirements, or improve itself.
+
+\subsection*{Executive Summary}
+
+SIS enables continuous self-improvement through a five-step loop: sense signals, dream improvements, experiment safely, integrate successes, and retrospect on outcomes. Dreams are stored in a catalog with hypotheses, plans, risks, and metrics. Experiments run in isolated environments with measurement plans. Successful improvements integrate into templates, chains, docs, and tooling. Learning integration enables pattern recognition and meta-learning.
+
+\textbf{Key Insight:} SIS enables the "self-improvement" principle from Chapter 1. Without it, AIM-OS cannot learn from failures or adapt to new requirements. With it, every failure becomes a learning opportunity, and every success becomes a template for future improvements.
+
+\subsection*{Improvement Loop}
+
+SIS operates through a continuous five-step improvement loop:
+
+\subsubsection*{1. Sense}
+
+\textbf{Purpose:} Collect signals from all AIM-OS systems
+
+\textbf{Sources:}
+\item \textbf{CAS (awareness):} Anomalies, drift indicators, failure modes
+\item \textbf{SDF-CVF (quality):} Gate failures, quartet parity violations, quality regressions
+\item \textbf{SEG (evidence):} Evidence gaps, contradiction detection, knowledge synthesis needs
+\item \textbf{VIF (confidence):} Confidence drops, threshold breaches, gating failures
+
+\textbf{Mechanism:} Continuous monitoring, event-driven triggers, periodic scans
+
+\textbf{Output:} Signal catalog with priority, impact, and feasibility scores
+
+\subsubsection*{2. Dream}
+
+\textbf{Purpose:} Propose candidate improvements ranked by impact and feasibility
+
+\textbf{Process:}
+\item Analyze signals to identify improvement opportunities
+\item Generate improvement "dreams" with hypotheses, plans, risks, metrics
+\item Rank dreams by impact (high/medium/low) and feasibility (easy/medium/hard)
+\item Store dreams in catalog for review and prioritization
+
+\textbf{Output:} Dream catalog with ranked candidate improvements
+
+\subsubsection*{3. Experiment}
+
+\textbf{Purpose:} Execute controlled changes with measurement plans
+
+\textbf{Process:}
+\item Select approved dream for experimentation
+\item Create isolated environment (staging, replay)
+\item Execute controlled change with measurement plan
+\item Compare metrics against control baseline
+\item Require statistically meaningful improvement
+
+\textbf{Output:} Experiment results with metrics and analysis
+
+\subsubsection*{4. Integrate}
+
+\textbf{Purpose:} Promote successful improvements into templates, chains, docs, and tooling
+
+\textbf{Process:}
+\item Validate experiment results meet success criteria
+\item Integrate improvement into production systems
+\item Update templates, chains, docs, and tooling
+\item Update VIF and SDF-CVF dashboards with results
+
+\textbf{Output:} Integrated improvement with updated systems
+
+\subsubsection*{5. Retrospect}
+
+\textbf{Purpose:} Record outcomes, lessons, and follow-up tasks
+
+\textbf{Process:}
+\item Document experiment outcomes (success/failure/partial)
+\item Extract lessons learned (what worked, what didn't)
+\item Create follow-up tasks for future improvements
+\item Record in CMC + SEG for auditability
+
+\textbf{Output:} Retrospective notes with lessons and follow-ups
+
+This loop ensures continuous improvement through systematic experimentation and learning.
+
+\subsection*{Runnable Examples (PowerShell)}
+
+\subsubsection*{Example 1: Generate Improvement Dreams}
+``\texttt{powershell
+\section*{Generate improvement dreams for foundation systems}
+\_\_MATH\_BLOCK\_0\_\_result = Invoke-WebRequest -Uri 'http://localhost:5001/mcp/execute' }
+    -Method POST -ContentType 'application/json' -Body \_\_MATH\_BLOCK\_1\_\_result.dreams | ForEach-Object {
+    Write-Host "  Dream ID: \_\_MATH\_BLOCK\_2\_\_\_.dream\_id)"
+    Write-Host "  Hypothesis: \_\_MATH\_BLOCK\_3\_\_\_.hypothesis)"
+    Write-Host "  Impact: \_\_MATH\_BLOCK\_4\_\_\_.impact), Feasibility: \_\_MATH\_BLOCK\_5\_\_\_.feasibility)"
+    Write-Host ""
+}
+``\texttt{
+
+\subsubsection*{Example 2: Test Improvement Dream}
+}`\texttt{powershell
+\section*{Test a selected dream in staging environment}
+\_\_MATH\_BLOCK\_6\_\_true
+    } 
+} | ConvertTo-Json -Depth 6
+
+\_\_MATH\_BLOCK\_7\_\_test |
+    Select-Object -ExpandProperty Content | ConvertFrom-Json
+
+Write-Host "Dream Test Results:"
+Write-Host "  Dream ID: \_\_MATH\_BLOCK\_8\_\_result.dream\_id)"
+Write-Host "  Status: \_\_MATH\_BLOCK\_9\_\_result.status)"
+Write-Host "  Metrics:"
+\_\_MATH\_BLOCK\_10\_\_(\_\_MATH\_BLOCK\_11\_\_(\_\_MATH\_BLOCK\_12\_\_(\_\_MATH\_BLOCK\_13\_\_(\_\_MATH\_BLOCK\_14\_\_history = @{ 
+    tool='query\_dataset'; 
+    arguments=@{ 
+        dataset\_id='self\_improvement';
+        query='improvement\_history';
+        filters=@{
+            window='30d';
+            min\_improvements=5;
+            include\_metrics=\_\_MATH\_BLOCK\_15\_\_result = Invoke-WebRequest -Uri 'http://localhost:5001/mcp/execute' }
+    -Method POST -ContentType 'application/json' -Body \_\_MATH\_BLOCK\_16\_\_(\_\_MATH\_BLOCK\_17\_\_(\_\_MATH\_BLOCK\_18\_\_(\_\_MATH\_BLOCK\_19\_\_result.top\_improvements | ForEach-Object {
+    Write-Host "    - \_\_MATH\_BLOCK\_20\_\_\_.dream\_id): \_\_MATH\_BLOCK\_21\_\_\_.impact) impact"
+}
+``\texttt{
+
+\subsection*{Dream Catalog}
+
+The dream catalog stores all candidate improvements with structured metadata:
+
+\subsubsection*{Dream Structure}
+
+Each dream includes:
+
+\textbf{Hypothesis:} Expected benefit (e.g., "reduce drift incidents by 30\%")
+
+\textbf{Plan:} Steps, dependencies, validation suites
+\item Detailed step-by-step implementation plan
+\item Dependencies on other systems or improvements
+\item Validation suites to ensure success
+
+\textbf{Risk:} Potential regressions, fallbacks
+\item List of potential negative impacts
+\item Fallback plans if improvement fails
+\item Rollback procedures
+
+\textbf{Metrics:} KPIs to monitor (VIF delta, example pass rate, response latency)
+\item Leading indicators (early signals of success)
+\item Lagging indicators (final outcomes)
+\item Thresholds for success/failure
+
+\subsubsection*{Dream Storage}
+
+Dreams are stored as CMC atoms tagged }{system:'sis', status:'open'}\texttt{ and cross-linked in SEG for evidence tracking.
+
+\textbf{Status Lifecycle:}
+\item }proposed\texttt{ → Dream created, awaiting review
+\item }approved\texttt{ → Dream approved for experimentation
+\item }running\texttt{ → Experiment in progress
+\item }completed\texttt{ → Experiment finished, results recorded
+\item }archived\texttt{ → Dream integrated or abandoned
+
+\subsubsection*{Dream Prioritization}
+
+Dreams are ranked by:
+\item \textbf{Impact:} High/medium/low impact on system quality
+\item \textbf{Feasibility:} Easy/medium/hard to implement
+\item \textbf{Urgency:} Critical/high/medium/low priority
+
+\textbf{Priority Formula:} }priority = (0.5 × impact) + (0.3 × feasibility) + (0.2 × urgency)\texttt{
+
+\subsection*{Experimentation Guidelines}
+
+SIS enforces strict experimentation guidelines to ensure safe improvement:
+
+\subsubsection*{Isolation Requirements}
+
+\textbf{Requirement:} Run experiments in isolated environments before production
+
+\textbf{Environments:}
+\item \textbf{Staging:} Full system replica for comprehensive testing
+\item \textbf{Replay:} Historical replay for regression testing
+\item \textbf{Sandbox:} Isolated environment for risky experiments
+
+\textbf{Purpose:} Prevent production regressions while enabling safe experimentation
+
+\subsubsection*{Automation Requirements}
+
+\textbf{Requirement:} Use APOE chains to automate experiment execution and data capture
+
+\textbf{Benefits:}
+\item Consistent experiment execution
+\item Automated data capture
+\item Reproducible results
+\item Reduced manual effort
+
+\textbf{Process:} Create APOE chain for experiment → Execute → Capture metrics → Analyze results
+
+\subsubsection*{Measurement Requirements}
+
+\textbf{Requirement:} Compare metrics against control baseline; require statistically meaningful improvement
+
+\textbf{Metrics:}
+\item \textbf{Control baseline:} Metrics before improvement
+\item \textbf{Treatment metrics:} Metrics after improvement
+\item \textbf{Statistical significance:} Require p < 0.05 for acceptance
+
+\textbf{Success Criteria:} Improvement must be statistically meaningful AND practically significant
+
+\subsubsection*{Dashboard Updates}
+
+\textbf{Requirement:} Update VIF and SDF-CVF dashboards with experiment results
+
+\textbf{Process:}
+\item Record experiment results in CMC
+\item Update VIF confidence based on results
+\item Update SDF-CVF quality metrics
+\item Create dashboard entries for visibility
+
+These guidelines ensure experiments are safe, measurable, and integrated properly.
+
+\subsection*{System Architecture}
+
+SIS implements a comprehensive framework for maintaining AI consciousness quality, preventing drift, and ensuring continuous improvement. The architecture follows a modular, event-driven pattern with clear separation of concerns.
+
+\subsubsection*{Core Components}
+
+\textbf{1. Improvement Analyzer}
+\item \textbf{Purpose:} Analyzes system performance and identifies improvement opportunities
+\item \textbf{Capabilities:} Performance analysis, quality analysis, alignment analysis, drift detection, pattern recognition
+\item \textbf{Outputs:} Improvement recommendations, analysis reports
+\item \textbf{Performance:} Analysis latency <5 seconds, real-time drift detection
+
+\textbf{2. Learning Engine}
+\item \textbf{Purpose:} Learns from system behavior and performance data
+\item \textbf{Capabilities:} Behavior analysis, pattern learning, model training, insight generation, adaptation planning
+\item \textbf{Outputs:} Learned models, learning insights
+\item \textbf{Performance:} Learning latency <30 seconds, continuous background training
+
+\textbf{3. Optimization Engine}
+\item \textbf{Purpose:} Optimizes system performance based on analysis and learning
+\item \textbf{Capabilities:} Performance optimization, quality optimization, alignment optimization, drift correction
+\item \textbf{Outputs:} Optimization results, effectiveness reports
+\item \textbf{Performance:} Optimization latency <10 seconds, success rate >90\%
+
+\textbf{4. Adaptation Engine}
+\item \textbf{Purpose:} Adapts system behavior based on changing conditions
+\item \textbf{Capabilities:} Condition monitoring, adaptation planning, behavior adaptation, strategy adaptation
+\item \textbf{Outputs:} Adaptation results, adaptation reports
+\item \textbf{Performance:} Adaptation latency <15 seconds, success rate >85\%
+
+\textbf{5. Improvement Monitor}
+\item \textbf{Purpose:} Monitors improvement progress and effectiveness
+\item \textbf{Capabilities:} Progress tracking, effectiveness monitoring, quality monitoring, alignment monitoring, reporting
+\item \textbf{Outputs:} Progress reports, effectiveness reports, quality reports
+\item \textbf{Performance:} Monitoring latency <5 seconds, real-time reporting
+
+\subsubsection*{Architectural Principles}
+
+\textbf{Modular Design:} Each component has a single, well-defined responsibility, enabling maintainability and scalability.
+
+\textbf{Event-Driven Processing:} Asynchronous processing for self-improvement operations, enabling non-blocking improvement workflows.
+
+\textbf{Scalable Architecture:} Horizontal scaling to support multiple AI systems and high-throughput improvement operations.
+
+\textbf{Quality-First Design:} Zero hallucination guarantee with continuous monitoring, ensuring improvements maintain quality standards.
+
+\textbf{Performance-Optimized:} Real-time drift detection and quality assurance, enabling rapid response to issues.
+
+\textbf{Extensible Framework:} Plugin architecture for new improvement capabilities, enabling future enhancements.
+
+\subsection*{Integration with Other Systems}
+
+SIS integrates deeply with all AIM-OS systems:
+
+\subsubsection*{CAS (Chapter 11)}
+
+\textbf{CAS provides:} Anomalies that trigger new dreams  
+\textbf{SIS provides:} Feedback when improvements resolve anomalies  
+\textbf{Integration:} CAS anomalies → SIS dreams → SIS improvements → CAS feedback
+
+\textbf{Key Insight:} CAS detects problems. SIS fixes problems. CAS validates fixes.
+
+\subsubsection*{SDF-CVF (Chapter 10)}
+
+\textbf{SIS provides:} Improvements that must pass quality gates  
+\textbf{SDF-CVF provides:} Quality validation and quartet parity enforcement  
+\textbf{Integration:} SIS improvements must pass SDF-CVF gates before integration
+
+\textbf{Key Insight:} SIS enables improvement. SDF-CVF ensures improvement quality.
+
+\subsubsection*{APOE (Chapter 8)}
+
+\textbf{SIS provides:} Improvement plans requiring orchestration  
+\textbf{APOE provides:} Execution chains for multi-step improvements  
+\textbf{Integration:} SIS dreams → APOE chains → SIS integration
+
+\textbf{Key Insight:} SIS plans improvements. APOE executes improvements.
+
+\subsubsection*{SEG (Chapter 9)}
+
+\textbf{SIS provides:} Improvement outcomes requiring evidence  
+\textbf{SEG provides:} Evidence graph structure for claims and anchors  
+\textbf{Integration:} SIS improvements recorded in SEG with evidence
+
+\textbf{Key Insight:} SIS generates improvements. SEG structures improvement evidence.
+
+\subsubsection*{VIF (Chapter 7)}
+
+\textbf{SIS provides:} Improvements that impact confidence  
+\textbf{VIF provides:} Confidence thresholds and gating  
+\textbf{Integration:} SIS improvements update VIF confidence metrics
+
+\textbf{Key Insight:} SIS improves systems. VIF tracks improvement confidence.
+
+\textbf{Overall Insight:} SIS is not isolated—it integrates with all systems to enable continuous improvement. Every system benefits from systematic improvement.
+
+\subsection*{Governance}
+
+SIS governance ensures systematic improvement management:
+
+\subsubsection*{Weekly Improvement Review}
+
+\textbf{Frequency:} Once per week during stand-up
+
+\textbf{Process:}
+1. \textbf{Prioritize:} Review top dreams ranked by impact and feasibility
+2. \textbf{Review:} Examine experiment results from previous week
+3. \textbf{Assign:} Assign owners to approved dreams
+4. \textbf{Track:} Monitor progress on running experiments
+
+\textbf{Success Criteria:} All high-priority dreams reviewed, experiments progressing, owners assigned
+
+\subsubsection*{Dream Lifecycle Management}
+
+\textbf{Lifecycle States:}
+\item }proposed\texttt{ → Dream created, awaiting review
+\item }approved\texttt{ → Dream approved for experimentation
+\item }running\texttt{ → Experiment in progress
+\item }completed\texttt{ → Experiment finished, results recorded
+\item }archived\texttt{ → Dream integrated or abandoned
+
+\textbf{State Transitions:} Governed by approval gates and success criteria
+
+\subsubsection*{Retrospective Requirements}
+
+\textbf{Requirement:} Each completed improvement must include retrospective notes and VIF impact analysis
+
+\textbf{Retrospective Content:}
+\item Experiment outcomes (success/failure/partial)
+\item Lessons learned (what worked, what didn't)
+\item VIF impact analysis (confidence delta)
+\item Follow-up tasks for future improvements
+
+\textbf{Purpose:} Enable learning and continuous improvement
+
+\subsubsection*{Experiment Capacity Management}
+
+\textbf{Requirement:} Keep a dream burnout budget; no more than N concurrent experiments per tier
+
+\textbf{Capacity Limits:}
+\item \textbf{Tier S:} Maximum 2 concurrent experiments
+\item \textbf{Tier A:} Maximum 5 concurrent experiments
+\item \textbf{Tier B:} Maximum 10 concurrent experiments
+
+\textbf{Purpose:} Prevent experiment overload and ensure quality
+
+This governance ensures systematic improvement without overwhelming the system.
+
+\subsection*{Failure Modes \& Mitigations}
+
+SIS handles multiple failure scenarios:
+
+\subsubsection*{Experiment Overload}
+
+\textbf{Scenario:} Too many concurrent experiments overwhelm system capacity
+
+\textbf{Mitigation:} Throttle with queue and owner capacity rules
+
+\textbf{Process:}
+\item Queue experiments when capacity exceeded
+\item Assign owners based on capacity
+\item Prioritize high-impact experiments
+
+\textbf{Prevention:} Capacity limits per tier, owner assignment rules
+
+\subsubsection*{Metric Blindness}
+
+\textbf{Scenario:} Experiments define metrics but miss critical indicators
+
+\textbf{Mitigation:} Ensure experiments define both leading and lagging indicators
+
+\textbf{Process:}
+\item Require leading indicators (early signals)
+\item Require lagging indicators (final outcomes)
+\item Validate metric completeness before approval
+
+\textbf{Prevention:} Metric checklist, validation gates
+
+\subsubsection*{Regression Escape}
+
+\textbf{Scenario:} Improvement introduces regressions despite testing
+
+\textbf{Mitigation:} Require SDF-CVF pass before merging; maintain rollback plans
+
+\textbf{Process:}
+\item Run SDF-CVF gates before integration
+\item Maintain rollback procedures
+\item Monitor for regressions after integration
+
+\textbf{Prevention:} Quality gates, rollback procedures, monitoring
+
+\subsubsection*{Stale Dreams}
+
+\textbf{Scenario:} Dreams remain in catalog without progress
+
+\textbf{Mitigation:} Auto-expire or re-evaluate after set time (e.g., 14 days without progress)
+
+\textbf{Process:}
+\item Track dream age and progress
+\item Auto-expire stale dreams
+\item Re-evaluate if still relevant
+
+\textbf{Prevention:} Age tracking, expiration rules, re-evaluation process
+
+Each failure mode has documented mitigation procedures that preserve improvement quality.
+
+\subsection*{Templates \& Automation}
+
+SIS uses templates and automation to streamline improvement:
+
+\subsubsection*{Improvement Templates}
+
+\textbf{Purpose:} Define standard steps for common improvement types
+
+\textbf{Template Types:}
+\item \textbf{Documentation improvements:} Standard steps for doc updates
+\item \textbf{Code improvements:} Standard steps for code changes
+\item \textbf{Infrastructure improvements:} Standard steps for infrastructure changes
+\item \textbf{Process improvements:} Standard steps for process changes
+
+\textbf{Storage:} Templates stored in }templates/improvement/*.yaml` (referenced via APOE)
+
+\textbf{Use Case:} "Improve documentation" → Use documentation template → Execute via APOE
+
+\subsubsection*{Automation Integration}
+
+\textbf{Purpose:} Automate improvement workflows
+
+\textbf{Automation Features:}
+\item \textbf{Notification:} Notify relevant contributors when new dreams enter approved state
+\item \textbf{Execution:} Automate experiment execution via APOE chains
+\item \textbf{Tracking:} Automate progress tracking and status updates
+\item \textbf{Reporting:} Automate experiment result reporting
+
+\textbf{Channels:} Chat + email notifications, dashboard updates, CMC logging
+
+\textbf{Key Insight:} Templates and automation reduce manual effort while ensuring consistency.
+
+\subsection*{Learning Integration \& Meta-Learning}
+SIS enables continuous improvement through systematic learning integration:
+
+\item \textbf{Pattern Recognition:} SIS analyzes successful improvements to identify patterns that can be generalized. These patterns inform future dream generation and increase success rates.
+
+\item \textbf{Failure Analysis:} When experiments fail, SIS performs root cause analysis to extract learnings. Failed experiments are as valuable as successful ones for preventing future mistakes.
+
+\item \textbf{Knowledge Synthesis:} SIS synthesizes learnings from multiple improvements into higher-level principles. These principles guide future improvement efforts and prevent redundant work.
+
+\item \textbf{Protocol Updates:} Based on learnings, SIS updates improvement protocols, templates, and workflows. This ensures the improvement system itself improves over time.
+
+\subsection*{Quality Preservation}
+SIS maintains quality standards while enabling rapid improvement:
+
+\item \textbf{Zero Hallucination Guarantee:} All improvements must maintain zero hallucination standards. SIS validates that improvements don't introduce fabrication or uncertainty.
+
+\item \textbf{Test Coverage:} Every improvement must include comprehensive tests. SIS ensures test coverage meets quality thresholds before integration.
+
+\item \textbf{Documentation Standards:} Improvements must follow L0-L4 documentation standards. SIS validates documentation completeness and quality.
+
+\item \textbf{Backward Compatibility:} Improvements must maintain backward compatibility unless explicitly breaking changes are approved. SIS checks for compatibility regressions.
+
+\subsection*{Continuous Monitoring}
+SIS monitors improvement effectiveness over time:
+
+\item \textbf{Success Metrics:} Tracks improvement success rates, time-to-integration, and impact measurements. These metrics inform future improvement prioritization.
+
+\item \textbf{Drift Detection:} Monitors for quality drift after improvements are integrated. If drift detected, SIS triggers remediation or rollback.
+
+\item \textbf{Feedback Loops:} Collects feedback from users and systems about improvement effectiveness. This feedback informs future improvement efforts.
+
+\item \textbf{Adaptive Thresholds:} Adjusts improvement thresholds based on historical performance. More successful improvement types get prioritized.
+
+\subsection*{Connection to Other Chapters}
+
+SIS connects to all AIM-OS systems:
+
+\item \textbf{Chapter 1 (The Great Limitation):} SIS addresses "no learning" by enabling systematic improvement
+\item \textbf{Chapter 2 (The Vision):} SIS enables the "self-improvement" principle from the universal interface
+\item \textbf{Chapter 3 (The Proof):} SIS validates improvements through experimentation
+\item \textbf{Chapter 5 (CMC):} SIS stores all improvement data in CMC for durability
+\item \textbf{Chapter 6 (HHNI):} SIS uses HHNI for hierarchical navigation of improvement data
+\item \textbf{Chapter 7 (VIF):} SIS updates VIF confidence based on improvement outcomes
+\item \textbf{Chapter 8 (APOE):} SIS uses APOE to orchestrate improvement chains
+\item \textbf{Chapter 9 (SEG):} SIS records improvement outcomes in SEG for evidence
+\item \textbf{Chapter 10 (SDF-CVF):} SIS ensures improvements pass quality gates
+\item \textbf{Chapter 11 (CAS):} SIS receives signals from CAS and provides feedback
+
+\textbf{Key Insight:} SIS is the improvement engine that enables all systems to evolve. Without SIS, AIM-OS cannot learn from failures or adapt to new requirements.
+
+\subsection*{Operational Metrics \& Dashboards}
+
+SIS provides comprehensive metrics and dashboards for monitoring improvement effectiveness:
+
+\subsubsection*{Improvement Metrics}
+
+\textbf{Success Metrics:}
+\item \textbf{Success Rate:} Percentage of experiments that achieve success criteria
+\item \textbf{Time-to-Integration:} Average time from dream approval to production integration
+\item \textbf{Impact Measurement:} Quantified improvement impact (performance, quality, reliability)
+\item \textbf{Regression Rate:} Percentage of improvements that introduce regressions
+
+\textbf{Process Metrics:}
+\item \textbf{Dream Throughput:} Number of dreams processed per week
+\item \textbf{Experiment Capacity:} Current vs maximum concurrent experiments
+\item \textbf{Review Cycle Time:} Time from dream proposal to approval
+\item \textbf{Integration Cycle Time:} Time from experiment completion to integration
+
+\subsubsection*{SIS Dashboard}
+
+\textbf{Dashboard Sections:}
+\item \textbf{Active Dreams:} Current dreams by status (proposed, approved, running, completed)
+\item \textbf{Experiment Status:} Running experiments with progress and metrics
+\item \textbf{Success Trends:} Historical success rates and impact trends
+\item \textbf{Capacity Utilization:} Current experiment capacity vs limits
+\item \textbf{Top Improvements:} Highest-impact improvements from recent period
+
+\textbf{Real-Time Updates:}
+\item Dashboard updates automatically as experiments progress
+\item Alerts for experiments exceeding thresholds
+\item Notifications for dream approvals and completions
+
+\subsubsection*{Integration with Monitoring}
+
+\textbf{CAS Integration:}
+\item SIS improvements tracked in CAS dashboards
+\item Improvement impact visible in system health metrics
+\item Anomaly resolution linked to SIS improvements
+
+\textbf{VIF Integration:}
+\item Improvement confidence tracked via VIF
+\item Confidence deltas measured before/after improvements
+\item Confidence trends inform future improvement prioritization
+
+\textbf{SDF-CVF Integration:}
+\item Quality metrics tracked for all improvements
+\item Quartet parity scores monitored throughout improvement lifecycle
+\item Quality regressions trigger immediate alerts
+
+These metrics enable data-driven improvement prioritization and continuous optimization of the improvement process itself.
+
+\subsection*{Completeness Checklist (SIS)}
+
+\item \textbf{Coverage:} Improvement loop, dream catalog, experimentation guidelines, integration points, governance, failure modes, templates, learning integration, quality preservation, continuous monitoring, system architecture, operational playbook
+\item \textbf{Relevance:} All sections support SIS self-improvement theme
+\item \textbf{Balance:} Conceptual explanation (improvement loop, dream catalog) balances with operational detail (experimentation, governance, operational playbook)
+\item \textbf{Minimum substance:} Runnable examples, detailed walkthrough, integration points, system architecture, operational guidance exceed minimum requirements

@@ -1,0 +1,116 @@
+% Chapter converted from Markdown
+% Auto-generated - do not edit manually
+
+﻿\# Chapter 2 - Vision: Chat/IDE as the Universal Interface
+
+
+\subsection*{Executive Summary}
+
+\item The interface decides whether AI work is improvable. Chat must become the control plane; the IDE remains the substrate where artifacts, tests, and evidence live.
+\item A universal Chat/IDE surface wires together the core systems introduced in Chapter 1: CMC, HHNI, VIF, APOE, and SEG.
+\item The vision is meta-circular: we use the interface to write and validate this chapter, demonstrating that the tools already exist and that the workflow is reproducible.
+
+\subsection*{Interface Principles}
+
+| Principle | Description | Resulting Behavior |
+| --- | --- | --- |
+| \textbf{Statefulness} | Chat threads resume with intent, plans, and atoms retrieved from CMC. | Work restarts with context loaded instead of manual recap. |
+| \textbf{Constraint-first} | Gates and policies shape the conversation. Plans, evidence, and examples are negotiated explicitly. | Quality is enforced in-line, not as a review afterthought. |
+| \textbf{Shared visibility} | Agents and humans see the same files, metrics, and tool outputs inside the IDE. | Collaboration becomes computable and auditable. |
+| \textbf{Runnable truth} | Every major claim pairs with a runnable example or validated script. | The system proves its capability as it describes it. |
+
+\subsection*{Roles of Chat and IDE}
+
+\item \textbf{Chat stream:} sets objectives, proposes plans, records status, and routes confidence updates. Messages link directly to artifact diffs, tests, and evidence entries.
+\item \textbf{IDE workspace:} stores chapters, code, metrics, and evidence. MCP tools operate on the workspace with policy-enforced safety checks.
+\item \textbf{Command surfaces:} operations like \texttt{run\_autonomous\_checklist} and \texttt{get\_tag\_coverage} expose reproducible controls. Results are written to files plus surfaced in chat summaries.
+
+\subsection*{Capabilities the Interface Must Provide}
+
+1. \textbf{Memory Access (CMC):} Retrieve atoms mapped to the active goal, scope, and time horizon without manual searching.
+2. \textbf{Hierarchical Retrieval (HHNI):} Navigate from executive summaries to deep-dive nodes in a few jumps, maintaining coherence.
+3. \textbf{Confidence Routing (VIF):} Record and enforce thresholds. If confidence drops below policy, the system stops or diverts to research automatically.
+4. \textbf{Executable Plans (APOE):} Produce chains that specify steps, expected artifacts, validation hooks, and escalation logic.
+5. \textbf{Evidence Graph (SEG):} Attach claims to anchors, detect contradictions, and block merges when proof is missing.
+
+\subsection*{Runnable Interface Examples (PowerShell)}
+
+Discover relevant tools for the current workspace:
+
+``\texttt{powershell
+Invoke-WebRequest -Uri 'http://localhost:5001/mcp/list' -Method GET |
+  Select-Object -ExpandProperty Content | ConvertFrom-Json |
+  ForEach-Object { \_\_MATH\_BLOCK\_0\_\_stats = @{ tool='get\_memory\_stats'; arguments=@{} } | ConvertTo-Json -Depth 5
+Invoke-WebRequest -Uri 'http://localhost:5001/mcp/execute' -Method POST -ContentType 'application/json' -Body \_\_MATH\_BLOCK\_1\_\_query = @{ tool='retrieve\_memory'; arguments=@{ query='universal interface vision'; limit=5 } } | ConvertTo-Json -Depth 6
+Invoke-WebRequest -Uri 'http://localhost:5001/mcp/execute' -Method POST -ContentType 'application/json' -Body \_\_MATH\_BLOCK\_2\_\_uri = 'http://localhost:5001/mcp/execute'
+\_\_MATH\_BLOCK\_3\_\_false
+} } | ConvertTo-Json -Depth 6
+Invoke-RestMethod -Uri \_\_MATH\_BLOCK\_4\_\_body | Out-Null
+}`\texttt{
+
+Example B â€” List project commands via MCP (discovery):
+
+}`\texttt{powershell
+\_\_MATH\_BLOCK\_5\_\_true } } | ConvertTo-Json -Depth 6
+Invoke-RestMethod -Uri \_\_MATH\_BLOCK\_6\_\_body | ConvertTo-Json -Depth 5
+}`\texttt{
+
+Use the audited route (}/mcp/execute\texttt{) for MCP tools. Cite output identifiers in }evidence.jsonl\texttt{ when referencing results.
+
+\subsection*{Operational Runbook (Minimal Loop)}
+
+1) Check in (MCP), 2) edit + add one example, 3) append Tier A evidence, 4) run gates for this chapter, 5) post gate outcomes to the shared board. Small loops stay auditable and reversible.
+
+\subsection*{Performance Characteristics (Local)}
+
+\item Centralized: Command server handles }/mcp/execute\texttt{ and chat macros with logging.
+\item Sub-second: Local MCP calls are typically quick; variance depends on environment.
+\item Observable: Gate telemetry and server logs expose inputs and results.
+
+\subsection*{Scenario: Coordinating Four Cursor Agents}
+
+}north\_star\_project/CURSOR\_AGENT\_ONBOARDING.md\texttt{ shows how the same interface onboards Max, Lex, Sam, and Dac. Each agent sends the }send\_ai\_message\texttt{ payload from }AGENT\_CHECK\_IN\_PROTOCOL.md\texttt{, HHNI loads the relevant chains, and the IDE enforces runnable examples before posting to }coordination/epic\_standards\_overhaul/comms/SHARED\_MESSAGE\_BOARD.md\texttt{.
+
+\subsection*{Intelligent Gate Telemetry}
+
+Gate policy (}north\_star\_project/policy/gates.json\texttt{) replaced raw counts with relevance, density, completion, and thoroughness scores. Tier B chapters must keep relevance â‰¥0.82; missing examples trip the density gate and open a SIS task; completion stays }pending\texttt{ until Aether publishes the new spec. }north\_star\_project/scripts/run\_chain.py\texttt{ emits the same numbers that appear in }metrics.yaml\texttt{, so reviewers see the raw telemetry, not a guess.
+
+\subsection*{Failure Modes and Mitigations}
+
+\item \textbf{Tool overload:} limit surfaced tools to task-relevant capabilities via RAG filtering. Provide "why surfaced" explanations.
+\item \textbf{Context drift:} HHNI enforces navigation discipline. Plans record chosen scope and depth.
+\item \textbf{Gate fatigue:} automate checklists and run them opportunistically (on save, before merge).
+\item \textbf{Evidence decay:} SEG monitors freshness and creates SIS tasks when anchors age beyond threshold.
+
+\subsection*{Troubleshooting Guide}
+
+\item 404 from command server: Confirm POST to }http://localhost:5001/mcp/execute\texttt{ and that the server is running.
+\item Tool not visible: RAG filtering may hide it; provide clearer context or call }list\_cursor\_commands\texttt{.
+\item Unicode/emoji crash: Use a UTFâ€‘8 terminal or set }[Console]::OutputEncoding = [Text.UTF8Encoding]::new($false)\texttt{.
+\item Cross-agent messaging not appearing: }send\_ai\_message` writes to both files; verify both JSON stores exist.
+
+\subsection*{Demonstration: Minimal Edit Cycle}
+
+1. Draft two sentences describing the change in chat.
+2. Update the chapter file; add or adjust a runnable example.
+3. Append an evidence entry with tier, source, and anchor.
+4. Run contradiction and example gates; remediate issues immediately.
+5. Post a status update summarizing the change plus confidence delta.
+
+\subsection*{FAQ}
+
+\textbf{Is this interface only for large teams?} No. The smallest loop is still tiny: a short objective, a runnable example, and one evidence entry. The ceremony scales down.
+
+\textbf{Do contributors need to understand all subsystems?} The interface abstracts them. You only dive into details when troubleshooting or extending capability.
+
+\textbf{Will gates slow down experts?} The discipline shortens review cycles and prevents rework. Time saved on regressions easily offsets gate execution.
+
+\textbf{Can we customize policies?} Yes. Policy files define thresholds and escalation rules. Changes require evidence and review, preserving auditability.
+
+\subsection*{Completeness Checklist (Chapter 2)}
+
+\item Coverage complete: vision, principles, interaction loop, surfaces, scenarios, and FAQ.
+\item Relevance sufficient: every section supports the claim that Chat/IDE must be the universal interface.
+\item Subsection balance: no section dominates; conceptual and operational content share the space.
+\item Minimum substance: runnable examples, tables, and timelines meet drafting requirements.
+

@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "depends_on",
+      "target": "kubernetes",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Kustomize generates Kubernetes API resources (YAML) from bases and overlays; it targets the Kubernetes object model."
+    },
+    {
+      "type": "integrates_with",
+      "target": "helm",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Helm supports Kustomize as a post-renderer for rendered chart output in documented workflows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "fluxcd",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Flux Kustomization CRD reconciles kustomize-built manifests from Git sources per upstream documentation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "argo-cd",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Argo CD supports Kustomize as an application source type per upstream documentation."
+    }
+  ]
+}

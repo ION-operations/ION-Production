@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "implements",
+      "target": "model-context-protocol",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "LUCID-MCP exposes AIM-OS via MCP JSON-RPC over stdio per AIMOS_MAJOR_SYSTEMS.md."
+    },
+    {
+      "type": "depends_on",
+      "target": "linux-kernel",
+      "evidence_tier": "INFERRED",
+      "notes": "Typical Python/MCP developer host; not stated as exclusive OS requirement in Aether quartet."
+    },
+    {
+      "type": "integrates_with",
+      "target": "cursor",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Architecture and major-systems docs discuss Cursor IDE tool limits and integration patterns."
+    }
+  ]
+}

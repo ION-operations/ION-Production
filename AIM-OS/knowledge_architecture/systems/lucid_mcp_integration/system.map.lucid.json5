@@ -1,0 +1,590 @@
+{
+  system_id: "lucid_mcp_integration",
+  system_name: "LUCID-MCP Integration",
+  version: "1.0.0",
+  last_updated: "2025-01-27T20:50:00Z",
+  map_type: "system_topology",
+  internal_topology: {
+    core_components: [
+      {
+        component_id: "mcp_router",
+        name: "MCP Router",
+        type: "routing_engine",
+        tier: 2,
+        description: "Routes MCP tool calls to appropriate servers and tools",
+        ports: {
+          input: [
+            "mcp_requests",
+            "routing_rules",
+          ],
+          output: [
+            "routed_calls",
+            "routing_status",
+          ],
+        },
+        dependencies: [
+          "routing_rules",
+          "server_manager",
+        ],
+        blast_radius: "platform",
+        must_never: [
+          "Route without validation",
+          "Skip routing rules",
+          "Ignore server requirements",
+          "Bypass routing validation",
+        ],
+      },
+      {
+        component_id: "tool_selector",
+        name: "Tool Selector",
+        type: "selection_engine",
+        tier: 2,
+        description: "Selects optimal MCP tools based on context and requirements",
+        ports: {
+          input: [
+            "selection_requests",
+            "selection_rules",
+          ],
+          output: [
+            "selected_tools",
+            "selection_reasoning",
+          ],
+        },
+        dependencies: [
+          "selection_rules",
+          "context_analyzer",
+        ],
+        blast_radius: "platform",
+        must_never: [
+          "Select without validation",
+          "Skip selection rules",
+          "Ignore context requirements",
+          "Bypass selection validation",
+        ],
+      },
+      {
+        component_id: "server_manager",
+        name: "Server Manager",
+        type: "management_engine",
+        tier: 2,
+        description: "Manages MCP servers and their lifecycle",
+        ports: {
+          input: [
+            "server_requests",
+            "management_rules",
+          ],
+          output: [
+            "server_status",
+            "management_events",
+          ],
+        },
+        dependencies: [
+          "management_rules",
+          "lifecycle_manager",
+        ],
+        blast_radius: "platform",
+        must_never: [
+          "Manage without validation",
+          "Skip management rules",
+          "Ignore lifecycle requirements",
+          "Bypass management validation",
+        ],
+      },
+      {
+        component_id: "context_analyzer",
+        name: "Context Analyzer",
+        type: "analysis_engine",
+        tier: 2,
+        description: "Analyzes context to determine optimal MCP tool usage",
+        ports: {
+          input: [
+            "context_data",
+            "analysis_rules",
+          ],
+          output: [
+            "context_insights",
+            "tool_recommendations",
+          ],
+        },
+        dependencies: [
+          "analysis_rules",
+          "context_processor",
+        ],
+        blast_radius: "platform",
+        must_never: [
+          "Analyze without validation",
+          "Skip analysis rules",
+          "Ignore context requirements",
+          "Bypass analysis validation",
+        ],
+      },
+      {
+        component_id: "integration_monitor",
+        name: "Integration Monitor",
+        type: "monitoring_engine",
+        tier: 2,
+        description: "Monitors MCP integration performance and effectiveness",
+        ports: {
+          input: [
+            "monitoring_requests",
+            "monitoring_rules",
+          ],
+          output: [
+            "monitoring_reports",
+            "integration_metrics",
+          ],
+        },
+        dependencies: [
+          "monitoring_rules",
+          "metrics_collector",
+        ],
+        blast_radius: "platform",
+        must_never: [
+          "Monitor without validation",
+          "Skip monitoring rules",
+          "Ignore integration requirements",
+          "Bypass monitoring validation",
+        ],
+      },
+    ],
+    supporting_components: [
+      {
+        component_id: "routing_rules",
+        name: "Routing Rules",
+        type: "rules_engine",
+        tier: 1,
+        description: "Defines rules for MCP routing",
+        ports: {
+          input: [
+            "rule_requests",
+            "rule_definitions",
+          ],
+          output: [
+            "routing_rules",
+            "rule_status",
+          ],
+        },
+        dependencies: [
+          "rule_engine",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Define rules without validation",
+          "Skip rule validation",
+          "Ignore rule requirements",
+          "Bypass rule validation",
+        ],
+      },
+      {
+        component_id: "selection_rules",
+        name: "Selection Rules",
+        type: "rules_engine",
+        tier: 1,
+        description: "Defines rules for tool selection",
+        ports: {
+          input: [
+            "rule_requests",
+            "rule_definitions",
+          ],
+          output: [
+            "selection_rules",
+            "rule_status",
+          ],
+        },
+        dependencies: [
+          "rule_engine",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Define rules without validation",
+          "Skip rule validation",
+          "Ignore rule requirements",
+          "Bypass rule validation",
+        ],
+      },
+      {
+        component_id: "lifecycle_manager",
+        name: "Lifecycle Manager",
+        type: "lifecycle_engine",
+        tier: 1,
+        description: "Manages MCP server lifecycle",
+        ports: {
+          input: [
+            "lifecycle_requests",
+            "lifecycle_rules",
+          ],
+          output: [
+            "lifecycle_events",
+            "lifecycle_status",
+          ],
+        },
+        dependencies: [
+          "lifecycle_rules",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Manage lifecycle without validation",
+          "Skip lifecycle rules",
+          "Ignore lifecycle requirements",
+          "Bypass lifecycle validation",
+        ],
+      },
+      {
+        component_id: "context_processor",
+        name: "Context Processor",
+        type: "processing_engine",
+        tier: 1,
+        description: "Processes context data for analysis",
+        ports: {
+          input: [
+            "context_requests",
+            "processing_rules",
+          ],
+          output: [
+            "processed_context",
+            "processing_status",
+          ],
+        },
+        dependencies: [
+          "processing_rules",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Process without validation",
+          "Skip processing rules",
+          "Ignore processing requirements",
+          "Bypass processing validation",
+        ],
+      },
+      {
+        component_id: "metrics_collector",
+        name: "Metrics Collector",
+        type: "collection_engine",
+        tier: 1,
+        description: "Collects metrics for monitoring",
+        ports: {
+          input: [
+            "collection_requests",
+            "collection_rules",
+          ],
+          output: [
+            "collected_metrics",
+            "collection_status",
+          ],
+        },
+        dependencies: [
+          "collection_rules",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Collect without validation",
+          "Skip collection rules",
+          "Ignore collection requirements",
+          "Bypass collection validation",
+        ],
+      },
+    ],
+  },
+  boundary_tendrils: {
+    input_ports: [
+      {
+        port_id: "mcp_requests_input",
+        name: "MCP Requests Input",
+        type: "data_input",
+        protocol: "json",
+        description: "Receives MCP tool requests",
+        required: true,
+        validation: "mcp_requests_schema",
+      },
+      {
+        port_id: "context_data_input",
+        name: "Context Data Input",
+        type: "data_input",
+        protocol: "json",
+        description: "Receives context data for analysis",
+        required: true,
+        validation: "context_data_schema",
+      },
+      {
+        port_id: "server_requests_input",
+        name: "Server Requests Input",
+        type: "data_input",
+        protocol: "json",
+        description: "Receives server management requests",
+        required: true,
+        validation: "server_requests_schema",
+      },
+    ],
+    output_ports: [
+      {
+        port_id: "routed_calls_output",
+        name: "Routed Calls Output",
+        type: "data_output",
+        protocol: "json",
+        description: "Outputs routed MCP tool calls",
+        required: true,
+        validation: "routed_calls_schema",
+      },
+      {
+        port_id: "selected_tools_output",
+        name: "Selected Tools Output",
+        type: "data_output",
+        protocol: "json",
+        description: "Outputs selected MCP tools",
+        required: true,
+        validation: "selected_tools_schema",
+      },
+      {
+        port_id: "integration_metrics_output",
+        name: "Integration Metrics Output",
+        type: "data_output",
+        protocol: "json",
+        description: "Outputs integration metrics",
+        required: true,
+        validation: "integration_metrics_schema",
+      },
+    ],
+  },
+  data_flow: {
+    primary_flow: [
+      {
+        step: 1,
+        component: "mcp_router",
+        action: "Route MCP tool calls",
+        input: [
+          "mcp_requests",
+          "routing_rules",
+        ],
+        output: [
+          "routed_calls",
+          "routing_status",
+        ],
+      },
+      {
+        step: 2,
+        component: "tool_selector",
+        action: "Select optimal tools",
+        input: [
+          "selection_requests",
+          "selection_rules",
+        ],
+        output: [
+          "selected_tools",
+          "selection_reasoning",
+        ],
+      },
+      {
+        step: 3,
+        component: "server_manager",
+        action: "Manage MCP servers",
+        input: [
+          "server_requests",
+          "management_rules",
+        ],
+        output: [
+          "server_status",
+          "management_events",
+        ],
+      },
+      {
+        step: 4,
+        component: "context_analyzer",
+        action: "Analyze context",
+        input: [
+          "context_data",
+          "analysis_rules",
+        ],
+        output: [
+          "context_insights",
+          "tool_recommendations",
+        ],
+      },
+      {
+        step: 5,
+        component: "integration_monitor",
+        action: "Monitor integration",
+        input: [
+          "monitoring_requests",
+          "monitoring_rules",
+        ],
+        output: [
+          "monitoring_reports",
+          "integration_metrics",
+        ],
+      },
+    ],
+    secondary_flows: [
+      {
+        flow_name: "mcp_routing",
+        components: [
+          "mcp_router",
+          "routing_rules",
+          "server_manager",
+        ],
+        description: "Routes MCP tool calls to appropriate servers",
+      },
+      {
+        flow_name: "tool_selection",
+        components: [
+          "tool_selector",
+          "selection_rules",
+          "context_analyzer",
+        ],
+        description: "Selects optimal MCP tools based on context",
+      },
+      {
+        flow_name: "server_management",
+        components: [
+          "server_manager",
+          "lifecycle_manager",
+        ],
+        description: "Manages MCP server lifecycle",
+      },
+    ],
+  },
+  security_boundaries: {
+    tier_0: {
+      components: [
+        "routing_rules",
+        "selection_rules",
+        "lifecycle_manager",
+        "context_processor",
+        "metrics_collector",
+      ],
+      description: "Supporting components with basic security requirements",
+    },
+    tier_1: {
+      components: [
+        "mcp_router",
+        "tool_selector",
+        "server_manager",
+        "context_analyzer",
+      ],
+      description: "Processing components with standard security requirements",
+    },
+    tier_2: {
+      components: [
+        "integration_monitor",
+      ],
+      description: "Core component with comprehensive security requirements",
+    },
+  },
+  performance_characteristics: {
+    latency: {
+      mcp_routing: "< 1 second",
+      tool_selection: "< 2 seconds",
+      server_management: "< 3 seconds",
+      context_analysis: "< 2 seconds",
+    },
+    throughput: {
+      mcp_calls_per_minute: 20000,
+      tool_selections_per_minute: 15000,
+      server_operations_per_minute: 5000,
+      context_analyses_per_minute: 10000,
+    },
+    resource_usage: {
+      cpu_usage: "< 35%",
+      memory_usage: "< 250MB",
+      disk_usage: "< 1.5GB",
+    },
+  },
+  monitoring_points: [
+    {
+      point_id: "mcp_routing_rate",
+      name: "MCP Routing Rate",
+      type: "counter",
+      description: "Number of MCP calls routed per minute",
+    },
+    {
+      point_id: "tool_selection_time",
+      name: "Tool Selection Time",
+      type: "duration",
+      description: "Time taken for tool selection",
+    },
+    {
+      point_id: "server_management_effectiveness",
+      name: "Server Management Effectiveness",
+      type: "gauge",
+      description: "Effectiveness of server management",
+    },
+    {
+      point_id: "context_analysis_accuracy",
+      name: "Context Analysis Accuracy",
+      type: "gauge",
+      description: "Accuracy of context analysis",
+    },
+  ],
+  error_handling: {
+    retry_policies: {
+      mcp_routing: "3 retries with exponential backoff",
+      tool_selection: "2 retries with linear backoff",
+      server_management: "3 retries with exponential backoff",
+    },
+    circuit_breakers: {
+      mcp_service: "Open after 5 consecutive failures",
+      tool_service: "Open after 3 consecutive failures",
+    },
+    fallback_strategies: {
+      mcp_routing_failure: "Use cached routing data",
+      tool_selection_failure: "Use basic tool selection",
+      server_management_failure: "Use simple server management",
+    },
+  },
+  deployment_considerations: {
+    scalability: {
+      horizontal_scaling: "Supported via load balancer",
+      vertical_scaling: "Supported via resource allocation",
+      auto_scaling: "Supported via metrics-based scaling",
+    },
+    availability: {
+      target_uptime: "99.9%",
+      redundancy: "Multi-instance deployment",
+      failover: "Automatic failover to standby instances",
+    },
+    maintenance: {
+      rolling_updates: "Supported",
+      downtime: "Minimal during updates",
+      rollback: "Supported via version management",
+    },
+  },
+  metadata: {
+    created: "2025-01-27T20:50:00Z",
+    updated: "2025-11-02T16:35:00Z",
+    author: "aether",
+    status: "production",
+    version: "1.0.0",
+  },
+  confidenceRouting: {
+    high: "Read T0 executive summary (100 words) or code directly",
+    medium: "Read T0 + T1 overview (500 words) + T2 architecture (2k words)",
+    low: "Read T0 + T1 + T2 + T3 detailed (10k words)",
+    veryLow: "Read T0 + T1 + T2 + T3 + T4 complete (15k+ words) or ask for help",
+  },
+  relatedSystems: [
+    {
+      system: "daemon_rag_system",
+      relationship: "LUCID MCP Integration provides tool routing and selection to Daemon/RAG",
+      whenToUse: "When implementing tool routing or understanding MCP integration",
+      docs: [
+        "systems/daemon_rag_system/T2_architecture.md#mcp-integration",
+      ],
+      priority: "required",
+    },
+    {
+      system: "mcp_tools",
+      relationship: "LUCID MCP Integration routes to MCP Tools registry",
+      whenToUse: "When implementing tool routing or understanding tool registry",
+      docs: [
+        "systems/mcp_tools/T2_architecture.md#mcp-integration",
+      ],
+      priority: "required",
+    },
+  ],
+  documentation: {
+    T0: "knowledge_architecture/systems/lucid_mcp_integration/T0_executive.md",
+    T1: "knowledge_architecture/systems/lucid_mcp_integration/T1_overview.md",
+    T2: "knowledge_architecture/systems/lucid_mcp_integration/T2_architecture.md",
+    T3: "knowledge_architecture/systems/lucid_mcp_integration/T3_detailed.md",
+    T4: "knowledge_architecture/systems/lucid_mcp_integration/T4_complete.md",
+  },
+}

@@ -1,0 +1,183 @@
+{
+  // System Map: Cursor Rules & Commands
+  // Generated: 2025-11-05
+  // Author: Aether
+  
+  system: "cursor_rules_commands",
+  version: "v1.0.0",
+  tier: 1,  // Infrastructure/Tooling
+  
+  components: [
+    {
+      name: "Rules System",
+      type: "context_management",
+      description: "MDC-based persistent AI context with 4 loading types",
+      files: [
+        ".cursor/rules/base-rules.mdc",
+        ".cursor/rules/dynamic-rules.mdc"
+      ],
+      loading_types: [
+        "Always Applied",
+        "Auto-Attached (glob)",
+        "Agent Requested",
+        "Manual (@mention)"
+      ],
+      status: "production"
+    },
+    {
+      name: "Commands System",
+      type: "workflow_automation",
+      description: "Slash commands for one-touch workflow execution",
+      files: [
+        ".cursor/commands/*.md"
+      ],
+      command_count: 15,
+      categories: [
+        "documentation",
+        "development",
+        "system",
+        "memory",
+        "integration"
+      ],
+      status: "production"
+    },
+    {
+      name: "Archive Management",
+      type: "versioning",
+      description: "Bitemporal versioning for rule evolution",
+      files: [
+        ".cursor/rules/archive/*.DISABLED"
+      ],
+      status: "production"
+    }
+  ],
+  
+  connections: [
+    {
+      from: "Rules System",
+      to: "Cursor IDE",
+      type: "context_injection",
+      description: "Rules injected into AI prompt context",
+      protocol: "MDC parsing + context assembly"
+    },
+    {
+      from: "Commands System",
+      to: "AIM-OS Scripts",
+      type: "execution",
+      description: "Commands trigger automation scripts",
+      protocol: "Shell command execution via AI"
+    },
+    {
+      from: "Commands System",
+      to: "MCP Tools",
+      type: "integration",
+      description: "Commands use MCP tools for operations",
+      protocol: "MCP tool invocation"
+    },
+    {
+      from: "Rules System",
+      to: "Documentation Standards",
+      type: "compliance",
+      description: "Rules must follow T0-T4 format",
+      protocol: "Perfect Metadata frontmatter"
+    }
+  ],
+  
+  dependencies: {
+    internal: [
+      "Cursor IDE 2.0+ (MDC parser, command detection)",
+      "Git (version control)",
+      "File system (.cursor/ directories)"
+    ],
+    external: [
+      "AIM-OS Scripts (83 automation scripts)",
+      "MCP Tools (59 tools)",
+      "Core Systems (CMC, HHNI, VIF, APOE, SDF-CVF)",
+      "Documentation Standards (T0-T4, Perfect Templates)"
+    ]
+  },
+  
+  data_flow: [
+    {
+      flow: "Rule Loading",
+      path: "User conversation → Rule selection → Context assembly → AI prompt",
+      data: "Rule markdown content",
+      volume: "5,000-11,000 tokens per conversation"
+    },
+    {
+      flow: "Command Execution",
+      path: "User /command → Detection → Content load → AI execution → Output",
+      data: "Command markdown + parameters",
+      volume: "500-1,000 tokens per command"
+    },
+    {
+      flow: "Archive Versioning",
+      path: "Rule modification → Archive old version → Commit → Git history",
+      data: "Rule content + metadata",
+      volume: "~3 KB per rule version"
+    }
+  ],
+  
+  integration_points: [
+    {
+      system: "CMC",
+      integration: "Storage for decision logs, thought journals created by commands",
+      status: "operational"
+    },
+    {
+      system: "HHNI",
+      integration: "Knowledge retrieval in dynamic rules, indexing updates from commands",
+      status: "operational"
+    },
+    {
+      system: "VIF",
+      integration: "Confidence tracking in commands, threshold enforcement in rules",
+      status: "operational"
+    },
+    {
+      system: "APOE",
+      integration: "Workflow orchestration via commands, plan creation",
+      status: "operational"
+    },
+    {
+      system: "SDF-CVF",
+      integration: "Quintet parity enforcement via rules and validation commands",
+      status: "operational"
+    }
+  ],
+  
+  metrics: {
+    rules_active: 2,
+    rules_archived: 2,
+    commands_deployed: 15,
+    documentation_complete: "T0-T4 (100%)",
+    token_reduction: "Est. 30-40%",
+    time_savings: "Est. 50-95% per workflow",
+    confidence: 0.95,
+    status: "production_ready"
+  },
+  
+  quality_gates: {
+    rule_creation: [
+      "YAML frontmatter valid",
+      "Markdown syntax correct",
+      "Token budget compliant (≤5,000 for Always)",
+      "Tested in conversation",
+      "Bitemporal archive preserved"
+    ],
+    command_creation: [
+      "Workflow clearly documented",
+      "Scripts/tools verified exist",
+      "Examples included",
+      "Error handling defined",
+      "Integration tested"
+    ],
+    deployment: [
+      "All validation tests pass",
+      "Documentation complete",
+      "User approval obtained",
+      "Rollback plan documented"
+    ]
+  }
+}
+

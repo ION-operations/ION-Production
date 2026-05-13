@@ -1,0 +1,52 @@
+{
+  "name": "ChatGPT Deep Search",
+  "description": "Automate ChatGPT for deep search queries - Navigate to ChatGPT, wait for chat input, type query, and extract response",
+  "provider": "chatgpt",
+  "variables": {
+    "query": "{{query}}",
+    "accountId": "{{accountId}}"
+  },
+  "actions": [
+    {
+      "type": "navigate",
+      "url": "https://chat.openai.com",
+      "timeout": 30000,
+      "beforeDelay": 1000,
+      "afterDelay": 2000
+    },
+    {
+      "type": "wait",
+      "selector": "textarea[data-id='root']",
+      "timeout": 15000,
+      "afterDelay": 1000
+    },
+    {
+      "type": "type",
+      "selector": "textarea[data-id='root']",
+      "value": "{{query}}",
+      "humanLike": true,
+      "beforeDelay": 500,
+      "afterDelay": 1000
+    },
+    {
+      "type": "click",
+      "selector": "button[data-testid='send-button']",
+      "afterDelay": 2000
+    },
+    {
+      "type": "wait",
+      "selector": ".markdown",
+      "timeout": 30000,
+      "afterDelay": 1000
+    },
+    {
+      "type": "extract",
+      "selector": ".markdown",
+      "variable": "response"
+    }
+  ],
+  "output": {
+    "response": ".markdown"
+  }
+}
+

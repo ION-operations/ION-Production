@@ -1,0 +1,14 @@
+{"claim": "HHNI supports multi-level (six) hierarchy for retrieval.", "tier": "A", "source": "knowledge_architecture/systems/hhni/T0_executive.md", "anchor": "overview"}
+{"claim": "DVNS-style optimization improves candidate selection.", "tier": "A", "source": "knowledge_architecture/systems/hhni/T2_architecture.md", "anchor": "dvns"}
+{"claim": "Implementation artifacts exist and pass tests.", "tier": "A", "source": "packages/hhni/", "anchor": "module"}
+{"claim": "Two-stage retrieval (coarse->refine) increases precision while preserving diversity.", "tier": "A", "source": "knowledge_architecture/systems/hhni/T5_deep_dive.md", "anchor": "two_stage"}
+{"claim": "Authority and time are first-class signals in hierarchical retrieval.", "tier": "A", "source": "knowledge_architecture/systems/hhni/T1_overview.md", "anchor": "signals"}
+{"claim": "HHNI consists of five core components: Index Engine, DVNS Physics Module, Retrieval Planner, Compression/Deduplication Module, and IO/Adapters.", "tier": "A", "source": "knowledge_architecture/systems/hhni/T2_architecture.md", "anchor": "components"}
+{"claim": "DVNS uses four physics forces: gravity (attraction), elastic (structure), repulse (separation), damping (stability).", "tier": "A", "source": "knowledge_architecture/systems/hhni/T2_architecture.md", "anchor": "dvns_forces"}
+{"claim": "HHNI achieves +15% RS-lift at precision-at-rank-5, empirically validated improvement over baseline.", "tier": "A", "source": "knowledge_architecture/systems/hhni/T1_overview.md", "anchor": "rs_lift"}
+{"claim": "Two-stage retrieval: Stage 1 (coarse) ~10ms latency, Stage 2 (physics) ~30-50ms latency, total p95 < 80ms.", "tier": "A", "source": "knowledge_architecture/systems/hhni/T2_architecture.md", "anchor": "performance"}
+{"claim": "HHNI integrates with CMC for atom indexing, APOE for context retrieval, VIF for witness storage, SEG for evidence indexing, SDF-CVF for index consistency.", "tier": "A", "source": "knowledge_architecture/systems/hhni/T1_overview.md", "anchor": "integrations"}
+{"claim": "Operational context replay runbook documents the five-step workflow before merges.", "tier": "A", "source": "knowledge_architecture/systems/hhni/L3_detailed.md", "anchor": "context_replay"}
+{"claim": "DVNS simulator module exposes gravity/elastic/repulse/damping forces used in production.", "tier": "A", "source": "packages/hhni/dvns_simulator.py", "anchor": "main"}
+{"claim": "Gate policy enforces Tier S thresholds (vif_min, intelligent metrics) for HHNI.", "tier": "A", "source": "north_star_project/policy/gates.json", "anchor": "quality_assessment.system_tier"}
+{"claim": "Wave 1 sequencing and status logging live in READY_TO_EXECUTE.md and SHARED_MESSAGE_BOARD.md.", "tier": "A", "source": "north_star_project/READY_TO_EXECUTE.md", "anchor": "Wave 1 plan"}

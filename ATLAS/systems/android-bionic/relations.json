@@ -1,0 +1,125 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "android-aosp",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Bionic is the C library shipped as part of the AOSP core system image and NDK targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Android native processes use Bionic as the userspace C library atop the device Linux-based kernel."
+    },
+    {
+      "type": "integrates_with",
+      "target": "c-language",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Bionic implements C, POSIX subset, and Android-specific APIs for hosted native code on Android."
+    },
+    {
+      "type": "integrates_with",
+      "target": "elf",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Android native binaries and shared objects use ELF dynamic linking with the Bionic dynamic linker."
+    },
+    {
+      "type": "integrates_with",
+      "target": "clang",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "The Android NDK primarily uses Clang/LLVM toolchains that link against Bionic."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-libcxx",
+      "evidence_tier": "INFERRED",
+      "notes": "NDK C++ stacks commonly use libc++ layered on Bionic for native C++ on Android."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-libcxxabi",
+      "evidence_tier": "INFERRED",
+      "notes": "libc++abi pairs with libc++ in typical NDK C++ configurations on Bionic."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-binutils",
+      "evidence_tier": "INFERRED",
+      "notes": "Some third-party or legacy native build flows may use GNU binutils components with appropriate Android sysroots."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-gcc",
+      "evidence_tier": "INFERRED",
+      "notes": "Legacy or specialized cross-build toolchains may target Bionic with GCC where configured."
+    },
+    {
+      "type": "competes_with",
+      "target": "glibc",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable C library implementations across Android Bionic vs GNU/Linux glibc (not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "musl",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable C library implementations across Android Bionic vs Linux musl (not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "freebsd-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct libc implementations (Android Bionic vs BSD base libcs; not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "openbsd-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct libc implementations (Android Bionic vs BSD base libcs; not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "netbsd-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct libc implementations (Android Bionic vs BSD base libcs; not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "dragonfly-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct libc implementations (Android Bionic vs BSD base libcs; not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "illumos-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct libc implementations (Android Bionic vs illumos distribution libc; not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "newlib",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct libc implementations (Android Bionic vs embedded newlib; not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "wasi-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct libc implementations (Android Bionic vs Wasm WASI wasi-libc; not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "uclibc",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct libc implementations (Android Bionic vs Linux uClibc; not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "dietlibc",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct libc implementations (Android Bionic vs Linux dietlibc; not ABI-interchangeable)."
+    }
+  ]
+}

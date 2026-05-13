@@ -1,0 +1,217 @@
+/* ─── Welcome Page ─── */
+
+.welc-page {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow-y: auto;
+    color: var(--text-primary, #e0e0e0);
+}
+
+/* Hero */
+.welc-hero {
+    text-align: center;
+    padding: 30px 20px 20px;
+    background: linear-gradient(180deg, rgba(0, 212, 255, 0.03) 0%, transparent 100%);
+}
+
+.welc-logo {
+    font-size: 42px;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, #00d4ff, #4ecdc4, #a882ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.welc-title {
+    font-size: 22px;
+    font-weight: 800;
+    margin: 0 0 4px;
+    background: linear-gradient(90deg, #e0e0e0, #00d4ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.welc-subtitle {
+    font-size: 12px;
+    color: var(--text-dim, #888);
+    margin: 0;
+}
+
+.welc-content {
+    padding: 0 24px 24px;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.welc-section {
+    margin-bottom: 20px;
+}
+
+.welc-section-title {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-dim, #888);
+    margin-bottom: 10px;
+}
+
+/* Quick Actions */
+.welc-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+}
+
+.welc-action-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 16px 8px;
+    border-radius: 8px;
+    border: 1px solid var(--border, #2a2a4a);
+    background: var(--bg-surface, #141428);
+    cursor: pointer;
+    transition: all 0.15s;
+    color: var(--text-primary);
+}
+
+.welc-action-card:hover {
+    background: var(--bg-hover, #252550);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.welc-action-icon {
+    font-size: 22px;
+}
+
+.welc-action-label {
+    font-size: 10px;
+    font-weight: 600;
+}
+
+/* Columns */
+.welc-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+/* System Status */
+.welc-status-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.welc-status-card {
+    display: flex;
+    flex-direction: column;
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border, #2a2a4a);
+}
+
+.welc-status-header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.welc-status-icon {
+    font-size: 12px;
+}
+
+.welc-status-name {
+    font-size: 11px;
+    font-weight: 600;
+    flex: 1;
+}
+
+.welc-status-badge {
+    font-size: 8px;
+    font-weight: 700;
+    font-family: 'SF Mono', monospace;
+}
+
+.welc-status-detail {
+    font-size: 9px;
+    color: var(--text-dim, #888);
+    margin-left: 18px;
+    margin-top: 2px;
+}
+
+/* Recent */
+.welc-recent-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.welc-recent-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 5px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    transition: background 0.1s;
+}
+
+.welc-recent-item:hover {
+    background: var(--bg-hover, #252550);
+}
+
+.welc-recent-icon {
+    font-size: 12px;
+    width: 16px;
+    text-align: center;
+}
+
+.welc-recent-title {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.welc-recent-time {
+    font-size: 9px;
+    color: var(--text-dim, #888);
+    white-space: nowrap;
+}
+
+/* Stats */
+.welc-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+}
+
+.welc-stat {
+    text-align: center;
+    padding: 12px 8px;
+    border-radius: 6px;
+    border: 1px solid var(--border, #2a2a4a);
+    background: var(--bg-surface, #141428);
+}
+
+.welc-stat-value {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--accent, #00d4ff);
+    font-family: 'SF Mono', monospace;
+}
+
+.welc-stat-label {
+    font-size: 9px;
+    color: var(--text-dim, #888);
+    text-transform: uppercase;
+    margin-top: 2px;
+}

@@ -1,0 +1,958 @@
+--- a/.codex/config.toml
++++ b/.codex/config.toml
+@@ -14,6 +14,7 @@
+ - Shared Codex solo context is read-only base memory for parallel agents; do not write CAPSULE.md, MINI.md, HOT_CONTEXT.md, STATUS.json, ROUTE.json, or assign C-numbers directly.
+ - For material work, create or mount a unique branch capsule under ION/05_context/current/agent_context_branches/, run/satisfy `kernel.ion_agent_branch_capsule preflight`, and route candidate updates through ION/05_context/current/context_settlement/inbox/.
+ - Before asking the context settler to review material branch results, run/satisfy `kernel.ion_agent_branch_capsule settlement-intake` so guard evidence, branch identity, and workload diff are present.
++- Use `kernel.ion_agent_branch_capsule reconcile` and `kernel.ion_agent_branch_capsule cockpit` to detect stale branch registry rows, missing settlement requests, and write-scope collisions.
+ - Do not create or use the old /home/sev/ION - Production/ION_CODEX path without explicit operator approval.
+ - Do not claim ION identity, STEWARD authority, RELAY authority, PERSONA authority, production authority, live execution authority, or secrets authority.
+ - After material work, record an explicit Codex Solo capsule post through kernel.ion_codex_solo_context with confirmation token ION_BOUNDED_WRITE_CONFIRMED.
+@@ -55,4 +56,4 @@
+ type = "command"
+ command = 'python3 "$(git rev-parse --show-toplevel)/.codex/hooks/ion_session_start_context.py"'
+ timeout = 10
+-statusMessage = "Loading ION Codex Solo capsule + branch-capsule bootstrap context"
++statusMessage = "Loading ION Codex Solo capsule + branch-capsule bootstrap/reconciliation context"
+
+--- a/.codex/hooks/ion_session_start_context.py
++++ b/.codex/hooks/ion_session_start_context.py
+@@ -2,7 +2,7 @@
+ """Codex SessionStart hook for ION Codex Solo capsule context.
+ 
+ The hook is intentionally read-only. It injects a bounded HOT_CONTEXT-derived
+-developer context block plus branch-capsule bootstrap law when Codex starts in
++developer context block plus branch-capsule bootstrap/reconciliation law when Codex starts in
+ the active ION root.
+ """
+ from __future__ import annotations
+@@ -42,7 +42,7 @@
+         "hookSpecificOutput": {
+             "hookEventName": "SessionStart",
+             "additionalContext": (
+-                "ION Codex Solo capsule + branch-capsule bootstrap context was not loaded automatically. "
++                "ION Codex Solo capsule + branch-capsule bootstrap/reconciliation context was not loaded automatically. "
+                 f"{message}"
+             ),
+         },
+
+--- a/ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_REGISTRY_RECONCILIATION_PROTOCOL_V0_1.md
++++ b/ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_REGISTRY_RECONCILIATION_PROTOCOL_V0_1.md
+@@ -0,0 +1,117 @@
++# ION Agent Branch Capsule Registry Reconciliation Protocol v0.1
++
++Status: active provisional protocol
++Created: 2026-05-11
++Authority: branch-capsule runtime integrity and operator visibility only
++Production authority: false
++Live execution authority: false
++
++## Purpose
++
++This protocol adds the registry reconciliation layer for branch capsules.
++
++The branch-capsule guard prevents a single worker from writing outside its
++declared scope. Settlement intake prevents a branch return from entering review
++without identity, guard evidence, and workload diff. Reconciliation closes the
++remaining gap: the system must also know whether the branch registry itself is
++fresh, complete, collision-free, and visible to the operator.
++
++## Core law
++
++```text
++branch records are source evidence
++branch registry is an active index
++reconciliation proves the index matches the branch records
++```
++
++The registry is not allowed to drift silently.
++
++## Reconciliation checks
++
++A reconciliation pass must inspect:
++
++```text
++ION/05_context/current/agent_context_branches/**/BRANCH_RECORD.json
++ION/05_context/current/agent_context_branches/**/STATUS.json
++ION/05_context/current/agent_context_branches/**/SETTLEMENT_REQUESTS/*.json
++ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json
++```
++
++It must detect:
++
++```text
++branch record missing from registry
++registry row whose branch record no longer exists
++invalid or missing STATUS.json
++missing settlement request when settlement_required is true
++write-scope collisions between active branches
++shared context surfaces inside write_scope
++direct C-number/checkpoint assignment surfaces
++root mismatch
++missing parent context proof
++```
++
++## Read-only and write modes
++
++Read-only reconciliation reports findings only.
++
++Write mode may repair the registry from branch records and emit a report:
++
++```text
++ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_RECONCILIATION_REPORT_V0_1.json
++```
++
++Write mode must require the bounded write confirmation token and may only write
++inside the branch-capsule runtime lane.
++
++## CLI contract
++
++```bash
++python -m kernel.ion_agent_branch_capsule --ion-root . reconcile
++python -m kernel.ion_agent_branch_capsule --ion-root . reconcile --write --confirmation ION_BOUNDED_WRITE_CONFIRMED
++python -m kernel.ion_agent_branch_capsule --ion-root . cockpit
++```
++
++## Cockpit snapshot
++
++The cockpit snapshot is a human-facing read model showing:
++
++```text
++active branch count
++blocked branch count
++branch_id
++conversation_tag
++agent_tag
++task_tag
++write_scope
++settlement request count
++drift findings
++```
++
++This is intended for Helixion/JOC/dAimon visibility surfaces and ChatGPT/Codex
++operator handoff, not for automatic settlement.
++
++## Settlement relationship
++
++Reconciliation does not settle branch output. It only proves whether branch
++metadata is coherent enough for material-work guard and settlement-intake
++workflows to be trusted.
++
++## Non-claims
++
++This protocol does not:
++
++```text
++merge branch output
++promote branch results into shared context
++assign C-numbers
++edit shared Capsule/Mini/HOT_CONTEXT/STATUS/ROUTE
++run scanner services
++reload services
++grant production or live execution authority
++```
++
++## Required next implementation lane
++
++Future implementation should expose the cockpit snapshot through the ION/JOC UI
++and allow the operator to route blocked branches into context_settlement/conflicts.
+
+--- a/ION/03_registry/ion_skill_registry.yaml
++++ b/ION/03_registry/ion_skill_registry.yaml
+@@ -490,3 +490,43 @@
+     runtime:
+       command: "python -m kernel.ion_agent_branch_capsule --ion-root . settlement-intake --packet <SETTLEMENT_PACKET.json>"
+       mutates_shared_context: false
++
++
++  - skill_id: agent-branch-capsule-reconciliation
++    display_name: Agent Branch Capsule Reconciliation
++    class: guard
++    purpose: "Audit and optionally repair the branch-capsule registry so active branch claims match branch records."
++    trigger_summary: "Use after branch creation, before settlement batches, when wrong-context drift is suspected, or when the operator wants branch cockpit visibility."
++    selection_priority: 118
++    model_stage_id: context_settlement_guard
++    preferred_model: deterministic_local
++    default_reasoning_effort: low
++    activates_templates:
++      - ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_REGISTRY_RECONCILIATION_PROTOCOL_V0_1.md
++    template_bindings: []
++    context_mount:
++      required_packages:
++        - agent_branch_capsule_bootstrap_package
++        - active_authority_package
++      route_deeper_packages:
++        - route_depth_package
++        - evidence_receipt_package
++    allowed_authority:
++      read_context: true
++      queue_work: false
++      write_files: branch_registry_report_only_with_confirmation
++      shared_context_write: false
++      assign_checkpoint: false
++      production_authority: false
++      live_execution_authority: false
++      secrets_authority: false
++    proof_contract:
++      context_proof_required: true
++      template_action_proof_required: true
++      receipt_required: true
++      settlement_required_for_shared_context: true
++    runtime:
++      read_command: "python -m kernel.ion_agent_branch_capsule --ion-root . reconcile"
++      write_command: "python -m kernel.ion_agent_branch_capsule --ion-root . reconcile --write --confirmation ION_BOUNDED_WRITE_CONFIRMED"
++      cockpit_command: "python -m kernel.ion_agent_branch_capsule --ion-root . cockpit"
++      mutates_shared_context: false
+
+--- a/ION/04_packages/kernel/ion_agent_branch_capsule.py
++++ b/ION/04_packages/kernel/ion_agent_branch_capsule.py
+@@ -25,7 +25,9 @@
+ CURRENT_ROOT = Path("ION/05_context/current")
+ BRANCH_ROOT = CURRENT_ROOT / "agent_context_branches"
+ BRANCH_REGISTRY_PATH = BRANCH_ROOT / "BRANCH_CAPSULE_REGISTRY_V0_1.json"
++BRANCH_RECONCILIATION_REPORT_PATH = BRANCH_ROOT / "BRANCH_CAPSULE_RECONCILIATION_REPORT_V0_1.json"
+ BRANCH_CAPSULE_SETTLEMENT_INTAKE_PROTOCOL_PATH = Path("ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_SETTLEMENT_INTAKE_PROTOCOL_V0_1.md")
++BRANCH_RECONCILIATION_PROTOCOL_PATH = Path("ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_REGISTRY_RECONCILIATION_PROTOCOL_V0_1.md")
+ SETTLEMENT_INBOX = CURRENT_ROOT / "context_settlement" / "inbox"
+ SETTLEMENT_CLAIMS = CURRENT_ROOT / "context_settlement" / "claims"
+ 
+@@ -695,6 +697,270 @@
+         "live_execution_authority": False,
+         "mutates_shared_context": False,
+     }
++
++
++
++
++def _branch_record_paths(root: str | Path) -> tuple[Path, ...]:
++    shell_root = _shell_root(root)
++    branch_root = shell_root / BRANCH_ROOT
++    if not branch_root.exists():
++        return ()
++    return tuple(sorted(branch_root.glob("*/*/*/BRANCH_RECORD.json")))
++
++
++def _branch_dir_from_record_path(path: Path) -> Path:
++    return path.parent
++
++
++def _relative_to_root(shell_root: Path, path: Path) -> str:
++    try:
++        return path.relative_to(shell_root).as_posix()
++    except ValueError:
++        return path.as_posix()
++
++
++def load_branch_records(root: str | Path) -> tuple[dict[str, Any], ...]:
++    """Load all branch records from the branch capsule tree.
++
++    This is a read-only scan. Invalid JSON records are represented as blocked
++    scan records so reconciliation can surface them without crashing.
++    """
++
++    shell_root = _shell_root(root)
++    loaded: list[dict[str, Any]] = []
++    for path in _branch_record_paths(shell_root):
++        try:
++            data = json.loads(path.read_text(encoding="utf-8"))
++            if isinstance(data, dict):
++                data = dict(data)
++            else:
++                data = {"schema_id": "ion.agent_branch_capsule.invalid_record.v1", "finding": "branch_record_not_object"}
++        except json.JSONDecodeError:
++            data = {"schema_id": "ion.agent_branch_capsule.invalid_record.v1", "finding": "branch_record_invalid_json"}
++        data["_record_path"] = _relative_to_root(shell_root, path)
++        data["_branch_dir"] = _relative_to_root(shell_root, path.parent)
++        loaded.append(data)
++    return tuple(loaded)
++
++
++def _settlement_request_count(shell_root: Path, branch_dir: Path) -> int:
++    requests = branch_dir / "SETTLEMENT_REQUESTS"
++    if not requests.exists():
++        return 0
++    return len([path for path in requests.glob("*.json") if path.is_file()])
++
++
++def _branch_status_payload(branch_dir: Path) -> dict[str, Any]:
++    return _read_json(branch_dir / "STATUS.json", {})
++
++
++def reconcile_branch_registry(
++    root: str | Path,
++    *,
++    write: bool = False,
++    confirmation: str | None = None,
++) -> dict[str, Any]:
++    """Reconcile branch registry state against branch capsule records.
++
++    Read-only mode reports stale registry rows, missing registry rows, branch
++    validation failures, write-scope collisions, and missing settlement
++    requests. Write mode may repair the registry and emit a reconciliation
++    report, but it never mutates shared Codex solo context or assigns
++    checkpoints.
++    """
++
++    if write and confirmation != WRITE_CONFIRMATION_TOKEN:
++        return {
++            "schema_id": "ion.agent_branch_capsule.registry_reconciliation.v1",
++            "ok": False,
++            "verdict": BLOCKED_VERDICT,
++            "findings": ["write_confirmation_required"],
++            "repaired_findings": [],
++            "production_authority": False,
++            "live_execution_authority": False,
++            "mutates_shared_context": False,
++            "mutates_branch_registry": False,
++        }
++
++    shell_root = _shell_root(root)
++    registry_path = shell_root / BRANCH_REGISTRY_PATH
++    registry = _read_json(registry_path, {})
++    registry_branches = [
++        branch for branch in (registry.get("active_branches") or ())
++        if isinstance(branch, dict)
++    ]
++
++    records = list(load_branch_records(shell_root))
++    record_by_id = {
++        record.get("branch_id"): record
++        for record in records
++        if record.get("branch_id")
++    }
++    registry_by_id = {
++        branch.get("branch_id"): branch
++        for branch in registry_branches
++        if branch.get("branch_id")
++    }
++
++    blocking_findings: list[str] = []
++    repairable_findings: list[str] = []
++    branch_reports: list[dict[str, Any]] = []
++
++    for branch_id in sorted(set(record_by_id) - set(registry_by_id)):
++        repairable_findings.append(f"registry_missing_branch_record:{branch_id}")
++
++    for branch_id, branch in sorted(registry_by_id.items()):
++        branch_path = branch.get("branch_path")
++        record_path = shell_root / str(branch_path or "") / "BRANCH_RECORD.json"
++        if branch_id not in record_by_id or not record_path.exists():
++            repairable_findings.append(f"registry_stale_branch:{branch_id}")
++
++    for record in records:
++        branch_id = record.get("branch_id") or "unknown"
++        branch_dir = shell_root / str(record.get("_branch_dir") or "")
++        other_claims = [
++            {
++                "claim_id": other.get("branch_id"),
++                "branch_id": other.get("branch_id"),
++                "write_scope": other.get("write_scope") or (),
++            }
++            for other in records
++            if other.get("branch_id") and other.get("branch_id") != branch_id
++        ]
++        validation = validate_branch_record(shell_root, record, active_claims=other_claims)
++        status_payload = _branch_status_payload(branch_dir)
++        settlement_count = _settlement_request_count(shell_root, branch_dir)
++        record_findings = list(validation.get("findings") or ())
++
++        if record.get("settlement_required") is True and settlement_count == 0:
++            record_findings.append(f"settlement_request_missing:{branch_id}")
++
++        if not (branch_dir / "STATUS.json").exists():
++            record_findings.append(f"branch_status_missing:{branch_id}")
++        elif status_payload.get("shared_context_write") is not False:
++            record_findings.append(f"branch_status_shared_context_write_not_false:{branch_id}")
++
++        if record_findings:
++            blocking_findings.extend(record_findings)
++
++        branch_reports.append(
++            {
++                "branch_id": branch_id,
++                "context_instance_id": record.get("context_instance_id"),
++                "conversation_tag": record.get("conversation_tag"),
++                "agent_tag": record.get("agent_tag"),
++                "task_tag": record.get("task_tag"),
++                "branch_path": record.get("branch_path"),
++                "record_path": record.get("_record_path"),
++                "write_scope": list(record.get("write_scope") or ()),
++                "loaded_refs": list(record.get("loaded_refs") or ()),
++                "settlement_request_count": settlement_count,
++                "status": "DRIFTED_BLOCKED" if record_findings else "ACTIVE_PROVISIONAL",
++                "findings": record_findings,
++            }
++        )
++
++    findings = list(blocking_findings)
++    repaired_findings: list[str] = []
++    if write:
++        repaired_findings = list(repairable_findings)
++    else:
++        findings.extend(repairable_findings)
++
++    ok = not findings
++    payload = {
++        "schema_id": "ion.agent_branch_capsule.registry_reconciliation.v1",
++        "ok": ok,
++        "verdict": READY_VERDICT if ok else BLOCKED_VERDICT,
++        "generated_at": _now(),
++        "branch_root": BRANCH_ROOT.as_posix(),
++        "registry_path": BRANCH_REGISTRY_PATH.as_posix(),
++        "report_path": BRANCH_RECONCILIATION_REPORT_PATH.as_posix(),
++        "branch_count": len(branch_reports),
++        "branches": branch_reports,
++        "findings": findings,
++        "repaired_findings": repaired_findings,
++        "production_authority": False,
++        "live_execution_authority": False,
++        "mutates_shared_context": False,
++        "mutates_branch_registry": bool(write),
++    }
++
++    if write:
++        registry_payload = {
++            "schema_id": "ion.agent_branch_capsule.registry.v1",
++            "created_at": registry.get("created_at") or _now(),
++            "updated_at": _now(),
++            "status": "ACTIVE_PROVISIONAL" if ok else "DRIFTED_BLOCKED",
++            "protocol": PROTOCOL_PATH.as_posix(),
++            "reconciliation_protocol": BRANCH_RECONCILIATION_PROTOCOL_PATH.as_posix(),
++            "branch_root": BRANCH_ROOT.as_posix(),
++            "settlement_inbox": SETTLEMENT_INBOX.as_posix(),
++            "reconciliation_report": BRANCH_RECONCILIATION_REPORT_PATH.as_posix(),
++            "active_branches": [
++                {
++                    "branch_id": branch["branch_id"],
++                    "context_instance_id": branch["context_instance_id"],
++                    "conversation_tag": branch["conversation_tag"],
++                    "agent_tag": branch["agent_tag"],
++                    "task_tag": branch["task_tag"],
++                    "branch_path": branch["branch_path"],
++                    "write_scope": branch["write_scope"],
++                    "loaded_refs": branch["loaded_refs"],
++                    "status": branch["status"],
++                    "settlement_required": True,
++                    "shared_context_write": False,
++                }
++                for branch in branch_reports
++            ],
++            "authority": {
++                "production_authority": False,
++                "live_execution_authority": False,
++                "secrets_authority": False,
++                "browser_control_authority": False,
++            },
++        }
++        _write_json(registry_path, registry_payload)
++        _write_json(shell_root / BRANCH_RECONCILIATION_REPORT_PATH, payload)
++
++    return payload
++
++
++def build_branch_cockpit_snapshot(root: str | Path) -> dict[str, Any]:
++    """Build a human/operator-facing branch health snapshot."""
++
++    reconciliation = reconcile_branch_registry(root, write=False)
++    branches = reconciliation.get("branches") or []
++    blocked = [branch for branch in branches if branch.get("findings")]
++    return {
++        "schema_id": "ion.agent_branch_capsule.cockpit_snapshot.v1",
++        "ok": reconciliation.get("ok"),
++        "verdict": reconciliation.get("verdict"),
++        "generated_at": _now(),
++        "branch_count": len(branches),
++        "blocked_branch_count": len(blocked),
++        "active_branch_count": len(branches) - len(blocked),
++        "branches": [
++            {
++                "branch_id": branch.get("branch_id"),
++                "conversation_tag": branch.get("conversation_tag"),
++                "agent_tag": branch.get("agent_tag"),
++                "task_tag": branch.get("task_tag"),
++                "write_scope": branch.get("write_scope") or [],
++                "settlement_request_count": branch.get("settlement_request_count", 0),
++                "status": branch.get("status"),
++                "findings": branch.get("findings") or [],
++            }
++            for branch in branches
++        ],
++        "registry_findings": reconciliation.get("findings") or [],
++        "production_authority": False,
++        "live_execution_authority": False,
++        "mutates_shared_context": False,
++    }
++
++
+ 
+ 
+ def update_branch_registry(root: str | Path, record: BranchCapsuleRecord | dict[str, Any]) -> Path:
+@@ -912,6 +1178,12 @@
+     settlement_intake.add_argument("--packet", required=True)
+     settlement_intake.add_argument("--branch-record", default=None)
+ 
++    reconcile = sub.add_parser("reconcile")
++    reconcile.add_argument("--write", action="store_true")
++    reconcile.add_argument("--confirmation", default=None)
++
++    cockpit = sub.add_parser("cockpit")
++
+     args = parser.parse_args(argv)
+ 
+     if args.command == "create":
+@@ -951,6 +1223,20 @@
+         print(json.dumps(result, indent=2, sort_keys=True))
+         return 0 if result["ok"] else 1
+ 
++    if args.command == "reconcile":
++        result = reconcile_branch_registry(
++            args.ion_root,
++            write=args.write,
++            confirmation=args.confirmation,
++        )
++        print(json.dumps(result, indent=2, sort_keys=True))
++        return 0 if result["ok"] else 1
++
++    if args.command == "cockpit":
++        result = build_branch_cockpit_snapshot(args.ion_root)
++        print(json.dumps(result, indent=2, sort_keys=True))
++        return 0 if result["ok"] else 1
++
+     record = json.loads(Path(args.record_json).read_text(encoding="utf-8"))
+     result = validate_branch_record(args.ion_root, record)
+     print(json.dumps(result, indent=2, sort_keys=True))
+
+--- a/ION/04_packages/kernel/ion_codex_solo_context.py
++++ b/ION/04_packages/kernel/ion_codex_solo_context.py
+@@ -38,7 +38,9 @@
+ BRANCH_CAPSULE_BOOTSTRAP_PROTOCOL_PATH = Path("ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_BOOTSTRAP_BINDING_PROTOCOL_V0_1.md")
+ BRANCH_CAPSULE_GUARD_PROTOCOL_PATH = Path("ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_MATERIAL_WORK_GUARD_PROTOCOL_V0_1.md")
+ BRANCH_CAPSULE_SETTLEMENT_INTAKE_PROTOCOL_PATH = Path("ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_SETTLEMENT_INTAKE_PROTOCOL_V0_1.md")
++BRANCH_CAPSULE_RECONCILIATION_PROTOCOL_PATH = Path("ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_REGISTRY_RECONCILIATION_PROTOCOL_V0_1.md")
+ BRANCH_CAPSULE_REGISTRY_PATH = Path("ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json")
++BRANCH_CAPSULE_RECONCILIATION_REPORT_PATH = Path("ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_RECONCILIATION_REPORT_V0_1.json")
+ CONTEXT_SETTLEMENT_REGISTRY_PATH = Path("ION/05_context/current/context_settlement/CONTEXT_SETTLEMENT_REGISTRY_V0_1.json")
+ AGENT_BRANCH_CAPSULE_HELPER_PATH = Path("ION/04_packages/kernel/ion_agent_branch_capsule.py")
+ MAX_MINI_LINES = 30
+@@ -206,6 +208,12 @@
+         "why": "Defines read-only intake checks before branch task returns can enter context-settler review.",
+     },
+     {
++        "path": BRANCH_CAPSULE_RECONCILIATION_PROTOCOL_PATH.as_posix(),
++        "required": True,
++        "classification": "active_context_branch_registry_reconciliation_protocol",
++        "why": "Defines branch registry reconciliation, cockpit snapshots, stale branch detection, and write-scope collision audits.",
++    },
++    {
+         "path": BRANCH_CAPSULE_REGISTRY_PATH.as_posix(),
+         "required": True,
+         "classification": "active_branch_capsule_registry",
+@@ -216,6 +224,12 @@
+         "required": True,
+         "classification": "active_context_settlement_registry",
+         "why": "Settlement lane registry; shared context and C-number assignment must flow through this lane.",
++    },
++    {
++        "path": BRANCH_CAPSULE_RECONCILIATION_REPORT_PATH.as_posix(),
++        "required": False,
++        "classification": "active_branch_capsule_reconciliation_report",
++        "why": "Latest branch registry reconciliation report; optional until first reconciliation pass writes it.",
+     },
+     {
+         "path": AGENT_BRANCH_CAPSULE_HELPER_PATH.as_posix(),
+@@ -684,7 +698,9 @@
+                 BRANCH_CAPSULE_BOOTSTRAP_PROTOCOL_PATH.as_posix(),
+                 BRANCH_CAPSULE_GUARD_PROTOCOL_PATH.as_posix(),
+                 BRANCH_CAPSULE_SETTLEMENT_INTAKE_PROTOCOL_PATH.as_posix(),
++                BRANCH_CAPSULE_RECONCILIATION_PROTOCOL_PATH.as_posix(),
+                 BRANCH_CAPSULE_REGISTRY_PATH.as_posix(),
++                BRANCH_CAPSULE_RECONCILIATION_REPORT_PATH.as_posix(),
+                 CONTEXT_SETTLEMENT_REGISTRY_PATH.as_posix(),
+                 AGENT_BRANCH_CAPSULE_HELPER_PATH.as_posix(),
+             ],
+@@ -1071,7 +1087,9 @@
+         "bootstrap_protocol": (shell_root / BRANCH_CAPSULE_BOOTSTRAP_PROTOCOL_PATH).is_file(),
+         "material_work_guard_protocol": (shell_root / BRANCH_CAPSULE_GUARD_PROTOCOL_PATH).is_file(),
+         "settlement_intake_protocol": (shell_root / BRANCH_CAPSULE_SETTLEMENT_INTAKE_PROTOCOL_PATH).is_file(),
++        "registry_reconciliation_protocol": (shell_root / BRANCH_CAPSULE_RECONCILIATION_PROTOCOL_PATH).is_file(),
+         "branch_registry": (shell_root / BRANCH_CAPSULE_REGISTRY_PATH).is_file(),
++        "branch_reconciliation_report": (shell_root / BRANCH_CAPSULE_RECONCILIATION_REPORT_PATH).is_file(),
+         "settlement_registry": (shell_root / CONTEXT_SETTLEMENT_REGISTRY_PATH).is_file(),
+         "runtime_helper": (shell_root / AGENT_BRANCH_CAPSULE_HELPER_PATH).is_file(),
+         "package_present": package_present,
+@@ -1089,6 +1107,7 @@
+             "- Agents must not directly edit CAPSULE.md, MINI.md, HOT_CONTEXT.md, STATUS.json, ROUTE.json, or assign C-numbers.",
+             "- Before material writes, run or satisfy the branch-capsule material-work preflight guard.",
+             "- Before context-settler review, material branch returns must pass settlement-intake preflight.",
++            "- Run branch registry reconciliation/cockpit checks to detect stale branches, collisions, and missing settlement requests.",
+             "- Candidate branch results go to branch SETTLEMENT_REQUESTS/ and ION/05_context/current/context_settlement/inbox/.",
+             "- Only context settlement may promote branch outputs into shared context.",
+             "",
+@@ -1097,7 +1116,9 @@
+             f"- {BRANCH_CAPSULE_BOOTSTRAP_PROTOCOL_PATH.as_posix()}",
+             f"- {BRANCH_CAPSULE_GUARD_PROTOCOL_PATH.as_posix()}",
+             f"- {BRANCH_CAPSULE_SETTLEMENT_INTAKE_PROTOCOL_PATH.as_posix()}",
++            f"- {BRANCH_CAPSULE_RECONCILIATION_PROTOCOL_PATH.as_posix()}",
+             f"- {BRANCH_CAPSULE_REGISTRY_PATH.as_posix()}",
++            f"- {BRANCH_CAPSULE_RECONCILIATION_REPORT_PATH.as_posix()}",
+             f"- {CONTEXT_SETTLEMENT_REGISTRY_PATH.as_posix()}",
+             f"- {AGENT_BRANCH_CAPSULE_HELPER_PATH.as_posix()}",
+         ]
+@@ -1153,13 +1174,13 @@
+         "- Do not claim ION identity, STEWARD/RELAY/PERSONA authority, production authority, live execution authority, or secrets authority.",
+         "- After material work, record a Codex Solo capsule post with explicit confirmation.",
+         "",
++        "## Startup Recency Snapshot",
++        "",
++        json.dumps(startup_recency, indent=2, sort_keys=True),
++        "",
+         "## Branch Capsule Bootstrap Law",
+         "",
+         _branch_capsule_bootstrap_summary(shell_root, model),
+-        "",
+-        "## Startup Recency Snapshot",
+-        "",
+-        json.dumps(startup_recency, indent=2, sort_keys=True),
+         "",
+         "## Context Paths",
+         "",
+
+--- a/ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_RECONCILIATION_REPORT_V0_1.json
++++ b/ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_RECONCILIATION_REPORT_V0_1.json
+@@ -0,0 +1,17 @@
++{
++  "branch_count": 0,
++  "branch_root": "ION/05_context/current/agent_context_branches",
++  "branches": [],
++  "findings": [],
++  "generated_at": "2026-05-11T17:43:16+00:00",
++  "live_execution_authority": false,
++  "mutates_branch_registry": true,
++  "mutates_shared_context": false,
++  "ok": true,
++  "production_authority": false,
++  "registry_path": "ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json",
++  "repaired_findings": [],
++  "report_path": "ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_RECONCILIATION_REPORT_V0_1.json",
++  "schema_id": "ion.agent_branch_capsule.registry_reconciliation.v1",
++  "verdict": "ION_AGENT_BRANCH_CAPSULE_READY"
++}
+
+--- a/ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json
++++ b/ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json
+@@ -8,53 +8,11 @@
+   },
+   "branch_root": "ION/05_context/current/agent_context_branches",
+   "created_at": "2026-05-11",
+-  "material_work_guard": {
+-    "preflight_command": "python -m kernel.ion_agent_branch_capsule --ion-root . preflight --branch-record <BRANCH_RECORD.json> --write-scope <path>",
+-    "protocol": "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_MATERIAL_WORK_GUARD_PROTOCOL_V0_1.md",
+-    "runtime_helper": "ION/04_packages/kernel/ion_agent_branch_capsule.py",
+-    "settlement_required": true,
+-    "shared_context_write": false,
+-    "status": "ACTIVE_PROVISIONAL"
+-  },
+-  "non_claims": [
+-    "This registry does not promote branch results into shared context.",
+-    "This registry does not assign C-numbers.",
+-    "This registry does not grant production or live execution authority."
+-  ],
+   "protocol": "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_PROTOCOL_V0_1.md",
+-  "required_identity_fields": [
+-    "context_instance_id",
+-    "branch_id",
+-    "branch_type",
+-    "agent_tag",
+-    "conversation_tag",
+-    "task_tag",
+-    "parent_context_id",
+-    "root",
+-    "loaded_refs",
+-    "write_scope",
+-    "shared_context_write",
+-    "settlement_required"
+-  ],
++  "reconciliation_protocol": "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_REGISTRY_RECONCILIATION_PROTOCOL_V0_1.md",
++  "reconciliation_report": "ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_RECONCILIATION_REPORT_V0_1.json",
+   "schema_id": "ion.agent_branch_capsule.registry.v1",
+   "settlement_inbox": "ION/05_context/current/context_settlement/inbox",
+-  "shared_context_surfaces": [
+-    "ION/05_context/current/codex_solo/CAPSULE.md",
+-    "ION/05_context/current/codex_solo/MINI.md",
+-    "ION/05_context/current/codex_solo/HOT_CONTEXT.md",
+-    "ION/05_context/current/codex_solo/STATUS.json",
+-    "ION/05_context/current/codex_solo/ROUTE.json"
+-  ],
+   "status": "ACTIVE_PROVISIONAL",
+-  "updated_at": "2026-05-11T18:04:00+00:00",
+-  "settlement_intake": {
+-    "protocol": "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_SETTLEMENT_INTAKE_PROTOCOL_V0_1.md",
+-    "runtime_helper": "ION/04_packages/kernel/ion_agent_branch_capsule.py",
+-    "preflight_command": "python -m kernel.ion_agent_branch_capsule --ion-root . settlement-intake --packet <SETTLEMENT_PACKET.json>",
+-    "material_work_guard_evidence_required": true,
+-    "workload_diff_required_for_material_work": true,
+-    "shared_context_write": false,
+-    "settlement_required": true,
+-    "status": "ACTIVE_PROVISIONAL"
+-  }
++  "updated_at": "2026-05-11T17:43:16+00:00"
+ }
+
+--- a/ION/05_context/current/agent_context_branches/README.md
++++ b/ION/05_context/current/agent_context_branches/README.md
+@@ -41,3 +41,31 @@
+ material-work guard evidence, requested write scope, and workload diff evidence.
+ This is a read-only admissibility check; it does not merge branch output or
+ assign C-numbers.
++
++## Registry reconciliation
++
++Branch records are source evidence. The registry is an active index and must not
++drift silently.
++
++Read-only check:
++
++```bash
++python -m kernel.ion_agent_branch_capsule --ion-root . reconcile
++```
++
++Bounded registry repair/report write:
++
++```bash
++python -m kernel.ion_agent_branch_capsule --ion-root . reconcile --write --confirmation ION_BOUNDED_WRITE_CONFIRMED
++```
++
++Operator visibility snapshot:
++
++```bash
++python -m kernel.ion_agent_branch_capsule --ion-root . cockpit
++```
++
++Reconciliation may repair the branch registry and emit
++`BRANCH_CAPSULE_RECONCILIATION_REPORT_V0_1.json`, but it does not edit shared
++Capsule/Mini/HOT_CONTEXT/STATUS/ROUTE, assign C-numbers, or settle branch output.
++
+
+--- a/ION/05_context/current/context_settlement/claims/claim_20260511_agent_branch_capsule_reconciliation_005.json
++++ b/ION/05_context/current/context_settlement/claims/claim_20260511_agent_branch_capsule_reconciliation_005.json
+@@ -0,0 +1,25 @@
++{
++  "authority": {
++    "live_execution_authority": false,
++    "production_authority": false
++  },
++  "claim": "Agent branch capsule registry reconciliation runtime layer was added as a candidate branch-integrity guard.",
++  "claim_id": "claim_20260511_agent_branch_capsule_reconciliation_005",
++  "created_at": "2026-05-11",
++  "evidence": [
++    "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_REGISTRY_RECONCILIATION_PROTOCOL_V0_1.md",
++    "ION/04_packages/kernel/ion_agent_branch_capsule.py",
++    "ION/tests/test_kernel_ion_agent_branch_capsule.py",
++    "ION/05_context/current/context_settlement/inbox/SETTLE_AGENT_BRANCH_CAPSULE_RECONCILIATION_005_20260511.json"
++  ],
++  "non_claims": [
++    "No shared Capsule/Mini/HOT_CONTEXT/STATUS/ROUTE edits are claimed.",
++    "No checkpoint number was assigned.",
++    "No service reload or production action was performed."
++  ],
++  "schema_id": "ion.context_settlement.claim.v1",
++  "status": "CANDIDATE_PENDING_SETTLEMENT",
++  "validation": [
++    "python3 -m pytest ION/tests/test_kernel_ion_agent_branch_capsule.py -q"
++  ]
++}
+
+--- a/ION/05_context/current/context_settlement/inbox/SETTLE_AGENT_BRANCH_CAPSULE_RECONCILIATION_005_20260511.json
++++ b/ION/05_context/current/context_settlement/inbox/SETTLE_AGENT_BRANCH_CAPSULE_RECONCILIATION_005_20260511.json
+@@ -0,0 +1,48 @@
++{
++  "acceptance_gates": [
++    "does not mutate shared Capsule/Mini/HOT_CONTEXT/STATUS/ROUTE directly",
++    "does not assign C-number directly",
++    "registry reconciliation only writes branch registry/report with confirmation",
++    "detects stale registry rows and missing branch records",
++    "detects missing settlement requests and write-scope collisions",
++    "cockpit snapshot is read-only"
++  ],
++  "authority": {
++    "browser_control_authority": false,
++    "live_execution_authority": false,
++    "production_authority": false,
++    "secrets_authority": false
++  },
++  "checkpoint_request": {
++    "agent_assigned_c_number": null,
++    "assign_c_number": true,
++    "preferred_settlement": "record branch registry reconciliation as active provisional runtime integrity surface after settler review"
++  },
++  "created_at": "2026-05-11",
++  "domain": "context_settlement",
++  "non_claims": [
++    "This packet does not settle or promote the reconciliation protocol.",
++    "This packet does not resolve existing context conflicts.",
++    "This packet does not update shared context.",
++    "This packet does not grant production or live execution authority."
++  ],
++  "packet_id": "SETTLE_AGENT_BRANCH_CAPSULE_RECONCILIATION_005_20260511",
++  "requested_outcome": "ACCEPTED_AS_WITNESS",
++  "required_review": [
++    "context_settler",
++    "ION protocol steward",
++    "Codex solo context steward"
++  ],
++  "risk_class": "branch_registry_reconciliation_candidate",
++  "schema_id": "ion.context_settlement.inbox_packet.v1",
++  "settlement_batch": "C00_active_agent_claim_review_then_C01_checkpoint_assignment_and_shared_context_settlement",
++  "source_refs": [
++    "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_REGISTRY_RECONCILIATION_PROTOCOL_V0_1.md",
++    "ION/04_packages/kernel/ion_agent_branch_capsule.py",
++    "ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json",
++    "ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_RECONCILIATION_REPORT_V0_1.json",
++    "ION/tests/test_kernel_ion_agent_branch_capsule.py"
++  ],
++  "source_type": "runtime_integrity_protocol",
++  "status": "CANDIDATE_PENDING_SETTLEMENT"
++}
+
+--- a/ION/tests/test_kernel_ion_agent_branch_capsule.py
++++ b/ION/tests/test_kernel_ion_agent_branch_capsule.py
+@@ -11,6 +11,8 @@
+     build_task_return_settlement_packet,
+     create_branch_capsule,
+     material_work_preflight,
++    reconcile_branch_registry,
++    build_branch_cockpit_snapshot,
+     settlement_intake_preflight,
+     render_identity_card,
+     validate_branch_record,
+@@ -280,3 +282,103 @@
+     assert result["ok"] is False
+     assert "agent_checkpoint_assignment_forbidden:C-091" in result["findings"]
+     assert f"settlement_source_ref_shared_context_surface_forbidden:{SHARED_CONTEXT_SURFACES[0]}" in result["findings"]
++
++
++def test_reconcile_branch_registry_detects_stale_registry_and_missing_settlement_request(tmp_path: Path):
++    _seed_root(tmp_path)
++    created = create_branch_capsule(
++        tmp_path,
++        conversation_tag="Demo",
++        agent_tag="Codex Worker",
++        task_tag="Reconcile Drift",
++        write_scope=["ION/04_packages/kernel/allowed.py"],
++        emitted_at="2026-05-11T18:30:00+00:00",
++        settlement_request=False,
++    )
++
++    registry_path = tmp_path / BRANCH_REGISTRY_PATH
++    registry = json.loads(registry_path.read_text(encoding="utf-8"))
++    registry["active_branches"].append({
++        "branch_id": "branch_stale_missing",
++        "context_instance_id": "ctx_stale_missing",
++        "conversation_tag": "demo",
++        "agent_tag": "missing_worker",
++        "task_tag": "stale",
++        "branch_path": "ION/05_context/current/agent_context_branches/demo/missing_worker/stale",
++        "write_scope": [],
++        "loaded_refs": [],
++        "status": "ACTIVE_PROVISIONAL",
++        "settlement_required": True,
++        "shared_context_write": False,
++    })
++    registry_path.write_text(json.dumps(registry, indent=2, sort_keys=True) + "\n", encoding="utf-8")
++
++    result = reconcile_branch_registry(tmp_path)
++
++    assert result["ok"] is False
++    assert result["verdict"] == BLOCKED_VERDICT
++    assert f"settlement_request_missing:{created['record']['branch_id']}" in result["findings"]
++    assert "registry_stale_branch:branch_stale_missing" in result["findings"]
++    assert result["mutates_shared_context"] is False
++
++
++def test_reconcile_branch_registry_write_repairs_registry_and_writes_report(tmp_path: Path):
++    _seed_root(tmp_path)
++    created = create_branch_capsule(
++        tmp_path,
++        conversation_tag="Demo",
++        agent_tag="Codex Worker",
++        task_tag="Reconcile OK",
++        write_scope=["ION/04_packages/kernel/allowed.py"],
++        emitted_at="2026-05-11T18:30:00+00:00",
++        settlement_request=True,
++    )
++
++    registry_path = tmp_path / BRANCH_REGISTRY_PATH
++    registry = json.loads(registry_path.read_text(encoding="utf-8"))
++    registry["active_branches"] = []
++    registry_path.write_text(json.dumps(registry, indent=2, sort_keys=True) + "\n", encoding="utf-8")
++
++    result = reconcile_branch_registry(
++        tmp_path,
++        write=True,
++        confirmation="ION_BOUNDED_WRITE_CONFIRMED",
++    )
++
++    assert result["ok"] is True
++    assert result["verdict"] == READY_VERDICT
++    assert f"registry_missing_branch_record:{created['record']['branch_id']}" in result["repaired_findings"]
++    assert result["mutates_branch_registry"] is True
++    assert result["mutates_shared_context"] is False
++
++    repaired_registry = json.loads(registry_path.read_text(encoding="utf-8"))
++    assert repaired_registry["active_branches"][0]["branch_id"] == created["record"]["branch_id"]
++    assert repaired_registry["active_branches"][0]["shared_context_write"] is False
++
++    report_path = tmp_path / "ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_RECONCILIATION_REPORT_V0_1.json"
++    assert report_path.exists()
++    report = json.loads(report_path.read_text(encoding="utf-8"))
++    assert report["schema_id"] == "ion.agent_branch_capsule.registry_reconciliation.v1"
++
++
++def test_branch_cockpit_snapshot_summarizes_branch_health(tmp_path: Path):
++    _seed_root(tmp_path)
++    create_branch_capsule(
++        tmp_path,
++        conversation_tag="Demo",
++        agent_tag="Codex Worker",
++        task_tag="Visible Branch",
++        write_scope=["ION/04_packages/kernel/allowed.py"],
++        emitted_at="2026-05-11T18:30:00+00:00",
++        settlement_request=True,
++    )
++
++    snapshot = build_branch_cockpit_snapshot(tmp_path)
++
++    assert snapshot["ok"] is True
++    assert snapshot["branch_count"] == 1
++    assert snapshot["active_branch_count"] == 1
++    assert snapshot["blocked_branch_count"] == 0
++    assert snapshot["branches"][0]["conversation_tag"] == "demo"
++    assert snapshot["branches"][0]["settlement_request_count"] == 1
++
+
+--- a/ION/tests/test_kernel_ion_codex_solo_context.py
++++ b/ION/tests/test_kernel_ion_codex_solo_context.py
+@@ -35,6 +35,7 @@
+         "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_BOOTSTRAP_BINDING_PROTOCOL_V0_1.md": "# branch capsule bootstrap protocol\n",
+         "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_MATERIAL_WORK_GUARD_PROTOCOL_V0_1.md": "# branch capsule material work guard protocol\n",
+         "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_SETTLEMENT_INTAKE_PROTOCOL_V0_1.md": "# branch capsule settlement intake protocol\n",
++        "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_REGISTRY_RECONCILIATION_PROTOCOL_V0_1.md": "# branch capsule registry reconciliation protocol\n",
+         "ION/02_architecture/ION_CODEX_CHAT_ENGINE_PROTOCOL.md": "# chat engine protocol\n",
+         "ION/02_architecture/CODEX_CARRIER_LIMITS_CONTEXT_PROTOCOL.md": "# codex carrier limits protocol\n",
+         "ION/03_registry/codex_carrier_limits_registry.yaml": "schema_id: ion.codex_carrier_limits_registry.v1\nstatus: ACTIVE\n",
+@@ -94,6 +95,7 @@
+     assert "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_BOOTSTRAP_BINDING_PROTOCOL_V0_1.md" in route_paths
+     assert "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_MATERIAL_WORK_GUARD_PROTOCOL_V0_1.md" in route_paths
+     assert "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_SETTLEMENT_INTAKE_PROTOCOL_V0_1.md" in route_paths
++    assert "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_REGISTRY_RECONCILIATION_PROTOCOL_V0_1.md" in route_paths
+     assert "ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json" in route_paths
+ 
+ 
+@@ -180,6 +182,7 @@
+     assert "Every active agent/conversation/task doing material work needs a unique branch capsule identity" in result["context"]
+     assert "material-work preflight guard" in result["context"]
+     assert "settlement-intake preflight" in result["context"]
++    assert "registry reconciliation/cockpit checks" in result["context"]
+     assert "## Loaded HOT_CONTEXT" in result["context"]
+     assert "## MINIMUM WORKING CAPSULE" in result["context"]
+     assert history_after == history_before

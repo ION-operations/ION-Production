@@ -1,0 +1,125 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "c-language",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "newlib provides C and POSIX-oriented interfaces for hosted and bare-metal embedded targets in GCC-class toolchains."
+    },
+    {
+      "type": "integrates_with",
+      "target": "elf",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Typical embedded link flows emit ELF objects and images consumed by GNU ld when targeting ELF-capable platforms."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-gcc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GCC pairs with newlib in many bare-metal and RTOS cross-compilation configurations distributed with embedded toolchains."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-binutils",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GNU ld/as participate in embedded link and startup flows that link newlib objects into final images."
+    },
+    {
+      "type": "integrates_with",
+      "target": "riscv-isa",
+      "evidence_tier": "INFERRED",
+      "notes": "RISC-V embedded GCC toolchains commonly ship newlib for bare-metal and small-hosted targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "clang",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang/LLVM embedded toolchains may link against newlib-built sysroots where configured for bare-metal targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-libstdcxx",
+      "evidence_tier": "INFERRED",
+      "notes": "Embedded C++ toolchains may link GNU libstdc++ above newlib in g++-oriented bare-metal flows when enabled."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-libcxx",
+      "evidence_tier": "INFERRED",
+      "notes": "Specialized embedded C++ stacks may layer libc++ above newlib-like sysroots in LLVM-centric vendor flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-libcxxabi",
+      "evidence_tier": "INFERRED",
+      "notes": "libc++abi may pair with libc++ in embedded LLVM toolchains that target newlib-backed environments."
+    },
+    {
+      "type": "competes_with",
+      "target": "glibc",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable C library implementations across embedded newlib vs GNU/Linux glibc deployments (not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "musl",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable C library implementations across embedded newlib vs Linux musl (not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "freebsd-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct libc implementations (embedded newlib vs BSD base libcs; not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "openbsd-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct libc implementations (embedded newlib vs BSD base libcs; not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "netbsd-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct libc implementations (embedded newlib vs BSD base libcs; not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "dragonfly-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct libc implementations (embedded newlib vs BSD base libcs; not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "illumos-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct libc implementations (embedded newlib vs illumos distribution libc; not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "android-bionic",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct libc implementations (embedded newlib vs Android Bionic; not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "wasi-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct minimal libc lineages (GCC embedded newlib vs LLVM WASI wasi-libc; not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "uclibc",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct embedded libc lineages (bare-metal newlib vs Linux uClibc)."
+    },
+    {
+      "type": "competes_with",
+      "target": "dietlibc",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct embedded libc lineages (bare-metal newlib vs Linux dietlibc)."
+    }
+  ]
+}

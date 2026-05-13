@@ -1,0 +1,282 @@
+{
+  "systemId": "cursor_addon.bulletproofMessaging",
+  "systemName": "Bulletproof Messaging Protocol - Reliable Communication System",
+  "version": "v1.0.0",
+  "status": "production",
+  "layer": 6,
+  "description": "Reliable message protocol ensuring guaranteed delivery, ordering, and exactly-once processing across Extension UI, VS Code Extension Host, and external clients. Solves critical gaps: no guaranteed delivery, no deduplication, no link health monitoring, no persistent queues.",
+  
+  "internalNodes": [
+    {
+      "id": "messageRouter",
+      "kind": "core.component",
+      "responsibility": "Routes messages with ordering, deduplication, retry logic, and dead letter queue",
+      "status": "production",
+      "must_never": [
+        "Process duplicate messages",
+        "Process messages out of order (per sender)",
+        "Lose messages without tracking",
+        "Exceed retry limits without DLQ"
+      ],
+      "perf_budget_ms": 50,
+      "security_level": "high"
+    },
+    {
+      "id": "envelopeProtocol",
+      "kind": "protocol.component",
+      "responsibility": "Versioned envelope format (v1) with ACK/NACK, sequence numbers, idempotency keys",
+      "status": "production",
+      "must_never": [
+        "Break envelope format compatibility",
+        "Allow invalid envelope structures",
+        "Lose envelope metadata"
+      ],
+      "perf_budget_ms": 5,
+      "security_level": "medium"
+    },
+    {
+      "id": "idempotencyManager",
+      "kind": "reliability.component",
+      "responsibility": "Prevents duplicate message processing using persistent ID tracking",
+      "status": "production",
+      "must_never": [
+        "Lose processed IDs on restart",
+        "Allow duplicate processing",
+        "Exceed memory limits"
+      ],
+      "perf_budget_ms": 10,
+      "security_level": "high"
+    },
+    {
+      "id": "orderingManager",
+      "kind": "reliability.component",
+      "responsibility": "Enforces FIFO ordering per sender using sequence numbers",
+      "status": "production",
+      "must_never": [
+        "Process messages out of order",
+        "Lose sequence number state",
+        "Block on gaps indefinitely"
+      ],
+      "perf_budget_ms": 20,
+      "security_level": "high"
+    },
+    {
+      "id": "deadLetterQueue",
+      "kind": "reliability.component",
+      "responsibility": "Stores failed messages for manual review and retry",
+      "status": "production",
+      "must_never": [
+        "Lose DLQ entries",
+        "Allow DLQ to grow unbounded",
+        "Process DLQ entries without review"
+      ],
+      "perf_budget_ms": 100,
+      "security_level": "medium"
+    },
+    {
+      "id": "resequencer",
+      "kind": "reliability.component",
+      "responsibility": "Handles out-of-order messages with gap detection and TTL expiration",
+      "status": "production",
+      "must_never": [
+        "Process messages out of order",
+        "Block indefinitely on gaps",
+        "Lose messages during resequencing"
+      ],
+      "perf_budget_ms": 30,
+      "security_level": "high"
+    },
+    {
+      "id": "persistentOutbox",
+      "kind": "persistence.component",
+      "responsibility": "Survives reloads/crashes using IndexedDB (webview) and Memento (extension)",
+      "status": "production",
+      "must_never": [
+        "Lose undelivered messages",
+        "Corrupt outbox state",
+        "Exceed storage quotas"
+      ],
+      "perf_budget_ms": 200,
+      "security_level": "critical"
+    },
+    {
+      "id": "heartbeatMonitor",
+      "kind": "monitoring.component",
+      "responsibility": "Monitors connection health with RTT tracking and automatic reconnect",
+      "status": "production",
+      "must_never": [
+        "Miss connection failures",
+        "Report false health status",
+        "Exceed heartbeat budget"
+      ],
+      "perf_budget_ms": 5,
+      "security_level": "medium"
+    }
+  ],
+  
+  "ports": [
+    {
+      "portId": "uiIntegration",
+      "direction": "bidirectional",
+      "connectsToSystem": "cursor_addon.extensionUI",
+      "protocol": "envelope_v1",
+      "whatIsExchanged": [
+        "envelopes",
+        "acks",
+        "heartbeats",
+        "state_updates"
+      ],
+      "security_level": "high"
+    },
+    {
+      "portId": "extensionIntegration",
+      "direction": "bidirectional",
+      "connectsToSystem": "cursor_addon.extensionHost",
+      "protocol": "envelope_v1",
+      "whatIsExchanged": [
+        "envelopes",
+        "router_commands",
+        "handler_registrations",
+        "status_updates"
+      ],
+      "security_level": "high"
+    },
+    {
+      "portId": "commandServerIntegration",
+      "direction": "bidirectional",
+      "connectsToSystem": "cursor_addon.commandServer",
+      "protocol": "http_envelope",
+      "whatIsExchanged": [
+        "envelopes_via_http",
+        "webhook_events",
+        "status_polls"
+      ],
+      "security_level": "high"
+    },
+    {
+      "portId": "electronAppIntegration",
+      "direction": "bidirectional",
+      "connectsToSystem": "external.electronApp",
+      "protocol": "http_envelope",
+      "whatIsExchanged": [
+        "envelopes_via_http",
+        "command_executions",
+        "status_updates"
+      ],
+      "security_level": "medium"
+    }
+  ],
+  
+  "internalEdges": [
+    {
+      "from": "messageRouter",
+      "to": "idempotencyManager",
+      "type": "uses",
+      "description": "Router checks idempotency before processing"
+    },
+    {
+      "from": "messageRouter",
+      "to": "orderingManager",
+      "type": "uses",
+      "description": "Router ensures FIFO ordering per sender"
+    },
+    {
+      "from": "messageRouter",
+      "to": "resequencer",
+      "type": "uses",
+      "description": "Router uses resequencer for deterministic ordering"
+    },
+    {
+      "from": "messageRouter",
+      "to": "deadLetterQueue",
+      "type": "uses",
+      "description": "Router sends failed messages to DLQ"
+    },
+    {
+      "from": "messageRouter",
+      "to": "persistentOutbox",
+      "type": "uses",
+      "description": "Router persists undelivered messages"
+    },
+    {
+      "from": "messageRouter",
+      "to": "heartbeatMonitor",
+      "type": "uses",
+      "description": "Router monitors connection health"
+    }
+  ],
+  
+  "externalEdges": [
+    {
+      "from": "cursor_addon.bulletproofMessaging",
+      "to": "cursor_addon.agentAutomation",
+      "type": "provides",
+      "description": "Provides reliable messaging for agent status updates"
+    },
+    {
+      "from": "cursor_addon.bulletproofMessaging",
+      "to": "cursor_addon.commandServer",
+      "type": "integrates_with",
+      "description": "Integrates with Command Server HTTP endpoints"
+    },
+    {
+      "from": "cursor_addon.bulletproofMessaging",
+      "to": "cursor_addon.mcpClient",
+      "type": "wraps",
+      "description": "Wraps MCP tool calls with envelope protocol"
+    }
+  ],
+  
+  "performanceCharacteristics": {
+    "latency": {
+      "target_ms": 50,
+      "p95_ms": 100,
+      "p99_ms": 200
+    },
+    "throughput": {
+      "messages_per_second": 100,
+      "concurrent_messages": 1000
+    },
+    "reliability": {
+      "delivery_guarantee": "at_least_once",
+      "ordering_guarantee": "fifo_per_sender",
+      "duplicate_prevention": "idempotency_keys"
+    }
+  },
+  
+  "securityCharacteristics": {
+    "authentication": "envelope_based",
+    "authorization": "topic_based",
+    "encryption": "transport_layer",
+    "audit": "dead_letter_queue"
+  },
+  
+  "deploymentCharacteristics": {
+    "runtime": "extension_host",
+    "storage": "IndexedDB_Memento",
+    "scalability": "horizontal",
+    "availability": "99.9%"
+  },
+  
+  "metadata": {
+    "documentation": [
+      "cursor-addon/docs/T0_BULLETPROOF_MESSAGING_EXECUTIVE.md",
+      "cursor-addon/docs/T1_BULLETPROOF_MESSAGING_OVERVIEW.md",
+      "cursor-addon/docs/T2_BULLETPROOF_MESSAGING_ARCHITECTURE.md"
+    ],
+    "code": [
+      "cursor-addon/src/messaging/router.ts",
+      "cursor-addon/src/messaging/envelope.ts",
+      "cursor-addon/src/messaging/idempotencyManager.ts",
+      "cursor-addon/src/messaging/orderingManager.ts",
+      "cursor-addon/src/messaging/deadLetterQueue.ts",
+      "cursor-addon/src/messaging/resequencer.ts",
+      "cursor-addon/src/messaging/persistentOutbox.ts",
+      "cursor-addon/src/messaging/heartbeatMonitor.ts"
+    ],
+    "tests": [
+      "cursor-addon/src/messaging/messaging.test.ts"
+    ]
+  }
+}
+

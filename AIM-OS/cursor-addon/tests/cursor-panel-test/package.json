@@ -1,0 +1,29 @@
+{
+  "name": "cursor-panel-test",
+  "displayName": "Cursor Panel Test",
+  "description": "Test if createWebviewPanel works in Cursor",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": ["Other"],
+  "activationEvents": ["onCommand:panelTest.open"],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "panelTest.open",
+        "title": "Open Panel Test"
+      }
+    ]
+  },
+  "scripts": {
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.74.0",
+    "@types/node": "^18.0.0",
+    "typescript": "^5.0.0"
+  }
+}

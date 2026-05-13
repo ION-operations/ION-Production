@@ -1,0 +1,25 @@
+{
+  "system_slug": "nvidia-triton-inference-server",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-03",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "grpc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Triton exposes gRPC inference protocol per NVIDIA documentation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "onnx",
+      "evidence_tier": "INFERRED",
+      "notes": "Triton commonly serves ONNX and other backend formats."
+    },
+    {
+      "type": "integrates_with",
+      "target": "nvidia-cuda",
+      "evidence_tier": "INFERRED",
+      "notes": "GPU backends typically require NVIDIA CUDA stack on GPU deployments."
+    }
+  ]
+}

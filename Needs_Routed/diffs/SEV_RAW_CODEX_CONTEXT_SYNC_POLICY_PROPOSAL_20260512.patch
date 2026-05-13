@@ -1,0 +1,250 @@
+--- a/ION/05_context/current/codex_carrier/CODEX_MEMORY_POLICY.md
++++ b/ION/05_context/current/codex_carrier/CODEX_MEMORY_POLICY.md
+@@ -2,27 +2,70 @@
+ 
+ Status: active policy for the Codex carrier domain.
+ 
+-Codex memories may orient local work. They are not accepted ION state.
++Codex memories and raw Codex context may orient local work. They are not
++accepted ION state.
+ 
+-Rules:
++This policy does **not** ignore raw Codex context. It separates raw diagnostic
++continuity from inheritable ION state.
+ 
+-- Do not export or print raw `~/.codex` memory/session contents without explicit review.
++## Context Lanes
++
++| Lane | Purpose | Storage | May enter shared ION context? | May prove accepted state? |
++|---|---|---|---|---|
++| Codex native memory/session | local orientation and resume | native Codex storage / local private storage | no, except by summary or approved excerpt | no |
++| Raw context snapshot | debugging continuity, drift diagnosis, session archaeology | local-private, gitignored, optionally encrypted | no | no |
++| Raw context manifest | proves a raw snapshot exists without exposing contents | branch capsule / session registry | yes | no |
++| Diagnostic excerpt | narrowly selected, redacted evidence for a specific issue | branch capsule evidence lane | yes, if reviewed | no, until gated |
++| Rolling context summary | compact current working continuity | `ROLLING_CONTEXT.md` | yes | no |
++| Receipt / settlement | accepted durable state | receipts / settlement ledgers | yes | yes |
++
++## Rules
++
++- Do not commit raw `~/.codex` memory/session contents.
++- Do not mirror raw Codex memory/session contents to Google Drive, GitHub, or
++  public context packages.
++- Raw context snapshots may be captured only in local-private ignored storage,
++  with a manifest containing path class, hash, timestamp, owning session,
++  packet, and redaction status.
++- Raw context manifests may be stored in branch capsules because they expose
++  existence and provenance, not content.
++- Diagnostic excerpts must be narrow, explicitly packet-bound, redacted, and
++  labeled as candidate evidence.
+ - Memory summaries may be cited as orientation only.
+ - Durable claims require branch capsule, receipt, proof, or settlement evidence.
+-- Secret-like content is path/type only unless the operator explicitly authorizes a redacted audit.
++- Secret-like content is path/type/hash only unless the operator explicitly
++  authorizes a redacted audit.
+ - Branch capsule governs current work; settlement governs accepted inheritance.
+ 
+-Authority:
++## Promotion Path
++
++```text
++raw Codex context
++-> local-private raw snapshot
++-> raw context manifest
++-> redacted diagnostic excerpt or summary
++-> proof gate
++-> receipt / settlement
++-> inheritable ION state
++```
++
++Skipping this path is a state-authority violation.
++
++## Authority
+ 
+ ```json
+ {
+   "branch_capsule_governs_current_work": true,
+-  "codex_memory_role": "working_recall_only",
++  "codex_memory_role": "working_recall_and_diagnostic_orientation_only",
+   "memory_may_accept_state": false,
+   "memory_may_orient": true,
+-  "raw_memory_export": "forbidden_without_explicit_review",
++  "raw_context_snapshot_allowed": true,
++  "raw_context_snapshot_storage": "local_private_gitignored_only",
++  "raw_context_manifest_allowed_in_capsule": true,
++  "raw_context_content_allowed_in_capsule": "redacted_excerpt_only_after_review",
++  "raw_memory_export": "forbidden_without_explicit_review_and_redaction",
+   "receipt_or_settlement_required_for_durable_claims": true,
+-  "schema_id": "ion.codex_carrier_memory_policy.v1",
++  "schema_id": "ion.codex_carrier_memory_policy.v1_1",
+   "secrets_redaction_required": true
+ }
+ ```
+
+--- a/ION/05_context/current/codex_carrier/ROLLING_CONTEXT.template.md
++++ b/ION/05_context/current/codex_carrier/ROLLING_CONTEXT.template.md
+@@ -16,6 +16,22 @@
+ - Loaded refs:
+ - Open blockers:
+ 
++## Raw Codex Context Lane — Diagnostic Only
++
++Raw context is allowed to help the mounted Codex agent diagnose drift, recover
++session continuity, and preserve development-time local recall. It is not
++accepted ION state.
++
++- Codex native session/resume ref:
++- Raw snapshot manifest refs:
++- Local-private snapshot path class:
++- Snapshot content committed: false
++- Snapshot mirrored externally: false
++- Redacted diagnostic excerpt refs:
++- Memory/context summary refs:
++- Known redactions:
++- Non-claim: raw context may orient; it may not accept state.
++
+ ## Proof Ledger
+ 
+ | Time | Command / Gate | Result | Evidence |
+
+--- /dev/null
++++ b/ION/02_architecture/CODEX_RAW_CONTEXT_SYNC_LANE_PROTOCOL.md
+@@ -0,0 +1,138 @@
++# Codex Raw Context Sync Lane Protocol
++
++Status: candidate protocol for `PCKT-ION-CODEX-CARRIER-DOMAIN-CONTROL-PLANE-SETTLEMENT-001`.
++
++## Purpose
++
++The Codex raw context sync lane preserves the practical value of Codex native
++session continuity during ION development without allowing raw model memory,
++chat transcript, or local session state to become ION authority.
++
++ION should not discard raw Codex context. It should quarantine, index, redact,
++and promote it through explicit proof paths.
++
++## Problem
++
++During active development, Codex native rolling context can contain useful
++signals that branch capsules and receipts do not yet capture:
++
++- observed local failure chains
++- tool-call ordering
++- implicit session assumptions
++- partial code archaeology
++- drift symptoms
++- prior debugging hypotheses
++- carrier-specific limitations
++
++Losing that context can slow diagnosis. Treating it as accepted state can corrupt
++ION. The protocol therefore creates a bounded diagnostic lane.
++
++## Lanes
++
++```text
++native Codex session/memory
++  -> local-private raw snapshot
++  -> raw context manifest
++  -> redacted diagnostic excerpt
++  -> rolling context summary
++  -> proof gate / receipt / settlement
++```
++
++## Storage Classes
++
++### 1. Local-private raw snapshot
++
++Allowed only outside committed project state or under an ignored private path.
++Recommended path class:
++
++```text
++.ion_private/codex_raw_context/<agent_tag>/<session_id>/
++```
++
++Required protections:
++
++- gitignored
++- never mirrored to Drive by default
++- never packed into public context packages
++- secret scan before any excerpt
++- optional encryption if the operator enables it
++
++### 2. Raw context manifest
++
++The manifest may live in the branch capsule because it describes the snapshot
++without revealing its contents.
++
++Recommended file:
++
++```text
++ION/05_context/current/agent_context_branches/<branch>/RAW_CONTEXT_MANIFEST.json
++```
++
++Minimum schema:
++
++```json
++{
++  "schema_id": "ion.codex_raw_context_manifest.v1",
++  "session_id": "codex_session_...",
++  "agent_tag": "codex_local_ion_mason",
++  "branch_id": "branch_...",
++  "packet_id": "PCKT-...",
++  "created_at": "2026-05-12T00:00:00Z",
++  "snapshot_storage_class": "local_private_gitignored",
++  "snapshot_content_committed": false,
++  "snapshot_mirrored_externally": false,
++  "snapshot_hash": "sha256:...",
++  "snapshot_size_bytes": 0,
++  "redaction_status": "not_exported",
++  "diagnostic_excerpt_refs": [],
++  "authority": {
++    "accepted_state_authority": false,
++    "production_authority": false,
++    "live_execution_authority": false,
++    "secrets_authority": false
++  }
++}
++```
++
++### 3. Diagnostic excerpt
++
++A diagnostic excerpt is a reviewed, narrow, redacted piece of raw Codex context
++that exists to explain or debug a specific packet issue. It must include:
++
++- packet id
++- reason for extraction
++- redaction statement
++- line/segment provenance if available
++- non-claim that the excerpt is candidate evidence
++- proof gate or settlement target if it is being used in a decision
++
++## Prohibited
++
++- committing raw `~/.codex` memory/session contents
++- uploading raw session data to Drive by default
++- using raw context as receipt substitute
++- treating raw context as branch-capsule accepted state
++- placing secrets, tunnel credentials, browser profiles, or private logs in a
++  context package
++- allowing a diagnostic excerpt to bypass proof gates
++
++## Cockpit Integration
++
++The cockpit should display raw context sync as a guarded lane:
++
++```text
++Raw context available: yes/no
++Snapshot manifest: present/missing
++Raw content committed: true/false
++External mirror: true/false
++Redaction status: none/reviewed/blocked
++Diagnostic excerpts: count + refs
++Promotion status: none/summary/proof/receipt/settlement
++```
++
++The cockpit must visually separate raw context from accepted ION state.
++
++## Settlement Rule
++
++Raw context may explain why a worker acted, but only proof-gated receipts and
++settlement decide what later workers inherit as state.
+

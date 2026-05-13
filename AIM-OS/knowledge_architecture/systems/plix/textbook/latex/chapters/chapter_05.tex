@@ -1,0 +1,361 @@
+% Chapter 5 converted from Markdown
+% Auto-generated - do not edit manually
+
+
+
+
+\section*{Section 5.1: The Architectural Foundation}
+
+PLIx architecture rests on four pillars: Contract Layer, Execution Layer, Safety Layer, and Evidence Layer. Each pillar addresses a fundamental concern in intent-driven systems, enabling pure intent expression, reliable execution, safety guarantees, and verifiable outcomes.
+
+\textbf{The Four Pillars Overview}
+
+The four pillars form a complete architecture for intent-driven systems:
+
+\begin{enumerate}
+\item \textbf{Contract Layer:} Expresses intent purely, without mechanism contamination
+\item \textbf{Execution Layer:} Achieves intent reliably, with recoverable execution
+\item \textbf{Safety Layer:} Ensures safety through confidence gates and policy enforcement
+\item \textbf{Evidence Layer:} Provides verifiable provenance and evidence chains
+\end{enumerate}
+
+Together, these pillars enable systems that understand their own purpose, execute reliably, maintain safety, and provide verifiable outcomes.
+
+\textbf{Why Four Pillars?}
+
+Each pillar addresses a critical gap in current systems:
+
+\begin{itemize}
+\item \textbf{Contract Layer:} Current systems mix intent with execution. The Contract Layer separates intent expression from implementation.
+\item \textbf{Execution Layer:} Current systems lack recoverable execution. The Execution Layer provides durable execution with saga patterns.
+\item \textbf{Safety Layer:} Current systems lack confidence-aware routing. The Safety Layer provides LLM confidence gates and policy enforcement.
+\item \textbf{Evidence Layer:} Current systems lack verifiable provenance. The Evidence Layer provides evidence chains and lineage tracking.
+\end{itemize}
+
+The four pillars work together: contracts express intent, execution achieves intent, safety ensures reliability, evidence provides verification.
+
+\textbf{Architectural Coherence}
+
+The four pillars form a coherent architecture:
+
+\begin{lstlisting}[caption=Code Example]
+Intent Expression (Contract Layer)
+    \textdownarrow{}
+Intent Achievement (Execution Layer)
+    \textdownarrow{}
+Safety Guarantees (Safety Layer)
+    \textdownarrow{}
+Verifiable Outcomes (Evidence Layer)
+\end{lstlisting}
+
+Each layer builds on the previous: contracts enable execution, execution requires safety, safety enables evidence, evidence verifies contracts. This coherence ensures that intent-driven systems are complete, reliable, and verifiable.
+
+\textbf{Integration with AIM-OS}
+
+The four pillars integrate seamlessly with AIM-OS systems:
+
+\begin{itemize}
+\item \textbf{Contract Layer:} Uses CMC for contract storage, HHNI for contract indexing
+\item \textbf{Execution Layer:} Uses APOE for plan execution, Router for tool selection
+\item \textbf{Safety Layer:} Uses VIF for confidence tracking, SCOR for policy enforcement
+\item \textbf{Evidence Layer:} Uses SEG for evidence chains, TCS for timeline tracking
+\end{itemize}
+
+This integration enables PLIx to leverage existing AIM-OS capabilities while adding intent-awareness to each system.
+
+\section*{Section 5.2: Pillar 1: Contract Layer}
+
+The Contract Layer expresses intent purely, without mechanism contamination. It provides Design by Contract (DbC), Controlled Natural Language (CNL), and formal modeling capabilities, enabling pure intent expression.
+
+\textbf{Design by Contract (DbC)}
+
+Design by Contract enables intent expression through preconditions and postconditions:
+
+\begin{lstlisting}[caption=Code Example]
+contract:
+  pre:
+    - "room_available == true"
+    - "user_authenticated == true"
+  post:
+    - "room_reserved == true"
+    - "calendar_event_created == true"
+\end{lstlisting}
+
+Preconditions express what must be true before intent achievement. Postconditions express what must be true after intent achievement. This contract-based expression enables pure intent: we express what we want (postconditions) and what we need (preconditions) without specifying how to achieve it.
+
+\textbf{Controlled Natural Language (CNL)}
+
+Controlled Natural Language enables human-readable intent expression:
+
+\begin{lstlisting}[caption=Code Example]
+Intent: Book a meeting room on 2025-12-01 for 2h.
+
+Task check_availability:
+  Action: api.check_room_availability
+  Params: date=2025-12-01, duration=2h
+
+Task reserve_room:
+  Action: api.reserve_room
+  Params: room_id=\texttt{\$\{check_availability.room_id\}\}
+  Depends: check_availability
+\end{lstlisting}
+
+CNL provides a structured, unambiguous way to express intent in natural language. It bridges human intent expression with formal contract specification, enabling both human readability and machine verifiability.
+
+\textbf{Formal Modeling}
+
+Formal modeling enables mathematical verification of contracts:
+
+\begin{itemize}
+\item \textbf{Alloy:} Models contract relationships and constraints
+\item \textbf{TLA+:} Models contract temporal properties and safety
+\item \textbf{Coq/Lean:} Proves contract correctness and completeness
+\end{itemize}
+
+Formal modeling provides mathematical guarantees: contracts are consistent, complete, and correct. This enables verification at the intent level, independent of execution.
+
+\textbf{Contract Layer Benefits}
+
+The Contract Layer provides:
+
+\begin{itemize}
+\item \textbf{Pure Intent Expression:} Intent expressed without mechanism contamination
+\item \textbf{Human Readability:} CNL enables natural language intent expression
+\item \textbf{Mathematical Verification:} Formal modeling enables contract verification
+\item \textbf{Timelessness:} Contracts survive technology changes
+\end{itemize}
+
+This enables intent-driven systems that express what they want clearly, verifiably, and timelessly.
+
+\section*{Section 5.3: Pillar 2: Execution Layer}
+
+The Execution Layer achieves intent reliably, with recoverable execution. It provides durable execution, saga patterns, and formal modeling of recovery, enabling reliable intent achievement.
+
+\textbf{Durable Execution}
+
+Durable execution ensures intent achievement survives failures:
+
+\begin{lstlisting}[caption=Code Example]
+async function executePlan(plan: IRPlan) {
+  const checkpoints: Record<string, string> = {};
+  
+  for (const node of plan.nodes) {
+    // Store checkpoint before execution
+    const checkpoint = await cmc.create_atom({
+      content: { type: 'checkpoint', node_id: node.id, state: 'running' }
+    });
+    checkpoints[node.id] = checkpoint.id;
+    
+    try {
+      // Execute node
+      const result = await executeNode(node);
+      
+      // Update checkpoint on success
+      await cmc.create_atom({
+        content: { type: 'checkpoint', node_id: node.id, state: 'completed', result }
+      });
+    } catch (error) {
+      // Restore from checkpoint on failure
+      await restoreFromCheckpoint(checkpoints[node.id]);
+      throw error;
+    }
+  }
+}
+\end{lstlisting}
+
+Durable execution stores checkpoints before each step, enabling recovery from failures. If execution fails, we can restore from the last checkpoint and retry, ensuring intent achievement despite transient failures.
+
+\textbf{Saga Pattern}
+
+Saga pattern enables compensation for partial failures:
+
+\begin{lstlisting}[caption=Code Example]
+Task reserve_room:
+  Action: api.reserve_room
+  Compensate: cancel_reservation
+
+Task cancel_reservation:
+  Action: api.cancel_reservation
+  Params: reservation_id=\texttt{\$\{reserve_room.res_id\}\}
+\end{lstlisting}
+
+If \texttt{reserve\_room} succeeds but a later step fails, the saga pattern triggers \texttt{cancel\_reservation} to compensate. This ensures system consistency: if intent achievement fails, we undo partial changes.
+
+\textbf{Formal Modeling of Recovery}
+
+Formal modeling enables mathematical verification of recovery:
+
+\begin{itemize}
+\item \textbf{TLA+:} Models recovery correctness and safety properties
+\item \textbf{Alloy:} Models recovery consistency and completeness
+\item \textbf{Coq/Lean:} Proves recovery termination and correctness
+\end{itemize}
+
+Formal modeling provides mathematical guarantees: recovery is correct, safe, and complete. This enables verification at the execution level, independent of implementation.
+
+\textbf{Execution Layer Benefits}
+
+The Execution Layer provides:
+
+\begin{itemize}
+\item \textbf{Reliable Achievement:} Durable execution ensures intent achievement despite failures
+\item \textbf{Consistency:} Saga pattern ensures system consistency through compensation
+\item \textbf{Mathematical Verification:} Formal modeling enables recovery verification
+\item \textbf{Resilience:} Recovery mechanisms enable resilient intent achievement
+\end{itemize}
+
+This enables intent-driven systems that achieve what they want reliably, consistently, and resiliently.
+
+\section*{Section 5.4: Pillar 3: Safety Layer}
+
+The Safety Layer ensures safety through confidence gates and policy enforcement. It provides LLM confidence tracking, adaptive routing, and policy-as-code, enabling safe intent achievement.
+
+\textbf{LLM Confidence Gates}
+
+LLM confidence gates ensure intent achievement only when confidence is sufficient:
+
+\begin{lstlisting}[caption=Code Example]
+async function executeWithConfidence(node: IRNode) {
+  const confidence = await vif.get_confidence(node.action, node.params);
+  
+  if (confidence < PLIX_DEFAULTS.confidence.global_minimum) {
+    throw new Error(`Low confidence: \texttt{\$\{confidence\}\} < \texttt{\$\{PLIX_DEFAULTS.confidence.global_minimum\}\}`);
+  }
+  
+  return await executeNode(node);
+}
+\end{lstlisting}
+
+Confidence gates prevent execution when confidence is too low, reducing risk of incorrect intent achievement. This enables safe intent achievement: we only execute when we're confident we can achieve the intent correctly.
+
+\textbf{Adaptive Routing (Economic Gate)}
+
+Adaptive routing optimizes tool selection based on cost, latency, and success rate:
+
+\begin{lstlisting}[caption=Code Example]
+async function routeAdaptively(node: IRNode) {
+  const proposals = await router.decide({
+    goal: node.intent,
+    task: node.action,
+    context: { node_id: node.id }
+  });
+  
+  // Router uses BanditScorer (BaRP equivalent) to rank tools
+  // Considers: cost, latency, success rate, context fit
+  return proposals[0]; // Best tool based on economic optimization
+}
+\end{lstlisting}
+
+Adaptive routing selects the best tool for each intent achievement, optimizing for cost, latency, and success rate. This enables efficient intent achievement: we use the best tool for each situation.
+
+\textbf{Policy-as-Code}
+
+Policy-as-code enforces constraints through OPA/Rego or AWS Cedar:
+
+\begin{lstlisting}[caption=Code Example]
+package plix.booking
+
+default allow = false
+
+allow {
+    input.duration <= 4
+    input.calendar_conflicts == "none"
+}
+\end{lstlisting}
+
+Policy-as-code compiles PLIx constraints into policy rules, enforcing constraints before execution. This enables safe intent achievement: we enforce constraints to prevent invalid intent achievement.
+
+\textbf{Safety Layer Benefits}
+
+The Safety Layer provides:
+
+\begin{itemize}
+\item \textbf{Confidence-Aware Execution:} Confidence gates prevent low-confidence execution
+\item \textbf{Economic Optimization:} Adaptive routing optimizes tool selection
+\item \textbf{Constraint Enforcement:} Policy-as-code enforces constraints
+\item \textbf{Risk Reduction:} Safety mechanisms reduce risk of incorrect intent achievement
+\end{itemize}
+
+This enables intent-driven systems that achieve what they want safely, efficiently, and correctly.
+
+\section*{Section 5.5: Pillar 4: Evidence Layer}
+
+The Evidence Layer provides verifiable provenance and evidence chains. It provides W3C PROV, OpenLineage, and intent lineage tracking, enabling verifiable intent achievement.
+
+\textbf{W3C PROV}
+
+W3C PROV provides standard provenance tracking:
+
+\begin{lstlisting}[caption=Code Example]
+{
+  "prefix": { "prov": "http://www.w3.org/ns/prov#" },
+  "entity": {
+    "ent:room_booking": { "prov:value": { "room_id": "A101", "date": "2025-12-01" } }
+  },
+  "activity": {
+    "act:reserve_room": { "prov:type": "api.reserve_room" }
+  },
+  "wasGeneratedBy": {
+    "ent:room_booking": { "prov:activity": "act:reserve_room" }
+  }
+}
+\end{lstlisting}
+
+W3C PROV tracks what entities were generated by which activities, providing standard provenance. This enables verifiable intent achievement: we can trace outcomes back to their sources.
+
+\textbf{OpenLineage}
+
+OpenLineage provides execution lineage tracking:
+
+\begin{lstlisting}[caption=Code Example]
+{
+  "eventType": "START",
+  "run": { "runId": "run-123" },
+  "job": { "namespace": "aimos/plix", "name": "book_meeting_room" },
+  "eventTime": "2025-12-01T10:00:00Z"
+}
+\end{lstlisting}
+
+OpenLineage tracks execution events (START, COMPLETE, FAIL), providing execution lineage. This enables verifiable intent achievement: we can trace execution through its lifecycle.
+
+\textbf{Intent Lineage}
+
+Intent lineage tracks intent evolution and achievement:
+
+\begin{lstlisting}[caption=Code Example]
+const lineage = {
+  intent: "Book a meeting room",
+  evolution: [
+    { timestamp: "2025-12-01T09:00:00Z", intent: "Book a room" },
+    { timestamp: "2025-12-01T09:05:00Z", intent: "Book a meeting room with catering" }
+  ],
+  achievement: [
+    { timestamp: "2025-12-01T10:00:00Z", outcome: "room_reserved == true" },
+    { timestamp: "2025-12-01T10:01:00Z", outcome: "calendar_event_created == true" }
+  ]
+};
+\end{lstlisting}
+
+Intent lineage tracks how intent evolves and how it's achieved, providing intent provenance. This enables verifiable intent achievement: we can trace intent from expression to achievement.
+
+\textbf{Evidence Layer Benefits}
+
+The Evidence Layer provides:
+
+\begin{itemize}
+\item \textbf{Verifiable Provenance:} W3C PROV provides standard provenance tracking
+\item \textbf{Execution Lineage:} OpenLineage provides execution lifecycle tracking
+\item \textbf{Intent Lineage:} Intent lineage tracks intent evolution and achievement
+\item \textbf{Complete Traceability:} Evidence chains provide complete traceability
+\end{itemize}
+
+This enables intent-driven systems that provide verifiable outcomes with complete traceability.
+
+\section*{Chapter 5 Summary}
+
+The four pillars form a complete architecture for intent-driven systems: Contract Layer (pure intent expression), Execution Layer (reliable achievement), Safety Layer (safe execution), Evidence Layer (verifiable outcomes). Together, these pillars enable systems that understand their own purpose, execute reliably, maintain safety, and provide verifiable outcomes—transforming AI from execution tools to conscious systems.
+
+\textbf{Next:} Chapter 6 explores CNL grammar—the human-readable syntax for PLIx contracts.
+
+\textbf{Word Count:} \textasciitilde{}2,400 words  
+

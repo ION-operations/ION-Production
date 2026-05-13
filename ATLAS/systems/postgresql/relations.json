@@ -1,0 +1,25 @@
+{
+  "system_slug": "postgresql",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-04",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "INFERRED",
+      "notes": "Typical server deployments on Linux hosts."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "StatefulSets and operators commonly run PostgreSQL on Kubernetes."
+    },
+    {
+      "type": "integrates_with",
+      "target": "openid-connect",
+      "evidence_tier": "INFERRED",
+      "notes": "Application-level auth often uses OIDC upstream of app DB access."
+    }
+  ]
+}

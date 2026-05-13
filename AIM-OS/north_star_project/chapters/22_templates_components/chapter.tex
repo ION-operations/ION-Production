@@ -1,0 +1,797 @@
+% Chapter converted from Markdown
+% Auto-generated - do not edit manually
+
+\section*{Chapter 22 - Templates \& Components}
+
+
+\subsection*{Purpose}
+
+This chapter presents the template and component library that enables rapid development while maintaining quality standards. Templates provide reusable patterns for documentation, orchestration chains, code generation, and system integration. Components provide pre-built functionality that can be composed into larger systems.
+
+\subsection*{Executive Summary}
+
+AIM-OS provides a comprehensive template and component library covering 32+ documentation systems, orchestration patterns, code generation templates, and reusable components. Templates enable rapid instantiation of common patterns while maintaining quality standards. Components provide pre-built functionality that integrates seamlessly with AIM-OS systems.
+
+\textbf{Key Insight:} Templates and components accelerate development while ensuring consistency and quality. They enable meta-circular documentation (system documents itself using its own templates) and rapid system construction.
+
+\subsection*{Template Library Overview}
+
+The template library provides complete, working templates for all documentation types, making it easy to create perfect documentation that follows all standards.
+
+\subsubsection*{Template Features}
+
+\textbf{Complete Metadata:}
+\item Frontmatter with all required fields
+\item System/component identification
+\item Confidence thresholds
+\item Token cost estimates
+\item Word count targets
+
+\textbf{Structured Content:}
+\item Consistent section organization
+\item Example content included
+\item Placeholder guidance
+\item Validation-ready format
+
+\textbf{Copy-and-Use Ready:}
+\item No customization required for basic use
+\item Customization guidance provided
+\item Best practices documented
+\item Quality standards enforced
+
+\subsubsection*{Template Categories}
+
+\textbf{Category 1: L0-L6 Technical Documentation (7 templates)}
+\item L0 Executive Summary (100 words)
+\item L1 Overview (500 words)
+\item L2 Architecture (2,000 words)
+\item L3 Detailed (10,000 words)
+\item L4 Complete (15,000+ words)
+\item L5 Deep Dive (academic level)
+\item L6 Academic (research paper format)
+
+\textbf{Category 2: Consciousness Documentation (6 templates)}
+\item Thought Journal Template
+\item Decision Log Template
+\item Learning Log Template
+\item Active Context Template
+\item Session Continuity Template
+\item Questions for Braden Template
+
+\textbf{Category 3: Planning Documentation (5 templates)}
+\item Goal Tree Template
+\item KPI Metrics Template
+\item Task Dependency Map Template
+\item Project Plan Template
+\item System Hierarchy Template
+
+\textbf{Category 4: Supporting Documentation (17 templates)}
+\item System Map Template
+\item System Index Template
+\item Component README Template
+\item API Reference Template
+\item Integration Guide Template
+\item And 12 more specialized templates
+
+\subsection*{Documentation Templates}
+
+\subsubsection*{L0 Executive Summary Template}
+
+\textbf{Purpose:} 100-word executive summary for quick reference
+
+\textbf{Structure:}
+``\texttt{markdown
+---
+\section*{Document Metadata}
+id: "{system}\_l0\_executive"
+system: "{system}"
+level: "L0"
+type: "executive"
+title: "{System} Executive Summary"
+word\_count: 100
+---
+
+\section*{{System} Executive Summary}
+
+\textbf{What:} {System} is [core function] that [primary capability].
+
+\textbf{Why:} Designed to [purpose] by [approach], enabling [key benefit].
+
+\textbf{Impact:} Provides [primary outcome], resulting in [measurable benefit].
+
+\textbf{Status:} Currently [X]\% complete, [production/development/testing].
+}`\texttt{
+
+\textbf{Usage:} Fill in blanks, validate, commit. Time: 15-30 minutes.
+
+\subsubsection*{L1 Overview Template}
+
+\textbf{Purpose:} 500-word overview for architects and planners
+
+\textbf{Structure:}
+\item System Purpose
+\item Core Architecture
+\item Key Capabilities
+\item Integration Points
+\item Status \& Roadmap
+
+\textbf{Usage:} Expand L0 content, add architecture details, validate. Time: 1-2 hours.
+
+\subsubsection*{L2 Architecture Template}
+
+\textbf{Purpose:} 2,000-word architecture document for implementers
+
+\textbf{Structure:}
+\item System Purpose \& Context
+\item Architecture Overview
+\item Component Details
+\item Data Flows
+\item Integration Architecture
+\item Quality Attributes
+\item Deployment Architecture
+
+\textbf{Usage:} Expand L1 content, add technical details, validate. Time: 4-8 hours.
+
+\subsection*{Orchestration Templates}
+
+\subsubsection*{APOE Chain Template}
+
+\textbf{Purpose:} Standard structure for APOE orchestration chains
+
+\textbf{Structure:}
+}`\texttt{yaml
+chain:
+  id: "{chain\_id}"
+  version: "1.0.0"
+  metadata:
+    description: "{chain\_description}"
+    author: "{author}"
+    created: "{timestamp}"
+  
+  nodes:
+    - id: "node\_1"
+      type: "prompt"
+      label: "{node\_label}"
+      prompt: "{prompt\_content}"
+      config:
+        model: "{model\_id}"
+        temperature: 0.7
+        max\_tokens: 2000
+      
+    - id: "node\_2"
+      type: "tool"
+      label: "{tool\_label}"
+      tool: "{tool\_name}"
+      arguments: {}
+  
+  edges:
+    - source: "node\_1"
+      target: "node\_2"
+      type: "sequential"
+}`\texttt{
+
+\textbf{Usage:} Copy template, fill in chain-specific details, validate, execute.
+
+\subsubsection*{Quality Gate Template}
+
+\textbf{Purpose:} Standard quality gates for chain execution
+
+\textbf{Structure:}
+}`\texttt{yaml
+gates:
+  pre\_execution:
+    - check: "dependencies\_complete"
+      threshold: 1.0
+    
+    - check: "confidence\_minimum"
+      threshold: 0.70
+  
+  post\_execution:
+    - check: "quality\_assessment"
+      threshold: 0.90
+    
+    - check: "integration\_validation"
+      threshold: 0.85
+}`\texttt{
+
+\textbf{Usage:} Define gates for chain, integrate with APOE execution, monitor results.
+
+\subsection*{Code Generation Templates}
+
+\subsubsection*{Component Template}
+
+\textbf{Purpose:} Standard structure for AIM-OS components
+
+\textbf{Structure:}
+}`\texttt{python
+"""
+{Component Name}
+
+Purpose: {component\_purpose}
+Integration: {integration\_points}
+Quality: {quality\_requirements}
+"""
+
+from typing import Dict, List, Optional
+from packages.vif import VIFWitness
+from packages.seg import SEGClaim
+
+class {ComponentClass}:
+    """{Component description}"""
+    
+    def \_\_init\_\_(self, config: Dict):
+        """Initialize component with configuration"""
+        self.config = config
+        self.vif = VIFWitness()
+        self.seg = SEGClaim()
+    
+    def execute(self, input\_data: Dict) -> Dict:
+        """Execute component operation"""
+        \# Implementation
+        pass
+}`\texttt{
+
+\textbf{Usage:} Copy template, implement component logic, add tests, validate.
+
+\subsubsection*{Integration Template}
+
+\textbf{Purpose:} Standard structure for system integrations
+
+\textbf{Structure:}
+}`\texttt{python
+"""
+{System} Integration
+
+Purpose: Integrate {system} with AIM-OS
+Components: {components\_used}
+Quality: {quality\_requirements}
+"""
+
+from packages.cmc import CMCAtom
+from packages.hhni import HHNINode
+from packages.apoe import APOEChain
+
+class {System}Integration:
+    """{System} integration implementation"""
+    
+    def \_\_init\_\_(self, config: Dict):
+        """Initialize integration"""
+        self.cmc = CMCAtom()
+        self.hhni = HHNINode()
+        self.apoe = APOEChain()
+    
+    def integrate(self, data: Dict) -> Dict:
+        """Perform integration"""
+        \# Implementation
+        pass
+}`\texttt{
+
+\textbf{Usage:} Copy template, implement integration logic, add tests, validate.
+
+\subsection*{Component Library}
+
+\subsubsection*{Core Components}
+
+\textbf{CMC Component:}
+\item Atom storage and retrieval
+\item Bitemporal tracking
+\item Snapshot management
+\item Witness envelope creation
+
+\textbf{HHNI Component:}
+\item Hierarchical indexing
+\item Multi-level retrieval
+\item DVNS physics optimization
+\item Budget-aware compression
+
+\textbf{VIF Component:}
+\item Confidence routing
+\item Witness envelope management
+\item κ-gating
+\item Deterministic replay
+
+\textbf{APOE Component:}
+\item Chain compilation
+\item Plan execution
+\item Role orchestration
+\item Quality gate management
+
+\textbf{SEG Component:}
+\item Evidence graph management
+\item Contradiction detection
+\item Knowledge synthesis
+\item Temporal awareness
+
+\subsubsection*{Integration Components}
+
+\textbf{MCP Integration:}
+\item MCP server implementation
+\item Tool registration
+\item Message routing
+\item Protocol translation
+
+\textbf{IDE Integration:}
+\item Cursor extension
+\item VS Code integration
+\item File system access
+\item Command execution
+
+\textbf{External API Integration:}
+\item HTTP client
+\item Authentication handling
+\item Rate limiting
+\item Error handling
+
+\subsection*{Template Usage Workflow}
+
+\subsubsection*{Step 1: Select Template}
+
+\textbf{Process:}
+1. Identify documentation/system type
+2. Select appropriate template category
+3. Choose specific template
+4. Review template structure
+
+\textbf{Key Insight:} Template selection ensures consistency and quality.
+
+\subsubsection*{Step 2: Customize Template}
+
+\textbf{Process:}
+1. Copy template to target location
+2. Update metadata (IDs, timestamps, tags)
+3. Fill in content sections
+4. Replace placeholders with actual content
+5. Maintain template structure
+
+\textbf{Key Insight:} Customization preserves template benefits while adapting to specific needs.
+
+\subsubsection*{Step 3: Validate Template}
+
+\textbf{Process:}
+1. Run syntax validation
+2. Run format validation
+3. Check word counts
+4. Verify all placeholders replaced
+5. Manual quality check
+
+\textbf{Key Insight:} Validation ensures template compliance and quality.
+
+\subsubsection*{Step 4: Review \& Finalize}
+
+\textbf{Process:}
+1. Expert review if needed
+2. Final quality check
+3. Approval
+4. Commit to repository
+
+\textbf{Key Insight:} Review ensures quality before deployment.
+
+\subsection*{Component Composition Patterns}
+
+\subsubsection*{Pattern 1: Sequential Composition}
+
+\textbf{Process:}
+1. Component A executes
+2. Output passed to Component B
+3. Component B executes
+4. Results combined
+
+\textbf{Example:}
+}`\texttt{python
+\section*{Sequential composition}
+result\_a = component\_a.execute(input\_data)
+result\_b = component\_b.execute(result\_a)
+final\_result = combine\_results(result\_a, result\_b)
+}`\texttt{
+
+\subsubsection*{Pattern 2: Parallel Composition}
+
+\textbf{Process:}
+1. Components execute in parallel
+2. Results collected
+3. Results merged
+4. Final result returned
+
+\textbf{Example:}
+}`\texttt{python
+\section*{Parallel composition}
+results = parallel\_execute([
+    component\_a.execute(input\_data),
+    component\_b.execute(input\_data),
+    component\_c.execute(input\_data)
+])
+final\_result = merge\_results(results)
+}`\texttt{
+
+\subsubsection*{Pattern 3: Conditional Composition}
+
+\textbf{Process:}
+1. Condition evaluated
+2. Component selected based on condition
+3. Selected component executes
+4. Result returned
+
+\textbf{Example:}
+}`\texttt{python
+\section*{Conditional composition}
+if condition\_met:
+    result = component\_a.execute(input\_data)
+else:
+    result = component\_b.execute(input\_data)
+}`\texttt{
+
+\subsection*{Runnable Examples (PowerShell)}
+
+\subsubsection*{Example 1: Create Documentation from Template}
+}`\texttt{powershell
+\section*{Create L0 executive summary from template}
+\_\_MATH\_BLOCK\_0\_\_system = 'CMC'
+\_\_MATH\_BLOCK\_1\_\_template -replace '{system}', \_\_MATH\_BLOCK\_2\_\_output = "knowledge\_architecture/systems/cmc/L0\_executive.md"
+\_\_MATH\_BLOCK\_3\_\_output -Encoding UTF8
+
+Write-Host "Created L0 executive summary: \_\_MATH\_BLOCK\_4\_\_doc = Get-Content 'knowledge\_architecture/systems/cmc/L0\_executive.md' -Raw
+
+\section*{Check for required metadata}
+\_\_MATH\_BLOCK\_5\_\_doc -match '\textasciicircum{}---\s\textit{\n.}?id:.\textit{?\n.}?---'
+\_\_MATH\_BLOCK\_6\_\_doc -match '\\textit{\}What:\\textit{\}'
+\_\_MATH\_BLOCK\_7\_\_doc -match '\\textit{\}Why:\\textit{\}'
+\_\_MATH\_BLOCK\_8\_\_doc -match '\\textit{\}Impact:\\textit{\}'
+
+if (\_\_MATH\_BLOCK\_9\_\_hasWhat -and \_\_MATH\_BLOCK\_10\_\_hasImpact) {
+    Write-Host "Template compliance: PASSED"
+} else {
+    Write-Host "Template compliance: FAILED"
+    Write-Host "  Metadata: \_\_MATH\_BLOCK\_11\_\_hasWhat"
+    Write-Host "  Why: \_\_MATH\_BLOCK\_12\_\_hasImpact"
+}
+}`\texttt{
+
+\subsubsection*{Example 3: Generate Component from Template}
+}`\texttt{powershell
+\section*{Generate component from template}
+\_\_MATH\_BLOCK\_13\_\_componentName = 'DataProcessor'
+\_\_MATH\_BLOCK\_14\_\_description = 'Processes data with validation and transformation'
+
+\_\_MATH\_BLOCK\_15\_\_template -replace '{ComponentClass}', \_\_MATH\_BLOCK\_16\_\_description
+
+\_\_MATH\_BLOCK\_17\_\_code | Out-File -FilePath \_\_MATH\_BLOCK\_18\_\_output"
+``\texttt{
+
+\subsection*{Integration Points}
+
+\subsubsection*{MIGE Integration}
+
+\textbf{Template Usage:}
+\item MIGE uses templates for rapid idea instantiation
+\item Templates stored in }templates/mige/*\texttt{
+\item Templates include code, tests, documentation
+\item Quality gates ensure template compliance
+
+\textbf{Component Usage:}
+\item MIGE composes components for system construction
+\item Components provide pre-built functionality
+\item Composition patterns enable rapid development
+\item Quality validation ensures component integration
+
+\subsubsection*{SIS Integration}
+
+\textbf{Template Improvement:}
+\item SIS analyzes template usage patterns
+\item Identifies improvement opportunities
+\item Proposes template enhancements
+\item Updates templates based on learnings
+
+\textbf{Component Improvement:}
+\item SIS monitors component performance
+\item Identifies optimization opportunities
+\item Proposes component enhancements
+\item Updates components based on learnings
+
+\subsubsection*{APOE Integration}
+
+\textbf{Template Execution:}
+\item APOE uses templates for chain construction
+\item Templates define standard chain patterns
+\item Template execution ensures consistency
+\item Quality gates validate template compliance
+
+\textbf{Component Orchestration:}
+\item APOE orchestrates component execution
+\item Components integrated into chains
+\item Composition patterns enable complex workflows
+\item Quality validation ensures correct integration
+
+\subsection*{Best Practices}
+
+\subsubsection*{Template Best Practices}
+
+\textbf{Always Start with Template:}
+\item Don't create from scratch
+\item Use existing templates as foundation
+\item Customize thoughtfully
+\item Maintain template structure
+
+\textbf{Fill Completely:}
+\item No placeholders in final doc
+\item All sections completed
+\item Examples included
+\item Validation passed
+
+\textbf{Keep Updated:}
+\item Update templates as standards evolve
+\item Add examples to templates
+\item Document template usage
+\item Maintain template library
+
+\subsubsection*{Component Best Practices}
+
+\textbf{Design for Composition:}
+\item Components should be composable
+\item Clear interfaces defined
+\item Dependencies minimized
+\item Integration points documented
+
+\textbf{Maintain Quality:}
+\item Components follow quality standards
+\item Tests included
+\item Documentation complete
+\item Examples provided
+
+\textbf{Version Management:}
+\item Components versioned
+\item Breaking changes documented
+\item Migration guides provided
+\item Deprecation handled gracefully
+
+\subsection*{Connection to Other Chapters}
+
+\item \textbf{Chapter 1 (The Great Limitation):} Templates address "uncurated tooling" by providing curated, validated patterns
+\item \textbf{Chapter 8 (APOE):} Templates enable rapid chain construction and consistent execution
+\item \textbf{Chapter 10 (SDF-CVF):} Templates ensure quartet parity (docs, tests, traces, code)
+\item \textbf{Chapter 12 (SIS):} Templates improved through self-improvement system
+\item \textbf{Chapter 14 (MIGE):} Templates enable rapid idea instantiation
+\item \textbf{Chapter 21 (ACL):} Templates define ACL chain patterns
+
+\textbf{Key Insight:} Templates and components are not isolated—they integrate with all systems to enable rapid, quality development.
+
+\subsection*{Component Library Details}
+
+\subsubsection*{Documentation Components}
+
+\textbf{L0-L6 Documentation Components:}
+\item \textbf{L0 Generator:} Creates 100-word executive summaries from system metadata
+\item \textbf{L1 Generator:} Expands L0 to 500-word overviews with architecture details
+\item \textbf{L2 Generator:} Expands L1 to 2,000-word architecture documents
+\item \textbf{L3 Generator:} Expands L2 to 10,000-word detailed guides
+\item \textbf{L4 Generator:} Expands L3 to 15,000+ word complete references
+\item \textbf{L5 Generator:} Creates academic-level deep dives
+\item \textbf{L6 Generator:} Creates research paper format documents
+
+\textbf{Consciousness Documentation Components:}
+\item \textbf{Thought Journal Component:} Captures and stores thought journal entries
+\item \textbf{Decision Log Component:} Records major decisions with rationale
+\item \textbf{Learning Log Component:} Tracks lessons learned from experience
+\item \textbf{Active Context Component:} Maintains current context state
+\item \textbf{Session Continuity Component:} Restores context across sessions
+
+\subsubsection*{Orchestration Components}
+
+\textbf{Chain Construction Components:}
+\item \textbf{Chain Builder:} Constructs APOE chains from templates
+\item \textbf{Node Generator:} Creates chain nodes from specifications
+\item \textbf{Edge Generator:} Creates chain edges with conditions
+\item \textbf{Gate Validator:} Validates quality gates before execution
+
+\textbf{Chain Execution Components:}
+\item \textbf{Chain Executor:} Executes APOE chains with monitoring
+\item \textbf{Role Orchestrator:} Coordinates role-based execution
+\item \textbf{Quality Monitor:} Monitors quality gates during execution
+\item \textbf{Result Validator:} Validates chain execution results
+
+\subsubsection*{Code Generation Components}
+
+\textbf{Component Generators:}
+\item \textbf{Python Component Generator:} Generates Python components from templates
+\item \textbf{TypeScript Component Generator:} Generates TypeScript components from templates
+\item \textbf{PowerShell Component Generator:} Generates PowerShell components from templates
+\item \textbf{YAML Config Generator:} Generates YAML configuration files
+
+\textbf{Test Generators:}
+\item \textbf{Unit Test Generator:} Generates unit tests for components
+\item \textbf{Integration Test Generator:} Generates integration tests
+\item \textbf{E2E Test Generator:} Generates end-to-end tests
+\item \textbf{Performance Test Generator:} Generates performance tests
+
+\subsection*{Template Customization Guide}
+
+\subsubsection*{Basic Customization}
+
+\textbf{Metadata Updates:}
+\item Update system/component IDs
+\item Set appropriate timestamps
+\item Add relevant tags
+\item Configure confidence thresholds
+
+\textbf{Content Customization:}
+\item Replace placeholders with actual content
+\item Add system-specific details
+\item Include relevant examples
+\item Maintain template structure
+
+\subsubsection*{Advanced Customization}
+
+\textbf{Structure Modifications:}
+\item Add custom sections if needed
+\item Remove irrelevant sections
+\item Reorder sections for clarity
+\item Maintain core template structure
+
+\textbf{Integration Customization:}
+\item Add integration-specific content
+\item Include integration examples
+\item Document integration patterns
+\item Maintain integration standards
+
+\subsection*{Component Integration Patterns}
+
+\subsubsection*{Pattern 4: Pipeline Composition}
+
+\textbf{Process:}
+1. Data flows through component pipeline
+2. Each component transforms data
+3. Final result returned
+4. Errors handled at each stage
+
+\textbf{Example:}
+}`\texttt{python
+\section*{Pipeline composition}
+pipeline = Pipeline([
+    DataValidator(),
+    DataTransformer(),
+    DataProcessor(),
+    DataFormatter()
+])
+result = pipeline.execute(input\_data)
+}`\texttt{
+
+\subsubsection*{Pattern 5: Event-Driven Composition}
+
+\textbf{Process:}
+1. Components subscribe to events
+2. Events trigger component execution
+3. Components emit events
+4. Event flow enables loose coupling
+
+\textbf{Example:}
+}`\texttt{python
+\section*{Event-driven composition}
+event\_bus = EventBus()
+event\_bus.subscribe('data\_ready', DataProcessor())
+event\_bus.subscribe('data\_processed', DataFormatter())
+event\_bus.publish('data\_ready', input\_data)
+}`\texttt{
+
+\subsubsection*{Pattern 6: Service Composition}
+
+\textbf{Process:}
+1. Components exposed as services
+2. Services communicate via APIs
+3. Service discovery enables dynamic composition
+4. Load balancing distributes requests
+
+\textbf{Example:}
+}`\texttt{python
+\section*{Service composition}
+service\_registry = ServiceRegistry()
+service\_a = service\_registry.get('component\_a')
+service\_b = service\_registry.get('component\_b')
+result = service\_b.execute(service\_a.execute(input\_data))
+}``
+
+\subsection*{Template Quality Assurance}
+
+\subsubsection*{Validation Checklist}
+
+\textbf{Metadata Validation:}
+\item [ ] All required metadata fields present
+\item [ ] IDs follow naming conventions
+\item [ ] Timestamps are valid
+\item [ ] Tags are appropriate
+
+\textbf{Content Validation:}
+\item [ ] All placeholders replaced
+\item [ ] Word counts within targets
+\item [ ] Examples are runnable
+\item [ ] Cross-references are valid
+
+\textbf{Structure Validation:}
+\item [ ] Template structure maintained
+\item [ ] Sections are complete
+\item [ ] Formatting is consistent
+\item [ ] Quality standards met
+
+\subsubsection*{Quality Metrics}
+
+\textbf{Template Usage Metrics:}
+\item Template adoption rate
+\item Template customization rate
+\item Template quality scores
+\item Template improvement frequency
+
+\textbf{Component Usage Metrics:}
+\item Component adoption rate
+\item Component composition patterns
+\item Component performance metrics
+\item Component improvement frequency
+
+\subsection*{Troubleshooting Guide}
+
+\subsubsection*{Issue: Template Not Found}
+
+\textbf{Symptoms:}
+\item Template file missing
+\item Template path incorrect
+\item Template version mismatch
+
+\textbf{Resolution:}
+1. Check template library location
+2. Verify template path
+3. Check template version
+4. Update template reference
+
+\subsubsection*{Issue: Component Integration Failure}
+
+\textbf{Symptoms:}
+\item Component not found
+\item Interface mismatch
+\item Dependency missing
+
+\textbf{Resolution:}
+1. Check component availability
+2. Verify interface compatibility
+3. Install missing dependencies
+4. Update component version
+
+\subsubsection*{Issue: Template Customization Errors}
+
+\textbf{Symptoms:}
+\item Validation failures
+\item Structure violations
+\item Quality gate failures
+
+\textbf{Resolution:}
+1. Review template structure
+2. Fix validation errors
+3. Restore template compliance
+4. Re-validate template
+
+\subsection*{Future Enhancements}
+
+\subsubsection*{Template Library Expansion}
+
+\textbf{Planned Templates:}
+\item Additional documentation templates
+\item Specialized orchestration templates
+\item Domain-specific templates
+\item Integration templates
+
+\textbf{Planned Components:}
+\item Additional core components
+\item Specialized integration components
+\item Domain-specific components
+\item Performance-optimized components
+
+\subsubsection*{Quality Improvements}
+
+\textbf{Template Quality:}
+\item Enhanced validation rules
+\item Improved examples
+\item Better documentation
+\item Quality metrics tracking
+
+\textbf{Component Quality:}
+\item Enhanced testing
+\item Better documentation
+\item Performance optimization
+\item Quality metrics tracking
+

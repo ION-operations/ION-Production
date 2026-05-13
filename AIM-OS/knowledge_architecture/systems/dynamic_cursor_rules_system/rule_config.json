@@ -1,0 +1,229 @@
+{
+  "version": "2.0",
+  "description": "Dynamic Cursor Rules System Configuration - Enhanced with All 34 Standards",
+  "last_updated": "2025-10-30",
+  "rule_partitions": {
+    "base_rules": {
+      "filename": "base_rules.cursorrules",
+      "priority": 10,
+      "always_load": true,
+      "dependencies": [],
+      "conflicts": [],
+      "context_requirements": {
+        "project_type": ["*"],
+        "task_type": ["*"],
+        "session_state": ["*"]
+      },
+      "memory_usage_kb": 50,
+      "load_time_ms": 10.0
+    },
+    "l0_l4_protocol": {
+      "filename": "l0_l4_protocol.cursorrules",
+      "priority": 9,
+      "always_load": false,
+      "dependencies": ["base_rules"],
+      "conflicts": [],
+      "context_requirements": {
+        "project_type": ["aim_os"],
+        "protocol_required": ["l0_l4", "documentation"]
+      },
+      "memory_usage_kb": 100,
+      "load_time_ms": 25.0
+    },
+    "ah_protocol": {
+      "filename": "ah_protocol.cursorrules",
+      "priority": 8,
+      "always_load": false,
+      "dependencies": ["base_rules"],
+      "conflicts": [],
+      "context_requirements": {
+        "protocol_required": ["ah_protocol", "idea_development"],
+        "task_type": ["development", "planning"]
+      },
+      "memory_usage_kb": 80,
+      "load_time_ms": 20.0
+    },
+    "mcp_tools": {
+      "filename": "mcp_tools.cursorrules",
+      "priority": 7,
+      "always_load": false,
+      "dependencies": ["base_rules"],
+      "conflicts": [],
+      "context_requirements": {
+        "project_type": ["aim_os"],
+        "task_type": ["development", "integration"]
+      },
+      "memory_usage_kb": 60,
+      "load_time_ms": 15.0
+    },
+    "quality_standards": {
+      "filename": "quality_standards.cursorrules",
+      "priority": 6,
+      "always_load": false,
+      "dependencies": ["base_rules"],
+      "conflicts": [],
+      "context_requirements": {
+        "task_type": ["development", "testing"],
+        "complexity_level": ["medium", "high", "critical"]
+      },
+      "memory_usage_kb": 40,
+      "load_time_ms": 12.0
+    },
+    "testing_protocols": {
+      "filename": "testing_protocols.cursorrules",
+      "priority": 5,
+      "always_load": false,
+      "dependencies": ["quality_standards"],
+      "conflicts": [],
+      "context_requirements": {
+        "task_type": ["testing", "validation"],
+        "project_type": ["aim_os"]
+      },
+      "memory_usage_kb": 30,
+      "load_time_ms": 8.0
+    },
+    "documentation_standards": {
+      "filename": "documentation_standards.cursorrules",
+      "priority": 4,
+      "always_load": false,
+      "dependencies": ["base_rules"],
+      "conflicts": [],
+      "context_requirements": {
+        "task_type": ["documentation", "specification"],
+        "protocol_required": ["documentation"]
+      },
+      "memory_usage_kb": 35,
+      "load_time_ms": 10.0
+    },
+    "performance_optimization": {
+      "filename": "performance_optimization.cursorrules",
+      "priority": 3,
+      "always_load": false,
+      "dependencies": ["base_rules"],
+      "conflicts": [],
+      "context_requirements": {
+        "task_type": ["optimization", "performance"],
+        "complexity_level": ["high", "critical"]
+      },
+      "memory_usage_kb": 25,
+      "load_time_ms": 6.0
+    },
+    "consciousness_memory": {
+      "filename": "consciousness_memory.cursorrules",
+      "priority": 6,
+      "always_load": false,
+      "dependencies": ["base_rules"],
+      "conflicts": [],
+      "context_requirements": {
+        "task_type": ["reflection", "memory", "consciousness", "handoff", "question"],
+        "protocol_required": ["consciousness", "memory", "continuity"]
+      },
+      "memory_usage_kb": 120,
+      "load_time_ms": 30.0
+    },
+    "planning_goals": {
+      "filename": "planning_goals.cursorrules",
+      "priority": 7,
+      "always_load": false,
+      "dependencies": ["base_rules"],
+      "conflicts": [],
+      "context_requirements": {
+        "task_type": ["planning", "strategy", "goal", "project", "coordination"],
+        "protocol_required": ["planning", "goals", "strategic"]
+      },
+      "memory_usage_kb": 100,
+      "load_time_ms": 25.0
+    },
+    "supporting_standards": {
+      "filename": "supporting_standards.cursorrules",
+      "priority": 5,
+      "always_load": false,
+      "dependencies": ["base_rules"],
+      "conflicts": [],
+      "context_requirements": {
+        "task_type": ["coordination", "reporting", "navigation", "analysis", "audit"],
+        "protocol_required": ["supporting", "coordination", "analysis"]
+      },
+      "memory_usage_kb": 180,
+      "load_time_ms": 45.0
+    },
+    "enhanced_foundational": {
+      "filename": "enhanced_foundational.cursorrules",
+      "priority": 8,
+      "always_load": false,
+      "dependencies": ["base_rules", "documentation_standards"],
+      "conflicts": [],
+      "context_requirements": {
+        "task_type": ["documentation", "validation", "mapping"],
+        "protocol_required": ["foundational", "validation", "templates"]
+      },
+      "memory_usage_kb": 80,
+      "load_time_ms": 20.0
+    }
+  },
+  "context_detection": {
+    "keywords": {
+      "project_type": {
+        "aim_os": ["aim-os", "aether", "lucid", "mcp", "consciousness"],
+        "documentation": ["documentation", "docs", "spec", "l0", "l1", "l2", "l3", "l4"],
+        "testing": ["test", "testing", "validation", "audit"],
+        "general": ["*"]
+      },
+      "task_type": {
+        "development": ["implement", "code", "develop", "build", "create"],
+        "documentation": ["document", "write", "spec", "l0", "l1", "l2", "l3", "l4"],
+        "testing": ["test", "validate", "check", "audit", "verify"],
+        "debugging": ["debug", "fix", "troubleshoot", "error"],
+        "planning": ["plan", "design", "architecture", "strategy"],
+        "reflection": ["reflection", "thought", "journal", "consciousness"],
+        "memory": ["memory", "context", "active", "handoff"],
+        "consciousness": ["consciousness", "thought", "emotion", "reflection"],
+        "handoff": ["handoff", "session", "continuity", "restore"],
+        "question": ["question", "blocker", "clarification", "human", "input"],
+        "strategy": ["strategy", "planning", "goal", "objective"],
+        "goal": ["goal", "objective", "kpi", "metric", "target"],
+        "project": ["project", "milestone", "timeline", "phase"],
+        "coordination": ["coordination", "team", "communication", "status"],
+        "reporting": ["report", "status", "update", "progress"],
+        "navigation": ["navigation", "index", "map", "concept"],
+        "analysis": ["analysis", "audit", "research", "evaluation"],
+        "audit": ["audit", "review", "analysis", "assessment"],
+        "mapping": ["map", "system_map", "atlas", "relationship"]
+      },
+      "protocol_required": {
+        "l0_l4": ["l0", "l1", "l2", "l3", "l4", "documentation"],
+        "ah_protocol": ["a-h", "ah protocol", "idea development"],
+        "lucid": ["lucid", "consciousness", "mcp"],
+        "mcp_tools": ["mcp", "tools", "integration"],
+        "consciousness": ["consciousness", "memory", "thought", "journal", "decision", "learning", "session", "continuity"],
+        "memory": ["memory", "context", "active", "handoff", "continuity"],
+        "planning": ["planning", "goal", "objective", "key result", "kpi", "metric", "task", "dependency"],
+        "goals": ["goal", "objective", "kpi", "metric", "task", "project", "hierarchy"],
+        "strategic": ["strategic", "planning", "goal", "objective"],
+        "supporting": ["supporting", "timeline", "coordination", "status", "report", "navigation", "index"],
+        "coordination": ["coordination", "communication", "team", "status", "report"],
+        "analysis": ["analysis", "audit", "research", "evaluation", "assessment"],
+        "foundational": ["foundational", "system_map", "system_index", "validation", "template"],
+        "validation": ["validation", "gate", "check", "quality", "compliance"],
+        "templates": ["template", "library", "standard", "documentation"]
+      },
+      "complexity_level": {
+        "critical": ["critical", "urgent", "emergency", "tier 3"],
+        "high": ["complex", "major", "tier 2", "architecture"],
+        "low": ["simple", "minor", "tier 1", "fix"],
+        "medium": ["*"]
+      }
+    }
+  },
+  "performance_limits": {
+    "max_memory_usage_kb": 800,
+    "max_load_time_ms": 250,
+    "max_partitions": 12,
+    "cache_size_mb": 15
+  },
+  "conflict_resolution": {
+    "strategy": "priority_based",
+    "fallback_strategy": "user_choice",
+    "merge_conflicts": false
+  }
+}

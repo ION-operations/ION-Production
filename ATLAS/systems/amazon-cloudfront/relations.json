@@ -1,0 +1,37 @@
+{
+  "system_slug": "amazon-cloudfront",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-10",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "amazon-s3",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "S3 bucket origins are a standard CloudFront pattern in AWS documentation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "aws-elastic-load-balancing",
+      "evidence_tier": "INFERRED",
+      "notes": "ALB/NLB as custom origins in common AWS architectures."
+    },
+    {
+      "type": "integrates_with",
+      "target": "amazon-api-gateway",
+      "evidence_tier": "INFERRED",
+      "notes": "API Gateway behind CloudFront in documented edge patterns."
+    },
+    {
+      "type": "competes_with",
+      "target": "azure-front-door",
+      "evidence_tier": "INFERRED",
+      "notes": "Cross-cloud CDN class."
+    },
+    {
+      "type": "competes_with",
+      "target": "cloudflare-workers",
+      "evidence_tier": "INFERRED",
+      "notes": "Overlapping global edge delivery (different execution models)."
+    }
+  ]
+}

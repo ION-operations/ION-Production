@@ -1,0 +1,345 @@
+{
+  "systemId": "apoe.aiPoweredOrchestration",
+  "humanName": "AI-Powered Orchestration Engine - Planned, Budgeted, Gated Execution",
+  "version": "v2.2.0",
+  "status": "production",
+  
+  "intent": {
+    "purpose": "Provide orchestration engine that transforms AI execution from improvisation to compilation. Compiles vague intent into typed, budgeted, gated execution plans using ACL (AIMOS Chain Language), orchestrates specialized agents through 8 roles, and ensures every operation is witnessed, budgeted, and verifiable.",
+    "must_not_regress": [
+      "Must not allow invalid ACL syntax",
+      "Must not execute steps out of order",
+      "Must not bypass gates",
+      "Must not allow budget violations",
+      "Must not skip witness generation"
+    ],
+    "why_it_exists": "Transforms ad-hoc AI execution into structured, verifiable orchestration. Enables multi-agent coordination, budget enforcement, and quality gates for reliable AI operations."
+  },
+  
+  "classification": {
+    "security_level": "critical",
+    "perf_sensitivity": "high",
+    "ownership": "core",
+    "sideEffects": [
+      "Orchestrates all AI operations through structured plans",
+      "Enforces budgets and quality gates",
+      "Generates witnesses for all executions",
+      "Coordinates multi-agent workflows",
+      "Manages execution state and recovery"
+    ]
+  },
+  
+  "internalNodes": [
+    {
+      "id": "aclCompiler",
+      "responsibility": "Compiles ACL text into typed, executable plans (ACL → DAG)",
+      "must_never": [
+        "Allow invalid ACL syntax",
+        "Skip type checking",
+        "Generate plans without budgets",
+        "Create circular dependencies"
+      ],
+      "perf_budget_ms": 100,
+      "status": "production"
+    },
+    {
+      "id": "dagExecutor",
+      "responsibility": "Executes plans as directed acyclic graphs with topological sorting",
+      "must_never": [
+        "Execute steps out of order",
+        "Skip dependency resolution",
+        "Allow circular execution",
+        "Lose execution state"
+      ],
+      "perf_budget_ms": 50,
+      "status": "production"
+    },
+    {
+      "id": "roleDispatcher",
+      "responsibility": "Dispatches steps to appropriate role agents (8 roles: Planner, Retriever, Reasoner, Verifier, Builder, Critic, Operator, Witness)",
+      "must_never": [
+        "Dispatch to wrong role",
+        "Skip contract enforcement",
+        "Allow budget violations",
+        "Skip VIF witness generation"
+      ],
+      "perf_budget_ms": 20,
+      "status": "production"
+    },
+    {
+      "id": "gateManager",
+      "responsibility": "Enforces quality, safety, and policy gates with PASS/FAIL/WARN/ABSTAIN routing",
+      "must_never": [
+        "Bypass gates",
+        "Skip gate evaluation",
+        "Allow unsafe operations",
+        "Lose gate decision reasoning"
+      ],
+      "perf_budget_ms": 15,
+      "status": "production"
+    },
+    {
+      "id": "budgetTracker",
+      "responsibility": "Tracks and enforces resource budgets (tokens, time, tools)",
+      "must_never": [
+        "Allow budget violations",
+        "Lose budget tracking",
+        "Skip budget enforcement",
+        "Exceed resource limits"
+      ],
+      "perf_budget_ms": 5,
+      "status": "production"
+    },
+    {
+      "id": "vifWitnessGenerator",
+      "responsibility": "Generates VIF witnesses for every step execution",
+      "must_never": [
+        "Skip witness generation",
+        "Lose provenance information",
+        "Allow witness tampering",
+        "Create incomplete witnesses"
+      ],
+      "perf_budget_ms": 10,
+      "status": "production"
+    },
+    {
+      "id": "deppRewriter",
+      "responsibility": "Self-rewriting plans using SEG evidence for continuous improvement",
+      "must_never": [
+        "Rewrite plans without evidence",
+        "Lose plan history",
+        "Create worse plans",
+        "Break plan semantics"
+      ],
+      "perf_budget_ms": 200,
+      "status": "development"
+    },
+    {
+      "id": "stateManager",
+      "responsibility": "Manages execution state and enables resumption/recovery",
+      "must_never": [
+        "Lose execution state",
+        "Create inconsistent states",
+        "Allow state corruption",
+        "Skip state snapshots"
+      ],
+      "perf_budget_ms": 30,
+      "status": "production"
+    }
+  ],
+  
+  "systemMap": {
+    "mapFile": "./system.map.lucid.json5"
+  },
+  
+  "foresight": {
+    "predictedRisks": [
+      {
+        "risk_id": "gate_bypass_failure",
+        "description": "Quality gates could be bypassed or fail",
+        "likelihood": "low",
+        "blast_radius_if_real": "unsafe_operations_executed",
+        "mitigation": "Implement strict gate enforcement and audit logging",
+        "watchpoint": "if gate_bypass_detected, halt execution and alert"
+      },
+      {
+        "risk_id": "budget_violation",
+        "description": "Budget violations could occur",
+        "likelihood": "medium",
+        "blast_radius_if_real": "resource_exhaustion",
+        "mitigation": "Implement strict budget enforcement and monitoring",
+        "watchpoint": "if budget_exceeded, halt execution and alert"
+      },
+      {
+        "risk_id": "witness_generation_failure",
+        "description": "Witness generation could fail",
+        "likelihood": "low",
+        "blast_radius_if_real": "provenance_lost",
+        "mitigation": "Implement redundant witness generation and validation",
+        "watchpoint": "if witness_fails, halt execution and alert"
+      },
+      {
+        "risk_id": "state_corruption",
+        "description": "Execution state could become corrupted",
+        "likelihood": "low",
+        "blast_radius_if_real": "execution_unrecoverable",
+        "mitigation": "Implement state validation and recovery mechanisms",
+        "watchpoint": "if state_corruption_detected, halt execution and alert"
+      }
+    ],
+    "killSwitch": "apoe.execution.enabled=false",
+    "emergencyProcedures": [
+      "Halt all execution immediately",
+      "Create emergency state snapshot",
+      "Switch to safe mode",
+      "Notify all dependent systems"
+    ]
+  },
+  
+  "lineage": {
+    "parentSystemId": null,
+    "childSystems": [
+      "cas.cognitiveAnalysis",
+      "iis.intuitiveIntelligence"
+    ],
+    "maturity": "production"
+  },
+  
+  "connections": [
+    {
+      "viaPort": "hhniIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "hhni.hierarchicalHypergraph",
+      "protocol": "internal_api",
+      "data": ["context_retrieval_requests", "optimized_context", "budget_aware_queries", "retrieval_witnesses"],
+      "security_level": "high",
+      "governanceRequired": true
+    },
+    {
+      "viaPort": "vifIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "vif.verifiableIntelligence",
+      "protocol": "internal_api",
+      "data": ["execution_witnesses", "confidence_scores", "provenance_traces", "verification_requests"],
+      "security_level": "critical",
+      "governanceRequired": true
+    },
+    {
+      "viaPort": "cmcIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "cmc.contextMemoryCore",
+      "protocol": "internal_api",
+      "data": ["execution_state", "plan_artifacts", "step_results", "state_snapshots"],
+      "security_level": "high",
+      "governanceRequired": true
+    },
+    {
+      "viaPort": "segIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "seg.sharedEvidenceGraph",
+      "protocol": "internal_api",
+      "data": ["execution_traces", "evidence_nodes", "synthesis_requests", "plan_effectiveness_data"],
+      "security_level": "high",
+      "governanceRequired": true
+    },
+    {
+      "viaPort": "sdfcvfIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "sdfcvf.atomicEvolution",
+      "protocol": "internal_api",
+      "data": ["quality_gate_status", "parity_checks", "evolution_artifacts", "trace_emissions"],
+      "security_level": "high",
+      "governanceRequired": true
+    },
+    {
+      "viaPort": "tcsIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "tcs.timelineContextSystem",
+      "protocol": "internal_api",
+      "data": ["timeline_entries", "execution_events", "session_continuity_data", "performance_analysis"],
+      "security_level": "high",
+      "governanceRequired": true
+    },
+    {
+      "viaPort": "casIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "cas.cognitiveAnalysis",
+      "protocol": "internal_api",
+      "data": ["introspection_data", "decision_analysis", "failure_mode_context", "resource_patterns"],
+      "security_level": "medium",
+      "governanceRequired": false
+    },
+    {
+      "viaPort": "llmIntegration",
+      "direction": "outbound",
+      "connectsToSystemId": "llm.external",
+      "protocol": "api",
+      "data": ["role_execution_requests", "llm_responses", "token_usage_data", "model_outputs"],
+      "security_level": "medium",
+      "governanceRequired": false
+    }
+  ],
+  
+  "exceptions": [],
+  
+  "lastUpdated": "2025-01-27T00:30:00Z",
+  "atlasHealth": {
+    "undeclaredConnections": [],
+    "performanceAlerts": [],
+    "securityAlerts": []
+  },
+  
+  "relatedIdeas": [
+    "I-009: Orchestration Runtime v0.1 (ideas/integrators/o3pro-ai/SEED_orchestration_runtime_v0_1.md)",
+    "Task orchestration patterns",
+    "Execution coordination approaches",
+    "ACL compilation techniques"
+  ],
+  
+  "ideaReferenceCount": 30,
+  
+  "integrationPoints": {
+    "retrieval": "HHNI provides context for orchestration",
+    "verification": "VIF validates all executions with witnesses",
+    "storage": "CMC stores execution state and artifacts",
+    "knowledge": "SEG synthesizes execution traces",
+    "quality": "SDF-CVF enforces quality gates",
+    "timeline": "TCS tracks execution events and session continuity",
+    "introspection": "CAS analyzes decisions and failure modes",
+    "execution": "LLM provides role execution capabilities"
+  },
+  
+  "subsystems": [
+    {
+      "id": "acl",
+      "name": "ACL Compiler Subsystem",
+      "type": "subsystem",
+      "parent": "apoe.aiPoweredOrchestration",
+      "status": "production",
+      "description": "AIMOS Chain Language (ACL) compiler - typed DSL for specifying AI execution plans",
+      "components": ["parser", "typeChecker", "budgetAnalyzer", "dependencyResolver"],
+      "integrations": ["sdfcvf"]
+    },
+    {
+      "id": "gates",
+      "name": "Gate Management Subsystem",
+      "type": "subsystem",
+      "parent": "apoe.aiPoweredOrchestration",
+      "status": "production",
+      "description": "Quality, safety, and policy enforcement gates with PASS/FAIL/WARN/ABSTAIN routing",
+      "components": ["qualityGates", "safetyGates", "policyGates", "budgetGates"],
+      "integrations": ["vif", "sdfcvf", "cas", "tcs"]
+    },
+    {
+      "id": "roles",
+      "name": "Role Dispatch Subsystem",
+      "type": "subsystem",
+      "parent": "apoe.aiPoweredOrchestration",
+      "status": "production",
+      "description": "Dispatches steps to appropriate role agents (8 roles: Planner, Retriever, Reasoner, Verifier, Builder, Critic, Operator, Witness)",
+      "components": ["plannerRole", "retrieverRole", "reasonerRole", "verifierRole", "builderRole", "criticRole", "operatorRole", "witnessRole"],
+      "integrations": ["hhni", "vif", "cmc", "cas", "tcs"]
+    },
+    {
+      "id": "budget",
+      "name": "Budget Management Subsystem",
+      "type": "subsystem",
+      "parent": "apoe.aiPoweredOrchestration",
+      "status": "production",
+      "description": "Tracks and enforces resource budgets (tokens, time, tools) for plan execution",
+      "components": ["tokenTracker", "timeTracker", "toolTracker", "budgetPooler"],
+      "integrations": ["tcs", "cmc", "cas"]
+    },
+    {
+      "id": "depp",
+      "name": "DEPP (Dynamic Evidence-Based Plan Rewriting) Subsystem",
+      "type": "subsystem",
+      "parent": "apoe.aiPoweredOrchestration",
+      "status": "development",
+      "description": "Self-rewriting plans using SEG evidence for continuous improvement",
+      "components": ["evidenceAnalyzer", "planRewriter", "effectivenessCalculator"],
+      "integrations": ["seg", "vif", "cmc", "cas", "tcs"]
+    }
+  ]
+}
+

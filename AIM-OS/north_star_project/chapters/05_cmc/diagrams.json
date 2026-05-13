@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "diagrams": [
+    {
+      "name": "atom_journal_snapshot",
+      "description": "Atom flows into journal; snapshots preserve consistent views",
+      "nodes": ["atom", "journal", "snapshot"],
+      "edges": [["atom", "journal"], ["journal", "snapshot"]]
+    }
+  ]
+}

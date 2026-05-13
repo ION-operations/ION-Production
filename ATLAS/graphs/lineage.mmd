@@ -1,0 +1,181 @@
+%% ATLAS lineage graph (Mermaid) — high level, evidence-bounded
+%% Node IDs must match systems_index slugs where possible
+
+flowchart TB
+  subgraph historical["Historical / research lineage"]
+    multics["multics"]
+    unix_research["Unix (research lineage)\nHISTORICAL aggregate"]
+    apache_mesos["apache-mesos\n(retired)"]
+    multics --> unix_research
+  end
+
+  subgraph kernels["Kernels / OS bases"]
+    linux-kernel["linux-kernel"]
+    windows-nt["windows-nt"]
+    xnu-macos["xnu-macos"]
+    freebsd["freebsd"]
+    android-aosp["android-aosp"]
+  end
+
+  unix_research -. influences .-> freebsd
+  unix_research -. influences .-> linux-kernel
+  systemd["systemd"]
+  nixos["nixos"]
+  podman["podman"]
+  runc["runc"]
+  crio["cri-o"]
+  firecracker["firecracker"]
+  linux-kernel -. hosts typical .-> systemd
+  linux-kernel -. hosts typical .-> docker
+  linux-kernel -. hosts typical .-> nixos
+  linux-kernel -. hosts typical .-> podman
+  linux-kernel -. KVM .-> firecracker
+  linux-kernel -. Android base .-> android-aosp
+
+  subgraph orchestration["Orchestration & runtime"]
+    kubernetes["kubernetes"]
+    nomad["nomad"]
+    aws_ecs["aws-ecs"]
+    aws_eks["aws-eks"]
+    azure_aks["azure-aks"]
+    azure_aca["azure-container-apps"]
+    gcp_gke["gcp-gke"]
+    oci_oke["oci-oke"]
+    ibm_iks["ibm-iks"]
+    digitalocean_doks["digitalocean-doks"]
+    civo_kubernetes["civo-kubernetes"]
+    linode_lke["linode-lke"]
+    vmware_tkg["vmware-tkg"]
+    red_hat_openshift["red-hat-openshift"]
+    openshift_dedicated["openshift-dedicated"]
+    azure_aci["azure-aci"]
+    docker["docker"]
+    containerd["containerd"]
+    docker --> containerd
+    containerd --> kubernetes
+    crio --> kubernetes
+    nomad --> docker
+    docker -. AWS docs name .-> aws_ecs
+    kubernetes -. orchestrator class .-> nomad
+    kubernetes -. orchestrator class .-> aws_ecs
+    nomad -. orchestrator class .-> aws_ecs
+    aws_eks --> kubernetes
+    azure_aks --> kubernetes
+    gcp_gke --> kubernetes
+    oci_oke --> kubernetes
+    ibm_iks --> kubernetes
+    digitalocean_doks --> kubernetes
+    civo_kubernetes --> kubernetes
+    linode_lke --> kubernetes
+    vmware_tkg --> kubernetes
+    azure_aca -. K8s substrate .-> kubernetes
+    azure_aca -. Azure pair .-> azure_aks
+    azure_aca -. Azure block .-> azure_aci
+    azure_aks -. virtual nodes .-> azure_aci
+    docker -. registries .-> azure_aca
+    docker -. registries .-> azure_aci
+    aws_eks -. AWS product pair .-> aws_ecs
+    aws_eks -. managed K8s class .-> azure_aks
+    aws_eks -. managed K8s class .-> gcp_gke
+    aws_eks -. managed K8s class .-> oci_oke
+    azure_aks -. managed K8s class .-> gcp_gke
+    azure_aks -. managed K8s class .-> oci_oke
+    gcp_gke -. managed K8s class .-> oci_oke
+    aws_eks -. managed K8s class .-> ibm_iks
+    azure_aks -. managed K8s class .-> ibm_iks
+    gcp_gke -. managed K8s class .-> ibm_iks
+    oci_oke -. managed K8s class .-> ibm_iks
+    aws_eks -. managed K8s class .-> digitalocean_doks
+    aws_eks -. managed K8s class .-> civo_kubernetes
+    aws_eks -. managed K8s class .-> linode_lke
+    azure_aks -. managed K8s class .-> digitalocean_doks
+    azure_aks -. managed K8s class .-> civo_kubernetes
+    azure_aks -. managed K8s class .-> linode_lke
+    gcp_gke -. managed K8s class .-> digitalocean_doks
+    gcp_gke -. managed K8s class .-> civo_kubernetes
+    gcp_gke -. managed K8s class .-> linode_lke
+    oci_oke -. managed K8s class .-> digitalocean_doks
+    oci_oke -. managed K8s class .-> civo_kubernetes
+    oci_oke -. managed K8s class .-> linode_lke
+    ibm_iks -. managed K8s class .-> digitalocean_doks
+    ibm_iks -. managed K8s class .-> civo_kubernetes
+    ibm_iks -. managed K8s class .-> linode_lke
+    digitalocean_doks -. managed K8s class .-> civo_kubernetes
+    digitalocean_doks -. managed K8s class .-> linode_lke
+    civo_kubernetes -. managed K8s class .-> linode_lke
+    aws_eks -. managed K8s class .-> vmware_tkg
+    azure_aks -. managed K8s class .-> vmware_tkg
+    gcp_gke -. managed K8s class .-> vmware_tkg
+    oci_oke -. managed K8s class .-> vmware_tkg
+    ibm_iks -. managed K8s class .-> vmware_tkg
+    digitalocean_doks -. managed K8s class .-> vmware_tkg
+    civo_kubernetes -. managed K8s class .-> vmware_tkg
+    linode_lke -. managed K8s class .-> vmware_tkg
+    vmware_tkg -. managed K8s class .-> digitalocean_doks
+    vmware_tkg -. managed K8s class .-> civo_kubernetes
+    vmware_tkg -. managed K8s class .-> linode_lke
+    aws_eks -. managed K8s class .-> red_hat_openshift
+    azure_aks -. managed K8s class .-> red_hat_openshift
+    gcp_gke -. managed K8s class .-> red_hat_openshift
+    oci_oke -. managed K8s class .-> red_hat_openshift
+    ibm_iks -. managed K8s class .-> red_hat_openshift
+    digitalocean_doks -. managed K8s class .-> red_hat_openshift
+    civo_kubernetes -. managed K8s class .-> red_hat_openshift
+    linode_lke -. managed K8s class .-> red_hat_openshift
+    vmware_tkg -. managed K8s class .-> red_hat_openshift
+    red_hat_openshift -. managed K8s class .-> vmware_tkg
+    red_hat_openshift -. managed K8s class .-> digitalocean_doks
+    red_hat_openshift -. managed K8s class .-> civo_kubernetes
+    red_hat_openshift -. managed K8s class .-> linode_lke
+    aws_eks -. managed K8s class .-> openshift_dedicated
+    azure_aks -. managed K8s class .-> openshift_dedicated
+    gcp_gke -. managed K8s class .-> openshift_dedicated
+    oci_oke -. managed K8s class .-> openshift_dedicated
+    ibm_iks -. managed K8s class .-> openshift_dedicated
+    digitalocean_doks -. managed K8s class .-> openshift_dedicated
+    civo_kubernetes -. managed K8s class .-> openshift_dedicated
+    linode_lke -. managed K8s class .-> openshift_dedicated
+    vmware_tkg -. managed K8s class .-> openshift_dedicated
+    red_hat_openshift -. managed K8s class .-> openshift_dedicated
+    openshift_dedicated -. managed K8s class .-> red_hat_openshift
+    openshift_dedicated -. managed K8s class .-> vmware_tkg
+    openshift_dedicated -. managed K8s class .-> digitalocean_doks
+    openshift_dedicated -. managed K8s class .-> civo_kubernetes
+    openshift_dedicated -. managed K8s class .-> linode_lke
+    nomad -. orchestrator class .-> digitalocean_doks
+    nomad -. orchestrator class .-> civo_kubernetes
+    nomad -. orchestrator class .-> linode_lke
+    nomad -. orchestrator class .-> vmware_tkg
+    nomad -. orchestrator class .-> red_hat_openshift
+    apache_mesos -. HISTORICAL class .-> kubernetes
+    firecracker -. some stacks .-> kubernetes
+    containerd -. OCI exec .-> runc
+    crio -. OCI exec .-> runc
+    podman -. OCI exec .-> runc
+  end
+
+  subgraph dev_ai["Developer & AI surfaces"]
+    vscode["vscode"]
+    cursor["cursor"]
+    mcp["model-context-protocol"]
+    lsp["language-server-protocol"]
+    openai_pub["openai-agents-chatgpt-public-runtime"]
+    anthropic_sdk["anthropic-claude-code-agent-sdk"]
+    gemini_api["gemini-api"]
+    deepseek_api["deepseek-api"]
+    maf["microsoft-agent-framework"]
+    oh["openhands"]
+    vscode -. integrates_with .-> mcp
+    cursor -. integrates_with .-> mcp
+    anthropic_sdk -. integrates_with .-> mcp
+    maf -. integrates_with .-> mcp
+    vscode -. integrates_with .-> lsp
+    cursor -. integrates_with .-> lsp
+    mcp -. editor stack .-> lsp
+    oh -. integrates_with .-> docker
+  end
+
+  classDef hist fill:#e8e8e8,stroke:#666;
+  classDef seeded fill:#d4edda,stroke:#2f6f3f;
+  class multics,unix_research,apache_mesos hist;
+  class linux-kernel,windows-nt,xnu-macos,freebsd,android-aosp,systemd,nixos,docker,containerd,podman,runc,crio,firecracker,kubernetes,nomad,aws_ecs,aws_eks,azure_aks,azure_aca,azure_aci,gcp_gke,oci_oke,ibm_iks,digitalocean_doks,civo_kubernetes,linode_lke,vmware_tkg,red_hat_openshift,openshift_dedicated,vscode,cursor,mcp,lsp,openai_pub,anthropic_sdk,gemini_api,deepseek_api,maf,oh seeded;

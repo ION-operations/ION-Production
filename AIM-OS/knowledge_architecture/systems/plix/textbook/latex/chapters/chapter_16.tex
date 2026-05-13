@@ -1,0 +1,478 @@
+% Chapter 16 converted from Markdown
+% Auto-generated - do not edit manually
+
+
+
+
+\section*{Section 16.1: OPA Integration}
+
+OPA (Open Policy Agent) integration provides policy evaluation for PLIx constraints, enabling fail-fast policy enforcement before execution.
+
+\textbf{OPA Overview}
+
+OPA provides:
+
+\begin{itemize}
+\item \textbf{Policy Engine:} Decoupled policy evaluation engine
+\item \textbf{Rego Language:} Declarative policy language
+\item \textbf{Sidecar Pattern:} OPA runs as sidecar service
+\item \textbf{Policy Evaluation:} Fast policy evaluation via HTTP API
+\end{itemize}
+
+OPA enables decoupled policy enforcement, supporting policy-as-code practices.
+
+\textbf{OPA Sidecar Integration}
+
+OPA sidecar integration:
+
+\begin{lstlisting}[caption=Code Example]
+interface OPAClient {
+  evaluate(policy: string, input: any): Promise<boolean>;
+}
+
+class OPASidecarClient implements OPAClient {
+  private baseUrl: string;
+  
+  constructor(baseUrl: string = "http://localhost:8181") {
+    this.baseUrl = baseUrl;
+  }
+  
+  async evaluate(policy: string, input: any): Promise<boolean> {
+    const response = await fetch(`\texttt{\$\{this.baseUrl\}\}/v1/data/plix/policy`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        input: input
+      })
+    });
+    
+    if (!response.ok) {
+      throw new Error(`OPA evaluation failed: \texttt{\$\{response.statusText\}\}`);
+    }
+    
+    const result = await response.json();
+    return result.result?.allow === true;
+  }
+}
+\end{lstlisting}
+
+OPA sidecar integration enables policy evaluation via HTTP API, supporting decoupled policy enforcement.
+
+\textbf{Policy Gate Implementation}
+
+Policy gate implementation:
+
+\begin{lstlisting}[caption=Code Example]
+async function evaluatePolicyGate(
+  constraints: string[],
+  nodeParams: Record<string, any>,
+  opaClient: OPAClient
+): Promise<boolean> {
+  // Compile constraints to Rego
+  const regoPolicy = compileConstraintsToRego(constraints);
+  
+  // Evaluate policy
+  const allowed = await opaClient.evaluate(regoPolicy, nodeParams);
+  
+  if (!allowed) {
+    throw new PolicyDeniedError(
+      `Policy denied for constraints: \texttt{\$\{constraints.join(', ')\}\}`
+    );
+  }
+  
+  return true;
+}
+
+async function executeWithPolicyGate(
+  ir: IRPlan,
+  executor: NodeExecutor,
+  opaClient: OPAClient
+): Promise<ExecutionResult> {
+  const results: Record<string, any> = {};
+  
+  for (const node of ir.nodes) {
+    // Evaluate policy gate before execution
+    const policyPassed = await evaluatePolicyGate(
+      ir.constraints,
+      node.params,
+      opaClient
+    );
+    
+    if (!policyPassed) {
+      throw new PolicyDeniedError(`Policy denied for node: \texttt{\$\{node.id\}\}`);
+    }
+    
+    // Execute node
+    const output = await executor.exec(node.id, node.action, node.params);
+    results[node.id] = output;
+  }
+  
+  return { results };
+}
+\end{lstlisting}
+
+Policy gate implementation enforces constraints before execution, ensuring policy compliance.
+
+\textbf{OPA Integration Benefits}
+
+OPA integration provides:
+
+\begin{itemize}
+\item \textbf{Decoupled Policy:} Policy evaluation decoupled from execution
+\item \textbf{Fail-Fast:} Policy enforcement before execution
+\item \textbf{Policy-as-Code:} Policies defined as code (Rego)
+\item \textbf{Scalability:} OPA sidecar scales independently
+\end{itemize}
+
+These benefits enable reliable policy enforcement with decoupled architecture.
+
+\section*{Section 16.2: Rego Generation}
+
+Rego generation transforms PLIx constraints into Rego policy language, enabling automatic policy generation from intent contracts.
+
+\textbf{Rego Language Overview}
+
+Rego provides:
+
+\begin{itemize}
+\item \textbf{Declarative Syntax:} Declarative policy language
+\item \textbf{Package Structure:} Package-based organization
+\item \textbf{Rules:} Rule-based policy definition
+\item \textbf{Expressions:} Boolean expressions for conditions
+\end{itemize}
+
+Rego enables declarative policy definition, supporting policy-as-code practices.
+
+\textbf{Constraint \textrightarrow{} Rego Translation}
+
+Constraint to Rego translation:
+
+\begin{lstlisting}[caption=Code Example]
+function compileConstraintsToRego(
+  constraints: string[],
+  packageName: string = "plix.policy"
+): string {
+  const regoRules = constraints.map((constraint, index) => {
+    const regoExpr = translateConstraintToRego(constraint);
+    return `    \texttt{\$\{regoExpr\}\}  # c\texttt{\$\{index\}\}`;
+  }).join('\n');
+  
+  return `package \texttt{\$\{packageName\}\}
+
+default allow = false
+
+allow {
+\texttt{\$\{regoRules\}\}
+}
+`;
+}
+
+function translateConstraintToRego(constraint: string): string {
+  // Translate PLIx constraint to Rego expression
+  let regoExpr = constraint;
+  
+  // Replace operators
+  regoExpr = regoExpr.replace(/==/g, '=');
+  regoExpr = regoExpr.replace(/<=/g, '<=');
+  regoExpr = regoExpr.replace(/>=/g, '>=');
+  regoExpr = regoExpr.replace(/&&/g, 'and');
+  regoExpr = regoExpr.replace(/\|\|/g, 'or');
+  regoExpr = regoExpr.replace(/!/g, 'not ');
+  
+  // Handle variable references
+  regoExpr = regoExpr.replace(/(\w+)/g, (match) => {
+    // Check if it's a variable reference
+    if (match.includes('.')) {
+      return `input.\texttt{\$\{match\}\}`;
+    }
+    return `input.\texttt{\$\{match\}\}`;
+  });
+  
+  return regoExpr;
+}
+\end{lstlisting}
+
+Constraint to Rego translation generates Rego policies from PLIx constraints, enabling automatic policy generation.
+
+\textbf{Rego Policy Examples}
+
+Rego policy examples:
+
+\begin{lstlisting}[caption=Code Example]
+# Example 1: Duration constraint
+package plix.booking
+
+default allow = false
+
+allow {
+    input.duration <= 4
+}
+
+# Example 2: Multiple constraints
+package plix.booking
+
+default allow = false
+
+allow {
+    input.duration <= 4
+    input.calendar_conflicts == "none"
+    input.user_age >= 18
+}
+
+# Example 3: Complex constraint
+package plix.booking
+
+default allow = false
+
+allow {
+    input.duration <= 4
+    input.room_available == true
+    not input.blacklisted_user
+}
+\end{lstlisting}
+
+Rego policy examples demonstrate constraint translation, showing how PLIx constraints become Rego policies.
+
+\textbf{Rego Generation Benefits}
+
+Rego generation provides:
+
+\begin{itemize}
+\item \textbf{Automatic Generation:} Constraints automatically become policies
+\item \textbf{Declarative Syntax:} Declarative policy definition
+\item \textbf{Standard Format:} Standard Rego format enables tool integration
+\item \textbf{Maintainability:} Policies defined as code, version-controlled
+\end{itemize}
+
+These benefits enable automatic policy generation from intent contracts.
+
+\section*{Section 16.3: Policy Evaluation}
+
+Policy evaluation provides runtime policy enforcement, ensuring constraints are satisfied before execution.
+
+\textbf{Policy Evaluation Flow}
+
+Policy evaluation flow:
+
+\begin{lstlisting}[caption=Code Example]
+async function evaluatePolicy(
+  regoPolicy: string,
+  input: Record<string, any>,
+  opaClient: OPAClient
+): Promise<PolicyResult> {
+  try {
+    // Load policy into OPA
+    await opaClient.loadPolicy(regoPolicy);
+    
+    // Evaluate policy
+    const allowed = await opaClient.evaluate(regoPolicy, input);
+    
+    return {
+      allowed,
+      reason: allowed ? "Policy passed" : "Policy denied",
+      constraints: extractConstraints(regoPolicy)
+    };
+  } catch (error) {
+    return {
+      allowed: false,
+      reason: `Policy evaluation error: \texttt{\$\{error.message\}\}`,
+      constraints: []
+    };
+  }
+}
+
+interface PolicyResult {
+  allowed: boolean;
+  reason: string;
+  constraints: string[];
+}
+\end{lstlisting}
+
+Policy evaluation flow provides runtime policy enforcement, ensuring constraints are satisfied.
+
+\textbf{Policy Gate Integration}
+
+Policy gate integration with PLIx execution:
+
+\begin{lstlisting}[caption=Code Example]
+async function executeWithPolicyGates(
+  ir: IRPlan,
+  executor: NodeExecutor,
+  opaClient: OPAClient
+): Promise<ExecutionResult> {
+  // Compile constraints to Rego
+  const regoPolicy = compileConstraintsToRego(ir.constraints);
+  
+  const results: Record<string, any> = {};
+  
+  for (const node of ir.nodes) {
+    // Evaluate policy gate
+    const policyResult = await evaluatePolicy(regoPolicy, node.params, opaClient);
+    
+    if (!policyResult.allowed) {
+      // Policy denied: fail fast
+      throw new PolicyDeniedError(
+        `Policy denied for node \texttt{\$\{node.id\}\}: \texttt{\$\{policyResult.reason\}\}`
+      );
+    }
+    
+    // Execute node
+    const output = await executor.exec(node.id, node.action, node.params);
+    results[node.id] = output;
+  }
+  
+  return { results };
+}
+\end{lstlisting}
+
+Policy gate integration enforces policies before execution, ensuring constraint compliance.
+
+\textbf{Policy Evaluation Benefits}
+
+Policy evaluation provides:
+
+\begin{itemize}
+\item \textbf{Fail-Fast:} Policy enforcement before execution
+\item \textbf{Constraint Compliance:} Ensures constraints are satisfied
+\item \textbf{Error Reporting:} Clear policy denial reasons
+\item \textbf{Runtime Enforcement:} Runtime policy enforcement
+\end{itemize}
+
+These benefits enable reliable constraint enforcement through policy evaluation.
+
+\section*{Section 16.4: Policy Testing}
+
+Policy testing ensures Rego policies are correct, enabling policy validation and verification.
+
+\textbf{Policy Unit Tests}
+
+Policy unit tests:
+
+\begin{lstlisting}[caption=Code Example]
+describe('Rego Policy Generation', () => {
+  it('generates Rego for duration constraint', () => {
+    const constraints = ['duration <= 4h'];
+    const rego = compileConstraintsToRego(constraints);
+    
+    expect(rego).toContain('package plix.policy');
+    expect(rego).toContain('default allow = false');
+    expect(rego).toContain('input.duration <= 4');
+  });
+  
+  it('generates Rego for multiple constraints', () => {
+    const constraints = [
+      'duration <= 4h',
+      'calendar_conflicts == none'
+    ];
+    const rego = compileConstraintsToRego(constraints);
+    
+    expect(rego).toContain('input.duration <= 4');
+    expect(rego).toContain('input.calendar_conflicts = "none"');
+  });
+});
+
+describe('Policy Evaluation', () => {
+  it('evaluates policy correctly', async () => {
+    const rego = `package plix.policy
+default allow = false
+allow {
+    input.duration <= 4
+}`;
+    
+    const opaClient = new OPASidecarClient();
+    const result = await evaluatePolicy(rego, { duration: 2 }, opaClient);
+    
+    expect(result.allowed).toBe(true);
+  });
+  
+  it('denies policy violation', async () => {
+    const rego = `package plix.policy
+default allow = false
+allow {
+    input.duration <= 4
+}`;
+    
+    const opaClient = new OPASidecarClient();
+    const result = await evaluatePolicy(rego, { duration: 5 }, opaClient);
+    
+    expect(result.allowed).toBe(false);
+  });
+});
+\end{lstlisting}
+
+Policy unit tests ensure Rego policies are correct, enabling policy validation.
+
+\textbf{Policy Integration Tests}
+
+Policy integration tests:
+
+\begin{lstlisting}[caption=Code Example]
+describe('Policy Gate Integration', () => {
+  it('enforces policy before execution', async () => {
+    const ir: IRPlan = {
+      intent: "Book a room",
+      nodes: [{
+        id: "reserve",
+        action: "api.reserve_room",
+        params: { duration: 2 },
+        deps: []
+      }],
+      constraints: ['duration <= 4h']
+    };
+    
+    const opaClient = new OPASidecarClient();
+    const executor = new MockExecutor();
+    
+    const result = await executeWithPolicyGates(ir, executor, opaClient);
+    
+    expect(result.results).toBeDefined();
+    expect(executor.executed).toBe(true);
+  });
+  
+  it('fails fast on policy violation', async () => {
+    const ir: IRPlan = {
+      intent: "Book a room",
+      nodes: [{
+        id: "reserve",
+        action: "api.reserve_room",
+        params: { duration: 5 },
+        deps: []
+      }],
+      constraints: ['duration <= 4h']
+    };
+    
+    const opaClient = new OPASidecarClient();
+    const executor = new MockExecutor();
+    
+    await expect(
+      executeWithPolicyGates(ir, executor, opaClient)
+    ).rejects.toThrow(PolicyDeniedError);
+    
+    expect(executor.executed).toBe(false);
+  });
+});
+\end{lstlisting}
+
+Policy integration tests ensure policy gates work correctly with execution, enabling end-to-end validation.
+
+\textbf{Policy Testing Benefits}
+
+Policy testing provides:
+
+\begin{itemize}
+\item \textbf{Correctness:} Ensures policies are correct
+\item \textbf{Validation:} Policy validation before deployment
+\item \textbf{Integration:} End-to-end policy integration testing
+\item \textbf{Reliability:} Reliable policy enforcement
+\end{itemize}
+
+These benefits enable reliable policy enforcement through comprehensive testing.
+
+\section*{Chapter 16 Summary}
+
+Policy emission provides OPA integration, Rego generation, policy evaluation, and policy testing. OPA integration enables decoupled policy evaluation via sidecar. Rego generation transforms PLIx constraints into Rego policies. Policy evaluation provides runtime policy enforcement. Policy testing ensures policies are correct and reliable.
+
+\textbf{Next:} Part IV Implementation complete. Part V explores philosophy—PLIx as language of consciousness and intent-driven development.
+
+\textbf{Word Count:} \textasciitilde{}2,200 words  
+

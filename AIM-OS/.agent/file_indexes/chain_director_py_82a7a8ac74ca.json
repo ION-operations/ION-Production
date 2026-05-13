@@ -1,0 +1,111 @@
+{
+  "path": "c:\\Users\\bombe\\OneDrive\\Desktop\\AIM-OS\\scripts/ai_engine/chain_director.py",
+  "mtime": 1772822791.5251129,
+  "data": {
+    "path": "chain_director.py",
+    "file_size": 34783,
+    "total_lines": 978,
+    "chunk_count": 5,
+    "language": "python",
+    "strategy": "mapreduce",
+    "generation_ms": 10.6,
+    "overview": "chain_director.py: 34,783 chars, 978 lines, 5 chunks. Key exports: Topology, Action, QualityScore, label, PhaseAssignment, ChainPlan, to_dict, QualityEvaluator, evaluate, ContextCompressor.",
+    "symbols": [
+      "Topology",
+      "Action",
+      "QualityScore",
+      "label",
+      "PhaseAssignment",
+      "ChainPlan",
+      "to_dict",
+      "QualityEvaluator",
+      "evaluate",
+      "ContextCompressor",
+      "compress",
+      "TopologySelector",
+      "select",
+      "ChainDirector",
+      "plan_chain",
+      "evaluate_output",
+      "decide",
+      "compress_for_next",
+      "decision_history",
+      "summary"
+    ],
+    "concepts": [
+      "relevancecalculator",
+      "contextcompressor",
+      "qualityevaluator",
+      "activationsystem",
+      "responsibilities",
+      "recommendations",
+      "deterministic",
+      "communication",
+      "chaindirector",
+      "intelligently",
+      "workdetector",
+      "specialists",
+      "contextpack",
+      "assessments",
+      "information"
+    ],
+    "chunks": [
+      {
+        "id": 0,
+        "lines": "2-136",
+        "chars": 4592,
+        "title": "\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550",
+        "symbols": [
+          "Topology",
+          "Action",
+          "QualityScore",
+          "label",
+          "PhaseAssignment"
+        ]
+      },
+      {
+        "id": 1,
+        "lines": "138-321",
+        "chars": 5702,
+        "title": "class QualityEvaluator",
+        "symbols": [
+          "QualityEvaluator",
+          "evaluate"
+        ]
+      },
+      {
+        "id": 2,
+        "lines": "323-486",
+        "chars": 5366,
+        "title": "class ContextCompressor",
+        "symbols": [
+          "ContextCompressor",
+          "compress",
+          "TopologySelector",
+          "select"
+        ]
+      },
+      {
+        "id": 3,
+        "lines": "488-874",
+        "chars": 15238,
+        "title": "class ChainDirector",
+        "symbols": [
+          "ChainDirector",
+          "plan_chain",
+          "evaluate_output",
+          "decide",
+          "compress_for_next"
+        ]
+      },
+      {
+        "id": 4,
+        "lines": "875-978",
+        "chars": 3880,
+        "title": "\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550",
+        "symbols": []
+      }
+    ]
+  },
+  "index_text": "<large_file_index path=\"chain_director.py\" strategy=\"mapreduce\">\n  <stats>\n    <size>34,783 chars, 978 lines</size>\n    <language>python</language>\n    <chunks>5</chunks>\n    <generation_ms>11</generation_ms>\n  </stats>\n  <overview>chain_director.py: 34,783 chars, 978 lines, 5 chunks. Key exports: Topology, Action, QualityScore, label, PhaseAssignment, ChainPlan, to_dict, QualityEvaluator, evaluate, ContextCompressor.</overview>\n  <symbols>Topology, Action, QualityScore, label, PhaseAssignment, ChainPlan, to_dict, QualityEvaluator, evaluate, ContextCompressor, compress, TopologySelector, select, ChainDirector, plan_chain, evaluate_output, decide, compress_for_next, decision_history, summary</symbols>\n  <concepts>relevancecalculator, contextcompressor, qualityevaluator, activationsystem, responsibilities, recommendations, deterministic, communication, chaindirector, intelligently, workdetector, specialists, contextpack, assessments, information</concepts>\n  <chunks>\n    <chunk id=\"0\" lines=\"2-136\" chars=\"4592\" symbols=\"Topology,Action,QualityScore,label,PhaseAssignment\">\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550</chunk>\n    <chunk id=\"1\" lines=\"138-321\" chars=\"5702\" symbols=\"QualityEvaluator,evaluate\">class QualityEvaluator</chunk>\n    <chunk id=\"2\" lines=\"323-486\" chars=\"5366\" symbols=\"ContextCompressor,compress,TopologySelector,select\">class ContextCompressor</chunk>\n    <chunk id=\"3\" lines=\"488-874\" chars=\"15238\" symbols=\"ChainDirector,plan_chain,evaluate_output,decide,compress_for_next\">class ChainDirector</chunk>\n    <chunk id=\"4\" lines=\"875-978\" chars=\"3880\">\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550\u2550</chunk>\n  </chunks>\n  <cross_refs>\n    <ref symbol=\"Topology\" chunks=\"0\"/>\n    <ref symbol=\"Action\" chunks=\"0\"/>\n    <ref symbol=\"QualityScore\" chunks=\"0\"/>\n    <ref symbol=\"label\" chunks=\"0\"/>\n    <ref symbol=\"PhaseAssignment\" chunks=\"0\"/>\n    <ref symbol=\"ChainPlan\" chunks=\"0\"/>\n    <ref symbol=\"to_dict\" chunks=\"0\"/>\n    <ref symbol=\"QualityEvaluator\" chunks=\"1\"/>\n    <ref symbol=\"evaluate\" chunks=\"1\"/>\n    <ref symbol=\"ContextCompressor\" chunks=\"2\"/>\n    <ref symbol=\"compress\" chunks=\"2\"/>\n    <ref symbol=\"TopologySelector\" chunks=\"2\"/>\n    <ref symbol=\"select\" chunks=\"2\"/>\n    <ref symbol=\"ChainDirector\" chunks=\"3\"/>\n    <ref symbol=\"plan_chain\" chunks=\"3\"/>\n    <ref symbol=\"evaluate_output\" chunks=\"3\"/>\n    <ref symbol=\"decide\" chunks=\"3\"/>\n    <ref symbol=\"compress_for_next\" chunks=\"3\"/>\n    <ref symbol=\"decision_history\" chunks=\"3\"/>\n    <ref symbol=\"summary\" chunks=\"3\"/>\n  </cross_refs>\n</large_file_index>"
+}

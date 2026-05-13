@@ -1,0 +1,25 @@
+{
+  "system_slug": "istio",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-04",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Istio targets Kubernetes as its primary deployment environment in upstream documentation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "envoy",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Istio uses Envoy as the data plane proxy in standard architectures."
+    },
+    {
+      "type": "integrates_with",
+      "target": "opentelemetry",
+      "evidence_tier": "INFERRED",
+      "notes": "Mesh telemetry often integrates with OpenTelemetry-class pipelines."
+    }
+  ]
+}

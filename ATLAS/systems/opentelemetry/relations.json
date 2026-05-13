@@ -1,0 +1,19 @@
+{
+  "system_slug": "opentelemetry",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-03",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "grpc",
+      "evidence_tier": "INFERRED",
+      "notes": "OTLP commonly carried over gRPC in deployments (see OTLP mapping docs)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "Kubernetes clusters commonly deploy OpenTelemetry collectors and instrumented workloads."
+    }
+  ]
+}

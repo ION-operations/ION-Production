@@ -1,0 +1,889 @@
+diff -ruN '--exclude=__pycache__' '--exclude=.pytest_cache' "/mnt/data/ion_evolve_baseline_after_bootstrap002/ION_CODEX FULL/.codex/config.toml" "/mnt/data/ion_evolve_work/ION_CODEX FULL/.codex/config.toml"
+--- "/mnt/data/ion_evolve_baseline_after_bootstrap002/ION_CODEX FULL/.codex/config.toml"	2026-05-11 16:19:40.931327704 +0000
++++ "/mnt/data/ion_evolve_work/ION_CODEX FULL/.codex/config.toml"	2026-05-11 17:08:29.436609289 +0000
+@@ -12,7 +12,7 @@
+ - Load the branch-capsule bootstrap law from ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_PROTOCOL_V0_1.md and ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_BOOTSTRAP_BINDING_PROTOCOL_V0_1.md before material work.
+ - Capsule is minimum working context; Mini is a lookup/receipt index only.
+ - Shared Codex solo context is read-only base memory for parallel agents; do not write CAPSULE.md, MINI.md, HOT_CONTEXT.md, STATUS.json, ROUTE.json, or assign C-numbers directly.
+-- For material work, create or mount a unique branch capsule under ION/05_context/current/agent_context_branches/ and route candidate updates through ION/05_context/current/context_settlement/inbox/.
++- For material work, create or mount a unique branch capsule under ION/05_context/current/agent_context_branches/, run/satisfy `kernel.ion_agent_branch_capsule preflight`, and route candidate updates through ION/05_context/current/context_settlement/inbox/.
+ - Do not create or use the old /home/sev/ION - Production/ION_CODEX path without explicit operator approval.
+ - Do not claim ION identity, STEWARD authority, RELAY authority, PERSONA authority, production authority, live execution authority, or secrets authority.
+ - After material work, record an explicit Codex Solo capsule post through kernel.ion_codex_solo_context with confirmation token ION_BOUNDED_WRITE_CONFIRMED.
+diff -ruN '--exclude=__pycache__' '--exclude=.pytest_cache' "/mnt/data/ion_evolve_baseline_after_bootstrap002/ION_CODEX FULL/ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_MATERIAL_WORK_GUARD_PROTOCOL_V0_1.md" "/mnt/data/ion_evolve_work/ION_CODEX FULL/ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_MATERIAL_WORK_GUARD_PROTOCOL_V0_1.md"
+--- "/mnt/data/ion_evolve_baseline_after_bootstrap002/ION_CODEX FULL/ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_MATERIAL_WORK_GUARD_PROTOCOL_V0_1.md"	1970-01-01 00:00:00.000000000 +0000
++++ "/mnt/data/ion_evolve_work/ION_CODEX FULL/ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_MATERIAL_WORK_GUARD_PROTOCOL_V0_1.md"	2026-05-11 17:06:48.814249166 +0000
+@@ -0,0 +1,123 @@
++# ION Agent Branch Capsule Material Work Guard Protocol v0.1
++
++Status: active provisional protocol
++Created: 2026-05-11
++Authority: branch-capsule material-work preflight only
++Production authority: false
++Live execution authority: false
++
++## Purpose
++
++This protocol binds the branch-capsule doctrine to a concrete runtime guard for
++material work. It prevents a Codex worker or agent from beginning file-changing
++work unless the work is associated with a valid branch capsule and the requested
++write scope is declared inside that branch.
++
++This is an enforcement layer, not a settlement layer. It does not promote
++candidate branch output into shared Codex solo context.
++
++## Extends
++
++```text
++ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_PROTOCOL_V0_1.md
++ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_BOOTSTRAP_BINDING_PROTOCOL_V0_1.md
++ION/02_architecture/ION_MULTI_AGENT_CONTEXT_AND_WORKPACKET_SETTLEMENT_PROTOCOL_V0_1.md
++```
++
++## Guard rule
++
++Before material work, the carrier should run or satisfy an equivalent
++`material_work_preflight` check:
++
++```text
++branch capsule present
++branch identity complete
++parent context proof loaded
++requested write scope declared by branch
++requested write scope does not touch shared Capsule/Mini/HOT_CONTEXT/STATUS/ROUTE
++requested write scope does not assign C-numbers
++requested write scope does not collide with another active branch claim
++settlement_required = true
++shared_context_write = false
++```
++
++If the guard fails, the worker must not proceed with material writes. It should
++create or repair a branch capsule, write a drift/blocker receipt if needed, and
++route the result through `context_settlement/inbox`.
++
++## Runtime helper
++
++The helper is:
++
++```text
++ION/04_packages/kernel/ion_agent_branch_capsule.py
++```
++
++The read-only preflight command is:
++
++```bash
++PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=ION/04_packages \
++python -m kernel.ion_agent_branch_capsule --ion-root . preflight \
++  --branch-record ION/05_context/current/agent_context_branches/<conversation>/<agent>/<task>/BRANCH_RECORD.json \
++  --write-scope ION/04_packages/kernel/example.py
++```
++
++Expected successful verdict:
++
++```text
++ION_AGENT_BRANCH_CAPSULE_READY
++```
++
++Expected blocked verdict:
++
++```text
++ION_AGENT_BRANCH_CAPSULE_BLOCKED
++```
++
++## Failure classes
++
++The guard can block for:
++
++```text
++branch_capsule_required_for_material_work
++branch_record_missing
++branch_record_invalid_json
++missing_required_field
++root_mismatch
++loaded_refs_missing_parent_context_proof
++shared_context_write_must_be_false
++settlement_required_must_be_true
++requested_write_scope_not_declared_in_branch
++requested_write_scope_shared_context_surface_forbidden
++requested_write_scope_checkpoint_assignment_surface_forbidden
++write_scope_overlap
++```
++
++## Non-claims
++
++This protocol does not:
++
++```text
++create branches automatically
++promote branch output
++update shared Capsule/Mini/HOT_CONTEXT/STATUS/ROUTE
++assign C-numbers
++run tests by itself
++reload services
++grant production authority
++grant live execution authority
++```
++
++## Next implementation lanes
++
++Future work may bind this guard into:
++
++```text
++Codex queue request validation
++agent invocation broker preflight
++ChatGPT Action Gateway validation
++JOC/dAimon cockpit branch panel
++context settler acceptance review
++```
++
++Those bindings must still preserve the settlement-only merge path.
+diff -ruN '--exclude=__pycache__' '--exclude=.pytest_cache' "/mnt/data/ion_evolve_baseline_after_bootstrap002/ION_CODEX FULL/ION/03_registry/ion_skill_registry.yaml" "/mnt/data/ion_evolve_work/ION_CODEX FULL/ION/03_registry/ion_skill_registry.yaml"
+--- "/mnt/data/ion_evolve_baseline_after_bootstrap002/ION_CODEX FULL/ION/03_registry/ion_skill_registry.yaml"	2026-05-11 16:22:14.539955038 +0000
++++ "/mnt/data/ion_evolve_work/ION_CODEX FULL/ION/03_registry/ion_skill_registry.yaml"	2026-05-11 17:08:18.330113552 +0000
+@@ -375,8 +375,8 @@
+   - skill_id: agent-branch-capsule-bootstrap
+     display_name: Branch Capsule Bootstrap
+     class: system_guard
+-    purpose: "Ensure Codex carriers mount unique branch identity and route material work through context settlement."
+-    trigger_summary: "Selected before material work, multi-agent fan-out, wrong-context repair, or shared-context write attempts."
++    purpose: "Ensure Codex carriers mount unique branch identity, run material-work preflight, and route branch output through context settlement."
++    trigger_summary: "Selected before material work, multi-agent fan-out, wrong-context repair, material write preflight, or shared-context write attempts."
+     selection_priority: 105
+     model_stage_id: context_settlement_guard
+     preferred_model: gpt-5.5
+@@ -412,3 +412,47 @@
+       label: Branch Guard
+       drawer_visible: true
+       user_chore: false
++
++  - skill_id: agent-branch-capsule-material-work-guard
++    display_name: Branch Material Work Guard
++    class: system_guard
++    purpose: "Run the read-only branch-capsule preflight before file-changing work."
++    trigger_summary: "Selected when an agent/worker is about to write files, patch code, apply diffs, or claim material task progress."
++    selection_priority: 110
++    model_stage_id: context_settlement_guard
++    preferred_model: gpt-5.5
++    default_reasoning_effort: medium
++    activates_templates:
++      - ION/07_templates/context/ION_CONTEXT_LOAD_PROOF.md
++      - ION/07_templates/actions/FULL_CARRIER_ACTION_RECEIPT.md
++    template_bindings: []
++    context_mount:
++      required_packages:
++        - active_authority_package
++        - agent_branch_capsule_bootstrap_package
++      route_deeper_packages:
++        - route_depth_package
++        - evidence_receipt_package
++    allowed_authority:
++      read_context: true
++      queue_work: false
++      write_files: false
++      shared_context_write: false
++      assign_checkpoint: false
++      production_authority: false
++      live_execution_authority: false
++      secrets_authority: false
++    proof_contract:
++      branch_capsule_required: true
++      material_work_preflight_required: true
++      requested_write_scope_must_be_declared: true
++      context_identity_card_required: true
++      context_proof_required: true
++      template_action_proof_required: false
++      receipt_required: false
++      settlement_required_for_shared_context: true
++    ui:
++      label: Branch Preflight
++      drawer_visible: true
++      user_chore: false
++
+diff -ruN '--exclude=__pycache__' '--exclude=.pytest_cache' "/mnt/data/ion_evolve_baseline_after_bootstrap002/ION_CODEX FULL/ION/04_packages/kernel/ion_agent_branch_capsule.py" "/mnt/data/ion_evolve_work/ION_CODEX FULL/ION/04_packages/kernel/ion_agent_branch_capsule.py"
+--- "/mnt/data/ion_evolve_baseline_after_bootstrap002/ION_CODEX FULL/ION/04_packages/kernel/ion_agent_branch_capsule.py"	2026-05-11 16:16:47.532898985 +0000
++++ "/mnt/data/ion_evolve_work/ION_CODEX FULL/ION/04_packages/kernel/ion_agent_branch_capsule.py"	2026-05-11 17:04:24.531267955 +0000
+@@ -355,6 +355,116 @@
+     path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+ 
+ 
++def _candidate_json_paths(values: Iterable[str] | None) -> tuple[Path, ...]:
++    if not values:
++        return ()
++    return tuple(Path(v) for v in values)
++
++
++def load_branch_record(root: str | Path, branch_record_path: str | Path) -> dict[str, Any]:
++    shell_root = _shell_root(root)
++    path = Path(branch_record_path)
++    if not path.is_absolute():
++        path = shell_root / path
++    return json.loads(path.read_text(encoding="utf-8"))
++
++
++def load_active_branch_claims(root: str | Path) -> tuple[dict[str, Any], ...]:
++    shell_root = _shell_root(root)
++    registry = _read_json(shell_root / BRANCH_REGISTRY_PATH, {})
++    claims: list[dict[str, Any]] = []
++    for branch in registry.get("active_branches") or ():
++        if isinstance(branch, dict):
++            claims.append(
++                {
++                    "claim_id": branch.get("branch_id"),
++                    "branch_id": branch.get("branch_id"),
++                    "write_scope": branch.get("write_scope") or (),
++                }
++            )
++    return tuple(claims)
++
++
++def _scope_forbidden_findings(scope: Iterable[str], *, prefix: str) -> list[str]:
++    findings: list[str] = []
++    for path in tuple(_rel_path(p) for p in scope):
++        if _is_shared_context_surface(path):
++            findings.append(f"{prefix}_shared_context_surface_forbidden:{path}")
++        if re.search(r"(^|/|_)C-\d{3}($|_|/)", path):
++            findings.append(f"{prefix}_checkpoint_assignment_surface_forbidden:{path}")
++    return findings
++
++
++def material_work_preflight(
++    root: str | Path,
++    *,
++    branch_record_path: str | Path | None = None,
++    record: BranchCapsuleRecord | dict[str, Any] | None = None,
++    requested_write_scope: Iterable[str] | None = None,
++    active_claims: Iterable[dict[str, Any]] | None = None,
++) -> dict[str, Any]:
++    """Read-only guard for material work.
++
++    The guard does not create branches, mutate shared context, or assign
++    checkpoints. It answers whether a material task is allowed to proceed under
++    a declared branch capsule.
++    """
++
++    findings: list[str] = []
++    branch_data: dict[str, Any] | None = None
++
++    if record is not None:
++        branch_data = asdict(record) if isinstance(record, BranchCapsuleRecord) else dict(record)
++    elif branch_record_path:
++        try:
++            branch_data = load_branch_record(root, branch_record_path)
++        except FileNotFoundError:
++            findings.append(f"branch_record_missing:{_rel_path(branch_record_path)}")
++        except json.JSONDecodeError:
++            findings.append(f"branch_record_invalid_json:{_rel_path(branch_record_path)}")
++    else:
++        findings.append("branch_capsule_required_for_material_work")
++
++    requested_scope = tuple(_rel_path(p) for p in (requested_write_scope or ()))
++    findings.extend(_scope_forbidden_findings(requested_scope, prefix="requested_write_scope"))
++
++    validation: dict[str, Any] | None = None
++    if branch_data is not None:
++        claims = tuple(active_claims) if active_claims is not None else load_active_branch_claims(root)
++        validation = validate_branch_record(root, branch_data, active_claims=claims)
++        findings.extend(validation["findings"])
++
++        declared_scope = set(_rel_path(p) for p in (branch_data.get("write_scope") or ()))
++        if requested_scope and not declared_scope:
++            findings.append("branch_write_scope_empty_for_requested_material_work")
++        for rel in requested_scope:
++            if rel not in declared_scope:
++                findings.append(f"requested_write_scope_not_declared_in_branch:{rel}")
++
++    ok = not findings
++    return {
++        "schema_id": "ion.agent_branch_capsule.material_work_preflight.v1",
++        "ok": ok,
++        "verdict": READY_VERDICT if ok else BLOCKED_VERDICT,
++        "required_action": "proceed_with_branch_scope" if ok else "create_or_repair_branch_capsule_before_material_work",
++        "branch_record_path": _rel_path(branch_record_path) if branch_record_path else None,
++        "branch_identity": {
++            "context_instance_id": branch_data.get("context_instance_id"),
++            "branch_id": branch_data.get("branch_id"),
++            "conversation_tag": branch_data.get("conversation_tag"),
++            "agent_tag": branch_data.get("agent_tag"),
++            "task_tag": branch_data.get("task_tag"),
++            "parent_context_id": branch_data.get("parent_context_id"),
++        } if branch_data else None,
++        "requested_write_scope": list(requested_scope),
++        "findings": findings,
++        "validation": validation,
++        "production_authority": False,
++        "live_execution_authority": False,
++        "mutates_shared_context": False,
++    }
++
++
+ def update_branch_registry(root: str | Path, record: BranchCapsuleRecord | dict[str, Any]) -> Path:
+     shell_root = _shell_root(root)
+     path = shell_root / BRANCH_REGISTRY_PATH
+@@ -386,6 +496,9 @@
+             "agent_tag": data["agent_tag"],
+             "task_tag": data["task_tag"],
+             "branch_path": data["branch_path"],
++            "branch_type": data.get("branch_type"),
++            "write_scope": list(data.get("write_scope") or ()),
++            "loaded_refs": list(data.get("loaded_refs") or ()),
+             "status": data.get("status", "ACTIVE_PROVISIONAL"),
+             "settlement_required": True,
+             "shared_context_write": False,
+@@ -559,6 +672,10 @@
+     validate = sub.add_parser("validate")
+     validate.add_argument("--record-json", required=True)
+ 
++    preflight = sub.add_parser("preflight")
++    preflight.add_argument("--branch-record", default=None)
++    preflight.add_argument("--write-scope", action="append", default=None)
++
+     args = parser.parse_args(argv)
+ 
+     if args.command == "create":
+@@ -579,6 +696,15 @@
+         )
+         print(json.dumps(result, indent=2, sort_keys=True))
+         return 0 if result["ok"] else 1
++
++    if args.command == "preflight":
++        result = material_work_preflight(
++            args.ion_root,
++            branch_record_path=args.branch_record,
++            requested_write_scope=args.write_scope,
++        )
++        print(json.dumps(result, indent=2, sort_keys=True))
++        return 0 if result["ok"] else 1
+ 
+     record = json.loads(Path(args.record_json).read_text(encoding="utf-8"))
+     result = validate_branch_record(args.ion_root, record)
+diff -ruN '--exclude=__pycache__' '--exclude=.pytest_cache' "/mnt/data/ion_evolve_baseline_after_bootstrap002/ION_CODEX FULL/ION/04_packages/kernel/ion_codex_solo_context.py" "/mnt/data/ion_evolve_work/ION_CODEX FULL/ION/04_packages/kernel/ion_codex_solo_context.py"
+--- "/mnt/data/ion_evolve_baseline_after_bootstrap002/ION_CODEX FULL/ION/04_packages/kernel/ion_codex_solo_context.py"	2026-05-11 16:20:15.543286497 +0000
++++ "/mnt/data/ion_evolve_work/ION_CODEX FULL/ION/04_packages/kernel/ion_codex_solo_context.py"	2026-05-11 17:07:05.647032008 +0000
+@@ -36,6 +36,7 @@
+ CONTEXT_PACKAGES_PATH = SOLO_DIR / "CONTEXT_PACKAGES.json"
+ BRANCH_CAPSULE_PROTOCOL_PATH = Path("ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_PROTOCOL_V0_1.md")
+ BRANCH_CAPSULE_BOOTSTRAP_PROTOCOL_PATH = Path("ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_BOOTSTRAP_BINDING_PROTOCOL_V0_1.md")
++BRANCH_CAPSULE_GUARD_PROTOCOL_PATH = Path("ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_MATERIAL_WORK_GUARD_PROTOCOL_V0_1.md")
+ BRANCH_CAPSULE_REGISTRY_PATH = Path("ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json")
+ CONTEXT_SETTLEMENT_REGISTRY_PATH = Path("ION/05_context/current/context_settlement/CONTEXT_SETTLEMENT_REGISTRY_V0_1.json")
+ AGENT_BRANCH_CAPSULE_HELPER_PATH = Path("ION/04_packages/kernel/ion_agent_branch_capsule.py")
+@@ -192,6 +193,12 @@
+         "why": "Defines how new Codex terminals inherit branch-capsule law without direct shared-context edits.",
+     },
+     {
++        "path": BRANCH_CAPSULE_GUARD_PROTOCOL_PATH.as_posix(),
++        "required": True,
++        "classification": "active_context_material_work_guard_protocol",
++        "why": "Defines preflight guard requirements before branch-scoped material writes.",
++    },
++    {
+         "path": BRANCH_CAPSULE_REGISTRY_PATH.as_posix(),
+         "required": True,
+         "classification": "active_branch_capsule_registry",
+@@ -668,6 +675,7 @@
+             "path_refs": [
+                 BRANCH_CAPSULE_PROTOCOL_PATH.as_posix(),
+                 BRANCH_CAPSULE_BOOTSTRAP_PROTOCOL_PATH.as_posix(),
++                BRANCH_CAPSULE_GUARD_PROTOCOL_PATH.as_posix(),
+                 BRANCH_CAPSULE_REGISTRY_PATH.as_posix(),
+                 CONTEXT_SETTLEMENT_REGISTRY_PATH.as_posix(),
+                 AGENT_BRANCH_CAPSULE_HELPER_PATH.as_posix(),
+@@ -1053,6 +1061,7 @@
+     path_state = {
+         "protocol": (shell_root / BRANCH_CAPSULE_PROTOCOL_PATH).is_file(),
+         "bootstrap_protocol": (shell_root / BRANCH_CAPSULE_BOOTSTRAP_PROTOCOL_PATH).is_file(),
++        "material_work_guard_protocol": (shell_root / BRANCH_CAPSULE_GUARD_PROTOCOL_PATH).is_file(),
+         "branch_registry": (shell_root / BRANCH_CAPSULE_REGISTRY_PATH).is_file(),
+         "settlement_registry": (shell_root / CONTEXT_SETTLEMENT_REGISTRY_PATH).is_file(),
+         "runtime_helper": (shell_root / AGENT_BRANCH_CAPSULE_HELPER_PATH).is_file(),
+@@ -1069,12 +1078,14 @@
+             "- Every active agent/conversation/task doing material work needs a unique branch capsule identity.",
+             "- Required identity fields: context_instance_id, branch_id, conversation_tag, agent_tag, task_tag, parent_context_id, loaded_refs, write_scope.",
+             "- Agents must not directly edit CAPSULE.md, MINI.md, HOT_CONTEXT.md, STATUS.json, ROUTE.json, or assign C-numbers.",
++            "- Before material writes, run or satisfy the branch-capsule material-work preflight guard.",
+             "- Candidate branch results go to branch SETTLEMENT_REQUESTS/ and ION/05_context/current/context_settlement/inbox/.",
+             "- Only context settlement may promote branch outputs into shared context.",
+             "",
+             "Route refs:",
+             f"- {BRANCH_CAPSULE_PROTOCOL_PATH.as_posix()}",
+             f"- {BRANCH_CAPSULE_BOOTSTRAP_PROTOCOL_PATH.as_posix()}",
++            f"- {BRANCH_CAPSULE_GUARD_PROTOCOL_PATH.as_posix()}",
+             f"- {BRANCH_CAPSULE_REGISTRY_PATH.as_posix()}",
+             f"- {CONTEXT_SETTLEMENT_REGISTRY_PATH.as_posix()}",
+             f"- {AGENT_BRANCH_CAPSULE_HELPER_PATH.as_posix()}",
+diff -ruN '--exclude=__pycache__' '--exclude=.pytest_cache' "/mnt/data/ion_evolve_baseline_after_bootstrap002/ION_CODEX FULL/ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json" "/mnt/data/ion_evolve_work/ION_CODEX FULL/ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json"
+--- "/mnt/data/ion_evolve_baseline_after_bootstrap002/ION_CODEX FULL/ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json"	2026-05-11 16:16:47.533197947 +0000
++++ "/mnt/data/ion_evolve_work/ION_CODEX FULL/ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json"	2026-05-11 17:08:41.687998015 +0000
+@@ -1,18 +1,27 @@
+ {
+-  "schema_id": "ion.agent_branch_capsule.registry.v1",
+-  "created_at": "2026-05-11",
+-  "status": "ACTIVE_PROVISIONAL",
+-  "protocol": "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_PROTOCOL_V0_1.md",
++  "active_branches": [],
++  "authority": {
++    "browser_control_authority": false,
++    "live_execution_authority": false,
++    "production_authority": false,
++    "secrets_authority": false
++  },
+   "branch_root": "ION/05_context/current/agent_context_branches",
+-  "settlement_inbox": "ION/05_context/current/context_settlement/inbox",
+-  "shared_context_surfaces": [
+-    "ION/05_context/current/codex_solo/CAPSULE.md",
+-    "ION/05_context/current/codex_solo/MINI.md",
+-    "ION/05_context/current/codex_solo/HOT_CONTEXT.md",
+-    "ION/05_context/current/codex_solo/STATUS.json",
+-    "ION/05_context/current/codex_solo/ROUTE.json"
++  "created_at": "2026-05-11",
++  "material_work_guard": {
++    "preflight_command": "python -m kernel.ion_agent_branch_capsule --ion-root . preflight --branch-record <BRANCH_RECORD.json> --write-scope <path>",
++    "protocol": "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_MATERIAL_WORK_GUARD_PROTOCOL_V0_1.md",
++    "runtime_helper": "ION/04_packages/kernel/ion_agent_branch_capsule.py",
++    "settlement_required": true,
++    "shared_context_write": false,
++    "status": "ACTIVE_PROVISIONAL"
++  },
++  "non_claims": [
++    "This registry does not promote branch results into shared context.",
++    "This registry does not assign C-numbers.",
++    "This registry does not grant production or live execution authority."
+   ],
+-  "active_branches": [],
++  "protocol": "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_PROTOCOL_V0_1.md",
+   "required_identity_fields": [
+     "context_instance_id",
+     "branch_id",
+@@ -27,15 +36,15 @@
+     "shared_context_write",
+     "settlement_required"
+   ],
+-  "authority": {
+-    "production_authority": false,
+-    "live_execution_authority": false,
+-    "secrets_authority": false,
+-    "browser_control_authority": false
+-  },
+-  "non_claims": [
+-    "This registry does not promote branch results into shared context.",
+-    "This registry does not assign C-numbers.",
+-    "This registry does not grant production or live execution authority."
+-  ]
++  "schema_id": "ion.agent_branch_capsule.registry.v1",
++  "settlement_inbox": "ION/05_context/current/context_settlement/inbox",
++  "shared_context_surfaces": [
++    "ION/05_context/current/codex_solo/CAPSULE.md",
++    "ION/05_context/current/codex_solo/MINI.md",
++    "ION/05_context/current/codex_solo/HOT_CONTEXT.md",
++    "ION/05_context/current/codex_solo/STATUS.json",
++    "ION/05_context/current/codex_solo/ROUTE.json"
++  ],
++  "status": "ACTIVE_PROVISIONAL",
++  "updated_at": "2026-05-11T17:03:00+00:00"
+ }
+diff -ruN '--exclude=__pycache__' '--exclude=.pytest_cache' "/mnt/data/ion_evolve_baseline_after_bootstrap002/ION_CODEX FULL/ION/05_context/current/codex_solo/CONTEXT_PACKAGES.json" "/mnt/data/ion_evolve_work/ION_CODEX FULL/ION/05_context/current/codex_solo/CONTEXT_PACKAGES.json"
+--- "/mnt/data/ion_evolve_baseline_after_bootstrap002/ION_CODEX FULL/ION/05_context/current/codex_solo/CONTEXT_PACKAGES.json"	2026-05-11 16:22:51.081448054 +0000
++++ "/mnt/data/ion_evolve_work/ION_CODEX FULL/ION/05_context/current/codex_solo/CONTEXT_PACKAGES.json"	2026-05-11 17:08:01.598215388 +0000
+@@ -1,5 +1,5 @@
+ {
+-  "generated_at": "2026-05-11T16:22:51+00:00",
++  "generated_at": "2026-05-11T17:03:00+00:00",
+   "live_execution_authority": false,
+   "package_count": 10,
+   "packages": [
+@@ -51,6 +51,7 @@
+         "ION/05_context/current/agent_context_systems/LEAD_DEV_ACTIVE_OPERATING_CONTEXT_V105.md",
+         "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_PROTOCOL_V0_1.md",
+         "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_BOOTSTRAP_BINDING_PROTOCOL_V0_1.md",
++        "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_MATERIAL_WORK_GUARD_PROTOCOL_V0_1.md",
+         "ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json",
+         "ION/05_context/current/context_settlement/CONTEXT_SETTLEMENT_REGISTRY_V0_1.json",
+         "ION/04_packages/kernel/ion_agent_branch_capsule.py"
+@@ -101,6 +102,7 @@
+         "ION/05_context/current/helixion_joc_rebuild/HELIXION_JOC_ORCHESTRATION_CONTEXT_PACKAGE.md",
+         "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_PROTOCOL_V0_1.md",
+         "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_BOOTSTRAP_BINDING_PROTOCOL_V0_1.md",
++        "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_MATERIAL_WORK_GUARD_PROTOCOL_V0_1.md",
+         "ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json",
+         "ION/05_context/current/context_settlement/CONTEXT_SETTLEMENT_REGISTRY_V0_1.json",
+         "ION/04_packages/kernel/ion_agent_branch_capsule.py"
+@@ -135,18 +137,20 @@
+       }
+     },
+     {
+-      "context_type": "context_isolation_and_settlement_bootstrap",
+-      "load_policy": "always_inline_boot_law_for_material_work",
++      "context_type": "context_isolation_settlement_and_material_work_guard",
++      "load_policy": "always_inline_boot_law_and_preflight_guard_for_material_work",
+       "package_id": "agent_branch_capsule_bootstrap_package",
+       "path_refs": [
+         "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_PROTOCOL_V0_1.md",
+         "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_BOOTSTRAP_BINDING_PROTOCOL_V0_1.md",
++        "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_MATERIAL_WORK_GUARD_PROTOCOL_V0_1.md",
+         "ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json",
+         "ION/05_context/current/context_settlement/CONTEXT_SETTLEMENT_REGISTRY_V0_1.json",
+         "ION/04_packages/kernel/ion_agent_branch_capsule.py"
+       ],
+       "window": {
+-        "kind": "boot_law_summary_plus_route_refs",
++        "kind": "boot_law_summary_route_refs_and_material_work_guard",
++        "preflight_required_for_material_work": true,
+         "settlement_required": true,
+         "shared_context_write": false
+       }
+diff -ruN '--exclude=__pycache__' '--exclude=.pytest_cache' "/mnt/data/ion_evolve_baseline_after_bootstrap002/ION_CODEX FULL/ION/05_context/current/codex_solo/ROUTE.json" "/mnt/data/ion_evolve_work/ION_CODEX FULL/ION/05_context/current/codex_solo/ROUTE.json"
+--- "/mnt/data/ion_evolve_baseline_after_bootstrap002/ION_CODEX FULL/ION/05_context/current/codex_solo/ROUTE.json"	2026-05-11 16:22:51.079468333 +0000
++++ "/mnt/data/ion_evolve_work/ION_CODEX FULL/ION/05_context/current/codex_solo/ROUTE.json"	2026-05-11 17:09:47.354997101 +0000
+@@ -254,43 +254,54 @@
+       "why": "Defines how new Codex terminals inherit branch-capsule law without direct shared-context edits."
+     },
+     {
+-      "bytes": 1335,
++      "bytes": 1843,
+       "classification": "active_branch_capsule_registry",
+       "exists": true,
+       "is_file": true,
+       "path": "ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json",
+       "repo_relative": true,
+       "required": true,
+-      "sha256": "869947049bf7634d255ef8b2f7dfa1675ee4495a2451471714084e4fd5cdce6d",
++      "sha256": "34750627aba9444eba62f9402221740af77dca8236b2d71a95c1f7e8848a4c9d",
+       "why": "Machine-readable registry for active/provisional branch capsules and write-scope claims."
+     },
+     {
+-      "bytes": 3726,
++      "bytes": 4297,
+       "classification": "active_context_settlement_registry",
+       "exists": true,
+       "is_file": true,
+       "path": "ION/05_context/current/context_settlement/CONTEXT_SETTLEMENT_REGISTRY_V0_1.json",
+       "repo_relative": true,
+       "required": true,
+-      "sha256": "1f0dd2476beb97243665b93d7d9e3506db2cbfff605badc8d9476460dc2b7e00",
++      "sha256": "ff8021003437a08cb9822a9a272749742fb762cac81a22df43cf00b7d786c921",
+       "why": "Settlement lane registry; shared context and C-number assignment must flow through this lane."
+     },
+     {
+-      "bytes": 22480,
++      "bytes": 27823,
+       "classification": "active_branch_capsule_runtime_helper",
+       "exists": true,
+       "is_file": true,
+       "path": "ION/04_packages/kernel/ion_agent_branch_capsule.py",
+       "repo_relative": true,
+       "required": true,
+-      "sha256": "3e2e4a9714f6778a4eddf8e4803841f56c2e0bf4142edced82d09965ef8e008a",
+-      "why": "Runtime helper for branch capsule creation, identity-card rendering, validation, and settlement request generation."
++      "sha256": "0be07cea56dcef1da15deac84f8c35d88d33b4f73ded8a816c5f4d6bb7a2ad15",
++      "why": "Runtime helper for branch capsule creation, identity-card rendering, validation, settlement request generation, and material-work preflight."
++    },
++    {
++      "bytes": 3281,
++      "classification": "active_context_material_work_guard_protocol",
++      "exists": true,
++      "is_file": true,
++      "path": "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_MATERIAL_WORK_GUARD_PROTOCOL_V0_1.md",
++      "repo_relative": true,
++      "required": true,
++      "sha256": "83ab6f2d357d6dd4d65562b4916c97ff63f8a7459eb04fcf3a60c9888ff651c6",
++      "why": "Defines preflight guard requirements before branch-scoped material writes."
+     }
+   ],
+   "live_execution_authority": false,
+   "production_authority": false,
+   "schema_id": "ion.codex_solo_route.v1",
+-  "updated_at": "2026-05-11T16:22:51+00:00",
++  "updated_at": "2026-05-11T17:08:00+00:00",
+   "validation": {
+     "entries": [
+       {
+@@ -547,37 +558,48 @@
+         "why": "Defines how new Codex terminals inherit branch-capsule law without direct shared-context edits."
+       },
+       {
+-        "bytes": 1335,
++        "bytes": 1843,
+         "classification": "active_branch_capsule_registry",
+         "exists": true,
+         "is_file": true,
+         "path": "ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json",
+         "repo_relative": true,
+         "required": true,
+-        "sha256": "869947049bf7634d255ef8b2f7dfa1675ee4495a2451471714084e4fd5cdce6d",
++        "sha256": "34750627aba9444eba62f9402221740af77dca8236b2d71a95c1f7e8848a4c9d",
+         "why": "Machine-readable registry for active/provisional branch capsules and write-scope claims."
+       },
+       {
+-        "bytes": 3726,
++        "bytes": 4297,
+         "classification": "active_context_settlement_registry",
+         "exists": true,
+         "is_file": true,
+         "path": "ION/05_context/current/context_settlement/CONTEXT_SETTLEMENT_REGISTRY_V0_1.json",
+         "repo_relative": true,
+         "required": true,
+-        "sha256": "1f0dd2476beb97243665b93d7d9e3506db2cbfff605badc8d9476460dc2b7e00",
++        "sha256": "ff8021003437a08cb9822a9a272749742fb762cac81a22df43cf00b7d786c921",
+         "why": "Settlement lane registry; shared context and C-number assignment must flow through this lane."
+       },
+       {
+-        "bytes": 22480,
++        "bytes": 27823,
+         "classification": "active_branch_capsule_runtime_helper",
+         "exists": true,
+         "is_file": true,
+         "path": "ION/04_packages/kernel/ion_agent_branch_capsule.py",
+         "repo_relative": true,
+         "required": true,
+-        "sha256": "3e2e4a9714f6778a4eddf8e4803841f56c2e0bf4142edced82d09965ef8e008a",
+-        "why": "Runtime helper for branch capsule creation, identity-card rendering, validation, and settlement request generation."
++        "sha256": "0be07cea56dcef1da15deac84f8c35d88d33b4f73ded8a816c5f4d6bb7a2ad15",
++        "why": "Runtime helper for branch capsule creation, identity-card rendering, validation, settlement request generation, and material-work preflight."
++      },
++      {
++        "bytes": 3281,
++        "classification": "active_context_material_work_guard_protocol",
++        "exists": true,
++        "is_file": true,
++        "path": "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_MATERIAL_WORK_GUARD_PROTOCOL_V0_1.md",
++        "repo_relative": true,
++        "required": true,
++        "sha256": "83ab6f2d357d6dd4d65562b4916c97ff63f8a7459eb04fcf3a60c9888ff651c6",
++        "why": "Defines preflight guard requirements before branch-scoped material writes."
+       }
+     ],
+     "findings": [],
+diff -ruN '--exclude=__pycache__' '--exclude=.pytest_cache' "/mnt/data/ion_evolve_baseline_after_bootstrap002/ION_CODEX FULL/ION/05_context/current/context_settlement/CONTEXT_SETTLEMENT_REGISTRY_V0_1.json" "/mnt/data/ion_evolve_work/ION_CODEX FULL/ION/05_context/current/context_settlement/CONTEXT_SETTLEMENT_REGISTRY_V0_1.json"
+--- "/mnt/data/ion_evolve_baseline_after_bootstrap002/ION_CODEX FULL/ION/05_context/current/context_settlement/CONTEXT_SETTLEMENT_REGISTRY_V0_1.json"	2026-05-11 16:22:37.633886913 +0000
++++ "/mnt/data/ion_evolve_work/ION_CODEX FULL/ION/05_context/current/context_settlement/CONTEXT_SETTLEMENT_REGISTRY_V0_1.json"	2026-05-11 17:09:14.812702299 +0000
+@@ -1,7 +1,8 @@
+ {
+   "active_claims": [
+     "ION/05_context/current/context_settlement/claims/claim_20260511_agent_branch_capsule_runtime_001.json",
+-    "ION/05_context/current/context_settlement/claims/claim_20260511_agent_branch_capsule_bootstrap_002.json"
++    "ION/05_context/current/context_settlement/claims/claim_20260511_agent_branch_capsule_bootstrap_002.json",
++    "ION/05_context/current/context_settlement/claims/claim_20260511_agent_branch_capsule_guard_003.json"
+   ],
+   "active_conflicts": [
+     "ION/05_context/current/context_settlement/conflicts/CHECKPOINT_COLLISION_C088_20260511.json"
+@@ -27,6 +28,14 @@
+     "conflicts": "ION/05_context/current/context_settlement/conflicts",
+     "inbox": "ION/05_context/current/context_settlement/inbox"
+   },
++  "guard_candidates": [
++    {
++      "artifact_id": "agent_branch_capsule_guard_003",
++      "authority": "candidate runtime guard; no shared context promotion",
++      "path": "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_MATERIAL_WORK_GUARD_PROTOCOL_V0_1.md",
++      "role": "candidate material-work preflight guard for branch-capsule enforcement"
++    }
++  ],
+   "non_claims": [
+     "This registry does not settle or accept any candidate packet.",
+     "This registry does not run the local content-proof scanner.",
+@@ -37,7 +46,8 @@
+     "ION/05_context/current/context_settlement/inbox/SETTLE_UI_RECOVERY_ANCHORED_PAGES_AND_DRAWER_CANON_20260511.json",
+     "ION/05_context/current/context_settlement/inbox/SETTLE_WORKPACKETS_DIFFS_INGESTION_002_20260510T234208.json",
+     "ION/05_context/current/context_settlement/inbox/SETTLE_AGENT_BRANCH_CAPSULE_RUNTIME_001_20260511.json",
+-    "ION/05_context/current/context_settlement/inbox/SETTLE_AGENT_BRANCH_CAPSULE_BOOTSTRAP_002_20260511.json"
++    "ION/05_context/current/context_settlement/inbox/SETTLE_AGENT_BRANCH_CAPSULE_BOOTSTRAP_002_20260511.json",
++    "ION/05_context/current/context_settlement/inbox/SETTLE_AGENT_BRANCH_CAPSULE_GUARD_003_20260511.json"
+   ],
+   "protocol": "ION/02_architecture/ION_MULTI_AGENT_CONTEXT_AND_WORKPACKET_SETTLEMENT_PROTOCOL_V0_1.md",
+   "purpose": "Serialize shared ION context updates while allowing parallel agents to produce candidate receipts, workpackets, diffs, and task returns.",
+diff -ruN '--exclude=__pycache__' '--exclude=.pytest_cache' "/mnt/data/ion_evolve_baseline_after_bootstrap002/ION_CODEX FULL/ION/05_context/current/context_settlement/claims/claim_20260511_agent_branch_capsule_guard_003.json" "/mnt/data/ion_evolve_work/ION_CODEX FULL/ION/05_context/current/context_settlement/claims/claim_20260511_agent_branch_capsule_guard_003.json"
+--- "/mnt/data/ion_evolve_baseline_after_bootstrap002/ION_CODEX FULL/ION/05_context/current/context_settlement/claims/claim_20260511_agent_branch_capsule_guard_003.json"	1970-01-01 00:00:00.000000000 +0000
++++ "/mnt/data/ion_evolve_work/ION_CODEX FULL/ION/05_context/current/context_settlement/claims/claim_20260511_agent_branch_capsule_guard_003.json"	2026-05-11 17:09:00.177945959 +0000
+@@ -0,0 +1,27 @@
++{
++  "authority": {
++    "live_execution_authority": false,
++    "production_authority": false,
++    "secrets_authority": false
++  },
++  "claim": "Agent branch capsule material-work guard is implemented as a read-only preflight candidate.",
++  "claim_id": "claim_20260511_agent_branch_capsule_guard_003",
++  "created_at": "2026-05-11",
++  "evidence": [
++    "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_MATERIAL_WORK_GUARD_PROTOCOL_V0_1.md",
++    "ION/04_packages/kernel/ion_agent_branch_capsule.py",
++    "ION/tests/test_kernel_ion_agent_branch_capsule.py",
++    "ION/05_context/current/context_settlement/inbox/SETTLE_AGENT_BRANCH_CAPSULE_GUARD_003_20260511.json"
++  ],
++  "non_claims": [
++    "Not settled into shared Codex solo context.",
++    "No C-number assigned.",
++    "No shared Capsule/Mini/HOT_CONTEXT/STATUS edits.",
++    "No production or live execution authority."
++  ],
++  "schema_id": "ion.context_settlement.claim.v1",
++  "status": "CANDIDATE_PENDING_SETTLEMENT",
++  "validation": [
++    "6 targeted branch-capsule tests passed"
++  ]
++}
+diff -ruN '--exclude=__pycache__' '--exclude=.pytest_cache' "/mnt/data/ion_evolve_baseline_after_bootstrap002/ION_CODEX FULL/ION/05_context/current/context_settlement/inbox/SETTLE_AGENT_BRANCH_CAPSULE_GUARD_003_20260511.json" "/mnt/data/ion_evolve_work/ION_CODEX FULL/ION/05_context/current/context_settlement/inbox/SETTLE_AGENT_BRANCH_CAPSULE_GUARD_003_20260511.json"
+--- "/mnt/data/ion_evolve_baseline_after_bootstrap002/ION_CODEX FULL/ION/05_context/current/context_settlement/inbox/SETTLE_AGENT_BRANCH_CAPSULE_GUARD_003_20260511.json"	1970-01-01 00:00:00.000000000 +0000
++++ "/mnt/data/ion_evolve_work/ION_CODEX FULL/ION/05_context/current/context_settlement/inbox/SETTLE_AGENT_BRANCH_CAPSULE_GUARD_003_20260511.json"	2026-05-11 17:09:00.177297568 +0000
+@@ -0,0 +1,52 @@
++{
++  "acceptance_gates": [
++    "preflight is read-only",
++    "preflight blocks missing branch capsules for material work",
++    "preflight blocks requested writes to shared Capsule/Mini/HOT_CONTEXT/STATUS/ROUTE",
++    "preflight blocks requested C-number assignment surfaces",
++    "preflight requires requested write scope to be declared in branch record",
++    "tests pass without editing shared Capsule/Mini/HOT_CONTEXT/STATUS"
++  ],
++  "authority": {
++    "browser_control_authority": false,
++    "live_execution_authority": false,
++    "production_authority": false,
++    "secrets_authority": false
++  },
++  "checkpoint_request": {
++    "agent_assigned_c_number": null,
++    "assign_c_number": true,
++    "preferred_settlement": "record branch material-work preflight as active provisional guard after context-settler review"
++  },
++  "created_at": "2026-05-11",
++  "domain": "context_settlement",
++  "non_claims": [
++    "This packet does not promote the guard into settled shared context.",
++    "This packet does not create branches automatically.",
++    "This packet does not update shared Capsule/Mini/HOT_CONTEXT/STATUS.",
++    "This packet does not assign a C-number.",
++    "This packet does not grant production or live execution authority."
++  ],
++  "packet_id": "SETTLE_AGENT_BRANCH_CAPSULE_GUARD_003_20260511",
++  "requested_outcome": "ACCEPTED_AS_GUARD_CANDIDATE",
++  "risk_class": "material_work_guard_candidate",
++  "schema_id": "ion.context_settlement.inbox_packet.v1",
++  "settlement_batch": "C00_active_agent_claim_review_then_C01_checkpoint_assignment_and_shared_context_settlement",
++  "source_refs": [
++    "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_MATERIAL_WORK_GUARD_PROTOCOL_V0_1.md",
++    "ION/04_packages/kernel/ion_agent_branch_capsule.py",
++    "ION/tests/test_kernel_ion_agent_branch_capsule.py",
++    "ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json",
++    "ION/05_context/current/codex_solo/CONTEXT_PACKAGES.json",
++    "ION/05_context/current/codex_solo/ROUTE.json",
++    "ION/03_registry/ion_skill_registry.yaml",
++    ".codex/config.toml"
++  ],
++  "source_type": "runtime_guard",
++  "status": "CANDIDATE_PENDING_SETTLEMENT",
++  "validation": {
++    "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=ION/04_packages python -m pytest ION/tests/test_kernel_ion_agent_branch_capsule.py -q",
++    "non_blocking_stderr": "artifact_tool spreadsheet warmup warning observed in this environment",
++    "result": "6 passed in 0.18s"
++  }
++}
+diff -ruN '--exclude=__pycache__' '--exclude=.pytest_cache' "/mnt/data/ion_evolve_baseline_after_bootstrap002/ION_CODEX FULL/ION/tests/test_kernel_ion_agent_branch_capsule.py" "/mnt/data/ion_evolve_work/ION_CODEX FULL/ION/tests/test_kernel_ion_agent_branch_capsule.py"
+--- "/mnt/data/ion_evolve_baseline_after_bootstrap002/ION_CODEX FULL/ION/tests/test_kernel_ion_agent_branch_capsule.py"	2026-05-11 16:16:47.532966100 +0000
++++ "/mnt/data/ion_evolve_work/ION_CODEX FULL/ION/tests/test_kernel_ion_agent_branch_capsule.py"	2026-05-11 17:04:40.896797116 +0000
+@@ -9,6 +9,7 @@
+     SHARED_CONTEXT_SURFACES,
+     build_branch_capsule_record,
+     create_branch_capsule,
++    material_work_preflight,
+     render_identity_card,
+     validate_branch_record,
+ )
+@@ -116,3 +117,70 @@
+ 
+     for rel in SHARED_CONTEXT_SURFACES:
+         assert not (tmp_path / rel).exists()
++
++
++def test_material_work_preflight_requires_branch_capsule_for_material_scope(tmp_path: Path):
++    _seed_root(tmp_path)
++
++    result = material_work_preflight(
++        tmp_path,
++        requested_write_scope=["ION/04_packages/kernel/example.py"],
++    )
++
++    assert result["ok"] is False
++    assert result["verdict"] == BLOCKED_VERDICT
++    assert "branch_capsule_required_for_material_work" in result["findings"]
++    assert result["required_action"] == "create_or_repair_branch_capsule_before_material_work"
++    assert result["mutates_shared_context"] is False
++
++
++def test_material_work_preflight_blocks_undeclared_and_shared_scope(tmp_path: Path):
++    _seed_root(tmp_path)
++    created = create_branch_capsule(
++        tmp_path,
++        conversation_tag="Demo",
++        agent_tag="Codex Worker",
++        task_tag="Runtime Guard",
++        write_scope=["ION/04_packages/kernel/allowed.py"],
++        emitted_at="2026-05-11T16:30:00+00:00",
++    )
++    record_path = Path(created["record"]["branch_path"]) / "BRANCH_RECORD.json"
++
++    result = material_work_preflight(
++        tmp_path,
++        branch_record_path=record_path,
++        requested_write_scope=[
++            "ION/04_packages/kernel/not_allowed.py",
++            SHARED_CONTEXT_SURFACES[0],
++        ],
++    )
++
++    assert result["ok"] is False
++    assert f"requested_write_scope_shared_context_surface_forbidden:{SHARED_CONTEXT_SURFACES[0]}" in result["findings"]
++    assert "requested_write_scope_not_declared_in_branch:ION/04_packages/kernel/not_allowed.py" in result["findings"]
++    assert f"requested_write_scope_not_declared_in_branch:{SHARED_CONTEXT_SURFACES[0]}" in result["findings"]
++
++
++def test_material_work_preflight_accepts_declared_branch_scope(tmp_path: Path):
++    _seed_root(tmp_path)
++    created = create_branch_capsule(
++        tmp_path,
++        conversation_tag="Demo",
++        agent_tag="Codex Worker",
++        task_tag="Runtime Guard",
++        write_scope=["ION/04_packages/kernel/allowed.py"],
++        emitted_at="2026-05-11T16:30:00+00:00",
++    )
++    record_path = Path(created["record"]["branch_path"]) / "BRANCH_RECORD.json"
++
++    result = material_work_preflight(
++        tmp_path,
++        branch_record_path=record_path,
++        requested_write_scope=["ION/04_packages/kernel/allowed.py"],
++    )
++
++    assert result["ok"] is True
++    assert result["verdict"] == READY_VERDICT
++    assert result["required_action"] == "proceed_with_branch_scope"
++    assert result["branch_identity"]["branch_id"] == created["record"]["branch_id"]
++    assert result["mutates_shared_context"] is False
+diff -ruN '--exclude=__pycache__' '--exclude=.pytest_cache' "/mnt/data/ion_evolve_baseline_after_bootstrap002/ION_CODEX FULL/ION/tests/test_kernel_ion_codex_solo_context.py" "/mnt/data/ion_evolve_work/ION_CODEX FULL/ION/tests/test_kernel_ion_codex_solo_context.py"
+--- "/mnt/data/ion_evolve_baseline_after_bootstrap002/ION_CODEX FULL/ION/tests/test_kernel_ion_codex_solo_context.py"	2026-05-11 16:24:03.035751406 +0000
++++ "/mnt/data/ion_evolve_work/ION_CODEX FULL/ION/tests/test_kernel_ion_codex_solo_context.py"	2026-05-11 17:10:38.929039671 +0000
+@@ -33,6 +33,7 @@
+         "ION/02_architecture/ION_SKILL_ACTIVATION_PROTOCOL.md": "# skill activation protocol\n",
+         "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_PROTOCOL_V0_1.md": "# branch capsule protocol\n",
+         "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_BOOTSTRAP_BINDING_PROTOCOL_V0_1.md": "# branch capsule bootstrap protocol\n",
++        "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_MATERIAL_WORK_GUARD_PROTOCOL_V0_1.md": "# branch capsule material work guard protocol\n",
+         "ION/02_architecture/ION_CODEX_CHAT_ENGINE_PROTOCOL.md": "# chat engine protocol\n",
+         "ION/02_architecture/CODEX_CARRIER_LIMITS_CONTEXT_PROTOCOL.md": "# codex carrier limits protocol\n",
+         "ION/03_registry/codex_carrier_limits_registry.yaml": "schema_id: ion.codex_carrier_limits_registry.v1\nstatus: ACTIVE\n",
+@@ -90,6 +91,7 @@
+     assert "ION/05_context/current/codex_solo/CODEX_CARRIER_LIMITS_CONTEXT.json" in route_paths
+     assert "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_PROTOCOL_V0_1.md" in route_paths
+     assert "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_BOOTSTRAP_BINDING_PROTOCOL_V0_1.md" in route_paths
++    assert "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_MATERIAL_WORK_GUARD_PROTOCOL_V0_1.md" in route_paths
+     assert "ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json" in route_paths
+ 
+ 
+@@ -174,6 +176,7 @@
+     assert "ION Codex Solo Boot Context" in result["context"]
+     assert "## Branch Capsule Bootstrap Law" in result["context"]
+     assert "Every active agent/conversation/task doing material work needs a unique branch capsule identity" in result["context"]
++    assert "material-work preflight guard" in result["context"]
+     assert "## Loaded HOT_CONTEXT" in result["context"]
+     assert "## MINIMUM WORKING CAPSULE" in result["context"]
+     assert history_after == history_before

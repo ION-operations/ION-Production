@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "depends_on",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Devices ship a downstream Linux-based kernel; not mainline-only."
+    },
+    {
+      "type": "integrates_with",
+      "target": "docker",
+      "evidence_tier": "INFERRED",
+      "notes": "Dev/test tooling may use containers; not part of on-device AOSP core."
+    },
+    {
+      "type": "integrates_with",
+      "target": "android-bionic",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Bionic is the platform C library shipped as part of the AOSP core native stack."
+    }
+  ]
+}

@@ -1,0 +1,250 @@
+{
+  "systemId": "cursor_addon.commandServer",
+  "systemName": "Command Server - HTTP API Bridge",
+  "version": "v1.0.0",
+  "status": "production",
+  "layer": 6,
+  "description": "HTTP API bridge exposing VS Code/Cursor functionality to external clients (Electron app, daemon). Provides endpoints for MCP tools, VS Code commands, Cursor state, and bulletproof messaging.",
+  
+  "internalNodes": [
+    {
+      "id": "httpServer",
+      "kind": "core.component",
+      "responsibility": "HTTP server listening on port 5001 for external requests",
+      "status": "production",
+      "must_never": [
+        "Bind to wrong port",
+        "Accept unauthorized requests",
+        "Expose sensitive data",
+        "Crash on invalid requests"
+      ],
+      "perf_budget_ms": 200,
+      "security_level": "high"
+    },
+    {
+      "id": "mcpEndpoint",
+      "kind": "api.component",
+      "responsibility": "POST /mcp/execute endpoint for MCP tool execution",
+      "status": "production",
+      "must_never": [
+        "Execute unauthorized tools",
+        "Expose MCP errors",
+        "Lose MCP responses"
+      ],
+      "perf_budget_ms": 5000,
+      "security_level": "high"
+    },
+    {
+      "id": "cursorStateEndpoint",
+      "kind": "api.component",
+      "responsibility": "GET /cursor/* endpoints for Cursor state (terminals, problems, editor, workspace)",
+      "status": "production",
+      "must_never": [
+        "Expose sensitive file contents",
+        "Return stale state",
+        "Exceed response size limits"
+      ],
+      "perf_budget_ms": 500,
+      "security_level": "medium"
+    },
+    {
+      "id": "messagingEndpoint",
+      "kind": "api.component",
+      "responsibility": "POST /messaging/send endpoint for bulletproof messaging protocol",
+      "status": "production",
+      "must_never": [
+        "Process invalid envelopes",
+        "Lose messages",
+        "Bypass router validation"
+      ],
+      "perf_budget_ms": 100,
+      "security_level": "high"
+    },
+    {
+      "id": "requestRouter",
+      "kind": "routing.component",
+      "responsibility": "Routes HTTP requests to appropriate handlers",
+      "status": "production",
+      "must_never": [
+        "Route to wrong handler",
+        "Miss route patterns",
+        "Fail on routing errors"
+      ],
+      "perf_budget_ms": 50,
+      "security_level": "medium"
+    },
+    {
+      "id": "corsHandler",
+      "kind": "security.component",
+      "responsibility": "Handles CORS headers for cross-origin requests",
+      "status": "production",
+      "must_never": [
+        "Allow unauthorized origins",
+        "Expose credentials",
+        "Fail CORS validation"
+      ],
+      "perf_budget_ms": 10,
+      "security_level": "medium"
+    }
+  ],
+  
+  "ports": [
+    {
+      "portId": "httpApi",
+      "direction": "bidirectional",
+      "connectsToSystem": "external.clients",
+      "protocol": "http_json",
+      "whatIsExchanged": [
+        "mcp_tool_requests",
+        "cursor_state_queries",
+        "messaging_envelopes",
+        "command_executions"
+      ],
+      "security_level": "high"
+    },
+    {
+      "portId": "mcpClient",
+      "direction": "bidirectional",
+      "connectsToSystem": "cursor_addon.mcpClient",
+      "protocol": "internal_api",
+      "whatIsExchanged": [
+        "tool_execution_requests",
+        "tool_responses",
+        "tool_list_queries"
+      ],
+      "security_level": "high"
+    },
+    {
+      "portId": "messageRouter",
+      "direction": "bidirectional",
+      "connectsToSystem": "cursor_addon.bulletproofMessaging",
+      "protocol": "internal_api",
+      "whatIsExchanged": [
+        "envelopes",
+        "routing_requests",
+        "acknowledgments"
+      ],
+      "security_level": "high"
+    },
+    {
+      "portId": "vscodeApi",
+      "direction": "outbound",
+      "connectsToSystem": "vscode.extensionHost",
+      "protocol": "vscode_api",
+      "whatIsExchanged": [
+        "command_executions",
+        "state_queries",
+        "workspace_access"
+      ],
+      "security_level": "high"
+    }
+  ],
+  
+  "internalEdges": [
+    {
+      "from": "httpServer",
+      "to": "requestRouter",
+      "type": "uses",
+      "description": "Routes incoming requests"
+    },
+    {
+      "from": "requestRouter",
+      "to": "corsHandler",
+      "type": "uses",
+      "description": "Handles CORS validation"
+    },
+    {
+      "from": "requestRouter",
+      "to": "mcpEndpoint",
+      "type": "routes_to",
+      "description": "Routes MCP requests"
+    },
+    {
+      "from": "requestRouter",
+      "to": "cursorStateEndpoint",
+      "type": "routes_to",
+      "description": "Routes Cursor state queries"
+    },
+    {
+      "from": "requestRouter",
+      "to": "messagingEndpoint",
+      "type": "routes_to",
+      "description": "Routes messaging requests"
+    },
+    {
+      "from": "mcpEndpoint",
+      "to": "mcpClient",
+      "type": "uses",
+      "description": "Uses MCP Client for tool execution"
+    },
+    {
+      "from": "messagingEndpoint",
+      "to": "messageRouter",
+      "type": "uses",
+      "description": "Uses Message Router for envelope processing"
+    }
+  ],
+  
+  "externalEdges": [
+    {
+      "from": "cursor_addon.commandServer",
+      "to": "cursor_addon.mcpClient",
+      "type": "uses",
+      "description": "Uses MCP Client for tool execution"
+    },
+    {
+      "from": "cursor_addon.commandServer",
+      "to": "cursor_addon.bulletproofMessaging",
+      "type": "integrates_with",
+      "description": "Integrates with bulletproof messaging"
+    },
+    {
+      "from": "cursor_addon.commandServer",
+      "to": "external.electronApp",
+      "type": "provides",
+      "description": "Provides HTTP API for Electron app"
+    }
+  ],
+  
+  "performanceCharacteristics": {
+    "latency": {
+      "target_ms": 200,
+      "p95_ms": 500,
+      "p99_ms": 1000
+    },
+    "throughput": {
+      "requests_per_second": 100,
+      "concurrent_requests": 100
+    },
+    "reliability": {
+      "delivery_guarantee": "best_effort",
+      "error_handling": "graceful_degradation",
+      "availability": "99.9%"
+    }
+  },
+  
+  "securityCharacteristics": {
+    "authentication": "none_localhost",
+    "authorization": "endpoint_based",
+    "encryption": "none_localhost",
+    "audit": "request_logs"
+  },
+  
+  "deploymentCharacteristics": {
+    "runtime": "extension_host",
+    "storage": "none",
+    "scalability": "single_instance",
+    "availability": "99.9%"
+  },
+  
+  "metadata": {
+    "documentation": [
+      "cursor-addon/docs/COMMAND_SERVER_ENHANCEMENT.md"
+    ],
+    "code": [
+      "cursor-addon/src/commandServer.ts"
+    ],
+    "tests": []
+  }
+}
+

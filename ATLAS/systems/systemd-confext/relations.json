@@ -1,0 +1,53 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "systemd",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "systemd-confext and systemd-confext.service are part of the systemd suite on Linux."
+    },
+    {
+      "type": "integrates_with",
+      "target": "systemd-unit-model",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Merged /etc trees can include systemd unit drop-ins and configuration consumed after confext merge."
+    },
+    {
+      "type": "integrates_with",
+      "target": "systemd-sysext",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Sysext and confext are sibling systemd extension merge mechanisms targeting different hierarchy roots per manuals."
+    },
+    {
+      "type": "integrates_with",
+      "target": "systemd-portable",
+      "evidence_tier": "INFERRED",
+      "notes": "Both layer OS-tree content on systemd hosts; portablectl attach differs from confext overlay merge."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Overlay-based merge relies on Linux mount and overlay filesystem support per systemd documentation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "unified-kernel-image",
+      "evidence_tier": "INFERRED",
+      "notes": "Some UKI/initrd/systemd-centric flows may ship or consume configuration extensions (distro-specific)."
+    },
+    {
+      "type": "competes_with",
+      "target": "docker",
+      "evidence_tier": "INFERRED",
+      "notes": "Container-delivered config vs host /etc merge address overlapping goals with different models."
+    },
+    {
+      "type": "competes_with",
+      "target": "oci-image-spec",
+      "evidence_tier": "INFERRED",
+      "notes": "OCI layers target container roots; confext merges configuration trees on the systemd host."
+    }
+  ]
+}

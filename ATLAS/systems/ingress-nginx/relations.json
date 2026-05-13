@@ -1,0 +1,37 @@
+{
+  "system_slug": "ingress-nginx",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-08",
+  "edges": [
+    {
+      "type": "depends_on",
+      "target": "nginx",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Controller embeds NGINX as the proxy engine per upstream project architecture."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Ingress controller for Kubernetes API resources."
+    },
+    {
+      "type": "competes_with",
+      "target": "traefik",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable ingress controller class."
+    },
+    {
+      "type": "competes_with",
+      "target": "emissary-ingress",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable ingress controller class."
+    },
+    {
+      "type": "integrates_with",
+      "target": "grpc",
+      "evidence_tier": "INFERRED",
+      "notes": "gRPC ingress patterns are common where documented for NGINX/Ingress annotations."
+    }
+  ]
+}

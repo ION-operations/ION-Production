@@ -1,0 +1,191 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "elf",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "readelf, objdump, ld, as consume and produce ELF objects on typical Unix-class targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "dwarf",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "objdump and readelf expose DWARF debug sections in ELF objects."
+    },
+    {
+      "type": "integrates_with",
+      "target": "c-language",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GNU as and ld are the traditional companions to GCC for C/C++ compilation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Linux kernel build documentation assumes GNU assembler and linker in standard GNU/Linux flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-ir",
+      "evidence_tier": "INFERRED",
+      "notes": "Some LLVM-based toolchains still link with GNU ld or substitute lld/llvm-objdump; deployment-specific."
+    },
+    {
+      "type": "integrates_with",
+      "target": "riscv-isa",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Binutils targets include RISC-V assembly and linking support."
+    },
+    {
+      "type": "competes_with",
+      "target": "llvm-lld",
+      "evidence_tier": "INFERRED",
+      "notes": "GNU ld vs LLVM lld as substitutable ELF linkers in clang/rust-heavy stacks."
+    },
+    {
+      "type": "integrates_with",
+      "target": "clang",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Clang on typical GNU/Linux triplets invokes GNU as and GNU ld unless the driver is pointed at lld."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-gcc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "gcc/g++ traditionally invoke GNU as and GNU ld on GNU/Linux flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-gdb",
+      "evidence_tier": "INFERRED",
+      "notes": "readelf/objdump static inspection complements GDB live debugging of the same ELF artifacts."
+    },
+    {
+      "type": "integrates_with",
+      "target": "glibc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GNU ld links executables against glibc shared objects; dynamic linker is part of glibc on GNU/Linux."
+    },
+    {
+      "type": "integrates_with",
+      "target": "musl",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GNU ld links musl objects and shared libraries in musl GNU/Linux toolchain flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-libstdcxx",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GNU ld links libstdc++ into g++-built executables and shared libraries on typical GNU/Linux flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-libcxx",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GNU ld can link Clang-built objects that pull in libc++ when lld is not used."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-libcxxabi",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GNU ld links libc++abi alongside libc++ in Clang flows that use GNU ld."
+    },
+    {
+      "type": "integrates_with",
+      "target": "alpine-linux",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GNU binutils participate in standard Alpine package build and link flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "debian",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GNU binutils participate in standard Debian package build and link flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "ubuntu",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GNU binutils participate in standard Ubuntu package build and link flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "fedora",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GNU binutils participate in standard Fedora RPM build and link flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "rhel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GNU binutils participate in standard RHEL RPM build and link flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "rocky-linux",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GNU binutils participate in standard Rocky Linux RPM build and link flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "almalinux",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GNU binutils participate in standard AlmaLinux RPM build and link flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "centos-stream",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GNU binutils participate in standard CentOS Stream RPM build and link flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "centos-linux",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GNU binutils participated in standard historical CentOS Linux RPM build and link flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "freebsd-libc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GNU ld links against FreeBSD libc in typical FreeBSD ELF flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "openbsd-libc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GNU ld links against OpenBSD libc in typical OpenBSD ELF flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "netbsd-libc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GNU ld links against NetBSD libc in typical NetBSD ELF flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "dragonfly-libc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GNU ld links against DragonFly libc in typical DragonFly ELF flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "illumos-libc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GNU ld links against illumos libc in typical illumos ELF flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "android-bionic",
+      "evidence_tier": "INFERRED",
+      "notes": "GNU ld may link Android native objects in specialized cross-build flows targeting Bionic sysroots."
+    },
+    {
+      "type": "integrates_with",
+      "target": "newlib",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GNU ld links newlib objects into embedded ELF images in standard GCC embedded flows."
+    }
+  ]
+}

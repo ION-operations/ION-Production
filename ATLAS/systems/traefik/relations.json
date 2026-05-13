@@ -1,0 +1,37 @@
+{
+  "system_slug": "traefik",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-06",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Traefik documents Kubernetes Ingress / Gateway API style integration."
+    },
+    {
+      "type": "integrates_with",
+      "target": "http3",
+      "evidence_tier": "INFERRED",
+      "notes": "HTTP stack features depend on version and entrypoints; verify per release."
+    },
+    {
+      "type": "integrates_with",
+      "target": "grpc",
+      "evidence_tier": "INFERRED",
+      "notes": "gRPC routing is a common edge use case where documented for Traefik version."
+    },
+    {
+      "type": "competes_with",
+      "target": "envoy",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable L7 edge / ingress in many Kubernetes deployments."
+    },
+    {
+      "type": "integrates_with",
+      "target": "opentelemetry",
+      "evidence_tier": "INFERRED",
+      "notes": "Tracing integration is common in production stacks (check Traefik OTel docs per version)."
+    }
+  ]
+}

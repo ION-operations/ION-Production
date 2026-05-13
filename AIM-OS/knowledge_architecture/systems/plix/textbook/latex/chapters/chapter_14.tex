@@ -1,0 +1,617 @@
+% Chapter 14 converted from Markdown
+% Auto-generated - do not edit manually
+
+
+
+
+\section*{Section 14.1: Durable Execution Engine}
+
+Durable execution ensures intent achievement survives failures, enabling reliable intent achievement through checkpointing and recovery.
+
+\textbf{Durable Execution Overview}
+
+Durable execution provides:
+
+\begin{itemize}
+\item \textbf{Checkpointing:} Store execution state before each step
+\item \textbf{Recovery:} Restore from checkpoints on failure
+\item \textbf{Idempotency:} Safe retry of operations
+\item \textbf{State Persistence:} Persistent state across failures
+\end{itemize}
+
+Durable execution enables reliable intent achievement despite transient failures.
+
+\textbf{Checkpointing Implementation}
+
+Checkpointing stores execution state:
+
+\begin{lstlisting}[caption=Code Example]
+interface Checkpoint {
+  node_id: string;
+  state: {
+    inputs: Record<string, any>;
+    outputs?: Record<string, any>;
+    status: 'running' | 'completed' | 'failed';
+  };
+  timestamp: string;
+  checkpoint_id: string;
+}
+
+async function createCheckpoint(
+  node_id: string,
+  state: Checkpoint['state'],
+  cmc: MemoryStore
+): Promise<string> {
+  const checkpoint = {
+    type: 'plix_checkpoint',
+    node_id,
+    state,
+    timestamp: new Date().toISOString()
+  };
+  
+  const atom = await cmc.create_atom({
+    content: checkpoint,
+    tags: ['checkpoint', 'plix_execution', node_id]
+  });
+  
+  return atom.id;
+}
+
+async function restoreFromCheckpoint(
+  checkpoint_id: string,
+  cmc: MemoryStore
+): Promise<Checkpoint['state']> {
+  const atom = await cmc.get_atom(checkpoint_id);
+  return atom.content.state;
+}
+\end{lstlisting}
+
+Checkpointing enables recovery from failures by storing execution state.
+
+\textbf{Recovery Implementation}
+
+Recovery restores execution from checkpoints:
+
+\begin{lstlisting}[caption=Code Example]
+async function executeWithRecovery(
+  ir: IRPlan,
+  executor: NodeExecutor,
+  cmc: MemoryStore
+): Promise<ExecutionResult> {
+  const results: Record<string, any> = {};
+  const checkpoints: Record<string, string> = {};
+  
+  for (const node of ir.nodes) {
+    try {
+      // Create checkpoint before execution
+      const checkpoint_id = await createCheckpoint(node.id, {
+        inputs: node.params,
+        status: 'running'
+      }, cmc);
+      checkpoints[node.id] = checkpoint_id;
+      
+      // Execute node
+      const output = await executor.exec(node.id, node.action, node.params);
+      results[node.id] = output;
+      
+      // Update checkpoint on success
+      await createCheckpoint(node.id, {
+        inputs: node.params,
+        outputs: output,
+        status: 'completed'
+      }, cmc);
+      
+    } catch (error) {
+      // Restore from checkpoint on failure
+      const checkpoint_id = checkpoints[node.id];
+      if (checkpoint_id) {
+        const state = await restoreFromCheckpoint(checkpoint_id, cmc);
+        // Retry or compensate based on state
+        await handleFailure(node, state, error, executor, cmc);
+      }
+      throw error;
+    }
+  }
+  
+  return { results };
+}
+\end{lstlisting}
+
+Recovery enables execution resumption from checkpoints, ensuring intent achievement despite failures.
+
+\textbf{Idempotency Support}
+
+Idempotency ensures safe retry:
+
+\begin{lstlisting}[caption=Code Example]
+async function executeIdempotent(
+  node_id: string,
+  action: string,
+  params: Record<string, any>,
+  executor: NodeExecutor,
+  cmc: MemoryStore
+): Promise<any> {
+  // Generate idempotency key
+  const idempotency_key = `\texttt{\$\{node_id\}\}_\texttt{\$\{hashParams(params)\}\}`;
+  
+  // Check if already executed
+  const existing = await cmc.query({
+    tags: ['execution', 'idempotent', idempotency_key]
+  });
+  
+  if (existing.length > 0) {
+    // Return existing result
+    return existing[0].content.outputs;
+  }
+  
+  // Execute and store result
+  const output = await executor.exec(node_id, action, params);
+  
+  await cmc.create_atom({
+    content: {
+      type: 'execution_result',
+      node_id,
+      outputs: output,
+      idempotency_key
+    },
+    tags: ['execution', 'idempotent', idempotency_key]
+  });
+  
+  return output;
+}
+\end{lstlisting}
+
+Idempotency ensures safe retry of operations, preventing duplicate execution.
+
+\textbf{Durable Execution Benefits}
+
+Durable execution provides:
+
+\begin{itemize}
+\item \textbf{Reliability:} Execution survives failures through checkpointing
+\item \textbf{Recovery:} Execution resumes from checkpoints
+\item \textbf{Idempotency:} Safe retry of operations
+\item \textbf{State Persistence:} Persistent state across failures
+\end{itemize}
+
+These benefits enable reliable intent achievement despite transient failures.
+
+\section*{Section 14.2: Saga Pattern Implementation}
+
+Saga pattern enables compensation for partial failures, ensuring system consistency through dynamic compensation logic.
+
+\textbf{Saga Pattern Overview}
+
+Saga pattern provides:
+
+\begin{itemize}
+\item \textbf{Compensation:} Undo operations when later steps fail
+\item \textbf{Dynamic Compensation:} Compensation logic defined per task
+\item \textbf{Consistency:} System remains consistent despite partial failures
+\item \textbf{Recovery:} System recovers from partial failures
+\end{itemize}
+
+Saga pattern ensures system consistency through compensation.
+
+\textbf{Compensation Logic}
+
+Compensation logic implementation:
+
+\begin{lstlisting}[caption=Code Example]
+interface Compensation {
+  action: string;
+  params: Record<string, any>;
+}
+
+async function executeWithCompensation(
+  ir: IRPlan,
+  executor: NodeExecutor,
+  cmc: MemoryStore
+): Promise<ExecutionResult> {
+  const results: Record<string, any> = {};
+  const completed: IRNode[] = [];
+  
+  for (const node of ir.nodes) {
+    try {
+      // Execute node
+      const output = await executor.exec(node.id, node.action, node.params);
+      results[node.id] = output;
+      completed.push(node);
+      
+    } catch (error) {
+      // Trigger compensation for completed nodes
+      for (const completedNode of completed.reverse()) {
+        if (completedNode.compensate) {
+          const compensateNode = ir.nodes.find(n => n.id === completedNode.compensate);
+          if (compensateNode) {
+            try {
+              await executor.exec(
+                compensateNode.id,
+                compensateNode.action,
+                resolveCompensationParams(compensateNode.params, results)
+              );
+            } catch (compError) {
+              // Log compensation failure
+              console.error(`Compensation failed for \texttt{\$\{completedNode.id\}\}: \texttt{\$\{compError\}\}`);
+            }
+          }
+        }
+      }
+      throw error;
+    }
+  }
+  
+  return { results };
+}
+
+function resolveCompensationParams(
+  params: Record<string, any>,
+  results: Record<string, any>
+): Record<string, any> {
+  const resolved: Record<string, any> = {};
+  
+  for (const [key, value] of Object.entries(params)) {
+    if (typeof value === 'string' && value.startsWith('\texttt{\$\{')) {
+      const ref = value.match(/\$\{([^\}\}]+)\}/)?.[1];
+      if (ref) {
+        const [taskId, field] = ref.split('.');
+        resolved[key] = results[taskId]?.[field] ?? value;
+      } else {
+        resolved[key] = value;
+      }
+    } else {
+      resolved[key] = value;
+    }
+  }
+  
+  return resolved;
+}
+\end{lstlisting}
+
+Compensation logic undoes completed operations when later steps fail, ensuring consistency.
+
+\textbf{Saga Pattern Example}
+
+Saga pattern example:
+
+\begin{lstlisting}[caption=Code Example]
+// Room booking saga
+const ir: IRPlan = {
+  intent: "Book a meeting room",
+  nodes: [
+    {
+      id: "check_availability",
+      action: "api.check_room_availability",
+      deps: []
+    },
+    {
+      id: "reserve_room",
+      action: "api.reserve_room",
+      deps: ["check_availability"],
+      compensate: "cancel_reservation"  // Compensation task
+    },
+    {
+      id: "create_calendar_event",
+      action: "api.create_calendar_event",
+      deps: ["reserve_room"],
+      compensate: "delete_calendar_event"
+    },
+    {
+      id: "cancel_reservation",
+      action: "api.cancel_reservation",
+      deps: []
+    },
+    {
+      id: "delete_calendar_event",
+      action: "api.delete_calendar_event",
+      deps: []
+    }
+  ]
+};
+
+// If create_calendar_event fails:
+// 1. cancel_reservation compensates reserve_room
+// 2. delete_calendar_event compensates create_calendar_event (if it succeeded)
+\end{lstlisting}
+
+Saga pattern ensures system consistency through compensation, undoing partial changes on failure.
+
+\textbf{Saga Pattern Benefits}
+
+Saga pattern provides:
+
+\begin{itemize}
+\item \textbf{Consistency:} System remains consistent despite partial failures
+\item \textbf{Recovery:} System recovers from partial failures through compensation
+\item \textbf{Dynamic Compensation:} Compensation logic defined per task
+\item \textbf{Reliability:} Ensures system reliability through compensation
+\end{itemize}
+
+These benefits enable reliable intent achievement with system consistency guarantees.
+
+\section*{Section 14.3: Recovery Mechanisms}
+
+Recovery mechanisms enable execution resumption from failures, ensuring intent achievement through checkpoint restoration and compensation.
+
+\textbf{Recovery Strategies}
+
+Recovery strategies:
+
+\begin{enumerate}
+\item \textbf{Checkpoint Restoration:} Restore from last checkpoint
+\item \textbf{Compensation:} Undo partial changes
+\item \textbf{Retry:} Retry failed operations
+\item \textbf{Escalation:} Escalate to human operator
+\end{enumerate}
+
+Recovery strategies enable execution resumption from various failure modes.
+
+\textbf{Checkpoint Restoration}
+
+Checkpoint restoration implementation:
+
+\begin{lstlisting}[caption=Code Example]
+async function restoreExecution(
+  plan_id: string,
+  cmc: MemoryStore
+): Promise<ExecutionState> {
+  // Find last checkpoint
+  const checkpoints = await cmc.query({
+    tags: ['checkpoint', 'plix_execution', plan_id]
+  });
+  
+  if (checkpoints.length === 0) {
+    throw new Error('No checkpoints found');
+  }
+  
+  // Get most recent checkpoint
+  const lastCheckpoint = checkpoints.sort((a, b) => 
+    new Date(b.content.timestamp).getTime() - new Date(a.content.timestamp).getTime()
+  )[0];
+  
+  // Restore state
+  const state: ExecutionState = {
+    plan_id,
+    completed_nodes: [],
+    failed_nodes: [],
+    current_node: lastCheckpoint.content.node_id,
+    state: lastCheckpoint.content.state
+  };
+  
+  // Find completed nodes
+  const completedCheckpoints = checkpoints.filter(c => 
+    c.content.state.status === 'completed'
+  );
+  state.completed_nodes = completedCheckpoints.map(c => c.content.node_id);
+  
+  return state;
+}
+
+async function resumeExecution(
+  state: ExecutionState,
+  ir: IRPlan,
+  executor: NodeExecutor,
+  cmc: MemoryStore
+): Promise<ExecutionResult> {
+  // Resume from checkpoint
+  const results: Record<string, any> = {};
+  
+  // Restore completed results
+  for (const nodeId of state.completed_nodes) {
+    const checkpoint = await findCheckpoint(nodeId, cmc);
+    if (checkpoint) {
+      results[nodeId] = checkpoint.content.state.outputs;
+    }
+  }
+  
+  // Continue from current node
+  const currentNodeIndex = ir.nodes.findIndex(n => n.id === state.current_node);
+  for (let i = currentNodeIndex; i < ir.nodes.length; i++) {
+    const node = ir.nodes[i];
+    try {
+      const output = await executor.exec(node.id, node.action, node.params);
+      results[node.id] = output;
+    } catch (error) {
+      // Handle failure
+      await handleFailure(node, results, error, executor, cmc);
+      throw error;
+    }
+  }
+  
+  return { results };
+}
+\end{lstlisting}
+
+Checkpoint restoration enables execution resumption from failures, ensuring intent achievement.
+
+\textbf{Retry Logic}
+
+Retry logic implementation:
+
+\begin{lstlisting}[caption=Code Example]
+async function executeWithRetry(
+  node: IRNode,
+  executor: NodeExecutor,
+  maxAttempts: number = 3,
+  backoff: 'none' | 'linear' | 'exponential' = 'exponential',
+  backoffMs: number = 1000
+): Promise<any> {
+  let lastError: Error | null = null;
+  
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      return await executor.exec(node.id, node.action, node.params);
+    } catch (error) {
+      lastError = error as Error;
+      
+      if (attempt < maxAttempts) {
+        // Calculate backoff delay
+        const delay = calculateBackoff(attempt, backoff, backoffMs);
+        await sleep(delay);
+      }
+    }
+  }
+  
+  throw lastError || new Error('Execution failed after retries');
+}
+
+function calculateBackoff(
+  attempt: number,
+  backoff: 'none' | 'linear' | 'exponential',
+  baseMs: number
+): number {
+  switch (backoff) {
+    case 'none':
+      return 0;
+    case 'linear':
+      return baseMs * attempt;
+    case 'exponential':
+      return baseMs * Math.pow(2, attempt - 1);
+    default:
+      return baseMs;
+  }
+}
+\end{lstlisting}
+
+Retry logic enables automatic retry of failed operations, improving reliability.
+
+\textbf{Recovery Mechanisms Benefits}
+
+Recovery mechanisms provide:
+
+\begin{itemize}
+\item \textbf{Checkpoint Restoration:} Execution resumption from failures
+\item \textbf{Compensation:} System consistency through compensation
+\item \textbf{Retry Logic:} Automatic retry of failed operations
+\item \textbf{Escalation:} Human operator intervention when needed
+\end{itemize}
+
+These benefits enable reliable intent achievement despite failures.
+
+\section*{Section 14.4: State Persistence}
+
+State persistence enables durable execution state storage, ensuring execution state survives failures and system restarts.
+
+\textbf{State Persistence Implementation}
+
+State persistence using CMC:
+
+\begin{lstlisting}[caption=Code Example]
+interface ExecutionState {
+  plan_id: string;
+  intent: string;
+  completed_nodes: string[];
+  failed_nodes: string[];
+  current_node?: string;
+  results: Record<string, any>;
+  checkpoints: Record<string, string>;
+}
+
+async function persistState(
+  state: ExecutionState,
+  cmc: MemoryStore
+): Promise<string> {
+  const atom = await cmc.create_atom({
+    content: {
+      type: 'plix_execution_state',
+      ...state,
+      timestamp: new Date().toISOString()
+    },
+    tags: ['execution_state', 'plix', state.plan_id]
+  });
+  
+  return atom.id;
+}
+
+async function loadState(
+  plan_id: string,
+  cmc: MemoryStore
+): Promise<ExecutionState | null> {
+  const atoms = await cmc.query({
+    tags: ['execution_state', 'plix', plan_id]
+  });
+  
+  if (atoms.length === 0) {
+    return null;
+  }
+  
+  // Get most recent state
+  const latest = atoms.sort((a, b) =>
+    new Date(b.content.timestamp).getTime() - new Date(a.content.timestamp).getTime()
+  )[0];
+  
+  return latest.content as ExecutionState;
+}
+\end{lstlisting}
+
+State persistence enables execution state storage and retrieval, supporting durable execution.
+
+\textbf{Bitemporal State Tracking}
+
+Bitemporal state tracking:
+
+\begin{lstlisting}[caption=Code Example]
+async function trackStateEvolution(
+  plan_id: string,
+  state: ExecutionState,
+  cmc: MemoryStore
+): Promise<void> {
+  // Store state with bitemporal tracking
+  await cmc.create_atom({
+    content: {
+      type: 'plix_execution_state',
+      ...state
+    },
+    tags: ['execution_state', 'plix', plan_id],
+    valid_from: new Date(),
+    valid_to: null  // Current state
+  });
+  
+  // Query state evolution
+  const evolution = await cmc.query({
+    tags: ['execution_state', 'plix', plan_id],
+    valid_at: new Date()  // State at specific time
+  });
+}
+
+async function queryStateHistory(
+  plan_id: string,
+  timestamp: Date,
+  cmc: MemoryStore
+): Promise<ExecutionState | null> {
+  const atoms = await cmc.query({
+    tags: ['execution_state', 'plix', plan_id],
+    valid_at: timestamp
+  });
+  
+  if (atoms.length === 0) {
+    return null;
+  }
+  
+  return atoms[0].content as ExecutionState;
+}
+\end{lstlisting}
+
+Bitemporal state tracking enables state evolution queries, supporting temporal reasoning.
+
+\textbf{State Persistence Benefits}
+
+State persistence provides:
+
+\begin{itemize}
+\item \textbf{Durability:} Execution state survives failures
+\item \textbf{Recovery:} Execution resumption from persisted state
+\item \textbf{Temporal Queries:} State evolution queries
+\item \textbf{Auditability:} Complete execution history
+\end{itemize}
+
+These benefits enable reliable intent achievement with complete execution history.
+
+\section*{Chapter 14 Summary}
+
+Runtime implementation provides durable execution, saga patterns, recovery mechanisms, and state persistence. Durable execution ensures intent achievement survives failures through checkpointing and recovery. Saga pattern enables compensation for partial failures, ensuring system consistency. Recovery mechanisms enable execution resumption from failures. State persistence enables durable execution state storage, ensuring execution state survives failures and system restarts.
+
+\textbf{Next:} Chapter 15 explores adapter implementation—PLIx \textrightarrow{} Temporal, Step Functions, Argo, and APOE adapters.
+
+\textbf{Word Count:} \textasciitilde{}2,300 words  
+

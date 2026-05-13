@@ -1,0 +1,114 @@
+{
+  "systemId": "cursor_addon.agentAutomation",
+  "humanName": "Agent Automation - Cursor Background Agents Control",
+  "version": "v1.0.0",
+  "status": "production",
+  
+  "intent": {
+    "purpose": "Control Cursor Background Agents via HTTP API (Cloud) and CLI (Local) for autonomous operation. Enables long-running agents with monitoring, status updates, and webhook integration.",
+    "must_not_regress": [
+      "Must not start agents without validation",
+      "Must not lose agent status tracking",
+      "Must not exceed runtime limits",
+      "Must not expose API keys"
+    ],
+    "why_it_exists": "Enables autonomous agent operation where Cursor agents run for hours/days without constant human supervision. Provides reliable agent control and monitoring."
+  },
+  
+  "classification": {
+    "security_level": "high",
+    "perf_sensitivity": "medium",
+    "ownership": "core",
+    "sideEffects": [
+      "Controls Cursor agents",
+      "Sends status updates",
+      "Manages agent lifecycle",
+      "Tracks agent execution"
+    ]
+  },
+  
+  "internalNodes": [
+    {
+      "id": "agentMonitor",
+      "responsibility": "Manages agent lifecycle (start, stop, status, metrics) via Cursor API",
+      "must_never": [
+        "Start agents without validation",
+        "Lose agent status tracking"
+      ],
+      "perf_budget_ms": 1000,
+      "status": "production"
+    },
+    {
+      "id": "cloudApiClient",
+      "responsibility": "Communicates with Cursor Cloud Agents API",
+      "must_never": [
+        "Expose API keys",
+        "Make unauthorized requests"
+      ],
+      "perf_budget_ms": 5000,
+      "status": "production"
+    },
+    {
+      "id": "cliAgentClient",
+      "responsibility": "Executes cursor-agent CLI for local repositories",
+      "must_never": [
+        "Execute arbitrary commands",
+        "Exceed timeout limits"
+      ],
+      "perf_budget_ms": 300000,
+      "status": "production"
+    }
+  ],
+  
+  "integration_points": [
+    {
+      "system": "external.cursorCloud",
+      "protocol": "http_bearer",
+      "direction": "outbound",
+      "purpose": "Cloud API for GitHub repositories"
+    },
+    {
+      "system": "cursor_addon.bulletproofMessaging",
+      "protocol": "envelope_v1",
+      "direction": "bidirectional",
+      "purpose": "Agent status updates"
+    },
+    {
+      "system": "cursor_addon.commandServer",
+      "protocol": "http",
+      "direction": "bidirectional",
+      "purpose": "HTTP API endpoints"
+    }
+  ],
+  
+  "dependencies": [
+    "cursor_addon.bulletproofMessaging"
+  ],
+  
+  "performance_summary": {
+    "latency_ms": 1000,
+    "throughput_agents_per_min": 10,
+    "reliability": "best_effort",
+    "status_tracking": "polling_webhooks"
+  },
+  
+  "documentation_status": {
+    "T0": "complete",
+    "T1": "complete",
+    "T2": "complete",
+    "T3": "pending",
+    "T4": "pending",
+    "T5": "pending",
+    "T6": "pending",
+    "system_map": "complete",
+    "system_index": "complete"
+  },
+  
+  "test_coverage": {
+    "unit_tests": 0,
+    "integration_tests": 0,
+    "coverage_percent": 0,
+    "status": "needs_tests"
+  }
+}
+

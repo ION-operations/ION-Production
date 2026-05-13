@@ -1,0 +1,153 @@
+#!/usr/bin/env python3
+"""
+Script to restore original system map format for systems that were overwritten.
+This script will restore the original format based on the VIF template.
+"""
+
+import json
+import os
+from pathlib import Path
+
+def restore_system_map(system_id, system_name, description, internal_nodes):
+    """Restore a system map to the original format."""
+    return {
+        "systemId": system_id,
+        "systemName": system_name,
+        "version": "v0.1",
+        "description": description,
+        "internalNodes": internal_nodes,
+        "externalConnections": [
+            {
+                "target": "cmc.contextMemoryCore",
+                "relationship": "stores_data_in",
+                "data_flow": "bidirectional",
+                "priority": "high"
+            },
+            {
+                "target": "hhni.hierarchicalHypergraph", 
+                "relationship": "queries_for",
+                "data_flow": "query_response",
+                "priority": "high"
+            },
+            {
+                "target": "vif.verifiableIntelligence",
+                "relationship": "validates_with",
+                "data_flow": "verification",
+                "priority": "high"
+            }
+        ],
+        "performanceCharacteristics": {
+            "latency_ms": "<100",
+            "throughput_ops_per_sec": "1000+",
+            "availability": "99.9%",
+            "scalability": "horizontal"
+        },
+        "securityCharacteristics": {
+            "encryption": "AES-256",
+            "authentication": "JWT",
+            "authorization": "RBAC",
+            "audit_logging": "comprehensive"
+        },
+        "deploymentCharacteristics": {
+            "containerization": "Docker",
+            "orchestration": "Kubernetes",
+            "monitoring": "Prometheus + Grafana",
+            "logging": "ELK Stack"
+        }
+    }
+
+def main():
+    """Restore original system maps for overwritten systems."""
+    
+    # Systems that were overwritten and need restoration
+    systems_to_restore = [
+        {
+            "system_id": "cmc.contextMemoryCore",
+            "system_name": "Context Memory Core - Bitemporal Memory Substrate", 
+            "description": "The persistent bitemporal memory substrate that stores everything in AIM-OS. Think 'AI's hippocampus' - where all memories live, never forgotten, with time-travel capabilities.",
+            "internal_nodes": [
+                {
+                    "id": "atomManager",
+                    "kind": "core.component",
+                    "responsibility": "Manages fundamental memory units (atoms) with bitemporal tracking",
+                    "status": "production",
+                    "must_never": [
+                        "Allow concurrent writes to same atom",
+                        "Delete atoms (only supersede)",
+                        "Modify atoms after creation"
+                    ],
+                    "perf_budget_ms": 10,
+                    "security_level": "high"
+                },
+                {
+                    "id": "bitemporalEngine",
+                    "kind": "core.component", 
+                    "responsibility": "Handles Transaction Time (TT) and Valid Time (VT) for temporal queries",
+                    "status": "production",
+                    "must_never": [
+                        "Allow invalid time ranges",
+                        "Corrupt temporal relationships",
+                        "Lose temporal consistency"
+                    ],
+                    "perf_budget_ms": 15,
+                    "security_level": "high"
+                }
+            ]
+        },
+        {
+            "system_id": "hhni.hierarchicalHypergraph",
+            "system_name": "Hierarchical Hypergraph Neural Index - Physics-Guided Retrieval",
+            "description": "Physics-guided retrieval system that finds information at any granularity using DVNS (Dynamic Vector Network Simulation) physics. Think 'Google Maps for knowledge' - zoom in/out to find exactly what you need.",
+            "internal_nodes": [
+                {
+                    "id": "hierarchicalIndex",
+                    "kind": "core.component",
+                    "responsibility": "Manages 6-level fractal indexing (System → Section → Paragraph → Sentence → Word → Subword)",
+                    "status": "production",
+                    "must_never": [
+                        "Lose hierarchical relationships",
+                        "Create circular dependencies", 
+                        "Index content without proper embedding"
+                    ],
+                    "perf_budget_ms": 20,
+                    "security_level": "high"
+                },
+                {
+                    "id": "dvnsPhysics",
+                    "kind": "core.component",
+                    "responsibility": "Dynamic Vector Network Simulation for physics-guided retrieval",
+                    "status": "production",
+                    "must_never": [
+                        "Violate physics constraints",
+                        "Create impossible vector states",
+                        "Lose energy conservation"
+                    ],
+                    "perf_budget_ms": 50,
+                    "security_level": "medium"
+                }
+            ]
+        }
+    ]
+    
+    # Restore each system
+    for system in systems_to_restore:
+        system_map = restore_system_map(
+            system["system_id"],
+            system["system_name"], 
+            system["description"],
+            system["internal_nodes"]
+        )
+        
+        # Write to file
+        system_dir = f"knowledge_architecture/systems/{system['system_id'].split('.')[0]}"
+        map_file = f"{system_dir}/system.map.lucid.json5"
+        
+        os.makedirs(system_dir, exist_ok=True)
+        
+        with open(map_file, 'w') as f:
+            json.dump(system_map, f, indent=2)
+            
+        print(f"Restored {map_file}")
+
+if __name__ == "__main__":
+    main()

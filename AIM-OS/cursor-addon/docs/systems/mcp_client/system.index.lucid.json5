@@ -1,0 +1,125 @@
+{
+  "systemId": "cursor_addon.mcpClient",
+  "humanName": "MCP Client - Python MCP Server Connection",
+  "version": "v1.0.0",
+  "status": "production",
+  
+  "intent": {
+    "purpose": "Connect Extension to Python MCP server (lucid_mcp_server.py) via JSON-RPC 2.0 over stdio. Provides access to 59 MCP tools for AIM-OS operations including memory, collaboration, timeline, and autonomous operation.",
+    "must_not_regress": [
+      "Must not lose process connection",
+      "Must not break JSON-RPC protocol",
+      "Must not lose pending requests",
+      "Must not exceed timeout limits",
+      "Must not spawn multiple processes"
+    ],
+    "why_it_exists": "Extension needs its own MCP connection independent of Cursor's built-in MCP client. Enables Electron app and external clients to use MCP tools via Command Server."
+  },
+  
+  "classification": {
+    "security_level": "high",
+    "perf_sensitivity": "medium",
+    "ownership": "core",
+    "sideEffects": [
+      "Spawns Python processes",
+      "Executes MCP tools",
+      "Manages process lifecycle",
+      "Handles JSON-RPC communication"
+    ]
+  },
+  
+  "internalNodes": [
+    {
+      "id": "processManager",
+      "responsibility": "Spawns and manages Python MCP server process",
+      "must_never": [
+        "Spawn multiple processes",
+        "Lose process handle"
+      ],
+      "perf_budget_ms": 2000,
+      "status": "production"
+    },
+    {
+      "id": "jsonRpcClient",
+      "responsibility": "JSON-RPC 2.0 client over stdio",
+      "must_never": [
+        "Break JSON-RPC protocol",
+        "Lose messages"
+      ],
+      "perf_budget_ms": 30000,
+      "status": "production"
+    },
+    {
+      "id": "messageParser",
+      "responsibility": "Parses JSON-RPC messages from stdout",
+      "must_never": [
+        "Miss messages",
+        "Parse invalid JSON"
+      ],
+      "perf_budget_ms": 10,
+      "status": "production"
+    },
+    {
+      "id": "requestManager",
+      "responsibility": "Manages pending requests and timeouts",
+      "must_never": [
+        "Lose pending requests",
+        "Timeout prematurely"
+      ],
+      "perf_budget_ms": 30000,
+      "status": "production"
+    }
+  ],
+  
+  "integration_points": [
+    {
+      "system": "external.pythonMcpServer",
+      "protocol": "jsonrpc_stdio",
+      "direction": "bidirectional",
+      "purpose": "Python MCP server communication"
+    },
+    {
+      "system": "cursor_addon.commandServer",
+      "protocol": "internal_api",
+      "direction": "bidirectional",
+      "purpose": "MCP tool execution requests"
+    },
+    {
+      "system": "cursor_addon.bulletproofMessaging",
+      "protocol": "envelope_v1",
+      "direction": "bidirectional",
+      "purpose": "Wrapped MCP tool calls"
+    }
+  ],
+  
+  "dependencies": [
+    "external.pythonMcpServer"
+  ],
+  
+  "performance_summary": {
+    "latency_ms": 500,
+    "throughput_req_per_sec": 10,
+    "reliability": "best_effort",
+    "process_recovery": "manual_restart"
+  },
+  
+  "documentation_status": {
+    "T0": "pending",
+    "T1": "pending",
+    "T2": "pending",
+    "T3": "pending",
+    "T4": "pending",
+    "T5": "pending",
+    "T6": "pending",
+    "system_map": "complete",
+    "system_index": "complete"
+  },
+  
+  "test_coverage": {
+    "unit_tests": 0,
+    "integration_tests": 0,
+    "coverage_percent": 0,
+    "status": "needs_tests"
+  }
+}
+

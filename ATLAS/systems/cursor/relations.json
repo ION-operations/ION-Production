@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "competes_with",
+      "target": "vscode",
+      "evidence_tier": "INFERRED",
+      "notes": "Both are editor-class products with extension ecosystems; Cursor is a distinct fork/product."
+    },
+    {
+      "type": "integrates_with",
+      "target": "model-context-protocol",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Cursor documents MCP support; pin subsection URLs in sources.yaml when curating."
+    },
+    {
+      "type": "integrates_with",
+      "target": "openai-agents-chatgpt-public-runtime",
+      "evidence_tier": "INFERRED",
+      "notes": "May route model calls to vendor APIs per product configuration; exact providers are product/docs-specific."
+    },
+    {
+      "type": "integrates_with",
+      "target": "language-server-protocol",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "LSP-based language features as in VS Code lineage; cite LSP spec + Cursor docs where feature-specific."
+    },
+    {
+      "type": "integrates_with",
+      "target": "debug-adapter-protocol",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "DAP-based debugging as in VS Code lineage; cite DAP spec + Cursor docs where feature-specific."
+    }
+  ]
+}

@@ -1,0 +1,801 @@
+diff --git a/ION/02_architecture/CODEX_COMMIT_BOUNDARY_AUDIT_PROTOCOL.md b/ION/02_architecture/CODEX_COMMIT_BOUNDARY_AUDIT_PROTOCOL.md
+new file mode 100644
+index 0000000..bcdbee0
+--- /dev/null
++++ b/ION/02_architecture/CODEX_COMMIT_BOUNDARY_AUDIT_PROTOCOL.md
+@@ -0,0 +1,50 @@
++# Codex Commit Boundary Audit Protocol
++
++Status: candidate protocol for `PCKT-ION-CODEX-COMMIT-BOUNDARY-AUDIT-001`.
++
++Codex CLI/App can produce a mixed dirty tree: source changes, generated carrier projections, branch-capsule records, local-PC evidence, runtime residue, deletion cleanups, and private diagnostic lanes. ION must classify that mixture before staging or committing.
++
++## Rule
++
++```text
++Dirty tree is evidence of work, not a commit boundary.
++Commit boundary is proposed only after path classification, proof obligations, and settlement review.
++```
++
++This protocol does not allow autonomous staging, committing, pushing, accepted-state mutation, production authority, or raw Codex context promotion.
++
++## Bundle classes
++
++| Bundle | Default action |
++|---|---|
++| `source_protocol_schema_tests` | Candidate for first/primary source commit after focused tests. |
++| `generated_projection_or_local_evidence` | Candidate evidence bundle; usually commit or regenerate after source commit. |
++| `deletion_review_required` | Separate cleanup/archive packet required. |
++| `runtime_residue_exclude` | Exclude by default. |
++| `private_or_secret_risk_exclude` | Block and review before any commit. |
++| `untracked_review_required` | Owner-surface classification required before staging. |
++| `preexisting_dirty_or_unknown` | Do not stage with Codex carrier OS bundle. |
++
++## Required proof
++
++```text
++git status --porcelain=v1 --branch
++git diff --check
++focused pytest for source bundle
++path-level secret/risk review
++stage manifest proposal
++operator/Steward settlement before commit/push
++```
++
++## Generated artifacts
++
++```text
++ION/05_context/current/codex_carrier/commit_boundary/CODEX_COMMIT_BOUNDARY_AUDIT.json
++ION/05_context/current/codex_carrier/commit_boundary/CODEX_COMMIT_STAGE_MANIFEST.candidate.json
++```
++
++These artifacts are candidate evidence. They are not receipts and do not establish accepted ION state.
++
++## Security boundary
++
++The audit is path-level by default. It must not read raw `~/.codex` transcripts, memory, credentials, tunnel files, browser profiles, `.env` files, raw private logs, or `.ion_private` raw context snapshots. Secret-like paths block the stage plan until reviewed and redacted or excluded.
+diff --git a/ION/03_registry/ion_codex_commit_boundary_audit.schema.json b/ION/03_registry/ion_codex_commit_boundary_audit.schema.json
+new file mode 100644
+index 0000000..353ec6b
+--- /dev/null
++++ b/ION/03_registry/ion_codex_commit_boundary_audit.schema.json
+@@ -0,0 +1,47 @@
++{
++  "$schema": "https://json-schema.org/draft/2020-12/schema",
++  "$id": "ion.codex_commit_boundary_audit.v1",
++  "title": "ION Codex Commit Boundary Audit",
++  "type": "object",
++  "required": [
++    "schema_id",
++    "generated_at",
++    "verdict",
++    "ok",
++    "git",
++    "path_counts",
++    "bundles",
++    "candidate_stage_manifest",
++    "accepted_state_authority",
++    "git_mutation_performed"
++  ],
++  "properties": {
++    "schema_id": {"const": "ion.codex_commit_boundary_audit.v1"},
++    "generated_at": {"type": "string"},
++    "verdict": {
++      "type": "string",
++      "enum": [
++        "ION_CODEX_COMMIT_BOUNDARY_AUDIT_READY",
++        "ION_CODEX_COMMIT_BOUNDARY_AUDIT_PARTIAL",
++        "ION_CODEX_COMMIT_BOUNDARY_AUDIT_BLOCKED"
++      ]
++    },
++    "ok": {"type": "boolean"},
++    "ready_for_source_commit_bundle": {"type": "boolean"},
++    "git": {"type": "object"},
++    "path_counts": {"type": "object", "additionalProperties": {"type": "integer"}},
++    "bundles": {"type": "array", "items": {"type": "object"}},
++    "candidate_stage_manifest": {"type": "object"},
++    "blocking_findings": {"type": "array", "items": {"type": "string"}},
++    "warning_findings": {"type": "array", "items": {"type": "string"}},
++    "accepted_state_authority": {"const": false},
++    "production_authority": {"const": false},
++    "live_execution_authority": {"const": false},
++    "secrets_authority": {"const": false},
++    "git_mutation_performed": {"const": false},
++    "git_push_authority": {"const": false},
++    "github_mutation_performed": {"const": false},
++    "raw_codex_context_promoted": {"const": false}
++  },
++  "additionalProperties": true
++}
+diff --git a/ION/04_packages/kernel/ion_codex_carrier_os.py b/ION/04_packages/kernel/ion_codex_carrier_os.py
+index 64b5382..2cda1a3 100644
+--- a/ION/04_packages/kernel/ion_codex_carrier_os.py
++++ b/ION/04_packages/kernel/ion_codex_carrier_os.py
+@@ -97,6 +97,11 @@ CONTROL_PLANES: tuple[dict[str, str], ...] = (
+         "purpose": "deterministic Codex command wrappers for mount/status/proof/sync/handoff",
+         "primary_ref": "ION/05_context/current/codex_carrier/CODEX_SLASH_COMMAND_REGISTRY.json",
+     },
++    {
++        "plane_id": "commit_boundary_audit",
++        "purpose": "path-level dirty-tree classification and candidate stage-manifest proposal; no git mutation",
++        "primary_ref": "ION/05_context/current/codex_carrier/commit_boundary/CODEX_COMMIT_BOUNDARY_AUDIT.json",
++    },
+ )
+ 
+ DEFAULT_SLASH_COMMANDS: tuple[dict[str, Any], ...] = (
+@@ -107,6 +112,7 @@ DEFAULT_SLASH_COMMANDS: tuple[dict[str, Any], ...] = (
+     {"command": "/ion-sync", "mode": "candidate_write", "maps_to": "rolling context + event append with confirmation", "mutates": True},
+     {"command": "/ion-proof", "mode": "read_only_or_candidate_write", "maps_to": "proof ledger/status; candidate evidence refs only", "mutates": "confirmation_required"},
+     {"command": "/ion-git-plan", "mode": "read_only", "maps_to": "git status/stage manifest proposal; no commit/push", "mutates": False},
++    {"command": "/ion-commit-boundary", "mode": "read_only", "maps_to": "kernel.ion_codex_commit_boundary_audit path classification + candidate stage manifest", "mutates": False},
+     {"command": "/ion-receipt", "mode": "candidate_write", "maps_to": "receipt proposal; acceptance remains Steward/operator gated", "mutates": "confirmation_required"},
+     {"command": "/ion-settlement", "mode": "candidate_write", "maps_to": "settlement request package", "mutates": "confirmation_required"},
+     {"command": "/ion-handoff", "mode": "candidate_write", "maps_to": "branch capsule handoff + event ledger", "mutates": "confirmation_required"},
+@@ -157,10 +163,12 @@ DEFAULT_CONTEXT_MIRROR_POLICY: dict[str, Any] = {
+         "ION/REPO_AUTHORITY.md",
+         "ION/02_architecture/ION_MOUNT_CONTRACT.md",
+         "ION/02_architecture/CODEX_CARRIER_OS_RUNTIME_PROTOCOL.md",
++        "ION/02_architecture/CODEX_COMMIT_BOUNDARY_AUDIT_PROTOCOL.md",
+         "ION/05_context/current/codex_carrier/CODEX_CARRIER_OS_SOURCE_MAP.json",
+         "ION/05_context/current/codex_carrier/CODEX_CARRIER_COCKPIT_SNAPSHOT.json",
+         "ION/05_context/current/codex_carrier/CODEX_SESSION_REGISTRY.json",
+         "ION/05_context/current/codex_carrier/CODEX_CARRIER_EVENT_LEDGER.json",
++        "ION/05_context/current/codex_carrier/commit_boundary/CODEX_COMMIT_BOUNDARY_AUDIT.json",
+     ],
+     "default_exclude_globs": [
+         ".git/**",
+diff --git a/ION/04_packages/kernel/ion_codex_commit_boundary_audit.py b/ION/04_packages/kernel/ion_codex_commit_boundary_audit.py
+new file mode 100644
+index 0000000..37d583b
+--- /dev/null
++++ b/ION/04_packages/kernel/ion_codex_commit_boundary_audit.py
+@@ -0,0 +1,459 @@
++"""Commit-boundary audit for the ION Codex carrier domain.
++
++The Codex carrier can produce a mixed dirty tree: source patches, generated
++carrier projections, local-PC evidence, runtime residue, archive cleanups, and
++private/raw diagnostic lanes.  This module classifies that tree into candidate
++stage bundles without staging, committing, pushing, reading secrets, or treating
++any delta as accepted ION state.
++"""
++
++from __future__ import annotations
++
++import argparse
++import json
++import subprocess
++import sys
++from datetime import datetime, timezone
++from pathlib import Path
++from typing import Any, Iterable, Mapping, Sequence
++
++SCHEMA_ID = "ion.codex_commit_boundary_audit.v1"
++STAGE_MANIFEST_SCHEMA_ID = "ion.codex_commit_stage_manifest.v1"
++READY_VERDICT = "ION_CODEX_COMMIT_BOUNDARY_AUDIT_READY"
++PARTIAL_VERDICT = "ION_CODEX_COMMIT_BOUNDARY_AUDIT_PARTIAL"
++BLOCKED_VERDICT = "ION_CODEX_COMMIT_BOUNDARY_AUDIT_BLOCKED"
++WRITE_CONFIRMATION_TOKEN = "ION_CODEX_COMMIT_BOUNDARY_AUDIT_WRITE_CONFIRMED"
++
++OUTPUT_DIR = Path("ION/05_context/current/codex_carrier/commit_boundary")
++AUDIT_OUTPUT_PATH = OUTPUT_DIR / "CODEX_COMMIT_BOUNDARY_AUDIT.json"
++STAGE_MANIFEST_OUTPUT_PATH = OUTPUT_DIR / "CODEX_COMMIT_STAGE_MANIFEST.candidate.json"
++PROTOCOL_PATH = Path("ION/02_architecture/CODEX_COMMIT_BOUNDARY_AUDIT_PROTOCOL.md")
++SCHEMA_PATH = Path("ION/03_registry/ion_codex_commit_boundary_audit.schema.json")
++
++AUTHORITY_FALSE: dict[str, bool] = {
++    "accepted_state_authority": False,
++    "production_authority": False,
++    "live_execution_authority": False,
++    "secrets_authority": False,
++    "git_mutation_performed": False,
++    "git_push_authority": False,
++    "github_mutation_performed": False,
++    "raw_codex_context_promoted": False,
++}
++
++SOURCE_PREFIXES: tuple[str, ...] = (
++    ".codex/",
++    "ION/02_architecture/",
++    "ION/03_registry/",
++    "ION/04_packages/kernel/",
++    "ION/07_templates/",
++    "ION/tests/",
++)
++SOURCE_EXACT: frozenset[str] = frozenset({
++    ".gitignore",
++    "README.md",
++    "CONTRIBUTING.md",
++    "SECURITY.md",
++    "pyproject.toml",
++})
++GENERATED_PREFIXES: tuple[str, ...] = (
++    "ION/05_context/current/codex_carrier/",
++    "ION/05_context/current/codex_local_pc/",
++    "ION/05_context/current/agent_context_branches/",
++    "ION/05_context/current/codex_solo/",
++    "ION/05_context/current/ACTIVE_",
++)
++RUNTIME_EXCLUDE_PREFIXES: tuple[str, ...] = (
++    ".git/",
++    ".ion_private/",
++    "ION/05_context/current/action_gateway/runtime/",
++    "ION/05_context/current/chatgpt_connector/runtime/",
++    "ION/05_context/current/codex_capsule_chat/response_runs/",
++    "ION/05_context/runtime_state/",
++)
++SECRETISH_TOKENS: tuple[str, ...] = (
++    ".env",
++    "secret",
++    "secrets",
++    "credential",
++    "credentials",
++    "token",
++    "oauth",
++    "cookie",
++    "session_cookie",
++    "browser_profile",
++    "cloudflared",
++    ".cloudflared",
++    "id_rsa",
++    "private_key",
++    "refresh_token",
++)
++
++BUNDLE_ORDER: tuple[str, ...] = (
++    "source_protocol_schema_tests",
++    "generated_projection_or_local_evidence",
++    "deletion_review_required",
++    "runtime_residue_exclude",
++    "private_or_secret_risk_exclude",
++    "untracked_review_required",
++    "preexisting_dirty_or_unknown",
++)
++
++BUNDLE_META: dict[str, dict[str, str]] = {
++    "source_protocol_schema_tests": {
++        "stage_decision": "candidate_for_source_commit_after_tests",
++        "commit_timing": "first_or_primary_commit",
++        "risk": "medium",
++        "description": "Source, protocol, schema, template, hook, and test paths that may form a narrow commit bundle.",
++    },
++    "generated_projection_or_local_evidence": {
++        "stage_decision": "candidate_for_evidence_commit_or_regeneration_after_source_commit",
++        "commit_timing": "after_source_commit_or_as_receipted_evidence_bundle",
++        "risk": "medium",
++        "description": "Generated carrier projections, branch-capsule records, and sanitized local-PC evidence.",
++    },
++    "deletion_review_required": {
++        "stage_decision": "do_not_stage_until_deletion_packet_exists",
++        "commit_timing": "separate_archive_cleanup_packet",
++        "risk": "high",
++        "description": "Deleted paths require explicit archive/cleanup intent and should not ride with carrier infrastructure commits.",
++    },
++    "runtime_residue_exclude": {
++        "stage_decision": "exclude_from_commit",
++        "commit_timing": "never_commit_runtime_residue_by_default",
++        "risk": "high",
++        "description": "Runtime state, bridge residues, response runs, private raw context, and local-only transient material.",
++    },
++    "private_or_secret_risk_exclude": {
++        "stage_decision": "block_and_review_before_any_commit",
++        "commit_timing": "never_commit_until_redacted_and_reclassified",
++        "risk": "critical",
++        "description": "Path names suggest credentials, tokens, browser profiles, tunnel material, or private logs.",
++    },
++    "untracked_review_required": {
++        "stage_decision": "review_before_staging",
++        "commit_timing": "only_after_owner_surface_is_known",
++        "risk": "medium",
++        "description": "Untracked files that are not clearly excluded or source-classified need owner classification.",
++    },
++    "preexisting_dirty_or_unknown": {
++        "stage_decision": "do_not_stage_with_carrier_os_bundle",
++        "commit_timing": "separate_packet_or_revert_decision_required",
++        "risk": "high",
++        "description": "Changed paths outside recognized owner surfaces; classify with the operator before staging.",
++    },
++}
++
++
++def _now() -> str:
++    return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
++
++
++def _resolve_shell_root(root: str | Path | None = None) -> Path:
++    candidate = Path(root or ".").expanduser().resolve()
++    for path in (candidate, *candidate.parents):
++        if (path / "pyproject.toml").is_file() and (path / "ION" / "REPO_AUTHORITY.md").is_file():
++            return path
++        if path.name == "ION" and (path / "REPO_AUTHORITY.md").is_file() and (path.parent / "pyproject.toml").is_file():
++            return path.parent
++    raise FileNotFoundError("Could not resolve ION shell root; expected pyproject.toml and ION/REPO_AUTHORITY.md")
++
++
++def _run_git(shell_root: Path, args: Sequence[str], *, timeout: int = 8, max_output_chars: int = 12000) -> dict[str, Any]:
++    command = ["git", *args]
++    try:
++        proc = subprocess.run(
++            command,
++            cwd=shell_root,
++            check=False,
++            capture_output=True,
++            text=True,
++            timeout=timeout,
++        )
++    except FileNotFoundError:
++        return {"command": command, "available": False, "returncode": None, "stdout": "", "stderr": "git_not_found"}
++    except subprocess.TimeoutExpired as exc:
++        return {
++            "command": command,
++            "available": True,
++            "returncode": None,
++            "timeout": timeout,
++            "stdout": (exc.stdout or "")[:max_output_chars] if isinstance(exc.stdout, str) else "",
++            "stderr": (exc.stderr or "")[:max_output_chars] if isinstance(exc.stderr, str) else "timeout_expired",
++        }
++    return {
++        "command": command,
++        "available": True,
++        "returncode": proc.returncode,
++        "stdout": (proc.stdout or "")[:max_output_chars],
++        "stderr": (proc.stderr or "")[:max_output_chars],
++    }
++
++
++def _path_after_status(raw_path: str) -> str:
++    raw_path = raw_path.strip()
++    if " -> " in raw_path:
++        return raw_path.rsplit(" -> ", 1)[1].strip()
++    return raw_path
++
++
++def _parse_porcelain(stdout: str) -> list[dict[str, Any]]:
++    entries: list[dict[str, Any]] = []
++    for line in stdout.splitlines():
++        if not line.strip() or line.startswith("##"):
++            continue
++        status = line[:2]
++        raw_path = line[3:] if len(line) > 3 else ""
++        path = _path_after_status(raw_path)
++        staged_status = status[0]
++        unstaged_status = status[1]
++        is_untracked = status == "??"
++        is_deleted = "D" in status
++        entries.append(
++            {
++                "status": status,
++                "path": path,
++                "raw_path": raw_path,
++                "staged": staged_status not in {" ", "?"},
++                "unstaged": unstaged_status not in {" ", "?"},
++                "untracked": is_untracked,
++                "deleted": is_deleted,
++            }
++        )
++    return entries
++
++
++def _starts_with_any(path: str, prefixes: Iterable[str]) -> bool:
++    return any(path.startswith(prefix) for prefix in prefixes)
++
++
++def _is_secretish(path: str) -> bool:
++    lowered = path.lower()
++    return any(token in lowered for token in SECRETISH_TOKENS)
++
++
++def _classify_path(entry: Mapping[str, Any]) -> str:
++    path = str(entry.get("path") or "")
++    if _is_secretish(path):
++        return "private_or_secret_risk_exclude"
++    if _starts_with_any(path, RUNTIME_EXCLUDE_PREFIXES):
++        return "runtime_residue_exclude"
++    if bool(entry.get("deleted")):
++        return "deletion_review_required"
++    if path in SOURCE_EXACT or _starts_with_any(path, SOURCE_PREFIXES):
++        return "source_protocol_schema_tests"
++    if _starts_with_any(path, GENERATED_PREFIXES):
++        return "generated_projection_or_local_evidence"
++    if bool(entry.get("untracked")):
++        return "untracked_review_required"
++    return "preexisting_dirty_or_unknown"
++
++
++def _bundle_entries(entries: Sequence[Mapping[str, Any]]) -> list[dict[str, Any]]:
++    grouped: dict[str, list[dict[str, Any]]] = {bundle_id: [] for bundle_id in BUNDLE_ORDER}
++    for entry in entries:
++        bundle_id = _classify_path(entry)
++        grouped.setdefault(bundle_id, []).append(dict(entry))
++
++    bundles: list[dict[str, Any]] = []
++    for bundle_id in BUNDLE_ORDER:
++        items = grouped.get(bundle_id, [])
++        meta = BUNDLE_META[bundle_id]
++        bundles.append(
++            {
++                "bundle_id": bundle_id,
++                "count": len(items),
++                "paths": [item["path"] for item in items],
++                "entries": items,
++                **meta,
++            }
++        )
++    return bundles
++
++
++def _stage_manifest_from_bundles(bundles: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
++    stage_groups = []
++    for bundle in bundles:
++        paths = list(bundle.get("paths", [])) if isinstance(bundle.get("paths"), list) else []
++        if not paths:
++            continue
++        stage_groups.append(
++            {
++                "bundle_id": bundle["bundle_id"],
++                "path_count": len(paths),
++                "paths": paths,
++                "stage_decision": bundle["stage_decision"],
++                "commit_timing": bundle["commit_timing"],
++                "risk": bundle["risk"],
++            }
++        )
++    return {
++        "schema_id": STAGE_MANIFEST_SCHEMA_ID,
++        "generated_at": _now(),
++        "stage_groups": stage_groups,
++        "rule": "This is a proposal only. It does not run git add, git commit, git push, or settlement.",
++        "recommended_commit_order": [
++            "source_protocol_schema_tests",
++            "generated_projection_or_local_evidence",
++            "deletion_review_required only with separate cleanup packet",
++        ],
++        **AUTHORITY_FALSE,
++    }
++
++
++def _branch_from_status(status_stdout: str) -> str | None:
++    for line in status_stdout.splitlines():
++        if line.startswith("## "):
++            value = line[3:].strip()
++            return value.split("...", 1)[0].strip() or None
++    return None
++
++
++def build_codex_commit_boundary_audit(root: str | Path | None = None) -> dict[str, Any]:
++    shell_root = _resolve_shell_root(root)
++    git_dir = shell_root / ".git"
++
++    status = _run_git(shell_root, ["status", "--porcelain=v1", "--branch", "-uall"], timeout=8, max_output_chars=100000)
++    head = _run_git(shell_root, ["rev-parse", "--short", "HEAD"], timeout=5, max_output_chars=1000)
++    diff_check = _run_git(shell_root, ["diff", "--check"], timeout=10, max_output_chars=16000)
++    cached_diff_check = _run_git(shell_root, ["diff", "--cached", "--check"], timeout=10, max_output_chars=16000)
++
++    git_available = bool(status.get("available") and status.get("returncode") == 0 and git_dir.exists())
++    entries = _parse_porcelain(status.get("stdout", "")) if git_available else []
++    bundles = _bundle_entries(entries)
++    manifest = _stage_manifest_from_bundles(bundles)
++
++    counts = {bundle["bundle_id"]: bundle["count"] for bundle in bundles}
++    blocking_findings: list[str] = []
++    warning_findings: list[str] = []
++
++    if not git_available:
++        blocking_findings.append("git_status_unavailable_or_not_a_git_worktree")
++    if diff_check.get("returncode") not in {0, None}:
++        blocking_findings.append("git_diff_check_failed")
++    if cached_diff_check.get("returncode") not in {0, None}:
++        blocking_findings.append("git_diff_cached_check_failed")
++    if counts.get("private_or_secret_risk_exclude", 0):
++        blocking_findings.append("private_or_secret_risk_paths_present")
++    if counts.get("runtime_residue_exclude", 0):
++        warning_findings.append("runtime_residue_paths_present")
++    if counts.get("deletion_review_required", 0):
++        warning_findings.append("deleted_paths_require_separate_cleanup_packet")
++    if counts.get("preexisting_dirty_or_unknown", 0):
++        warning_findings.append("unknown_owner_surface_paths_present")
++    if counts.get("untracked_review_required", 0):
++        warning_findings.append("untracked_paths_require_owner_review")
++
++    if blocking_findings:
++        verdict = BLOCKED_VERDICT
++        ready_for_source_commit = False
++    elif warning_findings:
++        verdict = PARTIAL_VERDICT
++        ready_for_source_commit = counts.get("source_protocol_schema_tests", 0) > 0
++    else:
++        verdict = READY_VERDICT
++        ready_for_source_commit = counts.get("source_protocol_schema_tests", 0) > 0
++
++    return {
++        "schema_id": SCHEMA_ID,
++        "generated_at": _now(),
++        "verdict": verdict,
++        "ok": git_available and not blocking_findings,
++        "ready_for_source_commit_bundle": ready_for_source_commit,
++        "shell_root": str(shell_root),
++        "protocol_ref": PROTOCOL_PATH.as_posix(),
++        "schema_ref": SCHEMA_PATH.as_posix(),
++        "output_ref": AUDIT_OUTPUT_PATH.as_posix(),
++        "stage_manifest_ref": STAGE_MANIFEST_OUTPUT_PATH.as_posix(),
++        "packet_ref": "PCKT-ION-CODEX-COMMIT-BOUNDARY-AUDIT-001",
++        "git": {
++            "available": git_available,
++            "git_dir_present": git_dir.exists(),
++            "branch": _branch_from_status(status.get("stdout", "")),
++            "head_short": head.get("stdout", "").strip() if head.get("returncode") == 0 else None,
++            "dirty": bool(entries),
++            "porcelain_count": len(entries),
++            "diff_check_returncode": diff_check.get("returncode"),
++            "diff_check_stderr": diff_check.get("stderr", ""),
++            "diff_check_stdout": diff_check.get("stdout", ""),
++            "cached_diff_check_returncode": cached_diff_check.get("returncode"),
++        },
++        "path_counts": counts,
++        "bundles": bundles,
++        "candidate_stage_manifest": manifest,
++        "proof_obligations": [
++            "git status --porcelain=v1 --branch -uall",
++            "git diff --check",
++            "focused pytest for source bundle",
++            "secret/path review for excluded and generated evidence bundles",
++            "separate packet for deletion/archive cleanup paths",
++        ],
++        "blocking_findings": blocking_findings,
++        "warning_findings": warning_findings,
++        "non_claims": [
++            "This audit does not stage, commit, push, or accept state.",
++            "This audit classifies path-level Git changes; it does not read raw Codex memories or secrets.",
++            "Stage manifests are proposals until operator/Steward settlement.",
++            "Generated local-PC evidence remains candidate until proof-gated and receipted.",
++        ],
++        **AUTHORITY_FALSE,
++    }
++
++
++def _write_json(path: Path, payload: Mapping[str, Any]) -> None:
++    path.parent.mkdir(parents=True, exist_ok=True)
++    path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
++
++
++def write_codex_commit_boundary_audit(root: str | Path | None = None) -> dict[str, Any]:
++    shell_root = _resolve_shell_root(root)
++    audit = build_codex_commit_boundary_audit(shell_root)
++    manifest = audit["candidate_stage_manifest"]
++    _write_json(shell_root / AUDIT_OUTPUT_PATH, audit)
++    _write_json(shell_root / STAGE_MANIFEST_OUTPUT_PATH, manifest)
++    result = dict(audit)
++    result["written_paths"] = [AUDIT_OUTPUT_PATH.as_posix(), STAGE_MANIFEST_OUTPUT_PATH.as_posix()]
++    return result
++
++
++def _print_json(payload: Mapping[str, Any]) -> None:
++    print(json.dumps(payload, indent=2, sort_keys=True))
++
++
++def _parser() -> argparse.ArgumentParser:
++    parser = argparse.ArgumentParser(description="Classify the Codex/ION dirty tree into lawful commit-boundary bundles.")
++    parser.add_argument("--ion-root", default=".", help="Shell root or ION content root")
++    parser.add_argument("--write", action="store_true", help="Write candidate audit and stage manifest artifacts")
++    parser.add_argument("--confirmation", default=None, help=f"Required with --write: {WRITE_CONFIRMATION_TOKEN}")
++    parser.add_argument("--json", action="store_true")
++    return parser
++
++
++def main(argv: list[str] | None = None) -> int:
++    args = _parser().parse_args(argv)
++    if args.write and args.confirmation != WRITE_CONFIRMATION_TOKEN:
++        payload = {
++            "ok": False,
++            "schema_id": "ion.codex_commit_boundary_audit_write_refusal.v1",
++            "refusal_class": "CONFIRMATION_REQUIRED",
++            "required_confirmation": WRITE_CONFIRMATION_TOKEN,
++            **AUTHORITY_FALSE,
++        }
++        if args.json:
++            _print_json(payload)
++        else:
++            print(f"Refused: confirmation must be {WRITE_CONFIRMATION_TOKEN}", file=sys.stderr)
++        return 3
++
++    payload = write_codex_commit_boundary_audit(args.ion_root) if args.write else build_codex_commit_boundary_audit(args.ion_root)
++    if args.json:
++        _print_json(payload)
++    else:
++        print(payload["verdict"])
++        for finding in [*payload.get("blocking_findings", []), *payload.get("warning_findings", [])]:
++            print(f"- {finding}")
++    return 0 if payload.get("ok") else 2
++
++
++if __name__ == "__main__":  # pragma: no cover
++    raise SystemExit(main())
+diff --git a/ION/04_packages/kernel/ion_mcp_local_bridge.py b/ION/04_packages/kernel/ion_mcp_local_bridge.py
+index bde535f..494740c 100644
+--- a/ION/04_packages/kernel/ion_mcp_local_bridge.py
++++ b/ION/04_packages/kernel/ion_mcp_local_bridge.py
+@@ -33,6 +33,7 @@ from .ion_codex_carrier_domain import (
+     build_codex_carrier_event_ledger,
+ )
+ from .ion_codex_carrier_os import build_codex_carrier_os_source_map
++from .ion_codex_commit_boundary_audit import build_codex_commit_boundary_audit
+ from .ion_codex_raw_context_sync import build_raw_context_sync_lane_status
+ from .ion_github_comms_fallback import (
+     build_github_comms_fallback_draft,
+@@ -64,6 +65,7 @@ READ_ONLY_TOOLS = {
+     "ion.codex.carrier.cockpit",
+     "ion.codex.carrier.events",
+     "ion.codex.carrier.os",
++    "ion.codex.commit_boundary.audit",
+     "ion.codex.raw_context.status",
+     "ion.github.comms.status",
+     "ion.receipts.list",
+@@ -609,6 +611,25 @@ class IonMcpLocalBridge:
+             next_required_action="Use explicit repo CLI confirmation for source-map writes; do not treat projection as accepted state.",
+         )
+ 
++    def codex_commit_boundary_audit(self, session_id: str | None = None) -> IonMcpToolResult:
++        sid = self._ensure_session_id(session_id)
++        payload = build_codex_commit_boundary_audit(self.ion_root)
++        receipt = self._write_bridge_receipt(
++            tool_name="ion.codex.commit_boundary.audit",
++            execution_resolution=IonMcpExecutionResolution.READ_ONLY,
++            session_id=sid,
++            detail="Codex commit-boundary path classification projected through read-only MCP bridge",
++        )
++        return self._result(
++            tool_name="ion.codex.commit_boundary.audit",
++            status=IonMcpToolStatus.OK if payload.get("ok") else IonMcpToolStatus.BLOCKED,
++            execution_resolution=IonMcpExecutionResolution.READ_ONLY,
++            session_id=sid,
++            receipt_refs=(receipt.receipt_id,),
++            payload=payload,
++            next_required_action="Use the candidate stage manifest as proposal only; do not stage/commit/push without operator settlement.",
++        )
++
+     def codex_raw_context_status(self, session_id: str | None = None) -> IonMcpToolResult:
+         sid = self._ensure_session_id(session_id)
+         payload = build_raw_context_sync_lane_status(self.ion_root)
+@@ -935,6 +956,8 @@ class IonMcpLocalBridge:
+             return self.codex_carrier_events(arguments.get("session_id"))
+         if name == "ion.codex.carrier.os":
+             return self.codex_carrier_os(arguments.get("session_id"))
++        if name == "ion.codex.commit_boundary.audit":
++            return self.codex_commit_boundary_audit(arguments.get("session_id"))
+         if name == "ion.codex.raw_context.status":
+             return self.codex_raw_context_status(arguments.get("session_id"))
+         if name == "ion.github.comms.status":
+@@ -989,6 +1012,7 @@ _TOOL_DESCRIPTIONS = {
+     "ion.codex.carrier.cockpit": "Project Codex carrier cockpit graph/drift/session state; read-only, no worker start.",
+     "ion.codex.carrier.events": "Project Codex carrier runtime event ledger; read-only telemetry, not receipts.",
+     "ion.codex.carrier.os": "Project the full Codex Carrier OS source map; read-only, no local execution.",
++    "ion.codex.commit_boundary.audit": "Classify dirty-tree paths into candidate commit/stage bundles; read-only, no git mutation.",
+     "ion.codex.raw_context.status": "Project raw Codex context diagnostic lane status; read-only, no raw content export.",
+     "ion.github.comms.status": "Project GitHub communications fallback readiness; read-only, no network or GitHub mutation.",
+     "ion.receipts.list": "List recent bridge/session/API-entry receipts.",
+@@ -1023,6 +1047,7 @@ _TOOL_INPUT_SCHEMAS: dict[str, dict[str, Any]] = {
+     "ion.codex.carrier.cockpit": {"type": "object", "additionalProperties": False, "properties": {"session_id": {"type": "string"}}},
+     "ion.codex.carrier.events": {"type": "object", "additionalProperties": False, "properties": {"session_id": {"type": "string"}}},
+     "ion.codex.carrier.os": {"type": "object", "additionalProperties": False, "properties": {"session_id": {"type": "string"}}},
++    "ion.codex.commit_boundary.audit": {"type": "object", "additionalProperties": False, "properties": {"session_id": {"type": "string"}}},
+     "ion.codex.raw_context.status": {"type": "object", "additionalProperties": False, "properties": {"session_id": {"type": "string"}}},
+     "ion.github.comms.status": {
+         "type": "object",
+diff --git a/ION/tests/test_kernel_ion_codex_commit_boundary_audit.py b/ION/tests/test_kernel_ion_codex_commit_boundary_audit.py
+new file mode 100644
+index 0000000..c2f8641
+--- /dev/null
++++ b/ION/tests/test_kernel_ion_codex_commit_boundary_audit.py
+@@ -0,0 +1,113 @@
++import json
++import subprocess
++from pathlib import Path
++
++from kernel.ion_codex_commit_boundary_audit import (
++    BLOCKED_VERDICT,
++    PARTIAL_VERDICT,
++    READY_VERDICT,
++    WRITE_CONFIRMATION_TOKEN,
++    build_codex_commit_boundary_audit,
++    main,
++    write_codex_commit_boundary_audit,
++)
++from kernel.ion_mcp_local_bridge import IonMcpExecutionResolution, IonMcpLocalBridge
++
++
++def _run(command, cwd: Path) -> None:
++    subprocess.run(command, cwd=cwd, check=True, capture_output=True, text=True)
++
++
++def _seed_repo(tmp_path: Path) -> Path:
++    root = tmp_path / "ion-shell"
++    (root / "ION").mkdir(parents=True)
++    (root / "pyproject.toml").write_text("[project]\nname = \"ion-test\"\n", encoding="utf-8")
++    (root / "ION/REPO_AUTHORITY.md").parent.mkdir(parents=True, exist_ok=True)
++    (root / "ION/REPO_AUTHORITY.md").write_text("# authority\n", encoding="utf-8")
++    (root / "ION/02_architecture").mkdir(parents=True)
++    (root / "ION/04_packages/kernel").mkdir(parents=True)
++    (root / "ION/tests").mkdir(parents=True)
++    _run(["git", "init"], root)
++    _run(["git", "config", "user.email", "ion@example.invalid"], root)
++    _run(["git", "config", "user.name", "ION Test"], root)
++    _run(["git", "add", "pyproject.toml", "ION/REPO_AUTHORITY.md"], root)
++    _run(["git", "commit", "-m", "seed"], root)
++    return root
++
++
++def test_commit_boundary_audit_classifies_dirty_tree_without_git_mutation(tmp_path: Path) -> None:
++    root = _seed_repo(tmp_path)
++    (root / "ION/04_packages/kernel/new_kernel.py").write_text("print('candidate')\n", encoding="utf-8")
++    (root / "ION/tests/test_new_kernel.py").write_text("def test_ok():\n    assert True\n", encoding="utf-8")
++    (root / "ION/05_context/current/codex_carrier/CODEX_SESSION_REGISTRY.json").parent.mkdir(parents=True, exist_ok=True)
++    (root / "ION/05_context/current/codex_carrier/CODEX_SESSION_REGISTRY.json").write_text("{}\n", encoding="utf-8")
++    (root / "ION/05_context/current/chatgpt_connector/runtime/state.json").parent.mkdir(parents=True, exist_ok=True)
++    (root / "ION/05_context/current/chatgpt_connector/runtime/state.json").write_text("{}\n", encoding="utf-8")
++
++    result = build_codex_commit_boundary_audit(root)
++
++    assert result["verdict"] in {READY_VERDICT, PARTIAL_VERDICT}
++    assert result["ok"] is True
++    assert result["git_mutation_performed"] is False
++    assert result["git"]["dirty"] is True
++    assert result["path_counts"]["source_protocol_schema_tests"] == 2
++    assert result["path_counts"]["generated_projection_or_local_evidence"] == 1
++    assert result["path_counts"]["runtime_residue_exclude"] == 1
++    source_bundle = next(bundle for bundle in result["bundles"] if bundle["bundle_id"] == "source_protocol_schema_tests")
++    assert "ION/04_packages/kernel/new_kernel.py" in source_bundle["paths"]
++    manifest_groups = result["candidate_stage_manifest"]["stage_groups"]
++    assert any(group["bundle_id"] == "source_protocol_schema_tests" for group in manifest_groups)
++
++    status_after = subprocess.run(["git", "status", "--porcelain=v1", "-uall"], cwd=root, check=True, capture_output=True, text=True)
++    assert "ION/04_packages/kernel/new_kernel.py" in status_after.stdout
++
++
++def test_commit_boundary_audit_blocks_secretish_paths(tmp_path: Path) -> None:
++    root = _seed_repo(tmp_path)
++    (root / ".env.local").write_text("TOKEN=redacted-test-fixture\n", encoding="utf-8")
++
++    result = build_codex_commit_boundary_audit(root)
++
++    assert result["verdict"] == BLOCKED_VERDICT
++    assert result["ok"] is False
++    assert result["path_counts"]["private_or_secret_risk_exclude"] == 1
++    assert "private_or_secret_risk_paths_present" in result["blocking_findings"]
++
++
++def test_commit_boundary_write_requires_confirmation_and_writes_candidate_manifest(tmp_path: Path, capsys) -> None:
++    root = _seed_repo(tmp_path)
++    (root / "ION/02_architecture/CODEX_TEST_PROTOCOL.md").write_text("# protocol\n", encoding="utf-8")
++
++    assert main(["--ion-root", str(root), "--write", "--confirmation", "WRONG", "--json"]) == 3
++    refused = capsys.readouterr().out
++    assert "CONFIRMATION_REQUIRED" in refused
++
++    result = write_codex_commit_boundary_audit(root)
++    assert result["written_paths"] == [
++        "ION/05_context/current/codex_carrier/commit_boundary/CODEX_COMMIT_BOUNDARY_AUDIT.json",
++        "ION/05_context/current/codex_carrier/commit_boundary/CODEX_COMMIT_STAGE_MANIFEST.candidate.json",
++    ]
++    audit_path = root / result["written_paths"][0]
++    manifest_path = root / result["written_paths"][1]
++    assert audit_path.exists()
++    assert manifest_path.exists()
++    assert json.loads(audit_path.read_text())["schema_id"] == "ion.codex_commit_boundary_audit.v1"
++    assert json.loads(manifest_path.read_text())["schema_id"] == "ion.codex_commit_stage_manifest.v1"
++
++    assert main(["--ion-root", str(root), "--write", "--confirmation", WRITE_CONFIRMATION_TOKEN, "--json"]) == 0
++    accepted = capsys.readouterr().out
++    assert "ION_CODEX_COMMIT_BOUNDARY_AUDIT" in accepted
++
++
++def test_mcp_commit_boundary_audit_is_read_only_projection(tmp_path: Path) -> None:
++    root = _seed_repo(tmp_path)
++    (root / "ION/04_packages/kernel/new_kernel.py").write_text("print('candidate')\n", encoding="utf-8")
++    bridge = IonMcpLocalBridge(root / "ION", tmp_path / "bridge-state")
++
++    result = bridge.call_tool("ion.codex.commit_boundary.audit", {})
++
++    assert result.execution_resolution == IonMcpExecutionResolution.READ_ONLY
++    assert result.kernel_truth_mutated is False
++    assert result.live_execution_authorized is False
++    assert result.payload["schema_id"] == "ion.codex_commit_boundary_audit.v1"
++    assert result.payload["git_mutation_performed"] is False

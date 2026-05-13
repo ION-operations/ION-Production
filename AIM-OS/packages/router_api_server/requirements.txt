@@ -1,0 +1,19 @@
+"""
+Router API Server - Requirements and Setup
+
+# Requirements
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+httpx>=0.25.0
+pydantic>=2.0.0
+
+# Installation
+pip install fastapi uvicorn[standard] httpx pydantic
+
+# Running
+uvicorn router_api_server.main:app --host 0.0.0.0 --port 8000 --reload
+
+# Environment Variables
+COMMAND_SERVER_URL=http://localhost:5001  # Command Server HTTP endpoint
+"""
+

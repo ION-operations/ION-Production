@@ -1,0 +1,1642 @@
+diff --git a/ION/04_packages/kernel/ion_living_graph_browser_proof_plan.py b/ION/04_packages/kernel/ion_living_graph_browser_proof_plan.py
+new file mode 100644
+index 0000000..a7b5210
+--- /dev/null
++++ b/ION/04_packages/kernel/ion_living_graph_browser_proof_plan.py
+@@ -0,0 +1,206 @@
++"""ION Living Operational Graph local browser proof handoff.
++
++This module prepares a fixture-bound browser proof plan for the JOC graph route.
++It does not launch a browser, navigate a page, access credentials, use external
++network, mutate the DOM, deploy, or claim screenshot proof.  It emits a manifest
++and handoff object that a local, explicitly approved visual harness can use.
++"""
++
++from __future__ import annotations
++
++import argparse
++import json
++from datetime import datetime, timezone
++from pathlib import Path
++from typing import Any
++
++from .ion_living_graph_view_model import build_living_graph_view_model
++
++FIXTURE_MANIFEST_OUTPUT = Path("ION/05_context/current/living_graph/BROWSER_PROOF_FIXTURE_MANIFEST_CANDIDATE.json")
++HANDOFF_OUTPUT = Path("ION/05_context/current/living_graph/BROWSER_PROOF_HANDOFF_CANDIDATE.json")
++
++
++def utc_now() -> str:
++    return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
++
++
++def _fixture_from_contract_item(item: dict[str, Any], *, order: int) -> dict[str, Any]:
++    selectors = item.get("selectors") if isinstance(item.get("selectors"), list) else []
++    return {
++        "id": str(item.get("id") or f"fixture_{order:02d}"),
++        "label": str(item.get("label") or item.get("id") or f"fixture {order}"),
++        "order": order,
++        "target_route": "#graph",
++        "target_surface": "ION/08_ui/joc_cockpit_shell",
++        "selectors": [str(selector) for selector in selectors],
++        "expected": str(item.get("expected") or "selector contract holds"),
++        "allowed_actions": [
++            "read_dom",
++            "read_accessibility_tree",
++            "capture_screenshot",
++            "keyboard_focus_only",
++            "click_local_ui_controls_only",
++        ],
++        "forbidden_actions": [
++            "external_network_access",
++            "credential_or_session_import",
++            "form_submission",
++            "account_operation",
++            "persistent_dom_mutation",
++            "production_visual_automation",
++        ],
++        "evidence_required": [
++            "screenshot_ref",
++            "dom_snapshot_ref",
++            "console_summary_ref",
++            "local_browser_execution_run_receipt",
++        ],
++        "authority": {
++            "local_dev_only": True,
++            "production_authority": False,
++            "live_execution_authority": False,
++            "external_network_authority": False,
++            "credential_authority": False,
++        },
++    }
++
++
++def build_living_graph_browser_proof_manifest(root: str | Path = ".") -> dict[str, Any]:
++    model = build_living_graph_view_model(root)
++    contract = model.get("browser_proof_contract") if isinstance(model.get("browser_proof_contract"), dict) else {}
++    fixture_items = contract.get("fixtures") if isinstance(contract.get("fixtures"), list) else []
++    fixtures = [
++        _fixture_from_contract_item(item, order=index + 1)
++        for index, item in enumerate(fixture_items)
++        if isinstance(item, dict)
++    ]
++    return {
++        "schema_id": "ion.living_graph.browser_proof_fixture_manifest.v1",
++        "generated_at": utc_now(),
++        "status": "candidate_fixture_manifest_ready" if fixtures and model.get("status") == "ready" else "candidate_fixture_manifest_watch",
++        "target": {
++            "route": "#graph",
++            "local_shell": "ION/08_ui/joc_cockpit_shell",
++            "expected_dev_url": "http://127.0.0.1:8788/#graph",
++            "origin_policy": "local_files_or_loopback_only",
++        },
++        "model_status": model.get("status"),
++        "model_kpis": model.get("kpis"),
++        "fixture_count": len(fixtures),
++        "fixtures": fixtures,
++        "required_environment": {
++            "node_vite_route": "ION/08_ui/joc_cockpit_shell",
++            "external_network": "forbidden",
++            "credentials": "forbidden",
++            "browser_profile": "ephemeral",
++            "artifact_writes": "receipts_and_capture_artifacts_only",
++        },
++        "commands_for_local_approval": {
++            "build_view_model": "PYTHONPATH=ION/04_packages python3 -m kernel.ion_living_graph_view_model --root . --write",
++            "build_static_visual_proof": "PYTHONPATH=ION/04_packages python3 -m kernel.ion_living_graph_visual_proof --root . --write",
++            "start_vite_loopback": "cd ION/08_ui/joc_cockpit_shell && node node_modules/vite/bin/vite.js --host 127.0.0.1 --port 8788",
++            "target_url": "http://127.0.0.1:8788/#graph",
++        },
++        "authority": {
++            "accepted_state": False,
++            "production_authority": False,
++            "browser_execution_authorized": False,
++            "external_network_authorized": False,
++            "credential_access_authorized": False,
++            "settlement_required_for_inheritance": True,
++        },
++        "non_claims": [
++            "fixture_manifest_only",
++            "not_browser_execution",
++            "not_screenshot_proof",
++            "not_live_telemetry",
++            "not_accepted_ion_state",
++        ],
++    }
++
++
++def build_living_graph_browser_proof_handoff(root: str | Path = ".") -> dict[str, Any]:
++    manifest = build_living_graph_browser_proof_manifest(root)
++    fixture_count = int(manifest.get("fixture_count") or 0)
++    return {
++        "schema_id": "ion.living_graph.browser_proof_handoff.v1",
++        "generated_at": utc_now(),
++        "status": "candidate_browser_proof_handoff_ready" if manifest.get("status") == "candidate_fixture_manifest_ready" else "candidate_browser_proof_handoff_watch",
++        "packet": "PCKT-ION-JOC-LIVING-GRAPH-BROWSER-PROOF-003",
++        "manifest_path": str(FIXTURE_MANIFEST_OUTPUT),
++        "visual_proof_path": "ION/05_context/current/ACTIVE_LIVING_GRAPH_VISUAL_PROOF.json",
++        "static_svg_path": "ION/05_context/current/living_graph/ACTIVE_LIVING_GRAPH_STATIC_PROOF.svg",
++        "target_url": manifest.get("target", {}).get("expected_dev_url"),
++        "fixture_count": fixture_count,
++        "acceptance_gates": {
++            "fixture_manifest_ready": manifest.get("status") == "candidate_fixture_manifest_ready",
++            "graph_shell_zones_fixture_present": any(fixture.get("id") == "graph_shell_zones" for fixture in manifest.get("fixtures", [])),
++            "honesty_badge_fixture_present": any(fixture.get("id") == "graph_honesty_badge" for fixture in manifest.get("fixtures", [])),
++            "relationship_inspector_fixture_present": any(fixture.get("id") == "graph_relationship_inspector" for fixture in manifest.get("fixtures", [])),
++            "minimap_fixture_present": any(fixture.get("id") == "graph_minimap" for fixture in manifest.get("fixtures", [])),
++            "local_loopback_only": manifest.get("target", {}).get("origin_policy") == "local_files_or_loopback_only",
++            "no_browser_execution_claim": True,
++        },
++        "next_local_visual_harness_request": {
++            "run_name": "ION JOC Living Graph browser proof 003",
++            "run_mode": "LOOPBACK_CAPTURE",
++            "target_origin_policy": "LOCAL_FILES_OR_LOOPBACK_ONLY",
++            "network_observation": "NO_EXTERNAL_NETWORK_OBSERVED",
++            "credential_observation": "NO_CREDENTIALS_OR_SESSION_IMPORT_OBSERVED",
++            "action_observation": "READ_ONLY_CAPTURE_ACTIONS_ONLY",
++            "mutation_observation": "NO_PERSISTENT_MUTATION_OBSERVED",
++            "artifact_write_observation": "RECEIPTS_AND_CAPTURE_ARTIFACTS_ONLY",
++            "fixture_manifest_refs": [str(FIXTURE_MANIFEST_OUTPUT)],
++        },
++        "commands_for_braden_or_local_codex": manifest.get("commands_for_local_approval"),
++        "authority": manifest.get("authority"),
++        "non_claims": [
++            "not_browser_screenshot_proof",
++            "not_live_browser_execution",
++            "not_production_ui",
++            "not_accepted_ion_state",
++            "no_action_mcp_mutation",
++        ],
++    }
++
++
++def write_living_graph_browser_proof_handoff(root: str | Path = ".") -> dict[str, Any]:
++    root_path = Path(root)
++    manifest = build_living_graph_browser_proof_manifest(root_path)
++    handoff = build_living_graph_browser_proof_handoff(root_path)
++
++    manifest_path = root_path / FIXTURE_MANIFEST_OUTPUT
++    manifest_path.parent.mkdir(parents=True, exist_ok=True)
++    manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
++
++    handoff_path = root_path / HANDOFF_OUTPUT
++    handoff_path.parent.mkdir(parents=True, exist_ok=True)
++    handoff_path.write_text(json.dumps(handoff, indent=2, sort_keys=True) + "\n", encoding="utf-8")
++
++    return {
++        "manifest": manifest,
++        "handoff": handoff,
++        "paths": {
++            "manifest": str(FIXTURE_MANIFEST_OUTPUT),
++            "handoff": str(HANDOFF_OUTPUT),
++        },
++    }
++
++
++def main(argv: list[str] | None = None) -> int:
++    parser = argparse.ArgumentParser(description="Build the ION Living Graph local browser proof handoff.")
++    parser.add_argument("--root", default=".", help="ION repository root")
++    parser.add_argument("--write", action="store_true", help="Write manifest and handoff JSON files")
++    args = parser.parse_args(argv)
++
++    payload = write_living_graph_browser_proof_handoff(args.root) if args.write else {
++        "manifest": build_living_graph_browser_proof_manifest(args.root),
++        "handoff": build_living_graph_browser_proof_handoff(args.root),
++    }
++    print(json.dumps(payload, indent=2, sort_keys=True))
++    status = payload.get("handoff", {}).get("status")
++    return 0 if status == "candidate_browser_proof_handoff_ready" else 1
++
++
++if __name__ == "__main__":  # pragma: no cover
++    raise SystemExit(main())
+diff --git a/ION/04_packages/kernel/ion_living_graph_view_model.py b/ION/04_packages/kernel/ion_living_graph_view_model.py
+index 0035761..8e148b2 100644
+--- a/ION/04_packages/kernel/ion_living_graph_view_model.py
++++ b/ION/04_packages/kernel/ion_living_graph_view_model.py
+@@ -72,6 +72,297 @@ def _node_sort_key(card: dict[str, Any]) -> tuple[int, str, float, str]:
+     )
+ 
+ 
++def _maybe_float(value: Any) -> float | None:
++    if isinstance(value, bool):
++        return None
++    if isinstance(value, (int, float)):
++        return float(value)
++    return None
++
++
++def _screen_point_from_position(position: dict[str, Any], *, index: int = 0, count: int = 1) -> dict[str, float]:
++    """Project abstract x/z world coordinates into the current SVG cockpit viewport.
++
++    The projection intentionally mirrors the React workbench's first-pass map math,
++    so static proof, keyboard fixture plans, and browser screenshots can compare the
++    same spatial contract without claiming a live R3F render yet.
++    """
++
++    x = _maybe_float(position.get("x"))
++    z = _maybe_float(position.get("z"))
++    if x is not None and z is not None:
++        return {"x": 430 + x * 34, "y": 260 + z * 28}
++    angle = (6.283185307179586 * index / max(count, 1)) - 1.5707963267948966
++    # Keep the fallback deterministic without importing math just for a rare path.
++    # Cos/sin approximations are not needed for source-backed graph fixtures because
++    # every mounted node has a position; fallback keeps empty/custom packets stable.
++    fallback_x = 430 + ((index % 12) - 6) * 58
++    fallback_y = 260 + ((index // 12) - 2) * 44
++    return {"x": float(fallback_x), "y": float(fallback_y)}
++
++
++def _screen_polygon(points: list[Any]) -> list[dict[str, float]]:
++    projected: list[dict[str, float]] = []
++    for index, point in enumerate(points):
++        if isinstance(point, dict):
++            projected.append(_screen_point_from_position(point, index=index, count=len(points)))
++    return projected
++
++
++def _district_card(district: dict[str, Any], *, domain_card: dict[str, Any] | None = None) -> dict[str, Any]:
++    polygon = [point for point in _list(district.get("polygon")) if isinstance(point, dict)]
++    centroid = _dict(district.get("centroid"))
++    return {
++        "id": _text(district.get("id")),
++        "domain_id": _text(district.get("domain_id"), ""),
++        "label": _text(district.get("label"), _text((domain_card or {}).get("label"), "")),
++        "color_token": district.get("color_token") or (domain_card or {}).get("color_token"),
++        "risk_heat": district.get("risk_heat", (domain_card or {}).get("risk_heat", 0)),
++        "centroid": centroid,
++        "screen_centroid": _screen_point_from_position(centroid),
++        "polygon": polygon,
++        "screen_polygon": _screen_polygon(polygon),
++        "lod": _dict(district.get("lod")),
++        "domain_status": (domain_card or {}).get("proof_status"),
++        "child_count": (domain_card or {}).get("child_count", 0),
++        "event_count": (domain_card or {}).get("event_count", 0),
++    }
++
++
++def _focus_lenses() -> list[dict[str, Any]]:
++    return [
++        {
++            "id": "world",
++            "label": "World",
++            "summary": "All districts, core exchange, routes, and sample replay traffic.",
++            "default_zoom": "world",
++            "node_layers": ["domains", "templates", "carriers", "packets", "receipts", "integrations", "risk"],
++            "edge_layers": ["routes"],
++        },
++        {
++            "id": "district",
++            "label": "District",
++            "summary": "Domain-scale workbench for selected district, children, and route ingress/egress.",
++            "default_zoom": "district",
++            "node_layers": ["domains", "templates", "packets", "receipts", "risk"],
++            "edge_layers": ["routes"],
++        },
++        {
++            "id": "proof",
++            "label": "Proof",
++            "summary": "Proof gates, receipts, blocked transitions, and settlement-risk visibility.",
++            "default_zoom": "detail",
++            "node_layers": ["receipts", "risk", "packets"],
++            "edge_layers": ["routes"],
++        },
++        {
++            "id": "agents",
++            "label": "Agents",
++            "summary": "Carrier, agent, operator, and queue-worker relationships.",
++            "default_zoom": "district",
++            "node_layers": ["carriers", "packets", "integrations"],
++            "edge_layers": ["routes"],
++        },
++        {
++            "id": "timeline",
++            "label": "Timeline",
++            "summary": "Replay sample event traffic without claiming live telemetry.",
++            "default_zoom": "world",
++            "node_layers": ["domains", "carriers", "packets", "receipts", "risk"],
++            "edge_layers": ["routes", "timeline"],
++        },
++    ]
++
++
++def _command_deck() -> list[dict[str, Any]]:
++    return [
++        {
++            "id": "search_graph",
++            "label": "Search graph object",
++            "shortcut": "/",
++            "target": "left_drawer.search",
++            "authority_posture": "local_ui_filter_only",
++            "enabled": True,
++        },
++        {
++            "id": "select_core_exchange",
++            "label": "Return to core exchange",
++            "shortcut": "C",
++            "target": "node.core_exchange",
++            "authority_posture": "local_selection_only",
++            "enabled": True,
++        },
++        {
++            "id": "toggle_routes",
++            "label": "Toggle route layer",
++            "shortcut": "R",
++            "target": "layer.routes",
++            "authority_posture": "local_visibility_only",
++            "enabled": True,
++        },
++        {
++            "id": "toggle_timeline",
++            "label": "Toggle timeline rail",
++            "shortcut": "T",
++            "target": "layer.timeline",
++            "authority_posture": "local_visibility_only",
++            "enabled": True,
++        },
++        {
++            "id": "open_proof_lens",
++            "label": "Open proof lens",
++            "shortcut": "P",
++            "target": "lens.proof",
++            "authority_posture": "local_lens_only",
++            "enabled": True,
++        },
++        {
++            "id": "write_settlement_request",
++            "label": "Draft settlement request",
++            "shortcut": None,
++            "target": "future.packet",
++            "authority_posture": "disabled_until_packet_authority",
++            "enabled": False,
++        },
++    ]
++
++
++def _browser_proof_contract() -> dict[str, Any]:
++    fixtures = [
++        {
++            "id": "graph_shell_zones",
++            "label": "JOC graph shell zones",
++            "selectors": [
++                '[data-joc-zone="graph-top"]',
++                '[data-joc-zone="graph-left-drawer"]',
++                '[data-joc-zone="graph-viewport"]',
++                '[data-joc-zone="graph-right-inspector"]',
++                '[data-joc-zone="graph-bottom-timeline"]',
++            ],
++            "expected": "all required graph workbench zones visible",
++        },
++        {
++            "id": "graph_honesty_badge",
++            "label": "Sample/candidate honesty badge",
++            "selectors": ['[data-proof-fixture="graph-honesty-badge"]'],
++            "expected": "SAMPLE / CANDIDATE DATA remains visible",
++        },
++        {
++            "id": "graph_node_keyboard_focus",
++            "label": "Node keyboard focus",
++            "selectors": ['[data-proof-fixture="graph-node"]'],
++            "expected": "at least one graph node is keyboard focusable and selectable",
++        },
++        {
++            "id": "graph_layer_toggle",
++            "label": "Layer toggle",
++            "selectors": ['[data-proof-fixture="graph-layer-toggle"]'],
++            "expected": "layer controls are buttons and preserve local-only visibility authority",
++        },
++        {
++            "id": "graph_command_deck",
++            "label": "Command deck",
++            "selectors": ['[data-proof-fixture="graph-command-deck"]'],
++            "expected": "local command deck exposes only visibility/selection commands unless disabled",
++        },
++        {
++            "id": "graph_relationship_inspector",
++            "label": "Relationship inspector",
++            "selectors": ['[data-proof-fixture="graph-relationship-inspector"]'],
++            "expected": "selected object relationships are visible without raw JSON dependence",
++        },
++        {
++            "id": "graph_timeline_replay",
++            "label": "Timeline replay rail",
++            "selectors": ['[data-proof-fixture="graph-timeline-event"]'],
++            "expected": "sample timeline events are selectable and marked candidate/sample",
++        },
++        {
++            "id": "graph_minimap",
++            "label": "District minimap",
++            "selectors": ['[data-proof-fixture="graph-minimap"]'],
++            "expected": "district minimap is present as navigational proof, not decorative telemetry",
++        },
++    ]
++    return {
++        "schema_id": "ion.living_graph.browser_proof_contract.v1",
++        "status": "candidate_fixture_contract_ready",
++        "route": "#graph",
++        "target_origin_policy": "local_files_or_loopback_only",
++        "network_policy": "no_external_network",
++        "credential_policy": "no_credentials_or_session_import",
++        "fixtures": fixtures,
++        "forbidden_actions": [
++            "external_network_access",
++            "credential_or_session_import",
++            "form_submission",
++            "account_operation",
++            "persistent_dom_mutation",
++            "production_visual_automation",
++        ],
++        "non_claims": [
++            "does_not_execute_browser",
++            "does_not_claim_screenshot_proof",
++            "does_not_claim_live_telemetry",
++        ],
++    }
++
++
++def _selected_relationships(
++    selected_id: str,
++    *,
++    visible_nodes: list[dict[str, Any]],
++    visible_edges: list[dict[str, Any]],
++    event_cards: list[dict[str, Any]],
++) -> dict[str, Any]:
++    node_index = {_text(node.get("id"), ""): node for node in visible_nodes}
++    incoming = [edge for edge in visible_edges if edge.get("target") == selected_id]
++    outgoing = [edge for edge in visible_edges if edge.get("source") == selected_id]
++    adjacent_edges = incoming + outgoing
++    neighbor_ids: list[str] = []
++    for edge in adjacent_edges:
++        for key in ("source", "target"):
++            candidate = _text(edge.get(key), "")
++            if candidate and candidate != selected_id and candidate not in neighbor_ids:
++                neighbor_ids.append(candidate)
++    event_refs = [
++        event
++        for event in event_cards
++        if event.get("actor_node") == selected_id
++        or event.get("source_node") == selected_id
++        or event.get("target_node") == selected_id
++    ]
++    children = [node for node in visible_nodes if node.get("parent_id") == selected_id]
++    proof_refs: list[str] = []
++    receipt_refs: list[str] = []
++    for event in event_refs:
++        proof_ref = event.get("proof_ref")
++        receipt_ref = event.get("receipt_ref")
++        if proof_ref and proof_ref not in proof_refs:
++            proof_refs.append(str(proof_ref))
++        if receipt_ref and receipt_ref not in receipt_refs:
++            receipt_refs.append(str(receipt_ref))
++    return {
++        "selected_node_id": selected_id,
++        "incoming_edges": incoming[:12],
++        "outgoing_edges": outgoing[:12],
++        "neighbor_nodes": [node_index[node_id] for node_id in neighbor_ids if node_id in node_index][:12],
++        "children": children[:12],
++        "events": event_refs[:16],
++        "proof_refs": proof_refs[:12],
++        "receipt_refs": receipt_refs[:12],
++        "relationship_counts": {
++            "incoming": len(incoming),
++            "outgoing": len(outgoing),
++            "neighbors": len(neighbor_ids),
++            "children": len(children),
++            "events": len(event_refs),
++            "proof_refs": len(proof_refs),
++            "receipt_refs": len(receipt_refs),
++        },
++    }
++
++
+ def utc_now() -> str:
+     return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
+ 
+@@ -379,7 +670,21 @@ def build_living_graph_view_model(
+     visible_edges = [_edge_card(edge, node_index) for edge in edges]
+     route_edges = [edge for edge in visible_edges if edge.get("type") == "routes_to"]
+     route_edges = route_edges[:24]
+-    latest_events = sorted((_event_card(event) for event in events), key=lambda item: item.get("timestamp", ""))[:16]
++    event_cards = sorted((_event_card(event) for event in events), key=lambda item: item.get("timestamp", ""))
++    latest_events = event_cards[:24]
++
++    domain_card_index = {_text(domain.get("id"), ""): domain for domain in domains}
++    domain_districts = [
++        _district_card(district, domain_card=domain_card_index.get(_text(district.get("domain_id"), "")))
++        for district in layout_districts
++    ]
++
++    selected_relationships = _selected_relationships(
++        _text(selected.get("id"), ""),
++        visible_nodes=visible_nodes,
++        visible_edges=visible_edges,
++        event_cards=event_cards,
++    )
+ 
+     domain_clusters = []
+     for domain in domains:
+@@ -437,6 +742,11 @@ def build_living_graph_view_model(
+             "risk_node_count": type_counts.get("risk_alert", 0),
+             "visible_node_count": len(visible_nodes),
+             "visible_edge_count": len(visible_edges),
++            "district_count": len(domain_districts),
++            "selected_relationship_count": len(selected_relationships.get("incoming_edges", [])) + len(selected_relationships.get("outgoing_edges", [])),
++            "focus_lens_count": len(_focus_lenses()),
++            "command_count": len(_command_deck()),
++            "browser_proof_fixture_count": len(_browser_proof_contract()["fixtures"]),
+             "live_telemetry_connected": live_telemetry_connected,
+         },
+         "node_type_counts": type_counts,
+@@ -446,10 +756,15 @@ def build_living_graph_view_model(
+         "screen_zones": screen_zones,
+         "missing_screen_zones": missing_zones,
+         "layers": _build_layers(nodes, edges, events),
++        "focus_lenses": _focus_lenses(),
++        "command_deck": _command_deck(),
++        "browser_proof_contract": _browser_proof_contract(),
+         "core": node_card(core_node) if core_node else {},
+         "selected": selected,
++        "selected_relationships": selected_relationships,
+         "domains": domains,
+         "domain_clusters": domain_clusters,
++        "domain_districts": domain_districts,
+         "visible_nodes": visible_nodes,
+         "visible_edges": visible_edges,
+         "route_edges": route_edges,
+@@ -460,6 +775,7 @@ def build_living_graph_view_model(
+             "playback": _dict(timeline.get("playback")),
+             "event_count": len(events),
+             "latest_events": latest_events,
++            "all_events": event_cards,
+         },
+         "inspector_contract": {
+             "tabs_required": _list(inspector_contract.get("tabs_required")),
+@@ -535,7 +851,17 @@ def main(argv: list[str] | None = None) -> int:
+         out = Path(args.root) / OUTPUT
+         out.parent.mkdir(parents=True, exist_ok=True)
+         out.write_text(json.dumps(model, indent=2, sort_keys=True), encoding="utf-8")
+-    print(json.dumps(model, indent=2, sort_keys=True))
++        print(json.dumps({
++            "schema_id": model.get("schema_id"),
++            "status": model.get("status"),
++            "output_path": str(OUTPUT),
++            "source_package_id": model.get("source_package_id"),
++            "kpis": model.get("kpis"),
++            "proof_gates": model.get("proof_gates"),
++            "non_claims": model.get("non_claims"),
++        }, indent=2, sort_keys=True))
++    else:
++        print(json.dumps(model, indent=2, sort_keys=True))
+     return 0
+ 
+ 
+diff --git a/ION/04_packages/kernel/ion_living_graph_visual_proof.py b/ION/04_packages/kernel/ion_living_graph_visual_proof.py
+index 58aacfb..63f96db 100644
+--- a/ION/04_packages/kernel/ion_living_graph_visual_proof.py
++++ b/ION/04_packages/kernel/ion_living_graph_visual_proof.py
+@@ -25,6 +25,14 @@ REQUIRED_TSX_MARKERS = {
+     "svg_viewport": "<svg",
+     "node_selection": "setActiveNodeId",
+     "layer_controls": "hiddenLayers",
++    "data_zone_top": 'data-joc-zone="graph-top"',
++    "data_zone_left": 'data-joc-zone="graph-left-drawer"',
++    "data_zone_viewport": 'data-joc-zone="graph-viewport"',
++    "data_zone_inspector": 'data-joc-zone="graph-right-inspector"',
++    "data_zone_timeline": 'data-joc-zone="graph-bottom-timeline"',
++    "command_deck": 'data-proof-fixture="graph-command-deck"',
++    "relationship_inspector": 'data-proof-fixture="graph-relationship-inspector"',
++    "minimap": 'data-proof-fixture="graph-minimap"',
+ }
+ 
+ REQUIRED_CSS_MARKERS = {
+@@ -105,6 +113,10 @@ def _model_checks(model: dict[str, Any]) -> dict[str, Any]:
+         "required_zones_present": bool(proof_gates.get("required_zones_present")),
+         "references_resolve": bool(proof_gates.get("references_resolve")),
+         "honesty_badges_required": bool(proof_gates.get("honesty_badges_required")),
++        "district_count": kpis.get("district_count", 0),
++        "focus_lens_count": kpis.get("focus_lens_count", 0),
++        "command_count": kpis.get("command_count", 0),
++        "browser_proof_fixture_count": kpis.get("browser_proof_fixture_count", 0),
+     }
+ 
+ 
+@@ -182,6 +194,10 @@ def build_living_graph_visual_proof(root: str | Path = ".", *, write: bool = Fal
+         "forbidden_primary_patterns_absent": bool(shell["forbidden_patterns_absent"]),
+         "references_resolve": bool(model_check["references_resolve"]),
+         "no_live_telemetry_claim": bool(model_check["sample_not_live"]),
++        "district_projection_present": int(model_check["district_count"] or 0) >= 8,
++        "focus_lenses_present": int(model_check["focus_lens_count"] or 0) >= 5,
++        "command_deck_present": int(model_check["command_count"] or 0) >= 5,
++        "browser_fixture_contract_present": int(model_check["browser_proof_fixture_count"] or 0) >= 8,
+     }
+     proof = {
+         "schema_id": "ion.living_graph.visual_proof_static.v1",
+diff --git a/ION/08_ui/joc_cockpit_shell/LivingGraphWorkbenchPanel.tsx b/ION/08_ui/joc_cockpit_shell/LivingGraphWorkbenchPanel.tsx
+index b64776f..0fd0a11 100644
+--- a/ION/08_ui/joc_cockpit_shell/LivingGraphWorkbenchPanel.tsx
++++ b/ION/08_ui/joc_cockpit_shell/LivingGraphWorkbenchPanel.tsx
+@@ -1,10 +1,20 @@
+-import { useMemo, useState } from 'react';
+-import type { IonCockpitViewModel, IonLivingGraphNodeCard } from './ionRuntimeCockpitTypes';
++import { useMemo, useRef, useState, type KeyboardEvent } from 'react';
++import type {
++  IonCockpitViewModel,
++  IonLivingGraphCommand,
++  IonLivingGraphDistrict,
++  IonLivingGraphFocusLens,
++  IonLivingGraphNodeCard,
++  IonLivingGraphRouteEdge,
++  IonLivingGraphTimelineEvent,
++} from './ionRuntimeCockpitTypes';
+ 
+ type Props = {
+   runtime: IonCockpitViewModel;
+ };
+ 
++type InspectorTab = 'overview' | 'relationships' | 'events' | 'proof' | 'raw';
++
+ function fmt(value: unknown, fallback = '—') {
+   if (value === null || value === undefined || value === '') return fallback;
+   return String(value);
+@@ -31,8 +41,48 @@ function toScreenPoint(node: IonLivingGraphNodeCard, index: number, count: numbe
+   };
+ }
+ 
++function pointList(points?: Array<{ x?: number; y?: number }>) {
++  return (points ?? [])
++    .filter((point) => typeof point.x === 'number' && typeof point.y === 'number')
++    .map((point) => `${point.x},${point.y}`)
++    .join(' ');
++}
++
++function nodeSearchText(node: IonLivingGraphNodeCard) {
++  return [
++    node.id,
++    node.label,
++    node.type,
++    node.layer_id,
++    node.domain_id,
++    node.parent_id,
++    node.authority_status,
++    node.proof_status,
++    node.operational_status,
++    node.summary,
++  ].map((value) => String(value ?? '').toLowerCase()).join(' ');
++}
++
++function edgeSearchText(edge: IonLivingGraphRouteEdge) {
++  return [
++    edge.id,
++    edge.type,
++    edge.source,
++    edge.target,
++    edge.source_label,
++    edge.target_label,
++    edge.authority_class,
++    edge.road_type,
++  ].map((value) => String(value ?? '').toLowerCase()).join(' ');
++}
++
++function edgeTouchesNode(edge: IonLivingGraphRouteEdge, nodeId?: string) {
++  return Boolean(nodeId && (edge.source === nodeId || edge.target === nodeId));
++}
++
+ export function LivingGraphWorkbenchPanel({ runtime }: Props) {
+   const graph = runtime.living_graph;
++  const searchInputRef = useRef<HTMLInputElement | null>(null);
+   const nodes = useMemo<IonLivingGraphNodeCard[]>(() => {
+     if (!graph) return [];
+     if (graph.visible_nodes?.length) return graph.visible_nodes;
+@@ -44,6 +94,9 @@ export function LivingGraphWorkbenchPanel({ runtime }: Props) {
+   const [activeNodeId, setActiveNodeId] = useState<string | undefined>(graph?.selected?.id ?? graph?.core?.id);
+   const [hiddenLayers, setHiddenLayers] = useState<Record<string, boolean>>({});
+   const [timelineCursor, setTimelineCursor] = useState<string | undefined>(typeof graph?.timeline?.playback?.scrubber_event_id === 'string' ? graph.timeline.playback.scrubber_event_id : undefined);
++  const [activeLensId, setActiveLensId] = useState<string>(graph?.focus_lenses?.[0]?.id ?? 'world');
++  const [activeInspectorTab, setActiveInspectorTab] = useState<InspectorTab>('overview');
++  const [query, setQuery] = useState('');
+ 
+   if (!graph) {
+     return (
+@@ -55,20 +108,83 @@ export function LivingGraphWorkbenchPanel({ runtime }: Props) {
+     );
+   }
+ 
+-  const activeNode = nodes.find((node) => node.id === activeNodeId) ?? graph.selected ?? graph.core ?? nodes[0];
+-  const visibleNodes = nodes.filter((node) => !hiddenLayers[node.layer_id ?? 'domains']);
+-  const visibleNodeIds = new Set(visibleNodes.map((node) => node.id));
++  const activeLens = (graph.focus_lenses ?? []).find((lens) => lens.id === activeLensId) ?? graph.focus_lenses?.[0];
++  const nodeLayerAllow = activeLens?.node_layers?.length ? new Set(activeLens.node_layers) : undefined;
++  const edgeLayerAllow = activeLens?.edge_layers?.length ? new Set(activeLens.edge_layers) : undefined;
++  const normalizedQuery = query.trim().toLowerCase();
++  const nodeIndex = new Map(nodes.map((node) => [node.id, node]));
++  const activeNode = nodeIndex.get(activeNodeId ?? '') ?? graph.selected ?? graph.core ?? nodes[0];
+   const pointById = new Map(nodes.map((node, index) => [node.id, toScreenPoint(node, index, nodes.length)]));
+   const graphEdges = graph.visible_edges?.length ? graph.visible_edges : graph.route_edges ?? [];
++  const allEvents = graph.timeline?.all_events?.length ? graph.timeline.all_events : graph.timeline?.latest_events ?? [];
++  const selectedEvent = allEvents.find((event) => event.id === timelineCursor);
++  const visibleNodes = nodes.filter((node) => {
++    if (hiddenLayers[node.layer_id ?? 'domains']) return false;
++    if (nodeLayerAllow && node.type !== 'core' && !nodeLayerAllow.has(node.layer_id ?? 'domains')) return false;
++    if (normalizedQuery && !nodeSearchText(node).includes(normalizedQuery)) return false;
++    return true;
++  });
++  const visibleNodeIds = new Set(visibleNodes.map((node) => node.id));
+   const visibleEdges = graphEdges.filter((edge) => {
+     if (hiddenLayers.routes) return false;
+-    return visibleNodeIds.has(edge.source) && visibleNodeIds.has(edge.target);
++    if (edgeLayerAllow && !edgeLayerAllow.has(edge.layer_id ?? 'routes')) return false;
++    if (!visibleNodeIds.has(edge.source) || !visibleNodeIds.has(edge.target)) return false;
++    if (normalizedQuery && !edgeSearchText(edge).includes(normalizedQuery) && !edgeTouchesNode(edge, activeNode?.id)) return false;
++    return true;
+   });
+   const showTimeline = !hiddenLayers.timeline;
++  const incomingEdges = graphEdges.filter((edge) => edge.target === activeNode?.id);
++  const outgoingEdges = graphEdges.filter((edge) => edge.source === activeNode?.id);
++  const neighborNodes = [...incomingEdges, ...outgoingEdges]
++    .map((edge) => (edge.source === activeNode?.id ? edge.target : edge.source))
++    .filter((nodeId, index, all) => nodeId && all.indexOf(nodeId) === index)
++    .map((nodeId) => nodeIndex.get(nodeId))
++    .filter((node): node is IonLivingGraphNodeCard => Boolean(node));
++  const childNodes = nodes.filter((node) => node.parent_id === activeNode?.id);
++  const selectedEvents = allEvents.filter((event) => (
++    event.actor_node === activeNode?.id ||
++    event.source_node === activeNode?.id ||
++    event.target_node === activeNode?.id
++  ));
++  const selectedProofRefs = selectedEvents.map((event) => event.proof_ref).filter((value, index, all): value is string => Boolean(value) && all.indexOf(value) === index);
++  const selectedReceiptRefs = selectedEvents.map((event) => event.receipt_ref).filter((value, index, all): value is string => Boolean(value) && all.indexOf(value) === index);
++  const coreNodeId = graph.core?.id;
++
++  function handleWorkbenchKeyDown(event: KeyboardEvent<HTMLElement>) {
++    const key = event.key.toLowerCase();
++    if (key === '/') {
++      event.preventDefault();
++      searchInputRef.current?.focus();
++      return;
++    }
++    if (key === 'c') {
++      setActiveNodeId(coreNodeId);
++      setActiveInspectorTab('overview');
++      return;
++    }
++    if (key === 'r') {
++      setHiddenLayers((previous) => ({ ...previous, routes: !previous.routes }));
++      return;
++    }
++    if (key === 't') {
++      setHiddenLayers((previous) => ({ ...previous, timeline: !previous.timeline }));
++      return;
++    }
++    if (key === 'p') {
++      setActiveLensId('proof');
++      setActiveInspectorTab('proof');
++    }
++  }
+ 
+   return (
+-    <section className={`ion-living-graph-workbench is-${statusClass(graph.status)}`} aria-label="ION Living Operational Graph">
+-      <header className="ion-living-graph-top">
++    <section
++      className={`ion-living-graph-workbench is-${statusClass(graph.status)}`}
++      aria-label="ION Living Operational Graph"
++      data-proof-fixture="graph-workbench"
++      onKeyDown={handleWorkbenchKeyDown}
++      tabIndex={-1}
++    >
++      <header className="ion-living-graph-top" data-joc-zone="graph-top">
+         <div>
+           <div className="ion-section-title">LIVING OPERATIONAL GRAPH / FULL SAMPLE MOUNT</div>
+           <h2>Developer cockpit territory map</h2>
+@@ -77,21 +193,70 @@ export function LivingGraphWorkbenchPanel({ runtime }: Props) {
+             <Metric label="nodes" value={graph.kpis?.node_count} />
+             <Metric label="edges" value={graph.kpis?.edge_count} />
+             <Metric label="events" value={graph.kpis?.event_count} />
+-            <Metric label="visible" value={graph.kpis?.visible_node_count} />
++            <Metric label="districts" value={graph.kpis?.district_count} />
++            <Metric label="visible" value={visibleNodes.length} />
+           </div>
+         </div>
+         <div className="ion-living-graph-badges">
+-          <span>{fmt(graph.honesty?.global_badge_label, 'SAMPLE / CANDIDATE DATA')}</span>
++          <span data-proof-fixture="graph-honesty-badge">{fmt(graph.honesty?.global_badge_label, 'SAMPLE / CANDIDATE DATA')}</span>
+           <b className={`is-${statusClass(graph.status)}`}>{fmt(graph.status)}</b>
+           <span>{graph.source_mount?.mounted ? 'SOURCE MOUNTED' : 'SOURCE MISSING'}</span>
+         </div>
+       </header>
+ 
+-      <aside className="ion-living-graph-left" aria-label="Graph layers">
++      <aside className="ion-living-graph-left" aria-label="Graph layers" data-joc-zone="graph-left-drawer">
++        <div className="ion-section-title">SEARCH / COMMAND</div>
++        <label className="ion-living-graph-search">
++          <span>filter</span>
++          <input
++            aria-label="Search graph objects"
++            data-proof-fixture="graph-search"
++            onChange={(event) => setQuery(event.target.value)}
++            placeholder="node, edge, proof, route..."
++            ref={searchInputRef}
++            value={query}
++          />
++        </label>
++
++        <div className="ion-section-title">FOCUS LENSES</div>
++        <div className="ion-living-graph-lens-grid">
++          {(graph.focus_lenses ?? []).map((lens: IonLivingGraphFocusLens) => (
++            <button
++              className={activeLensId === lens.id ? 'is-active' : undefined}
++              data-proof-fixture="graph-focus-lens"
++              key={lens.id}
++              onClick={() => setActiveLensId(lens.id)}
++              title={lens.summary}
++              type="button"
++            >
++              <span>{lens.label}</span>
++              <b>{lens.default_zoom ?? 'lens'}</b>
++            </button>
++          ))}
++        </div>
++
++        <div className="ion-section-title">LOCAL COMMAND DECK</div>
++        <div className="ion-living-graph-command-deck" data-proof-fixture="graph-command-deck">
++          {(graph.command_deck ?? []).map((command: IonLivingGraphCommand) => (
++            <button
++              className={command.enabled === false ? 'is-disabled' : undefined}
++              disabled={command.enabled === false}
++              key={command.id}
++              onClick={() => runLocalCommand(command, coreNodeId, setActiveNodeId, setActiveLensId, setHiddenLayers)}
++              type="button"
++            >
++              <span>{command.label}</span>
++              <b>{command.shortcut ?? '—'}</b>
++              <em>{command.authority_posture}</em>
++            </button>
++          ))}
++        </div>
++
+         <div className="ion-section-title">LAYERS</div>
+         {(graph.layers ?? []).map((layer) => (
+           <button
+             className={hiddenLayers[layer.id] ? 'is-muted' : 'is-active'}
++            data-proof-fixture="graph-layer-toggle"
+             key={layer.id}
+             onClick={() => setHiddenLayers((previous) => ({ ...previous, [layer.id]: !previous[layer.id] }))}
+             type="button"
+@@ -122,7 +287,7 @@ export function LivingGraphWorkbenchPanel({ runtime }: Props) {
+         </div>
+       </aside>
+ 
+-      <div className="ion-living-graph-viewport" aria-label="Graph territory viewport">
++      <div className="ion-living-graph-viewport" aria-label="Graph territory viewport" data-joc-zone="graph-viewport">
+         {graph.status !== 'ready' && (
+           <div className="ion-living-graph-missing-source">
+             <b>GRAPH SOURCE NOT MOUNTED</b>
+@@ -131,7 +296,13 @@ export function LivingGraphWorkbenchPanel({ runtime }: Props) {
+           </div>
+         )}
+ 
+-        <svg role="img" aria-label="Living operational graph map" viewBox="0 0 860 520">
++        <div className="ion-living-graph-viewport-hud">
++          <span>LENS / {fmt(activeLens?.label, 'World')}</span>
++          <span>VISIBLE / {visibleNodes.length} NODES / {visibleEdges.length} ROUTES</span>
++          <span>QUERY / {query || 'NONE'}</span>
++        </div>
++
++        <svg role="img" aria-label="Living operational graph map" viewBox="0 0 860 520" data-proof-fixture="graph-svg">
+           <defs>
+             <filter id="ionGraphGlow" x="-20%" y="-20%" width="140%" height="140%">
+               <feGaussianBlur stdDeviation="2" result="blur" />
+@@ -151,15 +322,27 @@ export function LivingGraphWorkbenchPanel({ runtime }: Props) {
+             ))}
+           </g>
+ 
++          <g className="ion-graph-districts">
++            {(graph.domain_districts ?? []).map((district: IonLivingGraphDistrict) => (
++              <g className={`ion-graph-district is-${statusClass(district.domain_status)}`} key={district.id}>
++                <polygon points={pointList(district.screen_polygon)} />
++                {district.screen_centroid && (
++                  <text x={district.screen_centroid.x} y={(district.screen_centroid.y ?? 0) + 38}>{district.label}</text>
++                )}
++              </g>
++            ))}
++          </g>
++
+           {visibleEdges.map((route) => {
+             const a = pointById.get(route.source);
+             const b = pointById.get(route.target);
+             if (!a || !b) return null;
+-            const active = activeNode?.id === route.source || activeNode?.id === route.target;
++            const active = edgeTouchesNode(route, activeNode?.id);
++            const eventActive = selectedEvent?.route_edge_id === route.id;
+             return (
+-              <g className={`ion-graph-route is-${statusClass(route.type)} ${active ? 'is-active' : ''}`} key={route.id}>
++              <g className={`ion-graph-route is-${statusClass(route.type)} ${active ? 'is-active' : ''} ${eventActive ? 'is-event-active' : ''}`} key={route.id}>
+                 <line x1={a.x} y1={a.y} x2={b.x} y2={b.y} />
+-                {active && <text x={(a.x + b.x) / 2} y={(a.y + b.y) / 2 - 5}>{route.authority_class}</text>}
++                {(active || eventActive) && <text x={(a.x + b.x) / 2} y={(a.y + b.y) / 2 - 5}>{route.authority_class}</text>}
+               </g>
+             );
+           })}
+@@ -169,15 +352,23 @@ export function LivingGraphWorkbenchPanel({ runtime }: Props) {
+             const isCore = node.type === 'core';
+             const isDomain = node.type === 'domain';
+             const active = activeNode?.id === node.id;
+-            const width = isCore ? 104 : isDomain ? 86 : 58;
+-            const height = isCore ? 58 : isDomain ? 42 : 28;
++            const width = isCore ? 104 : isDomain ? 86 : active ? 74 : 58;
++            const height = isCore ? 58 : isDomain ? 42 : active ? 34 : 28;
+             return (
+               <g
+                 className={`ion-graph-node is-${statusClass(node.type)} is-layer-${statusClass(node.layer_id)} ${active ? 'is-selected' : ''}`}
++                data-node-id={node.id}
++                data-proof-fixture="graph-node"
+                 key={node.id}
+-                onClick={() => setActiveNodeId(node.id)}
++                onClick={() => {
++                  setActiveNodeId(node.id);
++                  setActiveInspectorTab('overview');
++                }}
+                 onKeyDown={(event) => {
+-                  if (event.key === 'Enter' || event.key === ' ') setActiveNodeId(node.id);
++                  if (event.key === 'Enter' || event.key === ' ') {
++                    setActiveNodeId(node.id);
++                    setActiveInspectorTab('overview');
++                  }
+                 }}
+                 tabIndex={0}
+                 role="button"
+@@ -190,55 +381,106 @@ export function LivingGraphWorkbenchPanel({ runtime }: Props) {
+             );
+           })}
+         </svg>
++
++        <div className="ion-living-graph-minimap" data-proof-fixture="graph-minimap" aria-label="District minimap">
++          <span>MINIMAP</span>
++          <svg viewBox="0 0 160 100">
++            {(graph.domain_districts ?? []).map((district: IonLivingGraphDistrict) => {
++              const center = district.screen_centroid;
++              if (!center) return null;
++              return (
++                <g
++                  aria-label={`Select ${district.label}`}
++                  key={district.id}
++                  onClick={() => district.domain_id && setActiveNodeId(district.domain_id)}
++                  onKeyDown={(event) => {
++                    if (event.key === 'Enter' || event.key === ' ') district.domain_id && setActiveNodeId(district.domain_id);
++                  }}
++                  role="button"
++                  tabIndex={0}
++                >
++                  <circle cx={(center.x ?? 0) / 5.375} cy={(center.y ?? 0) / 5.2} r={activeNode?.id === district.domain_id ? 4.8 : 3.2} />
++                </g>
++              );
++            })}
++          </svg>
++        </div>
+       </div>
+ 
+-      <aside className="ion-living-graph-inspector" aria-label="Selected graph object inspector">
++      <aside className="ion-living-graph-inspector" aria-label="Selected graph object inspector" data-joc-zone="graph-right-inspector">
+         <div className="ion-section-title">SELECTED OBJECT TRUTH</div>
+         {activeNode ? (
+           <>
+             <h3>{activeNode.label}</h3>
+             <div className={`ion-living-graph-verdict is-${statusClass(activeNode.proof_status)}`}>{activeNode.type} / {activeNode.proof_status}</div>
+             <p>{activeNode.summary || 'No summary available for this graph object.'}</p>
+-            <div className="ion-runtime-grid">
+-              <Metric label="authority" value={activeNode.authority_status} />
+-              <Metric label="transition" value={activeNode.transition_authority_class} />
+-              <Metric label="layer" value={activeNode.layer_id} />
+-              <Metric label="routes" value={activeNode.route_count} />
+-              <Metric label="children" value={activeNode.child_count} />
+-              <Metric label="events" value={activeNode.event_count} />
+-              <Metric label="receipts" value={activeNode.receipt_count} />
+-              <Metric label="honesty" value={activeNode.honesty_status} />
+-            </div>
+-            <div className="ion-section-title">INSPECTOR TABS</div>
+-            <div className="ion-living-graph-tab-row">
+-              {(activeNode.available_tabs ?? []).map((tab) => <span key={tab}>{tab}</span>)}
++            <div className="ion-living-graph-inspector-tabs">
++              {(['overview', 'relationships', 'events', 'proof', 'raw'] as InspectorTab[]).map((tab) => (
++                <button className={activeInspectorTab === tab ? 'is-active' : undefined} key={tab} onClick={() => setActiveInspectorTab(tab)} type="button">{tab}</button>
++              ))}
+             </div>
++            {activeInspectorTab === 'overview' && (
++              <div className="ion-runtime-grid">
++                <Metric label="authority" value={activeNode.authority_status} />
++                <Metric label="transition" value={activeNode.transition_authority_class} />
++                <Metric label="layer" value={activeNode.layer_id} />
++                <Metric label="routes" value={activeNode.route_count} />
++                <Metric label="children" value={activeNode.child_count} />
++                <Metric label="events" value={activeNode.event_count} />
++                <Metric label="receipts" value={activeNode.receipt_count} />
++                <Metric label="honesty" value={activeNode.honesty_status} />
++              </div>
++            )}
++            {activeInspectorTab === 'relationships' && (
++              <RelationshipInspector
++                childNodes={childNodes}
++                incomingEdges={incomingEdges}
++                neighborNodes={neighborNodes}
++                outgoingEdges={outgoingEdges}
++              />
++            )}
++            {activeInspectorTab === 'events' && (
++              <EventInspector events={selectedEvents} setActiveNodeId={setActiveNodeId} setTimelineCursor={setTimelineCursor} />
++            )}
++            {activeInspectorTab === 'proof' && (
++              <ProofInspector
++                activeNode={activeNode}
++                proofRefs={selectedProofRefs}
++                receiptRefs={selectedReceiptRefs}
++                proofGates={graph.proof_gates ?? {}}
++              />
++            )}
++            {activeInspectorTab === 'raw' && (
++              <pre className="ion-living-graph-raw">{JSON.stringify(activeNode, null, 2).slice(0, 1800)}</pre>
++            )}
+           </>
+         ) : (
+           <div className="ion-empty-state">NO GRAPH OBJECT SELECTED</div>
+         )}
+       </aside>
+ 
+-      <footer className="ion-living-graph-timeline" aria-label="Graph timeline replay">
++      <footer className="ion-living-graph-timeline" aria-label="Graph timeline replay" data-joc-zone="graph-bottom-timeline">
+         <div>
+           <span className="ion-section-title">TIMELINE / {fmt(graph.timeline?.mode, 'sample replay')}</span>
+-          <strong>{fmt(graph.timeline?.event_count, '0')} events</strong>
++          <strong>{fmt(graph.timeline?.event_count, '0')} events / {fmt(selectedEvent?.event_type, 'no cursor')}</strong>
+         </div>
+         {showTimeline && (
+           <div className="ion-living-graph-events">
+             {(graph.timeline?.latest_events ?? []).map((event) => (
+               <button
+                 className={timelineCursor === event.id ? 'is-active' : undefined}
++                data-proof-fixture="graph-timeline-event"
+                 key={event.id}
+                 onClick={() => {
+                   setTimelineCursor(event.id);
+                   setActiveNodeId(event.target_node ?? event.source_node ?? event.actor_node ?? activeNodeId);
++                  setActiveInspectorTab('events');
+                 }}
+                 type="button"
+               >
+                 <span>{event.timestamp}</span>
+                 <b>{event.event_type}</b>
+-                <em>{event.timeline_track}</em>
++                <em>{event.timeline_track} / {event.status}</em>
+               </button>
+             ))}
+           </div>
+@@ -248,6 +490,122 @@ export function LivingGraphWorkbenchPanel({ runtime }: Props) {
+   );
+ }
+ 
++function runLocalCommand(
++  command: IonLivingGraphCommand,
++  coreNodeId: string | undefined,
++  setActiveNodeId: (nodeId: string | undefined) => void,
++  setActiveLensId: (lensId: string) => void,
++  setHiddenLayers: (updater: (previous: Record<string, boolean>) => Record<string, boolean>) => void,
++) {
++  if (command.enabled === false) return;
++  if (command.target === 'node.core_exchange') setActiveNodeId(coreNodeId);
++  if (command.target === 'layer.routes') setHiddenLayers((previous) => ({ ...previous, routes: !previous.routes }));
++  if (command.target === 'layer.timeline') setHiddenLayers((previous) => ({ ...previous, timeline: !previous.timeline }));
++  if (command.target === 'lens.proof') setActiveLensId('proof');
++}
++
++function RelationshipInspector({
++  childNodes,
++  incomingEdges,
++  neighborNodes,
++  outgoingEdges,
++}: {
++  childNodes: IonLivingGraphNodeCard[];
++  incomingEdges: IonLivingGraphRouteEdge[];
++  neighborNodes: IonLivingGraphNodeCard[];
++  outgoingEdges: IonLivingGraphRouteEdge[];
++}) {
++  return (
++    <div className="ion-living-graph-relationships" data-proof-fixture="graph-relationship-inspector">
++      <div className="ion-runtime-grid">
++        <Metric label="incoming" value={incomingEdges.length} />
++        <Metric label="outgoing" value={outgoingEdges.length} />
++        <Metric label="neighbors" value={neighborNodes.length} />
++        <Metric label="children" value={childNodes.length} />
++      </div>
++      <div className="ion-section-title">NEIGHBORS</div>
++      <div className="ion-living-graph-mini-list">
++        {neighborNodes.slice(0, 10).map((node) => <span key={node.id}>{node.label} / {node.type}</span>)}
++        {!neighborNodes.length && <span>no neighbor nodes in current projection</span>}
++      </div>
++      <div className="ion-section-title">ROUTES</div>
++      <div className="ion-living-graph-mini-list">
++        {[...incomingEdges, ...outgoingEdges].slice(0, 10).map((edge) => <span key={edge.id}>{edge.source_label} → {edge.target_label} / {edge.authority_class}</span>)}
++        {!incomingEdges.length && !outgoingEdges.length && <span>no routes touch selected object</span>}
++      </div>
++    </div>
++  );
++}
++
++function EventInspector({
++  events,
++  setActiveNodeId,
++  setTimelineCursor,
++}: {
++  events: IonLivingGraphTimelineEvent[];
++  setActiveNodeId: (nodeId: string | undefined) => void;
++  setTimelineCursor: (eventId: string | undefined) => void;
++}) {
++  return (
++    <div className="ion-living-graph-mini-list">
++      {events.slice(0, 12).map((event) => (
++        <button
++          key={event.id}
++          onClick={() => {
++            setTimelineCursor(event.id);
++            setActiveNodeId(event.target_node ?? event.source_node ?? event.actor_node ?? undefined);
++          }}
++          type="button"
++        >
++          <span>{event.timestamp}</span>
++          <b>{event.event_type}</b>
++          <em>{event.timeline_track} / {event.status}</em>
++        </button>
++      ))}
++      {!events.length && <span>no selected-object events in sample replay</span>}
++    </div>
++  );
++}
++
++function ProofInspector({
++  activeNode,
++  proofRefs,
++  proofGates,
++  receiptRefs,
++}: {
++  activeNode: IonLivingGraphNodeCard;
++  proofRefs: string[];
++  proofGates: Record<string, boolean>;
++  receiptRefs: string[];
++}) {
++  return (
++    <>
++      <div className="ion-runtime-grid">
++        <Metric label="proof status" value={activeNode.proof_status} />
++        <Metric label="authority" value={activeNode.authority_status} />
++        <Metric label="honesty" value={activeNode.honesty_status} />
++        <Metric label="receipts" value={receiptRefs.length || activeNode.receipt_count} />
++      </div>
++      <div className="ion-section-title">PROOF REFS</div>
++      <div className="ion-living-graph-mini-list">
++        {proofRefs.map((ref) => <span key={ref}>{ref}</span>)}
++        {!proofRefs.length && <span>no event proof refs for selected object</span>}
++      </div>
++      <div className="ion-section-title">RECEIPT REFS</div>
++      <div className="ion-living-graph-mini-list">
++        {receiptRefs.map((ref) => <span key={ref}>{ref}</span>)}
++        {!receiptRefs.length && <span>no event receipt refs for selected object</span>}
++      </div>
++      <div className="ion-section-title">GLOBAL GATES</div>
++      <div className="ion-living-graph-proof-stack">
++        {Object.entries(proofGates).map(([key, value]) => (
++          <span className={value ? 'is-pass' : 'is-watch'} key={key}>{key}</span>
++        ))}
++      </div>
++    </>
++  );
++}
++
+ function Metric({ label, value }: { label: string; value: unknown }) {
+   return (
+     <div className="ion-runtime-metric">
+diff --git a/ION/08_ui/joc_cockpit_shell/ion-runtime-cockpit.css b/ION/08_ui/joc_cockpit_shell/ion-runtime-cockpit.css
+index 4443579..f4eb27e 100644
+--- a/ION/08_ui/joc_cockpit_shell/ion-runtime-cockpit.css
++++ b/ION/08_ui/joc_cockpit_shell/ion-runtime-cockpit.css
+@@ -952,3 +952,238 @@
+       "graphTimeline graphTimeline";
+   }
+ }
++
++
++.ion-living-graph-search {
++  display: grid;
++  gap: 4px;
++  margin-bottom: 8px;
++}
++
++.ion-living-graph-search span {
++  color: var(--ion-text-muted);
++  font-size: 7px;
++  font-weight: 700;
++  letter-spacing: 0.8px;
++  text-transform: uppercase;
++}
++
++.ion-living-graph-search input {
++  min-width: 0;
++  border: 1px solid var(--ion-border);
++  background: #060606;
++  color: var(--ion-text);
++  font-family: var(--ion-font);
++  font-size: 9px;
++  letter-spacing: 0.5px;
++  outline: none;
++  padding: 7px;
++  text-transform: uppercase;
++}
++
++.ion-living-graph-search input:focus {
++  border-color: var(--ion-border-active);
++}
++
++.ion-living-graph-lens-grid,
++.ion-living-graph-command-deck {
++  display: grid;
++  gap: 5px;
++  margin-bottom: 8px;
++}
++
++.ion-living-graph-command-deck button {
++  grid-template-columns: minmax(0, 1fr) 22px;
++  grid-template-rows: auto auto;
++}
++
++.ion-living-graph-command-deck button em {
++  grid-column: 1 / -1;
++  color: var(--ion-text-muted);
++  font-size: 6.5px;
++  font-style: normal;
++  letter-spacing: 0.4px;
++}
++
++.ion-living-graph-command-deck button.is-disabled {
++  cursor: not-allowed;
++  opacity: 0.35;
++}
++
++.ion-living-graph-viewport-hud {
++  position: absolute;
++  z-index: 3;
++  left: 12px;
++  top: 12px;
++  display: flex;
++  flex-wrap: wrap;
++  gap: 5px;
++  max-width: calc(100% - 130px);
++  pointer-events: none;
++}
++
++.ion-living-graph-viewport-hud span {
++  border: 1px solid var(--ion-border);
++  background: rgba(5,5,5,0.84);
++  color: var(--ion-text-muted);
++  font-size: 7px;
++  font-weight: 700;
++  letter-spacing: 0.7px;
++  padding: 5px 6px;
++  text-transform: uppercase;
++}
++
++.ion-graph-district polygon {
++  fill: rgba(255,255,255,0.028);
++  stroke: rgba(255,255,255,0.16);
++  stroke-width: 1;
++  stroke-dasharray: 3 5;
++}
++
++.ion-graph-district.is-candidate polygon {
++  stroke: var(--ion-watch);
++  opacity: 0.62;
++}
++
++.ion-graph-district text {
++  fill: var(--ion-text-muted);
++  font-family: var(--ion-font);
++  font-size: 6.5px;
++  font-weight: 700;
++  text-anchor: middle;
++  text-transform: uppercase;
++  pointer-events: none;
++}
++
++.ion-graph-route.is-event-active line {
++  stroke: var(--ion-ok);
++  stroke-width: 2.2;
++  stroke-dasharray: 1 3;
++  filter: url(#ionGraphGlow);
++}
++
++.ion-living-graph-minimap {
++  position: absolute;
++  z-index: 4;
++  right: 10px;
++  bottom: 10px;
++  width: 126px;
++  border: 1px solid var(--ion-border);
++  background: rgba(4,4,4,0.88);
++  padding: 6px;
++}
++
++.ion-living-graph-minimap span {
++  display: block;
++  color: var(--ion-text-muted);
++  font-size: 7px;
++  font-weight: 700;
++  letter-spacing: 0.8px;
++  margin-bottom: 4px;
++  text-transform: uppercase;
++}
++
++.ion-living-graph-minimap svg {
++  min-height: 76px;
++  height: 76px;
++}
++
++.ion-living-graph-minimap circle {
++  fill: #121212;
++  stroke: var(--ion-text-secondary);
++  stroke-width: 1;
++  cursor: pointer;
++}
++
++.ion-living-graph-minimap g[role="button"]:focus circle {
++  stroke: var(--ion-ok);
++  stroke-width: 2;
++}
++
++.ion-living-graph-inspector-tabs {
++  display: grid;
++  grid-template-columns: repeat(5, minmax(0, 1fr));
++  gap: 4px;
++  margin: 8px 0;
++}
++
++.ion-living-graph-inspector-tabs button {
++  border: 1px solid var(--ion-border);
++  background: var(--ion-panel);
++  color: var(--ion-text-muted);
++  cursor: pointer;
++  font-family: var(--ion-font);
++  font-size: 7px;
++  font-weight: 700;
++  padding: 6px 4px;
++  text-transform: uppercase;
++}
++
++.ion-living-graph-inspector-tabs button.is-active {
++  border-color: var(--ion-border-active);
++  color: var(--ion-text);
++}
++
++.ion-living-graph-relationships {
++  display: grid;
++  gap: 7px;
++}
++
++.ion-living-graph-mini-list {
++  display: grid;
++  gap: 4px;
++  max-height: 190px;
++  overflow: auto;
++}
++
++.ion-living-graph-mini-list span,
++.ion-living-graph-mini-list button {
++  border: 1px solid var(--ion-border);
++  background: #080808;
++  color: var(--ion-text-muted);
++  font-family: var(--ion-font);
++  font-size: 7.5px;
++  font-weight: 700;
++  letter-spacing: 0.35px;
++  line-height: 1.35;
++  padding: 6px;
++  text-align: left;
++  text-transform: uppercase;
++}
++
++.ion-living-graph-mini-list button {
++  cursor: pointer;
++}
++
++.ion-living-graph-mini-list b,
++.ion-living-graph-mini-list em {
++  display: block;
++  color: var(--ion-text-secondary);
++  font-style: normal;
++}
++
++.ion-living-graph-raw {
++  max-height: 330px;
++  overflow: auto;
++  border: 1px solid var(--ion-border);
++  background: #050505;
++  color: var(--ion-text-muted);
++  font-family: var(--ion-font);
++  font-size: 7px;
++  line-height: 1.45;
++  padding: 8px;
++  white-space: pre-wrap;
++}
++
++@media (max-width: 1160px) {
++  .ion-living-graph-viewport-hud {
++    position: static;
++    padding: 8px;
++  }
++
++  .ion-living-graph-minimap {
++    position: static;
++    width: auto;
++    margin: 8px;
++  }
++}
+diff --git a/ION/08_ui/joc_cockpit_shell/ionRuntimeCockpitTypes.ts b/ION/08_ui/joc_cockpit_shell/ionRuntimeCockpitTypes.ts
+index 36c09a1..ef66227 100644
+--- a/ION/08_ui/joc_cockpit_shell/ionRuntimeCockpitTypes.ts
++++ b/ION/08_ui/joc_cockpit_shell/ionRuntimeCockpitTypes.ts
+@@ -415,6 +415,52 @@ export type IonLivingGraphTimelineEvent = {
+   honesty_status?: string;
+ };
+ 
++export type IonLivingGraphDistrict = {
++  id?: string;
++  domain_id?: string;
++  label?: string;
++  color_token?: string;
++  risk_heat?: number;
++  centroid?: { x?: number; y?: number; z?: number };
++  screen_centroid?: { x?: number; y?: number };
++  polygon?: Array<{ x?: number; y?: number; z?: number }>;
++  screen_polygon?: Array<{ x?: number; y?: number }>;
++  lod?: Record<string, unknown>;
++  domain_status?: string;
++  child_count?: number;
++  event_count?: number;
++};
++
++export type IonLivingGraphSelectedRelationships = {
++  selected_node_id?: string;
++  incoming_edges?: IonLivingGraphRouteEdge[];
++  outgoing_edges?: IonLivingGraphRouteEdge[];
++  neighbor_nodes?: IonLivingGraphNodeCard[];
++  children?: IonLivingGraphNodeCard[];
++  events?: IonLivingGraphTimelineEvent[];
++  proof_refs?: string[];
++  receipt_refs?: string[];
++  relationship_counts?: Record<string, number>;
++};
++
++export type IonLivingGraphFocusLens = {
++  id: string;
++  label: string;
++  summary?: string;
++  default_zoom?: string;
++  node_layers?: string[];
++  edge_layers?: string[];
++};
++
++export type IonLivingGraphCommand = {
++  id: string;
++  label: string;
++  shortcut?: string | null;
++  target?: string;
++  authority_posture?: string;
++  enabled?: boolean;
++};
++
+ export type IonLivingGraphViewModel = {
+   schema_id?: 'ion.living_graph_cockpit_view_model.v1' | string;
+   generated_at?: string;
+@@ -452,8 +498,12 @@ export type IonLivingGraphViewModel = {
+     edge_count?: number;
+     event_count?: number;
+   }>;
++  focus_lenses?: IonLivingGraphFocusLens[];
++  command_deck?: IonLivingGraphCommand[];
++  browser_proof_contract?: Record<string, unknown>;
+   core?: IonLivingGraphNodeCard;
+   selected?: IonLivingGraphNodeCard;
++  selected_relationships?: IonLivingGraphSelectedRelationships;
+   domains?: IonLivingGraphNodeCard[];
+   domain_clusters?: Array<{
+     domain_id?: string;
+@@ -463,6 +513,7 @@ export type IonLivingGraphViewModel = {
+     event_count?: number;
+     representative_nodes?: IonLivingGraphNodeCard[];
+   }>;
++  domain_districts?: IonLivingGraphDistrict[];
+   visible_nodes?: IonLivingGraphNodeCard[];
+   visible_edges?: IonLivingGraphRouteEdge[];
+   route_edges?: IonLivingGraphRouteEdge[];
+@@ -473,6 +524,7 @@ export type IonLivingGraphViewModel = {
+     playback?: Record<string, unknown>;
+     event_count?: number;
+     latest_events?: IonLivingGraphTimelineEvent[];
++    all_events?: IonLivingGraphTimelineEvent[];
+   };
+   inspector_contract?: Record<string, unknown>;
+   layout?: Record<string, unknown>;
+diff --git a/ION/tests/test_kernel_ion_living_graph_view_model.py b/ION/tests/test_kernel_ion_living_graph_view_model.py
+index 6ab0d11..ffc07b7 100644
+--- a/ION/tests/test_kernel_ion_living_graph_view_model.py
++++ b/ION/tests/test_kernel_ion_living_graph_view_model.py
+@@ -4,6 +4,7 @@ from pathlib import Path
+ from kernel.ion_cockpit_view_model import build_cockpit_view_model
+ from kernel.ion_living_graph_view_model import build_living_graph_view_model, write_living_graph_view_model
+ from kernel.ion_living_graph_visual_proof import build_living_graph_visual_proof
++from kernel.ion_living_graph_browser_proof_plan import build_living_graph_browser_proof_manifest, build_living_graph_browser_proof_handoff, write_living_graph_browser_proof_handoff
+ 
+ 
+ def write_json(root: Path, rel: str, payload: dict):
+@@ -195,7 +196,19 @@ def seed_living_graph(root: Path):
+             "bottom_timeline": {"height_px": 140, "role": "replay"},
+         },
+         "districts": [
+-            {"id": "layout_domain_finance", "domain_id": "domain_finance", "label": "Finance", "centroid": {"x": -3, "y": 0, "z": -2}}
++            {
++                "id": "layout_domain_finance",
++                "domain_id": "domain_finance",
++                "label": "Finance",
++                "centroid": {"x": -3, "y": 0, "z": -2},
++                "polygon": [
++                    {"x": -4, "y": 0, "z": -2},
++                    {"x": -3, "y": 0, "z": -1},
++                    {"x": -2, "y": 0, "z": -2},
++                    {"x": -3, "y": 0, "z": -3},
++                ],
++                "risk_heat": 0.0,
++            }
+         ],
+         "camera_presets": {"world": {"zoom": 52}},
+         "minimap": {"world_bounds": {"min": {"x": -5, "z": -5}, "max": {"x": 5, "z": 5}}},
+@@ -224,6 +237,17 @@ def test_living_graph_view_model_projects_sample_candidate_graph(tmp_path: Path)
+     assert model["proof_gates"]["required_zones_present"] is True
+     assert model["authority"]["production_authority"] is False
+     assert "not_live_telemetry" in model["non_claims"]
++    assert model["kpis"]["district_count"] == 1
++    assert model["kpis"]["focus_lens_count"] >= 5
++    assert model["kpis"]["command_count"] >= 5
++    assert model["kpis"]["browser_proof_fixture_count"] >= 8
++    assert model["domain_districts"][0]["domain_id"] == "domain_finance"
++    assert len(model["domain_districts"][0]["screen_polygon"]) == 4
++    assert model["selected_relationships"]["relationship_counts"]["incoming"] == 1
++    assert model["selected_relationships"]["relationship_counts"]["outgoing"] == 1
++    assert model["selected_relationships"]["relationship_counts"]["children"] == 1
++    assert model["timeline"]["all_events"][0]["id"] == "ev_001"
++    assert model["browser_proof_contract"]["status"] == "candidate_fixture_contract_ready"
+ 
+ 
+ def test_living_graph_view_model_missing_source_is_visibility_only(tmp_path: Path):
+@@ -275,6 +299,9 @@ def test_mounted_v0_4_living_graph_projects_full_visible_graph():
+     assert len(model["visible_nodes"]) == 64
+     assert len(model["visible_edges"]) == 72
+     assert len(model["domain_clusters"]) == 8
++    assert len(model["domain_districts"]) == 8
++    assert len(model["timeline"]["all_events"]) == 66
++    assert model["kpis"]["browser_proof_fixture_count"] >= 8
+     assert model["proof_gates"]["visible_nodes_project_all_nodes"] is True
+     assert model["proof_gates"]["visible_edges_project_all_edges"] is True
+     assert model["source_mount"]["mount_posture"] == "candidate_visibility_source"
+@@ -291,4 +318,38 @@ def test_static_visual_proof_harness_passes_for_mounted_living_graph():
+     assert proof["gates"]["all_edges_projected"] is True
+     assert proof["gates"]["required_shell_markers_present"] is True
+     assert proof["gates"]["forbidden_primary_patterns_absent"] is True
++    assert proof["gates"]["district_projection_present"] is True
++    assert proof["gates"]["focus_lenses_present"] is True
++    assert proof["gates"]["command_deck_present"] is True
++    assert proof["gates"]["browser_fixture_contract_present"] is True
+     assert proof["authority"]["browser_screenshot_proof"] is False
++
++
++def test_browser_proof_manifest_and_handoff_are_local_only(tmp_path: Path):
++    seed_living_graph(tmp_path)
++
++    manifest = build_living_graph_browser_proof_manifest(tmp_path)
++    handoff = build_living_graph_browser_proof_handoff(tmp_path)
++
++    assert manifest["status"] == "candidate_fixture_manifest_ready"
++    assert manifest["fixture_count"] >= 8
++    assert manifest["target"]["origin_policy"] == "local_files_or_loopback_only"
++    assert manifest["authority"]["browser_execution_authorized"] is False
++    assert manifest["fixtures"][0]["authority"]["production_authority"] is False
++    assert handoff["status"] == "candidate_browser_proof_handoff_ready"
++    assert handoff["acceptance_gates"]["graph_shell_zones_fixture_present"] is True
++    assert handoff["acceptance_gates"]["no_browser_execution_claim"] is True
++    assert "not_browser_screenshot_proof" in handoff["non_claims"]
++
++
++def test_write_browser_proof_handoff_outputs_candidate_files(tmp_path: Path):
++    seed_living_graph(tmp_path)
++
++    payload = write_living_graph_browser_proof_handoff(tmp_path)
++
++    manifest_path = tmp_path / payload["paths"]["manifest"]
++    handoff_path = tmp_path / payload["paths"]["handoff"]
++    assert manifest_path.exists()
++    assert handoff_path.exists()
++    assert json.loads(manifest_path.read_text(encoding="utf-8"))["fixture_count"] >= 8
++    assert json.loads(handoff_path.read_text(encoding="utf-8"))["authority"]["production_authority"] is False

@@ -1,0 +1,74 @@
+diff --git a/ION/04_packages/kernel/ion_codex_chat_memory_visualization_ui.py b/ION/04_packages/kernel/ion_codex_chat_memory_visualization_ui.py
+index 43e0b9b..3d8ef18 100644
+--- a/ION/04_packages/kernel/ion_codex_chat_memory_visualization_ui.py
++++ b/ION/04_packages/kernel/ion_codex_chat_memory_visualization_ui.py
+@@ -230,6 +230,7 @@ def _strata_panel(
+     segments_by_class: dict[str, list[Mapping[str, Any]]] = defaultdict(list)
+     for segment in segments:
+         segments_by_class[str(segment.get("window_class") or "UNKNOWN")].append(segment)
++    empty_segment_note = '<p class="empty-note">No visible segments.</p>'
+     rows = []
+     for item in windows:
+         window_class = str(item.get("window_class") or "UNKNOWN")
+@@ -240,7 +241,7 @@ def _strata_panel(
+             f'<b>{e(WINDOW_LABELS.get(window_class, window_class))}</b>'
+             f'<span>{e(item.get("segment_count"))} segments / {e(item.get("token_estimate"))} tok</span>'
+             '</div>'
+-            f'{cards or "<p class=\"empty-note\">No visible segments.</p>"}'
++            f'{cards or empty_segment_note}'
+             '</section>'
+         )
+     if not rows:
+@@ -308,6 +309,8 @@ def _route_graph_panel(
+         '</article>'
+         for edge_type, count in sorted(edge_counts.items())
+     )
++    empty_summary_card = '<article class="route-summary-card"><span>none</span><b>0</b></article>'
++    empty_route_edge = '<li class="route-edge-row"><b>No route edges</b></li>'
+     rows = []
+     for edge in edges[:18]:
+         source = segments_by_id.get(str(edge.get("from_segment_id")))
+@@ -333,14 +336,15 @@ def _route_graph_panel(
+     return (
+         '<section class="memory-panel">'
+         '<div class="memory-panel-title"><h3>Context Route Graph</h3><span>retrieval and compaction edges</span></div>'
+-        f'<div class="route-summary-grid">{summary_cards or "<article class=\"route-summary-card\"><span>none</span><b>0</b></article>"}</div>'
++        f'<div class="route-summary-grid">{summary_cards or empty_summary_card}</div>'
+         f'<div class="route-edge-filter-row">{"".join(filter_buttons)}</div>'
+-        f'<ol class="route-edge-list">{"".join(rows) or "<li class=\"route-edge-row\"><b>No route edges</b></li>"}</ol>'
++        f'<ol class="route-edge-list">{"".join(rows) or empty_route_edge}</ol>'
+         '</section>'
+     )
+ 
+ 
+ def _compaction_panel(events: list[Mapping[str, Any]]) -> str:
++    empty_compaction_event = '<li class="compaction-event"><b>No compaction events</b></li>'
+     rows = []
+     for event in events[:12]:
+         rows.append(
+@@ -355,7 +359,7 @@ def _compaction_panel(events: list[Mapping[str, Any]]) -> str:
+     return (
+         '<section class="memory-panel">'
+         '<div class="memory-panel-title"><h3>Compaction Timeline</h3><span>Capsule to Mini to long horizon</span></div>'
+-        f'<ol class="compaction-list">{"".join(rows) or "<li class=\"compaction-event\"><b>No compaction events</b></li>"}</ol>'
++        f'<ol class="compaction-list">{"".join(rows) or empty_compaction_event}</ol>'
+         '</section>'
+     )
+ 
+@@ -410,6 +414,7 @@ def _source_ref_panel(source_refs: list[Any], omitted_refs: list[Mapping[str, An
+         filter_buttons.append(
+             f'<button class="source-group-filter" type="button" data-source-group-filter="{e(group)}">{e(SOURCE_GROUP_LABELS.get(group, group))} <b>{e(len(items))}</b></button>'
+         )
++    empty_source_refs_note = '<p class="empty-note">No source refs.</p>'
+     lanes = "".join(
+         '<section class="source-ref-lane" data-source-ref-lane="{}">'.format(e(group))
+         + f'<h4>{e(SOURCE_GROUP_LABELS.get(group, group))}</h4>'
+@@ -421,7 +426,7 @@ def _source_ref_panel(source_refs: list[Any], omitted_refs: list[Mapping[str, An
+         '<section class="memory-panel source-ref-drilldown">'
+         '<div class="memory-panel-title"><h3>Source Ref Drilldown</h3><span>click a path/ref to inspect visible linkage</span></div>'
+         f'<div class="source-group-filter-row">{"".join(filter_buttons)}</div>'
+-        f'{lanes or "<p class=\"empty-note\">No source refs.</p>"}'
++        f'{lanes or empty_source_refs_note}'
+         '</section>'
+     )
+ 

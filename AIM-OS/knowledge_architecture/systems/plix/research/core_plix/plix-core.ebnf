@@ -1,0 +1,123 @@
+# Core-PLIx EBNF Grammar v0.1 (Final)
+
+**Date:** 2025-01-27  
+**Status:** ✅ **FINAL**  
+**Version:** 0.1.1  
+**Based on:** ChatGPT final refinements
+
+---
+
+## 📐 **EBNF GRAMMAR**
+
+```
+(* Core-PLIx Grammar v0.1.1 - Final *)
+
+(* Top-Level *)
+Intent ::= "intent" ident "{"
+             SpeechAct EntityClause ActionClause Contract [Policy] [Safety] Plan
+           "}"
+
+(* Speech Acts *)
+SpeechAct ::= "ask" | "assert" | "plan" | "ensure" | "measure" | "decide" | "retract"
+
+(* Entity Clause *)
+EntityClause ::= "ent:" Tag
+
+(* Action Clause *)
+ActionClause ::= "act:" Identifier | "using" "cap:" Tag
+
+(* Contract *)
+Contract ::= "contract" "{" "requires" Constr*  "ensures" Constr* "}"
+
+(* Policy *)
+Policy ::= "policy" "{" PolicyRule* "}"
+
+PolicyRule ::= Identifier ComparisonOp (Scalar | Identifier | Tag)
+
+(* Safety *)
+Safety ::= "safety" "{" SafetyRule* "}"
+
+SafetyRule ::= "min_confidence" "=" Number
+             | "effects" "=" "[" EffectList "]"
+
+EffectList ::= Effect ("," Effect)*
+Effect ::= "idempotent" | "compensable" | "external_io" | "data_mutation"
+
+(* Plan *)
+Plan ::= "plan" "{" Step* "}"
+
+Step ::= Task | Depends | Retry | Fallback | Comp
+
+(* Task *)
+Task ::= "task" ident ":" Action "(" [Params] ")" ["where" LetBindings]
+
+LetBindings ::= LetBinding ("," LetBinding)*
+LetBinding ::= ident "=" Expr
+
+Params ::= Param ("," Param)*
+Param ::= ident "=" (Scalar | TagRef | Expr)
+
+TagRef ::= Tag | ident "." "ref" ":" Tag
+
+(* Dependencies *)
+Depends ::= "depends" ident "<-" ident
+
+(* Retry *)
+Retry ::= "retry" ident "," Nat "," Backoff
+
+Backoff ::= ("linear" | "exponential" | "fixed") "(" Duration "," Duration ")"
+
+(* Fallback *)
+Fallback ::= "fallback" ident "->" ident
+
+(* Compensation *)
+Comp ::= "compensate" ident "->" Action "(" [Params] ")"
+
+(* Constraints *)
+Constr ::= Expr | LogicalConstr | QuantifiedConstr
+
+Expr ::= Identifier ComparisonOp (Scalar | Identifier | Tag | Expr)
+       | Expr ("and" | "or") Expr
+       | "not" Expr
+
+LogicalConstr ::= Expr ("and" | "or" | "not") Expr
+
+QuantifiedConstr ::= ("forall" | "exists") ident ":" Expr
+
+ComparisonOp ::= "==" | "!=" | "<=" | ">=" | "<" | ">"
+
+(* Primitives *)
+Tag ::= "plix://" Namespace "/" Path ["#rev@" Hash]
+Namespace ::= Identifier ("." Identifier)*
+Path ::= Identifier ("/" Identifier)*
+Hash ::= HexString
+
+Identifier ::= Letter (Letter | Digit | "_" | "." | "/")*
+Scalar ::= String | Number | Boolean
+String ::= '"' StringChar* '"'
+Number ::= Integer | Float
+Boolean ::= "true" | "false"
+Duration ::= Integer ("ms" | "s" | "m" | "h" | "d")
+HexString ::= ("0".."9" | "a".."f" | "A".."F")+
+Action ::= Identifier | Tag
+```
+
+---
+
+## 🎯 **CHANGES FROM v0.1**
+
+### **Added:**
+1. **Policy block** in Intent
+2. **Safety block** in Intent
+3. **Where clause** in Task (for computed params)
+
+### **Refined:**
+1. **Effect list** syntax in Safety
+2. **LetBindings** syntax in Task
+3. **TagRef** syntax (supports computed references)
+
+---
+
+**Status:** ✅ **GRAMMAR v0.1.1 FINAL**  
+**Next:** Implementation
+

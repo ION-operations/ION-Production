@@ -1,0 +1,19 @@
+{
+  "system_slug": "vllm",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-03",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "nvidia-cuda",
+      "evidence_tier": "INFERRED",
+      "notes": "Common deployments target NVIDIA GPUs via CUDA-class stacks."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "Helm/K8s deployment patterns common for serving at scale."
+    }
+  ]
+}

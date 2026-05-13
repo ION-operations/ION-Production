@@ -1,0 +1,203 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aim-os.local/schemas/shadow_bci_v1.schema.json",
+  "title": "Shadow BCI v1",
+  "description": "Advisory-first shadow indexing schema for Contextual Sync over AIM-OS Prime.",
+  "type": "object",
+  "required": [
+    "record_type",
+    "record_id",
+    "source_plane",
+    "observed_at",
+    "recorded_at"
+  ],
+  "properties": {
+    "record_type": {
+      "type": "string",
+      "enum": [
+        "bci_atom",
+        "bci_edge",
+        "bci_boundary_view",
+        "bci_sync_advisory"
+      ]
+    },
+    "record_id": {
+      "type": "string",
+      "description": "UUID for this shadow record"
+    },
+    "source_plane": {
+      "type": "string",
+      "enum": [
+        "mapper",
+        "daemon",
+        "kernel",
+        "contextual_sync"
+      ]
+    },
+    "source_ref": {
+      "type": "string",
+      "description": "File path + symbol or tool reference"
+    },
+    "observed_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "valid_from": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "valid_to": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "recorded_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "last_checked_at": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "payload_hash": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "payload": {
+      "type": "object"
+    },
+    "relations": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "to_record_id",
+          "relation_type"
+        ],
+        "properties": {
+          "to_record_id": {
+            "type": "string"
+          },
+          "relation_type": {
+            "type": "string",
+            "enum": [
+              "depends_on",
+              "derived_from",
+              "supports",
+              "contradicts",
+              "supersedes",
+              "emits"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    "view_level": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        null,
+        "L0",
+        "L1",
+        "L2",
+        "L3",
+        "L4",
+        "L5"
+      ]
+    },
+    "sync_state": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        null,
+        "fresh",
+        "stale",
+        "drift",
+        "contradiction",
+        "unknown"
+      ]
+    },
+    "severity": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        null,
+        "info",
+        "warn",
+        "high"
+      ]
+    },
+    "message": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "producer": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "producer_version": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "parse_confidence": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            null,
+            "High",
+            "Degraded",
+            "Fallback"
+          ]
+        },
+        "tool_call_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "snapshot_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "correlation_id": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

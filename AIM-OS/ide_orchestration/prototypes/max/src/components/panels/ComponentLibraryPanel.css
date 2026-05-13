@@ -1,0 +1,364 @@
+/* Component Library Panel Styles */
+.component-library-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: #1e1e1e;
+  color: #cccccc;
+}
+
+.component-library-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  background-color: #252526;
+  border-bottom: 1px solid #3e3e3e;
+}
+
+.component-library-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.component-library-header-icon {
+  width: 20px;
+  height: 20px;
+  color: #a78bfa;
+  flex-shrink: 0;
+}
+
+.component-library-header-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #a78bfa;
+  margin: 0;
+}
+
+.component-library-header-subtitle {
+  font-size: 11px;
+  color: #858585;
+  margin: 2px 0 0 0;
+}
+
+.component-library-header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.component-library-count {
+  font-size: 11px;
+  color: #858585;
+}
+
+.component-library-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  background-color: #252526;
+  border-bottom: 1px solid #3e3e3e;
+}
+
+.component-library-search {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  background-color: #1e1e1e;
+  border: 1px solid #3e3e3e;
+  border-radius: 4px;
+}
+
+.component-library-search-icon {
+  width: 14px;
+  height: 14px;
+  color: #858585;
+  flex-shrink: 0;
+}
+
+.component-library-search-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #cccccc;
+  font-size: 12px;
+  outline: none;
+}
+
+.component-library-search-input::placeholder {
+  color: #5a5a5a;
+}
+
+.component-library-categories {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.component-library-category {
+  padding: 4px 8px;
+  background-color: #1e1e1e;
+  border: 1px solid #3e3e3e;
+  border-radius: 4px;
+  color: #858585;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.component-library-category:hover {
+  background-color: #2d2d30;
+  color: #cccccc;
+}
+
+.component-library-category.active {
+  background-color: #007acc;
+  border-color: #007acc;
+  color: #ffffff;
+}
+
+.component-library-list {
+  flex: 1;
+  overflow: auto;
+  padding: 8px;
+}
+
+.component-library-item {
+  border: 1px solid #3e3e3e;
+  border-radius: 4px;
+  background-color: #252526;
+  margin-bottom: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.component-library-item:hover {
+  border-color: #007acc;
+  background-color: #2a2d2e;
+}
+
+.component-library-item.selected {
+  border-color: #007acc;
+  background-color: #2a2d2e;
+}
+
+.component-library-item-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+}
+
+.component-library-item-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.component-library-item-icon {
+  width: 16px;
+  height: 16px;
+  color: #858585;
+  flex-shrink: 0;
+}
+
+.component-library-item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.component-library-item-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #cccccc;
+  margin-bottom: 4px;
+}
+
+.component-library-item-description {
+  font-size: 11px;
+  color: #858585;
+  line-height: 1.4;
+}
+
+.component-library-item-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.component-library-item-usage {
+  font-size: 10px;
+  color: #858585;
+  font-weight: 600;
+}
+
+.component-library-item-details {
+  padding: 12px;
+  border-top: 1px solid #3e3e3e;
+  background-color: #1e1e1e;
+}
+
+.component-library-detail-section {
+  margin-bottom: 12px;
+}
+
+.component-library-detail-section:last-child {
+  margin-bottom: 0;
+}
+
+.component-library-detail-section-header {
+  font-size: 11px;
+  font-weight: 600;
+  color: #a78bfa;
+  margin-bottom: 6px;
+}
+
+.component-library-usage,
+.component-library-file-path {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  background-color: #252526;
+  border: 1px solid #3e3e3e;
+  border-radius: 4px;
+}
+
+.component-library-code {
+  flex: 1;
+  font-size: 11px;
+  font-family: monospace;
+  color: #60a5fa;
+  overflow-x: auto;
+}
+
+.component-library-copy-button,
+.component-library-external-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: #858585;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.component-library-copy-button:hover,
+.component-library-external-button:hover {
+  background-color: #2d2d30;
+  color: #cccccc;
+}
+
+.component-library-copy-icon,
+.component-library-external-icon {
+  width: 12px;
+  height: 12px;
+}
+
+.component-library-tags,
+.component-library-dependencies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.component-library-tag,
+.component-library-dependency {
+  padding: 2px 6px;
+  background-color: #252526;
+  border: 1px solid #3e3e3e;
+  border-radius: 4px;
+  font-size: 10px;
+  color: #858585;
+}
+
+.component-library-tag {
+  color: #a78bfa;
+}
+
+.component-library-dependency {
+  color: #60a5fa;
+}
+
+.component-library-examples {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.component-library-example-code {
+  padding: 6px 8px;
+  background-color: #252526;
+  border: 1px solid #3e3e3e;
+  border-radius: 4px;
+  font-size: 11px;
+  font-family: monospace;
+  color: #60a5fa;
+}
+
+.component-library-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+  color: #858585;
+}
+
+.component-library-empty-icon {
+  width: 32px;
+  height: 32px;
+  color: #858585;
+  margin-bottom: 12px;
+}
+
+.component-library-empty p {
+  margin: 0;
+  font-size: 13px;
+}
+
+.component-library-empty-hint {
+  font-size: 11px;
+  margin-top: 8px;
+  color: #6b7280;
+}
+
+.component-library-error {
+  padding: 24px;
+  text-align: center;
+  color: #f87171;
+  font-size: 12px;
+}
+
+/* Scrollbar styling */
+.component-library-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.component-library-list::-webkit-scrollbar-track {
+  background: #1e1e1e;
+}
+
+.component-library-list::-webkit-scrollbar-thumb {
+  background: #3e3e3e;
+  border-radius: 4px;
+}
+
+.component-library-list::-webkit-scrollbar-thumb:hover {
+  background: #4e4e4e;
+}
+

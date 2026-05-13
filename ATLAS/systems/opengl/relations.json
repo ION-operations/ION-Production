@@ -1,0 +1,55 @@
+{
+  "system_slug": "opengl",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-03",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "spir-v",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "OpenGL 4.6-era SPIR-V ingest via ARB_gl_spirv / SPIR-V extension track (Khronos); primary shader path remains GLSL historically."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "INFERRED",
+      "notes": "OpenGL drivers and Mesa stacks on Linux hosts."
+    },
+    {
+      "type": "integrates_with",
+      "target": "windows-nt",
+      "evidence_tier": "INFERRED",
+      "notes": "OpenGL via vendor ICDs on Windows (WGL)."
+    },
+    {
+      "type": "competes_with",
+      "target": "vulkan",
+      "evidence_tier": "INFERRED",
+      "notes": "Overlapping GPU graphics API problem space; Vulkan is the explicit low-overhead successor ecosystem (coexistence is common)."
+    },
+    {
+      "type": "competes_with",
+      "target": "metal",
+      "evidence_tier": "INFERRED",
+      "notes": "On Apple platforms, Metal is the supported low-overhead GPU path; legacy OpenGL exists but is deprecated for new development."
+    },
+    {
+      "type": "competes_with",
+      "target": "direct3d",
+      "evidence_tier": "INFERRED",
+      "notes": "Overlapping GPU graphics API space on Windows; many titles and engines target Direct3D while OpenGL remains supported via ICDs."
+    },
+    {
+      "type": "integrates_with",
+      "target": "webgl",
+      "evidence_tier": "INFERRED",
+      "notes": "WebGL is specified as a browser embedding of OpenGL ES-class APIs derived from the OpenGL family (Khronos)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "opengl-es",
+      "evidence_tier": "INFERRED",
+      "notes": "OpenGL ES is the embedded/mobile profile of the OpenGL specification family (Khronos)."
+    }
+  ]
+}

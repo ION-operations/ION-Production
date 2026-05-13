@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "influences",
+      "target": "linux-kernel",
+      "evidence_tier": "HISTORICAL",
+      "notes": "Unix and successor OS families absorbed selective Multics ideas (hierarchical FS, protection research lineage); precise influence mapping is historical scholarship, not a code fork."
+    },
+    {
+      "type": "influences",
+      "target": "windows-nt",
+      "evidence_tier": "INFERRED",
+      "notes": "Indirect: NT and POSIX ecosystems share problem domain with Multics-era research; no fork relationship. Keep INFERRED until a primary NT design memoir cites Multics directly in ledger."
+    }
+  ]
+}

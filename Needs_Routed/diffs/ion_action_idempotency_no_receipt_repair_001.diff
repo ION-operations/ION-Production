@@ -1,0 +1,363 @@
+--- a/ION/04_packages/kernel/ion_chatgpt_browser_mcp_connector_contract.py
++++ b/ION/04_packages/kernel/ion_chatgpt_browser_mcp_connector_contract.py
+@@ -47,6 +47,7 @@
+ OUTPUT_RELATIVE_PATH = Path("ION/05_context/current/CHATGPT_BROWSER_MCP_CONNECTOR_CONTRACT_V120.json")
+ CONNECTOR_STATE_DIR = Path("ION/05_context/current/chatgpt_connector")
+ CODEX_WORK_QUEUE_RELATIVE_PATH = Path("ION/05_context/current/ACTIVE_CHATGPT_CONNECTOR_CODEX_WORK_QUEUE.json")
++CODEX_WORK_REQUEST_IDEMPOTENCY_LEDGER_RELATIVE_PATH = CONNECTOR_STATE_DIR / "runtime" / "codex_work_request_idempotency_ledger.json"
+ ACTIVE_CARRIER_MESSAGE_QUEUE_RELATIVE_PATH = Path("ION/05_context/current/ACTIVE_CARRIER_MESSAGE_QUEUE.json")
+ 
+ PROTOCOL_RELATIVE_PATH = Path("ION/02_architecture/ION_CHATGPT_BROWSER_MCP_CONNECTOR_PROTOCOL.md")
+@@ -759,6 +760,135 @@
+     return path
+ 
+ 
++
++def _normalize_idempotency_token(value: str) -> str:
++    return re.sub(r"[^a-zA-Z0-9_.:-]+", "_", value.strip())[:180]
++
++
++def _codex_work_request_objective_fingerprint(objective: str) -> str:
++    normalized = re.sub(r"\s+", " ", objective).strip()
++    return _sha256_text(normalized)
++
++
++def _codex_work_request_dedupe_key(args: Mapping[str, Any], objective: str) -> tuple[str, str, bool]:
++    """Return (dedupe_key, source, implicit).
++
++    The ChatGPT carrier can see no response for a mutation even after the local
++    server accepted it. Without a stable key, safe operator retries create
++    duplicate Codex work packets. Prefer caller-provided idempotency/client
++    keys; fall back to an objective fingerprint so no-receipt retries for the
++    same objective return the original packet instead of mutating again.
++    """
++
++    explicit = str(args.get("idempotency_key") or "").strip()
++    if explicit:
++        return f"idempotency_key:{_normalize_idempotency_token(explicit)}", "idempotency_key", False
++    client_request_id = str(args.get("client_request_id") or "").strip()
++    if client_request_id:
++        return f"client_request_id:{_normalize_idempotency_token(client_request_id)}", "client_request_id", False
++    return f"objective_sha256:{_codex_work_request_objective_fingerprint(objective)}", "objective_sha256", True
++
++
++def _load_codex_work_request_idempotency_ledger(root: Path) -> dict[str, Any]:
++    path = root / CODEX_WORK_REQUEST_IDEMPOTENCY_LEDGER_RELATIVE_PATH
++    payload = _read_json(path)
++    if isinstance(payload, dict):
++        payload.setdefault("schema_id", "ion.chatgpt_browser_connector_codex_work_request_idempotency_ledger.v1")
++        payload.setdefault("entries", {})
++        return payload
++    return {
++        "schema_id": "ion.chatgpt_browser_connector_codex_work_request_idempotency_ledger.v1",
++        "created_at": _now(),
++        "updated_at": _now(),
++        "entries": {},
++        "production_authority": False,
++        "live_execution_authority": False,
++    }
++
++
++def _save_codex_work_request_idempotency_ledger(root: Path, ledger: Mapping[str, Any]) -> None:
++    _write_json(root / CODEX_WORK_REQUEST_IDEMPOTENCY_LEDGER_RELATIVE_PATH, dict(ledger))
++
++
++def _codex_work_request_existing_entry(root: Path, dedupe_key: str) -> dict[str, Any] | None:
++    ledger = _load_codex_work_request_idempotency_ledger(root)
++    entries = ledger.get("entries") if isinstance(ledger.get("entries"), Mapping) else {}
++    entry = entries.get(dedupe_key)
++    if isinstance(entry, Mapping):
++        packet_path = root / str(entry.get("packet_path") or "")
++        if packet_path.exists():
++            return dict(entry)
++    # Older packets may predate the ledger. Scan bounded request packets for
++    # a recorded key so the first replay after an upgrade can still be safe.
++    requests_root = root / CONNECTOR_STATE_DIR / "codex_work_requests"
++    if requests_root.exists():
++        for path in sorted(requests_root.glob("*.json"), reverse=True):
++            payload = _load_json_file(path)
++            if payload.get("dedupe_key") == dedupe_key:
++                return {
++                    "request_id": payload.get("request_id"),
++                    "packet_path": path.relative_to(root).as_posix(),
++                    "status": payload.get("status"),
++                    "objective_sha256": payload.get("objective_sha256"),
++                    "created_at": payload.get("created_at"),
++                    "found_by": "request_scan",
++                }
++    return None
++
++
++def _record_codex_work_request_idempotency(
++    root: Path,
++    dedupe_key: str,
++    *,
++    source: str,
++    implicit: bool,
++    payload: Mapping[str, Any],
++    packet_path: Path,
++) -> None:
++    ledger = _load_codex_work_request_idempotency_ledger(root)
++    entries = dict(ledger.get("entries") if isinstance(ledger.get("entries"), Mapping) else {})
++    entries[dedupe_key] = {
++        "recorded_at": _now(),
++        "source": source,
++        "implicit": implicit,
++        "request_id": payload.get("request_id"),
++        "packet_path": packet_path.relative_to(root).as_posix(),
++        "status": payload.get("status"),
++        "objective_sha256": payload.get("objective_sha256"),
++        "production_authority": False,
++        "live_execution_authority": False,
++    }
++    ledger["entries"] = entries
++    ledger["updated_at"] = _now()
++    _save_codex_work_request_idempotency_ledger(root, ledger)
++
++
++def _codex_work_request_replay_result(root: Path, tool_name: str, existing: Mapping[str, Any], dedupe_key: str, source: str) -> dict[str, Any]:
++    """Return a successful idempotent replay without mutating the queue.
++
++    Retried mutation calls after a no-receipt/timeout must be safe. Returning
++    ok=True lets ChatGPT recover the original packet handle while
++    duplicate_prevented explains that no new packet was created.
++    """
++
++    queue = _codex_work_queue(root)
++    return _ok(
++        tool_name,
++        {
++            "request_id": existing.get("request_id"),
++            "packet_path": existing.get("packet_path"),
++            "codex_work_queue_path": CODEX_WORK_QUEUE_RELATIVE_PATH.as_posix(),
++            "codex_work_queue_request_count": queue["request_count"],
++            "idempotent_replay": True,
++            "duplicate_prevented": True,
++            "dedupe_key": dedupe_key,
++            "idempotency_source": source,
++            "existing": dict(existing),
++        },
++        mutates_active_state=False,
++    )
++
++
+ def _artifact_receipt(root: Path, prefix: str, payload: Mapping[str, Any]) -> Path:
+     return _write_connector_packet(root, "artifact_receipts", prefix, payload)
+ 
+@@ -1356,6 +1486,10 @@
+                 "request_id": payload.get("request_id"),
+                 "path": rel_path,
+                 "objective": payload.get("objective"),
++                "objective_sha256": payload.get("objective_sha256") or _codex_work_request_objective_fingerprint(str(payload.get("objective") or "")),
++                "dedupe_key": payload.get("dedupe_key"),
++                "idempotency_source": payload.get("idempotency_source"),
++                "implicit_idempotency_key": payload.get("implicit_idempotency_key"),
+                 "status": payload.get("status"),
+                 "created_at": payload.get("created_at"),
+                 "updated_at": payload.get("updated_at"),
+@@ -1366,11 +1500,29 @@
+                     1 for item in returns if item["packet"].get("accepted_for_carrier_intake") is True
+                 ),
+             })
++    groups: dict[str, list[dict[str, Any]]] = {}
++    for request in requests:
++        key = str(request.get("dedupe_key") or request.get("objective_sha256") or "").strip()
++        if key:
++            groups.setdefault(key, []).append(request)
++    duplicate_group_count = 0
++    for key, rows in groups.items():
++        if len(rows) <= 1:
++            continue
++        duplicate_group_count += 1
++        canonical = sorted(rows, key=lambda row: str(row.get("created_at") or ""))[0]
++        canonical_id = canonical.get("request_id")
++        for index, row in enumerate(sorted(rows, key=lambda item: str(item.get("created_at") or ""))):
++            row["duplicate_group_key"] = key
++            row["duplicate_group_count"] = len(rows)
++            row["duplicate_index"] = index
++            row["duplicate_of_request_id"] = None if row.get("request_id") == canonical_id else canonical_id
+     return {
+         "schema_id": "ion.chatgpt_browser_connector_codex_work_queue.v1",
+         "queue_path": CODEX_WORK_QUEUE_RELATIVE_PATH.as_posix(),
+         "state_dir": (CONNECTOR_STATE_DIR / "codex_work_requests").as_posix(),
+         "request_count": len(requests),
++        "duplicate_group_count": duplicate_group_count,
+         "requests": requests,
+         "production_authority": False,
+         "live_execution_authority": False,
+@@ -1812,12 +1964,24 @@
+         objective = str(args.get("objective") or "").strip()
+         if not objective:
+             return _blocked(tool_name, "objective_required")
++        dedupe_key, dedupe_source, implicit_dedupe = _codex_work_request_dedupe_key(args, objective)
++        if args.get("force_new") is not True:
++            existing = _codex_work_request_existing_entry(shell_root, dedupe_key)
++            if existing:
++                return _codex_work_request_replay_result(shell_root, tool_name, existing, dedupe_key, dedupe_source)
+         now = _now()
+         request_id = f"codex_req_{now.replace(':', '').replace('+', 'Z')}_{_safe_slug(objective)}"
++        objective_sha256 = _codex_work_request_objective_fingerprint(objective)
+         payload = {
+             "schema_id": "ion.chatgpt_browser_connector_codex_work_request.v1",
+             "request_id": request_id,
+             "objective": objective,
++            "objective_sha256": objective_sha256,
++            "dedupe_key": dedupe_key,
++            "idempotency_source": dedupe_source,
++            "implicit_idempotency_key": implicit_dedupe,
++            "client_request_id": str(args.get("client_request_id") or "").strip() or None,
++            "idempotency_key": str(args.get("idempotency_key") or "").strip() or None,
+             "requested_by": "chatgpt_browser_connector",
+             "status": "QUEUED_FOR_CODEX_CARRIER",
+             "created_at": now,
+@@ -1843,6 +2007,14 @@
+         packet_path = _write_connector_packet(shell_root, "codex_work_requests", objective, payload)
+         payload["packet_path"] = packet_path.relative_to(shell_root).as_posix()
+         _write_json(packet_path, payload)
++        _record_codex_work_request_idempotency(
++            shell_root,
++            dedupe_key,
++            source=dedupe_source,
++            implicit=implicit_dedupe,
++            payload=payload,
++            packet_path=packet_path,
++        )
+         queue = _write_codex_work_queue_index(shell_root)
+         return _ok(
+             tool_name,
+@@ -1851,6 +2023,12 @@
+                 "packet_path": packet_path.relative_to(shell_root).as_posix(),
+                 "codex_work_queue_path": CODEX_WORK_QUEUE_RELATIVE_PATH.as_posix(),
+                 "codex_work_queue_request_count": queue["request_count"],
++                "idempotent_replay": False,
++                "duplicate_prevented": False,
++                "dedupe_key": dedupe_key,
++                "idempotency_source": dedupe_source,
++                "implicit_idempotency_key": implicit_dedupe,
++                "idempotency_ledger_path": CODEX_WORK_REQUEST_IDEMPOTENCY_LEDGER_RELATIVE_PATH.as_posix(),
+             },
+             mutates_active_state=True,
+         )
+--- a/ION/04_packages/kernel/ion_chatgpt_browser_mcp_http_preview.py
++++ b/ION/04_packages/kernel/ion_chatgpt_browser_mcp_http_preview.py
+@@ -591,6 +591,18 @@
+                         "required": ["path"],
+                         "additionalProperties": False,
+                     },
++                },
++                "idempotency_key": {
++                    "type": "string",
++                    "description": "Stable key for safe retries; repeated keys return the original packet instead of creating a duplicate.",
++                },
++                "client_request_id": {
++                    "type": "string",
++                    "description": "Optional carrier-side request id used for no-receipt/timeout replay recovery.",
++                },
++                "force_new": {
++                    "type": "boolean",
++                    "description": "Explicitly bypass dedupe for intentional duplicate work. Defaults to false.",
+                 },
+             },
+             "required": ["objective", "confirmation"],
+--- a/ION/04_packages/kernel/ion_dual_codex_chat.py
++++ b/ION/04_packages/kernel/ion_dual_codex_chat.py
+@@ -1568,6 +1568,8 @@
+     objective: str,
+     confirmation: str,
+     source_turn_id: str | None = None,
++    idempotency_key: str | None = None,
++    client_request_id: str | None = None,
+ ) -> dict[str, Any]:
+     if confirmation != WRITE_CONFIRMATION_TOKEN:
+         return {"ok": False, "finding": "bounded_write_confirmation_required", "required_confirmation": WRITE_CONFIRMATION_TOKEN}
+@@ -1626,17 +1628,26 @@
+             execution_mode="ion_comms_projection",
+             model_move=model_move,
+         )
++    stable_key = str(idempotency_key or "").strip()
++    if not stable_key:
++        source = str(source_turn_id or "").strip()
++        key_seed = f"{lane_id}:{source or _sha256_text(queued_text)}"
++        stable_key = f"dual_codex_chat:{_sha256_text(key_seed)}"
++    connector_args = {
++        "objective": queued_text,
++        "codex_model_move": model_move,
++        "required_context_reads": [{"path": ref, "kind": "file", "required": True} for ref in context_refs],
++        "ion_skill_activation": skill_activation,
++        "ion_chat_engine_turn": chat_engine_turn,
++        "request_kind": (chat_engine_turn.get("carrier_strategy") or {}).get("request_kind") if isinstance(chat_engine_turn.get("carrier_strategy"), Mapping) else "codex_work",
++        "idempotency_key": stable_key,
++    }
++    if client_request_id:
++        connector_args["client_request_id"] = client_request_id
+     result = call_chatgpt_connector_tool(
+         root,
+         "ion_request_codex_work_packet",
+-        {
+-            "objective": queued_text,
+-            "codex_model_move": model_move,
+-            "required_context_reads": [{"path": ref, "kind": "file", "required": True} for ref in context_refs],
+-            "ion_skill_activation": skill_activation,
+-            "ion_chat_engine_turn": chat_engine_turn,
+-            "request_kind": (chat_engine_turn.get("carrier_strategy") or {}).get("request_kind") if isinstance(chat_engine_turn.get("carrier_strategy"), Mapping) else "codex_work",
+-        },
++        connector_args,
+     )
+     data = result.get("data") if isinstance(result.get("data"), Mapping) else {}
+     link = {
+--- a/ION/tests/test_kernel_ion_chatgpt_browser_mcp_connector_contract.py
++++ b/ION/tests/test_kernel_ion_chatgpt_browser_mcp_connector_contract.py
+@@ -170,6 +170,53 @@
+     assert result["ok"] is True
+     assert captured["timeout_seconds"] == 900
+ 
++
++
++def test_codex_work_packet_request_is_idempotent_for_safe_retry(tmp_path):
++    _seed_root(tmp_path)
++    args = {
++        "objective": "B00 duplicate no-receipt retry should not create another work packet",
++        "idempotency_key": "b00-safe-retry-key",
++    }
++
++    first = call_chatgpt_connector_tool(tmp_path, "ion_request_codex_work_packet", args)
++    second = call_chatgpt_connector_tool(tmp_path, "ion_request_codex_work_packet", args)
++    queue = call_chatgpt_connector_tool(tmp_path, "ion_codex_work_queue", {"limit": 10})
++
++    assert first["ok"] is True
++    assert first["mutates_active_state"] is True
++    assert second["ok"] is True
++    assert second["mutates_active_state"] is False
++    assert second["data"]["idempotent_replay"] is True
++    assert second["data"]["duplicate_prevented"] is True
++    assert second["data"]["request_id"] == first["data"]["request_id"]
++    assert second["data"]["packet_path"] == first["data"]["packet_path"]
++    assert len(list((tmp_path / "ION/05_context/current/chatgpt_connector/codex_work_requests").glob("*.json"))) == 1
++    assert queue["data"]["request_count"] == 1
++
++
++def test_codex_work_packet_request_implicit_objective_dedupe_catches_no_receipt_retry(tmp_path):
++    _seed_root(tmp_path)
++    args = {
++        "objective": "Operator retries same objective after no receipt from carrier",
++    }
++
++    first = call_chatgpt_connector_tool(tmp_path, "ion_request_codex_work_packet", args)
++    second = call_chatgpt_connector_tool(tmp_path, "ion_request_codex_work_packet", args)
++    forced = call_chatgpt_connector_tool(tmp_path, "ion_request_codex_work_packet", {**args, "force_new": True})
++    queue = call_chatgpt_connector_tool(tmp_path, "ion_codex_work_queue", {"limit": 10})
++
++    assert first["ok"] is True
++    assert first["data"]["implicit_idempotency_key"] is True
++    assert second["ok"] is True
++    assert second["mutates_active_state"] is False
++    assert second["data"]["idempotent_replay"] is True
++    assert second["data"]["packet_path"] == first["data"]["packet_path"]
++    assert forced["ok"] is True
++    assert forced["data"]["idempotent_replay"] is False
++    assert forced["data"]["packet_path"] != first["data"]["packet_path"]
++    assert queue["data"]["request_count"] == 2
++    assert queue["data"]["duplicate_group_count"] == 1
+ 
+ def test_task_return_requires_context_and_template_action_proof(tmp_path):
+     _seed_root(tmp_path)

@@ -1,0 +1,23 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "competes_with",
+      "target": "kubernetes",
+      "evidence_tier": "HISTORICAL",
+      "notes": "Parallel datacenter scheduler era; Mesos now retired — comparative framing only."
+    },
+    {
+      "type": "integrates_with",
+      "target": "docker",
+      "evidence_tier": "HISTORICAL",
+      "notes": "Historical Mesos project materials described Docker and AppC image launches; verify per Attic-era docs if upgrading tier."
+    },
+    {
+      "type": "depends_on",
+      "target": "linux-kernel",
+      "evidence_tier": "INFERRED",
+      "notes": "Primary production deployments were Linux-centric; do not over-assert OS coverage."
+    }
+  ]
+}

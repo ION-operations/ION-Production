@@ -1,0 +1,13 @@
+docs/SOVEREIGN_CONTEXT_MAPPER_AIMOS_PRIME_BUILD_PLAN.md  — Canonical build plan (Strike 2 → 1 → 3, tiers, envelope, phases).
+docs/MISSION_START_SOVEREIGN_CONTEXT_MAPPER_2026-02-28.md — Mission start and alignment; points to build plan.
+docs/DAEMON_STDIO_MCP_AND_CONTEXT_BUS_FINDINGS.md       — Daemon, stdio, MCP tools and context bus mapping in AIM-OS.
+docs/REPLY_TO_DEEPTHINK_AIMOS_GRAND_CONVERGENCE.md       — Reply to DeepThink: 4-tier anatomy, daemon launch, Tauri wiring.
+daemon/lucid_mcp_server.py                               — Python MCP daemon entrypoint; JSON-RPC over stdio.
+daemon/README.txt                                        — How to launch daemon; MCP stdio and tools.
+wire_proof/src/mcp_daemon_bridge.rs                      — MCP bridge: spawn daemon, send_request, initialize, sanity probe.
+wire_proof/src/main.rs                                   — Wire proof binary: handshake, tools/list, tools/call(get_memory_stats).
+context_mapper_lab/src/extractor.rs                      — Tree-sitter extractor: use + pub struct/enum/trait/fn/type/const.
+context_mapper_lab/src/types.rs                          — ParseConfidence, ExtractedFile, Contract, ContractExtractor.
+context_mapper_lab/sample.rs                             — Sample Rust file for extractor harness (all six contract kinds).
+logs/wire_proof_run.txt                                  — Successful wire proof run summary.
+logs/context_mapper_lab_run.txt                          — Successful context mapper lab run summary.

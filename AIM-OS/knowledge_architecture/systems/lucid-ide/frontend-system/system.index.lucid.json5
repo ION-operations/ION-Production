@@ -1,0 +1,243 @@
+{
+  "systemId": "lucid-ide.frontendSystem",
+  "humanName": "Lucid IDE Frontend System",
+  "version": "v1.0.0",
+  "status": "production",
+  
+  "intent": {
+    "purpose": "Provide comprehensive Next.js 15 + React 19 frontend interface for Lucid IDE with 7 operational modes, resizable panels, advanced UI components, and seamless integration with backend services",
+    "must_not_regress": [
+      "Must not break SSR/SSG compatibility",
+      "Must not lose state on navigation",
+      "Must not break keyboard shortcuts",
+      "Must not exceed 100ms render time for main page",
+      "Must not break accessibility standards"
+    ],
+    "why_it_exists": "Transforms backend API capabilities into intuitive, powerful IDE interface enabling developers to build, visualize, and manage complex systems through unified multi-mode interface."
+  },
+  
+  "classification": {
+    "security_level": "high",
+    "perf_sensitivity": "high",
+    "ownership": "lucid-ide",
+    "sideEffects": [
+      "Renders user interface",
+      "Manages application state",
+      "Handles user interactions",
+      "Coordinates with backend APIs",
+      "Manages theme and preferences"
+    ]
+  },
+  
+  "internalNodes": [
+    {
+      "id": "appRouter",
+      "responsibility": "Next.js 15 App Router managing page routing and layout",
+      "must_never": [
+        "Break SSR/SSG compatibility",
+        "Allow unauthorized route access",
+        "Lose route state on navigation"
+      ],
+      "perf_budget_ms": 50,
+      "status": "production"
+    },
+    {
+      "id": "mainPage",
+      "responsibility": "Main application page orchestrating all modes and panels",
+      "must_never": [
+        "Lose state on mode switch",
+        "Allow concurrent mode activation",
+        "Break keyboard shortcuts"
+      ],
+      "perf_budget_ms": 100,
+      "status": "production"
+    },
+    {
+      "id": "uiComponentLibrary",
+      "responsibility": "50+ Radix UI components providing accessible UI primitives",
+      "must_never": [
+        "Break accessibility standards",
+        "Lose Radix UI compliance",
+        "Create inaccessible components"
+      ],
+      "perf_budget_ms": 16,
+      "status": "production"
+    },
+    {
+      "id": "leftDrawer",
+      "responsibility": "Left sidebar with file tree, search, and navigation tabs",
+      "must_never": [
+        "Lose file tree state",
+        "Break resizing functionality",
+        "Allow unauthorized file access"
+      ],
+      "perf_budget_ms": 50,
+      "status": "production"
+    },
+    {
+      "id": "rightDrawer",
+      "responsibility": "Right sidebar with AI chat, tools, and context panels",
+      "must_never": [
+        "Lose chat history",
+        "Break AI context integration",
+        "Expose sensitive data"
+      ],
+      "perf_budget_ms": 50,
+      "status": "production"
+    },
+    {
+      "id": "bottomDrawer",
+      "responsibility": "Bottom panel with terminal, logs, and context preview",
+      "must_never": [
+        "Lose terminal state",
+        "Break command execution",
+        "Allow code injection"
+      ],
+      "perf_budget_ms": 50,
+      "status": "production"
+    },
+    {
+      "id": "topBar",
+      "responsibility": "Top navigation bar with mode switching, theme controls, and command palette",
+      "must_never": [
+        "Break mode switching",
+        "Lose theme state",
+        "Break command palette access"
+      ],
+      "perf_budget_ms": 16,
+      "status": "production"
+    },
+    {
+      "id": "commandPalette",
+      "responsibility": "Command palette providing keyboard-driven command interface",
+      "must_never": [
+        "Break keyboard navigation",
+        "Lose command history",
+        "Allow unauthorized commands"
+      ],
+      "perf_budget_ms": 16,
+      "status": "production"
+    },
+    {
+      "id": "aiContextProvider",
+      "responsibility": "React Context providing AI service integration and state",
+      "must_never": [
+        "Lose AI connection state",
+        "Break provider switching",
+        "Expose API keys"
+      ],
+      "perf_budget_ms": 100,
+      "status": "production"
+    },
+    {
+      "id": "themeProvider",
+      "responsibility": "Theme management with 4 themes (space, cyberpunk, matrix, aurora)",
+      "must_never": [
+        "Lose theme preference",
+        "Break theme switching",
+        "Cause performance degradation"
+      ],
+      "perf_budget_ms": 16,
+      "status": "production"
+    },
+    {
+      "id": "resizablePanels",
+      "responsibility": "Resizable panel system with drag handles and state persistence",
+      "must_never": [
+        "Lose panel sizes",
+        "Break resize functionality",
+        "Cause layout shifts"
+      ],
+      "perf_budget_ms": 16,
+      "status": "production"
+    }
+  ],
+  
+  "systemMap": {
+    "mapFile": "./system.map.lucid.json5"
+  },
+  
+  "foresight": {
+    "predictedRisks": [
+      {
+        "risk_id": "large_component_performance",
+        "description": "Very large components (4700+ lines) could cause performance degradation",
+        "likelihood": "high",
+        "blast_radius_if_real": "entire_frontend_slow",
+        "mitigation": "Refactor large components, implement code splitting",
+        "watchpoint": "if render_time > 100ms for 10 consecutive renders, alert"
+      },
+      {
+        "risk_id": "state_management_complexity",
+        "description": "Heavy useState usage could lead to prop drilling and state bugs",
+        "likelihood": "medium",
+        "blast_radius_if_real": "state_inconsistencies_across_app",
+        "mitigation": "Implement Zustand or Jotai for global state",
+        "watchpoint": "if state_updates > 100/sec, consider optimization"
+      },
+      {
+        "risk_id": "api_client_security",
+        "description": "API client without proper auth could expose sensitive data",
+        "likelihood": "high",
+        "blast_radius_if_real": "data_breach",
+        "mitigation": "Add authentication middleware, input validation",
+        "watchpoint": "if unauthorized_api_calls detected, halt system"
+      }
+    ],
+    "killSwitch": "frontend.enabled=false",
+    "emergencyProcedures": [
+      "Freeze all API calls immediately",
+      "Switch to read-only mode",
+      "Clear sensitive state",
+      "Notify backend systems"
+    ]
+  },
+  
+  "integrations": {
+    "backendApiSystem": {
+      "protocol": "REST",
+      "whatIsExchanged": ["api_requests", "api_responses", "websocket_messages"],
+      "security": "high",
+      "rateLimit": "unlimited"
+    },
+    "aiStudioSystem": {
+      "protocol": "react-props",
+      "whatIsExchanged": ["ai_panel_state", "agent_configurations", "knowledge_map_data"],
+      "security": "high",
+      "rateLimit": "n/a"
+    },
+    "reactorSystems": {
+      "protocol": "react-props",
+      "whatIsExchanged": ["reactor_state", "visualization_data", "metrics"],
+      "security": "medium",
+      "rateLimit": "n/a"
+    }
+  },
+  
+  "performance": {
+    "metrics": {
+      "render_time_ms": "target < 100ms",
+      "api_latency_ms": "target < 200ms",
+      "bundle_size_mb": "target < 2MB",
+      "time_to_interactive_s": "target < 3s"
+    },
+    "optimization": [
+      "Code splitting",
+      "Lazy loading",
+      "Memoization",
+      "Virtual scrolling for large lists"
+    ],
+    "monitoring": ["render_time", "api_latency", "bundle_size", "error_rate"]
+  },
+  
+  "documentation": {
+    "l0_executive": "knowledge_architecture/systems/lucid-ide/frontend-system/L0_executive.md",
+    "l1_overview": "knowledge_architecture/systems/lucid-ide/frontend-system/L1_overview.md",
+    "l2_architecture": "knowledge_architecture/systems/lucid-ide/frontend-system/L2_architecture.md",
+    "l3_detailed": "knowledge_architecture/systems/lucid-ide/frontend-system/L3_detailed.md",
+    "l4_complete": "knowledge_architecture/systems/lucid-ide/frontend-system/L4_complete.md",
+    "system_map": "knowledge_architecture/systems/lucid-ide/frontend-system/system.map.lucid.json5",
+    "usage_envelope": "knowledge_architecture/systems/lucid-ide/frontend-system/usage.envelope.md"
+  }
+}
+

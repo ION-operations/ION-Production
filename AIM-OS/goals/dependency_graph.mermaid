@@ -1,0 +1,36 @@
+```mermaid
+graph TD
+    Start[North Star: Ship v0.3 by Nov 30]
+    
+    %% Ship-Critical Goals
+    Start --> OBJ01[OBJ-01: CMC 70%]
+    Start --> OBJ02[OBJ-02: HHNI 100% ✅]
+    
+    OBJ01 --> OBJ07[OBJ-07: MCP Tools 5% ⚠️]
+    OBJ02 --> OBJ07
+    
+    OBJ07 --> OBJ08[OBJ-08: Daemon 75%]
+    OBJ09[OBJ-09: RAG Proxy 80%] --> OBJ08
+    
+    OBJ08 --> OBJ12[OBJ-12: Protocols 60%]
+    OBJ12 --> Ship[SHIP v0.3 🚀]
+    
+    %% Supporting Goals
+    OBJ03[OBJ-03: Validation 85%]
+    OBJ04[OBJ-04: Infrastructure 40%]
+    OBJ05[OBJ-05: Data Integration 15%]
+    OBJ06[OBJ-06: Documentation 53%]
+    OBJ10[OBJ-10: Cursor Extension PAUSED]
+    OBJ11[OBJ-11: Temporal Graph 30%]
+    OBJ13[OBJ-13: Packaging 10%]
+    OBJ14[OBJ-14: Universal Registry 70%]
+    
+    %% Style
+    classDef critical fill:#ff6b6b,stroke:#c92a2a,stroke-width:3px
+    classDef complete fill:#51cf66,stroke:#2f9e44,stroke-width:2px
+    classDef inprogress fill:#ffd43b,stroke:#fab005,stroke-width:2px
+    
+    class OBJ07 critical
+    class OBJ02 complete
+    class OBJ01,OBJ08,OBJ09,OBJ12 inprogress
+```

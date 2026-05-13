@@ -1,0 +1,125 @@
+{
+  "systemId": "cursor_addon.commandServer",
+  "humanName": "Command Server - HTTP API Bridge",
+  "version": "v1.0.0",
+  "status": "production",
+  
+  "intent": {
+    "purpose": "Provide HTTP API bridge exposing VS Code/Cursor functionality to external clients. Enables Electron app, daemon, and other external systems to use MCP tools, VS Code commands, and Cursor state without direct extension access.",
+    "must_not_regress": [
+      "Must not expose unauthorized endpoints",
+      "Must not lose requests",
+      "Must not exceed port binding limits",
+      "Must not bypass security checks"
+    ],
+    "why_it_exists": "Electron app and external clients can't directly access VS Code API. Command Server bridges this gap, enabling programmatic control of Cursor IDE."
+  },
+  
+  "classification": {
+    "security_level": "high",
+    "perf_sensitivity": "medium",
+    "ownership": "core",
+    "sideEffects": [
+      "Exposes VS Code API",
+      "Executes MCP tools",
+      "Provides Cursor state",
+      "Handles HTTP requests"
+    ]
+  },
+  
+  "internalNodes": [
+    {
+      "id": "httpServer",
+      "responsibility": "HTTP server listening on port 5001",
+      "must_never": [
+        "Bind to wrong port",
+        "Accept unauthorized requests"
+      ],
+      "perf_budget_ms": 200,
+      "status": "production"
+    },
+    {
+      "id": "mcpEndpoint",
+      "responsibility": "POST /mcp/execute endpoint",
+      "must_never": [
+        "Execute unauthorized tools",
+        "Expose MCP errors"
+      ],
+      "perf_budget_ms": 5000,
+      "status": "production"
+    },
+    {
+      "id": "cursorStateEndpoint",
+      "responsibility": "GET /cursor/* endpoints",
+      "must_never": [
+        "Expose sensitive data",
+        "Return stale state"
+      ],
+      "perf_budget_ms": 500,
+      "status": "production"
+    },
+    {
+      "id": "messagingEndpoint",
+      "responsibility": "POST /messaging/send endpoint",
+      "must_never": [
+        "Process invalid envelopes",
+        "Lose messages"
+      ],
+      "perf_budget_ms": 100,
+      "status": "production"
+    }
+  ],
+  
+  "integration_points": [
+    {
+      "system": "external.electronApp",
+      "protocol": "http_json",
+      "direction": "bidirectional",
+      "purpose": "HTTP API for Electron app"
+    },
+    {
+      "system": "cursor_addon.mcpClient",
+      "protocol": "internal_api",
+      "direction": "bidirectional",
+      "purpose": "MCP tool execution"
+    },
+    {
+      "system": "cursor_addon.bulletproofMessaging",
+      "protocol": "internal_api",
+      "direction": "bidirectional",
+      "purpose": "Messaging protocol"
+    }
+  ],
+  
+  "dependencies": [
+    "cursor_addon.mcpClient",
+    "cursor_addon.bulletproofMessaging"
+  ],
+  
+  "performance_summary": {
+    "latency_ms": 200,
+    "throughput_req_per_sec": 100,
+    "reliability": "best_effort",
+    "availability": "99.9%"
+  },
+  
+  "documentation_status": {
+    "T0": "pending",
+    "T1": "pending",
+    "T2": "pending",
+    "T3": "pending",
+    "T4": "pending",
+    "T5": "pending",
+    "T6": "pending",
+    "system_map": "complete",
+    "system_index": "complete"
+  },
+  
+  "test_coverage": {
+    "unit_tests": 0,
+    "integration_tests": 0,
+    "coverage_percent": 0,
+    "status": "needs_tests"
+  }
+}
+

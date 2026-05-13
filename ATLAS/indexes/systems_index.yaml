@@ -1,0 +1,761 @@
+# ATLAS systems index — curated registry
+schema_version: "1.0"
+updated: "2026-04-13"
+
+systems:
+  - slug: multics
+    display_name: "Multics"
+    package_status: seeded
+    primary_kind: historical-system
+  - slug: windows-nt
+    display_name: "Windows NT family"
+    package_status: seeded
+    primary_kind: kernel
+  - slug: linux-kernel
+    display_name: "Linux kernel"
+    package_status: seeded
+    primary_kind: kernel
+  - slug: android-aosp
+    display_name: "Android Open Source Project"
+    package_status: seeded
+    primary_kind: mobile-os
+  - slug: xnu-macos
+    display_name: "XNU / Darwin (macOS kernel)"
+    package_status: seeded
+    primary_kind: kernel
+  - slug: freebsd
+    display_name: "FreeBSD"
+    package_status: seeded
+    primary_kind: kernel
+  - slug: systemd
+    display_name: "systemd"
+    package_status: seeded
+    primary_kind: service-manager
+  - slug: systemd-unit-model
+    display_name: "systemd unit file model"
+    package_status: seeded
+    primary_kind: service-manager
+  - slug: systemd-portable
+    display_name: "systemd portable services"
+    package_status: seeded
+    primary_kind: service-manager
+  - slug: systemd-sysext
+    display_name: "systemd system extensions (sysext)"
+    package_status: seeded
+    primary_kind: service-manager
+  - slug: systemd-confext
+    display_name: "systemd configuration extensions (confext)"
+    package_status: seeded
+    primary_kind: service-manager
+  - slug: docker
+    display_name: "Docker Engine / Moby"
+    package_status: seeded
+    primary_kind: container-runtime
+  - slug: containerd
+    display_name: "containerd"
+    package_status: seeded
+    primary_kind: container-runtime
+  - slug: kata-containers
+    display_name: "Kata Containers (VM-isolated OCI runtime)"
+    package_status: seeded
+    primary_kind: container-runtime
+  - slug: gvisor
+    display_name: "gVisor (runsc — userspace kernel / OCI runtime)"
+    package_status: seeded
+    primary_kind: container-runtime
+  - slug: buildkit
+    display_name: "BuildKit (OCI image build engine / buildkitd)"
+    package_status: seeded
+    primary_kind: container-runtime
+  - slug: helm
+    display_name: "Helm (Kubernetes package manager / charts)"
+    package_status: seeded
+    primary_kind: cluster-orchestrator
+  - slug: fluxcd
+    display_name: "Flux / Flux CD (CNCF GitOps for Kubernetes)"
+    package_status: seeded
+    primary_kind: cluster-orchestrator
+  - slug: argo-cd
+    display_name: "Argo CD (GitOps continuous delivery for Kubernetes)"
+    package_status: seeded
+    primary_kind: cluster-orchestrator
+  - slug: kustomize
+    display_name: "Kustomize (Kubernetes manifest customization / overlays)"
+    package_status: seeded
+    primary_kind: cluster-orchestrator
+  - slug: oci-image-spec
+    display_name: "OCI Image Format (opencontainers/image-spec)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: oci-distribution-spec
+    display_name: "OCI Distribution Specification (opencontainers/distribution-spec)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: oci-runtime-spec
+    display_name: "OCI Runtime Specification (opencontainers/runtime-spec)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: podman
+    display_name: "Podman"
+    package_status: seeded
+    primary_kind: container-runtime
+  - slug: runc
+    display_name: "runc (OCI runtime)"
+    package_status: seeded
+    primary_kind: container-runtime
+  - slug: crun
+    display_name: "crun (OCI runtime)"
+    package_status: seeded
+    primary_kind: container-runtime
+  - slug: cri-o
+    display_name: "CRI-O"
+    package_status: seeded
+    primary_kind: container-runtime
+  - slug: kubernetes
+    display_name: "Kubernetes"
+    package_status: seeded
+    primary_kind: cluster-orchestrator
+  - slug: kubevirt
+    display_name: "KubeVirt (VMs on Kubernetes)"
+    package_status: seeded
+    primary_kind: cluster-orchestrator
+  - slug: nomad
+    display_name: "HashiCorp Nomad"
+    package_status: seeded
+    primary_kind: cluster-orchestrator
+  - slug: apache-mesos
+    display_name: "Apache Mesos (retired)"
+    package_status: seeded
+    primary_kind: cluster-orchestrator
+  - slug: aws-ecs
+    display_name: "Amazon Elastic Container Service (ECS)"
+    package_status: seeded
+    primary_kind: cluster-orchestrator
+  - slug: aws-eks
+    display_name: "Amazon Elastic Kubernetes Service (EKS)"
+    package_status: seeded
+    primary_kind: cluster-orchestrator
+  - slug: azure-aci
+    display_name: "Azure Container Instances (ACI)"
+    package_status: seeded
+    primary_kind: container-runtime
+  - slug: azure-aks
+    display_name: "Azure Kubernetes Service (AKS)"
+    package_status: seeded
+    primary_kind: cluster-orchestrator
+  - slug: azure-container-apps
+    display_name: "Azure Container Apps"
+    package_status: seeded
+    primary_kind: cluster-orchestrator
+  - slug: gcp-gke
+    display_name: "Google Kubernetes Engine (GKE)"
+    package_status: seeded
+    primary_kind: cluster-orchestrator
+  - slug: ibm-iks
+    display_name: "IBM Cloud Kubernetes Service (IKS)"
+    package_status: seeded
+    primary_kind: cluster-orchestrator
+  - slug: oci-oke
+    display_name: "Oracle Kubernetes Engine (OKE)"
+    package_status: seeded
+    primary_kind: cluster-orchestrator
+  - slug: civo-kubernetes
+    display_name: "Civo Kubernetes"
+    package_status: seeded
+    primary_kind: cluster-orchestrator
+  - slug: digitalocean-doks
+    display_name: "DigitalOcean Kubernetes (DOKS)"
+    package_status: seeded
+    primary_kind: cluster-orchestrator
+  - slug: linode-lke
+    display_name: "Linode Kubernetes Engine (LKE)"
+    package_status: seeded
+    primary_kind: cluster-orchestrator
+  - slug: vmware-tkg
+    display_name: "VMware Tanzu Kubernetes Grid (TKG)"
+    package_status: seeded
+    primary_kind: cluster-orchestrator
+  - slug: red-hat-openshift
+    display_name: "Red Hat OpenShift Container Platform (OCP)"
+    package_status: seeded
+    primary_kind: cluster-orchestrator
+  - slug: openshift-dedicated
+    display_name: "Red Hat OpenShift Dedicated (OSD)"
+    package_status: seeded
+    primary_kind: cluster-orchestrator
+  - slug: firecracker
+    display_name: "Firecracker"
+    package_status: seeded
+    primary_kind: microvm
+  - slug: qemu
+    display_name: "QEMU (VMM / system emulator)"
+    package_status: seeded
+    primary_kind: vmm
+  - slug: libvirt
+    display_name: "libvirt (virtualization management API)"
+    package_status: seeded
+    primary_kind: control-plane
+  - slug: nixos
+    display_name: "NixOS"
+    package_status: seeded
+    primary_kind: declarative-os
+  - slug: alpine-linux
+    display_name: "Alpine Linux"
+    package_status: seeded
+    primary_kind: linux-distribution
+  - slug: debian
+    display_name: "Debian"
+    package_status: seeded
+    primary_kind: linux-distribution
+  - slug: ubuntu
+    display_name: "Ubuntu"
+    package_status: seeded
+    primary_kind: linux-distribution
+  - slug: fedora
+    display_name: "Fedora Linux"
+    package_status: seeded
+    primary_kind: linux-distribution
+  - slug: centos-stream
+    display_name: "CentOS Stream"
+    package_status: seeded
+    primary_kind: linux-distribution
+  - slug: rhel
+    display_name: "Red Hat Enterprise Linux"
+    package_status: seeded
+    primary_kind: linux-distribution
+  - slug: rocky-linux
+    display_name: "Rocky Linux"
+    package_status: seeded
+    primary_kind: linux-distribution
+  - slug: almalinux
+    display_name: "AlmaLinux OS"
+    package_status: seeded
+    primary_kind: linux-distribution
+  - slug: centos-linux
+    display_name: "CentOS Linux (legacy)"
+    package_status: seeded
+    primary_kind: linux-distribution
+  - slug: vscode
+    display_name: "Visual Studio Code"
+    package_status: seeded
+    primary_kind: dev-environment
+  - slug: cursor
+    display_name: "Cursor"
+    package_status: seeded
+    primary_kind: dev-environment
+  - slug: openai-agents-chatgpt-public-runtime
+    display_name: "OpenAI Agents / ChatGPT (public runtime & API surface)"
+    package_status: seeded
+    primary_kind: ai-runtime
+  - slug: anthropic-claude-code-agent-sdk
+    display_name: "Anthropic Claude Agent SDK / Claude Code (public surfaces)"
+    package_status: seeded
+    primary_kind: ai-runtime
+  - slug: gemini-api
+    display_name: "Google Gemini API (public surface)"
+    package_status: seeded
+    primary_kind: ai-runtime
+  - slug: deepseek-api
+    display_name: "DeepSeek API (public surface)"
+    package_status: seeded
+    primary_kind: ai-runtime
+  - slug: model-context-protocol
+    display_name: "Model Context Protocol (MCP)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: language-server-protocol
+    display_name: "Language Server Protocol (LSP)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: debug-adapter-protocol
+    display_name: "Debug Adapter Protocol (DAP)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: microsoft-agent-framework
+    display_name: "Microsoft Agent Framework"
+    package_status: seeded
+    primary_kind: ai-runtime
+  - slug: openhands
+    display_name: "OpenHands"
+    package_status: seeded
+    primary_kind: ai-runtime
+  - slug: aim-os
+    display_name: "AIM-OS / Aether-OS (governed cognitive infrastructure)"
+    package_status: seeded
+    primary_kind: ai-runtime
+  - slug: pl-i
+    display_name: "PL/I (Programming Language One)"
+    package_status: seeded
+    primary_kind: programming-language
+  - slug: plan-9
+    display_name: "Plan 9 from Bell Labs"
+    package_status: seeded
+    primary_kind: research-os
+  - slug: inferno-os
+    display_name: "Inferno (Limbo / Dis / Styx)"
+    package_status: seeded
+    primary_kind: research-os
+  - slug: 9front
+    display_name: "9front (Plan 9 fork)"
+    package_status: seeded
+    primary_kind: research-os
+  - slug: fortran
+    display_name: "Fortran"
+    package_status: seeded
+    primary_kind: programming-language
+  - slug: c-language
+    display_name: "C (ISO/IEC 9899)"
+    package_status: seeded
+    primary_kind: programming-language
+  - slug: cobol
+    display_name: "COBOL"
+    package_status: seeded
+    primary_kind: programming-language
+  - slug: rust-language
+    display_name: "Rust"
+    package_status: seeded
+    primary_kind: programming-language
+  - slug: ada-language
+    display_name: "Ada (ISO/IEC 8652)"
+    package_status: seeded
+    primary_kind: programming-language
+  - slug: golang
+    display_name: "Go"
+    package_status: seeded
+    primary_kind: programming-language
+  - slug: algol
+    display_name: "ALGOL (language family)"
+    package_status: seeded
+    primary_kind: programming-language
+  - slug: pascal-language
+    display_name: "Pascal (ISO/IEC 7185)"
+    package_status: seeded
+    primary_kind: programming-language
+  - slug: llvm-ir
+    display_name: "LLVM IR (intermediate representation)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: dwarf
+    display_name: "DWARF (debug information format)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: elf
+    display_name: "ELF (Executable and Linking Format)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: gnu-binutils
+    display_name: "GNU Binutils"
+    package_status: seeded
+    primary_kind: toolchain
+  - slug: gnu-gcc
+    display_name: "GNU GCC (Compiler Collection)"
+    package_status: seeded
+    primary_kind: toolchain
+  - slug: gnu-libstdcxx
+    display_name: "GNU libstdc++ (GCC C++ standard library)"
+    package_status: seeded
+    primary_kind: cxx-runtime
+  - slug: llvm-libcxx
+    display_name: "LLVM libc++ (C++ standard library)"
+    package_status: seeded
+    primary_kind: cxx-runtime
+  - slug: llvm-libcxxabi
+    display_name: "LLVM libc++abi (C++ ABI library)"
+    package_status: seeded
+    primary_kind: cxx-abi-runtime
+  - slug: gnu-gdb
+    display_name: "GNU GDB (debugger)"
+    package_status: seeded
+    primary_kind: toolchain
+  - slug: glibc
+    display_name: "GNU C Library (glibc)"
+    package_status: seeded
+    primary_kind: c-runtime
+  - slug: musl
+    display_name: "musl libc"
+    package_status: seeded
+    primary_kind: c-runtime
+  - slug: freebsd-libc
+    display_name: "FreeBSD libc (base system)"
+    package_status: seeded
+    primary_kind: c-runtime
+  - slug: openbsd-libc
+    display_name: "OpenBSD libc (base system)"
+    package_status: seeded
+    primary_kind: c-runtime
+  - slug: netbsd-libc
+    display_name: "NetBSD libc (base system)"
+    package_status: seeded
+    primary_kind: c-runtime
+  - slug: dragonfly-libc
+    display_name: "DragonFly BSD libc (base system)"
+    package_status: seeded
+    primary_kind: c-runtime
+  - slug: illumos-libc
+    display_name: "illumos libc (Solaris/ON lineage)"
+    package_status: seeded
+    primary_kind: c-runtime
+  - slug: android-bionic
+    display_name: "Android Bionic (libc)"
+    package_status: seeded
+    primary_kind: c-runtime
+  - slug: newlib
+    display_name: "newlib (embedded C library)"
+    package_status: seeded
+    primary_kind: c-runtime
+  - slug: wasi-libc
+    display_name: "wasi-libc (WASI C library for wasm)"
+    package_status: seeded
+    primary_kind: c-runtime
+  - slug: uclibc
+    display_name: "uClibc-ng (small Linux libc)"
+    package_status: seeded
+    primary_kind: c-runtime
+  - slug: dietlibc
+    display_name: "dietlibc (minimal Linux libc)"
+    package_status: seeded
+    primary_kind: c-runtime
+  - slug: msvc-vcruntime
+    display_name: "MSVC UCRT / VCRUNTIME (Windows CRT DLLs)"
+    package_status: seeded
+    primary_kind: c-runtime
+  - slug: msvcprt
+    display_name: "MSVC C++ runtime (msvcp*.dll)"
+    package_status: seeded
+    primary_kind: cxx-runtime
+  - slug: llvm-lld
+    display_name: "LLVM lld (linker)"
+    package_status: seeded
+    primary_kind: toolchain
+  - slug: clang
+    display_name: "Clang (LLVM C/C++ frontend)"
+    package_status: seeded
+    primary_kind: toolchain
+  - slug: lldb
+    display_name: "LLDB (LLVM debugger)"
+    package_status: seeded
+    primary_kind: toolchain
+  - slug: spir-v
+    display_name: "SPIR-V (Khronos)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: nvidia-ptx
+    display_name: "NVIDIA PTX (Parallel Thread Execution)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: jvm
+    display_name: "Java Virtual Machine (JVM spec)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: ecma-335-cli
+    display_name: "ECMA-335 CLI (CLR / .NET)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: webassembly
+    display_name: "WebAssembly (W3C core)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: wasi
+    display_name: "WASI (WebAssembly System Interface)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: wasm-component-model
+    display_name: "WebAssembly Component Model"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: amd-rocm
+    display_name: "AMD ROCm (GPU compute stack)"
+    package_status: seeded
+    primary_kind: gpu-compute-stack
+  - slug: nvidia-cuda
+    display_name: "NVIDIA CUDA (platform)"
+    package_status: seeded
+    primary_kind: gpu-compute-stack
+  - slug: opencl
+    display_name: "OpenCL (Khronos)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: vulkan
+    display_name: "Vulkan (Khronos)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: opengl
+    display_name: "OpenGL (Khronos)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: metal
+    display_name: "Metal (Apple)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: direct3d
+    display_name: "Direct3D (Microsoft)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: sycl
+    display_name: "SYCL (Khronos)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: level-zero
+    display_name: "Level Zero (oneAPI)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: webgpu
+    display_name: "WebGPU (W3C)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: webgl
+    display_name: "WebGL (Khronos)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: opengl-es
+    display_name: "OpenGL ES (Khronos)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: ebpf
+    display_name: "eBPF (Linux kernel bytecode)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: libbpf
+    display_name: "libbpf (userspace BPF library)"
+    package_status: seeded
+    primary_kind: toolchain
+  - slug: io-uring
+    display_name: "io_uring (Linux async I/O kernel uAPI)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: liburing
+    display_name: "liburing (io_uring userspace C library)"
+    package_status: seeded
+    primary_kind: toolchain
+  - slug: landlock
+    display_name: "Landlock (Linux unprivileged LSM sandbox)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: seccomp
+    display_name: "seccomp (Linux syscall filtering / seccomp-filter)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: libseccomp
+    display_name: "libseccomp (seccomp userspace library)"
+    package_status: seeded
+    primary_kind: toolchain
+  - slug: onnx
+    display_name: "ONNX (Open Neural Network Exchange)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: opentelemetry
+    display_name: "OpenTelemetry"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: grpc
+    display_name: "gRPC"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: http3
+    display_name: "HTTP/3 (QUIC transport)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: amazon-s3
+    display_name: "Amazon S3 (object storage API)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: nvidia-triton-inference-server
+    display_name: "NVIDIA Triton Inference Server"
+    package_status: seeded
+    primary_kind: ai-runtime
+  - slug: vllm
+    display_name: "vLLM (LLM inference engine)"
+    package_status: seeded
+    primary_kind: ai-runtime
+  - slug: nccl
+    display_name: "NVIDIA NCCL (collective communications)"
+    package_status: seeded
+    primary_kind: gpu-compute-stack
+  - slug: openid-connect
+    display_name: "OpenID Connect"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: tpm2
+    display_name: "TPM 2.0 (Trusted Platform Module)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: uefi
+    display_name: "UEFI (firmware interface)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: linux-security-modules
+    display_name: "Linux Security Modules (LSM / SELinux / AppArmor)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: linux-namespaces
+    display_name: "Linux namespaces (kernel isolation)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: linux-cgroups
+    display_name: "Linux cgroups (resource control / cgroup v2)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: linux-capabilities
+    display_name: "Linux capabilities (POSIX capability sets / CAP_*)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: linux-overlayfs
+    display_name: "Linux OverlayFS (union filesystem / overlay)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: linux-netfilter
+    display_name: "Linux netfilter (iptables/nftables framework)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: linux-fuse
+    display_name: "Linux FUSE (Filesystem in Userspace)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: linux-kvm
+    display_name: "Linux KVM (Kernel-based Virtual Machine)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: virtio
+    display_name: "Virtio (paravirtual I/O)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: linux-vhost
+    display_name: "Linux vhost (virtio backend / vhost-user)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: linux-vfio
+    display_name: "Linux VFIO (IOMMU device assignment / userspace drivers)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: confidential-computing
+    display_name: "Confidential computing (TEE survey)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: postgresql
+    display_name: "PostgreSQL (database)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: sqlite
+    display_name: "SQLite (embedded database)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: redis
+    display_name: "Redis (in-memory data store)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: apache-kafka
+    display_name: "Apache Kafka (distributed event streaming)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: envoy
+    display_name: "Envoy (L7 proxy / data plane)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: istio
+    display_name: "Istio (service mesh)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: grub
+    display_name: "GRUB (boot loader)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: linkerd
+    display_name: "Linkerd (service mesh)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: cilium
+    display_name: "Cilium (eBPF networking / mesh)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: systemd-boot
+    display_name: "systemd-boot (UEFI boot loader)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: unified-kernel-image
+    display_name: "Unified Kernel Image (UKI)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: traefik
+    display_name: "Traefik (ingress / reverse proxy)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: consul
+    display_name: "Consul (service discovery / Connect)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: uapi-boot-loader-specification
+    display_name: "UAPI Boot Loader Specification (BLS)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: emissary-ingress
+    display_name: "Emissary-Ingress (Envoy-based ingress)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: haproxy
+    display_name: "HAProxy (load balancer / reverse proxy)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: intel-tdx
+    display_name: "Intel TDX"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: amd-sev
+    display_name: "AMD SEV / SEV-SNP"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: nginx
+    display_name: "NGINX (web server / reverse proxy)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: ingress-nginx
+    display_name: "ingress-nginx (Kubernetes Ingress controller)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: arm-cca
+    display_name: "ARM Confidential Compute Architecture (CCA)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: aws-elastic-load-balancing
+    display_name: "AWS Elastic Load Balancing (ALB / NLB / GWLB)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: amazon-api-gateway
+    display_name: "Amazon API Gateway"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: azure-application-gateway
+    display_name: "Azure Application Gateway"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: gcp-load-balancing
+    display_name: "Google Cloud Load Balancing"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: azure-front-door
+    display_name: "Azure Front Door"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: amazon-cloudfront
+    display_name: "Amazon CloudFront"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: cloudflare-workers
+    display_name: "Cloudflare Workers"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: fastly
+    display_name: "Fastly (CDN / Compute@Edge)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: akamai
+    display_name: "Akamai (CDN / edge security)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: edgio
+    display_name: "Edgio (CDN / edge applications)"
+    package_status: seeded
+    primary_kind: protocol
+  - slug: riscv-isa
+    display_name: "RISC-V ISA"
+    package_status: seeded
+    primary_kind: protocol

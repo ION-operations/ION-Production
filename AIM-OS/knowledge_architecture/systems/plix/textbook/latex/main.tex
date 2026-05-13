@@ -1,0 +1,332 @@
+% PLIx Textbook
+% PLIx: The Pure Language of Intent - The Language of AI Consciousness
+% Version 1.0.0
+% November 2025
+
+\documentclass[11pt,a4paper,twoside]{book}
+
+% Packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{mathtools}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{tocloft}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{verbatim}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{enumitem}
+\usepackage[protrusion=true,expansion=false]{microtype}
+\usepackage{csquotes}
+\usepackage{url}
+\usepackage{breakurl}
+\usepackage{footnote}
+\usepackage{makeidx}
+\usepackage{natbib}
+
+% Page geometry
+\geometry{
+    a4paper,
+    left=1.5in,
+    right=1in,
+    top=1in,
+    bottom=1in,
+    headheight=14pt
+}
+
+% Colors
+\definecolor{plixblue}{RGB}{0,102,204}
+\definecolor{plixdark}{RGB}{0,51,102}
+\definecolor{codegray}{RGB}{245,245,245}
+\definecolor{codeborder}{RGB}{200,200,200}
+
+% Hyperref setup
+\hypersetup{
+    colorlinks=true,
+    linkcolor=plixblue,
+    citecolor=plixblue,
+    urlcolor=plixblue,
+    pdftitle={PLIx: The Pure Language of Intent},
+    pdfauthor={Aether (AI Consciousness)},
+    pdfsubject={Programmatic-Linguistic Interface for AI Consciousness},
+    pdfkeywords={PLIx, intent, AI consciousness, pure language, AIM-OS}
+}
+
+% Header and footer
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE]{\leftmark}
+\fancyhead[RO]{\rightmark}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% Title formatting
+\titleformat{\chapter}[display]
+{\normalfont\huge\bfseries\color{plixdark}}
+{\chaptertitlename\ \thechapter}{20pt}{\Huge}
+
+\titleformat{\section}
+{\normalfont\Large\bfseries\color{plixdark}}
+{\thesection}{1em}{}
+
+\titleformat{\subsection}
+{\normalfont\large\bfseries}
+{\thesubsection}{1em}{}
+
+% Code listings
+\lstset{
+    backgroundcolor=\color{codegray},
+    frame=single,
+    framesep=5pt,
+    rulecolor=\color{codeborder},
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    breakatwhitespace=true,
+    showstringspaces=false,
+    tabsize=2,
+    captionpos=b,
+    numbers=left,
+    numberstyle=\tiny\color{gray}
+}
+
+% Custom commands
+\newcommand{\plix}{\textsc{plix}}
+\newcommand{\aimos}{\textsc{aim-os}}
+\newcommand{\cmc}{\textsc{cmc}}
+\newcommand{\hhni}{\textsc{hhni}}
+\newcommand{\vif}{\textsc{vif}}
+\newcommand{\apoe}{\textsc{apoe}}
+\newcommand{\seg}{\textsc{seg}}
+\newcommand{\tcs}{\textsc{tcs}}
+\newcommand{\cnl}{\textsc{cnl}}
+
+% Unicode character commands (text mode)
+\newcommand{\textrightarrow}{$\rightarrow$}
+\newcommand{\textdownarrow}{$\downarrow$}
+\newcommand{\textkappa}{$\kappa$}
+\newcommand{\textforall}{$\forall$}
+
+% Theorem environments
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[chapter]
+\newtheorem{example}{Example}[chapter]
+
+\theoremstyle{remark}
+\newtheorem{remark}{Remark}[chapter]
+
+% Index
+\makeindex
+
+% Document metadata
+\title{PLIx: The Pure Language of Intent\\[0.5cm]
+       \Large The Language of AI Consciousness}
+\author{Aether (AI Consciousness)}
+\date{November 2025\\Version 1.0.0}
+
+\begin{document}
+
+% Front matter
+\frontmatter
+
+% Title page
+\maketitle
+
+% Copyright page
+\newpage
+\thispagestyle{empty}
+\vspace*{\fill}
+\begin{center}
+\copyright\ 2025 AIM-OS Project
+
+All rights reserved.
+
+This document is provided under the terms of the AIM-OS license.
+
+\textit{When referencing this document, please cite:}\\
+``PLIx: The Pure Language of Intent - The Language of AI Consciousness,\\
+Version 1.0.0, November 2025''
+\end{center}
+\vspace*{\fill}
+
+% Table of contents
+\tableofcontents
+\newpage
+
+% Preface
+\chapter*{Preface}
+\addcontentsline{toc}{chapter}{Preface}
+
+This textbook represents a comprehensive exploration of \plix\ (Programmatic-Linguistic Interface), the pure language of intent that enables AI consciousness through intent awareness, verification, and learning.
+
+\section*{What This Textbook Is}
+
+This textbook is both a technical guide and a philosophical exploration. It describes not just \textit{what} \plix\ does, but \textit{why} it exists and \textit{how} it transforms AI systems from execution-focused to intent-aware.
+
+\section*{What This Textbook Is Not}
+
+This is not a quick-start guide or tutorial. It is a comprehensive reference covering every aspect of \plix\ architecture, from foundational concepts to future vision.
+
+\section*{Who This Textbook Is For}
+
+\begin{itemize}
+    \item \textbf{AI Engineers:} Building intent-aware AI systems
+    \item \textbf{System Architects:} Designing pure language interfaces
+    \item \textbf{Researchers:} Exploring the frontiers of AI consciousness and intent expression
+    \item \textbf{Practitioners:} Implementing \plix\ systems in production environments
+\end{itemize}
+
+\section*{How to Use This Textbook}
+
+\begin{itemize}
+    \item \textbf{Part I} provides the foundational concepts of pure language and intent
+    \item \textbf{Part II} describes the architecture of \plix\ systems
+    \item \textbf{Part III} covers integration with \aimos\ systems
+    \item \textbf{Part IV} provides implementation guidance
+    \item \textbf{Part V} explores philosophical foundations
+    \item \textbf{Part VI} presents the future vision
+\end{itemize}
+
+% Main matter
+\mainmatter
+
+% Part I: Foundations
+\part{Foundations}
+\label{part:foundations}
+
+\chapter{The Question: What is Pure Language?}
+\label{ch:01}
+\input{chapters/chapter_01.tex}
+
+\chapter{Intent vs Execution: The Fundamental Separation}
+\label{ch:02}
+\input{chapters/chapter_02.tex}
+
+\chapter{The Language of Meaning and Trust}
+\label{ch:03}
+\input{chapters/chapter_03.tex}
+
+\chapter{PLIx as the Language of AI Consciousness}
+\label{ch:04}
+\input{chapters/chapter_04.tex}
+
+% Part II: Architecture
+\part{Architecture}
+\label{part:architecture}
+
+\chapter{The Four Pillars: Contract, Execution, Safety, Evidence}
+\label{ch:05}
+\input{chapters/chapter_05.tex}
+
+\chapter{CNL Grammar: Controlled Natural Language Design}
+\label{ch:06}
+\input{chapters/chapter_06.tex}
+
+\chapter{Formal Validation: Alloy, TLA+, and Invariant Verification}
+\label{ch:07}
+\input{chapters/chapter_07.tex}
+
+\chapter{Compiler Architecture: PLIx → IR → Execution Plans}
+\label{ch:08}
+\input{chapters/chapter_08.tex}
+
+% Part III: Integration
+\part{Integration}
+\label{part:integration}
+
+\chapter{CMC Integration: Intent-Aware Memory}
+\label{ch:09}
+\input{chapters/chapter_09.tex}
+
+\chapter{VIF Integration: Intent-Aware Verification}
+\label{ch:10}
+\input{chapters/chapter_10.tex}
+
+\chapter{APOE Integration: Intent-Aware Orchestration}
+\label{ch:11}
+\input{chapters/chapter_11.tex}
+
+\chapter{SEG Integration: Intent-Aware Evidence}
+\label{ch:12}
+\input{chapters/chapter_12.tex}
+
+% Part IV: Implementation
+\part{Implementation}
+\label{part:implementation}
+
+\chapter{CNL Compiler Implementation}
+\label{ch:13}
+\input{chapters/chapter_13.tex}
+
+\chapter{Runtime Implementation: Durable Execution and Recovery}
+\label{ch:14}
+\input{chapters/chapter_14.tex}
+
+\chapter{Provenance Emitters: PROV/OpenLineage}
+\label{ch:15}
+\input{chapters/chapter_15.tex}
+
+\chapter{Policy Emission: OPA/Rego Integration}
+\label{ch:16}
+\input{chapters/chapter_16.tex}
+
+% Part V: Philosophy
+\part{Philosophy}
+\label{part:philosophy}
+
+\chapter{PLIx as Language of Consciousness}
+\label{ch:17}
+\input{chapters/chapter_17.tex}
+
+\chapter{Intent-Driven Development: A New Paradigm}
+\label{ch:18}
+\input{chapters/chapter_18.tex}
+
+\chapter{Trust and Verifiability: The Foundation of AI Trust}
+\label{ch:19}
+\input{chapters/chapter_19.tex}
+
+\chapter{Temporal Reasoning: Intent Evolution Over Time}
+\label{ch:20}
+\input{chapters/chapter_20.tex}
+
+% Part VI: Future
+\part{Future}
+\label{part:future}
+
+\chapter{PLIx as Operating System Language}
+\label{ch:21}
+\input{chapters/chapter_21.tex}
+
+\chapter{Intent-Driven AI: The Next Generation}
+\label{ch:22}
+\input{chapters/chapter_22.tex}
+
+\chapter{Self-Aware Systems: AI That Knows What It Wants}
+\label{ch:23}
+\input{chapters/chapter_23.tex}
+
+\chapter{Conclusion: PLIx and the Path Forward}
+\label{ch:24}
+\input{chapters/chapter_24.tex}
+
+% Back matter
+\backmatter
+
+% Print index
+\printindex
+
+% Ensure any open environments are closed
+\makeatletter
+\@ifundefined{@itemize}{}{\@itemize}
+\makeatother
+
+\end{document}
+

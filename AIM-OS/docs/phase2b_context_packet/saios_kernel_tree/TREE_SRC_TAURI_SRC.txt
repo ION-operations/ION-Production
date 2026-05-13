@@ -1,0 +1,49 @@
+# SAIOS kernel source tree: src-tauri/src/
+
+Depth shown: root entry files, module layout, context_mapper placement, command/router/service subtrees.
+
+src-tauri/src/
+├── lib.rs                    # Library root; pub mod declarations; IPC commands; run()
+├── main.rs                   # Binary entry: calls saios_lib::run()
+├── context_mapper/           # PROMOTED (Phase 2B) — mapper core
+│   ├── mod.rs
+│   ├── types.rs
+│   ├── extractor.rs
+│   ├── imports.rs
+│   ├── resolver.rs
+│   ├── symbol_usage.rs
+│   └── envelope.rs
+├── webview_manager.rs        # Webview fleet
+├── injection/
+│   ├── mod.rs
+│   └── injector.rs
+├── extraction/               # SAIOS extraction (LLM response scraping), not context_mapper
+│   ├── mod.rs
+│   └── extractor.rs
+├── actuator/
+│   ├── mod.rs
+│   ├── input.rs
+│   ├── screen.rs
+│   ├── accessibility.rs
+│   └── process.rs
+├── command/                  # SYS command parsing/execution
+│   ├── mod.rs
+│   ├── parser.rs
+│   └── executor.rs
+├── state_machine/
+│   ├── mod.rs
+│   └── broker.rs
+├── workspace/
+│   ├── mod.rs
+│   ├── filesystem.rs
+│   └── compiler.rs
+├── evasion/
+│   ├── mod.rs
+│   ├── fingerprint.rs
+│   ├── humanizer.rs
+│   └── killswitch.rs
+└── (ipc module is inline in lib.rs)
+
+Where mod context_mapper belongs: In lib.rs, alongside other pub mod declarations (already added as "pub mod context_mapper;").
+
+Structural note: command/ is the SYS command path; state_machine/ runs the broker loop; context_mapper is not yet wired to router or webview — promotion only.

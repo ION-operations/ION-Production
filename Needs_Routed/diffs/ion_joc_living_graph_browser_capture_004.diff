@@ -1,0 +1,709 @@
+--- a/ION/04_packages/kernel/ion_living_graph_view_model.py
++++ b/ION/04_packages/kernel/ion_living_graph_view_model.py
+@@ -48,6 +48,25 @@
+ }
+ LAYER_ORDER = {layer_id: index for index, (layer_id, _label, _node_types) in enumerate(DEFAULT_LAYERS)}
+ LAYER_ORDER.update({"routes": len(LAYER_ORDER), "timeline": len(LAYER_ORDER) + 1})
++
++# The first full-graph SVG pass revealed dense same-domain coordinates where
++# layer markers can sit directly on top of domain district anchors.  Keep the
++# source world position intact, but provide a deterministic cockpit screen point
++# with small layer offsets so browser-proof click targets do not depend on SVG
++# paint order or accidental overlap.
++LAYER_SCREEN_OFFSETS: dict[str, tuple[float, float]] = {
++    "domains": (0.0, 0.0),
++    "templates": (-28.0, -24.0),
++    "carriers": (30.0, -18.0),
++    "packets": (-30.0, 24.0),
++    "receipts": (32.0, 26.0),
++    "integrations": (0.0, 38.0),
++    "risk": (0.0, -42.0),
++}
++NODE_TYPE_SCREEN_OFFSETS: dict[str, tuple[float, float]] = {
++    "core": (0.0, 0.0),
++    "domain": (0.0, 0.0),
++}
+ 
+ 
+ def _layer_id_for_type(node_type: str) -> str:
+@@ -99,6 +118,44 @@
+     fallback_x = 430 + ((index % 12) - 6) * 58
+     fallback_y = 260 + ((index // 12) - 2) * 44
+     return {"x": float(fallback_x), "y": float(fallback_y)}
++
++
++def _stable_micro_offset(identifier: str) -> tuple[float, float]:
++    """Return a tiny deterministic offset for crowded equal-layer anchors."""
++
++    if not identifier:
++        return 0.0, 0.0
++    seed = sum((index + 1) * ord(char) for index, char in enumerate(identifier))
++    choices = (
++        (0.0, 0.0),
++        (-8.0, -4.0),
++        (8.0, 4.0),
++        (-5.0, 9.0),
++        (5.0, -9.0),
++        (-10.0, 7.0),
++        (10.0, -7.0),
++    )
++    return choices[seed % len(choices)]
++
++
++def _screen_point_for_node(
++    node_id: str,
++    position: dict[str, Any],
++    *,
++    layer_id: str,
++    node_type: str,
++) -> dict[str, Any]:
++    base = _screen_point_from_position(position)
++    layer_dx, layer_dy = LAYER_SCREEN_OFFSETS.get(layer_id, (0.0, 0.0))
++    type_dx, type_dy = NODE_TYPE_SCREEN_OFFSETS.get(node_type, (0.0, 0.0))
++    micro_dx, micro_dy = _stable_micro_offset(node_id)
++    if node_type in {"core", "domain"}:
++        micro_dx, micro_dy = 0.0, 0.0
++    return {
++        "x": round(base["x"] + layer_dx + type_dx + micro_dx, 2),
++        "y": round(base["y"] + layer_dy + type_dy + micro_dy, 2),
++        "source": "world_position_layer_collision_relief",
++    }
+ 
+ 
+ def _screen_polygon(points: list[Any]) -> list[dict[str, float]]:
+@@ -416,12 +473,15 @@
+     visual = _dict(node.get("visual_style"))
+     layout = _dict(node.get("layout"))
+     node_type = _text(node.get("type"))
++    node_id = _text(node.get("id"))
++    layer_id = _layer_id_for_type(node_type)
++    position = _node_position(node, layout_index)
+     screen_priority = _number(layout.get("screen_priority"), _number(visual.get("selected_priority"), 0.0))
+     return {
+-        "id": _text(node.get("id")),
++        "id": node_id,
+         "label": _text(node.get("label")),
+         "type": node_type,
+-        "layer_id": _layer_id_for_type(node_type),
++        "layer_id": layer_id,
+         "domain_id": node.get("domain_id"),
+         "parent_id": node.get("parent_id"),
+         "visual_metaphor": node.get("visual_metaphor"),
+@@ -440,7 +500,8 @@
+         "tag_count": len(_list(node.get("tags"))),
+         "summary": _text(inspector.get("summary"), ""),
+         "available_tabs": sorted(tabs.keys()),
+-        "position": _node_position(node, layout_index),
++        "position": position,
++        "screen_point": _screen_point_for_node(node_id, position, layer_id=layer_id, node_type=node_type),
+         "height": layout.get("height"),
+         "screen_priority": screen_priority,
+         "risk_heat": visual.get("risk_heat", 0),
+--- a/ION/04_packages/kernel/ion_living_graph_visual_proof.py
++++ b/ION/04_packages/kernel/ion_living_graph_visual_proof.py
+@@ -125,6 +125,11 @@
+     edges = [edge for edge in model.get("visible_edges", []) if isinstance(edge, dict)]
+ 
+     def screen_point(node: dict[str, Any], index: int) -> tuple[float, float]:
++        projected = node.get("screen_point", {}) if isinstance(node.get("screen_point"), dict) else {}
++        x = projected.get("x")
++        y = projected.get("y")
++        if isinstance(x, (int, float)) and isinstance(y, (int, float)):
++            return float(x) + 50, float(y) + 40
+         pos = node.get("position", {}) if isinstance(node.get("position"), dict) else {}
+         x = pos.get("x")
+         z = pos.get("z")
+--- a/ION/04_packages/kernel/ion_living_graph_browser_capture.py
++++ b/ION/04_packages/kernel/ion_living_graph_browser_capture.py
+@@ -0,0 +1,418 @@
++"""Browser capture harness for the ION Living Operational Graph JOC surface.
++
++The harness is intentionally local-only.  It can render the built React shell as
++an inline fixture so proof capture does not depend on live network, live MCP, or
++loopback server mutation.  Browser execution remains candidate proof until a
++human/Steward settlement route accepts it.
++"""
++
++from __future__ import annotations
++
++import argparse
++import asyncio
++import json
++import os
++import subprocess
++import sys
++from datetime import datetime, timezone
++from html import escape
++from pathlib import Path
++from typing import Any
++
++from .ion_cockpit_view_model import build_cockpit_view_model
++
++OUTPUT_DIR = Path("ION/05_context/current/living_graph/browser_capture")
++RESULT_OUTPUT = OUTPUT_DIR / "BROWSER_CAPTURE_RESULT_CANDIDATE.json"
++INLINE_FIXTURE_OUTPUT = OUTPUT_DIR / "BROWSER_CAPTURE_INLINE_FIXTURE_CANDIDATE.html"
++DOM_OUTPUT = OUTPUT_DIR / "BROWSER_CAPTURE_GRAPH_ROUTE_DOM_CANDIDATE.html"
++SCREENSHOT_OUTPUT = OUTPUT_DIR / "BROWSER_CAPTURE_GRAPH_ROUTE_CANDIDATE.png"
++SELECTED_SCREENSHOT_OUTPUT = OUTPUT_DIR / "BROWSER_CAPTURE_GRAPH_ROUTE_SELECTED_NODE_CANDIDATE.png"
++
++UI_ROOT = Path("ION/08_ui/joc_cockpit_shell")
++REQUIRED_ZONES = [
++    "graph-top",
++    "graph-left-drawer",
++    "graph-viewport",
++    "graph-right-inspector",
++    "graph-bottom-timeline",
++]
++REQUIRED_FIXTURES = [
++    "graph-workbench",
++    "graph-command-deck",
++    "graph-minimap",
++    "graph-node",
++    "graph-timeline-event",
++    "graph-relationship-inspector",
++    "graph-selected-object",
++]
++
++
++def utc_now() -> str:
++    return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
++
++
++def _run_command(command: list[str], *, cwd: Path, timeout: int = 90) -> dict[str, Any]:
++    try:
++        completed = subprocess.run(
++            command,
++            cwd=cwd,
++            text=True,
++            stdout=subprocess.PIPE,
++            stderr=subprocess.PIPE,
++            timeout=timeout,
++            env={**os.environ, "CI": "1"},
++        )
++        return {
++            "command": command,
++            "cwd": str(cwd),
++            "returncode": completed.returncode,
++            "stdout_tail": completed.stdout[-2400:],
++            "stderr_tail": completed.stderr[-2400:],
++        }
++    except Exception as exc:  # pragma: no cover - exercised by local operator environment
++        return {
++            "command": command,
++            "cwd": str(cwd),
++            "returncode": None,
++            "error": str(exc),
++        }
++
++
++def _asset_paths(ui_root: Path) -> tuple[Path | None, Path | None]:
++    asset_dir = ui_root / "dist/assets"
++    css_files = sorted(asset_dir.glob("*.css"))
++    js_files = sorted(asset_dir.glob("*.js"))
++    return (css_files[0] if css_files else None, js_files[0] if js_files else None)
++
++
++def _build_inline_fixture(root_path: Path, *, build: bool = True) -> tuple[str, list[dict[str, Any]]]:
++    ui_root = root_path / UI_ROOT
++    build_results: list[dict[str, Any]] = []
++    css_path, js_path = _asset_paths(ui_root)
++
++    if build or not css_path or not js_path:
++        vite_js = ui_root / "node_modules/vite/bin/vite.js"
++        if vite_js.exists():
++            build_results.append(_run_command(["node", str(vite_js.relative_to(ui_root)), "build"], cwd=ui_root))
++        else:
++            build_results.append(
++                {
++                    "command": ["node", "node_modules/vite/bin/vite.js", "build"],
++                    "cwd": str(ui_root),
++                    "returncode": None,
++                    "error": "vite_bin_missing",
++                }
++            )
++
++    css_path, js_path = _asset_paths(ui_root)
++    if not css_path or not js_path:
++        raise RuntimeError("vite_dist_assets_missing")
++
++    model_json = json.dumps(build_cockpit_view_model(root_path), sort_keys=True)
++    css = css_path.read_text(encoding="utf-8")
++    js = js_path.read_text(encoding="utf-8")
++    fixture_html = f"""<!doctype html>
++<html lang="en">
++<head>
++<meta charset="UTF-8" />
++<meta name="viewport" content="width=device-width, initial-scale=1.0" />
++<title>ION/JOC Living Graph Browser Proof Fixture</title>
++<style>{css}</style>
++<script>
++window.__ION_MODEL_JSON__ = {json.dumps(model_json)};
++const originalFetch = window.fetch.bind(window);
++window.fetch = async function(input, init) {{
++  const url = typeof input === 'string' ? input : (input && input.url) || '';
++  if (url === '/model.json' || url.endsWith('/model.json')) {{
++    return new Response(window.__ION_MODEL_JSON__, {{status: 200, headers: {{'Content-Type': 'application/json'}}}});
++  }}
++  return originalFetch(input, init);
++}};
++</script>
++</head>
++<body>
++<div id="root"></div>
++<script type="module">
++{js}
++</script>
++</body>
++</html>
++"""
++    return fixture_html, build_results
++
++
++async def _run_playwright_capture(root_path: Path, fixture_html: str, output_dir: Path, *, chromium_path: str) -> dict[str, Any]:
++    try:
++        from playwright.async_api import async_playwright
++    except Exception as exc:  # pragma: no cover - depends on local installation
++        return {
++            "status": "candidate_browser_capture_blocked",
++            "blocked_reason": "playwright_python_package_unavailable",
++            "error": str(exc),
++        }
++
++    screenshot_path = root_path / SCREENSHOT_OUTPUT
++    selected_screenshot_path = root_path / SELECTED_SCREENSHOT_OUTPUT
++    dom_path = root_path / DOM_OUTPUT
++    screenshot_path.parent.mkdir(parents=True, exist_ok=True)
++
++    launch_args = [
++        "--no-sandbox",
++        "--disable-dev-shm-usage",
++        "--disable-gpu",
++        "--disable-software-rasterizer",
++        "--disable-setuid-sandbox",
++        "--disable-accelerated-2d-canvas",
++        "--single-process",
++        "--no-zygote",
++    ]
++
++    async with async_playwright() as p:
++        try:
++            browser = await p.chromium.launch(
++                headless=True,
++                executable_path=chromium_path,
++                args=launch_args,
++            )
++        except Exception as exc:
++            return {
++                "status": "candidate_browser_capture_blocked",
++                "blocked_reason": "chromium_launch_failed",
++                "error": str(exc),
++                "launch_args": launch_args,
++            }
++
++        page = await browser.new_page(viewport={"width": 1600, "height": 1000}, device_scale_factor=1)
++        console: list[dict[str, str]] = []
++        page_errors: list[str] = []
++        page.on("console", lambda msg: console.append({"type": msg.type, "text": msg.text}))
++        page.on("pageerror", lambda exc: page_errors.append(str(exc)))
++
++        try:
++            await page.set_content(fixture_html, wait_until="networkidle", timeout=30000)
++            await page.wait_for_selector('[data-joc-zone="graph-viewport"]', timeout=15000)
++            collect_metrics_js = """() => {
++                  const q = (sel) => document.querySelectorAll(sel).length;
++                  const zones = Array.from(document.querySelectorAll('[data-joc-zone]')).map((el) => ({
++                    zone: el.getAttribute('data-joc-zone'),
++                    tag: el.tagName,
++                    text: (el.textContent || '').slice(0, 90),
++                    rect: (() => { const r = el.getBoundingClientRect(); return {x:r.x,y:r.y,w:r.width,h:r.height}; })(),
++                  }));
++                  const fixtureCounts = Array.from(document.querySelectorAll('[data-proof-fixture]')).reduce((acc, el) => {
++                    const key = el.getAttribute('data-proof-fixture') || 'unknown';
++                    acc[key] = (acc[key] || 0) + 1;
++                    return acc;
++                  }, {});
++                  return {
++                    title: document.title,
++                    location: location.href,
++                    viewport_width: innerWidth,
++                    viewport_height: innerHeight,
++                    body_scroll_width: document.body.scrollWidth,
++                    body_scroll_height: document.body.scrollHeight,
++                    zones,
++                    zone_count: zones.length,
++                    fixtures_by_name: fixtureCounts,
++                    node_count: q('[data-proof-fixture="graph-node"]'),
++                    edge_count: q('[data-proof-fixture="graph-edge"]'),
++                    timeline_event_count: q('[data-proof-fixture="graph-timeline-event"]'),
++                    command_count: q('[data-proof-fixture="graph-command-deck"] button'),
++                    minimap_count: q('[data-proof-fixture="graph-minimap"]'),
++                    graph_selected_object_count: q('[data-proof-fixture="graph-selected-object"]'),
++                    graph_relationship_inspector_count: q('[data-proof-fixture="graph-relationship-inspector"]'),
++                    graph_viewport_count: q('[data-joc-zone="graph-viewport"]'),
++                    graph_right_inspector_count: q('[data-joc-zone="graph-right-inspector"]'),
++                    text_sample: document.body.innerText.slice(0, 1200),
++                  };
++                }"""
++
++            await page.screenshot(path=str(screenshot_path), full_page=True)
++            initial_metrics = await page.evaluate(collect_metrics_js)
++
++            await page.locator('[data-proof-fixture="graph-workbench"]').focus()
++            await page.keyboard.press("/")
++            await page.wait_for_timeout(200)
++            keyboard_focus_after_slash = await page.evaluate(
++                """() => {
++                  const a = document.activeElement;
++                  return {
++                    tag: a?.tagName,
++                    aria: a?.getAttribute('aria-label'),
++                    placeholder: a?.getAttribute('placeholder'),
++                    className: String(a?.className || ''),
++                  };
++                }"""
++            )
++
++            target_node = "domain_governance"
++            if await page.locator(f'[data-node-id="{target_node}"]').count() == 0:
++                target_node = await page.locator('[data-proof-fixture="graph-node"]').first().get_attribute("data-node-id") or ""
++
++            if target_node:
++                await page.locator(f'[data-node-id="{target_node}"]').focus()
++                await page.keyboard.press("Enter")
++                await page.wait_for_timeout(200)
++
++            relationship_tab = page.locator('[data-joc-zone="graph-right-inspector"] button').filter(has_text="relationships")
++            if await relationship_tab.count():
++                await relationship_tab.first.click()
++                await page.wait_for_timeout(200)
++
++            selected_state = await page.evaluate(
++                """() => ({
++                  selectedLabel: document.querySelector('[data-proof-fixture="graph-selected-object"]')?.textContent?.slice(0, 500) || null,
++                  inspectorText: document.querySelector('[data-joc-zone="graph-right-inspector"]')?.innerText?.slice(0, 1200) || '',
++                })"""
++            )
++            metrics = await page.evaluate(collect_metrics_js)
++
++            await page.screenshot(path=str(selected_screenshot_path), full_page=True)
++            dom_path.write_text(await page.content(), encoding="utf-8")
++
++            zone_names = {item.get("zone") for item in metrics.get("zones", []) if isinstance(item, dict)}
++            fixture_counts = metrics.get("fixtures_by_name", {}) if isinstance(metrics.get("fixtures_by_name"), dict) else {}
++            gates = {
++                "graph_viewport_present": metrics.get("graph_viewport_count", 0) >= 1,
++                "right_inspector_present": metrics.get("graph_right_inspector_count", 0) >= 1,
++                "required_zones_present": all(zone in zone_names for zone in REQUIRED_ZONES),
++                "required_fixtures_present": all(int(fixture_counts.get(fixture, 0) or 0) >= 1 for fixture in REQUIRED_FIXTURES),
++                "full_graph_nodes_rendered": int(metrics.get("node_count", 0) or 0) >= 64,
++                "timeline_events_rendered": int(metrics.get("timeline_event_count", 0) or 0) >= 20,
++                "keyboard_search_focus": keyboard_focus_after_slash.get("tag") == "INPUT",
++                "keyboard_node_selection": bool(selected_state.get("selectedLabel")),
++                "no_body_vertical_monolith": int(metrics.get("body_scroll_height", 0) or 0) <= int(metrics.get("viewport_height", 0) or 0) + 4,
++                "no_body_horizontal_monolith": int(metrics.get("body_scroll_width", 0) or 0) <= int(metrics.get("viewport_width", 0) or 0) + 4,
++                "no_page_errors": not page_errors,
++            }
++
++            await browser.close()
++            return {
++                "status": "candidate_browser_capture_pass" if all(gates.values()) else "candidate_browser_capture_watch",
++                "mode": "inline_built_fixture",
++                "generated_at": utc_now(),
++                "gates": gates,
++                "metrics": metrics,
++                "initial_metrics": initial_metrics,
++                "keyboard_focus_after_slash": keyboard_focus_after_slash,
++                "selected_state": selected_state,
++                "screenshot_path": str(SCREENSHOT_OUTPUT),
++                "selected_screenshot_path": str(SELECTED_SCREENSHOT_OUTPUT),
++                "dom_snapshot_path": str(DOM_OUTPUT),
++                "console_tail": console[-30:],
++                "page_errors": page_errors,
++                "authority": {
++                    "production_authority": False,
++                    "live_telemetry_authority": False,
++                    "accepted_state": False,
++                    "browser_screenshot_proof_candidate": True,
++                },
++                "non_claims": [
++                    "not_accepted_state",
++                    "not_live_telemetry",
++                    "not_production_deployment",
++                    "not_live_action_mcp_mutation",
++                ],
++                "launch_args": launch_args,
++            }
++        except Exception as exc:
++            try:
++                await browser.close()
++            except Exception:
++                pass
++            return {
++                "status": "candidate_browser_capture_blocked",
++                "blocked_reason": "browser_capture_exception",
++                "error": str(exc),
++                "console_tail": console[-30:],
++                "page_errors": page_errors,
++                "launch_args": launch_args,
++            }
++
++
++def build_living_graph_browser_capture(
++    root: str | Path = ".",
++    *,
++    write: bool = False,
++    build: bool = True,
++    chromium_path: str = "/usr/bin/chromium",
++) -> dict[str, Any]:
++    root_path = Path(root).resolve()
++    output_dir = root_path / OUTPUT_DIR
++    output_dir.mkdir(parents=True, exist_ok=True)
++
++    try:
++        fixture_html, build_results = _build_inline_fixture(root_path, build=build)
++    except Exception as exc:
++        result = {
++            "schema_id": "ion.living_graph.browser_capture.v1",
++            "generated_at": utc_now(),
++            "status": "candidate_browser_capture_blocked",
++            "blocked_reason": "inline_fixture_build_failed",
++            "error": str(exc),
++            "authority": {
++                "production_authority": False,
++                "live_telemetry_authority": False,
++                "accepted_state": False,
++            },
++        }
++    else:
++        if write:
++            (root_path / INLINE_FIXTURE_OUTPUT).parent.mkdir(parents=True, exist_ok=True)
++            (root_path / INLINE_FIXTURE_OUTPUT).write_text(fixture_html, encoding="utf-8")
++        capture = asyncio.run(_run_playwright_capture(root_path, fixture_html, output_dir, chromium_path=chromium_path))
++        result = {
++            "schema_id": "ion.living_graph.browser_capture.v1",
++            "generated_at": utc_now(),
++            "build_results": build_results,
++            "capture": capture,
++            "status": capture.get("status", "candidate_browser_capture_unknown"),
++            "source_paths": {
++                "ui_root": str(UI_ROOT),
++                "inline_fixture": str(INLINE_FIXTURE_OUTPUT),
++                "result": str(RESULT_OUTPUT),
++            },
++            "authority": {
++                "production_authority": False,
++                "live_telemetry_authority": False,
++                "accepted_state": False,
++            },
++            "non_claims": [
++                "not_accepted_state",
++                "not_live_telemetry",
++                "not_production_deployment",
++                "not_live_action_mcp_mutation",
++            ],
++        }
++
++    if write:
++        result_path = root_path / RESULT_OUTPUT
++        result_path.parent.mkdir(parents=True, exist_ok=True)
++        result_path.write_text(json.dumps(result, indent=2, sort_keys=True) + "\n", encoding="utf-8")
++    return result
++
++
++def main(argv: list[str] | None = None) -> int:
++    parser = argparse.ArgumentParser(description="Capture local candidate browser proof for the ION Living Graph JOC route.")
++    parser.add_argument("--root", default=".")
++    parser.add_argument("--write", action="store_true")
++    parser.add_argument("--no-build", action="store_true", help="Use existing dist assets instead of running Vite build first.")
++    parser.add_argument("--chromium-path", default="/usr/bin/chromium")
++    parser.add_argument("--json", action="store_true")
++    args = parser.parse_args(argv)
++
++    result = build_living_graph_browser_capture(
++        args.root,
++        write=args.write,
++        build=not args.no_build,
++        chromium_path=args.chromium_path,
++    )
++    if args.json:
++        print(json.dumps(result, indent=2, sort_keys=True))
++    else:
++        print(result["status"])
++    return 0 if str(result.get("status", "")).endswith("_pass") else 1
++
++
++if __name__ == "__main__":  # pragma: no cover
++    raise SystemExit(main())
+--- a/ION/08_ui/joc_cockpit_shell/LivingGraphWorkbenchPanel.tsx
++++ b/ION/08_ui/joc_cockpit_shell/LivingGraphWorkbenchPanel.tsx
+@@ -25,6 +25,13 @@
+ }
+ 
+ function toScreenPoint(node: IonLivingGraphNodeCard, index: number, count: number) {
++  const projected = node.screen_point ?? {};
++  if (typeof projected.x === 'number' && typeof projected.y === 'number') {
++    return {
++      x: projected.x,
++      y: projected.y,
++    };
++  }
+   const raw = node.position ?? {};
+   const x = typeof raw.x === 'number' ? raw.x : undefined;
+   const z = typeof raw.z === 'number' ? raw.z : undefined;
+@@ -411,7 +418,7 @@
+         <div className="ion-section-title">SELECTED OBJECT TRUTH</div>
+         {activeNode ? (
+           <>
+-            <h3>{activeNode.label}</h3>
++            <h3 data-proof-fixture="graph-selected-object">{activeNode.label}</h3>
+             <div className={`ion-living-graph-verdict is-${statusClass(activeNode.proof_status)}`}>{activeNode.type} / {activeNode.proof_status}</div>
+             <p>{activeNode.summary || 'No summary available for this graph object.'}</p>
+             <div className="ion-living-graph-inspector-tabs">
+--- a/ION/08_ui/joc_cockpit_shell/ionRuntimeCockpitTypes.ts
++++ b/ION/08_ui/joc_cockpit_shell/ionRuntimeCockpitTypes.ts
+@@ -374,6 +374,7 @@
+   summary?: string;
+   available_tabs?: string[];
+   position?: { x?: number; y?: number; z?: number };
++  screen_point?: { x?: number; y?: number; source?: string };
+   height?: number;
+   screen_priority?: number;
+   risk_heat?: number;
+--- a/ION/08_ui/joc_cockpit_shell/joc-cockpit.css
++++ b/ION/08_ui/joc_cockpit_shell/joc-cockpit.css
+@@ -13,9 +13,23 @@
+   --ion-font: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace);
+ }
+ 
++html,
++body,
++#root {
++  height: 100%;
++  margin: 0;
++  overflow: hidden;
++}
++
++body {
++  background: var(--ion-bg);
++}
++
+ .ion-joc-shell {
+-  min-height: 100vh;
+-  display: grid;
++  height: 100vh;
++  min-height: 0;
++  display: grid;
++  overflow: hidden;
+   grid-template-columns: 48px minmax(0, 1fr) 360px;
+   grid-template-rows: 40px minmax(0, 1fr) 240px;
+   grid-template-areas:
+@@ -107,6 +121,7 @@
+ .ion-main-work-surface {
+   grid-area: main;
+   min-width: 0;
++  min-height: 0;
+   padding: 12px;
+   display: grid;
+   gap: 12px;
+--- a/ION/08_ui/joc_cockpit_shell/ion-runtime-cockpit.css
++++ b/ION/08_ui/joc_cockpit_shell/ion-runtime-cockpit.css
+@@ -220,6 +220,10 @@
+ 
+ .ion-live-page {
+   align-content: start;
++  grid-template-rows: auto minmax(0, 1fr);
++  height: 100%;
++  min-height: 0;
++  overflow: hidden;
+ }
+ 
+ .ion-live-page-header {
+@@ -263,6 +267,8 @@
+ }
+ 
+ .ion-live-page-body {
++  min-height: 0;
++  overflow: hidden;
+   display: grid;
+   grid-template-columns: minmax(0, 1fr);
+   gap: 8px;
+@@ -533,10 +539,12 @@
+    mutate ION state or claim live telemetry. */
+ .ion-living-graph-workbench {
+   grid-column: 1 / -1;
+-  min-height: 720px;
++  height: 100%;
++  min-height: 0;
++  overflow: hidden;
+   display: grid;
+   grid-template-columns: 190px minmax(420px, 1fr) 330px;
+-  grid-template-rows: auto minmax(460px, 1fr) 160px;
++  grid-template-rows: minmax(72px, auto) minmax(0, 1fr) 150px;
+   grid-template-areas:
+     "graphTop graphTop graphTop"
+     "graphLeft graphViewport graphInspector"
+@@ -615,6 +623,7 @@
+ .ion-living-graph-left {
+   grid-area: graphLeft;
+   min-width: 0;
++  min-height: 0;
+   border: 1px solid var(--ion-border);
+   background: var(--ion-surface);
+   padding: 8px;
+@@ -699,7 +708,7 @@
+ .ion-living-graph-viewport {
+   grid-area: graphViewport;
+   position: relative;
+-  min-height: 460px;
++  min-height: 0;
+   border: 1px solid var(--ion-border);
+   background:
+     radial-gradient(circle at 50% 50%, rgba(255,255,255,0.045), transparent 34%),
+@@ -710,7 +719,7 @@
+ .ion-living-graph-viewport svg {
+   width: 100%;
+   height: 100%;
+-  min-height: 460px;
++  min-height: 0;
+   display: block;
+ }
+ 
+@@ -858,6 +867,7 @@
+ .ion-living-graph-inspector {
+   grid-area: graphInspector;
+   min-width: 0;
++  min-height: 0;
+   border: 1px solid var(--ion-border);
+   background: var(--ion-surface);
+   padding: 9px;
+@@ -878,6 +888,7 @@
+ .ion-living-graph-timeline {
+   grid-area: graphTimeline;
+   min-width: 0;
++  min-height: 0;
+   display: grid;
+   grid-template-rows: auto minmax(0, 1fr);
+   gap: 6px;
+--- a/ION/tests/test_kernel_ion_living_graph_view_model.py
++++ b/ION/tests/test_kernel_ion_living_graph_view_model.py
+@@ -232,6 +232,10 @@
+     assert model["selected"]["id"] == "domain_finance"
+     assert model["selected"]["child_count"] == 1
+     assert model["domains"][0]["label"] == "Finance"
++    assert model["domains"][0]["screen_point"]["source"] == "world_position_layer_collision_relief"
++    point_by_id = {node["id"]: node["screen_point"] for node in model["visible_nodes"]}
++    assert point_by_id["domain_finance"] != point_by_id["template_finance_close"]
++    assert point_by_id["template_finance_close"]["x"] < point_by_id["domain_finance"]["x"]
+     assert model["route_edges"][0]["id"] == "e_core_to_finance"
+     assert model["timeline"]["event_count"] == 2
+     assert model["proof_gates"]["required_zones_present"] is True
+@@ -298,6 +302,9 @@
+     assert model["kpis"]["visible_edge_count"] == model["kpis"]["edge_count"]
+     assert len(model["visible_nodes"]) == 64
+     assert len(model["visible_edges"]) == 72
++    assert all("screen_point" in node for node in model["visible_nodes"])
++    screen_points = {(node["screen_point"]["x"], node["screen_point"]["y"]) for node in model["visible_nodes"]}
++    assert len(screen_points) > 48
+     assert len(model["domain_clusters"]) == 8
+     assert len(model["domain_districts"]) == 8
+     assert len(model["timeline"]["all_events"]) == 66

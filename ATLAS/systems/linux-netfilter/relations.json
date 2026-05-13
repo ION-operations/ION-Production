@@ -1,0 +1,53 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Netfilter is a Linux kernel networking subsystem providing packet filtering hooks and related facilities per kernel documentation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-namespaces",
+      "evidence_tier": "INFERRED",
+      "notes": "Netfilter tables and rules are scoped per network namespace on Linux."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-capabilities",
+      "evidence_tier": "INFERRED",
+      "notes": "Modifying firewall rules typically requires network administration capabilities (e.g. CAP_NET_ADMIN) per common Linux privilege model."
+    },
+    {
+      "type": "integrates_with",
+      "target": "ebpf",
+      "evidence_tier": "INFERRED",
+      "notes": "eBPF programs can attach in multiple kernel subsystems; netfilter is a separate hook framework for classic iptables/nftables paths."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "kube-proxy and node networking on Linux commonly program netfilter rules for Services unless replaced by other datapaths."
+    },
+    {
+      "type": "integrates_with",
+      "target": "docker",
+      "evidence_tier": "INFERRED",
+      "notes": "Docker’s Linux networking modes interact with iptables/nftables rules for NAT and bridge forwarding in typical deployments."
+    },
+    {
+      "type": "integrates_with",
+      "target": "cilium",
+      "evidence_tier": "INFERRED",
+      "notes": "Cilium often uses eBPF for datapath policy; clusters may still have residual netfilter rules or migrate away from iptables kube-proxy modes."
+    },
+    {
+      "type": "integrates_with",
+      "target": "envoy",
+      "evidence_tier": "INFERRED",
+      "notes": "Envoy is a userspace L7 proxy; host L3/L4 policy may still be implemented with netfilter separately in layered stacks."
+    }
+  ]
+}

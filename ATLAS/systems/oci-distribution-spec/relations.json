@@ -1,0 +1,65 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "oci-image-spec",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Registry protocol moves OCI image manifests, indexes, configs, and layer blobs defined by the image spec."
+    },
+    {
+      "type": "integrates_with",
+      "target": "docker",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Engine and registry clients push/pull using distribution-class HTTP APIs."
+    },
+    {
+      "type": "integrates_with",
+      "target": "containerd",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Image pull and push paths use registry HTTP semantics compatible with OCI distribution."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "kubelet/CRI stacks pull images from registries implementing distribution-compatible APIs."
+    },
+    {
+      "type": "integrates_with",
+      "target": "podman",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Podman pushes and pulls images from OCI-compatible registries per documented workflows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "cri-o",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "CRI-O pulls container images from registries using distribution-class HTTP behavior."
+    },
+    {
+      "type": "integrates_with",
+      "target": "buildkit",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "BuildKit pushes built images to OCI-compatible registries using distribution-class HTTP APIs for manifests and blobs."
+    },
+    {
+      "type": "integrates_with",
+      "target": "helm",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Helm can use OCI registries for chart storage and push/pull using distribution-class HTTP semantics."
+    },
+    {
+      "type": "integrates_with",
+      "target": "fluxcd",
+      "evidence_tier": "INFERRED",
+      "notes": "Flux image automation and registry-facing controllers interact with distribution-class HTTP APIs."
+    },
+    {
+      "type": "integrates_with",
+      "target": "argo-cd",
+      "evidence_tier": "INFERRED",
+      "notes": "Argo CD pulls charts and images from OCI-compatible registries using distribution-class HTTP semantics."
+    }
+  ]
+}

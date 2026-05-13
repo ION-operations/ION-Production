@@ -1,0 +1,68 @@
+{
+  "name": "ChatGPT Login",
+  "description": "Automate ChatGPT login flow - Navigate to login page, enter credentials, and wait for chat interface",
+  "provider": "chatgpt",
+  "variables": {
+    "email": "{{email}}",
+    "password": "{{password}}"
+  },
+  "actions": [
+    {
+      "type": "navigate",
+      "url": "https://chat.openai.com/auth/login",
+      "timeout": 30000,
+      "beforeDelay": 1000,
+      "afterDelay": 2000
+    },
+    {
+      "type": "wait",
+      "selector": "button[data-testid='login-button']",
+      "timeout": 10000,
+      "afterDelay": 500
+    },
+    {
+      "type": "click",
+      "selector": "button[data-testid='login-button']",
+      "afterDelay": 2000
+    },
+    {
+      "type": "wait",
+      "selector": "input[name='email']",
+      "timeout": 5000,
+      "afterDelay": 500
+    },
+    {
+      "type": "type",
+      "selector": "input[name='email']",
+      "value": "{{email}}",
+      "humanLike": true,
+      "beforeDelay": 500,
+      "afterDelay": 1000
+    },
+    {
+      "type": "type",
+      "selector": "input[name='password']",
+      "value": "{{password}}",
+      "humanLike": true,
+      "beforeDelay": 500,
+      "afterDelay": 1000
+    },
+    {
+      "type": "click",
+      "selector": "button[type='submit']",
+      "afterDelay": 3000
+    },
+    {
+      "type": "wait",
+      "selector": "textarea[data-id='root']",
+      "timeout": 15000,
+      "afterDelay": 1000
+    },
+    {
+      "type": "screenshot",
+      "afterDelay": 500
+    }
+  ],
+  "output": {}
+}
+

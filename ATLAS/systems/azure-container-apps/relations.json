@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Microsoft documents Container Apps as powered by Kubernetes while not exposing direct access to underlying Kubernetes APIs (use AKS for full API access)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "docker",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Overview documents running containers from registries including Docker Hub and Azure Container Registry."
+    },
+    {
+      "type": "competes_with",
+      "target": "azure-aks",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitution among Azure container hosting models per Microsoft comparison guidance; different API/control surface."
+    },
+    {
+      "type": "competes_with",
+      "target": "aws-ecs",
+      "evidence_tier": "INFERRED",
+      "notes": "Cross-vendor managed/serverless container platform substitution class; not API-equivalent."
+    },
+    {
+      "type": "competes_with",
+      "target": "azure-aci",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitution vs lower-level container group building block on Azure."
+    }
+  ]
+}

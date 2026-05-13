@@ -1,0 +1,273 @@
+/* ─── GPU Monitor ─── */
+
+.gpu-page {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+    color: var(--text-primary, #e0e0e0);
+}
+
+.gpu-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border, #2a2a4a);
+    flex-shrink: 0;
+}
+
+.gpu-title {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.gpu-subtitle {
+    font-size: 11px;
+    color: var(--text-dim, #888);
+}
+
+.gpu-body {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+}
+
+/* Main */
+.gpu-main {
+    flex: 1;
+    overflow-y: auto;
+    padding: 14px 18px;
+}
+
+.gpu-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.gpu-stat-card {
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border, #2a2a4a);
+    background: var(--bg-surface, #141428);
+}
+
+.gpu-stat-label {
+    font-size: 10px;
+    color: var(--text-dim, #888);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.gpu-stat-value {
+    font-size: 20px;
+    font-weight: 800;
+    margin: 4px 0;
+    font-family: 'SF Mono', monospace;
+}
+
+.gpu-stat-bar {
+    height: 4px;
+    background: var(--bg-input, #1a1a35);
+    border-radius: 2px;
+    overflow: hidden;
+    margin-top: 6px;
+}
+
+.gpu-stat-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 1s ease, background 0.3s ease;
+}
+
+/* Section */
+.gpu-section {
+    margin-bottom: 18px;
+}
+
+.gpu-section-title {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-dim, #888);
+    margin-bottom: 8px;
+}
+
+/* Jobs */
+.gpu-job-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.gpu-job-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    transition: background 0.1s;
+}
+
+.gpu-job-row:hover {
+    background: var(--bg-hover, #252550);
+}
+
+.gpu-job-status {
+    font-size: 12px;
+    width: 16px;
+    text-align: center;
+}
+
+.gpu-job-model {
+    font-weight: 600;
+    width: 100px;
+    color: var(--accent, #00d4ff);
+    font-family: 'SF Mono', monospace;
+    font-size: 10px;
+}
+
+.gpu-job-prompt {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: var(--text-secondary, #aaa);
+}
+
+.gpu-job-tokens {
+    font-size: 9px;
+    color: var(--text-dim);
+    font-family: 'SF Mono', monospace;
+}
+
+.gpu-job-duration {
+    width: 50px;
+    text-align: right;
+    font-size: 10px;
+    color: var(--text-dim);
+    font-family: 'SF Mono', monospace;
+}
+
+.gpu-job-time {
+    width: 60px;
+    text-align: right;
+    font-size: 10px;
+    color: var(--text-dim);
+}
+
+/* Model Sidebar */
+.gpu-model-panel {
+    width: 260px;
+    flex-shrink: 0;
+    overflow-y: auto;
+    padding: 14px;
+    border-left: 1px solid var(--border, #2a2a4a);
+}
+
+.gpu-model-card {
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border, #2a2a4a);
+    margin-bottom: 6px;
+}
+
+.gpu-model-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.gpu-model-name {
+    font-size: 11px;
+    font-weight: 700;
+    font-family: 'SF Mono', monospace;
+}
+
+.gpu-model-size {
+    font-size: 9px;
+    color: var(--text-dim);
+    font-family: 'SF Mono', monospace;
+}
+
+.gpu-model-meta {
+    font-size: 9px;
+    color: var(--text-dim, #888);
+    margin-top: 3px;
+    display: flex;
+    gap: 4px;
+}
+
+.gpu-model-actions {
+    display: flex;
+    gap: 4px;
+    margin-top: 6px;
+}
+
+.gpu-model-btn {
+    padding: 3px 8px;
+    font-size: 9px;
+    border: 1px solid var(--border, #2a2a4a);
+    background: var(--bg-elevated, #1e1e3a);
+    color: var(--text-secondary);
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.gpu-model-btn:hover {
+    background: var(--bg-hover);
+}
+
+.gpu-pull-btn {
+    width: 100%;
+    padding: 6px;
+    font-size: 10px;
+    border: 1px dashed var(--border, #2a2a4a);
+    background: none;
+    color: var(--text-dim);
+    border-radius: 4px;
+    cursor: pointer;
+    margin-top: 4px;
+}
+
+.gpu-pull-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+}
+
+/* Cloud */
+.gpu-cloud-card {
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--border, #2a2a4a);
+    margin-bottom: 6px;
+}
+
+.gpu-cloud-provider {
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.gpu-cloud-status {
+    font-size: 9px;
+    color: var(--text-dim, #888);
+    margin: 3px 0;
+}
+
+.gpu-cloud-btn {
+    padding: 4px 10px;
+    font-size: 9px;
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    background: rgba(0, 212, 255, 0.04);
+    color: var(--accent);
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.gpu-cloud-btn:hover {
+    background: rgba(0, 212, 255, 0.1);
+}

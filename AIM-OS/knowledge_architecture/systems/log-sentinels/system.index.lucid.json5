@@ -1,0 +1,237 @@
+{
+  "systemId": "log-sentinels.hybridLogAnalysis",
+  "humanName": "Log-Sentinels (Hybrid Log Analysis System)",
+  "version": "v1.0.0",
+  "status": "production",
+  
+  "intent": {
+    "purpose": "Hybrid log analysis system providing fast cloud summaries (Cerebras Scout) and deep local forensics (Ollama). Privacy-first: cloud sees only redacted/templated windows; local has raw for deep analysis. Escalates based on severity, confidence, novelty.",
+    "must_not_regress": [
+      "Must not send raw logs to cloud",
+      "Must not skip PII redaction",
+      "Must not bypass escalation logic",
+      "Must not lose log records",
+      "Must not exceed Scout timeout (700ms)",
+      "Must not exceed Forensics timeout (8s)",
+      "Must not allow privacy violations"
+    ],
+    "why_it_exists": "Enables proactive issue detection with privacy protection through hybrid cloud/local analysis. Transforms reactive debugging into proactive monitoring with privacy-first design."
+  },
+  
+  "classification": {
+    "security_level": "critical",
+    "perf_sensitivity": "high",
+    "ownership": "log-sentinels",
+    "sideEffects": [
+      "Analyzes log records",
+      "Generates Scout reports",
+      "Generates Forensics reports",
+      "Suggests MCP tools",
+      "Records evidence chains",
+      "Creates timeline markers"
+    ]
+  },
+  
+  "internalNodes": [
+    {
+      "id": "logSentinelsPipeline",
+      "responsibility": "Main orchestrator coordinating collectors, normalizer, template miner, windower, scout, forensics, router policy",
+      "must_never": [
+        "Skip PII redaction",
+        "Send raw logs to cloud",
+        "Bypass escalation logic",
+        "Lose log records"
+      ],
+      "perf_budget_ms": 1000,
+      "status": "production"
+    },
+    {
+      "id": "logCollector",
+      "responsibility": "Abstract base for log sources. Implementations: BrowserConsoleCollector (WebSocket), TerminalCollector (file), BackendAPICollector (OTEL)",
+      "must_never": [
+        "Lose log records",
+        "Skip source validation",
+        "Allow unauthorized access",
+        "Bypass rate limits"
+      ],
+      "perf_budget_ms": 50,
+      "status": "production"
+    },
+    {
+      "id": "logNormalizer",
+      "responsibility": "PII redaction before cloud calls. Pattern-based redaction (regex), hash raw for local storage, preserve structure",
+      "must_never": [
+        "Send raw logs to cloud",
+        "Skip redaction patterns",
+        "Lose raw hash references",
+        "Bypass privacy checks"
+      ],
+      "perf_budget_ms": 10,
+      "status": "production"
+    },
+    {
+      "id": "logTemplateMiner",
+      "responsibility": "Template extraction using Drain3 algorithm. Clusters similar logs, computes novelty scores, cache management (LRU, 5000 templates)",
+      "must_never": [
+        "Lose template cache",
+        "Skip novelty computation",
+        "Allow cache corruption",
+        "Bypass clustering"
+      ],
+      "perf_budget_ms": 100,
+      "status": "production"
+    },
+    {
+      "id": "windower",
+      "responsibility": "Time-based windowing system. Rolling windows (60s), minimum records (12), burst detection (2.5x baseline)",
+      "must_never": [
+        "Create windows with insufficient records",
+        "Lose window state",
+        "Skip burst detection",
+        "Bypass time windows"
+      ],
+      "perf_budget_ms": 20,
+      "status": "production"
+    },
+    {
+      "id": "scoutAdapter",
+      "responsibility": "Fast cloud LLM adapter (Cerebras). Analyzes redacted windows, returns summary, confidence, severity, tags, suggested tools",
+      "must_never": [
+        "Send raw logs to cloud",
+        "Exceed timeout (700ms)",
+        "Lose analysis results",
+        "Bypass redaction"
+      ],
+      "perf_budget_ms": 700,
+      "status": "production"
+    },
+    {
+      "id": "forensicsAdapter",
+      "responsibility": "Deep local LLM adapter (Ollama). Analyzes raw windows with context, returns root cause, fix suggestion, evidence",
+      "must_never": [
+        "Send raw logs to cloud",
+        "Exceed timeout (8s)",
+        "Lose analysis results",
+        "Bypass local-only constraint"
+      ],
+      "perf_budget_ms": 8000,
+      "status": "production"
+    },
+    {
+      "id": "routerPolicy",
+      "responsibility": "Escalation decision logic. Severity scoring, confidence thresholds, novelty detection, keep/escalate decisions",
+      "must_never": [
+        "Skip escalation checks",
+        "Lose decision reasoning",
+        "Bypass severity thresholds",
+        "Allow unsafe escalations"
+      ],
+      "perf_budget_ms": 5,
+      "status": "production"
+    }
+  ],
+  
+  "systemMap": {
+    "mapFile": "./system.map.lucid.json5"
+  },
+  
+  "foresight": {
+    "predictedRisks": [
+      {
+        "risk_id": "pii_leakage",
+        "description": "PII leakage to cloud if normalizer fails or is bypassed",
+        "likelihood": "low",
+        "blast_radius_if_real": "privacy_breach",
+        "mitigation": "Multiple redaction layers, validation checks, audit logs",
+        "watchpoint": "if pii_detected_in_cloud_payload, halt system"
+      },
+      {
+        "risk_id": "raw_logs_to_cloud",
+        "description": "Raw logs sent to cloud if Scout adapter bypasses normalizer",
+        "likelihood": "low",
+        "blast_radius_if_real": "privacy_breach",
+        "mitigation": "Hard constraints, validation checks, pre-flight validation",
+        "watchpoint": "if raw_logs_detected_in_scout_request, halt system"
+      },
+      {
+        "risk_id": "escalation_bypass",
+        "description": "Escalation bypass allowing missed issues",
+        "likelihood": "medium",
+        "blast_radius_if_real": "missed_critical_issues",
+        "mitigation": "Hard gates, validation checks, monitoring",
+        "watchpoint": "if escalation_bypass detected, alert and review"
+      }
+    ],
+    "killSwitch": "log-sentinels.enabled=false",
+    "emergencyProcedures": [
+      "Freeze all log processing immediately",
+      "Stop all cloud calls",
+      "Clear caches",
+      "Notify privacy team",
+      "Audit recent operations"
+    ]
+  },
+  
+  "integrations": {
+    "router": {
+      "protocol": "internal_api",
+      "whatIsExchanged": ["tool_suggestions", "log_insights", "anomaly_reports"],
+      "security": "medium",
+      "rateLimit": "unlimited"
+    },
+    "seg": {
+      "protocol": "internal_api",
+      "whatIsExchanged": ["scout_evidence", "forensics_evidence", "escalation_chains"],
+      "security": "high",
+      "rateLimit": "unlimited"
+    },
+    "vif": {
+      "protocol": "internal_api",
+      "whatIsExchanged": ["quality_gates", "confidence_scores", "validation_requests"],
+      "security": "critical",
+      "rateLimit": "unlimited"
+    },
+    "cmc": {
+      "protocol": "internal_api",
+      "whatIsExchanged": ["decision_atoms", "analysis_results", "escalation_decisions"],
+      "security": "high",
+      "rateLimit": "unlimited"
+    },
+    "tcs": {
+      "protocol": "internal_api",
+      "whatIsExchanged": ["incident_markers", "analysis_events", "timeline_entries"],
+      "security": "medium",
+      "rateLimit": "unlimited"
+    }
+  },
+  
+  "performance": {
+    "metrics": {
+      "scout_latency_ms": "target < 700ms",
+      "forensics_latency_ms": "target < 8s",
+      "escalation_rate": "monitored",
+      "tool_suggestion_accuracy": "target > 85%",
+      "privacy_violations": "target = 0",
+      "cache_hit_rate": "target > 70%"
+    },
+    "optimization": [
+      "Template caching",
+      "Window optimization",
+      "Batch processing",
+      "LRU eviction",
+      "Parallel analysis"
+    ],
+    "monitoring": ["scout_latency", "forensics_latency", "escalation_rate", "privacy_violations", "cache_hit_rate"]
+  },
+  
+  "documentation": {
+    "T0_executive": "knowledge_architecture/systems/log-sentinels/T0_executive.md",
+    "T1_overview": "knowledge_architecture/systems/log-sentinels/T1_overview.md",
+    "T2_architecture": "knowledge_architecture/systems/log-sentinels/T2_architecture.md",
+    "T3_detailed": "knowledge_architecture/systems/log-sentinels/T3_detailed.md",
+    "T4_complete": "knowledge_architecture/systems/log-sentinels/T4_complete.md",
+    "system_map": "knowledge_architecture/systems/log-sentinels/system.map.lucid.json5",
+    "usage_envelope": "knowledge_architecture/systems/log-sentinels/usage.envelope.md"
+  }
+}
+

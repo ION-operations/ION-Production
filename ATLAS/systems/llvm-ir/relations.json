@@ -1,0 +1,53 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "c-language",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Clang lowers C family to LLVM IR (clang.llvm.org)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "rust-language",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "rustc uses LLVM as a primary code generation path (rustc dev guide / project docs)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "dwarf",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "LLVM source-level debugging documentation describes DWARF emission paths."
+    },
+    {
+      "type": "integrates_with",
+      "target": "elf",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "LLVM backends emit ELF object files and linked images on common Unix-class targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-binutils",
+      "evidence_tier": "INFERRED",
+      "notes": "LLVM outputs may be linked with GNU ld or LLVM lld; objdump/readelf vs llvm-objdump varies by deployment."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-lld",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "LLVM codegen and LTO outputs are commonly linked with lld in LLVM-native stacks."
+    },
+    {
+      "type": "integrates_with",
+      "target": "clang",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Clang is the primary C/C++/Objective-C frontend that feeds LLVM IR into the LLVM pipeline."
+    },
+    {
+      "type": "integrates_with",
+      "target": "lldb",
+      "evidence_tier": "INFERRED",
+      "notes": "LLDB is part of the LLVM project and shares release/integration context with LLVM toolchains."
+    }
+  ]
+}

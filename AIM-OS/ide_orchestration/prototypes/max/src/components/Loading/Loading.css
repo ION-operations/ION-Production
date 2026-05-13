@@ -1,0 +1,135 @@
+/* Loading Component Styles */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--skeleton-bg, #2d2d2d) 0%,
+    var(--skeleton-shine, #3d3d3d) 50%,
+    var(--skeleton-bg, #2d2d2d) 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+  display: inline-block;
+}
+
+.skeleton-rounded {
+  border-radius: 4px;
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.skeleton-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.skeleton-text-line {
+  margin-bottom: 0.25rem;
+}
+
+.progress-indicator {
+  width: 100%;
+  height: 4px;
+  background-color: var(--bg-tertiary, #2d2d2d);
+  border-radius: 2px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progress-bar {
+  height: 100%;
+  background-color: var(--primary-color, #007acc);
+  transition: width 0.3s ease;
+}
+
+.progress-bar-indeterminate {
+  width: 30%;
+  animation: progress-indeterminate 1.5s ease-in-out infinite;
+}
+
+@keyframes progress-indeterminate {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(400%);
+  }
+}
+
+.progress-label {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary, #cccccc);
+}
+
+.loading-spinner {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-spinner-small {
+  width: 16px;
+  height: 16px;
+}
+
+.loading-spinner-medium {
+  width: 24px;
+  height: 24px;
+}
+
+.loading-spinner-large {
+  width: 32px;
+  height: 32px;
+}
+
+.spinner {
+  width: 100%;
+  height: 100%;
+  border: 2px solid var(--bg-tertiary, #2d2d2d);
+  border-top-color: var(--primary-color, #007acc);
+  border-radius: 50%;
+  animation: spinner-rotate 0.8s linear infinite;
+}
+
+@keyframes spinner-rotate {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.panel-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  min-height: 200px;
+}
+
+.panel-loading-message {
+  margin-top: 1rem;
+  color: var(--text-secondary, #cccccc);
+  font-size: 0.875rem;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+

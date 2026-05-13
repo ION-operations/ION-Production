@@ -1,0 +1,25 @@
+{
+  "system_slug": "ebpf",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-03",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "eBPF programs are verified and executed by the Linux kernel BPF subsystem."
+    },
+    {
+      "type": "integrates_with",
+      "target": "libbpf",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "libbpf is the canonical userspace C library for BPF program loading and map management against the BPF syscall uAPI."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-netfilter",
+      "evidence_tier": "INFERRED",
+      "notes": "eBPF and netfilter address overlapping operational concerns (packet path policy) via different kernel mechanisms; not interchangeable."
+    }
+  ]
+}

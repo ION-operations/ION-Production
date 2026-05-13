@@ -1,0 +1,292 @@
+/* AIM-OS Gemini Bridge — Overlay Styles */
+
+#aimos-bridge-badge {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    border-radius: 20px;
+    font-family: 'Google Sans', 'Segoe UI', system-ui, sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    color: #e8eaed;
+    background: rgba(32, 33, 36, 0.92);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(138, 180, 248, 0.3);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    user-select: none;
+}
+
+#aimos-bridge-badge:hover {
+    background: rgba(32, 33, 36, 0.98);
+    border-color: rgba(138, 180, 248, 0.6);
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+    transform: translateY(-1px);
+}
+
+#aimos-bridge-badge .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+#aimos-bridge-badge .status-dot.connected {
+    background: #34a853;
+    box-shadow: 0 0 6px rgba(52, 168, 83, 0.6);
+    animation: pulse-green 2s ease-in-out infinite;
+}
+
+#aimos-bridge-badge .status-dot.disconnected {
+    background: #ea4335;
+    box-shadow: 0 0 6px rgba(234, 67, 53, 0.6);
+}
+
+#aimos-bridge-badge .status-dot.working {
+    background: #fbbc04;
+    box-shadow: 0 0 6px rgba(251, 188, 4, 0.6);
+    animation: pulse-yellow 0.8s ease-in-out infinite;
+}
+
+#aimos-bridge-badge .status-dot.has-result {
+    background: #8ab4f8;
+    box-shadow: 0 0 8px rgba(138, 180, 248, 0.8);
+    animation: pulse-blue 1s ease-in-out infinite;
+}
+
+#aimos-bridge-badge.has-result {
+    border-color: rgba(138, 180, 248, 0.7);
+    background: rgba(26, 35, 51, 0.96);
+    box-shadow: 0 4px 20px rgba(138, 180, 248, 0.25);
+    animation: badge-glow 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse-blue {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.4;
+    }
+}
+
+@keyframes badge-glow {
+
+    0%,
+    100% {
+        box-shadow: 0 4px 20px rgba(138, 180, 248, 0.25);
+    }
+
+    50% {
+        box-shadow: 0 4px 28px rgba(138, 180, 248, 0.45);
+    }
+}
+
+@keyframes pulse-green {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}
+
+@keyframes pulse-yellow {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.4;
+    }
+}
+
+/* Tool call notification toast */
+#aimos-bridge-toast {
+    position: fixed;
+    bottom: 60px;
+    right: 20px;
+    z-index: 99998;
+    padding: 10px 16px;
+    border-radius: 12px;
+    font-family: 'Google Sans', 'Segoe UI', system-ui, sans-serif;
+    font-size: 12px;
+    color: #e8eaed;
+    background: rgba(32, 33, 36, 0.95);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(138, 180, 248, 0.2);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    max-width: 340px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+}
+
+#aimos-bridge-toast.visible {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+#aimos-bridge-toast .toast-tool {
+    color: #8ab4f8;
+    font-weight: 600;
+}
+
+#aimos-bridge-toast .toast-status {
+    color: #81c995;
+    font-size: 11px;
+    margin-top: 4px;
+}
+
+/* ── Results Panel ─────────────────────────────────────── */
+
+#aimos-results-panel {
+    position: fixed;
+    top: 60px;
+    right: 20px;
+    z-index: 99997;
+    width: 420px;
+    max-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    border-radius: 14px;
+    font-family: 'Google Sans', 'Segoe UI', system-ui, sans-serif;
+    color: #e8eaed;
+    background: rgba(28, 29, 33, 0.96);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(138, 180, 248, 0.25);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    transform: translateX(20px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    pointer-events: none;
+}
+
+#aimos-results-panel.visible {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+}
+
+.arp-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.arp-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #8ab4f8;
+}
+
+.arp-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.arp-toggle {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    font-size: 11px;
+    color: #9aa0a6;
+}
+
+.arp-toggle input[type="checkbox"] {
+    width: 14px;
+    height: 14px;
+    accent-color: #8ab4f8;
+    cursor: pointer;
+}
+
+.arp-toggle-label {
+    user-select: none;
+}
+
+.arp-body {
+    flex: 1;
+    overflow: auto;
+    margin: 0;
+    padding: 12px 16px;
+    font-family: 'Roboto Mono', 'Consolas', monospace;
+    font-size: 11px;
+    line-height: 1.5;
+    color: #c5c8cc;
+    white-space: pre-wrap;
+    word-break: break-word;
+    max-height: 50vh;
+}
+
+.arp-body code {
+    font-family: inherit;
+    background: none;
+    padding: 0;
+}
+
+.arp-actions {
+    display: flex;
+    gap: 8px;
+    padding: 10px 16px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.arp-btn {
+    padding: 6px 14px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    border: 1px solid rgba(138, 180, 248, 0.2);
+    background: rgba(138, 180, 248, 0.08);
+    color: #8ab4f8;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.arp-btn:hover {
+    background: rgba(138, 180, 248, 0.18);
+    border-color: rgba(138, 180, 248, 0.4);
+}
+
+.arp-btn.arp-close {
+    background: none;
+    border: none;
+    color: #9aa0a6;
+    padding: 4px 8px;
+    font-size: 14px;
+}
+
+.arp-btn.arp-close:hover {
+    color: #e8eaed;
+}
+
+.arp-btn.arp-upload {
+    background: rgba(52, 168, 83, 0.12);
+    border-color: rgba(52, 168, 83, 0.3);
+    color: #81c995;
+}
+
+.arp-btn.arp-upload:hover {
+    background: rgba(52, 168, 83, 0.22);
+    border-color: rgba(52, 168, 83, 0.5);
+}

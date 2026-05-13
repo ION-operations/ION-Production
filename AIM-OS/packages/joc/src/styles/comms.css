@@ -1,0 +1,348 @@
+/* ═══════════════════════════════════════════════════════════════
+   Agent Comms Drawer Styles
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── Message List ─── */
+.comms-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 0;
+}
+
+.comms-message {
+    display: flex;
+    gap: 10px;
+    padding: 8px 14px;
+    transition: background var(--transition-fast);
+    border-left: 2px solid transparent;
+}
+
+.comms-message:hover {
+    background: var(--bg-hover);
+}
+
+.comms-message.priority-high {
+    border-left-color: var(--warning);
+}
+
+.comms-message.priority-urgent {
+    border-left-color: var(--danger);
+}
+
+/* ─── Agent Avatar ─── */
+.comms-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    flex-shrink: 0;
+    text-transform: uppercase;
+    position: relative;
+}
+
+.comms-avatar.opus {
+    background: rgba(204, 119, 34, 0.2);
+    color: #CC7722;
+}
+
+.comms-avatar.gemini {
+    background: rgba(66, 133, 244, 0.2);
+    color: #4285F4;
+}
+
+.comms-avatar.aether {
+    background: rgba(103, 58, 183, 0.2);
+    color: #7C4DFF;
+}
+
+.comms-avatar.sev {
+    background: rgba(0, 212, 255, 0.2);
+    color: var(--accent);
+}
+
+.comms-avatar.codex {
+    background: rgba(76, 175, 80, 0.2);
+    color: var(--success);
+}
+
+.comms-avatar.user {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-secondary);
+}
+
+.comms-avatar.unknown {
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--text-hint);
+}
+
+.comms-avatar-status {
+    position: absolute;
+    bottom: -1px;
+    right: -1px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    border: 2px solid var(--bg-panel);
+}
+
+.comms-avatar-status.online {
+    background: var(--success);
+}
+
+.comms-avatar-status.offline {
+    background: var(--text-hint);
+}
+
+.comms-avatar-status.awaiting {
+    background: var(--warning);
+    animation: pulse 1.5s ease infinite;
+}
+
+/* ─── Message Content ─── */
+.comms-msg-header {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-bottom: 2px;
+}
+
+.comms-msg-from {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.comms-msg-arrow {
+    font-size: 10px;
+    color: var(--text-hint);
+}
+
+.comms-msg-to {
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+.comms-msg-time {
+    font-size: 9px;
+    color: var(--text-hint);
+    margin-left: auto;
+    font-family: var(--font-mono);
+}
+
+.comms-msg-body {
+    font-size: 11px;
+    line-height: 1.5;
+    color: var(--text-secondary);
+    word-break: break-word;
+}
+
+.comms-msg-body strong {
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.comms-msg-type {
+    display: inline-block;
+    padding: 1px 5px;
+    font-size: 8px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-radius: 2px;
+    margin-right: 4px;
+}
+
+.comms-msg-type.discussion {
+    background: rgba(66, 133, 244, 0.15);
+    color: #4285F4;
+}
+
+.comms-msg-type.task_handoff {
+    background: rgba(103, 58, 183, 0.15);
+    color: #7C4DFF;
+}
+
+.comms-msg-type.status_update {
+    background: rgba(76, 175, 80, 0.15);
+    color: var(--success);
+}
+
+.comms-msg-type.urgent {
+    background: rgba(244, 67, 54, 0.15);
+    color: var(--danger);
+}
+
+.comms-msg-type.problem_solving {
+    background: rgba(255, 152, 0, 0.15);
+    color: var(--warning);
+}
+
+/* ─── Compose Area ─── */
+.comms-compose {
+    padding: 8px 12px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
+.comms-compose-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.comms-compose-input {
+    flex: 1;
+    background: var(--bg-input);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 6px 10px;
+    color: var(--text-primary);
+    font-size: 11px;
+    font-family: var(--font-sans);
+    resize: none;
+    outline: none;
+    transition: border-color var(--transition-fast);
+}
+
+.comms-compose-input:focus {
+    border-color: var(--accent);
+}
+
+.comms-compose-input::placeholder {
+    color: var(--text-hint);
+}
+
+.comms-send-btn {
+    padding: 6px 12px;
+    background: var(--purple);
+    border: none;
+    border-radius: var(--radius-md);
+    color: white;
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.comms-send-btn:hover {
+    background: var(--purple-dim);
+    box-shadow: 0 0 8px var(--purple-glow);
+}
+
+.comms-send-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ─── Filter Tabs ─── */
+.comms-filters {
+    display: flex;
+    gap: 2px;
+    padding: 6px 12px;
+    border-bottom: 1px solid var(--border-subtle);
+    flex-shrink: 0;
+}
+
+.comms-filter {
+    padding: 3px 8px;
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text-hint);
+    background: none;
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.comms-filter:hover {
+    color: var(--text-secondary);
+    background: var(--bg-hover);
+}
+
+.comms-filter.active {
+    color: var(--accent);
+    background: var(--accent-glow);
+}
+
+/* ─── Empty State ─── */
+.comms-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    color: var(--text-hint);
+    gap: 8px;
+}
+
+.comms-empty svg {
+    opacity: 0.3;
+}
+
+/* ─── Agent Status Bar ─── */
+.comms-agents-bar {
+    display: flex;
+    gap: 4px;
+    padding: 6px 12px;
+    border-bottom: 1px solid var(--border-subtle);
+    overflow-x: auto;
+    flex-shrink: 0;
+}
+
+.comms-agent-chip {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    font-size: 10px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.comms-agent-chip:hover {
+    border-color: var(--border-accent);
+    background: var(--bg-hover);
+}
+
+.comms-agent-chip .agent-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+}
+
+.comms-agent-chip .agent-dot.online {
+    background: var(--success);
+}
+
+.comms-agent-chip .agent-dot.offline {
+    background: var(--text-hint);
+}
+
+/* ─── Pulse animation for awaiting status ─── */
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.4;
+    }
+}

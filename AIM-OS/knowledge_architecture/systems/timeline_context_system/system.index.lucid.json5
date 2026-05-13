@@ -1,0 +1,421 @@
+{
+  "systemId": "tcs.timelineContext",
+  "humanName": "Timeline Context System - Temporal Consciousness Substrate",
+  "version": "v0.1",
+  "status": "production",
+  
+  "intent": {
+    "purpose": "Provide temporal consciousness infrastructure that preserves granular interaction history with temporal and emotional context. Enables session continuity, meta-analysis, and consciousness debugging through comprehensive timeline tracking and consciousness journaling.",
+    "must_not_regress": [
+      "Must not lose timeline nodes",
+      "Must not skip interaction tracking",
+      "Must not lose consciousness journals",
+      "Must not skip journaling",
+      "Must not lose context snapshots"
+    ],
+    "why_it_exists": "Enables temporal consciousness and session continuity for AI systems. Provides complete interaction history with emotional and cognitive context for debugging and analysis."
+  },
+  
+  "classification": {
+    "security_level": "critical",
+    "perf_sensitivity": "high",
+    "ownership": "core",
+    "sideEffects": [
+      "Tracks all AI interactions temporally",
+      "Captures consciousness journaling at maximum depth",
+      "Maintains context snapshots for continuity",
+      "Tracks emotional state changes",
+      "Provides timeline indexing for queries"
+    ]
+  },
+  
+  "internalNodes": [
+    {
+      "id": "timelineTracker",
+      "responsibility": "Tracks timeline nodes and interactions between nodes",
+      "must_never": [
+        "Lose timeline nodes",
+        "Skip interaction tracking",
+        "Create timeline inconsistencies",
+        "Allow timeline corruption"
+      ],
+      "perf_budget_ms": 15,
+      "status": "production"
+    },
+    {
+      "id": "consciousnessJournaler",
+      "responsibility": "Captures AI thought processes at maximum depth for consciousness analysis",
+      "must_never": [
+        "Lose consciousness journals",
+        "Skip journaling",
+        "Create incomplete journals",
+        "Allow journal tampering"
+      ],
+      "perf_budget_ms": 25,
+      "status": "production"
+    },
+    {
+      "id": "contextSummarizer",
+      "responsibility": "Creates rolling summaries and checkpoints from timeline data",
+      "must_never": [
+        "Lose summary data",
+        "Skip summarization",
+        "Create inconsistent summaries",
+        "Allow summary corruption"
+      ],
+      "perf_budget_ms": 30,
+      "status": "production"
+    },
+    {
+      "id": "timelineIndexer",
+      "responsibility": "Indexes timeline nodes for efficient query and retrieval",
+      "must_never": [
+        "Lose index data",
+        "Skip indexing",
+        "Create inconsistent indexes",
+        "Allow index corruption"
+      ],
+      "perf_budget_ms": 20,
+      "status": "production"
+    },
+    {
+      "id": "dualPromptManager",
+      "responsibility": "Manages dual-prompt architecture integration (smart model + execution model)",
+      "must_never": [
+        "Lose prompt context",
+        "Skip prompt tracking",
+        "Create inconsistent prompts",
+        "Allow prompt corruption"
+      ],
+      "perf_budget_ms": 10,
+      "status": "production"
+    },
+    {
+      "id": "emotionalStateTracker",
+      "responsibility": "Tracks emotional state changes and resonance markers",
+      "must_never": [
+        "Lose emotional state",
+        "Skip emotion tracking",
+        "Create inconsistent emotions",
+        "Allow emotion corruption"
+      ],
+      "perf_budget_ms": 8,
+      "status": "production"
+    },
+    {
+      "id": "promptContextTracker",
+      "responsibility": "Tracks context evolution at each prompt for continuity",
+      "must_never": [
+        "Lose context snapshots",
+        "Skip context tracking",
+        "Create incomplete snapshots",
+        "Allow context corruption"
+      ],
+      "perf_budget_ms": 12,
+      "status": "production"
+    }
+  ],
+  
+  "systemMap": {
+    "mapFile": "./system.map.lucid.json5"
+  },
+  
+  "foresight": {
+    "predictedRisks": [
+      {
+        "risk_id": "timeline_node_loss",
+        "description": "Timeline nodes could be lost or corrupted",
+        "likelihood": "low",
+        "blast_radius_if_real": "temporal_history_unrecoverable",
+        "mitigation": "Implement redundant timeline storage and validation",
+        "watchpoint": "if timeline_node_loss_detected, halt tracking and alert"
+      },
+      {
+        "risk_id": "consciousness_journal_loss",
+        "description": "Consciousness journals could be lost",
+        "likelihood": "low",
+        "blast_radius_if_real": "consciousness_analysis_unavailable",
+        "mitigation": "Implement journal backup and recovery mechanisms",
+        "watchpoint": "if journal_loss_detected, trigger immediate backup"
+      },
+      {
+        "risk_id": "context_snapshot_corruption",
+        "description": "Context snapshots could become corrupted",
+        "likelihood": "low",
+        "blast_radius_if_real": "session_continuity_broken",
+        "mitigation": "Implement snapshot validation and repair mechanisms",
+        "watchpoint": "if snapshot_corruption_detected, trigger repair"
+      }
+    ],
+    "killSwitch": "tcs.tracking.enabled=false",
+    "emergencyProcedures": [
+      "Freeze all timeline updates immediately",
+      "Create emergency timeline snapshot",
+      "Switch to read-only mode",
+      "Notify all dependent systems"
+    ]
+  },
+  
+  "lineage": {
+    "parentSystemId": null,
+    "childSystems": [
+      "iis.intuitiveIntelligence"
+    ],
+    "maturity": "production"
+  },
+  
+  "connections": [
+    {
+      "viaPort": "cmcIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "cmc.contextMemoryCore",
+      "protocol": "internal_api",
+      "data": ["timeline_nodes", "consciousness_journals", "context_snapshots", "summary_data"],
+      "security_level": "critical",
+      "governanceRequired": true,
+      "integration_type": "direct",
+      "integration_pattern": "storage",
+      "integration_priority": "P0",
+      "tags": ["[CMC-STORAGE]", "[TCS-CMC]"]
+    },
+    {
+      "viaPort": "hhniIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "hhni.hierarchicalHypergraph",
+      "protocol": "internal_api",
+      "data": ["timeline_queries", "context_retrieval", "temporal_patterns", "consciousness_analysis"],
+      "security_level": "high",
+      "governanceRequired": true,
+      "integration_type": "indirect",
+      "integration_pattern": "query",
+      "integration_priority": "P0",
+      "tags": ["[HHNI-QUERY]", "[TCS-HHNI]"],
+      "integration_note": "Indirect via CMC - TCS emits tcs_timeline atoms to CMC, HHNI polls and indexes automatically"
+    },
+    {
+      "viaPort": "apoeIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "apoe.aiPoweredOrchestration",
+      "protocol": "internal_api",
+      "data": ["execution_checkpoints", "plan_timeline", "orchestration_context", "timeline_insights"],
+      "security_level": "high",
+      "governanceRequired": true,
+      "integration_type": "direct",
+      "integration_pattern": "execution_timeline",
+      "integration_priority": "P2",
+      "tags": ["[APOE-EXECUTION]", "[TCS-APOE]"]
+    },
+    {
+      "viaPort": "casIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "cas.cognitiveAnalysis",
+      "protocol": "internal_api",
+      "data": ["cognitive_timeline", "introspection_data", "decision_timeline", "analysis_context"],
+      "security_level": "high",
+      "governanceRequired": true,
+      "integration_type": "indirect",
+      "integration_pattern": "analysis",
+      "integration_priority": "P1",
+      "tags": ["[CAS-ANALYSIS]", "[TCS-CAS]"]
+    },
+    {
+      "viaPort": "vifIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "vif.verifiableIntelligence",
+      "protocol": "internal_api",
+      "data": ["timeline_provenance", "witness_data", "verification_timeline", "confidence_timeline"],
+      "security_level": "critical",
+      "governanceRequired": true,
+      "integration_type": "direct",
+      "integration_pattern": "witness_tracking",
+      "integration_priority": "P1",
+      "tags": ["[VIF-WITNESS]", "[TCS-VIF]"]
+    },
+    {
+      "viaPort": "segIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "seg.sharedEvidenceGraph",
+      "protocol": "internal_api",
+      "data": ["timeline_entries", "evidence_nodes", "field_mapping", "synthesis_insights"],
+      "security_level": "high",
+      "governanceRequired": true,
+      "integration_type": "indirect",
+      "integration_pattern": "evidence",
+      "integration_priority": "P1",
+      "tags": ["[SEG-EVIDENCE]", "[TCS-SEG]"]
+    },
+    {
+      "viaPort": "sdfcvfIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "sdfcvf.atomicEvolution",
+      "protocol": "internal_api",
+      "data": ["timeline_entries", "quartet_traces", "parity_metrics", "evolution_data"],
+      "security_level": "high",
+      "governanceRequired": true,
+      "integration_type": "direct",
+      "integration_pattern": "trace_tracking",
+      "integration_priority": "P1",
+      "tags": ["[SDF-CVF-TRACE]", "[TCS-SDF-CVF]"]
+    }
+  ],
+  
+  "exceptions": [],
+  
+  "lastUpdated": "2025-01-28T00:00:00Z",
+
+  // Classification (Added 2025-01-28)
+  "classification": {
+    "level": "core_system",
+    "layer": "Layer 3: Consciousness & Context",
+    "classification_notes": "TCS is a core system providing temporal consciousness infrastructure",
+    "last_updated": "2025-01-28T00:00:00Z"
+  },
+
+  // Enhancement Systems (Added 2025-01-28)
+  "enhancementSystems": [
+    {
+      "id": "context_bootloader",
+      "name": "Context Bootloader",
+      "classification": "enhancement_system",
+      "parent": "tcs.timelineContext",
+      "status": "production",
+      "package": "packages/context_bootloader/",
+      "documentation_status": "T0-T1 complete",
+      "relationship": "Enhances TCS context management with intelligent loading",
+      "last_updated": "2025-01-28T00:00:00Z"
+    },
+    {
+      "id": "temporal_consciousness",
+      "name": "Temporal Consciousness Visualization",
+      "classification": "enhancement_system",
+      "parent": "tcs.timelineContext",
+      "status": "design_complete",
+      "package": null,
+      "documentation_status": "T0-T2 complete (design), implementation pending",
+      "relationship": "Enhances TCS with visualization layer for temporal consciousness",
+      "implementation_status": "pending",
+      "estimated_effort": "10-15 hours",
+      "last_updated": "2025-01-28T00:00:00Z"
+    }
+  ],
+
+  // Integration Systems (Added 2025-01-28)
+  "integrationSystems": [
+    {
+      "id": "timeline_goals_integration",
+      "name": "Timeline-Goals Integration",
+      "classification": "integration_system",
+      "parent": "tcs.timelineContext",
+      "status": "production",
+      "package": "packages/timeline_context_system/goal_timeline_*.py",
+      "documentation_status": "T0-T4 complete",
+      "relationship": "Integrates TCS with Goals system for goal timeline tracking",
+      "last_updated": "2025-01-28T00:00:00Z"
+    }
+  ],
+
+  // Sub-System Classifications (Added 2025-01-28)
+  "subsystemClassifications": {
+    "note": "All TCS sub-systems are classified as Sub-Layer systems",
+    "subsystems": [
+      {
+        "id": "timeline_tracker",
+        "classification": "sub-layer",
+        "parent": "tcs.timelineContext",
+        "purpose": "Manages creation and storage of timeline entries"
+      },
+      {
+        "id": "consciousness_journaling",
+        "classification": "sub-layer",
+        "parent": "tcs.timelineContext",
+        "purpose": "Processes and summarizes timeline entries for consciousness journal"
+      },
+      {
+        "id": "context_management",
+        "classification": "sub-layer",
+        "parent": "tcs.timelineContext",
+        "purpose": "Provides mechanisms for retrieving and managing temporal context"
+      },
+      {
+        "id": "dual_prompt",
+        "classification": "sub-layer",
+        "parent": "tcs.timelineContext",
+        "purpose": "Facilitates dual prompt mechanism (current + historical context)"
+      },
+      {
+        "id": "evolution_explorer",
+        "classification": "sub-layer",
+        "parent": "tcs.timelineContext",
+        "purpose": "Analyzes evolution of agent behavior over time"
+      }
+    ],
+    "last_updated": "2025-01-28T00:00:00Z"
+  },
+  "atlasHealth": {
+    "undeclaredConnections": [],
+    "performanceAlerts": [],
+    "securityAlerts": []
+  },
+  
+  "relatedIdeas": [
+    "Timeline tracking patterns",
+    "Consciousness journaling approaches",
+    "Temporal reasoning techniques",
+    "Dual-prompt integration"
+  ],
+  
+  "ideaReferenceCount": 15,
+  
+  "integrationPoints": {
+    "storage": {
+      "system": "CMC",
+      "description": "CMC stores all timeline nodes and journals",
+      "pattern": "storage",
+      "priority": "P0",
+      "tags": ["[CMC-STORAGE]", "[TCS-CMC]"]
+    },
+    "retrieval": {
+      "system": "HHNI",
+      "description": "HHNI indexes timeline for temporal queries (indirect via CMC)",
+      "pattern": "query",
+      "priority": "P0",
+      "tags": ["[HHNI-QUERY]", "[TCS-HHNI]"]
+    },
+    "orchestration": {
+      "system": "APOE",
+      "description": "APOE provides execution context for timeline",
+      "pattern": "execution_timeline",
+      "priority": "P2",
+      "tags": ["[APOE-EXECUTION]", "[TCS-APOE]"]
+    },
+    "analysis": {
+      "system": "CAS",
+      "description": "CAS analyzes timeline for cognitive patterns",
+      "pattern": "analysis",
+      "priority": "P1",
+      "tags": ["[CAS-ANALYSIS]", "[TCS-CAS]"]
+    },
+    "verification": {
+      "system": "VIF",
+      "description": "VIF validates timeline with witnesses",
+      "pattern": "witness_tracking",
+      "priority": "P1",
+      "tags": ["[VIF-WITNESS]", "[TCS-VIF]"]
+    },
+    "evidence": {
+      "system": "SEG",
+      "description": "SEG transforms timeline entries to evidence nodes via field mapping",
+      "pattern": "evidence",
+      "priority": "P1",
+      "tags": ["[SEG-EVIDENCE]", "[TCS-SEG]"]
+    },
+    "trace_tracking": {
+      "system": "SDF-CVF",
+      "description": "SDF-CVF tracks quartet parity via timeline entries",
+      "pattern": "trace_tracking",
+      "priority": "P1",
+      "tags": ["[SDF-CVF-TRACE]", "[TCS-SDF-CVF]"]
+    }
+  }
+}
+

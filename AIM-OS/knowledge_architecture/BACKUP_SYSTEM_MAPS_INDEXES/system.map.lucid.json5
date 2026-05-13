@@ -1,0 +1,352 @@
+{
+  "systemId": "vif.verifiableIntelligence",
+  "systemName": "Verifiable Intelligence Framework - Provenance and Confidence Tracking",
+  "version": "v0.1",
+  "description": "Provenance and confidence tracking system that prevents hallucinations and ensures verifiable AI operations. Think 'AI's conscience' - tracks every decision, validates every claim, and maintains cryptographic proof of truth.",
+  
+  "internalNodes": [
+    {
+      "id": "confidenceTracker",
+      "kind": "core.component",
+      "responsibility": "Tracks confidence scores and calibration across all operations",
+      "status": "production",
+      "must_never": [
+        "Allow confidence scores without evidence",
+        "Modify confidence scores after validation",
+        "Track confidence without proper provenance"
+      ],
+      "perf_budget_ms": 5,
+      "security_level": "critical"
+    },
+    {
+      "id": "witnessManager",
+      "kind": "core.component",
+      "responsibility": "Manages cryptographic witnesses for all AI operations",
+      "status": "production",
+      "must_never": [
+        "Create witnesses without proper evidence",
+        "Modify witnesses after creation",
+        "Allow witness tampering"
+      ],
+      "perf_budget_ms": 10,
+      "security_level": "critical"
+    },
+    {
+      "id": "provenanceEngine",
+      "kind": "core.component",
+      "responsibility": "Tracks complete provenance chain for all decisions and outputs",
+      "status": "production",
+      "must_never": [
+        "Lose provenance information",
+        "Create circular provenance chains",
+        "Allow provenance tampering"
+      ],
+      "perf_budget_ms": 15,
+      "security_level": "high"
+    },
+    {
+      "id": "validationEngine",
+      "kind": "validation.component",
+      "responsibility": "Validates AI outputs against confidence claims and evidence",
+      "status": "production",
+      "must_never": [
+        "Skip validation for high-confidence claims",
+        "Accept validation without proper evidence",
+        "Allow false positive validations"
+      ],
+      "perf_budget_ms": 20,
+      "security_level": "high"
+    },
+    {
+      "id": "replayEngine",
+      "kind": "replay.component",
+      "responsibility": "Enables deterministic replay of AI operations for verification",
+      "status": "production",
+      "must_never": [
+        "Lose replay state information",
+        "Allow non-deterministic replay",
+        "Expose sensitive data during replay"
+      ],
+      "perf_budget_ms": 25,
+      "security_level": "high"
+    },
+    {
+      "id": "eceCalculator",
+      "kind": "metrics.component",
+      "responsibility": "Calculates Expected Calibration Error (ECE) for confidence calibration",
+      "status": "production",
+      "must_never": [
+        "Calculate ECE with insufficient data",
+        "Modify ECE calculations after validation",
+        "Expose calibration data inappropriately"
+      ],
+      "perf_budget_ms": 10,
+      "security_level": "medium"
+    },
+    {
+      "id": "kappaGating",
+      "kind": "gating.component",
+      "responsibility": "Implements Cohen's Kappa gating for inter-annotator agreement",
+      "status": "production",
+      "must_never": [
+        "Gate operations without proper agreement",
+        "Allow low-agreement operations to proceed",
+        "Modify kappa thresholds without approval"
+      ],
+      "perf_budget_ms": 8,
+      "security_level": "medium"
+    },
+    {
+      "id": "rsLiftCalculator",
+      "kind": "metrics.component",
+      "responsibility": "Calculates RS-Lift metrics for retrieval system performance",
+      "status": "production",
+      "must_never": [
+        "Calculate metrics with invalid data",
+        "Expose performance data inappropriately",
+        "Modify metrics after calculation"
+      ],
+      "perf_budget_ms": 12,
+      "security_level": "low"
+    },
+    {
+      "id": "auditLogger",
+      "kind": "logging.component",
+      "responsibility": "Comprehensive audit logging for all VIF operations",
+      "status": "production",
+      "must_never": [
+        "Skip logging for critical operations",
+        "Modify audit logs after creation",
+        "Expose sensitive audit information"
+      ],
+      "perf_budget_ms": 3,
+      "security_level": "critical"
+    }
+  ],
+  
+  "ports": [
+    {
+      "portId": "cmcIntegration",
+      "direction": "bidirectional",
+      "connectsToSystem": "cmc.contextMemoryCore",
+      "protocol": "internal_api",
+      "whatIsExchanged": [
+        "witness_storage",
+        "confidence_scores",
+        "verification_requests",
+        "proof_artifacts"
+      ],
+      "security_level": "critical"
+    },
+    {
+      "portId": "hhniIntegration",
+      "direction": "bidirectional",
+      "connectsToSystem": "hhni.hierarchicalHypergraph",
+      "protocol": "internal_api",
+      "whatIsExchanged": [
+        "retrieval_operations",
+        "rs_lift_metrics",
+        "witness_data",
+        "replay_snapshots"
+      ],
+      "security_level": "high"
+    },
+    {
+      "portId": "apoeIntegration",
+      "direction": "bidirectional",
+      "connectsToSystem": "apoe.aiPoweredOrchestration",
+      "protocol": "internal_api",
+      "whatIsExchanged": [
+        "execution_validation",
+        "confidence_checks",
+        "provenance_traces",
+        "safety_verification"
+      ],
+      "security_level": "high"
+    },
+    {
+      "portId": "segIntegration",
+      "direction": "bidirectional",
+      "connectsToSystem": "seg.sharedEvidenceGraph",
+      "protocol": "internal_api",
+      "whatIsExchanged": [
+        "evidence_validation",
+        "contradiction_detection",
+        "proof_verification",
+        "consistency_checks"
+      ],
+      "security_level": "high"
+    },
+    {
+      "portId": "sdfcvfIntegration",
+      "direction": "bidirectional",
+      "connectsToSystem": "sdfcvf.atomicEvolution",
+      "protocol": "internal_api",
+      "whatIsExchanged": [
+        "schema_validation",
+        "parity_checks",
+        "evolution_artifacts",
+        "consistency_reports"
+      ],
+      "security_level": "high"
+    },
+    {
+      "portId": "externalAudit",
+      "direction": "outbound",
+      "connectsToSystem": "audit.external",
+      "protocol": "secure_api",
+      "whatIsExchanged": [
+        "audit_reports",
+        "compliance_data",
+        "verification_results",
+        "security_alerts"
+      ],
+      "security_level": "critical"
+    }
+  ],
+  
+  "internalEdges": [
+    {
+      "from": "confidenceTracker",
+      "to": "witnessManager",
+      "type": "provides_confidence_data",
+      "data_flow": "confidence_scores → witness_creation"
+    },
+    {
+      "from": "witnessManager",
+      "to": "provenanceEngine",
+      "type": "provides_witnesses",
+      "data_flow": "witnesses → provenance_chain"
+    },
+    {
+      "from": "provenanceEngine",
+      "to": "validationEngine",
+      "type": "provides_provenance",
+      "data_flow": "provenance_chain → validation_context"
+    },
+    {
+      "from": "validationEngine",
+      "to": "replayEngine",
+      "type": "triggers_replay",
+      "data_flow": "validation_requests → replay_operations"
+    },
+    {
+      "from": "eceCalculator",
+      "to": "confidenceTracker",
+      "type": "provides_calibration",
+      "data_flow": "ece_metrics → confidence_calibration"
+    },
+    {
+      "from": "kappaGating",
+      "to": "validationEngine",
+      "type": "provides_gating",
+      "data_flow": "kappa_scores → validation_gating"
+    },
+    {
+      "from": "rsLiftCalculator",
+      "to": "hhniIntegration",
+      "type": "provides_metrics",
+      "data_flow": "rs_lift_metrics → retrieval_validation"
+    },
+    {
+      "from": "auditLogger",
+      "to": "all_components",
+      "type": "logs_operations",
+      "data_flow": "operation_data → audit_logs"
+    }
+  ],
+  
+  "externalEdges": [
+    {
+      "fromPort": "cmcIntegration",
+      "toSystem": "cmc.contextMemoryCore",
+      "type": "stores_witnesses",
+      "data_flow": "witnesses → persistent_storage"
+    },
+    {
+      "fromPort": "hhniIntegration",
+      "toSystem": "hhni.hierarchicalHypergraph",
+      "type": "witnesses_retrieval",
+      "data_flow": "retrieval_operations → witness_data"
+    },
+    {
+      "fromPort": "apoeIntegration",
+      "toSystem": "apoe.aiPoweredOrchestration",
+      "type": "validates_execution",
+      "data_flow": "execution_requests → validation_results"
+    },
+    {
+      "fromPort": "segIntegration",
+      "toSystem": "seg.sharedEvidenceGraph",
+      "type": "validates_evidence",
+      "data_flow": "evidence_claims → validation_proofs"
+    },
+    {
+      "fromPort": "sdfcvfIntegration",
+      "toSystem": "sdfcvf.atomicEvolution",
+      "type": "validates_evolution",
+      "data_flow": "evolution_artifacts → validation_reports"
+    },
+    {
+      "fromPort": "externalAudit",
+      "toSystem": "audit.external",
+      "type": "reports_compliance",
+      "data_flow": "audit_data → compliance_reports"
+    }
+  ],
+  
+  "riskOverlay": {
+    "perf_hotspots": [
+      "validationEngine",
+      "replayEngine",
+      "provenanceEngine"
+    ],
+    "security_sensitive_ports": [
+      "cmcIntegration",
+      "externalAudit",
+      "witnessManager"
+    ],
+    "governance_touchpoints": [
+      "confidenceTracker",
+      "witnessManager",
+      "validationEngine"
+    ],
+    "critical_failure_modes": [
+      "Witness tampering or corruption",
+      "Provenance chain breakage",
+      "Validation bypass or failure",
+      "Audit log tampering"
+    ],
+    "blast_radius": {
+      "confidenceTracker": "all_ai_operations",
+      "witnessManager": "verification_integrity",
+      "provenanceEngine": "decision_traceability",
+      "validationEngine": "output_verification"
+    }
+  },
+  
+  "governance": {
+    "cryptographic_integrity": true,
+    "provenance_immutability": true,
+    "confidence_calibration": true,
+    "audit_completeness": true,
+    "verification_standards": true
+  },
+  
+  "monitoring": {
+    "key_metrics": [
+      "confidence_calibration_accuracy",
+      "witness_creation_rate",
+      "validation_success_rate",
+      "provenance_chain_integrity",
+      "ece_score_trends"
+    ],
+    "alerts": [
+      "confidence_calibration_drift > 0.1",
+      "witness_creation_failure_rate > 1%",
+      "validation_bypass_detected",
+      "provenance_chain_corruption",
+      "audit_log_tampering_detected"
+    ]
+  }
+}

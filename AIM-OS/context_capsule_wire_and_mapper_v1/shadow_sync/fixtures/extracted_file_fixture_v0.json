@@ -1,0 +1,31 @@
+{
+  "source_path": "context_mapper_lab/src/sample_unit.rs",
+  "observed_at": "2026-03-01T00:00:00Z",
+  "parse_confidence": "High",
+  "source_text": "use std::path::Path;\nuse crate::resolver::resolve_imports;\n\npub struct SampleStruct {\n    pub id: u32,\n    pub name: String,\n}\n\n#[non_exhaustive]\npub enum SampleEnum {\n    A,\n    B(String),\n}\n\npub fn public_fn(x: i32) -> i32 {\n    x + 1\n}\n",
+  "imports": [
+    "use std::path::Path;",
+    "use crate::resolver::resolve_imports;"
+  ],
+  "contracts": [
+    {
+      "kind": "struct_item",
+      "name": "SampleStruct",
+      "signature": "pub struct SampleStruct { pub id: u32, pub name: String }"
+    },
+    {
+      "kind": "enum_item",
+      "name": "SampleEnum",
+      "signature": "#[non_exhaustive]\\npub enum SampleEnum { A, B(String) }"
+    },
+    {
+      "kind": "function_item",
+      "name": "public_fn",
+      "signature": "pub fn public_fn(x: i32) -> i32"
+    }
+  ],
+  "resolved_dependencies": [
+    "context_mapper_lab/src/resolver.rs",
+    "context_mapper_lab/src/types.rs"
+  ]
+}

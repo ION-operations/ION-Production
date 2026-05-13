@@ -1,0 +1,47 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "FUSE is a Linux kernel facility for delegating filesystem operations to userspace per kernel documentation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-namespaces",
+      "evidence_tier": "INFERRED",
+      "notes": "FUSE mounts are scoped by mount namespaces like other filesystems on Linux."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-overlayfs",
+      "evidence_tier": "INFERRED",
+      "notes": "OverlayFS is an in-kernel stacked filesystem; FUSE delegates to userspace — different mechanisms for different use cases."
+    },
+    {
+      "type": "integrates_with",
+      "target": "oci-image-spec",
+      "evidence_tier": "INFERRED",
+      "notes": "OCI images define layer manifests and blobs; FUSE is unrelated to image format law though mounts may appear in roots."
+    },
+    {
+      "type": "integrates_with",
+      "target": "docker",
+      "evidence_tier": "INFERRED",
+      "notes": "Docker volume and storage plugins on Linux may involve FUSE-based drivers where configured."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "Kubernetes CSI drivers on Linux may use FUSE-based implementations where supported and permitted on nodes."
+    },
+    {
+      "type": "integrates_with",
+      "target": "containerd",
+      "evidence_tier": "INFERRED",
+      "notes": "containerd snapshotters and mount setup can interact with FUSE mounts on Linux in advanced storage setups."
+    }
+  ]
+}

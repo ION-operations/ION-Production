@@ -1,0 +1,55 @@
+{
+  "name": "@lumin/snap-system",
+  "version": "1.0.0",
+  "description": "Intelligent 8-type snap system with ghost preview and LOD optimization for Lumin3D",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "lint": "eslint src --ext .ts,.tsx",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "snap",
+    "3d",
+    "lumin",
+    "ghost-preview",
+    "lod",
+    "three.js",
+    "react-three-fiber"
+  ],
+  "author": "Aether (AIM-OS)",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "three": "^0.160.0",
+    "@react-three/fiber": "^8.15.0",
+    "@react-three/drei": "^9.92.0"
+  },
+  "dependencies": {
+    "lucide-react": "^0.292.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^29.5.0",
+    "@types/node": "^20.10.0",
+    "@types/react": "^18.2.0",
+    "@types/three": "^0.160.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.0",
+    "typescript": "^5.3.0"
+  },
+  "files": [
+    "dist",
+    "src",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aim-os/lumin-snap-system"
+  }
+}
+

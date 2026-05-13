@@ -1,0 +1,25 @@
+{
+  "system_slug": "arm-cca",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-08",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "INFERRED",
+      "notes": "OS/hypervisor support for CCA is kernel and firmware dependent (pin version)."
+    },
+    {
+      "type": "competes_with",
+      "target": "intel-tdx",
+      "evidence_tier": "INFERRED",
+      "notes": "Alternative confidential computing architecture (different CPU vendor)."
+    },
+    {
+      "type": "competes_with",
+      "target": "amd-sev",
+      "evidence_tier": "INFERRED",
+      "notes": "Alternative confidential computing architecture (different CPU vendor)."
+    }
+  ]
+}

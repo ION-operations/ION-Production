@@ -1,0 +1,113 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "competes_with",
+      "target": "kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable cluster scheduler / workload orchestrator in some deployment classes."
+    },
+    {
+      "type": "integrates_with",
+      "target": "docker",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Nomad supports Docker-based task drivers per HashiCorp documentation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "podman",
+      "evidence_tier": "INFERRED",
+      "notes": "Task driver ecosystem may include Podman-style integrations; verify per release notes before DOCUMENTED upgrade."
+    },
+    {
+      "type": "depends_on",
+      "target": "linux-kernel",
+      "evidence_tier": "INFERRED",
+      "notes": "Common agent/server deployment on Linux; other OS support is product/doc specific."
+    },
+    {
+      "type": "competes_with",
+      "target": "aws-ecs",
+      "evidence_tier": "INFERRED",
+      "notes": "Orchestrator substitution in some hybrid/AWS-adjacent footprints; not mutually exclusive."
+    },
+    {
+      "type": "competes_with",
+      "target": "aws-eks",
+      "evidence_tier": "INFERRED",
+      "notes": "Orchestrator substitution vs managed Kubernetes on AWS in some footprints; not mutually exclusive."
+    },
+    {
+      "type": "competes_with",
+      "target": "azure-aks",
+      "evidence_tier": "INFERRED",
+      "notes": "Orchestrator substitution vs managed Kubernetes on Azure in some footprints; not mutually exclusive."
+    },
+    {
+      "type": "competes_with",
+      "target": "gcp-gke",
+      "evidence_tier": "INFERRED",
+      "notes": "Orchestrator substitution vs managed Kubernetes on Google Cloud in some footprints; not mutually exclusive."
+    },
+    {
+      "type": "competes_with",
+      "target": "oci-oke",
+      "evidence_tier": "INFERRED",
+      "notes": "Orchestrator substitution vs managed Kubernetes on OCI in some footprints; not mutually exclusive."
+    },
+    {
+      "type": "competes_with",
+      "target": "azure-container-apps",
+      "evidence_tier": "INFERRED",
+      "notes": "Orchestrator substitution vs Azure Container Apps in some footprints; not mutually exclusive."
+    },
+    {
+      "type": "competes_with",
+      "target": "ibm-iks",
+      "evidence_tier": "INFERRED",
+      "notes": "Orchestrator substitution vs IBM managed Kubernetes in some footprints; not mutually exclusive."
+    },
+    {
+      "type": "competes_with",
+      "target": "azure-aci",
+      "evidence_tier": "INFERRED",
+      "notes": "Orchestrator substitution vs ACI-backed or single-group container hosting in narrow footprints; not mutually exclusive."
+    },
+    {
+      "type": "competes_with",
+      "target": "digitalocean-doks",
+      "evidence_tier": "INFERRED",
+      "notes": "Orchestrator substitution vs DOKS in some footprints; not mutually exclusive."
+    },
+    {
+      "type": "competes_with",
+      "target": "civo-kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "Orchestrator substitution vs Civo managed Kubernetes in some footprints; not mutually exclusive."
+    },
+    {
+      "type": "competes_with",
+      "target": "linode-lke",
+      "evidence_tier": "INFERRED",
+      "notes": "Orchestrator substitution vs Akamai LKE in some footprints; not mutually exclusive."
+    },
+    {
+      "type": "competes_with",
+      "target": "vmware-tkg",
+      "evidence_tier": "INFERRED",
+      "notes": "Orchestrator substitution vs TKG-class Kubernetes in some footprints; not mutually exclusive."
+    },
+    {
+      "type": "competes_with",
+      "target": "red-hat-openshift",
+      "evidence_tier": "INFERRED",
+      "notes": "Orchestrator substitution vs OpenShift-class Kubernetes in some footprints; not mutually exclusive."
+    },
+    {
+      "type": "competes_with",
+      "target": "openshift-dedicated",
+      "evidence_tier": "INFERRED",
+      "notes": "Orchestrator substitution vs OpenShift Dedicated in some footprints; not mutually exclusive."
+    }
+  ]
+}

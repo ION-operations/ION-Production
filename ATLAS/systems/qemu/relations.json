@@ -1,0 +1,59 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "depends_on",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "QEMU targets Linux hosts and kernel facilities for KVM, virtio, and VFIO-class integration per upstream documentation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-kvm",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "QEMU uses the KVM interface on Linux when KVM acceleration is enabled per QEMU documentation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "virtio",
+      "evidence_tier": "INFERRED",
+      "notes": "QEMU provides virtio device models for guests; virtio is the interface contract, QEMU is the VMM."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-vhost",
+      "evidence_tier": "INFERRED",
+      "notes": "QEMU can wire vhost backends for virtio datapaths depending on device and configuration."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-vfio",
+      "evidence_tier": "INFERRED",
+      "notes": "QEMU assigns devices via VFIO on Linux for passthrough where supported."
+    },
+    {
+      "type": "competes_with",
+      "target": "firecracker",
+      "evidence_tier": "INFERRED",
+      "notes": "Both are VMM-class stacks with different scope (general-purpose emulator vs microVM product); not drop-in substitutes."
+    },
+    {
+      "type": "integrates_with",
+      "target": "libvirt",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "libvirt manages QEMU domains and device models as documented; QEMU is the VMM, libvirt is the management layer."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubevirt",
+      "evidence_tier": "INFERRED",
+      "notes": "KubeVirt runs QEMU on Linux Kubernetes nodes for VM workloads; QEMU is the VMM, KubeVirt is the Kubernetes integration layer."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kata-containers",
+      "evidence_tier": "INFERRED",
+      "notes": "Kata Containers uses QEMU on typical Linux VM sandbox paths; QEMU is the VMM, Kata is the OCI runtime integration layer."
+    }
+  ]
+}

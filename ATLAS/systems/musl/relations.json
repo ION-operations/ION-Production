@@ -1,0 +1,155 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "musl provides syscall wrappers and POSIX/C API on Linux userland ABIs."
+    },
+    {
+      "type": "integrates_with",
+      "target": "elf",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "musl shared objects and ld-musl participate in ELF dynamic linking on musl-based Linux systems."
+    },
+    {
+      "type": "integrates_with",
+      "target": "c-language",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "musl implements the C standard library for hosted C environments on musl Linux triplets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-gcc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GCC is commonly used to build musl-based systems (e.g. Alpine Linux toolchains)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-binutils",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GNU ld links musl objects and shared libraries in typical musl GNU/Linux flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "clang",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang can target musl environments when using appropriate triplets and sysroots."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-gdb",
+      "evidence_tier": "INFERRED",
+      "notes": "GDB can debug musl-linked executables similarly to glibc-linked programs on Linux."
+    },
+    {
+      "type": "integrates_with",
+      "target": "lldb",
+      "evidence_tier": "INFERRED",
+      "notes": "LLDB may be used on musl-based Linux systems for C/C++ debugging (environment-dependent)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "riscv-isa",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "musl supports Linux ports on multiple architectures documented in the project, including RISC-V."
+    },
+    {
+      "type": "integrates_with",
+      "target": "docker",
+      "evidence_tier": "INFERRED",
+      "notes": "Many popular OCI images use Alpine or other musl-based bases, pulled and run via Docker."
+    },
+    {
+      "type": "competes_with",
+      "target": "glibc",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Linux libc implementations with different ABI, features, and packaging models."
+    },
+    {
+      "type": "competes_with",
+      "target": "freebsd-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable libc implementations across Linux musl vs FreeBSD base libc (not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "openbsd-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable libc implementations across Linux musl vs OpenBSD base libc (not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "netbsd-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable libc implementations across Linux musl vs NetBSD base libc (not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "dragonfly-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable libc implementations across Linux musl vs DragonFly base libc (not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "illumos-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable libc implementations across Linux musl vs illumos distribution libc (not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "android-bionic",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable libc implementations across Linux musl vs Android Bionic (not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "newlib",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable libc implementations across Linux musl vs embedded newlib (not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "wasi-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable libc implementations across Linux musl vs Wasm WASI wasi-libc (not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "uclibc",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Linux libc implementations across musl vs uClibc (not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "dietlibc",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Linux libc implementations across musl vs dietlibc (not ABI-interchangeable)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-libstdcxx",
+      "evidence_tier": "INFERRED",
+      "notes": "g++-built C++ on musl systems typically links GNU libstdc++ above musl."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-libcxx",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang with libc++ can target musl Linux triplets with an appropriate sysroot."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-libcxxabi",
+      "evidence_tier": "INFERRED",
+      "notes": "libc++abi can be layered on musl in Clang libc++ sysroots when packaging matches."
+    },
+    {
+      "type": "integrates_with",
+      "target": "alpine-linux",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Alpine Linux uses musl as its standard C library on supported architectures per Alpine documentation."
+    }
+  ]
+}

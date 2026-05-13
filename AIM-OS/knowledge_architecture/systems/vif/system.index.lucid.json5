@@ -1,0 +1,464 @@
+{
+  "systemId": "vif.verifiableIntelligence",
+  "humanName": "Verifiable Intelligence Framework - Provenance and Confidence Tracking",
+  "version": "v2.2.0",
+  "status": "production",
+  
+  "intent": {
+    "purpose": "Provide provenance and confidence tracking system that prevents hallucinations and ensures verifiable AI operations. Think 'AI's conscience' - tracks every decision, validates every claim, and maintains cryptographic proof of truth.",
+    "must_not_regress": [
+      "Must not allow confidence scores without evidence",
+      "Must not modify witnesses after creation",
+      "Must not lose provenance information",
+      "Must not skip validation for high-confidence claims",
+      "Must not break deterministic replay"
+    ],
+    "why_it_exists": "Enables verifiable AI operations with complete provenance tracking, confidence calibration, and deterministic replay. Prevents hallucinations through κ-gating and witness validation."
+  },
+  
+  "classification": {
+    "security_level": "critical",
+    "perf_sensitivity": "high",
+    "ownership": "core",
+    "sideEffects": [
+      "Tracks all AI operations with provenance",
+      "Validates confidence claims",
+      "Prevents hallucinations through gating",
+      "Enables deterministic replay",
+      "Provides cryptographic proof of truth"
+    ]
+  },
+  
+  "internalNodes": [
+    {
+      "id": "confidenceTracker",
+      "responsibility": "Tracks confidence scores and calibration across all operations",
+      "must_never": [
+        "Allow confidence scores without evidence",
+        "Modify confidence scores after validation",
+        "Track confidence without proper provenance"
+      ],
+      "perf_budget_ms": 5,
+      "status": "production"
+    },
+    {
+      "id": "witnessManager",
+      "responsibility": "Manages cryptographic witnesses for all AI operations",
+      "must_never": [
+        "Create witnesses without proper evidence",
+        "Modify witnesses after creation",
+        "Allow witness tampering"
+      ],
+      "perf_budget_ms": 10,
+      "status": "production"
+    },
+    {
+      "id": "provenanceEngine",
+      "responsibility": "Tracks complete provenance chain for all decisions and outputs",
+      "must_never": [
+        "Lose provenance information",
+        "Create circular provenance chains",
+        "Allow provenance tampering"
+      ],
+      "perf_budget_ms": 15,
+      "status": "production"
+    },
+    {
+      "id": "validationEngine",
+      "responsibility": "Validates AI outputs against confidence claims and evidence",
+      "must_never": [
+        "Skip validation for high-confidence claims",
+        "Accept validation without proper evidence",
+        "Allow false positive validations"
+      ],
+      "perf_budget_ms": 20,
+      "status": "production"
+    },
+    {
+      "id": "replayEngine",
+      "responsibility": "Enables deterministic replay of AI operations for verification",
+      "must_never": [
+        "Lose replay state information",
+        "Allow non-deterministic replay",
+        "Expose sensitive data during replay"
+      ],
+      "perf_budget_ms": 25,
+      "status": "production"
+    },
+    {
+      "id": "eceCalculator",
+      "responsibility": "Calculates Expected Calibration Error (ECE) for confidence calibration",
+      "must_never": [
+        "Calculate ECE with insufficient data",
+        "Modify ECE calculations after validation",
+        "Expose calibration data inappropriately"
+      ],
+      "perf_budget_ms": 10,
+      "status": "production"
+    },
+    {
+      "id": "kappaGating",
+      "responsibility": "Implements Cohen's Kappa gating for inter-annotator agreement",
+      "must_never": [
+        "Gate operations without proper agreement",
+        "Allow low-agreement operations to proceed",
+        "Modify kappa thresholds without approval"
+      ],
+      "perf_budget_ms": 8,
+      "status": "production"
+    },
+    {
+      "id": "rsLiftCalculator",
+      "responsibility": "Calculates RS-Lift metrics for retrieval system performance",
+      "must_never": [
+        "Calculate metrics with invalid data",
+        "Expose performance data inappropriately",
+        "Modify metrics after calculation"
+      ],
+      "perf_budget_ms": 12,
+      "status": "production"
+    },
+    {
+      "id": "auditLogger",
+      "responsibility": "Comprehensive audit logging for all VIF operations",
+      "must_never": [
+        "Skip logging for critical operations",
+        "Modify audit logs after creation",
+        "Expose sensitive audit information"
+      ],
+      "perf_budget_ms": 3,
+      "status": "production"
+    }
+  ],
+  
+  "systemMap": {
+    "mapFile": "./system.map.lucid.json5"
+  },
+  
+  "foresight": {
+    "predictedRisks": [
+      {
+        "risk_id": "witness_storage_exhaustion",
+        "description": "Unlimited witness creation could exhaust storage capacity",
+        "likelihood": "medium",
+        "blast_radius_if_real": "witness_creation_unavailable",
+        "mitigation": "Implement witness archival policies and compression",
+        "watchpoint": "if witness_count > 1M for 24h, trigger archival"
+      },
+      {
+        "risk_id": "confidence_calibration_drift",
+        "description": "Confidence calibration could drift over time",
+        "likelihood": "high",
+        "blast_radius_if_real": "confidence_scores_unreliable",
+        "mitigation": "Implement continuous calibration monitoring and recalibration",
+        "watchpoint": "if ECE > 0.15 for 100 consecutive predictions, trigger recalibration"
+      },
+      {
+        "risk_id": "replay_determinism_failure",
+        "description": "Deterministic replay could fail due to non-deterministic operations",
+        "likelihood": "low",
+        "blast_radius_if_real": "replay_verification_unreliable",
+        "mitigation": "Implement strict replay state validation and fallback mechanisms",
+        "watchpoint": "if replay_determinism_check fails, halt replay and alert"
+      },
+      {
+        "risk_id": "provenance_chain_corruption",
+        "description": "Provenance chains could become corrupted or circular",
+        "likelihood": "low",
+        "blast_radius_if_real": "provenance_tracking_unreliable",
+        "mitigation": "Implement provenance chain validation and cycle detection",
+        "watchpoint": "if provenance_cycle_detected, halt operation and alert"
+      }
+    ],
+    "killSwitch": "vif.verification.enabled=false",
+    "emergencyProcedures": [
+      "Disable witness creation immediately",
+      "Switch to read-only mode",
+      "Create emergency audit snapshot",
+      "Notify all dependent systems"
+    ]
+  },
+  
+  "lineage": {
+    "parentSystemId": null,
+    "childSystems": [
+      "apoe.aiPoweredOrchestration",
+      "sdfcvf.atomicEvolution",
+      "cas.cognitiveAnalysis"
+    ],
+    "maturity": "production"
+  },
+  
+  "connections": [
+    {
+      "viaPort": "cmcIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "cmc.contextMemoryCore",
+      "protocol": "internal_api",
+      "data": ["witness_storage", "confidence_scores", "verification_requests", "proof_artifacts"],
+      "security_level": "critical",
+      "governanceRequired": true
+    },
+    {
+      "viaPort": "hhniIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "hhni.hierarchicalHypergraph",
+      "protocol": "internal_api",
+      "data": ["retrieval_operations", "rs_lift_metrics", "witness_data"],
+      "security_level": "high",
+      "governanceRequired": true
+    },
+    {
+      "viaPort": "segIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "seg.sharedEvidenceGraph",
+      "protocol": "internal_api",
+      "data": ["provenance_edges", "evidence_links", "witness_nodes"],
+      "security_level": "high",
+      "governanceRequired": true
+    },
+    {
+      "viaPort": "apoeIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "apoe.aiPoweredOrchestration",
+      "protocol": "internal_api",
+      "data": ["execution_validation", "confidence_tracking", "gate_results"],
+      "security_level": "high",
+      "governanceRequired": true
+    },
+    {
+      "viaPort": "sdfcvfIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "sdfcvf.atomicEvolution",
+      "protocol": "internal_api",
+      "data": ["quality_validation", "parity_checks", "evolution_artifacts"],
+      "security_level": "high",
+      "governanceRequired": true
+    },
+    {
+      "viaPort": "tcsIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "tcs.timelineContext",
+      "protocol": "internal_api",
+      "data": ["witness_timeline_entries", "kappa_gate_events", "timeline_queries"],
+      "security_level": "high",
+      "governanceRequired": true
+    },
+    {
+      "viaPort": "casIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "cas.cognitiveAnalysis",
+      "protocol": "internal_api",
+      "data": ["cognitive_context", "confidence_enhancement", "activation_state"],
+      "security_level": "medium",
+      "governanceRequired": false
+    }
+  ],
+  
+  "exceptions": [],
+  
+  "lastUpdated": "2025-01-27T00:15:00Z",
+  "atlasHealth": {
+    "undeclaredConnections": [],
+    "performanceAlerts": [],
+    "securityAlerts": []
+  },
+  
+  "relatedIdeas": [
+    "I-007: Validation Framework v0.1 (ideas/researchers/gemini-2-5-pro/SEED_validation_framework_v0_1.md)",
+    "I-014: CMC v0.1 Safety Fixes Validation (ideas/researchers/gemini-2-5-pro/VALIDATION_cmc_v0_1_fixes.md)",
+    "Validation Metrics Snapshot (ideas/researchers/gemini-2-5-pro/VALIDATION_metrics_snapshot.md)",
+    "Validation Review Metrics (ideas/philosophers/grok-4-max/VALIDATION_review_metrics.md)"
+  ],
+  
+  "ideaReferenceCount": 42,
+  
+  "integrationPoints": {
+    "storage": "CMC stores all VIF witnesses and confidence scores",
+    "retrieval": "HHNI indexes VIF operations for retrieval",
+    "knowledge": "SEG links VIF witnesses to evidence graph",
+    "orchestration": "APOE uses VIF for execution validation",
+    "quality": "SDF-CVF uses VIF for quality assurance",
+    "timeline": "TCS tracks VIF witness timeline entries",
+    "cognitive": "CAS adds cognitive context to VIF witnesses"
+  },
+  
+  "subsystems": [
+    {
+      "id": "witness",
+      "name": "Witness Management Subsystem",
+      "status": "production",
+      "description": "Cryptographic witness envelopes for complete provenance capture of all AI operations",
+      "layer": 2,
+      "documentation": {
+        "L0": "components/witness/README.md",
+        "README": "components/witness/README.md"
+      },
+      "integrationPoints": ["cmc", "hhni", "apoe", "seg", "cas", "sdfcvf", "tcs"],
+      "components": []
+    },
+    {
+      "id": "kappa_gating",
+      "name": "κ-Gating Subsystem",
+      "status": "production",
+      "description": "Behavioral abstention enforcement - AI must say 'I don't know' when confidence < threshold",
+      "layer": 2,
+      "documentation": {
+        "L0": "components/kappa_gating/README.md",
+        "README": "components/kappa_gating/README.md"
+      },
+      "integrationPoints": ["apoe", "cmc", "seg", "cas", "sdfcvf"],
+      "components": []
+    },
+    {
+      "id": "replay",
+      "name": "Replay Subsystem",
+      "status": "production",
+      "description": "Deterministic replay of AI operations for verification and audit",
+      "layer": 2,
+      "documentation": {
+        "L0": "components/replay/README.md",
+        "README": "components/replay/README.md"
+      },
+      "integrationPoints": ["cmc", "hhni", "tcs"],
+      "components": []
+    },
+    {
+      "id": "confidence_bands",
+      "name": "Confidence Bands Subsystem",
+      "status": "production",
+      "description": "Confidence calibration and band management (A/B/C/D bands) for accurate uncertainty quantification",
+      "layer": 2,
+      "documentation": {
+        "L0": "components/confidence_bands/README.md",
+        "README": "components/confidence_bands/README.md"
+      },
+      "integrationPoints": ["cmc", "cas"],
+      "components": [
+        {
+          "id": "ece",
+          "name": "Expected Calibration Error (ECE)",
+          "status": "production",
+          "description": "Calculates Expected Calibration Error for confidence calibration",
+          "layer": 3,
+          "parentSubsystem": "confidence_bands",
+          "documentation": {
+            "L0": "components/ece/README.md",
+            "README": "components/ece/README.md"
+          }
+        }
+      ]
+    }
+  ],
+  
+  "concepts": [
+    {
+      "id": "witness",
+      "name": "Witness Management Subsystem",
+      "type": "subsystem",
+      "layer": 2,
+      "parentSystem": "vif",
+      "description": "Cryptographic witness envelopes for complete provenance capture",
+      "components": []
+    },
+    {
+      "id": "kappa_gating",
+      "name": "κ-Gating Subsystem",
+      "type": "subsystem",
+      "layer": 2,
+      "parentSystem": "vif",
+      "description": "Behavioral abstention enforcement (prevents hallucinations)",
+      "components": []
+    },
+    {
+      "id": "replay",
+      "name": "Replay Subsystem",
+      "type": "subsystem",
+      "layer": 2,
+      "parentSystem": "vif",
+      "description": "Deterministic replay of AI operations for verification",
+      "components": []
+    },
+    {
+      "id": "confidence_bands",
+      "name": "Confidence Bands Subsystem",
+      "type": "subsystem",
+      "layer": 2,
+      "parentSystem": "vif",
+      "description": "Confidence calibration and band management",
+      "components": ["ece"]
+    },
+    {
+      "id": "ece",
+      "name": "Expected Calibration Error (ECE)",
+      "type": "component",
+      "layer": 3,
+      "parentSubsystem": "confidence_bands",
+      "description": "Calculates Expected Calibration Error for confidence calibration"
+    },
+    {
+      "id": "vif_cmc_integration",
+      "name": "VIF ↔ CMC Integration",
+      "type": "integration",
+      "systems": ["vif", "cmc"],
+      "bidirectional": true,
+      "purpose": "Witness storage and persistence",
+      "tags": ["[CMC-STORAGE]", "[VIF-WITNESS]"]
+    },
+    {
+      "id": "vif_hhni_integration",
+      "name": "VIF ↔ HHNI Integration",
+      "type": "integration",
+      "systems": ["vif", "hhni"],
+      "bidirectional": true,
+      "purpose": "Retrieval operations witnessed, RS-lift metrics tracked",
+      "tags": ["[HHNI-RETRIEVAL]", "[VIF-WITNESS]"]
+    },
+    {
+      "id": "vif_apoe_integration",
+      "name": "VIF ↔ APOE Integration",
+      "type": "integration",
+      "systems": ["vif", "apoe"],
+      "bidirectional": true,
+      "purpose": "Execution validation, κ-gating for step execution",
+      "tags": ["[APOE-EXECUTION]", "[VIF-WITNESS]", "[APOE-GATE]", "[VIF-KAPPA]"]
+    },
+    {
+      "id": "vif_seg_integration",
+      "name": "VIF ↔ SEG Integration",
+      "type": "integration",
+      "systems": ["vif", "seg"],
+      "bidirectional": true,
+      "purpose": "Evidence validation, witness provenance chains",
+      "tags": ["[SEG-PROVENANCE]", "[VIF-WITNESS]"]
+    },
+    {
+      "id": "vif_sdfcvf_integration",
+      "name": "VIF ↔ SDF-CVF Integration",
+      "type": "integration",
+      "systems": ["vif", "sdfcvf"],
+      "bidirectional": true,
+      "purpose": "VIF witnesses as traces for quartet parity",
+      "tags": ["[SDFCVF-QUARTET]", "[VIF-WITNESS]"]
+    },
+    {
+      "id": "vif_tcs_integration",
+      "name": "VIF ↔ TCS Integration",
+      "type": "integration",
+      "systems": ["vif", "tcs"],
+      "bidirectional": true,
+      "purpose": "VIF creates timeline entries for witness tracking",
+      "tags": ["[TCS-TIMELINE]", "[VIF-WITNESS]"]
+    },
+    {
+      "id": "vif_cas_integration",
+      "name": "VIF ↔ CAS Integration",
+      "type": "integration",
+      "systems": ["vif", "cas"],
+      "bidirectional": true,
+      "purpose": "CAS cognitive context added to VIF witnesses",
+      "tags": ["[CAS-INTROSPECTION]", "[VIF-WITNESS]"]
+    }
+  ]
+}
+

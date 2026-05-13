@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "io_uring is a Linux kernel subsystem providing submission/completion queues for asynchronous I/O."
+    },
+    {
+      "type": "integrates_with",
+      "target": "liburing",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "liburing is the reference userspace C library for constructing io_uring requests and mapping rings."
+    }
+  ]
+}

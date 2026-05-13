@@ -1,0 +1,209 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "dwarf",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "DWARF debug data is typically stored in ELF sections (.debug_*)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-ir",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "LLVM backends emit ELF relocatable objects and linked images on common Unix targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Linux exec path loads ELF binaries and interprets ELF program headers."
+    },
+    {
+      "type": "integrates_with",
+      "target": "unified-kernel-image",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "UKI construction wraps a Linux kernel that remains ELF-shaped inside the PE UKI envelope."
+    },
+    {
+      "type": "integrates_with",
+      "target": "c-language",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "C/C++ toolchains on Unix-class systems predominantly emit ELF objects."
+    },
+    {
+      "type": "integrates_with",
+      "target": "riscv-isa",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "RISC-V ELF psABI and ELF flags are specified alongside the ISA (platform docs)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "debug-adapter-protocol",
+      "evidence_tier": "INFERRED",
+      "notes": "Debug adapters resolve symbols via debug info commonly packaged in ELF objects."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-binutils",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "readelf, objdump, ld, and as are the common operational interface to ELF objects in GNU/Linux flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-lld",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "lld consumes and emits ELF on typical Unix-class LLVM toolchains."
+    },
+    {
+      "type": "integrates_with",
+      "target": "clang",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Clang emits ELF relocatable objects on typical Unix-class targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-gcc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GCC emits ELF relocatable objects and executables on typical Unix-class GNU flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-gdb",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GDB loads ELF executables and shared libraries for debugging."
+    },
+    {
+      "type": "integrates_with",
+      "target": "lldb",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "LLDB loads ELF binaries and shared libraries on Linux."
+    },
+    {
+      "type": "integrates_with",
+      "target": "glibc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "libc.so and the dynamic linker are ELF shared objects; PT_INTERP links loader to executables on GNU/Linux."
+    },
+    {
+      "type": "integrates_with",
+      "target": "musl",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "musl libc.so and ld-musl are ELF shared objects on musl-based Linux systems."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-libstdcxx",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "libstdc++.so is an ELF shared library on typical GNU/Linux targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-libcxx",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "libc++.so (and related) are ELF shared libraries on typical LLVM libc++ Unix targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-libcxxabi",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "libc++abi.so is an ELF shared library on typical LLVM C++ ABI Unix targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "alpine-linux",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Alpine Linux userland binaries and shared libraries are ELF on typical Linux targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "debian",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Debian userland binaries and shared libraries are ELF on typical Linux targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "ubuntu",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Ubuntu userland binaries and shared libraries are ELF on typical Linux targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "fedora",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Fedora userland binaries and shared libraries are ELF on typical Linux targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "rhel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "RHEL userland binaries and shared libraries are ELF on typical Linux targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "rocky-linux",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Rocky Linux userland binaries and shared libraries are ELF on typical Linux targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "almalinux",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "AlmaLinux userland binaries and shared libraries are ELF on typical Linux targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "centos-stream",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "CentOS Stream userland binaries and shared libraries are ELF on typical Linux targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "centos-linux",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Historical CentOS Linux userland binaries and shared libraries were ELF on typical Linux targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "freebsd-libc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "FreeBSD libc and typical FreeBSD userland binaries use ELF dynamic linking on supported architectures."
+    },
+    {
+      "type": "integrates_with",
+      "target": "openbsd-libc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "OpenBSD libc and typical OpenBSD userland binaries use ELF dynamic linking on supported architectures."
+    },
+    {
+      "type": "integrates_with",
+      "target": "netbsd-libc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "NetBSD libc and typical NetBSD userland binaries use ELF dynamic linking on supported architectures."
+    },
+    {
+      "type": "integrates_with",
+      "target": "dragonfly-libc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "DragonFly libc and typical DragonFly userland binaries use ELF dynamic linking on supported architectures."
+    },
+    {
+      "type": "integrates_with",
+      "target": "illumos-libc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "illumos libc and typical illumos userland binaries use ELF dynamic linking on supported architectures."
+    },
+    {
+      "type": "integrates_with",
+      "target": "android-bionic",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Bionic and typical Android native binaries use ELF dynamic linking on supported ABIs."
+    },
+    {
+      "type": "integrates_with",
+      "target": "newlib",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Embedded link flows commonly emit ELF relocatable objects and images linking newlib archives on ELF-capable targets."
+    }
+  ]
+}

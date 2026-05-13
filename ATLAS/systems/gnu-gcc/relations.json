@@ -1,0 +1,167 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "gnu-binutils",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "gcc/g++ invoke GNU as and GNU ld on typical GNU/Linux triplets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "c-language",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GCC is a major production C and C++ compiler implementation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "elf",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Default relocatable and executable output uses ELF on typical Unix-class targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "dwarf",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Debug builds with -g emit DWARF on typical ELF targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Linux kernel has historically been built with GCC; documentation references GCC."
+    },
+    {
+      "type": "integrates_with",
+      "target": "riscv-isa",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GCC includes a RISC-V port among many backends."
+    },
+    {
+      "type": "competes_with",
+      "target": "clang",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang and GCC are substitutable C/C++ compilers on many Linux and cross-compile flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-gdb",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GCC -g debug builds on ELF targets supply DWARF and symbols for GDB."
+    },
+    {
+      "type": "integrates_with",
+      "target": "glibc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GCC targets glibc on typical GNU/Linux triplets for C/C++ standard library linkage."
+    },
+    {
+      "type": "integrates_with",
+      "target": "musl",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GCC is used to build musl-based Linux systems (e.g. Alpine) with musl as the C library."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-libstdcxx",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "g++ links and distributes GNU libstdc++ as the default C++ standard library implementation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "alpine-linux",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GCC toolchain packages are provided in Alpine repositories for builds on and for the distribution."
+    },
+    {
+      "type": "integrates_with",
+      "target": "debian",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GCC is central to Debian build-essential and package build flows on the distribution."
+    },
+    {
+      "type": "integrates_with",
+      "target": "ubuntu",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GCC is central to Ubuntu build-essential and package build flows on the distribution."
+    },
+    {
+      "type": "integrates_with",
+      "target": "fedora",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GCC is central to Fedora development tool groups and RPM package build flows on the distribution."
+    },
+    {
+      "type": "integrates_with",
+      "target": "rhel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GCC participates in RHEL developer toolsets and RPM package build flows on the distribution."
+    },
+    {
+      "type": "integrates_with",
+      "target": "rocky-linux",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GCC participates in Rocky Linux developer tool groups and RPM package build flows on the distribution."
+    },
+    {
+      "type": "integrates_with",
+      "target": "almalinux",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GCC participates in AlmaLinux developer tool groups and RPM package build flows on the distribution."
+    },
+    {
+      "type": "integrates_with",
+      "target": "centos-stream",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GCC participates in CentOS Stream developer tool groups and RPM package build flows on the distribution."
+    },
+    {
+      "type": "integrates_with",
+      "target": "centos-linux",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GCC participated in historical CentOS Linux developer tool groups and RPM package build flows on the distribution."
+    },
+    {
+      "type": "integrates_with",
+      "target": "freebsd-libc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GCC participates in FreeBSD base and ports toolchains that link against FreeBSD libc."
+    },
+    {
+      "type": "integrates_with",
+      "target": "openbsd-libc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GCC participates in OpenBSD base and ports toolchains that link against OpenBSD libc."
+    },
+    {
+      "type": "integrates_with",
+      "target": "netbsd-libc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GCC participates in NetBSD base and pkgsrc toolchains that link against NetBSD libc."
+    },
+    {
+      "type": "integrates_with",
+      "target": "dragonfly-libc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GCC participates in DragonFly base and dports toolchains that link against DragonFly libc."
+    },
+    {
+      "type": "integrates_with",
+      "target": "illumos-libc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GCC participates in illumos distribution toolchains that link against illumos libc."
+    },
+    {
+      "type": "integrates_with",
+      "target": "android-bionic",
+      "evidence_tier": "INFERRED",
+      "notes": "GCC may appear in legacy or third-party Android cross toolchains that link against Bionic when configured."
+    },
+    {
+      "type": "integrates_with",
+      "target": "newlib",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GCC commonly pairs with newlib in embedded and bare-metal cross-compilation toolchains."
+    }
+  ]
+}

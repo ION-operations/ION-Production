@@ -1,0 +1,420 @@
+% Chapter 19 converted from Markdown
+% Auto-generated - do not edit manually
+
+
+
+
+\section*{Section 19.1: What is Trust?}
+
+Trust, in the context of AI systems, means confidence that the system will achieve what you want—confidence based on verifiable evidence, not blind faith.
+
+\textbf{Defining Trust}
+
+Trust requires:
+
+\begin{itemize}
+\item \textbf{Confidence:} Belief that something will behave as expected
+\item \textbf{Verifiability:} Ability to verify that expectations were met
+\item \textbf{Transparency:} Understanding of how the system works
+\item \textbf{Evidence:} Proof that the system achieves its goals
+\end{itemize}
+
+Without these, trust is blind faith—hope without verification.
+
+\textbf{Trust in AI Systems}
+
+Trust in AI systems means:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# Trust = Confidence that AI will achieve intent
+contract = PLIxContract(intent="Book a meeting room")
+
+# Trust requires:
+# 1. Explicit intent (what we want)
+# 2. Verifiable achievement (can we verify it?)
+# 3. Evidence (proof it worked)
+# 4. Transparency (how did it work?)
+
+# Without PLIx: Trust is implicit (hope)
+# With PLIx: Trust is explicit (verifiable)
+\end{lstlisting}
+
+Trust in AI systems requires explicit intent, verifiable achievement, evidence, and transparency—all enabled by PLIx.
+
+\textbf{Trust vs. Faith}
+
+Trust differs from faith:
+
+\textbf{Faith:}
+\begin{itemize}
+\item Belief without evidence
+\item Hope without verification
+\item Assumption without proof
+\end{itemize}
+
+\textbf{Trust:}
+\begin{itemize}
+\item Belief based on evidence
+\item Confidence based on verification
+\item Assurance based on proof
+\end{itemize}
+
+PLIx enables trust through verifiable intent achievement, transforming faith into trust.
+
+\textbf{Trust Summary}
+
+Trust means:
+\begin{itemize}
+\item \textbf{Confidence:} Belief that system will achieve intent
+\item \textbf{Verifiability:} Ability to verify intent achievement
+\item \textbf{Transparency:} Understanding of how system works
+\item \textbf{Evidence:} Proof that system achieves intent
+\end{itemize}
+
+These requirements enable trust based on evidence, not blind faith.
+
+\section*{Section 19.2: How PLIx Enables Trust}
+
+PLIx enables trust through verifiable intent, evidence chains, transparency, and confidence tracking—the four pillars of AI trust.
+
+\textbf{Verifiable Intent}
+
+PLIx enables verifiable intent:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# PLIx contract expresses verifiable intent
+contract = PLIxContract(
+    intent="Book a meeting room",
+    contract={
+        "post": ["room_reserved == true"]
+    }
+)
+
+# Intent is explicit and verifiable
+# We can verify: "Did we achieve the intent?"
+intent_achieved = verify_contract(contract, outcome)
+
+# Trust is based on verifiable intent achievement
+trust_score = calculate_trust_score(intent_achieved, evidence)
+\end{lstlisting}
+
+Verifiable intent enables trust based on verifiable achievement, not blind faith.
+
+\textbf{Evidence Chains}
+
+PLIx enables evidence chains:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# PLIx enables evidence chains
+def create_evidence_chain(contract, outcome, execution_provenance):
+    # Store evidence in SEG
+    evidence = {
+        "contract": contract,
+        "outcome": outcome,
+        "execution_provenance": execution_provenance,
+        "intent_achieved": verify_contract(contract, outcome)
+    }
+    
+    # Store in SEG for verification
+    seg.add_evidence(evidence)
+    
+    return evidence
+
+# Evidence chains enable trust through proof
+evidence_chain = create_evidence_chain(contract, outcome, provenance)
+trust_score = calculate_trust_from_evidence(evidence_chain)
+\end{lstlisting}
+
+Evidence chains enable trust through verifiable proof, supporting trust reasoning.
+
+\textbf{Transparency}
+
+PLIx enables transparency:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# PLIx enables transparency
+def provide_transparency(contract, execution_trace):
+    # Transparency = Understanding how intent was achieved
+    transparency = {
+        "intent": contract.intent,
+        "plan": execution_trace.plan,
+        "execution": execution_trace.steps,
+        "outcome": execution_trace.outcome,
+        "verification": verify_contract(contract, execution_trace.outcome)
+    }
+    
+    return transparency
+
+# Transparency enables trust through understanding
+transparency = provide_transparency(contract, execution_trace)
+trust_score = calculate_trust_from_transparency(transparency)
+\end{lstlisting}
+
+Transparency enables trust through understanding, enabling trust reasoning.
+
+\textbf{Confidence Tracking}
+
+PLIx enables confidence tracking:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# PLIx enables confidence tracking
+def track_confidence(contract, outcome):
+    # Calculate confidence in intent achievement
+    intent_confidence = calculate_intent_confidence(contract, outcome)
+    
+    # Track confidence over time
+    confidence_history = store_confidence_history(contract, intent_confidence)
+    
+    # Trust is based on confidence history
+    trust_score = calculate_trust_from_confidence(confidence_history)
+    
+    return trust_score
+
+# Confidence tracking enables trust through historical evidence
+trust_score = track_confidence(contract, outcome)
+\end{lstlisting}
+
+Confidence tracking enables trust through historical evidence, supporting trust reasoning.
+
+\textbf{PLIx Trust Benefits}
+
+PLIx enables trust through:
+
+\begin{itemize}
+\item \textbf{Verifiable Intent:} Intent is explicit and verifiable
+\item \textbf{Evidence Chains:} Complete evidence for verification
+\item \textbf{Transparency:} Understanding of how intent was achieved
+\item \textbf{Confidence Tracking:} Historical confidence data
+\end{itemize}
+
+These benefits enable trust based on evidence, not blind faith.
+
+\section*{Section 19.3: Verifiability}
+
+Verifiability means the ability to verify that intent was achieved—enabled by PLIx contract verification.
+
+\textbf{Intent Verification}
+
+PLIx enables intent verification:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# PLIx enables intent verification
+def verify_intent(contract, outcome):
+    # Verify postconditions
+    postconditions_satisfied = all(
+        evaluate_postcondition(post, outcome)
+        for post in contract.post
+    )
+    
+    # Verification result
+    return {
+        "intent_achieved": postconditions_satisfied,
+        "postconditions": contract.post,
+        "verification_details": {
+            post: evaluate_postcondition(post, outcome)
+            for post in contract.post
+        }
+    }
+
+# Intent verification enables trust through verifiable achievement
+verification_result = verify_intent(contract, outcome)
+trust_score = calculate_trust_from_verification(verification_result)
+\end{lstlisting}
+
+Intent verification enables trust through verifiable achievement, supporting trust reasoning.
+
+\textbf{Formal Verification}
+
+PLIx enables formal verification:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# PLIx enables formal verification
+def formally_verify_contract(contract):
+    # Formal verification using Alloy/TLA+
+    formal_model = compile_to_alloy(contract)
+    verification_result = verify_alloy_model(formal_model)
+    
+    return {
+        "formally_verified": verification_result.valid,
+        "invariants_held": verification_result.invariants,
+        "verification_proof": verification_result.proof
+    }
+
+# Formal verification enables trust through mathematical proof
+formal_verification = formally_verify_contract(contract)
+trust_score = calculate_trust_from_formal_verification(formal_verification)
+\end{lstlisting}
+
+Formal verification enables trust through mathematical proof, supporting high-confidence trust.
+
+\textbf{Evidence-Based Verification}
+
+PLIx enables evidence-based verification:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# PLIx enables evidence-based verification
+def verify_with_evidence(contract, outcome, evidence_chain):
+    # Verify intent achievement
+    intent_achieved = verify_contract(contract, outcome)
+    
+    # Verify evidence chain
+    evidence_valid = verify_evidence_chain(evidence_chain)
+    
+    # Combined verification
+    return {
+        "intent_achieved": intent_achieved,
+        "evidence_valid": evidence_valid,
+        "combined_confidence": calculate_combined_confidence(
+            intent_achieved, evidence_valid
+        )
+    }
+
+# Evidence-based verification enables trust through proof
+verification_result = verify_with_evidence(contract, outcome, evidence_chain)
+trust_score = calculate_trust_from_evidence_verification(verification_result)
+\end{lstlisting}
+
+Evidence-based verification enables trust through proof, supporting trust reasoning.
+
+\textbf{Verifiability Benefits}
+
+Verifiability provides:
+
+\begin{itemize}
+\item \textbf{Intent Verification:} Can verify intent achievement
+\item \textbf{Formal Verification:} Mathematical proof of correctness
+\item \textbf{Evidence-Based Verification:} Proof through evidence chains
+\item \textbf{Trust:} Trust based on verifiable achievement
+\end{itemize}
+
+These benefits enable trust through verification, not blind faith.
+
+\section*{Section 19.4: Trust Metrics}
+
+Trust metrics enable quantitative trust assessment, supporting trust reasoning and decision-making.
+
+\textbf{Confidence Scores}
+
+Confidence scores as trust metrics:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# Confidence scores enable trust metrics
+def calculate_trust_metrics(contract, outcome, confidence_history):
+    # Calculate trust metrics
+    metrics = {
+        "intent_confidence": calculate_intent_confidence(contract, outcome),
+        "historical_confidence": calculate_average_confidence(confidence_history),
+        "confidence_trend": calculate_confidence_trend(confidence_history),
+        "trust_score": calculate_trust_score(
+            intent_confidence=calculate_intent_confidence(contract, outcome),
+            historical_confidence=calculate_average_confidence(confidence_history),
+            trend=calculate_confidence_trend(confidence_history)
+        )
+    }
+    
+    return metrics
+
+# Trust metrics enable quantitative trust assessment
+trust_metrics = calculate_trust_metrics(contract, outcome, confidence_history)
+\end{lstlisting}
+
+Confidence scores enable quantitative trust assessment, supporting trust reasoning.
+
+\textbf{Evidence Quality}
+
+Evidence quality as trust metrics:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# Evidence quality enables trust metrics
+def calculate_evidence_quality(evidence_chain):
+    # Calculate evidence quality metrics
+    quality_metrics = {
+        "evidence_completeness": calculate_completeness(evidence_chain),
+        "evidence_consistency": calculate_consistency(evidence_chain),
+        "evidence_provenance": calculate_provenance_quality(evidence_chain),
+        "evidence_trust_score": calculate_trust_from_evidence(evidence_chain)
+    }
+    
+    return quality_metrics
+
+# Evidence quality enables trust assessment
+evidence_quality = calculate_evidence_quality(evidence_chain)
+\end{lstlisting}
+
+Evidence quality enables trust assessment through evidence evaluation.
+
+\textbf{Verification Coverage}
+
+Verification coverage as trust metrics:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# Verification coverage enables trust metrics
+def calculate_verification_coverage(contract, verification_results):
+    # Calculate verification coverage
+    coverage_metrics = {
+        "postcondition_coverage": calculate_postcondition_coverage(
+            contract.post, verification_results
+        ),
+        "formal_verification_coverage": calculate_formal_coverage(
+            contract, verification_results
+        ),
+        "evidence_coverage": calculate_evidence_coverage(
+            verification_results
+        ),
+        "overall_coverage": calculate_overall_coverage(verification_results)
+    }
+    
+    return coverage_metrics
+
+# Verification coverage enables trust assessment
+verification_coverage = calculate_verification_coverage(contract, verification_results)
+\end{lstlisting}
+
+Verification coverage enables trust assessment through coverage evaluation.
+
+\textbf{Trust Dashboard}
+
+Trust dashboard for trust visualization:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# Trust dashboard enables trust visualization
+def create_trust_dashboard(contract, metrics, evidence, verification):
+    dashboard = {
+        "intent": contract.intent,
+        "trust_score": metrics["trust_score"],
+        "confidence_scores": metrics["confidence_scores"],
+        "evidence_quality": evidence["quality"],
+        "verification_coverage": verification["coverage"],
+        "trust_trend": calculate_trust_trend(metrics["historical_data"]),
+        "recommendations": generate_trust_recommendations(metrics, evidence, verification)
+    }
+    
+    return dashboard
+
+# Trust dashboard enables trust visualization
+dashboard = create_trust_dashboard(contract, metrics, evidence, verification)
+\end{lstlisting}
+
+Trust dashboard enables trust visualization, supporting trust reasoning and decision-making.
+
+\textbf{Trust Metrics Benefits}
+
+Trust metrics provide:
+
+\begin{itemize}
+\item \textbf{Quantitative Assessment:} Numerical trust scores
+\item \textbf{Evidence Evaluation:} Evidence quality assessment
+\item \textbf{Coverage Analysis:} Verification coverage analysis
+\item \textbf{Visualization:} Trust dashboard for understanding
+\end{itemize}
+
+These benefits enable quantitative trust assessment and reasoning.
+
+\section*{Chapter 19 Summary}
+
+Trust and verifiability form the foundation of AI trust. Trust means confidence that the system will achieve intent, based on verifiable evidence. PLIx enables trust through verifiable intent, evidence chains, transparency, and confidence tracking. Verifiability enables intent verification, formal verification, and evidence-based verification. Trust metrics enable quantitative trust assessment through confidence scores, evidence quality, and verification coverage.
+
+\textbf{Next:} Chapter 20 explores temporal reasoning—how intents evolve over time and how PLIx enables temporal intent reasoning.
+
+\textbf{Word Count:} \textasciitilde{}2,300 words  
+

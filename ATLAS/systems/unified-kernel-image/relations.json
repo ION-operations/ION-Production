@@ -1,0 +1,61 @@
+{
+  "system_slug": "unified-kernel-image",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-05",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "uefi",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "UKI is consumed by UEFI firmware as a bootable PE/EFI artifact."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "UKI bundles the Linux kernel image in standard UKI constructions."
+    },
+    {
+      "type": "integrates_with",
+      "target": "systemd",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "ukify and UKI workflow are documented in the systemd project."
+    },
+    {
+      "type": "integrates_with",
+      "target": "systemd-boot",
+      "evidence_tier": "INFERRED",
+      "notes": "systemd-boot commonly loads UKIs on systemd-centric distributions."
+    },
+    {
+      "type": "integrates_with",
+      "target": "tpm2",
+      "evidence_tier": "INFERRED",
+      "notes": "Measured boot / PCR policies may use UKI with TPM2 (deployment-specific)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "elf",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "UKI bundles a Linux kernel that remains ELF-class internally while the outer UKI is PE/EFI-shaped."
+    },
+    {
+      "type": "integrates_with",
+      "target": "systemd-unit-model",
+      "evidence_tier": "INFERRED",
+      "notes": "Post-boot activation still flows through standard systemd units/targets on systemd-centric images."
+    },
+    {
+      "type": "integrates_with",
+      "target": "systemd-sysext",
+      "evidence_tier": "INFERRED",
+      "notes": "Some UKI/initrd/systemd-centric boot flows deploy or consume system extensions (distro-specific)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "systemd-confext",
+      "evidence_tier": "INFERRED",
+      "notes": "Some UKI/initrd/systemd-centric boot flows may deploy or consume configuration extensions (distro-specific)."
+    }
+  ]
+}

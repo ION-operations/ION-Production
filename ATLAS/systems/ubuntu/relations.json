@@ -1,0 +1,95 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "depends_on",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Ubuntu ships Linux kernel packages for supported architectures as part of the distribution."
+    },
+    {
+      "type": "fork_of",
+      "target": "debian",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Ubuntu is a Debian-derived distribution: dpkg/apt packaging lineage and archive heritage with Canonical governance and distinct release cadence."
+    },
+    {
+      "type": "integrates_with",
+      "target": "glibc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Ubuntu desktop and server on standard ports use glibc as the C library alongside the dynamic linker."
+    },
+    {
+      "type": "integrates_with",
+      "target": "systemd",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "systemd is the default init and service manager on current Ubuntu LTS and interim releases per Ubuntu documentation themes."
+    },
+    {
+      "type": "integrates_with",
+      "target": "systemd-unit-model",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Ubuntu services are expressed as systemd unit files and drop-ins on default systemd installs."
+    },
+    {
+      "type": "integrates_with",
+      "target": "elf",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Ubuntu userland binaries and shared libraries are ELF on typical Linux targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-gcc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GCC toolchain packages are central to Ubuntu build-essential and package build flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-binutils",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GNU binutils participate in standard Ubuntu package build and link flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-libstdcxx",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "g++-built packages link GNU libstdc++ above glibc on typical Ubuntu GNU/Linux flows."
+    },
+    {
+      "type": "integrates_with",
+      "target": "clang",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang/LLVM packages are available from Ubuntu archives for alternative compiler stacks."
+    },
+    {
+      "type": "integrates_with",
+      "target": "docker",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Official ubuntu and ubuntu:* OCI images are common glibc-based bases; Docker pulls and runs them like other Linux images."
+    },
+    {
+      "type": "integrates_with",
+      "target": "containerd",
+      "evidence_tier": "INFERRED",
+      "notes": "CRI/containerd nodes run Ubuntu-based workload images pulled as OCI artifacts."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "Kubernetes nodes and pods frequently use Ubuntu-class images on Linux; not exclusive."
+    },
+    {
+      "type": "integrates_with",
+      "target": "oci-image-spec",
+      "evidence_tier": "INFERRED",
+      "notes": "Ubuntu bases are packaged as OCI image rootfs layers conforming to OCI image layout conventions."
+    },
+    {
+      "type": "competes_with",
+      "target": "alpine-linux",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Linux distribution defaults for containers and servers (glibc/systemd vs musl/OpenRC field patterns)."
+    }
+  ]
+}

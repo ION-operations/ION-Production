@@ -1,0 +1,478 @@
+% Chapter 10 converted from Markdown
+% Auto-generated - do not edit manually
+
+
+
+
+\section*{Section 10.1: Before PLIx: Execution Verification}
+
+Before PLIx, VIF (Verifiable Intelligence Framework) verifies execution correctness—tracking confidence in execution success and creating witnesses that record how something was created.
+
+\textbf{VIF's Original Purpose}
+
+VIF was designed to:
+
+\begin{itemize}
+\item \textbf{Track Confidence:} Monitor confidence scores (0-1) and confidence bands (A/B/C)
+\item \textbf{Create Witnesses:} Generate cryptographic witnesses that record how something was created
+\item \textbf{Provide Verification:} Enable verification of execution correctness through witnesses
+\item \textbf{Enable \textkappa{}-Gating:} Route operations based on confidence bands (abstain if Band C)
+\end{itemize}
+
+VIF's strength lies in its ability to track confidence and create verifiable witnesses, enabling trust through cryptographic proof.
+
+\textbf{Execution Verification Example}
+
+Before PLIx, VIF verifies execution:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# Verify execution
+witness = VIF(
+    confidence_score=0.85,
+    confidence_band="A",
+    operation="book_room",
+    inputs={"room_id": "A101", "date": "2025-12-01"},
+    outputs={"reservation_id": "res-123"}
+)
+
+# Witness records: "I'm 85% confident this execution succeeded"
+# Verification: Check if execution completed successfully
+\end{lstlisting}
+
+VIF verifies execution success (did the action complete?) but not intent achievement (did we achieve what we wanted?). This limits VIF's ability to verify purpose and measure intent-outcome alignment.
+
+\textbf{Limitations of Execution Verification}
+
+Execution verification has limitations:
+
+\begin{itemize}
+\item \textbf{No Intent Awareness:} VIF doesn't know what was intended, only what was executed
+\item \textbf{No Intent Verification:} Can't verify "did this outcome satisfy the intent?"
+\item \textbf{No Intent Confidence:} Can't track confidence in intent achievement
+\item \textbf{No Contract Verification:} Can't verify postconditions independently
+\end{itemize}
+
+These limitations prevent VIF from supporting intent-driven verification, confidence tracking, and learning.
+
+\textbf{Confidence Tracking}
+
+VIF tracks confidence in execution:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# Confidence tracking
+confidence = calculate_confidence(operation, inputs, context)
+confidence_band = route_to_band(confidence)  # A/B/C
+
+if confidence_band == "C":
+    # Abstain: Confidence too low
+    return None
+else:
+    # Execute: Confidence sufficient
+    return execute(operation, inputs)
+\end{lstlisting}
+
+Confidence tracking enables risk-aware execution, but without intent awareness, VIF can't track confidence in intent achievement.
+
+\textbf{Witness Creation}
+
+VIF creates witnesses that record execution:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# Create witness
+witness = create_witness(
+    operation="book_room",
+    inputs={"room_id": "A101"},
+    outputs={"reservation_id": "res-123"},
+    confidence=0.85,
+    timestamp=datetime.now()
+)
+
+# Witness provides cryptographic proof of execution
+# Enables verification: "Did this execution happen?"
+\end{lstlisting}
+
+Witness creation enables verifiable execution, but without intent awareness, witnesses don't record why something was created (intent).
+
+\textbf{Before PLIx Summary}
+
+Before PLIx, VIF is execution-focused:
+\begin{itemize}
+\item Verifies execution correctness (did action complete?)
+\item Tracks confidence in execution success
+\item Creates witnesses that record how something was created
+\item Lacks intent awareness (no intent verification or confidence tracking)
+\end{itemize}
+
+This execution focus limits VIF's ability to support intent-driven verification and learning.
+
+\section*{Section 10.2: After PLIx: Intent Verification}
+
+After PLIx, VIF verifies intent achievement—tracking confidence in intent achievement and creating witnesses that record why something was created (intent).
+
+\textbf{Intent-Aware Verification}
+
+With PLIx, VIF verifies intent:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# Verify intent achievement
+contract = PLIxContract(
+    intent="Book a meeting room",
+    contract={"post": ["room_reserved == true"]}
+)
+
+witness = VIF(
+    confidence_score=0.90,
+    confidence_band="A",
+    contract=contract,
+    outcome={"room_reserved": True}
+)
+
+# Witness records: "I'm 90% confident we achieved the intent"
+# Verification: Check if postconditions are satisfied
+\end{lstlisting}
+
+VIF now verifies intent achievement (did we achieve what we wanted?) in addition to execution success (did the action complete?), enabling intent-driven verification.
+
+\textbf{Intent Confidence Tracking}
+
+With PLIx, VIF tracks confidence in intent achievement:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# Calculate intent confidence
+def calculate_intent_confidence(contract: PLIxContract, outcome: dict) -> float:
+    # Check postcondition satisfaction
+    postconditions_satisfied = all(
+        evaluate_postcondition(post, outcome) 
+        for post in contract.contract["post"]
+    )
+    
+    if not postconditions_satisfied:
+        return 0.0  # Intent not achieved
+    
+    # Calculate confidence based on postcondition satisfaction
+    confidence = calculate_confidence_from_outcome(outcome, contract)
+    return confidence
+
+# Track intent confidence
+intent_confidence = calculate_intent_confidence(contract, outcome)
+intent_band = route_to_band(intent_confidence)
+
+if intent_band == "C":
+    # Abstain: Intent confidence too low
+    return None
+else:
+    # Proceed: Intent confidence sufficient
+    return execute_intent(contract)
+\end{lstlisting}
+
+Intent confidence tracking enables risk-aware intent achievement, ensuring we only proceed when confident we can achieve the intent.
+
+\textbf{Intent Witness Creation}
+
+With PLIx, VIF creates intent witnesses:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# Create intent witness
+witness = create_intent_witness(
+    contract=contract,
+    outcome=outcome,
+    confidence=intent_confidence,
+    execution_witness=execution_witness,  # Link to execution witness
+    timestamp=datetime.now()
+)
+
+# Witness provides cryptographic proof of intent achievement
+# Enables verification: "Did we achieve the intent?"
+# Records: Why something was created (intent)
+\end{lstlisting}
+
+Intent witness creation enables verifiable intent achievement, recording both how something was created (execution) and why it was created (intent).
+
+\textbf{Contract Verification}
+
+With PLIx, VIF verifies contracts:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# Verify contract postconditions
+def verify_contract(contract: PLIxContract, outcome: dict) -> bool:
+    # Check all postconditions
+    for postcondition in contract.contract["post"]:
+        if not evaluate_postcondition(postcondition, outcome):
+            return False
+    return True
+
+# Verify intent achievement
+intent_achieved = verify_contract(contract, outcome)
+witness = create_intent_witness(
+    contract=contract,
+    outcome=outcome,
+    confidence=0.90 if intent_achieved else 0.0,
+    verification_result=intent_achieved
+)
+\end{lstlisting}
+
+Contract verification enables independent verification of intent achievement, checking postconditions without needing to understand execution.
+
+\textbf{After PLIx Summary}
+
+After PLIx, VIF is intent-aware:
+\begin{itemize}
+\item Verifies intent achievement (did we achieve what we wanted?)
+\item Tracks confidence in intent achievement
+\item Creates witnesses that record why something was created (intent)
+\item Verifies contracts independently (postcondition checking)
+\end{itemize}
+
+This intent awareness transforms VIF from execution-focused verification to intent-aware verification, enabling intent-driven trust and learning.
+
+\section*{Section 10.3: Transformation Details}
+
+The transformation from execution verification to intent verification involves calculating intent confidence, creating intent witnesses, implementing intent \textkappa{}-gating, and enabling confidence routing based on intent.
+
+\textbf{Intent \textrightarrow{} VIF Confidence}
+
+Intent confidence calculation:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+def calculate_intent_confidence(
+    contract: PLIxContract,
+    outcome: dict,
+    execution_confidence: float
+) -> float:
+    """Calculate confidence in intent achievement"""
+    
+    # Check postcondition satisfaction
+    postconditions_satisfied = all(
+        evaluate_postcondition(post, outcome)
+        for post in contract.contract["post"]
+    )
+    
+    if not postconditions_satisfied:
+        return 0.0  # Intent not achieved
+    
+    # Combine execution confidence with postcondition satisfaction
+    # Higher confidence if both execution succeeded and postconditions satisfied
+    intent_confidence = execution_confidence * 0.7 + (1.0 if postconditions_satisfied else 0.0) * 0.3
+    
+    return intent_confidence
+\end{lstlisting}
+
+Intent confidence combines execution confidence with postcondition satisfaction, providing a holistic measure of intent achievement confidence.
+
+\textbf{Intent Witness Creation}
+
+Intent witness creation:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+def create_intent_witness(
+    contract: PLIxContract,
+    outcome: dict,
+    execution_witness: Witness,
+    confidence: float
+) -> IntentWitness:
+    """Create witness for intent achievement"""
+    
+    witness = IntentWitness(
+        contract=contract,
+        outcome=outcome,
+        confidence=confidence,
+        confidence_band=route_to_band(confidence),
+        execution_witness_id=execution_witness.id,
+        postconditions_satisfied=verify_contract(contract, outcome),
+        timestamp=datetime.now()
+    )
+    
+    # Cryptographic hash for verification
+    witness.hash = calculate_witness_hash(witness)
+    
+    return witness
+\end{lstlisting}
+
+Intent witnesses link execution witnesses to intent contracts, enabling verification of both execution and intent achievement.
+
+\textbf{Intent \textkappa{}-Gating}
+
+Intent \textkappa{}-gating routes based on intent confidence:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+def intent_kappa_gate(
+    contract: PLIxContract,
+    intent_confidence: float
+) -> bool:
+    """\textkappa{}-gating based on intent confidence"""
+    
+    confidence_band = route_to_band(intent_confidence)
+    
+    # Band A: High confidence \textrightarrow{} Execute
+    if confidence_band == "A":
+        return True
+    
+    # Band B: Medium confidence \textrightarrow{} Execute with caution
+    elif confidence_band == "B":
+        return True  # Execute but monitor
+    
+    # Band C: Low confidence \textrightarrow{} Abstain
+    else:
+        return False  # Abstain: Intent confidence too low
+\end{lstlisting}
+
+Intent \textkappa{}-gating prevents execution when intent confidence is too low, ensuring we only proceed when confident we can achieve the intent.
+
+\textbf{Confidence Routing}
+
+Confidence routing optimizes execution based on intent confidence:
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+def route_by_intent_confidence(
+    contract: PLIxContract,
+    available_tools: List[Tool]
+) -> Tool:
+    """Route to best tool based on intent confidence"""
+    
+    # Calculate intent confidence for each tool
+    tool_confidences = [
+        (tool, calculate_intent_confidence_for_tool(contract, tool))
+        for tool in available_tools
+    ]
+    
+    # Select tool with highest intent confidence
+    best_tool = max(tool_confidences, key=lambda x: x[1])[0]
+    
+    return best_tool
+\end{lstlisting}
+
+Confidence routing selects tools that maximize intent achievement confidence, optimizing for intent success rather than just execution success.
+
+\textbf{Transformation Benefits}
+
+The transformation provides:
+
+\begin{itemize}
+\item \textbf{Intent Verification:} VIF verifies intent achievement, not just execution success
+\item \textbf{Intent Confidence:} VIF tracks confidence in intent achievement
+\item \textbf{Intent Witnesses:} VIF creates witnesses that record why something was created
+\item \textbf{Intent \textkappa{}-Gating:} VIF routes based on intent confidence
+\end{itemize}
+
+These benefits transform VIF from execution-focused verification to intent-aware verification, enabling intent-driven trust and learning.
+
+\section*{Section 10.4: Implementation Examples}
+
+Implementation examples demonstrate intent confidence calculation, intent witness creation, intent \textkappa{}-gating, and confidence routing.
+
+\textbf{Example 1: Intent Confidence Calculation}
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# PLIx contract
+contract = PLIxContract(
+    intent="Book a meeting room",
+    contract={
+        "post": ["room_reserved == true", "calendar_event_created == true"]
+    }
+)
+
+# Execution outcome
+outcome = {
+    "room_reserved": True,
+    "calendar_event_created": True,
+    "reservation_id": "res-123"
+}
+
+# Execution confidence
+execution_confidence = 0.85
+
+# Calculate intent confidence
+intent_confidence = calculate_intent_confidence(contract, outcome, execution_confidence)
+print(f"Intent confidence: {intent_confidence}")  # 0.90
+
+# Route to band
+intent_band = route_to_band(intent_confidence)
+print(f"Intent band: {intent_band}")  # "A"
+\end{lstlisting}
+
+This example demonstrates calculating intent confidence from contract postconditions and execution outcome.
+
+\textbf{Example 2: Intent Witness Creation}
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# Create execution witness
+execution_witness = create_witness(
+    operation="book_room",
+    inputs={"room_id": "A101"},
+    outputs={"reservation_id": "res-123"},
+    confidence=0.85
+)
+
+# Create intent witness
+intent_witness = create_intent_witness(
+    contract=contract,
+    outcome=outcome,
+    execution_witness=execution_witness,
+    confidence=0.90
+)
+
+print(f"Intent witness ID: {intent_witness.id}")
+print(f"Postconditions satisfied: {intent_witness.postconditions_satisfied}")  # True
+print(f"Confidence band: {intent_witness.confidence_band}")  # "A"
+\end{lstlisting}
+
+This example demonstrates creating intent witnesses that link execution witnesses to intent contracts.
+
+\textbf{Example 3: Intent \textkappa{}-Gating}
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# Check intent confidence
+intent_confidence = calculate_intent_confidence(contract, outcome, execution_confidence)
+
+# Apply \textkappa{}-gating
+if intent_kappa_gate(contract, intent_confidence):
+    print("Intent confidence sufficient: Proceeding")
+    result = execute_intent(contract)
+else:
+    print("Intent confidence too low: Abstaining")
+    result = None
+\end{lstlisting}
+
+This example demonstrates intent \textkappa{}-gating: proceeding only when intent confidence is sufficient.
+
+\textbf{Example 4: Confidence Routing}
+
+\begin{lstlisting}[language=Python, caption=Python Example]
+# Available tools
+available_tools = [
+    Tool(id="api_v1", action="api_v1.reserve_room"),
+    Tool(id="api_v2", action="api_v2.reserve_room"),
+    Tool(id="direct_db", action="db.insert_reservation")
+]
+
+# Route by intent confidence
+best_tool = route_by_intent_confidence(contract, available_tools)
+print(f"Best tool: {best_tool.id}")  # Tool with highest intent confidence
+
+# Execute with best tool
+result = execute_with_tool(best_tool, contract)
+\end{lstlisting}
+
+This example demonstrates confidence routing: selecting the tool that maximizes intent achievement confidence.
+
+\textbf{Implementation Benefits}
+
+Implementation examples demonstrate:
+
+\begin{itemize}
+\item \textbf{Intent Confidence:} Calculating confidence in intent achievement
+\item \textbf{Intent Witnesses:} Creating witnesses that record intent achievement
+\item \textbf{Intent \textkappa{}-Gating:} Routing based on intent confidence
+\item \textbf{Confidence Routing:} Optimizing tool selection for intent achievement
+\end{itemize}
+
+These examples show how VIF transforms from execution-focused verification to intent-aware verification, enabling intent-driven trust and learning.
+
+\section*{Chapter 10 Summary}
+
+VIF transforms from execution verification to intent verification through PLIx integration. Before PLIx, VIF verifies execution correctness but lacks intent awareness. After PLIx, VIF verifies intent achievement, tracks intent confidence, creates intent witnesses, and implements intent \textkappa{}-gating. This transformation enables intent-driven verification, trust, and learning, making VIF a foundation for intent-aware systems.
+
+\textbf{Next:} Chapter 11 explores APOE integration—how APOE transforms from plan execution to intent achievement.
+
+\textbf{Word Count:} \textasciitilde{}2,300 words  
+

@@ -1,0 +1,29 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "wasi-libc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "C/C++ toolchains targeting Wasm link wasi-libc-built objects into Wasm modules."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-ir",
+      "evidence_tier": "INFERRED",
+      "notes": "Many compilers target wasm32 via LLVM; LLVM includes an in-tree WebAssembly code generation target."
+    },
+    {
+      "type": "integrates_with",
+      "target": "webgpu",
+      "evidence_tier": "INFERRED",
+      "notes": "Browser engine stacks commonly pair Wasm modules with WebGPU for portable GPU-accelerated workloads."
+    },
+    {
+      "type": "integrates_with",
+      "target": "webgl",
+      "evidence_tier": "INFERRED",
+      "notes": "Wasm + JS engine stacks commonly pair WebAssembly modules with WebGL contexts for legacy portable graphics."
+    }
+  ]
+}

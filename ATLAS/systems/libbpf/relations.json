@@ -1,0 +1,53 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "ebpf",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "libbpf loads BPF programs, manages maps, and uses the BPF syscall uAPI against the kernel BPF subsystem."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "libbpf targets Linux BPF syscall and netlink/perf adjacency as documented for the reference library."
+    },
+    {
+      "type": "integrates_with",
+      "target": "c-language",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "libbpf exposes a C API for BPF program loading and map lifecycle in userspace."
+    },
+    {
+      "type": "integrates_with",
+      "target": "glibc",
+      "evidence_tier": "INFERRED",
+      "notes": "Typical GNU/Linux BPF tooling links libbpf against glibc."
+    },
+    {
+      "type": "integrates_with",
+      "target": "musl",
+      "evidence_tier": "INFERRED",
+      "notes": "musl-based Linux userlands may link libbpf in static or dynamic builds."
+    },
+    {
+      "type": "integrates_with",
+      "target": "clang",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang LLVM BPF targets often produce objects consumed by libbpf loaders."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-ir",
+      "evidence_tier": "INFERRED",
+      "notes": "LLVM BPF backend lowers to BPF objects that libbpf loads; not the IR spec itself."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-gcc",
+      "evidence_tier": "INFERRED",
+      "notes": "GCC BPF backends exist in some stacks; loaders remain libbpf-shaped."
+    }
+  ]
+}

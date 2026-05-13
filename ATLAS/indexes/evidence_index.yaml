@@ -1,0 +1,29 @@
+# Evidence tier registry + example source ID prefixes
+schema_version: "1.0"
+updated: "2026-04-02"
+
+tiers:
+  DOCUMENTED:
+    description: Primary source states the claim; locator in sources.yaml.
+  OBSERVED:
+    description: Externally reproduced signal; protocol recorded in ledger.
+  HISTORICAL:
+    description: Time-indexed primary or peer-reviewed historical record.
+  INFERRED:
+    description: Not directly stated; reasoning chain in 14_documented_vs_inferred.md.
+  UNKNOWN:
+    description: No grounded basis; do not fill with speculative architecture.
+
+source_id_conventions:
+  - prefix: "src-"
+    used_in: package sources.yaml
+  - prefix: "std-"
+    meaning: "Standard body (IEEE, IETF, W3C, OCI, CNCF, etc.)"
+  - prefix: "paper-"
+    meaning: "Academic or industrial lab paper with stable citation"
+
+ledger_columns:
+  - claim_id
+  - tier
+  - locator_or_protocol
+  - curator_notes

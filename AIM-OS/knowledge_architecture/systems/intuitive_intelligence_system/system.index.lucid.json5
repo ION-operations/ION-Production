@@ -1,0 +1,249 @@
+{
+  "systemId": "iis.intuitiveIntelligence",
+  "humanName": "Intuitive Intelligence System - AI Intuition and Learning",
+  "version": "v0.1",
+  "status": "production",
+  
+  "intent": {
+    "purpose": "Provide operational definition and learning loop for AI intuition. Computes IntuitionScore for candidate actions using calibrated confidence (VIF), retrieval quality (HHNI), meta-pattern similarity (CAS/timeline), emotional salience (TCS), and 4D evolution alignment. Learns online from outcomes and maintains auditability through CAS.",
+    "must_not_regress": [
+      "Must not skip intuition calculation",
+      "Must not use uncalibrated confidence",
+      "Must not lose learning data",
+      "Must not skip trace generation",
+      "Must not allow calibration drift"
+    ],
+    "why_it_exists": "Enables intuitive decision-making for AI consciousness. Provides learned intuition scores based on multiple cognitive dimensions and maintains continuous learning from outcomes."
+  },
+  
+  "classification": {
+    "security_level": "high",
+    "perf_sensitivity": "medium",
+    "ownership": "core",
+    "sideEffects": [
+      "Computes intuition scores for all decisions",
+      "Learns from outcomes continuously",
+      "Tracks calibration metrics",
+      "Generates intuition traces",
+      "Predicts evolution alignment"
+    ]
+  },
+  
+  "internalNodes": [
+    {
+      "id": "intuitionCalculator",
+      "responsibility": "Computes IntuitionScore using feature vector (C', RS, M, E, F, U)",
+      "must_never": [
+        "Skip intuition calculation",
+        "Use uncalibrated confidence",
+        "Lose intuition reasoning",
+        "Allow intuition override of safety"
+      ],
+      "perf_budget_ms": 20,
+      "status": "production"
+    },
+    {
+      "id": "featureExtractor",
+      "responsibility": "Extracts intuition features (calibrated confidence, retrieval strength, meta-pattern similarity, emotional salience, 4D evolution alignment)",
+      "must_never": [
+        "Lose feature data",
+        "Skip feature extraction",
+        "Create incorrect features",
+        "Allow feature corruption"
+      ],
+      "perf_budget_ms": 15,
+      "status": "production"
+    },
+    {
+      "id": "learningEngine",
+      "responsibility": "Learns online from labeled outcomes (success/failure) using SGD",
+      "must_never": [
+        "Lose learning data",
+        "Skip learning updates",
+        "Create false learnings",
+        "Allow learning degradation"
+      ],
+      "perf_budget_ms": 25,
+      "status": "production"
+    },
+    {
+      "id": "calibrationTracker",
+      "responsibility": "Tracks calibration metrics (AUC, ECE) and detects drift",
+      "must_never": [
+        "Lose calibration data",
+        "Skip calibration tracking",
+        "Allow calibration drift",
+        "Create inconsistent calibration"
+      ],
+      "perf_budget_ms": 10,
+      "status": "production"
+    },
+    {
+      "id": "evolutionPredictor",
+      "responsibility": "Predicts 4D evolution (AI state, user state, collaboration state) for alignment scoring",
+      "must_never": [
+        "Lose prediction data",
+        "Skip evolution prediction",
+        "Create incorrect predictions",
+        "Allow prediction degradation"
+      ],
+      "perf_budget_ms": 30,
+      "status": "development"
+    },
+    {
+      "id": "intuitionTraceGenerator",
+      "responsibility": "Generates IntuitionTrace records with full provenance",
+      "must_never": [
+        "Lose trace data",
+        "Skip trace generation",
+        "Create incomplete traces",
+        "Allow trace tampering"
+      ],
+      "perf_budget_ms": 8,
+      "status": "production"
+    },
+    {
+      "id": "metaPatternAnalyzer",
+      "responsibility": "Analyzes meta-pattern similarity to past successful decisions",
+      "must_never": [
+        "Lose pattern data",
+        "Skip pattern analysis",
+        "Create false patterns",
+        "Allow pattern degradation"
+      ],
+      "perf_budget_ms": 20,
+      "status": "production"
+    }
+  ],
+  
+  "systemMap": {
+    "mapFile": "./system.map.lucid.json5"
+  },
+  
+  "foresight": {
+    "predictedRisks": [
+      {
+        "risk_id": "calibration_drift",
+        "description": "Intuition calibration could drift over time",
+        "likelihood": "medium",
+        "blast_radius_if_real": "intuition_scores_unreliable",
+        "mitigation": "Implement continuous calibration monitoring and recalibration",
+        "watchpoint": "if calibration_drift > 0.1, trigger recalibration"
+      },
+      {
+        "risk_id": "learning_degradation",
+        "description": "Learning could degrade or create false patterns",
+        "likelihood": "low",
+        "blast_radius_if_real": "intuition_scores_incorrect",
+        "mitigation": "Implement learning validation and pattern verification",
+        "watchpoint": "if learning_accuracy_drops, trigger validation"
+      },
+      {
+        "risk_id": "trace_loss",
+        "description": "Intuition traces could be lost",
+        "likelihood": "low",
+        "blast_radius_if_real": "intuition_auditability_lost",
+        "mitigation": "Implement redundant trace storage and validation",
+        "watchpoint": "if trace_loss_detected, halt operation and alert"
+      }
+    ],
+    "killSwitch": "iis.intuition.enabled=false",
+    "emergencyProcedures": [
+      "Disable intuition calculation immediately",
+      "Create emergency calibration snapshot",
+      "Switch to safe mode",
+      "Notify all dependent systems"
+    ]
+  },
+  
+  "lineage": {
+    "parentSystemId": null,
+    "childSystems": [],
+    "maturity": "production"
+  },
+  
+  "connections": [
+    {
+      "viaPort": "vifIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "vif.verifiableIntelligence",
+      "protocol": "internal_api",
+      "data": ["calibrated_confidence", "confidence_scores", "provenance_data", "intuition_traces"],
+      "security_level": "critical",
+      "governanceRequired": true
+    },
+    {
+      "viaPort": "hhniIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "hhni.hierarchicalHypergraph",
+      "protocol": "internal_api",
+      "data": ["retrieval_strength", "retrieval_scores", "context_quality", "intuition_features"],
+      "security_level": "high",
+      "governanceRequired": true
+    },
+    {
+      "viaPort": "casIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "cas.cognitiveAnalysis",
+      "protocol": "internal_api",
+      "data": ["meta_pattern_data", "cognitive_metrics", "intuition_traces", "learning_insights"],
+      "security_level": "high",
+      "governanceRequired": true
+    },
+    {
+      "viaPort": "tcsIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "tcs.timelineContext",
+      "protocol": "internal_api",
+      "data": ["emotional_salience", "temporal_patterns", "consciousness_data", "intuition_context"],
+      "security_level": "high",
+      "governanceRequired": true
+    },
+    {
+      "viaPort": "cmcIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "cmc.contextMemoryCore",
+      "protocol": "internal_api",
+      "data": ["intuition_traces", "learning_data", "calibration_data", "pattern_data"],
+      "security_level": "critical",
+      "governanceRequired": true
+    },
+    {
+      "viaPort": "segIntegration",
+      "direction": "bidirectional",
+      "connectsToSystemId": "seg.sharedEvidenceGraph",
+      "protocol": "internal_api",
+      "data": ["intuition_evidence", "pattern_nodes", "learning_insights", "evolution_data"],
+      "security_level": "high",
+      "governanceRequired": true
+    }
+  ],
+  
+  "exceptions": [],
+  
+  "lastUpdated": "2025-01-27T00:45:00Z",
+  "atlasHealth": {
+    "undeclaredConnections": [],
+    "performanceAlerts": [],
+    "securityAlerts": []
+  },
+  
+  "relatedIdeas": [
+    "Intuition scoring algorithms",
+    "Meta-pattern learning approaches",
+    "Emotional salience tracking",
+    "4D evolution alignment"
+  ],
+  
+  "ideaReferenceCount": 12,
+  
+  "integrationPoints": {
+    "verification": "VIF provides calibrated confidence for intuition",
+    "retrieval": "HHNI provides retrieval strength metrics",
+    "analysis": "CAS provides meta-pattern similarity data",
+    "temporal": "TCS provides emotional salience and temporal patterns",
+    "storage": "CMC stores all intuition traces and learning data",
+    "knowledge": "SEG links intuition evidence to knowledge graph"
+  }
+}
+

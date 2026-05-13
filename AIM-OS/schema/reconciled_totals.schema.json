@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://aim.os/schema/reconciled-totals.json",
+  "title": "Reconciled Tag Totals",
+  "description": "Canonical tag count numbers from source of truth",
+  "type": "object",
+  "required": ["grand_totals", "systems", "files_total"],
+  "properties": {
+    "session_id": {
+      "type": "string",
+      "pattern": "^quintet_parity:\\d{4}-\\d{2}-\\d{2}$"
+    },
+    "generated": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "source": {
+      "type": "string",
+      "description": "Where these numbers came from"
+    },
+    "grand_totals": {
+      "type": "object",
+      "required": ["ALL"],
+      "properties": {
+        "ALL": {"type": "integer", "minimum": 0},
+        "NL_TAG": {"type": "integer", "minimum": 0},
+        "NL_TAG_INTENT": {"type": "integer", "minimum": 0},
+        "NL_TAG_CONNECT": {"type": "integer", "minimum": 0},
+        "NL_TAG_SPEC": {"type": "integer", "minimum": 0}
+      }
+    },
+    "files_total": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "systems": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["system", "folder", "tags_total"],
+        "properties": {
+          "system": {
+            "type": "string",
+            "pattern": "^[A-Z-]+$"
+          },
+          "folder": {
+            "type": "string"
+          },
+          "files_tagged": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "tags_total": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "by_type": {
+            "type": "object",
+            "properties": {
+              "NL_TAG": {"type": "integer", "minimum": 0},
+              "NL_TAG_INTENT": {"type": "integer", "minimum": 0},
+              "NL_TAG_CONNECT": {"type": "integer", "minimum": 0},
+              "NL_TAG_SPEC": {"type": "integer", "minimum": 0}
+            }
+          }
+        }
+      },
+      "minItems": 1
+    }
+  },
+  "additionalProperties": true
+}
+

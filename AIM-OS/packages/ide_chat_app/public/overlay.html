@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Template Capture Overlay</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.5);
+      cursor: crosshair;
+      user-select: none;
+      overflow: hidden;
+    }
+    
+    .instructions {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      color: white;
+      font-family: Arial, sans-serif;
+      font-size: 14px;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 10px 15px;
+      border-radius: 5px;
+      z-index: 1000;
+    }
+    
+    .coordinates {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      color: white;
+      font-family: monospace;
+      font-size: 12px;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 8px 12px;
+      border-radius: 5px;
+      z-index: 1000;
+    }
+    
+    .rectangle {
+      position: fixed;
+      border: 2px solid #00ffff;
+      background: rgba(0, 255, 255, 0.2);
+      pointer-events: none;
+      z-index: 999;
+    }
+  </style>
+</head>
+<body>
+  <div class="instructions">
+    Click and drag to select area • Press ESC to cancel • Press Enter to capture
+  </div>
+  <div class="coordinates" id="coordinates">X: 0, Y: 0, W: 0, H: 0</div>
+  <div class="rectangle" id="rectangle" style="display: none;"></div>
+  
+  <script>
+    // IPC is available via preload script (window.ipcRenderer)
+    let isDrawing = false;
+    let startPoint = null;
+    let currentRect = null;
+    const rectangleEl = document.getElementById('rectangle');
+    const coordinatesEl = document.getElementById('coordinates');
+    
+    // Mouse down - start drawing
+    document.addEventListener('mousedown', (e) => {
+      isDrawing = true;
+      startPoint = { x: e.clientX, y: e.clientY };
+      rectangleEl.style.display = 'block';
+    });
+    
+    // Mouse move - update rectangle
+    document.addEventListener('mousemove', (e) => {
+      if (!isDrawing || !startPoint) return;
+      
+      const rect = {
+        x: Math.min(startPoint.x, e.clientX),
+        y: Math.min(startPoint.y, e.clientY),
+        width: Math.abs(e.clientX - startPoint.x),
+        height: Math.abs(e.clientY - startPoint.y)
+      };
+      
+      currentRect = rect;
+      
+      // Update rectangle visual
+      rectangleEl.style.left = rect.x + 'px';
+      rectangleEl.style.top = rect.y + 'px';
+      rectangleEl.style.width = rect.width + 'px';
+      rectangleEl.style.height = rect.height + 'px';
+      
+      // Update coordinates
+      coordinatesEl.textContent = `X: ${rect.x}, Y: ${rect.y}, W: ${rect.width}, H: ${rect.height}`;
+    });
+    
+    // Mouse up - finish drawing
+    document.addEventListener('mouseup', () => {
+      if (isDrawing && currentRect) {
+        isDrawing = false;
+        // Rectangle is ready, wait for Enter key
+      }
+    });
+    
+    // Enter - capture
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && currentRect && window.ipcRenderer) {
+        // Send rectangle to main process
+        window.ipcRenderer.invoke('overlay:capture', currentRect);
+      } else if (e.key === 'Escape' && window.ipcRenderer) {
+        // Cancel
+        window.ipcRenderer.invoke('overlay:cancel');
+      }
+    });
+  </script>
+</body>
+</html>
+

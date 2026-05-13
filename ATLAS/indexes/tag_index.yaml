@@ -1,0 +1,68 @@
+# Reverse index: tag → systems (update when packages seed)
+schema_version: "1.0"
+updated: "2026-04-13T00:00:00Z"
+
+tags:
+  kernel:
+    systems: [multics, windows-nt, linux-kernel, xnu-macos, freebsd, android-aosp, 9front, linux-security-modules, linux-namespaces, linux-cgroups, linux-capabilities, linux-overlayfs, linux-netfilter, linux-fuse, linux-kvm, linux-vhost, linux-vfio, ebpf, io-uring, landlock, seccomp]
+  service-manager:
+    systems: [systemd, systemd-unit-model, systemd-portable, systemd-sysext, systemd-confext]
+  container-runtime:
+    systems: [docker, containerd, kata-containers, gvisor, buildkit, podman, runc, crun, cri-o, azure-aci]
+  cluster-orchestrator:
+    systems: [kubernetes, helm, fluxcd, kubevirt, nomad, apache-mesos, aws-ecs, aws-eks, azure-aks, azure-container-apps, civo-kubernetes, digitalocean-doks, gcp-gke, ibm-iks, linode-lke, oci-oke, openshift-dedicated, red-hat-openshift, vmware-tkg]
+  c-runtime:
+    systems: [glibc, musl, freebsd-libc, openbsd-libc, netbsd-libc, dragonfly-libc, illumos-libc, android-bionic, newlib, wasi-libc, uclibc, dietlibc, msvc-vcruntime]
+  cxx-runtime:
+    systems: [gnu-libstdcxx, llvm-libcxx, msvcprt]
+  cxx-abi-runtime:
+    systems: [llvm-libcxxabi]
+  declarative-os:
+    systems: [nixos]
+  linux-distribution:
+    systems: [alpine-linux, debian, ubuntu, fedora, centos-stream, rhel, rocky-linux, almalinux, centos-linux]
+  dev-environment:
+    systems: [vscode, cursor, anthropic-claude-code-agent-sdk, openhands]
+  ai-runtime:
+    systems:
+      - openai-agents-chatgpt-public-runtime
+      - anthropic-claude-code-agent-sdk
+      - gemini-api
+      - deepseek-api
+      - microsoft-agent-framework
+      - openhands
+      - aim-os
+      - nvidia-triton-inference-server
+      - vllm
+  protocol:
+    systems: [model-context-protocol, language-server-protocol, debug-adapter-protocol, elf, plan-9, llvm-ir, dwarf, spir-v, nvidia-ptx, jvm, ecma-335-cli, webassembly, wasi, wasm-component-model, webgpu, webgl, opengl-es, opencl, sycl, level-zero, vulkan, opengl, metal, direct3d, ebpf, io-uring, landlock, seccomp, onnx, oci-distribution-spec, oci-image-spec, oci-runtime-spec, opentelemetry, grpc, http3, amazon-s3, openid-connect, tpm2, uefi, confidential-computing, linux-security-modules, linux-namespaces, linux-cgroups, linux-capabilities, linux-overlayfs, linux-netfilter, linux-fuse, linux-kvm, virtio, linux-vhost, linux-vfio, nccl, nvidia-triton-inference-server, vllm, postgresql, sqlite, redis, apache-kafka, envoy, istio, grub, linkerd, cilium, systemd-boot, unified-kernel-image, traefik, consul, uapi-boot-loader-specification, emissary-ingress, haproxy, intel-tdx, amd-sev, nginx, ingress-nginx, arm-cca, aws-elastic-load-balancing, amazon-api-gateway, azure-application-gateway, gcp-load-balancing, azure-front-door, amazon-cloudfront, cloudflare-workers, fastly, akamai, edgio, riscv-isa]
+  historical-system:
+    systems: [multics, apache-mesos, pl-i, fortran, c-language, cobol, ada-language, algol, pascal-language, plan-9, inferno-os, 9front]
+  programming-language:
+    systems: [pl-i, fortran, c-language, cobol, rust-language, ada-language, golang, algol, pascal-language]
+  toolchain:
+    systems: [gnu-binutils, gnu-gcc, gnu-gdb, llvm-lld, clang, lldb, libbpf, liburing, libseccomp]
+  research-os:
+    systems: [plan-9, inferno-os, 9front]
+  desktop-os:
+    systems: [windows-nt, xnu-macos, freebsd, nixos]
+  mobile-os:
+    systems: [android-aosp]
+  distributed-system:
+    systems: [kubernetes, helm, fluxcd, argo-cd, kustomize, kubevirt, kata-containers, gvisor, buildkit, golang, openhands, aim-os, plan-9, inferno-os, 9front, nomad, firecracker, qemu, libvirt, apache-mesos, aws-ecs, aws-eks, azure-aci, azure-aks, azure-container-apps, gcp-gke, ibm-iks, linode-lke, oci-oke, openshift-dedicated, red-hat-openshift, vmware-tkg, amd-rocm, nvidia-cuda, grpc, http3, opentelemetry, nccl, postgresql, redis, apache-kafka, envoy, istio, linkerd, cilium, traefik, consul, emissary-ingress, haproxy, nginx, ingress-nginx, aws-elastic-load-balancing, amazon-api-gateway, azure-application-gateway, gcp-load-balancing, azure-front-door, amazon-cloudfront, cloudflare-workers, fastly, akamai, edgio]
+  microvm:
+    systems: [firecracker, kata-containers]
+  vmm:
+    systems: [qemu]
+  extension-platform:
+    systems: [vscode, cursor]
+  control-plane:
+    systems: [kubernetes, helm, fluxcd, argo-cd, kustomize, kubevirt, libvirt, microsoft-agent-framework, aws-ecs, aws-eks, azure-aks, azure-container-apps, civo-kubernetes, digitalocean-doks, gcp-gke, ibm-iks, linode-lke, oci-oke, openshift-dedicated, red-hat-openshift, vmware-tkg, amazon-s3, envoy, istio, linkerd, cilium, traefik, consul, emissary-ingress, haproxy, nginx, ingress-nginx, aws-elastic-load-balancing, amazon-api-gateway, azure-application-gateway, gcp-load-balancing, azure-front-door, amazon-cloudfront, cloudflare-workers, fastly, akamai, edgio]
+  public-runtime-surface:
+    systems:
+      - openai-agents-chatgpt-public-runtime
+      - anthropic-claude-code-agent-sdk
+      - gemini-api
+      - deepseek-api
+      - model-context-protocol
+      - microsoft-agent-framework

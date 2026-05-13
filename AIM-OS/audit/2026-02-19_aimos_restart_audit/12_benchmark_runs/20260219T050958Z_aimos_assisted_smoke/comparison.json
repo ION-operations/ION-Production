@@ -1,0 +1,157 @@
+{
+  "generated_utc": "2026-02-19T05:15:26.434693+00:00",
+  "baseline_run_id": "20260219T050458Z_baseline_smoke",
+  "candidate_run_id": "20260219T050958Z_aimos_assisted_smoke",
+  "profile": "smoke",
+  "baseline_path": "C:\\Users\\bombe\\OneDrive\\Desktop\\AIM-OS\\audit\\2026-02-19_aimos_restart_audit\\12_benchmark_runs\\20260219T050458Z_baseline_smoke\\run.json",
+  "candidate_path": "C:\\Users\\bombe\\OneDrive\\Desktop\\AIM-OS\\audit\\2026-02-19_aimos_restart_audit\\12_benchmark_runs\\20260219T050958Z_aimos_assisted_smoke\\run.json",
+  "aggregate_rows": [
+    {
+      "metric": "commands_failed",
+      "baseline": 0,
+      "candidate": 0,
+      "delta": 0
+    },
+    {
+      "metric": "pytest_passed",
+      "baseline": 48,
+      "candidate": 48,
+      "delta": 0
+    },
+    {
+      "metric": "pytest_failed",
+      "baseline": 0,
+      "candidate": 0,
+      "delta": 0
+    },
+    {
+      "metric": "pytest_warnings",
+      "baseline": 0,
+      "candidate": 0,
+      "delta": 0
+    },
+    {
+      "metric": "duration_seconds_total",
+      "baseline": 293.658,
+      "candidate": 321.773,
+      "delta": 28.115
+    }
+  ],
+  "performance_rows": [
+    {
+      "metric": "cmc_write_error_rate",
+      "baseline": 0.0,
+      "candidate": 0.0,
+      "delta": 0.0,
+      "improved": false
+    },
+    {
+      "metric": "cmc_write_p99_ms",
+      "baseline": 83.99750001262873,
+      "candidate": 36.623099935241044,
+      "delta": -47.37440007738769,
+      "improved": true
+    },
+    {
+      "metric": "hhni_retrieval_mean_relevance",
+      "baseline": 0.6170218708520986,
+      "candidate": 0.6170218708520986,
+      "delta": 0.0,
+      "improved": false
+    },
+    {
+      "metric": "hhni_retrieval_p95_ms",
+      "baseline": 66618.4809000697,
+      "candidate": 71202.40810001269,
+      "delta": 4583.927199942991,
+      "improved": false
+    },
+    {
+      "metric": "hhni_retrieval_p99_ms",
+      "baseline": 66618.4809000697,
+      "candidate": 71202.40810001269,
+      "delta": 4583.927199942991,
+      "improved": false
+    },
+    {
+      "metric": "hhni_write_error_rate",
+      "baseline": 0.0,
+      "candidate": 0.0,
+      "delta": 0.0,
+      "improved": false
+    },
+    {
+      "metric": "hhni_write_p99_ms",
+      "baseline": 9183.415499981493,
+      "candidate": 10104.32679997757,
+      "delta": 920.911299996078,
+      "improved": false
+    }
+  ],
+  "checks": [
+    {
+      "name": "candidate has zero command failures",
+      "passed": true,
+      "type": "hard_gate",
+      "details": "commands_failed=0"
+    },
+    {
+      "name": "candidate pytest failures <= baseline",
+      "passed": true,
+      "type": "hard_gate",
+      "details": "baseline=0 candidate=0"
+    },
+    {
+      "name": "candidate pytest warnings <= baseline",
+      "passed": true,
+      "type": "hard_gate",
+      "details": "baseline=0 candidate=0"
+    },
+    {
+      "name": "performance metric improved: cmc_write_error_rate",
+      "passed": false,
+      "type": "advisory",
+      "details": "baseline=0.000000 candidate=0.000000 delta=+0.000000"
+    },
+    {
+      "name": "performance metric improved: cmc_write_p99_ms",
+      "passed": true,
+      "type": "advisory",
+      "details": "baseline=83.997500 candidate=36.623100 delta=-47.374400"
+    },
+    {
+      "name": "performance metric improved: hhni_retrieval_mean_relevance",
+      "passed": false,
+      "type": "advisory",
+      "details": "baseline=0.617022 candidate=0.617022 delta=+0.000000"
+    },
+    {
+      "name": "performance metric improved: hhni_retrieval_p95_ms",
+      "passed": false,
+      "type": "advisory",
+      "details": "baseline=66618.480900 candidate=71202.408100 delta=+4583.927200"
+    },
+    {
+      "name": "performance metric improved: hhni_retrieval_p99_ms",
+      "passed": false,
+      "type": "advisory",
+      "details": "baseline=66618.480900 candidate=71202.408100 delta=+4583.927200"
+    },
+    {
+      "name": "performance metric improved: hhni_write_error_rate",
+      "passed": false,
+      "type": "advisory",
+      "details": "baseline=0.000000 candidate=0.000000 delta=+0.000000"
+    },
+    {
+      "name": "performance metric improved: hhni_write_p99_ms",
+      "passed": false,
+      "type": "advisory",
+      "details": "baseline=9183.415500 candidate=10104.326800 delta=+920.911300"
+    }
+  ],
+  "hard_gate_passed": true,
+  "performance_improved_count": 1,
+  "performance_metric_count": 7,
+  "verdict": "pass"
+}

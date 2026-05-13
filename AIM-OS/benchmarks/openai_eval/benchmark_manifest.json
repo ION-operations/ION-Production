@@ -1,0 +1,346 @@
+{
+  "schema_version": "1.0",
+  "name": "aimos_openai_eval_pack",
+  "description": "Reproducible benchmark task suite for baseline vs AIM-OS-assisted comparison.",
+  "profiles": {
+    "smoke": [
+      {
+        "id": "mcp_parity",
+        "name": "MCP parity check",
+        "parse": "json_stdout",
+        "timeout_seconds": 120,
+        "command": [
+          "{python}",
+          "scripts/check_mcp_tool_parity.py"
+        ]
+      },
+      {
+        "id": "mcp_parity_tests",
+        "name": "MCP parity pytest guardrails",
+        "parse": "pytest",
+        "timeout_seconds": 300,
+        "command": [
+          "{python}",
+          "-m",
+          "pytest",
+          "tests/test_mcp_tool_surface_parity.py",
+          "-q",
+          "-o",
+          "addopts=''"
+        ]
+      },
+      {
+        "id": "apoe_streaming_tests",
+        "name": "APOE streaming subset",
+        "parse": "pytest",
+        "timeout_seconds": 600,
+        "command": [
+          "{python}",
+          "-m",
+          "pytest",
+          "packages/apoe/tests/test_streaming.py",
+          "-q",
+          "-o",
+          "addopts=''"
+        ]
+      },
+      {
+        "id": "seg_models_tests",
+        "name": "SEG models subset",
+        "parse": "pytest",
+        "timeout_seconds": 600,
+        "command": [
+          "{python}",
+          "-m",
+          "pytest",
+          "packages/seg/tests/test_models.py",
+          "-q",
+          "-o",
+          "addopts=''"
+        ]
+      },
+      {
+        "id": "sdfcvf_parity_tests",
+        "name": "SDF-CVF parity subset",
+        "parse": "pytest",
+        "timeout_seconds": 600,
+        "command": [
+          "{python}",
+          "-m",
+          "pytest",
+          "packages/sdfcvf/tests/test_parity.py",
+          "-q",
+          "-o",
+          "addopts=''"
+        ]
+      },
+      {
+        "id": "hhni_perf_mini",
+        "name": "HHNI performance mini benchmark",
+        "parse": "none",
+        "timeout_seconds": 900,
+        "output_json": "artifacts/hhni_perf_mini.json",
+        "command": [
+          "{python}",
+          "benchmarks/hhni_performance.py",
+          "--atoms",
+          "20",
+          "--backend",
+          "sqlite",
+          "--output",
+          "{task_output}"
+        ]
+      },
+      {
+        "id": "hhni_retrieval_mini",
+        "name": "HHNI retrieval mini benchmark",
+        "parse": "none",
+        "timeout_seconds": 900,
+        "output_json": "artifacts/hhni_retrieval_mini.json",
+        "command": [
+          "{python}",
+          "benchmarks/hhni_retrieval_benchmark.py",
+          "--queries",
+          "5",
+          "--corpus",
+          "20",
+          "--provider",
+          "fallback",
+          "--coarse-k",
+          "20",
+          "--dvns-iterations",
+          "5",
+          "--token-budget",
+          "1200",
+          "--output",
+          "{task_output}"
+        ]
+      }
+    ],
+    "quick": [
+      {
+        "id": "mcp_parity",
+        "name": "MCP parity check",
+        "parse": "json_stdout",
+        "timeout_seconds": 120,
+        "command": [
+          "{python}",
+          "scripts/check_mcp_tool_parity.py"
+        ]
+      },
+      {
+        "id": "source_of_truth_dry_run",
+        "name": "Source of truth detector dry-run",
+        "parse": "none",
+        "timeout_seconds": 300,
+        "command": [
+          "{python}",
+          "scripts/detect_source_of_truth.py",
+          "--dry-run",
+          "--check-mcp-parity"
+        ]
+      },
+      {
+        "id": "mcp_parity_tests",
+        "name": "MCP parity pytest guardrails",
+        "parse": "pytest",
+        "timeout_seconds": 300,
+        "command": [
+          "{python}",
+          "-m",
+          "pytest",
+          "tests/test_mcp_tool_surface_parity.py",
+          "-q",
+          "-o",
+          "addopts=''"
+        ]
+      },
+      {
+        "id": "apoe_tests",
+        "name": "APOE package suite",
+        "parse": "pytest",
+        "timeout_seconds": 1800,
+        "command": [
+          "{python}",
+          "-m",
+          "pytest",
+          "packages/apoe/tests",
+          "-q",
+          "-o",
+          "addopts=''"
+        ]
+      },
+      {
+        "id": "seg_tests",
+        "name": "SEG package suite",
+        "parse": "pytest",
+        "timeout_seconds": 1800,
+        "command": [
+          "{python}",
+          "-m",
+          "pytest",
+          "packages/seg/tests",
+          "-q",
+          "-o",
+          "addopts=''"
+        ]
+      },
+      {
+        "id": "sdfcvf_tests",
+        "name": "SDF-CVF package suite",
+        "parse": "pytest",
+        "timeout_seconds": 3600,
+        "command": [
+          "{python}",
+          "-m",
+          "pytest",
+          "packages/sdfcvf/tests",
+          "-q",
+          "-o",
+          "addopts=''"
+        ]
+      }
+    ],
+    "full": [
+      {
+        "id": "mcp_parity",
+        "name": "MCP parity check",
+        "parse": "json_stdout",
+        "timeout_seconds": 120,
+        "command": [
+          "{python}",
+          "scripts/check_mcp_tool_parity.py"
+        ]
+      },
+      {
+        "id": "source_of_truth_dry_run",
+        "name": "Source of truth detector dry-run",
+        "parse": "none",
+        "timeout_seconds": 300,
+        "command": [
+          "{python}",
+          "scripts/detect_source_of_truth.py",
+          "--dry-run",
+          "--check-mcp-parity"
+        ]
+      },
+      {
+        "id": "mcp_parity_tests",
+        "name": "MCP parity pytest guardrails",
+        "parse": "pytest",
+        "timeout_seconds": 300,
+        "command": [
+          "{python}",
+          "-m",
+          "pytest",
+          "tests/test_mcp_tool_surface_parity.py",
+          "-q",
+          "-o",
+          "addopts=''"
+        ]
+      },
+      {
+        "id": "apoe_tests",
+        "name": "APOE package suite",
+        "parse": "pytest",
+        "timeout_seconds": 1800,
+        "command": [
+          "{python}",
+          "-m",
+          "pytest",
+          "packages/apoe/tests",
+          "-q",
+          "-o",
+          "addopts=''"
+        ]
+      },
+      {
+        "id": "hhni_tests",
+        "name": "HHNI package suite",
+        "parse": "pytest",
+        "timeout_seconds": 1800,
+        "command": [
+          "{python}",
+          "-m",
+          "pytest",
+          "packages/hhni/tests",
+          "-q",
+          "-o",
+          "addopts=''"
+        ]
+      },
+      {
+        "id": "seg_tests",
+        "name": "SEG package suite",
+        "parse": "pytest",
+        "timeout_seconds": 1800,
+        "command": [
+          "{python}",
+          "-m",
+          "pytest",
+          "packages/seg/tests",
+          "-q",
+          "-o",
+          "addopts=''"
+        ]
+      },
+      {
+        "id": "sdfcvf_tests",
+        "name": "SDF-CVF package suite",
+        "parse": "pytest",
+        "timeout_seconds": 3600,
+        "command": [
+          "{python}",
+          "-m",
+          "pytest",
+          "packages/sdfcvf/tests",
+          "-q",
+          "-o",
+          "addopts=''"
+        ]
+      },
+      {
+        "id": "hhni_perf_full",
+        "name": "HHNI performance benchmark",
+        "parse": "none",
+        "timeout_seconds": 1800,
+        "output_json": "artifacts/hhni_perf_full.json",
+        "command": [
+          "{python}",
+          "benchmarks/hhni_performance.py",
+          "--atoms",
+          "100",
+          "--backend",
+          "sqlite",
+          "--output",
+          "{task_output}"
+        ]
+      },
+      {
+        "id": "hhni_retrieval_full",
+        "name": "HHNI retrieval benchmark",
+        "parse": "none",
+        "timeout_seconds": 1800,
+        "output_json": "artifacts/hhni_retrieval_full.json",
+        "command": [
+          "{python}",
+          "benchmarks/hhni_retrieval_benchmark.py",
+          "--queries",
+          "50",
+          "--corpus",
+          "300",
+          "--provider",
+          "fallback",
+          "--coarse-k",
+          "80",
+          "--dvns-iterations",
+          "20",
+          "--token-budget",
+          "3000",
+          "--output",
+          "{task_output}"
+        ]
+      }
+    ]
+  }
+}

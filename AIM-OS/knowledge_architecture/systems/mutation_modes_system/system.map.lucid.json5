@@ -1,0 +1,579 @@
+{
+  system_id: "mutation_modes_system",
+  system_name: "Mutation Modes System",
+  version: "1.0.0",
+  last_updated: "2025-01-27T20:50:00Z",
+  map_type: "system_topology",
+  internal_topology: {
+    core_components: [
+      {
+        component_id: "change_classifier",
+        name: "Change Classifier",
+        type: "classification_engine",
+        tier: 2,
+        description: "Classifies changes by risk level and complexity",
+        ports: {
+          input: [
+            "change_request",
+            "classification_rules",
+          ],
+          output: [
+            "change_classification",
+            "risk_assessment",
+          ],
+        },
+        dependencies: [
+          "risk_assessment_rules",
+          "complexity_assessment_rules",
+        ],
+        blast_radius: "system",
+        must_never: [
+          "Classify changes without validation",
+          "Skip risk assessment",
+          "Bypass complexity assessment",
+          "Ignore mode selection rules",
+        ],
+      },
+      {
+        component_id: "mode_router",
+        name: "Mode Router",
+        type: "routing_engine",
+        tier: 2,
+        description: "Routes changes to appropriate mutation mode",
+        ports: {
+          input: [
+            "change_request",
+            "change_classification",
+          ],
+          output: [
+            "routing_decision",
+            "mode_status",
+          ],
+        },
+        dependencies: [
+          "change_classification",
+          "mode_processors",
+        ],
+        blast_radius: "system",
+        must_never: [
+          "Route changes without classification",
+          "Skip mode validation",
+          "Bypass routing rules",
+          "Ignore mode status",
+        ],
+      },
+      {
+        component_id: "trivial_mode_processor",
+        name: "Trivial Mode Processor",
+        type: "processing_engine",
+        tier: 2,
+        description: "Processes trivial and gentle changes",
+        ports: {
+          input: [
+            "change_request",
+            "validation_rules",
+          ],
+          output: [
+            "processing_result",
+            "execution_status",
+          ],
+        },
+        dependencies: [
+          "validation_engine",
+          "propagation_manager",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Process high-risk changes",
+          "Skip validation",
+          "Bypass auto-propagation",
+          "Ignore safety checks",
+        ],
+      },
+      {
+        component_id: "governed_mode_processor",
+        name: "Governed Mode Processor",
+        type: "processing_engine",
+        tier: 2,
+        description: "Processes governed and critical changes",
+        ports: {
+          input: [
+            "change_request",
+            "confidence_packet",
+          ],
+          output: [
+            "processing_result",
+            "approval_status",
+          ],
+        },
+        dependencies: [
+          "validation_engine",
+          "approval_engine",
+        ],
+        blast_radius: "system",
+        must_never: [
+          "Process changes without approval",
+          "Skip comprehensive validation",
+          "Bypass approval workflows",
+          "Ignore risk assessment",
+        ],
+      },
+      {
+        component_id: "propagation_manager",
+        name: "Propagation Manager",
+        type: "propagation_engine",
+        tier: 2,
+        description: "Manages change propagation and notification",
+        ports: {
+          input: [
+            "change_request",
+            "propagation_rules",
+          ],
+          output: [
+            "propagation_result",
+            "notification_status",
+          ],
+        },
+        dependencies: [
+          "dependency_analyzer",
+          "notification_engine",
+        ],
+        blast_radius: "platform",
+        must_never: [
+          "Propagate changes without analysis",
+          "Skip dependency checks",
+          "Bypass notification requirements",
+          "Ignore rollback support",
+        ],
+      },
+    ],
+    supporting_components: [
+      {
+        component_id: "validation_engine",
+        name: "Validation Engine",
+        type: "validation_engine",
+        tier: 1,
+        description: "Provides validation services for both modes",
+        ports: {
+          input: [
+            "change_request",
+            "validation_rules",
+          ],
+          output: [
+            "validation_result",
+            "validation_errors",
+          ],
+        },
+        dependencies: [
+          "validation_rules",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Skip validation rules",
+          "Ignore validation errors",
+          "Bypass validation checks",
+          "Skip validation escalation",
+        ],
+      },
+      {
+        component_id: "approval_engine",
+        name: "Approval Engine",
+        type: "approval_engine",
+        tier: 1,
+        description: "Provides approval workflows for governed mode",
+        ports: {
+          input: [
+            "change_request",
+            "approval_rules",
+          ],
+          output: [
+            "approval_result",
+            "approval_status",
+          ],
+        },
+        dependencies: [
+          "approval_rules",
+        ],
+        blast_radius: "system",
+        must_never: [
+          "Skip approval workflows",
+          "Ignore approval requirements",
+          "Bypass approval validation",
+          "Skip approval tracking",
+        ],
+      },
+      {
+        component_id: "notification_engine",
+        name: "Notification Engine",
+        type: "notification_engine",
+        tier: 1,
+        description: "Provides notification services for propagation",
+        ports: {
+          input: [
+            "notification_request",
+            "notification_rules",
+          ],
+          output: [
+            "notification_result",
+            "delivery_status",
+          ],
+        },
+        dependencies: [
+          "notification_rules",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Skip notifications",
+          "Ignore notification delivery",
+          "Bypass notification tracking",
+          "Skip notification validation",
+        ],
+      },
+      {
+        component_id: "rollback_engine",
+        name: "Rollback Engine",
+        type: "rollback_engine",
+        tier: 1,
+        description: "Provides rollback capabilities",
+        ports: {
+          input: [
+            "rollback_request",
+            "rollback_rules",
+          ],
+          output: [
+            "rollback_result",
+            "rollback_status",
+          ],
+        },
+        dependencies: [
+          "rollback_rules",
+        ],
+        blast_radius: "system",
+        must_never: [
+          "Skip rollback validation",
+          "Ignore rollback safety",
+          "Bypass rollback checks",
+          "Skip rollback tracking",
+        ],
+      },
+    ],
+  },
+  boundary_tendrils: {
+    input_ports: [
+      {
+        port_id: "change_request_input",
+        name: "Change Request Input",
+        type: "data_input",
+        protocol: "json",
+        description: "Receives change requests from external systems",
+        required: true,
+        validation: "change_request_schema",
+      },
+      {
+        port_id: "classification_rules_input",
+        name: "Classification Rules Input",
+        type: "data_input",
+        protocol: "json",
+        description: "Receives classification rules from external systems",
+        required: true,
+        validation: "classification_rules_schema",
+      },
+      {
+        port_id: "validation_rules_input",
+        name: "Validation Rules Input",
+        type: "data_input",
+        protocol: "json",
+        description: "Receives validation rules from external systems",
+        required: true,
+        validation: "validation_rules_schema",
+      },
+    ],
+    output_ports: [
+      {
+        port_id: "processing_result_output",
+        name: "Processing Result Output",
+        type: "data_output",
+        protocol: "json",
+        description: "Outputs processing results to external systems",
+        required: true,
+        validation: "processing_result_schema",
+      },
+      {
+        port_id: "propagation_result_output",
+        name: "Propagation Result Output",
+        type: "data_output",
+        protocol: "json",
+        description: "Outputs propagation results to external systems",
+        required: true,
+        validation: "propagation_result_schema",
+      },
+      {
+        port_id: "notification_output",
+        name: "Notification Output",
+        type: "data_output",
+        protocol: "json",
+        description: "Outputs notifications to external systems",
+        required: true,
+        validation: "notification_schema",
+      },
+    ],
+  },
+  data_flow: {
+    primary_flow: [
+      {
+        step: 1,
+        component: "change_classifier",
+        action: "Classify change",
+        input: [
+          "change_request",
+          "classification_rules",
+        ],
+        output: [
+          "change_classification",
+          "risk_assessment",
+        ],
+      },
+      {
+        step: 2,
+        component: "mode_router",
+        action: "Route change to appropriate mode",
+        input: [
+          "change_request",
+          "change_classification",
+        ],
+        output: [
+          "routing_decision",
+          "mode_status",
+        ],
+      },
+      {
+        step: 3,
+        component: "trivial_mode_processor",
+        action: "Process trivial change",
+        input: [
+          "change_request",
+          "validation_rules",
+        ],
+        output: [
+          "processing_result",
+          "execution_status",
+        ],
+      },
+      {
+        step: 4,
+        component: "governed_mode_processor",
+        action: "Process governed change",
+        input: [
+          "change_request",
+          "confidence_packet",
+        ],
+        output: [
+          "processing_result",
+          "approval_status",
+        ],
+      },
+      {
+        step: 5,
+        component: "propagation_manager",
+        action: "Manage change propagation",
+        input: [
+          "change_request",
+          "propagation_rules",
+        ],
+        output: [
+          "propagation_result",
+          "notification_status",
+        ],
+      },
+    ],
+    secondary_flows: [
+      {
+        flow_name: "validation_processing",
+        components: [
+          "validation_engine",
+          "trivial_mode_processor",
+          "governed_mode_processor",
+        ],
+        description: "Processes validation for both modes",
+      },
+      {
+        flow_name: "approval_processing",
+        components: [
+          "approval_engine",
+          "governed_mode_processor",
+        ],
+        description: "Processes approval workflows for governed mode",
+      },
+      {
+        flow_name: "notification_processing",
+        components: [
+          "notification_engine",
+          "propagation_manager",
+        ],
+        description: "Processes notifications for propagation",
+      },
+    ],
+  },
+  security_boundaries: {
+    tier_0: {
+      components: [
+        "validation_engine",
+        "notification_engine",
+        "rollback_engine",
+      ],
+      description: "Supporting components with basic security requirements",
+    },
+    tier_1: {
+      components: [
+        "approval_engine",
+      ],
+      description: "Approval component with standard security requirements",
+    },
+    tier_2: {
+      components: [
+        "change_classifier",
+        "mode_router",
+        "trivial_mode_processor",
+        "governed_mode_processor",
+        "propagation_manager",
+      ],
+      description: "Core components with comprehensive security requirements",
+    },
+  },
+  performance_characteristics: {
+    latency: {
+      trivial_changes: "< 1 second",
+      governed_changes: "< 5 minutes",
+      propagation: "< 30 seconds",
+      rollback: "< 2 minutes",
+    },
+    throughput: {
+      changes_per_second: 100,
+      concurrent_changes: 50,
+      propagations_per_hour: 500,
+      notifications_per_hour: 10000,
+    },
+    resource_usage: {
+      cpu_usage: "< 20%",
+      memory_usage: "< 100MB",
+      disk_usage: "< 500MB",
+    },
+  },
+  monitoring_points: [
+    {
+      point_id: "change_processing_rate",
+      name: "Change Processing Rate",
+      type: "counter",
+      description: "Number of changes processed per second",
+    },
+    {
+      point_id: "mode_distribution",
+      name: "Mode Distribution",
+      type: "gauge",
+      description: "Distribution of changes between trivial and governed modes",
+    },
+    {
+      point_id: "processing_time",
+      name: "Processing Time",
+      type: "duration",
+      description: "Time taken for change processing",
+    },
+    {
+      point_id: "propagation_success_rate",
+      name: "Propagation Success Rate",
+      type: "percentage",
+      description: "Percentage of successful propagations",
+    },
+  ],
+  error_handling: {
+    retry_policies: {
+      change_processing: "3 retries with exponential backoff",
+      propagation: "2 retries with linear backoff",
+      notifications: "3 retries with exponential backoff",
+    },
+    circuit_breakers: {
+      processing_service: "Open after 5 consecutive failures",
+      propagation_service: "Open after 3 consecutive failures",
+    },
+    fallback_strategies: {
+      classification_failure: "Use default classification",
+      processing_failure: "Use fallback processing",
+      propagation_failure: "Use manual propagation",
+    },
+  },
+  deployment_considerations: {
+    scalability: {
+      horizontal_scaling: "Supported via load balancer",
+      vertical_scaling: "Supported via resource allocation",
+      auto_scaling: "Supported via metrics-based scaling",
+    },
+    availability: {
+      target_uptime: "99.9%",
+      redundancy: "Multi-instance deployment",
+      failover: "Automatic failover to standby instances",
+    },
+    maintenance: {
+      rolling_updates: "Supported",
+      downtime: "Minimal during updates",
+      rollback: "Supported via version management",
+    },
+  },
+  metadata: {
+    created: "2025-01-27T20:50:00Z",
+    updated: "2025-11-02T17:35:00Z",
+    author: "aether",
+    status: "production",
+    version: "1.0.0",
+  },
+  confidenceRouting: {
+    high: "Read T0 executive summary (100 words) or code directly",
+    medium: "Read T0 + T1 overview (500 words) + T2 architecture (2k words)",
+    low: "Read T0 + T1 + T2 + T3 detailed (10k words)",
+    veryLow: "Read T0 + T1 + T2 + T3 + T4 complete (15k+ words) or ask for help",
+  },
+  relatedSystems: [
+    {
+      system: "sdfcvf",
+      relationship: "Mutation Modes System uses SDF-CVF for confidence gating and quartet parity",
+      whenToUse: "When implementing change validation or understanding mutation controls",
+      docs: [
+        "systems/sdfcvf/T2_architecture.md#mutation-modes",
+      ],
+      priority: "required",
+    },
+    {
+      system: "vif",
+      relationship: "Mutation Modes System uses VIF for confidence tracking",
+      whenToUse: "When implementing confidence validation or understanding mutation quality",
+      docs: [
+        "systems/vif/T2_architecture.md#mutation-modes",
+      ],
+      priority: "required",
+    },
+    {
+      system: "governance_system",
+      relationship: "Mutation Modes System integrates with Governance System for approval workflows",
+      whenToUse: "When implementing approval workflows or understanding governance policies",
+      docs: [
+        "systems/governance_system/T2_architecture.md#mutation-modes",
+      ],
+      priority: "required",
+    },
+    {
+      system: "cmc",
+      relationship: "Mutation Modes System stores mutation data in CMC",
+      whenToUse: "When implementing mutation storage or understanding memory persistence",
+      docs: [
+        "systems/cmc/T2_architecture.md#mutation-modes",
+      ],
+      priority: "required",
+    },
+  ],
+  documentation: {
+    T0: "knowledge_architecture/systems/mutation_modes_system/T0_executive.md",
+    T1: "knowledge_architecture/systems/mutation_modes_system/T1_overview.md",
+    T2: "knowledge_architecture/systems/mutation_modes_system/T2_architecture.md",
+    T3: "knowledge_architecture/systems/mutation_modes_system/T3_detailed.md",
+    T4: "knowledge_architecture/systems/mutation_modes_system/T4_complete.md",
+  },
+}

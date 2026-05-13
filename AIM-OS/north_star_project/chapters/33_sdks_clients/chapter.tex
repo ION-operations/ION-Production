@@ -1,0 +1,279 @@
+% Chapter converted from Markdown
+% Auto-generated - do not edit manually
+
+\section*{Chapter 33 - SDKs \& Clients}
+
+
+\subsection*{Purpose}
+
+This chapter provides reference documentation for AIM-OS SDKs and client libraries enabling developers to integrate AIM-OS capabilities into their applications. SDKs provide high-level abstractions over AIM-OS APIs.
+
+\subsection*{Executive Summary}
+
+\item AIM-OS provides SDKs for Python, TypeScript, and PowerShell enabling easy integration.
+\item Client libraries abstract API complexity and provide type-safe interfaces.
+\item SDKs enable rapid development of AIM-OS-integrated applications.
+
+\subsection*{Python SDK}
+
+\textbf{Installation:}
+``\texttt{bash
+pip install aimos-sdk
+}`\texttt{
+
+\textbf{Usage:}
+}`\texttt{python
+from aimos import AIMOSClient
+
+\section*{Initialize client}
+client = AIMOSClient(api\_url="http://localhost:5001")
+
+\section*{Store memory}
+memory\_id = client.store\_memory(
+    content="AIM-OS enables AI consciousness",
+    tags=["consciousness", "ai"],
+    metadata={"source": "chapter\_expansion"}
+)
+
+\section*{Retrieve memory}
+memories = client.retrieve\_memory(
+    query="AI consciousness",
+    limit=10,
+    filters={"tags": ["consciousness"]}
+)
+
+\section*{Track confidence}
+witness\_id = client.track\_confidence(
+    task="chapter\_expansion",
+    confidence=0.90,
+    evidence=["tier\_a\_sources", "quality\_gates\_passing"]
+)
+
+\section*{Create plan}
+plan\_id = client.create\_plan(
+    goal="Expand chapter on AIM-OS",
+    context={"chapter": "ch33\_sdks\_clients"},
+    priority="high"
+)
+
+\section*{Get memory stats}
+stats = client.get\_memory\_stats(include\_breakdown=True)
+print(f"Total atoms: {stats['total\_atoms']}")
+print(f"Total snapshots: {stats['total\_snapshots']}")
+}`\texttt{
+
+\textbf{Features:}
+\item Type-safe interfaces with Pydantic models
+\item Automatic error handling and retries
+\item Async/await support (planned)
+\item Comprehensive documentation
+
+\subsection*{TypeScript SDK}
+
+\textbf{Installation:}
+}`\texttt{bash
+npm install @aimos/sdk
+}`\texttt{
+
+\textbf{Usage:}
+}`\texttt{typescript
+import { AIMOSClient } from '@aimos/sdk';
+
+// Initialize client
+const client = new AIMOSClient({
+  apiUrl: 'http://localhost:5001'
+});
+
+// Store memory
+const memoryId = await client.storeMemory({
+  content: 'AIM-OS enables AI consciousness',
+  tags: ['consciousness', 'ai'],
+  metadata: { source: 'chapter\_expansion' }
+});
+
+// Retrieve memory
+const memories = await client.retrieveMemory({
+  query: 'AI consciousness',
+  limit: 10,
+  filters: { tags: ['consciousness'] }
+});
+
+// Track confidence
+const witnessId = await client.trackConfidence({
+  task: 'chapter\_expansion',
+  confidence: 0.90,
+  evidence: ['tier\_a\_sources', 'quality\_gates\_passing']
+});
+
+// Create plan
+const planId = await client.createPlan({
+  goal: 'Expand chapter on AIM-OS',
+  context: { chapter: 'ch33\_sdks\_clients' },
+  priority: 'high'
+});
+
+// Get memory stats
+const stats = await client.getMemoryStats({ includeBreakdown: true });
+console.log(}Total atoms: \_\_MATH\_BLOCK\_0\_\_{stats.totalSnapshots}\texttt{);
+}`\texttt{
+
+\textbf{Features:}
+\item TypeScript type definitions
+\item Promise-based async API
+\item Error handling with typed errors
+\item Tree-shakeable exports
+
+\subsection*{PowerShell SDK}
+
+\textbf{Installation:}
+}`\texttt{powershell
+Install-Module -Name AIMOS -Scope CurrentUser
+}`\texttt{
+
+\textbf{Usage:}
+}`\texttt{powershell
+\section*{Import AIM-OS module}
+Import-Module AIMOS
+
+\section*{Initialize client}
+\_\_MATH\_BLOCK\_1\_\_memoryId = \_\_MATH\_BLOCK\_2\_\_memories = \_\_MATH\_BLOCK\_3\_\_witnessId = \_\_MATH\_BLOCK\_4\_\_planId = \_\_MATH\_BLOCK\_5\_\_stats = \_\_MATH\_BLOCK\_6\_\_(\_\_MATH\_BLOCK\_7\_\_(\_\_MATH\_BLOCK\_8\_\_{chapterId}\texttt{,
+    confidence: 0.90,
+    evidence: ['tier\_a\_sources']
+  });
+  
+  // Perform expansion
+  const result = await performExpansion(chapterId);
+  
+  // Store expansion results
+  await client.storeMemory({
+    content: result,
+    tags: ['chapter\_expansion', chapterId]
+  });
+  
+  return result;
+}
+}`\texttt{
+
+\subsubsection*{PowerShell Integration Example}
+
+\textbf{Use Case:} Integrate AIM-OS into PowerShell scripts for automation
+
+}`\texttt{powershell
+\section*{Import AIM-OS module}
+Import-Module AIMOS
+
+\section*{Initialize client}
+\_\_MATH\_BLOCK\_9\_\_UserQuery)
+    
+    \# Retrieve relevant context
+    \_\_MATH\_BLOCK\_10\_\_client | Retrieve-Memory }
+        -Query \_\_MATH\_BLOCK\_11\_\_response = Generate-Response -Query \_\_MATH\_BLOCK\_12\_\_context
+    
+    \# Store response in memory
+    \_\_MATH\_BLOCK\_13\_\_response \texttt{
+        -Tags @("response", "user\_query") }
+        -Metadata @{ query = \_\_MATH\_BLOCK\_14\_\_response
+}
+
+\section*{Track confidence for operations}
+function Expand-Chapter {
+    param([string]\_\_MATH\_BLOCK\_15\_\_client | Track-Confidence \texttt{
+        -Task "expand\_\_\_MATH\_BLOCK\_16\_\_result = Perform-Expansion -ChapterId \_\_MATH\_BLOCK\_17\_\_client | Store-Memory }
+        -Content \_\_MATH\_BLOCK\_18\_\_ChapterId)
+    
+    return \_\_MATH\_BLOCK\_19\_\_{error.message}\texttt{);
+    // Handle error
+  }
+}
+}`\texttt{
+
+\textbf{PowerShell:}
+}`\texttt{powershell
+try {
+    \_\_MATH\_BLOCK\_20\_\_client | Store-Memory -Content "..."
+} catch {
+    Write-Error "Error: \_\_MATH\_BLOCK\_21\_\_\_.Exception.Message)"
+    \# Handle error
+}
+}`\texttt{
+
+\subsubsection*{Configuration}
+
+\textbf{Python:}
+}`\texttt{python
+client = AIMOSClient(
+    api\_url="http://localhost:5001",
+    timeout=30,
+    retry\_count=3
+)
+}`\texttt{
+
+\textbf{TypeScript:}
+}`\texttt{typescript
+const client = new AIMOSClient({
+  apiUrl: 'http://localhost:5001',
+  timeout: 30000,
+  retryCount: 3
+});
+}`\texttt{
+
+\textbf{PowerShell:}
+}`\texttt{powershell
+$client = New-AIMOSClient }
+    -ApiUrl "http://localhost:5001" \texttt{
+    -Timeout 30 }
+    -RetryCount 3
+```
+
+\subsection*{Integration Points}
+
+SDKs integrate deeply with all AIM-OS systems:
+
+\subsubsection*{APIs Reference (Chapter 32)}
+
+\textbf{APIs provide:} Underlying API documentation  
+\textbf{SDKs provide:} High-level abstractions over APIs  
+\textbf{Integration:} SDKs wrap APIs with type-safe interfaces and error handling
+
+\textbf{Key Insight:} APIs enable integration. SDKs simplify API usage.
+
+\subsubsection*{APOE (Chapter 8)}
+
+\textbf{APOE provides:} Orchestration capabilities via SDK  
+\textbf{SDKs provide:} Easy access to APOE orchestration  
+\textbf{Integration:} SDKs expose APOE planning and execution capabilities
+
+\textbf{Key Insight:} APOE enables orchestration. SDKs expose orchestration capabilities.
+
+\subsubsection*{CMC (Chapter 5)}
+
+\textbf{CMC provides:} Memory capabilities via SDK  
+\textbf{SDKs provide:} Easy access to CMC storage and retrieval  
+\textbf{Integration:} SDKs expose CMC memory operations with type safety
+
+\textbf{Key Insight:} CMC enables memory. SDKs expose memory capabilities.
+
+\subsubsection*{VIF (Chapter 7)}
+
+\textbf{VIF provides:} Confidence tracking via SDK  
+\textbf{SDKs provide:} Easy access to VIF confidence tracking  
+\textbf{Integration:} SDKs expose VIF confidence operations
+
+\textbf{Key Insight:} VIF enables confidence tracking. SDKs expose confidence capabilities.
+
+\textbf{Overall Insight:} SDKs integrate with all systems to enable comprehensive AIM-OS access. Every system contributes to SDK functionality.
+
+\subsection*{Connection to Other Chapters}
+
+SDKs connect to all AIM-OS systems:
+
+\item \textbf{Chapter 1 (The Great Limitation):} SDKs address "no integration" by enabling easy external system access
+\item \textbf{Chapter 2 (The Vision):} SDKs enable the "integration" principle from the universal interface
+\item \textbf{Chapter 3 (The Proof):} SDKs validate integration through proof loop
+\item \textbf{Chapter 5 (CMC):} SDKs use CMC for memory operations
+\item \textbf{Chapter 7 (VIF):} SDKs use VIF for confidence tracking
+\item \textbf{Chapter 8 (APOE):} SDKs use APOE for orchestration
+\item \textbf{Chapter 32 (APIs Reference):} SDKs wrap APIs with high-level abstractions
+
+\textbf{Key Insight:} SDKs are the developer-friendly integration layer that enables AIM-OS to work with external applications. Without SDKs, developers must use low-level APIs directly.
+

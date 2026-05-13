@@ -1,0 +1,131 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "c-language",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "dietlibc implements a minimal C standard library for Linux userland."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "dietlibc provides syscall wrappers and POSIX-oriented services on Linux."
+    },
+    {
+      "type": "integrates_with",
+      "target": "elf",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "dietlibc is used with ELF objects and static/dynamic linking on Linux."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-gcc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "The dietlibc toolchain integrates with GCC via the documented diet driver/wrapper."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-binutils",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GNU ld/as participate in dietlibc link flows on Linux."
+    },
+    {
+      "type": "integrates_with",
+      "target": "clang",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang may be used in custom embedded flows; dietlibc is primarily documented around GCC integration."
+    },
+    {
+      "type": "integrates_with",
+      "target": "riscv-isa",
+      "evidence_tier": "INFERRED",
+      "notes": "Architecture coverage depends on upstream ports; treat per-target as environment-specific."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-libstdcxx",
+      "evidence_tier": "INFERRED",
+      "notes": "g++ may link GNU libstdc++ above dietlibc only in specialized minimal Linux toolchains when configured."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-libcxx",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang libc++ above dietlibc is uncommon but possible in custom sysroots."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-libcxxabi",
+      "evidence_tier": "INFERRED",
+      "notes": "libc++abi pairs with libc++ in the same uncommon minimal Clang+dietlibc stacks."
+    },
+    {
+      "type": "competes_with",
+      "target": "glibc",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Linux libc implementations (dietlibc vs glibc; not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "musl",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable Linux libc implementations (dietlibc vs musl; not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "uclibc",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable embedded Linux libc implementations (dietlibc vs uClibc-ng; not ABI-interchangeable)."
+    },
+    {
+      "type": "competes_with",
+      "target": "freebsd-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct libc implementations (Linux dietlibc vs BSD base libcs)."
+    },
+    {
+      "type": "competes_with",
+      "target": "openbsd-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct libc implementations (Linux dietlibc vs BSD base libcs)."
+    },
+    {
+      "type": "competes_with",
+      "target": "netbsd-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct libc implementations (Linux dietlibc vs BSD base libcs)."
+    },
+    {
+      "type": "competes_with",
+      "target": "dragonfly-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct libc implementations (Linux dietlibc vs BSD base libcs)."
+    },
+    {
+      "type": "competes_with",
+      "target": "illumos-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct libc implementations (Linux dietlibc vs illumos libc)."
+    },
+    {
+      "type": "competes_with",
+      "target": "android-bionic",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct libc implementations (Linux dietlibc vs Android Bionic)."
+    },
+    {
+      "type": "competes_with",
+      "target": "newlib",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct libc lineages (Linux dietlibc vs bare-metal/RTOS newlib)."
+    },
+    {
+      "type": "competes_with",
+      "target": "wasi-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "Distinct libc implementations (Linux dietlibc vs Wasm WASI wasi-libc)."
+    }
+  ]
+}

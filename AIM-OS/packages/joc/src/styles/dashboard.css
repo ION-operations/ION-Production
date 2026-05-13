@@ -1,0 +1,828 @@
+/* ═══════════════════════════════════════════════════════════════════
+   Dashboard CSS — Panavision DXL / DSLR Camera Body Aesthetic
+   ═══════════════════════════════════════════════════════════════════
+   Palette: Pure matte blacks and gunmetal greys
+   Panels: Recessed instrument cavities with machined edges
+   Color: ONLY for status LEDs and LCD readouts
+   Reference: Panavision DXL-262 cinema camera body
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── Material Tokens ─────────────────────────────────────────── */
+:root {
+    --dxl-body: #121212;
+    --dxl-panel: #0e0e0e;
+    --dxl-recess: #0a0a0a;
+    --dxl-surface: #191919;
+    --dxl-raised: #222222;
+    --dxl-edge-hi: rgba(255, 255, 255, 0.06);
+    --dxl-edge-lo: rgba(0, 0, 0, 0.70);
+    --dxl-cavity: rgba(0, 0, 0, 0.50);
+    --dxl-cavity-deep: rgba(0, 0, 0, 0.72);
+    --dxl-border: rgba(255, 255, 255, 0.04);
+    --dxl-text: #888888;
+    --dxl-text-dim: #555555;
+    --dxl-text-label: #666666;
+    --dxl-text-bright: #b0b0b0;
+    --dxl-chrome: #444444;
+    --dxl-led-green: #22cc44;
+    --dxl-led-red: #cc3333;
+    --dxl-led-amber: #cc8800;
+    --dxl-led-blue: #4488cc;
+    --dxl-lcd-bg: #080c0a;
+    --dxl-lcd-text: #33cc66;
+}
+
+/* ─── Dashboard Root ──────────────────────────────────────────── */
+.dash {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--dxl-body);
+    color: var(--dxl-text);
+    font-family: 'SF Mono', 'Monaco', 'Consolas', 'Courier New', monospace;
+    font-size: 11px;
+    line-height: 1.4;
+    overflow: hidden;
+    position: relative;
+}
+
+/* ─── Zone 1: System Status Bar (Instrument Bezel) ────────────── */
+.dash__sysbar {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    height: 32px;
+    min-height: 32px;
+    padding: 0 8px;
+    background:
+        linear-gradient(180deg, #181818 0%, #111111 40%, #0e0e0e 100%);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.8);
+    box-shadow:
+        inset 0 1px 0 var(--dxl-edge-hi),
+        0 1px 3px var(--dxl-cavity-deep);
+    position: relative;
+    z-index: 10;
+}
+
+.dash__sysbar::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--dxl-edge-hi);
+    opacity: 0.3;
+}
+
+.dash__sysbar-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 0 8px;
+    white-space: nowrap;
+    color: var(--dxl-text-dim);
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.dash__sysbar-item--oracle {
+    cursor: pointer;
+    padding: 2px 8px;
+    border-radius: 3px;
+    background:
+        linear-gradient(180deg, #1a1a1a 0%, #141414 100%);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    box-shadow:
+        inset 0 1px 0 var(--dxl-edge-hi),
+        inset 0 -1px 2px var(--dxl-cavity);
+    transition: background 0.15s;
+}
+
+.dash__sysbar-item--oracle:hover {
+    background: linear-gradient(180deg, #1e1e1e 0%, #181818 100%);
+}
+
+.dash__sysbar-sep {
+    width: 1px;
+    height: 16px;
+    background: rgba(255, 255, 255, 0.06);
+    margin: 0 4px;
+    flex-shrink: 0;
+}
+
+.dash__sysbar-spacer {
+    flex: 1;
+}
+
+/* LED status indicators (hardware LED style) */
+.dash__led {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow:
+        0 0 3px currentColor,
+        inset 0 -1px 1px rgba(0, 0, 0, 0.4);
+}
+
+.dash__led--on {
+    color: var(--dxl-led-green);
+}
+
+.dash__led--off {
+    color: var(--dxl-led-red);
+}
+
+.dash__led--warn {
+    color: var(--dxl-led-amber);
+}
+
+/* Mode badges — recessed LCD style */
+.dash__mode-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 1px 6px;
+    border-radius: 2px;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    background: var(--dxl-lcd-bg);
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    box-shadow:
+        inset 0 1px 3px rgba(0, 0, 0, 0.6),
+        inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+.dash__mode-badge--auto {
+    color: var(--dxl-led-green);
+}
+
+.dash__mode-badge--supervised {
+    color: var(--dxl-led-amber);
+}
+
+.dash__mode-badge--manual {
+    color: var(--dxl-led-red);
+}
+
+.dash__mode-badge--offline {
+    color: var(--dxl-text-dim);
+}
+
+/* ─── Zone 2+3: Two-column Workspace ─────────────────────────── */
+.dash__workspace {
+    display: grid;
+    grid-template-columns: clamp(280px, 22vw, 380px) 1fr;
+    gap: 0;
+    flex: 1;
+    overflow: hidden;
+}
+
+.dash__col {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: #2a2a2a #0e0e0e;
+}
+
+.dash__col--left {
+    border-right: 1px solid rgba(0, 0, 0, 0.6);
+    box-shadow: 1px 0 0 var(--dxl-edge-hi);
+    background: var(--dxl-panel);
+}
+
+.dash__col--right {
+    background: var(--dxl-body);
+}
+
+/* ─── Section Panels (Recessed Instrument Cavities) ───────────── */
+.dash__section {
+    position: relative;
+}
+
+.dash__section+.dash__section {
+    border-top: 1px solid rgba(0, 0, 0, 0.5);
+    box-shadow: inset 0 1px 0 var(--dxl-edge-hi);
+}
+
+.dash__section-hdr {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--dxl-text-label);
+    background:
+        linear-gradient(180deg, #161616 0%, #121212 100%);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+    box-shadow:
+        inset 0 1px 0 var(--dxl-edge-hi),
+        0 1px 2px rgba(0, 0, 0, 0.3);
+    user-select: none;
+}
+
+.dash__section-hdr svg {
+    opacity: 0.5;
+    flex-shrink: 0;
+}
+
+.dash__section-badge {
+    margin-left: auto;
+    font-size: 9px;
+    font-weight: 400;
+    color: var(--dxl-text-dim);
+    letter-spacing: 0.04em;
+}
+
+.dash__section-body {
+    padding: 6px 8px;
+}
+
+/* ─── Agent Fleet Grid (Small machined cells) ────────────────── */
+.dash__fleet-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 3px;
+}
+
+.dash__agent {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 6px;
+    border-radius: 3px;
+    background:
+        linear-gradient(180deg, #171717 0%, #131313 100%);
+    border: 1px solid rgba(255, 255, 255, 0.02);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.03),
+        inset 0 -1px 2px rgba(0, 0, 0, 0.3);
+    transition: border-color 0.15s;
+}
+
+.dash__agent:hover {
+    border-color: rgba(255, 255, 255, 0.06);
+}
+
+.dash__agent-avatar {
+    width: 18px;
+    height: 18px;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    background:
+        linear-gradient(135deg, #1e1e1e 0%, #161616 100%);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.05),
+        inset 0 -1px 2px rgba(0, 0, 0, 0.4);
+    flex-shrink: 0;
+}
+
+.dash__agent-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.dash__agent-name {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--dxl-text-bright);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dash__agent-domain {
+    font-size: 8px;
+    color: var(--dxl-text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.dash__agent-score {
+    font-size: 10px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    color: var(--dxl-text-label);
+}
+
+/* ─── AIM-OS Subsystem Status Grid (LED panel) ────────────────── */
+.dash__subsys-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 3px;
+}
+
+.dash__subsys-cell {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 5px;
+    border-radius: 2px;
+    background: var(--dxl-recess);
+    border: 1px solid rgba(0, 0, 0, 0.4);
+    box-shadow:
+        inset 0 1px 3px var(--dxl-cavity),
+        inset 0 0 8px rgba(0, 0, 0, 0.2);
+    font-size: 9px;
+    color: var(--dxl-text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.dash__subsys-cell--active {
+    color: var(--dxl-text);
+}
+
+.dash__subsys-led {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.dash__subsys-led--on {
+    background: var(--dxl-led-green);
+    box-shadow: 0 0 4px var(--dxl-led-green);
+}
+
+.dash__subsys-led--off {
+    background: #333;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.dash__subsys-led--warn {
+    background: var(--dxl-led-amber);
+    box-shadow: 0 0 4px var(--dxl-led-amber);
+}
+
+/* ─── Oracle Action Log ───────────────────────────────────────── */
+.dash__oracle-entry {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 0;
+    font-size: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.dash__oracle-time {
+    font-variant-numeric: tabular-nums;
+    color: var(--dxl-text-dim);
+    font-size: 9px;
+    flex-shrink: 0;
+    width: 36px;
+}
+
+.dash__oracle-text {
+    flex: 1;
+    color: var(--dxl-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dash__oracle-status {
+    font-size: 8px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 1px 4px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+.dash__oracle-status--approved {
+    color: var(--dxl-led-green);
+    background: rgba(34, 204, 68, 0.08);
+    border: 1px solid rgba(34, 204, 68, 0.15);
+}
+
+.dash__oracle-status--denied {
+    color: var(--dxl-led-red);
+    background: rgba(204, 51, 51, 0.08);
+    border: 1px solid rgba(204, 51, 51, 0.15);
+}
+
+.dash__oracle-status--executed {
+    color: var(--dxl-led-amber);
+    background: rgba(204, 136, 0, 0.08);
+    border: 1px solid rgba(204, 136, 0, 0.15);
+}
+
+.dash__oracle-status--pending {
+    color: var(--dxl-text-dim);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Approve/Deny micro-buttons */
+.dash__oracle-actions {
+    display: flex;
+    gap: 3px;
+    flex-shrink: 0;
+}
+
+.dash__oracle-btn {
+    padding: 1px 5px;
+    font-size: 8px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border-radius: 2px;
+    border: 1px solid;
+    cursor: pointer;
+    transition: opacity 0.15s;
+    background: linear-gradient(180deg, #1e1e1e 0%, #161616 100%);
+    box-shadow:
+        inset 0 1px 0 var(--dxl-edge-hi),
+        0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.dash__oracle-btn:hover {
+    opacity: 0.85;
+}
+
+.dash__oracle-btn--approve {
+    color: var(--dxl-led-green);
+    border-color: rgba(34, 204, 68, 0.2);
+}
+
+.dash__oracle-btn--deny {
+    color: var(--dxl-led-red);
+    border-color: rgba(204, 51, 51, 0.2);
+}
+
+/* ─── Dispatch Composer (Right Column) ────────────────────────── */
+.dash__dispatch {
+    padding: 8px;
+}
+
+.dash__dispatch-strategy {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.dash__dispatch-select {
+    padding: 3px 8px;
+    font-size: 10px;
+    font-family: inherit;
+    color: var(--dxl-text);
+    background:
+        linear-gradient(180deg, #171717 0%, #111111 100%);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: 3px;
+    box-shadow:
+        inset 0 1px 3px var(--dxl-cavity),
+        inset 0 0 6px rgba(0, 0, 0, 0.2);
+    outline: none;
+    cursor: pointer;
+}
+
+.dash__dispatch-select:focus {
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+.dash__dispatch-textarea {
+    width: 100%;
+    min-height: 60px;
+    padding: 8px;
+    font-family: inherit;
+    font-size: 11px;
+    color: var(--dxl-text-bright);
+    background: var(--dxl-lcd-bg);
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
+    box-shadow:
+        inset 0 2px 6px rgba(0, 0, 0, 0.5),
+        inset 0 0 12px rgba(0, 0, 0, 0.3),
+        0 1px 0 var(--dxl-edge-hi);
+    outline: none;
+    resize: vertical;
+    margin-bottom: 6px;
+}
+
+.dash__dispatch-textarea::placeholder {
+    color: var(--dxl-text-dim);
+}
+
+.dash__dispatch-textarea:focus {
+    box-shadow:
+        inset 0 2px 6px rgba(0, 0, 0, 0.5),
+        inset 0 0 12px rgba(0, 0, 0, 0.3),
+        0 0 0 1px rgba(68, 136, 204, 0.15),
+        0 1px 0 var(--dxl-edge-hi);
+}
+
+/* Target provider buttons */
+.dash__targets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 6px;
+}
+
+.dash__target-btn {
+    padding: 3px 8px;
+    font-size: 9px;
+    font-family: inherit;
+    color: var(--dxl-text-dim);
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    border-radius: 3px;
+    background:
+        linear-gradient(180deg, #1a1a1a 0%, #141414 100%);
+    box-shadow:
+        inset 0 1px 0 var(--dxl-edge-hi),
+        0 1px 2px rgba(0, 0, 0, 0.3);
+    transition: all 0.12s;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.dash__target-btn:hover {
+    border-color: rgba(255, 255, 255, 0.08);
+    color: var(--dxl-text);
+}
+
+.dash__target-btn--selected {
+    border-color: rgba(68, 136, 204, 0.2);
+    color: var(--dxl-led-blue);
+    background:
+        linear-gradient(180deg, #161a1e 0%, #111418 100%);
+}
+
+.dash__target-pipeline {
+    font-size: 8px;
+    margin-left: 4px;
+    opacity: 0.6;
+}
+
+/* Dispatch send button — raised rubber tactile */
+.dash__dispatch-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 100%;
+    padding: 6px 12px;
+    font-size: 10px;
+    font-weight: 600;
+    font-family: inherit;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--dxl-text-bright);
+    cursor: pointer;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 4px;
+    background:
+        linear-gradient(180deg, #232323 0%, #1a1a1a 40%, #161616 100%);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.08),
+        inset 0 -1px 2px rgba(0, 0, 0, 0.4),
+        0 2px 4px rgba(0, 0, 0, 0.4),
+        0 1px 0 rgba(255, 255, 255, 0.02);
+    transition: all 0.1s;
+}
+
+.dash__dispatch-btn:hover {
+    background:
+        linear-gradient(180deg, #282828 0%, #1e1e1e 40%, #1a1a1a 100%);
+}
+
+.dash__dispatch-btn:active {
+    box-shadow:
+        inset 0 2px 4px rgba(0, 0, 0, 0.5),
+        inset 0 0 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(1px);
+}
+
+/* ─── Missions Panel ──────────────────────────────────────────── */
+.dash__mission {
+    padding: 6px 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+.dash__mission:last-child {
+    border-bottom: none;
+}
+
+.dash__mission-hdr {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+}
+
+.dash__mission-id {
+    font-size: 9px;
+    font-variant-numeric: tabular-nums;
+    color: var(--dxl-text-dim);
+    flex-shrink: 0;
+}
+
+.dash__mission-title {
+    flex: 1;
+    font-size: 10px;
+    color: var(--dxl-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dash__mission-status {
+    font-size: 8px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 1px 5px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+.dash__mission-status--running {
+    color: var(--dxl-led-green);
+    background: rgba(34, 204, 68, 0.06);
+    border: 1px solid rgba(34, 204, 68, 0.12);
+}
+
+.dash__mission-status--complete {
+    color: var(--dxl-text-dim);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.dash__mission-status--pending {
+    color: var(--dxl-led-amber);
+    background: rgba(204, 136, 0, 0.06);
+    border: 1px solid rgba(204, 136, 0, 0.12);
+}
+
+.dash__mission-status--error {
+    color: var(--dxl-led-red);
+    background: rgba(204, 51, 51, 0.06);
+    border: 1px solid rgba(204, 51, 51, 0.12);
+}
+
+.dash__mission-targets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-bottom: 4px;
+}
+
+.dash__mission-target {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 9px;
+    color: var(--dxl-text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+/* Segmented progress bar (VU meter style) */
+.dash__mission-progress {
+    height: 3px;
+    background: var(--dxl-recess);
+    border-radius: 1px;
+    overflow: hidden;
+    box-shadow:
+        inset 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.dash__mission-fill {
+    height: 100%;
+    background: var(--dxl-led-green);
+    border-radius: 1px;
+    transition: width 0.3s ease;
+    box-shadow: 0 0 4px rgba(34, 204, 68, 0.3);
+}
+
+.dash__mission-fill--done {
+    background: var(--dxl-text-dim);
+    box-shadow: none;
+}
+
+.dash__mission-actions {
+    margin-top: 4px;
+}
+
+/* ─── Feed (Activity Log — LCD readout style) ─────────────────── */
+.dash__feed-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 3px 8px;
+    font-size: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.015);
+}
+
+.dash__feed-item:hover {
+    background: rgba(255, 255, 255, 0.01);
+}
+
+.dash__feed-time {
+    font-size: 9px;
+    font-variant-numeric: tabular-nums;
+    color: var(--dxl-text-dim);
+    flex-shrink: 0;
+    width: 36px;
+}
+
+.dash__feed-icon {
+    flex-shrink: 0;
+    color: var(--dxl-text-dim);
+}
+
+.dash__feed-icon--notification {
+    color: var(--dxl-led-amber);
+}
+
+.dash__feed-icon--ai_message {
+    color: var(--dxl-led-blue);
+}
+
+.dash__feed-icon--oracle {
+    color: var(--dxl-led-green);
+}
+
+.dash__feed-icon--activity {
+    color: var(--dxl-text-dim);
+}
+
+.dash__feed-icon--error {
+    color: var(--dxl-led-red);
+}
+
+.dash__feed-text {
+    flex: 1;
+    color: var(--dxl-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dash__feed-source {
+    font-size: 8px;
+    color: var(--dxl-text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    flex-shrink: 0;
+}
+
+/* ─── Small Buttons ───────────────────────────────────────────── */
+.dash__btn-sm {
+    padding: 2px 8px;
+    font-size: 9px;
+    font-weight: 600;
+    font-family: inherit;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    cursor: pointer;
+    border-radius: 3px;
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    background:
+        linear-gradient(180deg, #1e1e1e 0%, #161616 100%);
+    box-shadow:
+        inset 0 1px 0 var(--dxl-edge-hi),
+        0 1px 2px rgba(0, 0, 0, 0.3);
+    color: var(--dxl-text);
+    transition: all 0.12s;
+}
+
+.dash__btn-sm:hover {
+    border-color: rgba(255, 255, 255, 0.08);
+    color: var(--dxl-text-bright);
+}
+
+.dash__btn-sm--primary {
+    color: var(--dxl-led-blue);
+    border-color: rgba(68, 136, 204, 0.15);
+}
+
+/* ─── Empty State ─────────────────────────────────────────────── */
+.dash__empty {
+    padding: 16px;
+    text-align: center;
+    color: var(--dxl-text-dim);
+    font-size: 10px;
+    font-style: italic;
+}

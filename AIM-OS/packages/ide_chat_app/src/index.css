@@ -1,0 +1,249 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Accessibility: Screen reader only */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.sr-only:focus {
+  position: static;
+  width: auto;
+  height: auto;
+  padding: inherit;
+  margin: inherit;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+/* Accessibility: Reduced motion */
+.reduced-motion *,
+.reduced-motion *::before,
+.reduced-motion *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* Accessibility: High contrast */
+.high-contrast {
+  --color-background: #000000;
+  --color-surface: #1A1A1A;
+  --color-text: #FFFFFF;
+  --color-textSecondary: #CCCCCC;
+  --color-border: #666666;
+}
+
+/* Theme variables */
+:root {
+  --color-background: #111827;
+  --color-surface: #1F2937;
+  --color-text: #F9FAFB;
+  --color-textSecondary: #9CA3AF;
+  --color-border: #374151;
+  --color-primary: #3B82F6;
+  --color-primaryHover: #2563EB;
+  --color-secondary: #8B5CF6;
+  --color-error: #EF4444;
+  --color-warning: #F59E0B;
+  --color-success: #10B981;
+  --color-info: #06B6D4;
+}
+
+[data-theme="light"] {
+  --color-background: #FFFFFF;
+  --color-surface: #F9FAFB;
+  --color-text: #111827;
+  --color-textSecondary: #6B7280;
+  --color-border: #E5E7EB;
+}
+
+[data-theme="high-contrast"] {
+  --color-background: #000000;
+  --color-surface: #1A1A1A;
+  --color-text: #FFFFFF;
+  --color-textSecondary: #CCCCCC;
+  --color-border: #666666;
+  --color-primary: #00FFFF;
+  --color-primaryHover: #00CCCC;
+  --color-secondary: #FF00FF;
+  --color-error: #FF0000;
+  --color-warning: #FFFF00;
+  --color-success: #00FF00;
+  --color-info: #00FFFF;
+}
+
+/* Global styles for the IDE/Chat App */
+@layer base {
+  * {
+    border-color: hsl(214.3 31.8% 91.4%);
+  }
+  
+  body {
+    @apply bg-white text-gray-900 font-sans;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer components {
+  /* Neumorphic design components */
+  .neumorphic {
+    background-color: #f0f0f3;
+    box-shadow: 20px 20px 60px #d1d9e6, -20px -20px 60px #ffffff;
+  }
+  
+  .neumorphic-inset {
+    background-color: #f0f0f3;
+    box-shadow: inset 20px 20px 60px #d1d9e6, inset -20px -20px 60px #ffffff;
+  }
+  
+  .neumorphic-dark {
+    background-color: #2a2a2a;
+    box-shadow: 20px 20px 60px #1a1a1a, -20px -20px 60px #2a2a2a;
+  }
+  
+  .neumorphic-inset-dark {
+    background-color: #2a2a2a;
+    box-shadow: inset 20px 20px 60px #1a1a1a, inset -20px -20px 60px #2a2a2a;
+  }
+  
+  /* Theme-specific styles */
+  .theme-space {
+    background-color: #0a0a0a;
+    color: #e94560;
+  }
+  
+  .theme-cyberpunk {
+    background-color: #0d1117;
+    color: #00ff88;
+  }
+  
+  .theme-matrix {
+    background-color: #000000;
+    color: #00ff00;
+  }
+  
+  .theme-aurora {
+    background-color: #0f0f23;
+    color: #e94560;
+  }
+  
+  /* Wave background animation */
+  .wave-bg {
+    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+    background-size: 400% 400%;
+    animation: gradient 15s ease infinite;
+  }
+  
+  @keyframes gradient {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
+  
+  /* Glass morphism effect */
+  .glass {
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+  }
+  
+  .glass-dark {
+    background-color: rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  /* Custom scrollbar */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 rounded-full;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-400;
+  }
+  
+  /* Animation utilities */
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-in-out;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .animate-slide-in {
+    animation: slideIn 0.3s ease-out;
+  }
+  
+  @keyframes slideIn {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(0);
+    }
+  }
+}
+
+@layer utilities {
+  /* Text gradient utilities */
+  .text-gradient {
+    background: linear-gradient(to right, #2563eb, #9333ea);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  
+  .text-gradient-cyberpunk {
+    background: linear-gradient(to right, #00ff88, #22c55e);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  
+  /* Shadow utilities */
+  .shadow-glow {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+  }
+  
+  .shadow-glow-cyberpunk {
+    box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+  }
+}

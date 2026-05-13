@@ -1,0 +1,43 @@
+{
+  "system_slug": "sycl",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-03",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "opencl",
+      "evidence_tier": "INFERRED",
+      "notes": "Many SYCL implementations target OpenCL as a backend runtime; not exclusive across all implementations."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-ir",
+      "evidence_tier": "INFERRED",
+      "notes": "Major SYCL compilers are LLVM-based and lower through LLVM IR-class compilation pipelines."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "INFERRED",
+      "notes": "Typical SYCL deployments on Linux hosts with vendor GPU/accelerator drivers."
+    },
+    {
+      "type": "integrates_with",
+      "target": "amd-rocm",
+      "evidence_tier": "INFERRED",
+      "notes": "AMD ROCm-related SYCL tooling paths exist in the ecosystem (implementation-dependent)."
+    },
+    {
+      "type": "competes_with",
+      "target": "nvidia-cuda",
+      "evidence_tier": "INFERRED",
+      "notes": "Overlapping portable accelerator programming space vs NVIDIA CUDA’s native programming model."
+    },
+    {
+      "type": "integrates_with",
+      "target": "level-zero",
+      "evidence_tier": "INFERRED",
+      "notes": "Intel SYCL / oneAPI GPU stacks commonly use Level Zero as a low-level backend on supported configurations."
+    }
+  ]
+}

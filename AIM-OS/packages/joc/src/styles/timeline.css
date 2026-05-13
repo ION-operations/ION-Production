@@ -1,0 +1,352 @@
+/* ═══════════════════════════════════════════════════════════════
+   Git Subway Map / Timeline Styles
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── Timeline Container ─── */
+.git-timeline {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--bg-deep);
+    overflow: hidden;
+}
+
+.git-timeline-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+}
+
+.git-timeline-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-primary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* ─── Branch Legend ─── */
+.branch-legend {
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+    align-items: center;
+}
+
+.branch-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 9px;
+    color: var(--text-secondary);
+}
+
+.branch-legend-line {
+    width: 16px;
+    height: 3px;
+    border-radius: 2px;
+}
+
+/* ─── Subway Map Canvas ─── */
+.subway-map-viewport {
+    flex: 1;
+    overflow-x: auto;
+    overflow-y: hidden;
+    position: relative;
+    min-height: 0;
+}
+
+.subway-map-canvas {
+    display: flex;
+    align-items: stretch;
+    min-width: 100%;
+    height: 100%;
+    padding: 8px 16px;
+    gap: 0;
+    position: relative;
+}
+
+/* ─── Branch Lanes ─── */
+.branch-lane {
+    position: absolute;
+    height: 3px;
+    border-radius: 2px;
+    opacity: 0.6;
+    transition: opacity var(--transition-fast);
+}
+
+.branch-lane:hover {
+    opacity: 1;
+}
+
+/* ─── Commit Nodes (Stations) ─── */
+.commit-node {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 80px;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: transform var(--transition-fast);
+}
+
+.commit-node:hover {
+    transform: translateY(-2px);
+}
+
+.commit-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid;
+    background: var(--bg-deep);
+    position: relative;
+    z-index: 2;
+    transition: all var(--transition-fast);
+}
+
+.commit-dot.merge {
+    width: 18px;
+    height: 18px;
+    border-width: 3px;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+}
+
+.commit-node:hover .commit-dot {
+    transform: scale(1.3);
+}
+
+.commit-hash {
+    font-size: 9px;
+    font-family: var(--font-mono);
+    color: var(--text-hint);
+    margin-top: 4px;
+}
+
+.commit-msg {
+    font-size: 9px;
+    color: var(--text-secondary);
+    max-width: 100px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-align: center;
+    margin-top: 2px;
+}
+
+.commit-author {
+    font-size: 8px;
+    color: var(--text-hint);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    margin-top: 1px;
+}
+
+.commit-time {
+    font-size: 8px;
+    font-family: var(--font-mono);
+    color: var(--text-hint);
+    margin-top: 1px;
+}
+
+/* ─── Commit Tooltip ─── */
+.commit-tooltip {
+    position: absolute;
+    bottom: calc(100% + 12px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 8px 12px;
+    min-width: 220px;
+    max-width: 320px;
+    z-index: 20;
+    pointer-events: none;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+.commit-tooltip-hash {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--accent);
+    margin-bottom: 4px;
+}
+
+.commit-tooltip-msg {
+    font-size: 11px;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+    line-height: 1.4;
+    word-break: break-word;
+}
+
+.commit-tooltip-meta {
+    display: flex;
+    gap: 12px;
+    font-size: 9px;
+    color: var(--text-hint);
+}
+
+.commit-tooltip-files {
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px solid var(--border-subtle);
+}
+
+.commit-tooltip-file {
+    font-size: 9px;
+    font-family: var(--font-mono);
+    color: var(--text-secondary);
+    padding: 1px 0;
+}
+
+/* ─── Agent Colors ─── */
+.agent-opus {
+    --agent-color: #CC7722;
+}
+
+.agent-aether {
+    --agent-color: #7C4DFF;
+}
+
+.agent-gemini {
+    --agent-color: #4285F4;
+}
+
+.agent-sev {
+    --agent-color: #00D4FF;
+}
+
+.agent-braden {
+    --agent-color: #E8E8E8;
+}
+
+.agent-unknown {
+    --agent-color: #666;
+}
+
+/* ─── Branch Route Colors ─── */
+.route-main {
+    --route-color: #E8E8E8;
+}
+
+.route-feat {
+    --route-color: #7C4DFF;
+}
+
+.route-fix {
+    --route-color: #4CAF50;
+}
+
+.route-hotfix {
+    --route-color: #FF5722;
+}
+
+.route-session {
+    --route-color: #00D4FF;
+}
+
+/* ─── Playback Controls ─── */
+.timeline-controls {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 12px;
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+}
+
+.timeline-ctrl-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border: 1px solid var(--border);
+    background: var(--bg-elevated);
+    color: var(--text-secondary);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.timeline-ctrl-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+    border-color: var(--border-accent);
+}
+
+.timeline-ctrl-btn.active {
+    background: var(--accent-glow);
+    color: var(--accent);
+    border-color: var(--accent);
+}
+
+.timeline-ctrl-btn svg {
+    width: 12px;
+    height: 12px;
+}
+
+.timeline-scrubber {
+    flex: 1;
+    height: 4px;
+    background: var(--bg-input);
+    border-radius: 2px;
+    position: relative;
+    cursor: pointer;
+    margin: 0 8px;
+}
+
+.timeline-scrubber-fill {
+    height: 100%;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: width 0.1s ease;
+}
+
+.timeline-scrubber-head {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg-deep);
+    cursor: grab;
+}
+
+.timeline-range-label {
+    font-size: 9px;
+    font-family: var(--font-mono);
+    color: var(--text-hint);
+    min-width: 80px;
+}
+
+/* ─── Connection Lines (SVG) ─── */
+.subway-connections {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.subway-connections path {
+    fill: none;
+    stroke-width: 2.5;
+    stroke-linecap: round;
+}
+
+.subway-connections path.merge-line {
+    stroke-dasharray: 4, 4;
+    stroke-width: 1.5;
+    opacity: 0.5;
+}

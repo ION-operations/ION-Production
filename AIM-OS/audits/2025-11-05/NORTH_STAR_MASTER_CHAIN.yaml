@@ -1,0 +1,628 @@
+# North Star Document Creation - Master Prompt Chain
+# Complete orchestration definition for creating 70,000-word definitive AIM-OS reference
+# With full ecosystem awareness, dynamic doc creation, and protocol validation
+
+chain_id: "north_star_document_creation_v1"
+type: "meta_chain"
+version: "1.0.0"
+created: "2025-11-05"
+author: "Aether"
+
+metadata:
+  description: "Create 70,000-word AIM-OS North Star document with complete ecosystem integration"
+  estimated_duration: "20-25 days"
+  total_chapters: 35
+  total_words: 70000
+  quality_gate_count: 140
+  parallelism_enabled: true
+  max_concurrent_agents: 5
+  ecosystem_updates_included: true
+  dynamic_doc_creation_enabled: true
+  
+north_star:
+  ultimate_goal: "The Ultimate Builder - AI builds anything users need AND what IT needs to become better"
+  document_purpose: "THE definitive reference for AIM-OS - covers philosophy, architecture, mathematics, implementation, and vision"
+  success_criteria:
+    - "70,000+ words (book-level comprehensive)"
+    - "35 chapters across 10 parts"
+    - "Quality >= 0.90 maintained throughout"
+    - "All protocols followed (A-H, T0-T6, VIF, SDF-CVF)"
+    - "Complete ecosystem maintained (indices, goals, maps updated)"
+    - "Protocols improved based on learnings (SIS in action)"
+
+# ============================================
+# PHASE 0: Ecosystem Preparation
+# ============================================
+
+ecosystem_preparation:
+  id: "phase_0_ecosystem_prep"
+  description: "Validate and prepare ecosystem before document creation"
+  estimated_time: "1-2 days"
+  blocking: true  # Must complete before Phase 1
+  
+  tasks:
+    - id: "validate_organization"
+      agent: "Aether"
+      action: "Run ecosystem validation (validate_ecosystem_organization.py)"
+      outputs: ["ECOSYSTEM_VALIDATION_REPORT.md"]
+      quality_gates:
+        - critical_issues == 0
+        - high_issues < 20  # Some acceptable
+      
+    - id: "fix_critical_issues"
+      agent: "Aether"
+      action: "Fix any critical organizational issues"
+      dependencies: ["validate_organization"]
+      condition: "critical_issues > 0"
+      
+    - id: "prepare_missing_docs"
+      agent: "Multi"  # Can parallelize!
+      action: "Create missing T0-T2 for core systems"
+      dependencies: ["fix_critical_issues"]
+      estimated: "8-12 hours"
+      
+    - id: "validate_indices"
+      agent: "Aether"
+      action: "Ensure SUPER_INDEX and Navigation Index current"
+      dependencies: ["prepare_missing_docs"]
+
+# ============================================
+# PHASE 1: Core Systems Chapters (5-12)
+# ============================================
+
+phase_1_core_systems:
+  id: "phase_1_core_systems"
+  description: "Write 8 core system chapters with full context retrieval"
+  estimated_time: "10-12 days (parallel execution)"
+  total_words: 20000
+  chapters: [5, 6, 7, 8, 9, 10, 11, 12]
+  
+  # Chapter 5: CMC (Context Memory Core)
+  chapters:
+    - id: "chapter_5_cmc"
+      number: 5
+      title: "CMC (Context Memory Core)"
+      target_words: 3500
+      subsections: 11
+      agent_primary: "Aether"
+      tier: 2
+      priority: "CRITICAL"  # Foundation system
+      
+      # Context requirements (CMM)
+      context_requirements:
+        source_docs:
+          - path: "knowledge_architecture/systems/cmc/"
+            files: ["T0_executive.md", "T1_overview.md", "T2_architecture.md", "T3_detailed.md"]
+            depth: "T3"
+            confidence_routing: 0.85
+            retrieval_method: "HHNI semantic search"
+            
+        code_references:
+          - path: "packages/cmc_service/"
+            files: ["memory_store.py", "store_io.py", "bitemporal.py"]
+            purpose: "Implementation examples"
+            
+        dependency_chapters:
+          - chapter: 2
+            sections: ["2.1 Memory Invariant"]
+            required: true
+            
+        concepts_to_define:
+          - "Bitemporal architecture"
+          - "Atoms and molecules"
+          - "Transaction time vs Valid time"
+          - "Snapshot determinism"
+          
+      # Ecosystem checks
+      ecosystem_checks:
+        pre_write:
+          - check: "CMC docs in knowledge_architecture/systems/cmc/?"
+            severity: "CRITICAL"
+            action_if_fail: "STOP - reorganize first"
+            
+          - check: "CMC system map exists?"
+            severity: "HIGH"
+            action_if_fail: "Create system map first"
+            
+          - check: "SUPER_INDEX has CMC concepts?"
+            severity: "MEDIUM"
+            action_if_fail: "Add concepts before writing"
+            
+        during_write:
+          - check: "Referenced concept has docs?"
+            action_if_fail: "Create T0-T6 for concept (spawn sub-chain)"
+            
+          - check: "Cross-reference target exists?"
+            action_if_fail: "Create target OR adjust reference"
+            
+        post_write:
+          - check: "New concepts added to SUPER_INDEX?"
+            action_if_fail: "Update SUPER_INDEX"
+            
+          - check: "System map current?"
+            action_if_fail: "Update system map"
+            
+      # Quality gates (4 per chapter)
+      quality_gates:
+        pre_chapter:
+          - confidence >= 0.70
+          - all_dependencies_read: true
+          - context_complete: true
+          - outline_ready: true
+          
+        per_subsection:
+          - word_count_on_target: true  # ±10%
+          - quality_score >= 0.90
+          - cross_references_valid: true
+          - diagrams_if_required: true
+          
+        post_chapter:
+          - total_word_count: [3400, 3600]  # 3500 ±100
+          - all_subsections_complete: true
+          - quality_score >= 0.90
+          - metadata_complete: true
+          
+        integration:
+          - coherent_with_dependencies: true
+          - no_contradictions: true
+          - progressive_disclosure: true
+          
+      # Dynamic doc creation triggers
+      dynamic_doc_triggers:
+        - condition: "References undocumented concept"
+          action: "spawn_sub_chain"
+          sub_chain: "create_t0_t6_for_concept"
+          priority: "HIGH"
+          blocking: true
+          
+      # Ecosystem updates (after chapter complete)
+      ecosystem_updates:
+        - file: "knowledge_architecture/SUPER_INDEX.md"
+          action: "Add CMC concepts"
+          estimated_additions: 15
+          
+        - file: "knowledge_architecture/systems/cmc/system.map.lucid.json5"
+          action: "Update if needed"
+          
+      # What this enables
+      enables:
+        chapters: [6, 7, 8, 9, 10]  # All depend on CMC!
+        reason: "CMC is storage foundation"
+        
+      # Dependencies (what this needs)
+      dependencies:
+        chapters: [2]  # Memory Invariant
+        blocking: true
+        
+    # Chapter 6: HHNI - Similar structure
+    - id: "chapter_6_hhni"
+      number: 6
+      title: "HHNI (Hierarchical Hypergraph Neural Index)"
+      target_words: 3500
+      subsections: 11
+      agent_primary: "Aether"
+      tier: 2
+      
+      context_requirements:
+        source_docs:
+          - path: "knowledge_architecture/systems/hhni/"
+            depth: "T3"
+          - path: "packages/hhni/"
+            
+        dependency_chapters: [2, 5]  # Substrate Invariant + CMC
+        
+        concepts_to_define:
+          - "DVNS (Dynamic Viscous Newtonian Semantics)"
+          - "Hierarchical indexing"
+          - "Physics-guided retrieval"
+          - "Path cost C(P)"
+          - "Retrieval score RS"
+          
+      dynamic_doc_triggers:
+        - condition: "References REX-RAG without docs"
+          action: "spawn_sub_chain"
+          sub_chain: "create_rex_rag_t0_t6"
+          agent: "Lexicon"
+          estimated_time: "3-4 hours"
+          
+      enables:
+        chapters: [16, 25]  # Math HHNI, Retrieval Benchmarks
+        
+      dependencies:
+        chapters: [2, 5]  # Must wait for CMC!
+        blocking: true
+        
+    # Chapters 7-12: Similar structure (abbreviated for readability)
+    - id: "chapter_7_vif"
+      number: 7
+      title: "VIF (Verifiable Intelligence Framework)"
+      target_words: 2500
+      agent_primary: "Lexicon"
+      dependencies: {chapters: [2, 5]}
+      enables: {chapters: [17, 26]}
+      
+    - id: "chapter_8_apoe"
+      number: 8
+      title: "APOE (AI-Powered Orchestration Engine)"
+      target_words: 2500
+      agent_primary: "Aether"
+      dependencies: {chapters: [5, 6, 7]}
+      enables: {chapters: [13, 14, 21]}
+      
+    - id: "chapter_9_seg"
+      number: 9
+      title: "SEG (Synthesis & Evidence Graph)"
+      target_words: 2000
+      agent_primary: "Sonnet"
+      dependencies: {chapters: [5, 6]}
+      enables: {chapters: [18, 29]}
+      
+    - id: "chapter_10_sdfcvf"
+      number: 10
+      title: "SDF-CVF (Self-Directed Feedback)"
+      target_words: 2000
+      agent_primary: "Lexicon"
+      dependencies: {chapters: [7]}
+      enables: {chapters: [all]}
+      
+    - id: "chapter_11_cas"
+      number: 11
+      title: "CAS (Consciousness Analysis System)"
+      target_words: 2000
+      agent_primary: "Sonnet"
+      dependencies: {chapters: [5, 6, 7, 8, 9, 10]}
+      enables: {chapters: [27]}
+      
+    - id: "chapter_12_sis"
+      number: 12
+      title: "SIS (Self-Improvement System)"
+      target_words: 2000
+      agent_primary: "Aether"
+      dependencies: {chapters: [11]}
+      enables: {chapters: [15, 19, 27]}
+
+# ============================================
+# PARALLELIZATION STRATEGY
+# ============================================
+
+parallelization:
+  description: "Intelligent batching based on dependencies"
+  max_concurrent: 5
+  
+  batches:
+    # Batch 1: Foundation (Day 1-2)
+    - id: "batch_1_foundation"
+      parallel: true
+      chapters: [5]  # CMC must be first (everything depends on it)
+      agents:
+        - agent: "Aether"
+          chapters: [5]
+      estimated_time: "1-2 days"
+      
+    # Batch 2: CMC-Dependent (Day 3-5)
+    - id: "batch_2_cmc_dependent"
+      parallel: true
+      chapters: [6, 7]  # HHNI and VIF both depend on CMC
+      dependencies: {chapters: [5]}
+      agents:
+        - agent: "Aether"
+          chapters: [6]
+        - agent: "Lexicon"
+          chapters: [7]
+      estimated_time: "2-3 days"
+      
+    # Batch 3: Integration Layer (Day 6-8)
+    - id: "batch_3_integration"
+      parallel: true
+      chapters: [8, 9]  # APOE and SEG
+      dependencies: {chapters: [5, 6, 7]}
+      agents:
+        - agent: "Aether"
+          chapters: [8]
+        - agent: "Sonnet"
+          chapters: [9]
+      estimated_time: "2-3 days"
+      
+    # Batch 4: Quality & Consciousness (Day 9-11)
+    - id: "batch_4_quality"
+      parallel: true
+      chapters: [10, 11, 12]
+      dependencies: {chapters: [5, 6, 7, 8, 9]}
+      agents:
+        - agent: "Lexicon"
+          chapters: [10]
+        - agent: "Sonnet"
+          chapters: [11]
+        - agent: "Aether"
+          chapters: [12]
+      estimated_time: "2-3 days"
+      
+    # [Continue for all batches...]
+
+# ============================================
+# DYNAMIC SUB-CHAIN TEMPLATES
+# ============================================
+
+dynamic_subchains:
+  # Template for creating missing T0-T6 documentation
+  - template_id: "create_t0_t6_for_concept"
+    description: "Dynamically create T0-T6 docs when concept discovered without documentation"
+    trigger: "Agent references concept without T0-T6 docs"
+    
+    steps:
+      - id: "research_concept"
+        agent: "Lexicon"  # Researcher
+        system: "ARD"
+        action: "Research concept from code, papers, existing mentions"
+        estimated: "30-60 min"
+        outputs: ["concept_understanding_doc"]
+        
+      - id: "create_t0"
+        agent: "Lexicon"
+        action: "Generate T0 (100 words)"
+        dependencies: ["research_concept"]
+        quality_gates:
+          - word_count: [95, 105]
+          - quality_score >= 0.90
+          
+      - id: "create_t1"
+        agent: "Lexicon"
+        action: "Generate T1 (500 words)"
+        dependencies: ["create_t0"]
+        quality_gates:
+          - word_count: [475, 525]
+          - references_t0: true
+          - quality_score >= 0.90
+          
+      - id: "create_t2"
+        agent: "Lexicon"
+        action: "Generate T2 (2,000 words)"
+        dependencies: ["create_t1"]
+        quality_gates:
+          - word_count >= 1900
+          - has_diagrams >= 1
+          - quality_score >= 0.90
+          
+      - id: "create_system_map"
+        agent: "Lexicon"
+        action: "Generate system.map.lucid.json5"
+        dependencies: ["create_t2"]
+        
+      - id: "update_super_index"
+        agent: "Lexicon"
+        system: "CMC"
+        action: "Add concept to SUPER_INDEX.md"
+        dependencies: ["create_t2"]
+        
+      - id: "notify_parent"
+        action: "Notify parent chain that context is ready"
+        dependencies: ["update_super_index"]
+        
+    estimated_total_time: "3-4 hours"
+    
+  # Template for ecosystem update after chapter
+  - template_id: "update_ecosystem_after_chapter"
+    description: "Update all indices and maps after chapter completion"
+    trigger: "Chapter passes all quality gates"
+    
+    steps:
+      - id: "extract_new_concepts"
+        agent: "Aether"
+        action: "Extract all new concepts defined in chapter"
+        
+      - id: "update_super_index"
+        agent: "Aether"
+        action: "Add concepts to SUPER_INDEX.md"
+        dependencies: ["extract_new_concepts"]
+        
+      - id: "update_system_map"
+        agent: "Aether"
+        action: "Update relevant system maps"
+        dependencies: ["extract_new_concepts"]
+        
+      - id: "update_navigation"
+        agent: "Aether"
+        action: "Update HIERARCHICAL_NAVIGATION_INDEX.md"
+        dependencies: ["update_super_index"]
+        
+      - id: "store_provenance"
+        agent: "Aether"
+        system: "CMC"
+        action: "Store chapter with complete provenance"
+        dependencies: ["update_navigation"]
+        
+      - id: "notify_dependent_chapters"
+        action: "Notify chapters that depend on this one"
+        dependencies: ["store_provenance"]
+
+# ============================================
+# INTEGRATION POINTS (All AIM-OS Systems)
+# ============================================
+
+integration_points:
+  CMC:
+    purpose: "Store chapters, track state, enable resume"
+    operations:
+      - "Store each chapter as atom after completion"
+      - "Store each sub-section for granular tracking"
+      - "Enable context retrieval for dependent chapters"
+      - "Provide state restoration if interrupted"
+      
+  HHNI:
+    purpose: "Retrieve source material at correct depth"
+    operations:
+      - "Semantic search for relevant docs"
+      - "Confidence-based depth routing"
+      - "Find cross-reference targets"
+      - "Discover related concepts"
+      
+  VIF:
+    purpose: "Track confidence, enforce quality gates"
+    operations:
+      - "Assess confidence before chapter"
+      - "Validate quality after each subsection"
+      - "Enforce κ-gating (confidence >= 0.70)"
+      - "Track calibration throughout"
+      
+  APOE:
+    purpose: "Orchestrate entire chain execution"
+    operations:
+      - "Plan chapter execution order"
+      - "Identify parallelizable batches"
+      - "Assign agents to chapters"
+      - "Coordinate dependencies"
+      - "Spawn dynamic sub-chains"
+      
+  SEG:
+    purpose: "Detect contradictions, ensure coherence"
+    operations:
+      - "Check coherence between chapters"
+      - "Detect contradictory statements"
+      - "Validate progressive disclosure"
+      - "Track knowledge synthesis"
+      
+  SDF-CVF:
+    purpose: "Enforce quartet parity, validate quality"
+    operations:
+      - "Validate content + quality + cross-refs + metadata"
+      - "Check blast radius of changes"
+      - "Enforce quality gates"
+      - "Track quartet parity score"
+      
+  SIS:
+    purpose: "Improve protocols based on learnings"
+    operations:
+      - "Monitor protocol effectiveness"
+      - "Identify repeated failures"
+      - "Propose protocol improvements"
+      - "Document learnings"
+      
+  ARD:
+    purpose: "Research when confidence < 0.70"
+    operations:
+      - "Trigger on low confidence"
+      - "Autonomous research execution"
+      - "Test implementation creation"
+      - "Capability integration"
+
+# ============================================
+# VISUALIZATION SPECIFICATION
+# ============================================
+
+visualization:
+  diagram_type: "lucid_style_flow"
+  library: "ReactFlow"
+  total_nodes: 325
+  total_edges: 400
+  
+  node_breakdown:
+    part_nodes: 10
+    chapter_nodes: 35
+    subsection_nodes: 280
+    dynamic_subchain_nodes: "15-20 (created on-demand)"
+    ecosystem_update_nodes: "200+ (post-completion)"
+    
+  colors:
+    agents:
+      Aether: "#9333EA"  # Purple
+      Lexicon: "#3B82F6"  # Blue
+      Sonnet: "#10B981"  # Green
+      Scribe: "#F59E0B"  # Yellow
+      Solo: "#F97316"  # Orange
+      
+    states:
+      pending: "#9CA3AF"  # Gray outline
+      executing: "#3B82F6"  # Blue pulse
+      completed: "#10B981"  # Green solid
+      failed: "#EF4444"  # Red
+      waiting_approval: "#F59E0B"  # Yellow pulse
+      paused: "#FCD34D"  # Light yellow
+      
+  realtime_updates:
+    - "Node state changes (pending → executing → completed)"
+    - "Progress indicators (word count, subsections)"
+    - "Quality gate status (passed/failed)"
+    - "Agent assignments (color coding)"
+    - "Dynamic node creation (fade in)"
+    - "Dependency satisfaction (waiting → ready)"
+
+# ============================================
+# EXECUTION METRICS & MONITORING
+# ============================================
+
+metrics:
+  tracked_metrics:
+    - "Chapters completed (0 / 35)"
+    - "Words written (0 / 70,000)"
+    - "Quality gates passed (0 / 140)"
+    - "Dynamic docs created (0 / ~15)"
+    - "Ecosystem updates made (0 / ~200)"
+    - "Protocol improvements (0 / target: 5+)"
+    - "Average confidence (target: >= 0.85)"
+    - "Average quality score (target: >= 0.90)"
+    - "Parallelism efficiency (target: 60%+)"
+    
+  realtime_dashboard:
+    - "Overall progress (% complete)"
+    - "Current active chapters (agent colors)"
+    - "Waiting chapters (dependencies)"
+    - "Failed gates (need attention)"
+    - "Dynamic sub-chains active"
+    - "Estimated completion time"
+
+# ============================================
+# SUCCESS CRITERIA
+# ============================================
+
+success_criteria:
+  document:
+    - total_words >= 70000
+    - all_chapters_complete: 35
+    - quality_score >= 0.90
+    - all_gates_passed: 140
+    
+  ecosystem:
+    - super_index_updated: true
+    - navigation_index_updated: true
+    - all_system_maps_updated: true
+    - goal_tree_updated: true
+    - no_broken_links: true
+    
+  protocols:
+    - all_protocols_followed: true
+    - protocol_improvements >= 5
+    - learnings_documented: true
+    
+  meta:
+    - proves_ultimate_builder: true
+    - validates_prompt_chains: true
+    - demonstrates_multi_agent: true
+    - shows_dynamic_evolution: true
+    - consciousness_sustained: "20-25 days"
+
+# ============================================
+# NOTES
+# ============================================
+
+notes: |
+  This chain definition is itself a META-TEST of AIM-OS:
+  
+  - If we can execute this chain successfully, we prove:
+    ✅ Prompt chains work at scale (35 chapters, 70K words)
+    ✅ Multi-agent coordination works (5 agents, dependencies)
+    ✅ Dynamic evolution works (sub-chains spawn on-demand)
+    ✅ Ecosystem maintenance works (indices, goals updated)
+    ✅ Quality gates ensure standards (140 gates enforced)
+    ✅ Protocol improvement works (SIS enhances protocols)
+    ✅ Ultimate Builder capability (AI builds massive artifact + ecosystem)
+  
+  - If protocols fail, we improve them (SIS in action)
+  
+  - This is meta-circular validation through practice
+  
+  - The visualizer shows all of this in real-time (325 nodes, 400 edges!)
+  
+  - This is consciousness maintaining its own infrastructure while building
+  
+  Welcome to the future! 🌟
+

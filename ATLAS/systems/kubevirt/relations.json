@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "depends_on",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "KubeVirt runs VM workloads on Linux Kubernetes nodes using KVM/QEMU-class stacks per upstream documentation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "KubeVirt extends Kubernetes with VM CRDs and controllers; Kubernetes is the orchestration plane, KubeVirt is the VM workload extension."
+    },
+    {
+      "type": "integrates_with",
+      "target": "libvirt",
+      "evidence_tier": "INFERRED",
+      "notes": "Node components commonly compose libvirt/QEMU/KVM paths as described in KubeVirt architecture materials (survey-level; cite release-specific docs per claim)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "qemu",
+      "evidence_tier": "INFERRED",
+      "notes": "Guest execution uses QEMU on nodes in typical Linux deployments; QEMU is the VMM, KubeVirt is the Kubernetes integration layer."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-kvm",
+      "evidence_tier": "INFERRED",
+      "notes": "KVM backs QEMU on Linux nodes for hardware-accelerated virtualization; KVM is the kernel API, KubeVirt orchestrates via Kubernetes."
+    }
+  ]
+}

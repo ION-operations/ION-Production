@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Shadertoy al-ro Clouds Harness (WebGL2)</title>
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+        background: #000;
+        overflow: hidden;
+        font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      }
+      #canvas {
+        display: block;
+        width: 100vw;
+        height: 100vh;
+      }
+      #overlay {
+        position: fixed;
+        right: 12px;
+        top: 12px;
+        color: #fff;
+        background: rgba(0, 0, 0, 0.55);
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        width: min(520px, calc(100vw - 24px));
+        max-height: calc(100vh - 24px);
+        line-height: 1.35;
+        font-size: 13px;
+        overflow: hidden;
+        backdrop-filter: blur(8px);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+      }
+      #overlay code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
+          monospace;
+        font-size: 12px;
+      }
+      #overlayHeader {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 12px;
+        background: rgba(255, 255, 255, 0.04);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      #overlayBody {
+        display: grid;
+        grid-template-columns: 52px 1fr;
+        min-height: 0;
+        max-height: calc(100vh - 60px);
+      }
+      #tabBar {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+        padding: 10px 6px;
+        background: rgba(255, 255, 255, 0.03);
+        border-right: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      .tabButton {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        color: #fff;
+        border-radius: 10px;
+        padding: 8px 4px;
+        cursor: pointer;
+        font-size: 16px;
+        transition: background 0.15s, border-color 0.15s;
+      }
+      .tabButton.active {
+        background: rgba(143, 211, 255, 0.16);
+        border-color: rgba(143, 211, 255, 0.6);
+      }
+      #tabPanels {
+        position: relative;
+        min-height: 0;
+      }
+      .tabPanel {
+        position: absolute;
+        inset: 0;
+        padding: 12px 14px;
+        overflow-y: auto;
+        display: none;
+      }
+      .tabPanel.active {
+        display: block;
+      }
+      .controlRow {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      .controlRow label {
+        opacity: 0.92;
+      }
+      .controlRow input[type="range"] {
+        width: 220px;
+      }
+      .controlRow select,
+      .controlRow input[type="range"] {
+        accent-color: #8fd3ff;
+      }
+      .controlHint {
+        opacity: 0.7;
+        font-size: 12px;
+        margin-top: 8px;
+      }
+      #settings {
+        opacity: 0.9;
+      }
+      #error {
+        color: #ffb4b4;
+        margin-top: 8px;
+        white-space: pre-wrap;
+      }
+      #collapseBtn {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        border-radius: 8px;
+        color: #fff;
+        padding: 4px 8px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="canvas"></canvas>
+    <div id="overlay">
+      <div id="overlayHeader">
+        <div>
+          <div><strong>Shadertoy al-ro Clouds (BufferA + BufferB + Image)</strong></div>
+          <div style="opacity: 0.85; font-size: 12px">Right-side tabs for settings; status is in its own tab.</div>
+        </div>
+        <button id="collapseBtn" aria-label="Toggle panel">▸</button>
+      </div>
+      <div id="overlayBody">
+        <div id="tabBar"></div>
+        <div id="tabPanels"></div>
+      </div>
+    </div>
+    <script type="module" src="./main.js"></script>
+  </body>
+</html>

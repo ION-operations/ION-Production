@@ -1,0 +1,387 @@
+/* ═══════════════════════════════════════════════════════════════
+   Code Editor — Advanced AI IDE Operations
+   Integrates with Sovereign Context Mapper & BCI Sync Advisories
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── Editor Layout ─── */
+.code-editor-page {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.code-editor-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+}
+
+.code-editor-toolbar-section {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.code-editor-toolbar-divider {
+    width: 1px;
+    height: 18px;
+    background: var(--border);
+    margin: 0 4px;
+}
+
+.code-editor-tab-bar {
+    display: flex;
+    align-items: center;
+    gap: 0;
+    padding: 0 8px;
+    background: var(--bg-deep);
+    border-bottom: 1px solid var(--border-subtle);
+    flex-shrink: 0;
+    overflow-x: auto;
+}
+
+.code-editor-tab {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 14px;
+    font-size: 11px;
+    color: var(--text-hint);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all var(--transition-fast);
+    white-space: nowrap;
+}
+
+.code-editor-tab:hover {
+    color: var(--text-secondary);
+    background: var(--bg-elevated);
+}
+
+.code-editor-tab.active {
+    color: var(--text-primary);
+    border-bottom-color: var(--accent);
+    background: var(--bg-surface);
+}
+
+.code-editor-tab-modified {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+}
+
+.code-editor-tab-close {
+    width: 14px;
+    height: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-sm);
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+    cursor: pointer;
+}
+
+.code-editor-tab:hover .code-editor-tab-close {
+    opacity: 0.5;
+}
+
+.code-editor-tab-close:hover {
+    opacity: 1 !important;
+    background: var(--bg-hover);
+}
+
+/* ─── Editor Main Area ─── */
+.code-editor-main {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+}
+
+.code-editor-monaco {
+    flex: 1;
+    min-width: 0;
+}
+
+/* ─── Dependency Panel (right side) ─── */
+.code-editor-dep-panel {
+    width: 260px;
+    background: var(--bg-surface);
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.dep-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 10px;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.dep-panel-title {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.dep-panel-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 4px 0;
+}
+
+/* ─── Dependency Items ─── */
+.dep-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 6px 10px;
+    cursor: pointer;
+    transition: background var(--transition-fast);
+}
+
+.dep-item:hover {
+    background: var(--bg-hover);
+}
+
+.dep-item-sync {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 3px;
+}
+
+.dep-item-sync.fresh {
+    background: var(--success);
+}
+
+.dep-item-sync.stale {
+    background: #FFD54F;
+}
+
+.dep-item-sync.drift {
+    background: var(--warning);
+}
+
+.dep-item-sync.contradiction {
+    background: var(--danger);
+}
+
+.dep-item-sync.unknown {
+    background: var(--text-hint);
+}
+
+.dep-item-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.dep-item-name {
+    font-size: 11px;
+    font-family: var(--font-mono);
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.dep-item-meta {
+    font-size: 9px;
+    color: var(--text-hint);
+    margin-top: 1px;
+}
+
+.dep-item-symbols {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+    margin-top: 3px;
+}
+
+.dep-item-symbol {
+    font-size: 9px;
+    font-family: var(--font-mono);
+    color: var(--accent);
+    background: rgba(0, 212, 255, 0.08);
+    padding: 0 4px;
+    border-radius: 2px;
+}
+
+/* ─── Parse Confidence Banner ─── */
+.parse-confidence-banner {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+    font-size: 9px;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.parse-confidence-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+}
+
+.parse-confidence-banner.high .parse-confidence-dot {
+    background: var(--success);
+}
+
+.parse-confidence-banner.degraded .parse-confidence-dot {
+    background: var(--warning);
+}
+
+.parse-confidence-banner.fallback .parse-confidence-dot {
+    background: var(--danger);
+}
+
+.parse-confidence-banner.high {
+    color: var(--success);
+}
+
+.parse-confidence-banner.degraded {
+    color: var(--warning);
+}
+
+.parse-confidence-banner.fallback {
+    color: var(--danger);
+}
+
+/* ─── AI Ops Bar ─── */
+.ai-ops-bar {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding: 3px 8px;
+    background: var(--bg-deep);
+    border-top: 1px solid var(--border);
+    flex-shrink: 0;
+}
+
+.ai-ops-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    font-size: 10px;
+    color: var(--text-secondary);
+    background: none;
+    border: 1px solid transparent;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.ai-ops-btn:hover {
+    color: var(--text-primary);
+    border-color: var(--border);
+    background: var(--bg-elevated);
+}
+
+.ai-ops-btn.active {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: rgba(0, 212, 255, 0.05);
+}
+
+.ai-ops-btn-icon {
+    font-size: 12px;
+    line-height: 1;
+}
+
+.ai-ops-spacer {
+    flex: 1;
+}
+
+.ai-ops-status {
+    font-size: 9px;
+    color: var(--text-hint);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* ─── Envelope View Mode ─── */
+.envelope-section-header {
+    padding: 2px 8px;
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: var(--bg-elevated);
+    color: var(--text-hint);
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.envelope-section-header.target {
+    color: var(--success);
+    border-left: 3px solid var(--success);
+}
+
+.envelope-section-header.contract {
+    color: var(--warning);
+    border-left: 3px solid var(--warning);
+}
+
+/* ─── Sync State Gutter Markers ─── */
+.sync-gutter-marker {
+    width: 4px;
+    height: 14px;
+    border-radius: 1px;
+    margin-left: 2px;
+}
+
+.sync-gutter-marker.fresh {
+    background: var(--success);
+    opacity: 0.3;
+}
+
+.sync-gutter-marker.stale {
+    background: #FFD54F;
+    opacity: 0.6;
+}
+
+.sync-gutter-marker.drift {
+    background: var(--warning);
+    opacity: 0.8;
+}
+
+.sync-gutter-marker.contradiction {
+    background: var(--danger);
+    opacity: 1;
+}
+
+/* ─── Relationship Lines Overlay ─── */
+.relationship-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 5;
+}
+
+.relationship-line {
+    fill: none;
+    stroke-linecap: round;
+    opacity: 0.3;
+}
+
+.relationship-line:hover {
+    opacity: 0.8;
+}

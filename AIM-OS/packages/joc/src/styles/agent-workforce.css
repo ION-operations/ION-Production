@@ -1,0 +1,476 @@
+/* ═══════════════════════════════════════════════════════════════════
+   Agent Workforce CSS — Military Org Chart + n8n Node Graph
+   ═══════════════════════════════════════════════════════════════════
+   Palette: DXL Panavision (matte blacks, gunmetal, LED-only color)
+   Layout: Rank tier bars + agent node cards + SVG comms graph
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ─── Root ────────────────────────────────────────────────────── */
+.awf {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--dxl-body, #121212);
+    color: var(--dxl-text, #888);
+    font-family: 'SF Mono', 'Monaco', 'Consolas', 'Courier New', monospace;
+    font-size: 11px;
+    line-height: 1.4;
+    overflow: hidden;
+}
+
+/* ─── System Bar ─────────────────────────────────────────────── */
+.awf__sysbar {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    height: 32px;
+    min-height: 32px;
+    padding: 0 8px;
+    background:
+        linear-gradient(180deg, #181818 0%, #111111 40%, #0e0e0e 100%);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.8);
+    box-shadow:
+        inset 0 1px 0 var(--dxl-edge-hi, rgba(255, 255, 255, 0.06)),
+        0 1px 3px var(--dxl-cavity-deep, rgba(0, 0, 0, 0.72));
+    position: relative;
+    z-index: 10;
+}
+
+.awf__sysbar::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--dxl-edge-hi);
+    opacity: 0.3;
+}
+
+.awf__sysbar-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 0 8px;
+    white-space: nowrap;
+    color: var(--dxl-text-dim, #555);
+    font-size: 10px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.awf__sysbar-sep {
+    width: 1px;
+    height: 16px;
+    background: rgba(255, 255, 255, 0.06);
+    margin: 0 4px;
+    flex-shrink: 0;
+}
+
+.awf__sysbar-spacer {
+    flex: 1;
+}
+
+.awf__sysbar-value {
+    font-size: 10px;
+    font-variant-numeric: tabular-nums;
+    color: var(--dxl-text);
+}
+
+/* ─── Main Layout ────────────────────────────────────────────── */
+.awf__workspace {
+    display: grid;
+    grid-template-columns: 1fr clamp(260px, 20vw, 360px);
+    gap: 0;
+    flex: 1;
+    overflow: hidden;
+}
+
+.awf__col {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: #2a2a2a #0e0e0e;
+}
+
+.awf__col--main {
+    background: var(--dxl-body);
+}
+
+.awf__col--side {
+    border-left: 1px solid rgba(0, 0, 0, 0.6);
+    box-shadow: -1px 0 0 var(--dxl-edge-hi);
+    background: var(--dxl-panel, #0e0e0e);
+}
+
+/* ─── Sections ───────────────────────────────────────────────── */
+.awf__section {
+    position: relative;
+}
+
+.awf__section+.awf__section {
+    border-top: 1px solid rgba(0, 0, 0, 0.5);
+    box-shadow: inset 0 1px 0 var(--dxl-edge-hi);
+}
+
+.awf__section-hdr {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--dxl-text-label, #666);
+    background: linear-gradient(180deg, #161616 0%, #121212 100%);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+    box-shadow: inset 0 1px 0 var(--dxl-edge-hi), 0 1px 2px rgba(0, 0, 0, 0.3);
+    user-select: none;
+}
+
+.awf__section-hdr svg {
+    opacity: 0.5;
+    flex-shrink: 0;
+}
+
+.awf__section-badge {
+    margin-left: auto;
+    font-size: 9px;
+    font-weight: 400;
+    color: var(--dxl-text-dim);
+}
+
+.awf__section-body {
+    padding: 6px 8px;
+}
+
+/* ─── Rank Tier Headers ──────────────────────────────────────── */
+.awf__tier {
+    margin-bottom: 2px;
+}
+
+.awf__tier-bar {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    font-size: 8px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    position: relative;
+    overflow: hidden;
+}
+
+.awf__tier-bar::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+}
+
+.awf__tier-bar--command {
+    color: #f59e0b;
+    background: rgba(245, 158, 11, 0.04);
+}
+
+.awf__tier-bar--command::before {
+    background: #f59e0b;
+    box-shadow: 0 0 6px rgba(245, 158, 11, 0.3);
+}
+
+.awf__tier-bar--executive {
+    color: var(--dxl-led-blue);
+    background: rgba(68, 136, 204, 0.04);
+}
+
+.awf__tier-bar--executive::before {
+    background: var(--dxl-led-blue);
+    box-shadow: 0 0 6px rgba(68, 136, 204, 0.3);
+}
+
+.awf__tier-bar--lead {
+    color: #8b5cf6;
+    background: rgba(139, 92, 246, 0.04);
+}
+
+.awf__tier-bar--lead::before {
+    background: #8b5cf6;
+    box-shadow: 0 0 6px rgba(139, 92, 246, 0.3);
+}
+
+.awf__tier-bar--specialist {
+    color: #06b6d4;
+    background: rgba(6, 182, 212, 0.04);
+}
+
+.awf__tier-bar--specialist::before {
+    background: #06b6d4;
+    box-shadow: 0 0 6px rgba(6, 182, 212, 0.3);
+}
+
+.awf__tier-bar--worker {
+    color: var(--dxl-text-dim);
+    background: rgba(255, 255, 255, 0.02);
+}
+
+.awf__tier-bar--worker::before {
+    background: var(--dxl-text-dim);
+}
+
+.awf__tier-count {
+    margin-left: auto;
+    font-size: 9px;
+    font-weight: 400;
+    opacity: 0.6;
+}
+
+/* ─── Agent Cards (n8n Node Style) ───────────────────────────── */
+.awf__agent-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 4px;
+    padding: 4px 6px;
+}
+
+.awf__agent-node {
+    position: relative;
+    padding: 10px 12px;
+    border-radius: 4px;
+    background: linear-gradient(180deg, #171717 0%, #131313 100%);
+    border: 1px solid rgba(255, 255, 255, 0.02);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.03),
+        inset 0 -1px 2px rgba(0, 0, 0, 0.3);
+    transition: border-color 0.15s, box-shadow 0.15s;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.awf__agent-node:hover {
+    border-color: rgba(255, 255, 255, 0.08);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.05),
+        inset 0 -1px 2px rgba(0, 0, 0, 0.3),
+        0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.awf__agent-node--selected {
+    border-color: rgba(68, 136, 204, 0.3);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.05),
+        0 0 12px rgba(68, 136, 204, 0.08);
+}
+
+/* Rank color strip */
+.awf__agent-rank-strip {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+}
+
+.awf__agent-rank-strip--command {
+    background: #f59e0b;
+    box-shadow: 0 0 4px rgba(245, 158, 11, 0.3);
+}
+
+.awf__agent-rank-strip--executive {
+    background: var(--dxl-led-blue);
+    box-shadow: 0 0 4px rgba(68, 136, 204, 0.3);
+}
+
+.awf__agent-rank-strip--lead {
+    background: #8b5cf6;
+    box-shadow: 0 0 4px rgba(139, 92, 246, 0.3);
+}
+
+.awf__agent-rank-strip--specialist {
+    background: #06b6d4;
+    box-shadow: 0 0 4px rgba(6, 182, 212, 0.3);
+}
+
+.awf__agent-rank-strip--worker {
+    background: var(--dxl-text-dim);
+}
+
+.awf__agent-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.awf__agent-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    background: linear-gradient(135deg, #1e1e1e 0%, #161616 100%);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.05),
+        inset 0 -1px 2px rgba(0, 0, 0, 0.4);
+    flex-shrink: 0;
+}
+
+.awf__agent-identity {
+    flex: 1;
+    min-width: 0;
+}
+
+.awf__agent-callsign {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--dxl-text-bright, #b0b0b0);
+    letter-spacing: 0.06em;
+}
+
+.awf__agent-name {
+    font-size: 9px;
+    color: var(--dxl-text-dim);
+}
+
+.awf__agent-led {
+    display: inline-flex;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    box-shadow: 0 0 3px currentColor, inset 0 -1px 1px rgba(0, 0, 0, 0.4);
+}
+
+.awf__agent-led--online {
+    color: var(--dxl-led-green);
+}
+
+.awf__agent-led--standby {
+    color: var(--dxl-led-amber);
+}
+
+.awf__agent-led--offline {
+    color: #333;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.awf__agent-meta {
+    display: flex;
+    gap: 6px;
+    font-size: 8px;
+    color: var(--dxl-text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    flex-wrap: wrap;
+}
+
+.awf__agent-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 1px 5px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.awf__agent-rank-badge {
+    font-size: 7px;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 2px;
+    letter-spacing: 0.08em;
+    background: var(--dxl-lcd-bg, #080c0a);
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.6);
+}
+
+/* ─── Agent Detail Side Panel ────────────────────────────────── */
+.awf__detail-lcd {
+    background: var(--dxl-lcd-bg);
+    border: 1px solid rgba(0, 0, 0, 0.5);
+    border-radius: 4px;
+    padding: 8px 10px;
+    box-shadow:
+        inset 0 2px 6px rgba(0, 0, 0, 0.5),
+        inset 0 0 12px rgba(0, 0, 0, 0.3),
+        0 1px 0 var(--dxl-edge-hi);
+}
+
+.awf__detail-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 0;
+    font-size: 9px;
+    border-bottom: 1px solid rgba(51, 204, 102, 0.06);
+}
+
+.awf__detail-row:last-child {
+    border-bottom: none;
+}
+
+.awf__detail-key {
+    color: rgba(51, 204, 102, 0.5);
+    min-width: 80px;
+    text-transform: uppercase;
+    font-size: 8px;
+    letter-spacing: 0.06em;
+}
+
+.awf__detail-val {
+    color: var(--dxl-lcd-text, #33cc66);
+    font-weight: 500;
+    font-size: 10px;
+}
+
+/* ─── n8n-style Hierarchy Graph ──────────────────────────────── */
+.awf__graph-container {
+    padding: 8px;
+    background: var(--dxl-recess, #0a0a0a);
+    border: 1px solid rgba(0, 0, 0, 0.4);
+    border-radius: 4px;
+    box-shadow: inset 0 1px 3px var(--dxl-cavity);
+    overflow: auto;
+}
+
+.awf__graph-container svg text {
+    font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+}
+
+/* ─── Capabilities Grid ─────────────────────────────────────── */
+.awf__cap-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3px;
+}
+
+.awf__cap-tag {
+    padding: 1px 5px;
+    font-size: 7px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    color: var(--dxl-text-dim);
+}
+
+/* ─── Empty State ────────────────────────────────────────────── */
+.awf__empty {
+    padding: 12px 8px;
+    text-align: center;
+    color: var(--dxl-text-dim);
+    font-size: 10px;
+    font-style: italic;
+}

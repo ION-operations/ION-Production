@@ -1,0 +1,24 @@
+# Optional: Qdrant + DGraph for full HHNI (retrieve_memory semantic search)
+# Run: docker compose -f deployment/docker-compose-hhni.yml up -d
+# Without this: set HHNI_LOCAL=1 to use in-memory Qdrant + no-op DGraph (no Docker needed)
+
+version: '3.8'
+
+services:
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: aimos-qdrant
+    ports:
+      - "6333:6333"
+    volumes:
+      - qdrant_data:/qdrant/storage
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6333/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  qdrant_data:
+    driver: local

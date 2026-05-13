@@ -1,0 +1,128 @@
+{
+  "version": "1.0.0",
+  "description": "Multi-level quality gates for the IDE orchestration program with continuous evaluation",
+  "created": "2025-11-07",
+  "updated": "2025-11-07",
+  "enhancements": {
+    "continuous_evaluation": true,
+    "multi_level_dependencies": true,
+    "dynamic_thresholds": true,
+    "automated_remediation": true
+  },
+  "gates": {
+    "task": {
+      "research_artifact_quality": {
+        "description": "Research output cites Tier A/B sources and passes SEG validation",
+        "method": "seg_validate",
+        "blocking": true,
+        "evaluation_mode": "continuous",
+        "inputs": {
+          "evidence_targets": "required",
+          "citations": ">=1 Tier A"
+        }
+      },
+      "spec_integrity": {
+        "description": "Spec/architecture updates validated for schema + dependency correctness",
+        "method": "spec_schema_check",
+        "blocking": true,
+        "evaluation_mode": "continuous",
+        "multi_level_check": true
+      },
+      "policy_alignment": {
+        "description": "Policy files reference latest AIM-OS thresholds + completion rules",
+        "method": "policy_diff_check",
+        "blocking": true
+      },
+      "api_contracts": {
+        "description": "API adapters declare required providers and log request metadata",
+        "method": "api_contract_audit",
+        "blocking": true
+      },
+      "unit_tests": {
+        "description": "Implementation tasks ship with unit/integration tests",
+        "method": "test_runner",
+        "blocking": true,
+        "threshold": 0.9
+      },
+      "qa_suite": {
+        "description": "QA tasks execute SDF-CVF suite with zero blocking defects",
+        "method": "sdf_cvf_suite",
+        "blocking": true
+      },
+      "evidence_logged": {
+        "description": "Every task logs atoms to CMC + HHNI",
+        "method": "cmc_evidence_check",
+        "blocking": true
+      }
+    },
+    "phase": {
+      "phase_completeness": {
+        "description": "All workstreams delivered required artifacts + gates",
+        "method": "coverage_check",
+        "blocking": true
+      },
+      "integration_consistency": {
+        "description": "Terminology + APIs aligned across workstreams",
+        "method": "hhni_glossary_diff",
+        "blocking": false
+      },
+      "quality_threshold": {
+        "description": "Aggregated VIF score meets tier thresholds",
+        "method": "vif_aggregate",
+        "blocking": true,
+        "evaluation_mode": "continuous",
+        "dynamic_thresholds": true,
+        "thresholds": {
+          "research_phase": 0.82,
+          "architecture_phase": 0.88,
+          "build_phase": 0.90,
+          "qa_phase": 0.92,
+          "launch_phase": 0.90
+        }
+      }
+    },
+    "epic": {
+      "system_integration": {
+        "description": "IDE surfaces, API mediation, orchestration engine tested end-to-end",
+        "method": "aimos_system_audit",
+        "blocking": true
+      },
+      "operability": {
+        "description": "SDF-CVF + live drills confirm runbooks + telemetry",
+        "method": "operational_readiness_check",
+        "blocking": true
+      },
+      "launch_readiness": {
+        "description": "All launch tasks complete, dashboards live, SHARED_MESSAGE_BOARD updated",
+        "method": "launch_checklist",
+        "blocking": true,
+        "evaluation_mode": "boundary"
+      }
+    }
+  },
+  "remediation": {
+    "enabled": true,
+    "auto_create_tasks": true,
+    "strategies": {
+      "gate_failure": {
+        "first_failure": "notify_author",
+        "second_failure": "create_remediation_task",
+        "third_failure": "block_progress"
+      },
+      "quality_below_threshold": {
+        "action": "route_to_research",
+        "timeout": "24 hours",
+        "fallback": "mark_uncertain"
+      }
+    }
+  },
+  "continuous_evaluation": {
+    "enabled": true,
+    "frequency": "per_task_update",
+    "methods": {
+      "vif_confidence_tracking": true,
+      "sdf_cvf_quality_validation": true,
+      "seg_evidence_synthesis": true
+    }
+  }
+}

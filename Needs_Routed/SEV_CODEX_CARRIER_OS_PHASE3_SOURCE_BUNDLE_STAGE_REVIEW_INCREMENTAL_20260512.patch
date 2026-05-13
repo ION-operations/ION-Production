@@ -1,0 +1,759 @@
+diff --git a/ION/02_architecture/CODEX_SOURCE_BUNDLE_STAGE_REVIEW_PROTOCOL.md b/ION/02_architecture/CODEX_SOURCE_BUNDLE_STAGE_REVIEW_PROTOCOL.md
+new file mode 100644
+index 0000000..4161ee6
+--- /dev/null
++++ b/ION/02_architecture/CODEX_SOURCE_BUNDLE_STAGE_REVIEW_PROTOCOL.md
+@@ -0,0 +1,97 @@
++# Codex Source Bundle Stage Review Protocol
++
++Status: candidate protocol for `PCKT-ION-CODEX-SOURCE-BUNDLE-STAGE-REVIEW-003`.
++
++The commit-boundary audit classifies the dirty tree. This protocol turns that classification into the first safe source/protocol/schema/test stage proposal without staging, committing, pushing, settling, or promoting generated/local evidence.
++
++## Rule
++
++```text
++A source bundle may be proposed only after the dirty tree has been classified.
++The proposal may include source/protocol/schema/test paths only.
++Generated projections, local evidence, runtime residue, raw context, unknown owner paths, and deletion cleanup do not ride with the first source commit.
++```
++
++This protocol produces a stage review and a candidate source-bundle stage manifest. Both are proposals. They do not mutate Git and do not create accepted ION state.
++
++## Inputs
++
++```text
++ION/05_context/current/codex_carrier/commit_boundary/CODEX_COMMIT_BOUNDARY_AUDIT.json
++ION/05_context/current/codex_carrier/commit_boundary/CODEX_COMMIT_STAGE_MANIFEST.candidate.json
++or a live read-only execution of kernel.ion_codex_commit_boundary_audit
++```
++
++## Outputs
++
++```text
++ION/05_context/current/codex_carrier/commit_boundary/CODEX_SOURCE_BUNDLE_STAGE_REVIEW.json
++ION/05_context/current/codex_carrier/commit_boundary/CODEX_SOURCE_BUNDLE_STAGE_MANIFEST.candidate.json
++```
++
++## Inclusion rule
++
++Only paths classified as `source_protocol_schema_tests` may enter the first source-bundle stage proposal.
++
++Typical included surfaces:
++
++```text
++.codex/**
++ION/02_architecture/**
++ION/03_registry/**
++ION/04_packages/kernel/**
++ION/07_templates/**
++ION/tests/**
++.gitignore
++README.md
++CONTRIBUTING.md
++SECURITY.md
++pyproject.toml
++```
++
++## Exclusion rule
++
++The first source bundle must exclude:
++
++```text
++ION/05_context/current/** generated projections and local evidence
++ION/05_context/current/** branch capsule runtime/evidence records
++.ion_private/** raw Codex context snapshots
++runtime/** bridge/service residues
++unknown owner-surface paths
++private/secret-risk paths
++deletions without a cleanup/archive packet
++```
++
++## Required proof before actual staging
++
++```text
++git status --porcelain=v1 --branch -uall
++git diff --check
++focused pytest for touched kernel/protocol/schema/test paths
++secret/path review for source paths
++operator review of excluded generated/evidence/runtime/unknown groups
++explicit human/Codex command to stage, after this proposal is reviewed
++```
++
++## Authority boundary
++
++```text
++source stage review = proposal
++Git staging = separate human/operator-approved action
++Git commit = separate proof-bearing action
++push/PR = separate policy-gated action
++receipt/settlement = ION acceptance path
++```
++
++Non-claims:
++
++```text
++No accepted ION state.
++No production authority.
++No live execution authority.
++No secrets authority.
++No Git mutation.
++No GitHub mutation.
++No raw Codex context promotion.
++```
+diff --git a/ION/03_registry/ion_codex_source_bundle_stage_review.schema.json b/ION/03_registry/ion_codex_source_bundle_stage_review.schema.json
+new file mode 100644
+index 0000000..95709ba
+--- /dev/null
++++ b/ION/03_registry/ion_codex_source_bundle_stage_review.schema.json
+@@ -0,0 +1,46 @@
++{
++  "$schema": "https://json-schema.org/draft/2020-12/schema",
++  "$id": "ion.codex_source_bundle_stage_review.v1",
++  "title": "ION Codex Source Bundle Stage Review",
++  "type": "object",
++  "required": [
++    "schema_id",
++    "generated_at",
++    "verdict",
++    "ok",
++    "source_bundle_stage_ready",
++    "source_bundle",
++    "excluded_bundles",
++    "candidate_stage_manifest",
++    "accepted_state_authority",
++    "git_mutation_performed"
++  ],
++  "properties": {
++    "schema_id": {"const": "ion.codex_source_bundle_stage_review.v1"},
++    "generated_at": {"type": "string"},
++    "verdict": {
++      "type": "string",
++      "enum": [
++        "ION_CODEX_SOURCE_BUNDLE_STAGE_REVIEW_READY",
++        "ION_CODEX_SOURCE_BUNDLE_STAGE_REVIEW_PARTIAL",
++        "ION_CODEX_SOURCE_BUNDLE_STAGE_REVIEW_BLOCKED"
++      ]
++    },
++    "ok": {"type": "boolean"},
++    "source_bundle_stage_ready": {"type": "boolean"},
++    "source_bundle": {"type": "object"},
++    "excluded_bundles": {"type": "array", "items": {"type": "object"}},
++    "candidate_stage_manifest": {"type": "object"},
++    "blocking_findings": {"type": "array", "items": {"type": "string"}},
++    "warning_findings": {"type": "array", "items": {"type": "string"}},
++    "accepted_state_authority": {"const": false},
++    "production_authority": {"const": false},
++    "live_execution_authority": {"const": false},
++    "secrets_authority": {"const": false},
++    "git_mutation_performed": {"const": false},
++    "git_push_authority": {"const": false},
++    "github_mutation_performed": {"const": false},
++    "raw_codex_context_promoted": {"const": false}
++  },
++  "additionalProperties": true
++}
+diff --git a/ION/04_packages/kernel/ion_codex_carrier_os.py b/ION/04_packages/kernel/ion_codex_carrier_os.py
+index 2cda1a3..114909f 100644
+--- a/ION/04_packages/kernel/ion_codex_carrier_os.py
++++ b/ION/04_packages/kernel/ion_codex_carrier_os.py
+@@ -102,6 +102,11 @@ CONTROL_PLANES: tuple[dict[str, str], ...] = (
+         "purpose": "path-level dirty-tree classification and candidate stage-manifest proposal; no git mutation",
+         "primary_ref": "ION/05_context/current/codex_carrier/commit_boundary/CODEX_COMMIT_BOUNDARY_AUDIT.json",
+     },
++    {
++        "plane_id": "source_bundle_stage_review",
++        "purpose": "first safe source/protocol/schema/test stage proposal derived from commit-boundary audit; no git mutation",
++        "primary_ref": "ION/05_context/current/codex_carrier/commit_boundary/CODEX_SOURCE_BUNDLE_STAGE_REVIEW.json",
++    },
+ )
+ 
+ DEFAULT_SLASH_COMMANDS: tuple[dict[str, Any], ...] = (
+@@ -113,6 +118,7 @@ DEFAULT_SLASH_COMMANDS: tuple[dict[str, Any], ...] = (
+     {"command": "/ion-proof", "mode": "read_only_or_candidate_write", "maps_to": "proof ledger/status; candidate evidence refs only", "mutates": "confirmation_required"},
+     {"command": "/ion-git-plan", "mode": "read_only", "maps_to": "git status/stage manifest proposal; no commit/push", "mutates": False},
+     {"command": "/ion-commit-boundary", "mode": "read_only", "maps_to": "kernel.ion_codex_commit_boundary_audit path classification + candidate stage manifest", "mutates": False},
++    {"command": "/ion-source-bundle", "mode": "read_only", "maps_to": "kernel.ion_codex_source_bundle_stage_review source/protocol/schema/test stage proposal", "mutates": False},
+     {"command": "/ion-receipt", "mode": "candidate_write", "maps_to": "receipt proposal; acceptance remains Steward/operator gated", "mutates": "confirmation_required"},
+     {"command": "/ion-settlement", "mode": "candidate_write", "maps_to": "settlement request package", "mutates": "confirmation_required"},
+     {"command": "/ion-handoff", "mode": "candidate_write", "maps_to": "branch capsule handoff + event ledger", "mutates": "confirmation_required"},
+@@ -164,11 +170,13 @@ DEFAULT_CONTEXT_MIRROR_POLICY: dict[str, Any] = {
+         "ION/02_architecture/ION_MOUNT_CONTRACT.md",
+         "ION/02_architecture/CODEX_CARRIER_OS_RUNTIME_PROTOCOL.md",
+         "ION/02_architecture/CODEX_COMMIT_BOUNDARY_AUDIT_PROTOCOL.md",
++        "ION/02_architecture/CODEX_SOURCE_BUNDLE_STAGE_REVIEW_PROTOCOL.md",
+         "ION/05_context/current/codex_carrier/CODEX_CARRIER_OS_SOURCE_MAP.json",
+         "ION/05_context/current/codex_carrier/CODEX_CARRIER_COCKPIT_SNAPSHOT.json",
+         "ION/05_context/current/codex_carrier/CODEX_SESSION_REGISTRY.json",
+         "ION/05_context/current/codex_carrier/CODEX_CARRIER_EVENT_LEDGER.json",
+         "ION/05_context/current/codex_carrier/commit_boundary/CODEX_COMMIT_BOUNDARY_AUDIT.json",
++        "ION/05_context/current/codex_carrier/commit_boundary/CODEX_SOURCE_BUNDLE_STAGE_REVIEW.json",
+     ],
+     "default_exclude_globs": [
+         ".git/**",
+diff --git a/ION/04_packages/kernel/ion_codex_source_bundle_stage_review.py b/ION/04_packages/kernel/ion_codex_source_bundle_stage_review.py
+new file mode 100644
+index 0000000..3101ec9
+--- /dev/null
++++ b/ION/04_packages/kernel/ion_codex_source_bundle_stage_review.py
+@@ -0,0 +1,362 @@
++"""Source-bundle stage review for the ION Codex carrier domain.
++
++This module consumes the commit-boundary audit and isolates the first safe
++source/protocol/schema/test stage proposal. It never runs git add, git commit,
++git push, GitHub mutation, raw Codex memory export, or ION settlement.
++"""
++
++from __future__ import annotations
++
++import argparse
++import json
++import sys
++from datetime import datetime, timezone
++from pathlib import Path
++from typing import Any, Mapping, Sequence
++
++from .ion_codex_commit_boundary_audit import (
++    AUTHORITY_FALSE,
++    OUTPUT_DIR as COMMIT_BOUNDARY_OUTPUT_DIR,
++    build_codex_commit_boundary_audit,
++)
++
++SCHEMA_ID = "ion.codex_source_bundle_stage_review.v1"
++STAGE_MANIFEST_SCHEMA_ID = "ion.codex_source_bundle_stage_manifest.v1"
++READY_VERDICT = "ION_CODEX_SOURCE_BUNDLE_STAGE_REVIEW_READY"
++PARTIAL_VERDICT = "ION_CODEX_SOURCE_BUNDLE_STAGE_REVIEW_PARTIAL"
++BLOCKED_VERDICT = "ION_CODEX_SOURCE_BUNDLE_STAGE_REVIEW_BLOCKED"
++WRITE_CONFIRMATION_TOKEN = "ION_CODEX_SOURCE_BUNDLE_STAGE_REVIEW_WRITE_CONFIRMED"
++
++OUTPUT_DIR = COMMIT_BOUNDARY_OUTPUT_DIR
++REVIEW_OUTPUT_PATH = OUTPUT_DIR / "CODEX_SOURCE_BUNDLE_STAGE_REVIEW.json"
++STAGE_MANIFEST_OUTPUT_PATH = OUTPUT_DIR / "CODEX_SOURCE_BUNDLE_STAGE_MANIFEST.candidate.json"
++PROTOCOL_PATH = Path("ION/02_architecture/CODEX_SOURCE_BUNDLE_STAGE_REVIEW_PROTOCOL.md")
++SCHEMA_PATH = Path("ION/03_registry/ion_codex_source_bundle_stage_review.schema.json")
++SOURCE_BUNDLE_ID = "source_protocol_schema_tests"
++
++SOURCE_REVIEW_AUTHORITY_FALSE: dict[str, bool] = {
++    **AUTHORITY_FALSE,
++    "git_stage_authority": False,
++}
++
++
++def _now() -> str:
++    return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
++
++
++def _resolve_shell_root(root: str | Path | None = None) -> Path:
++    candidate = Path(root or ".").expanduser().resolve()
++    for path in (candidate, *candidate.parents):
++        if (path / "pyproject.toml").is_file() and (path / "ION" / "REPO_AUTHORITY.md").is_file():
++            return path
++        if path.name == "ION" and (path / "REPO_AUTHORITY.md").is_file() and (path.parent / "pyproject.toml").is_file():
++            return path.parent
++    raise FileNotFoundError("Could not resolve ION shell root; expected pyproject.toml and ION/REPO_AUTHORITY.md")
++
++
++def _write_json(path: Path, payload: Mapping[str, Any]) -> None:
++    path.parent.mkdir(parents=True, exist_ok=True)
++    path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
++
++
++def _bundle_by_id(audit: Mapping[str, Any], bundle_id: str) -> dict[str, Any]:
++    for bundle in audit.get("bundles", []):
++        if isinstance(bundle, dict) and bundle.get("bundle_id") == bundle_id:
++            return dict(bundle)
++    return {
++        "bundle_id": bundle_id,
++        "count": 0,
++        "paths": [],
++        "entries": [],
++        "stage_decision": "not_present",
++        "commit_timing": "not_present",
++        "risk": "unknown",
++        "description": "Bundle not present in commit-boundary audit.",
++    }
++
++
++def _excluded_bundles(audit: Mapping[str, Any]) -> list[dict[str, Any]]:
++    excluded: list[dict[str, Any]] = []
++    for bundle in audit.get("bundles", []):
++        if not isinstance(bundle, dict) or bundle.get("bundle_id") == SOURCE_BUNDLE_ID:
++            continue
++        count = int(bundle.get("count") or 0)
++        if count <= 0:
++            continue
++        excluded.append(
++            {
++                "bundle_id": bundle.get("bundle_id"),
++                "path_count": count,
++                "paths": list(bundle.get("paths", [])),
++                "stage_decision": bundle.get("stage_decision"),
++                "commit_timing": bundle.get("commit_timing"),
++                "risk": bundle.get("risk"),
++                "reason": _exclusion_reason(str(bundle.get("bundle_id"))),
++            }
++        )
++    return excluded
++
++
++def _exclusion_reason(bundle_id: str) -> str:
++    return {
++        "generated_projection_or_local_evidence": "Generated projections and local-PC evidence must be committed/regenerated after source settlement.",
++        "deletion_review_required": "Deleted paths require a separate archive/cleanup packet.",
++        "runtime_residue_exclude": "Runtime residue is local/transient and excluded by default.",
++        "private_or_secret_risk_exclude": "Secret/private-risk paths block source staging until redacted and reclassified.",
++        "untracked_review_required": "Untracked owner surfaces require operator classification before staging.",
++        "preexisting_dirty_or_unknown": "Unknown owner-surface paths must not ride with the Codex carrier source bundle.",
++    }.get(bundle_id, "Excluded from first source bundle by default.")
++
++
++def _path_kind(path: str) -> str:
++    if path.startswith(".codex/"):
++        return "codex_native_config_or_hook"
++    if path.startswith("ION/02_architecture/"):
++        return "protocol_or_architecture_doc"
++    if path.startswith("ION/03_registry/"):
++        return "registry_or_schema"
++    if path.startswith("ION/04_packages/kernel/"):
++        return "kernel_source"
++    if path.startswith("ION/tests/"):
++        return "test_source"
++    if path.startswith("ION/07_templates/"):
++        return "template_source"
++    if path.endswith(".py"):
++        return "python_source"
++    if path.endswith(".json"):
++        return "json_source"
++    if path.endswith(".md"):
++        return "documentation_source"
++    if path.endswith(".toml"):
++        return "packaging_config"
++    if path == ".gitignore":
++        return "gitignore_policy"
++    return "source_surface"
++
++
++def _source_entries(source_bundle: Mapping[str, Any]) -> list[dict[str, Any]]:
++    entries = source_bundle.get("entries")
++    if isinstance(entries, list) and entries:
++        result = []
++        for entry in entries:
++            if isinstance(entry, dict):
++                path = str(entry.get("path") or "")
++                if path:
++                    result.append({**entry, "path_kind": _path_kind(path), "stage_in_source_bundle": True})
++        return result
++    result = []
++    for path in source_bundle.get("paths", []):
++        if isinstance(path, str) and path:
++            result.append({"path": path, "path_kind": _path_kind(path), "stage_in_source_bundle": True})
++    return result
++
++
++def _validation_commands(paths: Sequence[str]) -> list[str]:
++    commands = [
++        "git status --porcelain=v1 --branch -uall",
++        "git diff --check",
++    ]
++    has_kernel = any(path.startswith("ION/04_packages/kernel/") for path in paths)
++    has_tests = any(path.startswith("ION/tests/") for path in paths)
++    has_codex = any("codex" in path.lower() for path in paths)
++    if has_kernel or has_tests or has_codex:
++        commands.append(
++            "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=ION/04_packages PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 "
++            "python3 -m pytest ION/tests/test_kernel_ion_codex_commit_boundary_audit.py "
++            "ION/tests/test_kernel_ion_codex_source_bundle_stage_review.py "
++            "ION/tests/test_kernel_ion_codex_carrier_os.py "
++            "ION/tests/test_kernel_ion_mcp_local_bridge.py -q"
++        )
++    else:
++        commands.append(
++            "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=ION/04_packages PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 "
++            "python3 -m pytest ION/tests -q"
++        )
++    commands.extend(
++        [
++            "python3 -m py_compile $(git diff --name-only -- '*.py')",
++            "review CODEX_SOURCE_BUNDLE_STAGE_MANIFEST.candidate.json before any git add",
++        ]
++    )
++    return commands
++
++
++def _chunk_paths(paths: Sequence[str], chunk_size: int = 80) -> list[list[str]]:
++    return [list(paths[i : i + chunk_size]) for i in range(0, len(paths), chunk_size)]
++
++
++def _candidate_stage_manifest(source_paths: Sequence[str], excluded: Sequence[Mapping[str, Any]]) -> dict[str, Any]:
++    sorted_paths = sorted(dict.fromkeys(source_paths))
++    return {
++        "schema_id": STAGE_MANIFEST_SCHEMA_ID,
++        "generated_at": _now(),
++        "bundle_id": "codex_carrier_os_source_protocol_schema_tests",
++        "source_path_count": len(sorted_paths),
++        "source_paths": sorted_paths,
++        "excluded_bundle_count": len(excluded),
++        "excluded_bundle_summaries": [
++            {
++                "bundle_id": item.get("bundle_id"),
++                "path_count": item.get("path_count"),
++                "risk": item.get("risk"),
++                "reason": item.get("reason"),
++            }
++            for item in excluded
++        ],
++        "candidate_git_add_chunks": [
++            {
++                "chunk_index": index,
++                "path_count": len(chunk),
++                "argv_preview": ["git", "add", "--", *chunk],
++            }
++            for index, chunk in enumerate(_chunk_paths(sorted_paths), start=1)
++        ],
++        "candidate_commit_message": "work/codex-carrier-os-source-bundle-stage-review",
++        "validation_commands": _validation_commands(sorted_paths),
++        "rule": "Proposal only. Do not run candidate git add chunks until operator/Steward review accepts the source bundle boundary.",
++        **SOURCE_REVIEW_AUTHORITY_FALSE,
++    }
++
++
++def build_codex_source_bundle_stage_review(root: str | Path | None = None) -> dict[str, Any]:
++    """Build a source-bundle stage proposal from the commit-boundary audit."""
++    shell_root = _resolve_shell_root(root)
++    audit = build_codex_commit_boundary_audit(shell_root)
++    source_bundle = _bundle_by_id(audit, SOURCE_BUNDLE_ID)
++    source_entries = _source_entries(source_bundle)
++    source_paths = [entry["path"] for entry in source_entries]
++    excluded = _excluded_bundles(audit)
++    manifest = _candidate_stage_manifest(source_paths, excluded)
++
++    blocking_findings: list[str] = []
++    warning_findings: list[str] = []
++
++    if not audit.get("ok"):
++        blocking_findings.append("commit_boundary_audit_not_ok")
++    for finding in audit.get("blocking_findings", []):
++        blocking_findings.append(f"commit_boundary:{finding}")
++    if not source_paths:
++        blocking_findings.append("no_source_protocol_schema_test_paths_available")
++    if int(audit.get("path_counts", {}).get("private_or_secret_risk_exclude", 0)) > 0:
++        blocking_findings.append("private_or_secret_risk_paths_present")
++
++    for finding in audit.get("warning_findings", []):
++        warning_findings.append(f"commit_boundary:{finding}")
++    for item in excluded:
++        bundle_id = item.get("bundle_id")
++        warning_findings.append(f"excluded_bundle_present:{bundle_id}:{item.get('path_count')}")
++
++    source_ready = not blocking_findings and bool(source_paths)
++    if blocking_findings:
++        verdict = BLOCKED_VERDICT
++    elif warning_findings:
++        verdict = PARTIAL_VERDICT
++    else:
++        verdict = READY_VERDICT
++
++    return {
++        "schema_id": SCHEMA_ID,
++        "generated_at": _now(),
++        "verdict": verdict,
++        "ok": source_ready,
++        "source_bundle_stage_ready": source_ready,
++        "shell_root": str(shell_root),
++        "protocol_ref": PROTOCOL_PATH.as_posix(),
++        "schema_ref": SCHEMA_PATH.as_posix(),
++        "output_ref": REVIEW_OUTPUT_PATH.as_posix(),
++        "stage_manifest_ref": STAGE_MANIFEST_OUTPUT_PATH.as_posix(),
++        "packet_ref": "PCKT-ION-CODEX-SOURCE-BUNDLE-STAGE-REVIEW-003",
++        "commit_boundary_audit": {
++            "verdict": audit.get("verdict"),
++            "ok": audit.get("ok"),
++            "ready_for_source_commit_bundle": audit.get("ready_for_source_commit_bundle"),
++            "audit_ref": audit.get("output_ref"),
++            "stage_manifest_ref": audit.get("stage_manifest_ref"),
++            "path_counts": audit.get("path_counts"),
++            "warning_findings": audit.get("warning_findings", []),
++            "blocking_findings": audit.get("blocking_findings", []),
++        },
++        "source_bundle": {
++            "bundle_id": SOURCE_BUNDLE_ID,
++            "path_count": len(source_paths),
++            "paths": sorted(dict.fromkeys(source_paths)),
++            "entries": source_entries,
++            "stage_decision": "candidate_for_first_source_bundle_after_review",
++            "commit_timing": "first_source_commit_before_generated_evidence_bundle",
++            "risk": "medium",
++        },
++        "excluded_bundles": excluded,
++        "candidate_stage_manifest": manifest,
++        "proof_obligations": [
++            "Operator/Steward review of CODEX_SOURCE_BUNDLE_STAGE_MANIFEST.candidate.json",
++            "git diff --check",
++            "focused pytest for included kernel/tests/protocol paths",
++            "path-level secret review before staging",
++            "separate evidence/projection commit or regeneration after source commit",
++            "no raw Codex context, runtime residue, generated projection, deletion cleanup, or unknown owner path in first source bundle",
++        ],
++        "recommended_next_action": "If reviewed, stage only source_paths from the candidate manifest; do not stage excluded bundles.",
++        "blocking_findings": blocking_findings,
++        "warning_findings": warning_findings,
++        "non_claims": [
++            "Source-bundle stage review does not stage, commit, push, or accept state.",
++            "Candidate git add chunks are previews only.",
++            "Generated local evidence and projections remain excluded from the first source bundle.",
++            "Raw Codex context remains diagnostic continuity and is not promoted.",
++        ],
++        **SOURCE_REVIEW_AUTHORITY_FALSE,
++    }
++
++
++def write_codex_source_bundle_stage_review(root: str | Path | None = None) -> dict[str, Any]:
++    shell_root = _resolve_shell_root(root)
++    review = build_codex_source_bundle_stage_review(shell_root)
++    manifest = review["candidate_stage_manifest"]
++    _write_json(shell_root / REVIEW_OUTPUT_PATH, review)
++    _write_json(shell_root / STAGE_MANIFEST_OUTPUT_PATH, manifest)
++    result = dict(review)
++    result["written_paths"] = [REVIEW_OUTPUT_PATH.as_posix(), STAGE_MANIFEST_OUTPUT_PATH.as_posix()]
++    return result
++
++
++def _print_json(payload: Mapping[str, Any]) -> None:
++    print(json.dumps(payload, indent=2, sort_keys=True))
++
++
++def _parser() -> argparse.ArgumentParser:
++    parser = argparse.ArgumentParser(description="Review the Codex carrier source/protocol/schema/test bundle before staging.")
++    parser.add_argument("--ion-root", default=".", help="Shell root or ION content root")
++    parser.add_argument("--write", action="store_true", help="Write candidate source stage review and manifest artifacts")
++    parser.add_argument("--confirmation", default=None, help=f"Required with --write: {WRITE_CONFIRMATION_TOKEN}")
++    parser.add_argument("--json", action="store_true")
++    return parser
++
++
++def main(argv: list[str] | None = None) -> int:
++    args = _parser().parse_args(argv)
++    if args.write and args.confirmation != WRITE_CONFIRMATION_TOKEN:
++        payload = {
++            "ok": False,
++            "schema_id": "ion.codex_source_bundle_stage_review_write_refusal.v1",
++            "refusal_class": "CONFIRMATION_REQUIRED",
++            "required_confirmation": WRITE_CONFIRMATION_TOKEN,
++            **SOURCE_REVIEW_AUTHORITY_FALSE,
++        }
++        if args.json:
++            _print_json(payload)
++        else:
++            print(f"Refused: confirmation must be {WRITE_CONFIRMATION_TOKEN}", file=sys.stderr)
++        return 3
++
++    payload = write_codex_source_bundle_stage_review(args.ion_root) if args.write else build_codex_source_bundle_stage_review(args.ion_root)
++    if args.json:
++        _print_json(payload)
++    else:
++        print(payload["verdict"])
++        for finding in [*payload.get("blocking_findings", []), *payload.get("warning_findings", [])]:
++            print(f"- {finding}")
++    return 0 if payload.get("source_bundle_stage_ready") else 2
++
++
++if __name__ == "__main__":  # pragma: no cover
++    raise SystemExit(main())
+diff --git a/ION/04_packages/kernel/ion_mcp_local_bridge.py b/ION/04_packages/kernel/ion_mcp_local_bridge.py
+index 494740c..6ea706b 100644
+--- a/ION/04_packages/kernel/ion_mcp_local_bridge.py
++++ b/ION/04_packages/kernel/ion_mcp_local_bridge.py
+@@ -34,6 +34,7 @@ from .ion_codex_carrier_domain import (
+ )
+ from .ion_codex_carrier_os import build_codex_carrier_os_source_map
+ from .ion_codex_commit_boundary_audit import build_codex_commit_boundary_audit
++from .ion_codex_source_bundle_stage_review import build_codex_source_bundle_stage_review
+ from .ion_codex_raw_context_sync import build_raw_context_sync_lane_status
+ from .ion_github_comms_fallback import (
+     build_github_comms_fallback_draft,
+@@ -66,6 +67,7 @@ READ_ONLY_TOOLS = {
+     "ion.codex.carrier.events",
+     "ion.codex.carrier.os",
+     "ion.codex.commit_boundary.audit",
++    "ion.codex.source_bundle.stage_review",
+     "ion.codex.raw_context.status",
+     "ion.github.comms.status",
+     "ion.receipts.list",
+@@ -630,6 +632,26 @@ class IonMcpLocalBridge:
+             next_required_action="Use the candidate stage manifest as proposal only; do not stage/commit/push without operator settlement.",
+         )
+ 
++
++    def codex_source_bundle_stage_review(self, session_id: str | None = None) -> IonMcpToolResult:
++        sid = self._ensure_session_id(session_id)
++        payload = build_codex_source_bundle_stage_review(self.ion_root)
++        receipt = self._write_bridge_receipt(
++            tool_name="ion.codex.source_bundle.stage_review",
++            execution_resolution=IonMcpExecutionResolution.READ_ONLY,
++            session_id=sid,
++            detail="Codex source-bundle stage review projected through read-only MCP bridge",
++        )
++        return self._result(
++            tool_name="ion.codex.source_bundle.stage_review",
++            status=IonMcpToolStatus.OK if payload.get("source_bundle_stage_ready") else IonMcpToolStatus.BLOCKED,
++            execution_resolution=IonMcpExecutionResolution.READ_ONLY,
++            session_id=sid,
++            receipt_refs=(receipt.receipt_id,),
++            payload=payload,
++            next_required_action="Review the candidate source stage manifest; do not stage/commit/push through MCP.",
++        )
++
+     def codex_raw_context_status(self, session_id: str | None = None) -> IonMcpToolResult:
+         sid = self._ensure_session_id(session_id)
+         payload = build_raw_context_sync_lane_status(self.ion_root)
+@@ -958,6 +980,8 @@ class IonMcpLocalBridge:
+             return self.codex_carrier_os(arguments.get("session_id"))
+         if name == "ion.codex.commit_boundary.audit":
+             return self.codex_commit_boundary_audit(arguments.get("session_id"))
++        if name == "ion.codex.source_bundle.stage_review":
++            return self.codex_source_bundle_stage_review(arguments.get("session_id"))
+         if name == "ion.codex.raw_context.status":
+             return self.codex_raw_context_status(arguments.get("session_id"))
+         if name == "ion.github.comms.status":
+@@ -1013,6 +1037,7 @@ _TOOL_DESCRIPTIONS = {
+     "ion.codex.carrier.events": "Project Codex carrier runtime event ledger; read-only telemetry, not receipts.",
+     "ion.codex.carrier.os": "Project the full Codex Carrier OS source map; read-only, no local execution.",
+     "ion.codex.commit_boundary.audit": "Classify dirty-tree paths into candidate commit/stage bundles; read-only, no git mutation.",
++    "ion.codex.source_bundle.stage_review": "Review and isolate the first safe source/protocol/schema/test stage bundle; read-only, no git mutation.",
+     "ion.codex.raw_context.status": "Project raw Codex context diagnostic lane status; read-only, no raw content export.",
+     "ion.github.comms.status": "Project GitHub communications fallback readiness; read-only, no network or GitHub mutation.",
+     "ion.receipts.list": "List recent bridge/session/API-entry receipts.",
+@@ -1048,6 +1073,7 @@ _TOOL_INPUT_SCHEMAS: dict[str, dict[str, Any]] = {
+     "ion.codex.carrier.events": {"type": "object", "additionalProperties": False, "properties": {"session_id": {"type": "string"}}},
+     "ion.codex.carrier.os": {"type": "object", "additionalProperties": False, "properties": {"session_id": {"type": "string"}}},
+     "ion.codex.commit_boundary.audit": {"type": "object", "additionalProperties": False, "properties": {"session_id": {"type": "string"}}},
++    "ion.codex.source_bundle.stage_review": {"type": "object", "additionalProperties": False, "properties": {"session_id": {"type": "string"}}},
+     "ion.codex.raw_context.status": {"type": "object", "additionalProperties": False, "properties": {"session_id": {"type": "string"}}},
+     "ion.github.comms.status": {
+         "type": "object",
+diff --git a/ION/tests/test_kernel_ion_codex_source_bundle_stage_review.py b/ION/tests/test_kernel_ion_codex_source_bundle_stage_review.py
+new file mode 100644
+index 0000000..c817934
+--- /dev/null
++++ b/ION/tests/test_kernel_ion_codex_source_bundle_stage_review.py
+@@ -0,0 +1,120 @@
++import json
++import subprocess
++from pathlib import Path
++
++from kernel.ion_codex_source_bundle_stage_review import (
++    BLOCKED_VERDICT,
++    PARTIAL_VERDICT,
++    WRITE_CONFIRMATION_TOKEN,
++    build_codex_source_bundle_stage_review,
++    main,
++    write_codex_source_bundle_stage_review,
++)
++from kernel.ion_mcp_local_bridge import IonMcpExecutionResolution, IonMcpLocalBridge
++
++
++def _run(command, cwd: Path) -> None:
++    subprocess.run(command, cwd=cwd, check=True, capture_output=True, text=True)
++
++
++def _seed_repo(tmp_path: Path) -> Path:
++    root = tmp_path / "ion-shell"
++    (root / "ION").mkdir(parents=True)
++    (root / "pyproject.toml").write_text("[project]\nname = \"ion-test\"\n", encoding="utf-8")
++    (root / "ION/REPO_AUTHORITY.md").parent.mkdir(parents=True, exist_ok=True)
++    (root / "ION/REPO_AUTHORITY.md").write_text("# authority\n", encoding="utf-8")
++    (root / "ION/02_architecture").mkdir(parents=True)
++    (root / "ION/03_registry").mkdir(parents=True)
++    (root / "ION/04_packages/kernel").mkdir(parents=True)
++    (root / "ION/tests").mkdir(parents=True)
++    _run(["git", "init"], root)
++    _run(["git", "config", "user.email", "ion@example.invalid"], root)
++    _run(["git", "config", "user.name", "ION Test"], root)
++    _run(["git", "add", "pyproject.toml", "ION/REPO_AUTHORITY.md"], root)
++    _run(["git", "commit", "-m", "seed"], root)
++    return root
++
++
++def test_source_bundle_stage_review_isolates_source_paths_without_git_mutation(tmp_path: Path) -> None:
++    root = _seed_repo(tmp_path)
++    (root / "ION/04_packages/kernel/new_kernel.py").write_text("print('candidate')\n", encoding="utf-8")
++    (root / "ION/tests/test_new_kernel.py").write_text("def test_ok():\n    assert True\n", encoding="utf-8")
++    (root / "ION/02_architecture/CODEX_TEST_PROTOCOL.md").write_text("# protocol\n", encoding="utf-8")
++    (root / "ION/05_context/current/codex_carrier/CODEX_SESSION_REGISTRY.json").parent.mkdir(parents=True, exist_ok=True)
++    (root / "ION/05_context/current/codex_carrier/CODEX_SESSION_REGISTRY.json").write_text("{}\n", encoding="utf-8")
++    (root / "ION/05_context/current/chatgpt_connector/runtime/state.json").parent.mkdir(parents=True, exist_ok=True)
++    (root / "ION/05_context/current/chatgpt_connector/runtime/state.json").write_text("{}\n", encoding="utf-8")
++    (root / "notes.tmp").write_text("unknown owner\n", encoding="utf-8")
++
++    result = build_codex_source_bundle_stage_review(root)
++
++    assert result["verdict"] == PARTIAL_VERDICT
++    assert result["ok"] is True
++    assert result["source_bundle_stage_ready"] is True
++    assert result["git_mutation_performed"] is False
++    assert result["source_bundle"]["path_count"] == 3
++    assert "ION/04_packages/kernel/new_kernel.py" in result["source_bundle"]["paths"]
++    assert "ION/05_context/current/codex_carrier/CODEX_SESSION_REGISTRY.json" not in result["source_bundle"]["paths"]
++    assert any(item["bundle_id"] == "generated_projection_or_local_evidence" for item in result["excluded_bundles"])
++    assert any(item["bundle_id"] == "runtime_residue_exclude" for item in result["excluded_bundles"])
++    assert any(item["bundle_id"] == "untracked_review_required" for item in result["excluded_bundles"])
++    assert result["candidate_stage_manifest"]["source_path_count"] == 3
++    assert result["candidate_stage_manifest"]["git_mutation_performed"] is False
++    assert result["candidate_stage_manifest"]["candidate_git_add_chunks"]
++
++    status_after = subprocess.run(["git", "status", "--porcelain=v1", "-uall"], cwd=root, check=True, capture_output=True, text=True)
++    assert "ION/04_packages/kernel/new_kernel.py" in status_after.stdout
++
++
++def test_source_bundle_stage_review_blocks_when_boundary_audit_blocks(tmp_path: Path) -> None:
++    root = _seed_repo(tmp_path)
++    (root / ".env.local").write_text("TOKEN=redacted-test-fixture\n", encoding="utf-8")
++    (root / "ION/04_packages/kernel/new_kernel.py").write_text("print('candidate')\n", encoding="utf-8")
++
++    result = build_codex_source_bundle_stage_review(root)
++
++    assert result["verdict"] == BLOCKED_VERDICT
++    assert result["ok"] is False
++    assert result["source_bundle_stage_ready"] is False
++    assert "commit_boundary_audit_not_ok" in result["blocking_findings"]
++    assert "private_or_secret_risk_paths_present" in result["blocking_findings"]
++
++
++def test_source_bundle_stage_review_write_requires_confirmation_and_writes_candidate_manifest(tmp_path: Path, capsys) -> None:
++    root = _seed_repo(tmp_path)
++    (root / "ION/04_packages/kernel/new_kernel.py").write_text("print('candidate')\n", encoding="utf-8")
++
++    assert main(["--ion-root", str(root), "--write", "--confirmation", "WRONG", "--json"]) == 3
++    refused = capsys.readouterr().out
++    assert "CONFIRMATION_REQUIRED" in refused
++
++    result = write_codex_source_bundle_stage_review(root)
++    assert result["written_paths"] == [
++        "ION/05_context/current/codex_carrier/commit_boundary/CODEX_SOURCE_BUNDLE_STAGE_REVIEW.json",
++        "ION/05_context/current/codex_carrier/commit_boundary/CODEX_SOURCE_BUNDLE_STAGE_MANIFEST.candidate.json",
++    ]
++    review_path = root / result["written_paths"][0]
++    manifest_path = root / result["written_paths"][1]
++    assert review_path.exists()
++    assert manifest_path.exists()
++    assert json.loads(review_path.read_text())["schema_id"] == "ion.codex_source_bundle_stage_review.v1"
++    assert json.loads(manifest_path.read_text())["schema_id"] == "ion.codex_source_bundle_stage_manifest.v1"
++
++    assert main(["--ion-root", str(root), "--write", "--confirmation", WRITE_CONFIRMATION_TOKEN, "--json"]) == 0
++    accepted = capsys.readouterr().out
++    assert "ION_CODEX_SOURCE_BUNDLE_STAGE_REVIEW" in accepted
++
++
++def test_mcp_source_bundle_stage_review_is_read_only_projection(tmp_path: Path) -> None:
++    root = _seed_repo(tmp_path)
++    (root / "ION/04_packages/kernel/new_kernel.py").write_text("print('candidate')\n", encoding="utf-8")
++    bridge = IonMcpLocalBridge(root / "ION", tmp_path / "bridge-state")
++
++    result = bridge.call_tool("ion.codex.source_bundle.stage_review", {})
++
++    assert result.execution_resolution == IonMcpExecutionResolution.READ_ONLY
++    assert result.kernel_truth_mutated is False
++    assert result.live_execution_authorized is False
++    assert result.payload["schema_id"] == "ion.codex_source_bundle_stage_review.v1"
++    assert result.payload["git_mutation_performed"] is False
++    assert result.payload["source_bundle_stage_ready"] is True

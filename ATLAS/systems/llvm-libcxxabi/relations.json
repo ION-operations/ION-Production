@@ -1,0 +1,137 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "llvm-libcxx",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "libc++abi provides Itanium C++ ABI routines linked alongside libc++ in typical Clang -stdlib=libc++ deployments."
+    },
+    {
+      "type": "integrates_with",
+      "target": "clang",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Clang-generated C++ object files reference libc++abi symbols for exceptions, RTTI, and static initialization."
+    },
+    {
+      "type": "integrates_with",
+      "target": "llvm-lld",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "lld resolves libc++abi when linking libc++-using binaries in LLVM toolchains."
+    },
+    {
+      "type": "integrates_with",
+      "target": "glibc",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "libc++abi uses C library and pthread-layer services on GNU/Linux hosted builds."
+    },
+    {
+      "type": "integrates_with",
+      "target": "musl",
+      "evidence_tier": "INFERRED",
+      "notes": "Clang + libc++/libc++abi stacks can target musl Linux with a consistent sysroot."
+    },
+    {
+      "type": "integrates_with",
+      "target": "freebsd-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "libc++abi uses C library and threading services from FreeBSD libc on FreeBSD-hosted Clang builds."
+    },
+    {
+      "type": "integrates_with",
+      "target": "openbsd-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "libc++abi uses C library and threading services from OpenBSD libc on OpenBSD-hosted Clang builds."
+    },
+    {
+      "type": "integrates_with",
+      "target": "netbsd-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "libc++abi uses C library and threading services from NetBSD libc on NetBSD-hosted Clang builds."
+    },
+    {
+      "type": "integrates_with",
+      "target": "dragonfly-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "libc++abi uses C library and threading services from DragonFly libc on DragonFly-hosted Clang builds."
+    },
+    {
+      "type": "integrates_with",
+      "target": "illumos-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "libc++abi uses C library and threading services from illumos libc on illumos-hosted Clang builds."
+    },
+    {
+      "type": "integrates_with",
+      "target": "android-bionic",
+      "evidence_tier": "INFERRED",
+      "notes": "libc++abi uses C library and threading services from Bionic on Android NDK libc++ builds."
+    },
+    {
+      "type": "integrates_with",
+      "target": "newlib",
+      "evidence_tier": "INFERRED",
+      "notes": "libc++abi may use C services from newlib in embedded libc++ configurations when toolchains align."
+    },
+    {
+      "type": "integrates_with",
+      "target": "wasi-libc",
+      "evidence_tier": "INFERRED",
+      "notes": "libc++abi may pair with libc++ on wasm WASI targets backed by wasi-libc."
+    },
+    {
+      "type": "integrates_with",
+      "target": "uclibc",
+      "evidence_tier": "INFERRED",
+      "notes": "libc++abi may pair with libc++ on uClibc embedded Linux targets when packaging matches."
+    },
+    {
+      "type": "integrates_with",
+      "target": "dietlibc",
+      "evidence_tier": "INFERRED",
+      "notes": "libc++abi may pair with libc++ on dietlibc minimal Linux targets when packaging matches."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-binutils",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GNU ld can link libc++abi objects when Clang is not using lld."
+    },
+    {
+      "type": "integrates_with",
+      "target": "elf",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "libc++abi is packaged as ELF shared objects on typical Unix targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "dwarf",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Exception handling and debug info interact with DWARF unwind data on ELF targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "c-language",
+      "evidence_tier": "INFERRED",
+      "notes": "C++ ABI runtime bridges compiler-generated code with C/POSIX runtime underneath."
+    },
+    {
+      "type": "integrates_with",
+      "target": "gnu-gdb",
+      "evidence_tier": "INFERRED",
+      "notes": "GDB debugs through exception frames and RTTI metadata produced with libc++abi in the link."
+    },
+    {
+      "type": "integrates_with",
+      "target": "lldb",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "LLDB debugs Clang + libc++/libc++abi stacks natively on LLVM-oriented targets."
+    },
+    {
+      "type": "integrates_with",
+      "target": "riscv-isa",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "LLVM ships libc++abi for RISC-V targets alongside libc++ in LLVM toolchains."
+    }
+  ]
+}

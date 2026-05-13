@@ -1,0 +1,129 @@
+---
+# Source of Truth Metadata (archived snapshot - DO NOT use as authoritative)
+id: "source_of_truth"
+type: "source_of_truth"
+authoritative: false
+source_of_truth: "lucid_mcp_server.py"
+source_of_truth_type: "code"
+auto_generated: true
+generated: '2025-11-06T16:28:26.847328'
+archived: 2026-02-21
+note: Archived snapshot (stale). Run `python scripts/detect_source_of_truth.py` for current data.
+tags: ["historical", "archived"]
+---
+
+aim_os_source_of_truth:
+  version: 1.0.0
+  generated: '2025-11-06T16:28:26.847328'
+  note: Archived snapshot - DO NOT use as authoritative
+  mcp_tools:
+    count: 81
+    header_count: 81
+    parsed_count: 86
+    categories:
+      OS: 6
+      ? 'synthesize_knowledge
+
+        SCOR'
+      : 3
+      ? 'detect_manipulation_signals
+
+        Snapshots'
+      : 4
+      ? 'archive_snapshot
+
+        Timeline'
+      : 3
+      Goal Timeline: 3
+    source: lucid_mcp_server.py
+    detection_method: all_tools array + header comment
+    last_updated: '2025-11-06T16:28:26.850357'
+  cursor_commands:
+    count: 16
+    files:
+    - audit-system.md
+    - code-review.md
+    - create-decision-log.md
+    - create-system.md
+    - create-t0-t4-docs.md
+    - create-thought-journal.md
+    - deploy-package.md
+    - fix-linter.md
+    - fix-nl-tags.md
+    - run-tests.md
+    - test-mcp-tools.md
+    - test-phase2-command.md
+    - update-goal-tree.md
+    - update-super-index.md
+    - validate-docs.md
+    - validate-quintet.md
+    source: .cursor/commands/
+    detection_method: '*.md file count'
+    last_updated: '2025-11-06T16:28:26.850357'
+  systems:
+    count: 46
+    systems:
+    - advanced_monaco_editor
+    - agent
+    - aimos_mobile_app
+    - ai_collaboration
+    - apoe
+    - apoe_runner
+    - autonomous_protocol
+    - autonomous_research_dream
+    - capability_awareness
+    - cas
+    - cmc_service
+    - cmc_service.egg-info
+    - consciousness_analyzer
+    - consciousness_creativity_engine
+    - consciousness_error_learning
+    - consciousness_learning_engine
+    - consciousness_optimization_detector
+    - context_bootloader
+    - doc_builder
+    - hhni
+    - ide_chat_app
+    - integration_tests
+    - intent_classification
+    - intuitive_intelligence_system
+    - llm_client
+    - lucid_core_console
+    - lucid_mcp_server
+    - lucid_orchestrator
+    - mcp_data_integration
+    - mcp_debugging_system
+    - mcp_rag_proxy
+    - mcp_server
+    - meta_optimizer
+    - meta_reasoning
+    - nl_tags
+    - orchestration_builder
+    - prompt_chains
+    - prompt_chain_executor
+    - safety_systems
+    - schemas
+    - scor
+    - sdfcvf
+    - seg
+    - sis
+    - timeline_context_system
+    - vif
+    source: packages/
+    detection_method: directory count
+    last_updated: '2025-11-06T16:28:26.852367'
+  documentation:
+    total_files: 2387
+    by_location:
+      knowledge_architecture/**/*.md: 2257
+      cursor-addon/docs/**/*.md: 107
+      '*.md': 23
+    source: knowledge_architecture/ + cursor-addon/docs/ + root
+    detection_method: '*.md file count'
+    last_updated: '2025-11-06T16:28:27.630469'
+  tests:
+    total: 346
+    test_files: 346
+    source: '**/test_*.py + **/*_test.py + **/tests/**/*.py'
+    detection_method: test file pattern matching
+    last_updated: '2025-11-06T16:28:33.223288'

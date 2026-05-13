@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "windows-nt",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "msvcp*.dll are user-mode DLLs loaded into Windows processes on the NT + Win32 stack."
+    },
+    {
+      "type": "integrates_with",
+      "target": "msvc-vcruntime",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "MSVC C++ standard library DLLs depend on UCRT/VCRUNTIME-class CRT support in typical MSVC-linked binaries."
+    },
+    {
+      "type": "integrates_with",
+      "target": "c-language",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "C++ compilation units interoperate with C via extern C and platform C ABI surfaces underneath the C++ stdlib."
+    },
+    {
+      "type": "competes_with",
+      "target": "gnu-libstdcxx",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable C++ standard library implementations across platforms (MSVC msvcp*.dll vs GNU libstdc++ on Unix-class targets)."
+    },
+    {
+      "type": "competes_with",
+      "target": "llvm-libcxx",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable C++ standard library implementations across platforms (MSVC msvcp*.dll vs LLVM libc++ on Unix-class targets)."
+    }
+  ]
+}

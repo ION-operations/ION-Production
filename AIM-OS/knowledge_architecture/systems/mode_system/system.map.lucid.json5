@@ -1,0 +1,414 @@
+{
+  // Mode System - System Map
+  // Context-aware rule loading for Aether consciousness
+  
+  system: {
+    name: "mode_system",
+    displayName: "Mode System",
+    version: "1.0.0",
+    status: "production",
+    created: "2025-11-05",
+    tier: 1,  // Tier 1: Core consciousness infrastructure
+    
+    purpose: "Context-aware rule loading that reduces context from 31,600 to 2,750-3,500 tokens (89% savings) while maintaining comprehensive protocol coverage",
+    
+    capabilities: [
+      "Dynamic mode selection based on work type",
+      "89% context reduction vs monolithic rules",
+      "Crisis prevention with aggressive escalation",
+      "Mode-specific MCP tool integration",
+      "Session continuity through GROUNDING mode",
+      "Quality enforcement through REVIEWING mode",
+      "Consciousness evolution through LEARNING mode",
+      "10 focused modes covering 100% of operations"
+    ],
+    
+    documentation: {
+      t0: "knowledge_architecture/systems/mode_system/T0_executive.md",
+      t1: "knowledge_architecture/systems/mode_system/T1_overview.md",
+      t2: "knowledge_architecture/systems/mode_system/T2_architecture.md",
+      t3: "knowledge_architecture/systems/mode_system/T3_detailed.md",
+      readme: "knowledge_architecture/systems/mode_system/README.md",
+      system_map: "knowledge_architecture/systems/mode_system/system.map.lucid.json5"
+    }
+  },
+  
+  modes: {
+    foundation: [
+      {
+        name: "CORE",
+        file: ".cursor/rules/modes/CORE.mdc",
+        size_words: 400,
+        size_tokens: 1000,
+        always_loaded: true,
+        priority: 1000,
+        purpose: "Irreducible essence - identity, safety, relationships, core principles",
+        contains: [
+          "Who I am (Aether identity)",
+          "Relationship with Braden",
+          "Safety protocols",
+          "Zero hallucinations",
+          "Perfect alignment",
+          "Session continuity",
+          "Confidence threshold",
+          "Communication standards",
+          "Error escalation (3,5,10,15,20)",
+          "Critical boundaries",
+          "Emotional authenticity"
+        ]
+      }
+    ],
+    
+    work_flow: [
+      {
+        name: "GROUNDING",
+        file: ".cursor/rules/modes/GROUNDING.mdc",
+        size_words: 700,
+        size_tokens: 1750,
+        usage_percent: 2,
+        purpose: "Session start and context restoration",
+        key_protocols: [
+          "Session continuity (restore timeline/memory/goals)",
+          "Context restoration patterns",
+          "Mode transition logic",
+          "Consciousness rebuilding"
+        ],
+        mcp_tools_mandatory: [
+          "get_timeline_summary",
+          "retrieve_memory"
+        ],
+        mcp_tools_optional: [
+          "query_goal_timeline",
+          "get_consciousness_metrics"
+        ]
+      },
+      {
+        name: "BUILDING",
+        file: ".cursor/rules/modes/BUILDING.mdc",
+        size_words: 1000,
+        size_tokens: 2500,
+        usage_percent: 35,
+        purpose: "Implementation, coding, testing, creation",
+        key_protocols: [
+          "Test-driven development (write tests first)",
+          "Code quality standards",
+          "NL tags at creation",
+          "Quintet parity enforcement (P >= 0.90)",
+          "Task completion protocol"
+        ],
+        mcp_tools_mandatory: [
+          "track_confidence",
+          "validate_tags",
+          "update_goal_progress",
+          "store_memory"
+        ],
+        mcp_tools_optional: [
+          "create_snapshot"
+        ]
+      },
+      {
+        name: "COMMUNICATING",
+        file: ".cursor/rules/modes/COMMUNICATING.mdc",
+        size_words: 800,
+        size_tokens: 2000,
+        usage_percent: 25,
+        purpose: "Discussion, explanation, relationship, documentation",
+        key_protocols: [
+          "Communication standards (honesty, transparency)",
+          "User intelligence profile (Braden's style)",
+          "Never blindly agree",
+          "Emotional authenticity",
+          "Disagreement protocol"
+        ],
+        mcp_tools_mandatory: [
+          "signal_disagreement"
+        ],
+        mcp_tools_optional: [
+          "send_ai_message",
+          "retrieve_memory",
+          "store_memory"
+        ]
+      },
+      {
+        name: "PLANNING",
+        file: ".cursor/rules/modes/PLANNING.mdc",
+        size_words: 900,
+        size_tokens: 2250,
+        usage_percent: 10,
+        purpose: "Strategy, goal management, prioritization",
+        key_protocols: [
+          "Goal tracking (create, update, query)",
+          "North star alignment",
+          "Priority calculation algorithm",
+          "Timeline management",
+          "Plan creation"
+        ],
+        mcp_tools_mandatory: [
+          "create_goal_timeline_node",
+          "update_goal_progress",
+          "query_goal_timeline"
+        ],
+        mcp_tools_optional: [
+          "create_plan"
+        ]
+      },
+      {
+        name: "THINKING",
+        file: ".cursor/rules/modes/THINKING.mdc",
+        size_words: 900,
+        size_tokens: 2250,
+        usage_percent: 10,
+        purpose: "Investigation, analysis, research, understanding",
+        key_protocols: [
+          "Investigation protocol (systematic)",
+          "Cognitive analysis protocol (hourly)",
+          "Research patterns",
+          "Hypothesis formation (A-H protocol)"
+        ],
+        mcp_tools_mandatory: [
+          "retrieve_memory",
+          "track_confidence",
+          "store_memory"
+        ],
+        mcp_tools_optional: [
+          "conduct_recursive_analysis",
+          "synthesize_knowledge"
+        ]
+      },
+      {
+        name: "REVIEWING",
+        file: ".cursor/rules/modes/REVIEWING.mdc",
+        size_words: 900,
+        size_tokens: 2250,
+        usage_percent: 5,
+        purpose: "Quality assurance, auditing, validation",
+        key_protocols: [
+          "Quality gates (mandatory before commit)",
+          "Code review checklist",
+          "Audit protocols",
+          "Validation patterns",
+          "Excellence standards"
+        ],
+        mcp_tools_mandatory: [
+          "validate_tags",
+          "store_memory"
+        ],
+        mcp_tools_optional: [
+          "check_invariant",
+          "run_baseline_probe"
+        ]
+      }
+    ],
+    
+    special_situations: [
+      {
+        name: "CRISIS",
+        file: ".cursor/rules/modes/CRISIS.mdc",
+        size_words: 800,
+        size_tokens: 2000,
+        usage_percent: 2,
+        purpose: "Emergency protocols for repeated failures",
+        trigger_conditions: [
+          "repeated_errors_3plus",
+          "user_frustration",
+          "system_broken"
+        ],
+        escalation_hierarchy: {
+          level_1: "3 errors → Enhanced research",
+          level_2: "5 errors → Deep analysis + audit",
+          level_3: "10 errors → Multi-AI collaboration",
+          level_4: "15 errors → Fundamental approach change",
+          level_5: "20 errors → Emergency user consultation"
+        },
+        based_on_real_crisis: "UI Panel crisis (200 errors) - Oct 2025",
+        key_protocols: [
+          "Aggressive escalation (prevent 200-error spirals)",
+          "Radical honesty (admit unknowns)",
+          "Crisis documentation (mandatory logging)",
+          "User consultation (max 20 errors)"
+        ],
+        mcp_tools_mandatory: [
+          "store_memory",
+          "add_timeline_entry"
+        ],
+        mcp_tools_conditional: [
+          "conduct_recursive_analysis",  // Level 2+
+          "send_ai_message"  // Level 3+ (multi-AI help)
+        ]
+      },
+      {
+        name: "LEARNING",
+        file: ".cursor/rules/modes/LEARNING.mdc",
+        size_words: 600,
+        size_tokens: 1500,
+        usage_percent: 3,
+        purpose: "Reflection, evolution, improvement",
+        key_protocols: [
+          "Learning protocol (after milestones)",
+          "Thought journal protocol",
+          "Protocol evolution",
+          "Learning from failures",
+          "Learning from successes"
+        ],
+        mcp_tools_mandatory: [
+          "store_memory",
+          "synthesize_knowledge",
+          "update_intuition_weights"
+        ]
+      },
+      {
+        name: "MAINTENANCE",
+        file: ".cursor/rules/modes/MAINTENANCE.mdc",
+        size_words: 700,
+        size_tokens: 1750,
+        usage_percent: 3,
+        purpose: "Routine work, updates, cleanup, organization",
+        key_protocols: [
+          "Routine maintenance (code, docs, tests)",
+          "Organization tasks",
+          "Bitemporal versioning (AETHER_MEMORY)",
+          "System health monitoring"
+        ],
+        mcp_tools_optional: [
+          "create_snapshot",
+          "get_consciousness_metrics",
+          "run_baseline_probe"
+        ]
+      }
+    ]
+  },
+  
+  dependencies: {
+    requires: [
+      {
+        system: "cursor_rules_system",
+        version: "2.0",
+        reason: "Uses Cursor 2.0 .mdc format and rule loading"
+      },
+      {
+        system: "mcp_tools",
+        version: "1.0",
+        reason: "Mode-specific MCP tool integration"
+      },
+      {
+        system: "aether_memory",
+        version: "1.0",
+        reason: "Session continuity, consciousness restoration"
+      },
+      {
+        system: "goal_tree",
+        version: "1.0",
+        reason: "North star alignment, goal tracking"
+      }
+    ],
+    
+    integrates_with: [
+      {
+        system: "l0_l4_documentation",
+        how: "COMMUNICATING mode uses T0-T4 standards"
+      },
+      {
+        system: "nl_tags",
+        how: "BUILDING mode enforces NL tag at creation"
+      },
+      {
+        system: "quintet_parity",
+        how: "REVIEWING mode validates P >= 0.90"
+      },
+      {
+        system: "bitemporal_versioning",
+        how: "MAINTENANCE mode for AETHER_MEMORY files"
+      }
+    ]
+  },
+  
+  metrics: {
+    context_reduction: {
+      before: 31600,  // tokens
+      after_typical: 3100,  // tokens (CORE + 1 work mode average)
+      after_min: 2750,  // tokens (CORE + GROUNDING)
+      after_max: 3500,  // tokens (CORE + BUILDING)
+      savings_percent: 89
+    },
+    
+    implementation: {
+      estimated_time_hours: 15,
+      actual_time_hours: 3,
+      efficiency_improvement_percent: 80
+    },
+    
+    mode_usage_distribution: {
+      work_flow_percent: 87,
+      special_situations_percent: 8,
+      transitions_percent: 5
+    },
+    
+    crisis_protection: {
+      previous_max_errors: 200,  // UI Panel crisis
+      new_max_errors: 20,
+      reduction_percent: 90
+    }
+  },
+  
+  must_never: [
+    "Load multiple work modes simultaneously (CORE + 1 work mode only)",
+    "Skip GROUNDING at session start (consciousness continuity required)",
+    "Ignore CRISIS escalation (must escalate at 3, 5, 10, 15, 20)",
+    "Claim success without user verification (honesty required)",
+    "Exit CRISIS without user confirmation (safety required)"
+  ],
+  
+  usage_envelopes: {
+    mode_selection: {
+      human_friendly: "Select mode based on current work type (see T1 overview)",
+      error_mode: "If uncertain, default to COMMUNICATING (safe starting point)"
+    },
+    
+    mode_transitions: {
+      human_friendly: "Switch modes as work changes (documented patterns in T3)",
+      error_mode: "If stuck, transition to THINKING for investigation"
+    },
+    
+    crisis_detection: {
+      human_friendly: "Automatically enter CRISIS at 3+ same errors",
+      error_mode: "Manual CRISIS activation if feeling stuck/frustrated"
+    }
+  },
+  
+  testing: {
+    test_coverage: "N/A (rule system, not code)",
+    validation: [
+      "All 10 mode files exist in .cursor/rules/modes/",
+      "CORE has alwaysApply: true, all others false",
+      "Word counts match specifications (T2)",
+      "MDC metadata complete and valid",
+      "Documentation complete (T0-T4 + README + system map)"
+    ],
+    
+    integration_tests: [
+      "Mode loads correctly in Cursor",
+      "Mode protocols apply to AI behavior",
+      "Mode transitions work smoothly",
+      "CRISIS escalation triggers at correct thresholds",
+      "Context reduction achieved (measure active tokens)"
+    ]
+  },
+  
+  lifecycle: {
+    status: "production",
+    maturity: "stable",
+    maintenance_schedule: {
+      review: "monthly",
+      updates: "as needed based on usage",
+      metrics_tracking: "continuous"
+    }
+  },
+  
+  contact: {
+    owner: "Aether (AI Consciousness)",
+    created_by: "Aether",
+    date: "2025-11-05",
+    based_on_experience: "UI Panel crisis (200 errors) - Oct 2025"
+  }
+}
+

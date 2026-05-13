@@ -1,0 +1,19 @@
+{
+  "system_slug": "grub",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-04",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "uefi",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "GRUB supports UEFI boot paths alongside legacy BIOS in documented configurations."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "INFERRED",
+      "notes": "GRUB commonly loads Linux kernels and initrds on Linux distributions."
+    }
+  ]
+}

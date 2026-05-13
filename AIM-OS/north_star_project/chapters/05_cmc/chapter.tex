@@ -1,0 +1,520 @@
+% Chapter converted from Markdown
+% Auto-generated - do not edit manually
+
+\section*{Chapter 5 -- Memory That Never Forgets (CMC)}
+
+
+\subsection*{Purpose}
+
+This chapter specifies the Context Memory Core (CMC) as the durable substrate that makes AIM-OS work possible. CMC solves the fundamental problem introduced in Chapter 1: statelessness. Without durable memory, every session starts from zero, context evaporates, and decisions cannot be audited.
+
+CMC provides:
+\item \textbf{Immutable atoms} with rich tags, metadata, and provenance
+\item \textbf{Bitemporal preservation} enabling "what did we know then" and "what do we know now" queries
+\item \textbf{Append-only journaling} with hash-chained integrity
+\item \textbf{Deterministic snapshots} for fast recovery and point-in-time analysis
+\item \textbf{Composable retrieval} that integrates with Chat/IDE and MCP tools
+
+This chapter demonstrates that CMC is not just a database—it is the foundation of consciousness continuity. Every decision, every failure, every success becomes a retrievable atom that survives session boundaries.
+
+\subsection*{Executive Summary}
+
+CMC stores immutable atoms with rich tags, metadata, and provenance. The journal is append-only; snapshots provide fast cold-start and deterministic recovery. Time is bitemporal: transaction time (when written) and valid time (what period the content describes). Retrieval works by content, tags, time, and provenance—and composes with Chat/IDE + MCP tools. Operational safeguards (hash-chains, manifests, quarantine) keep integrity high without slowing work.
+
+\textbf{Key Insight:} CMC enables the "memory that never forgets" principle from Chapter 1. Without it, AIM-OS cannot maintain continuity, audit decisions, or learn from history. With it, every session starts with loaded context, not guesswork.
+
+\subsection*{Design Goals}
+
+CMC is designed around five non-negotiable principles:
+
+1. \textbf{Durability first:} Nothing important is ephemeral. Edits append successors; history is never lost. This enables auditability and learning from past decisions.
+
+2. \textbf{Auditability by default:} Every atom carries provenance: who created it, when, why, and what it references. Audits traverse by agent, thread, or tool without manual reconstruction.
+
+3. \textbf{Bitemporal truth:} CMC preserves two time axes:
+   - \textbf{Transaction time:} When the atom was written (immutable, set by CMC)
+   - \textbf{Valid time:} What period the content describes (mutable, set by authoring tool)
+   
+   This enables queries like "What did we believe at 14:00 on Tuesday?" and "What do we believe now about Monday's event?"
+
+4. \textbf{Fast recovery:} Snapshots capture consistent views with indices and manifests. Cold-start loads the latest snapshot, then replays the journal tail. Recovery is deterministic and fast.
+
+5. \textbf{Accessible operations:} Human-first summaries for common queries; raw JSON available for deep inspection. The interface abstracts complexity without hiding capability.
+
+These goals are not aspirational—they are enforced by the implementation. The system cannot function without them.
+
+\subsection*{Core Concepts}
+
+\subsubsection*{Atom: The Minimal Unit of Knowledge}
+
+An atom is the smallest unit of persisted knowledge in CMC. It contains:
+\item \textbf{Content:} The actual knowledge (text, image, binary, or reference URI)
+\item \textbf{Tags:} Structured labels for retrieval (e.g., \texttt{{chapter: "05", cmc: true, type: "evidence"}})
+\item \textbf{Metadata:} Arbitrary JSON (author, source, thread, tool, confidence)
+\item \textbf{Provenance:} Actor + timestamp + rationale (who created it, when, why)
+\item \textbf{Temporal fields:} \texttt{valid\_time} (what period this describes) and \texttt{tx\_time} (when written)
+
+Atoms are immutable. To update knowledge, create a successor atom that references the predecessor. This preserves history and enables audit trails.
+
+\textbf{Atom Schema Details:}
+\item \textbf{Identity:} Each atom has a stable UUID (\texttt{atom\_{uuid}})
+\item \textbf{Modality:} Supports \texttt{text}, \texttt{code}, \texttt{event}, \texttt{tool:call}, \texttt{tool:result}
+\item \textbf{Content Reference:} Small content (<1KB) stored inline; larger content externalized to object store with URI and SHA-256 hash
+\item \textbf{Embedding:} Optional vector representation for semantic search (model ID, dimensions, vector)
+\item \textbf{Tag Priority Vector (TPV):} Priority, relevance, and decay parameters for retrieval optimization
+\item \textbf{VIF Witness Envelope:} Complete provenance including model ID, weights hash, prompt template, tools used, writer, confidence band, and entropy
+
+This rich schema ensures every atom carries complete context for retrieval, verification, and auditability.
+
+\subsubsection*{Journal: The Append-Only Log}
+
+The journal is an append-only log of atoms, hash-chained for integrity. Each segment includes:
+\item The previous segment's hash (forming a chain)
+\item A batch of atoms written together
+\item A manifest of atom IDs and checksums
+
+The journal enables:
+\item \textbf{Integrity verification:} Hash chains detect corruption immediately
+\item \textbf{Deterministic replay:} Replay from any point to reconstruct state
+\item \textbf{Audit trails:} Every write is preserved, never overwritten
+
+\subsubsection*{Snapshot: Consistent Checkpoints}
+
+Snapshots are periodic, consistent checkpoints materialized from the journal. Each snapshot includes:
+\item \textbf{Inverted indices:} Fast lookup by tags, terms, provenance
+\item \textbf{Manifests:} Complete list of atom IDs, sizes, checksums
+\item \textbf{Summaries:} Counts, growth rates, distribution statistics
+
+Snapshots enable:
+\item \textbf{Fast cold-start:} Load latest snapshot, then replay journal tail
+\item \textbf{Point-in-time analysis:} Query "as of snapshot N"
+\item \textbf{Safe migration:} Compaction and optimization windows
+
+\subsubsection*{Bitemporal: Dual Time Axes}
+
+Bitemporal preservation answers two critical questions:
+\item \textbf{Transaction-time queries:} "What did we believe at 14:00 on Tuesday?" (replay journal as of that time)
+\item \textbf{Valid-time queries:} "What do we believe now about Monday's event?" (query current state filtered by valid\_time)
+
+This dual-axis model enables both historical accuracy and current truth, which is essential for auditability and learning.
+
+\subsection*{Atom Model}
+
+Atoms are the fundamental building blocks of CMC. Each atom represents a single piece of knowledge with complete provenance.
+
+\subsubsection*{Atom Fields}
+
+\item \textbf{modality:} \texttt{text | image | bin} - The type of content stored
+\item \textbf{content:} Inline content or reference URI (for large payloads)
+\item \textbf{tags:} Structured labels for retrieval (e.g., \texttt{{chapter: "05", cmc: true, type: "evidence"}})
+\item \textbf{metadata:} Arbitrary JSON (author, source, thread, tool, confidence, etc.)
+\item \textbf{provenance:} Actor + timestamp + rationale (who created it, when, why)
+\item \textbf{valid\_time:} Interval the content describes \texttt{[start, end]} (set by authoring tool)
+\item \textbf{tx\_time:} Server write time (immutable, set by CMC)
+
+\subsubsection*{Atom Properties}
+
+\item \textbf{Immutability:} Creating a successor never overwrites—history is preserved. This enables audit trails and learning from past decisions.
+
+\item \textbf{Addressability:} Each atom has a stable UUID. Successors link via metadata/provenance, creating a graph of knowledge evolution.
+
+\item \textbf{Minimality:} Atoms are small; large payloads live behind URIs with checksums. This keeps the journal fast and enables efficient retrieval.
+
+\item \textbf{Composability:} Atoms reference other atoms via tags and metadata. This creates a knowledge graph that HHNI can navigate hierarchically.
+
+\subsubsection*{Successor Relationships}
+
+When knowledge evolves, create a successor atom that:
+\item References the predecessor atom ID
+\item Narrows or extends \texttt{valid\_time} as appropriate
+\item Carries updated content and metadata
+\item Preserves the full history chain
+
+This enables queries like "Show me all versions of this knowledge" and "What did we believe before this change?"
+
+\subsection*{Journal and Integrity}
+
+The journal is CMC's append-only log of atoms, hash-chained for integrity. This design ensures that corruption is detected immediately and recovery is deterministic.
+
+\subsubsection*{Hash Chaining}
+
+Each journal segment includes:
+\item The previous segment's hash (forming an unbreakable chain)
+\item A batch of atoms written together (atomicity)
+\item A manifest of atom IDs and checksums (verification)
+
+Hash chaining enables:
+\item \textbf{Immediate corruption detection:} Any modification breaks the chain
+\item \textbf{Deterministic replay:} Reconstruct state from any point
+\item \textbf{Audit trails:} Every write is preserved, never overwritten
+
+\subsubsection*{Integrity Checks}
+
+Integrity is verified at multiple levels:
+\item \textbf{On write:} Each atom is validated before journaling
+\item \textbf{Periodic scans:} CI and background tasks verify hash chains
+\item \textbf{On read:} Checksums verified when loading from journal
+
+\subsubsection*{Quarantine Policy}
+
+When corruption is detected:
+1. Isolate the corrupt segment immediately
+2. Report the violation with full context
+3. Recover from the last good snapshot
+4. Replay journal tail to restore consistency
+
+This policy ensures that corruption never propagates and recovery is always possible.
+
+\subsection*{Snapshots}
+
+Snapshots are periodic, consistent checkpoints materialized from the journal. They provide fast cold-start and enable point-in-time analysis.
+
+\subsubsection*{Snapshot Contents}
+
+Each snapshot includes:
+\item \textbf{Inverted indices:} Fast lookup by tags, terms, provenance (enables HHNI traversal)
+\item \textbf{Manifests:} Complete list of atom IDs, sizes, checksums (verification)
+\item \textbf{Summaries:} Counts, growth rates, distribution statistics (observability)
+
+\subsubsection*{Snapshot Uses}
+
+Snapshots enable three critical capabilities:
+
+1. \textbf{Fast cold-start:} Load the latest snapshot, then replay the journal tail. This reduces startup time from minutes to seconds.
+
+2. \textbf{Point-in-time analysis:} Query "as of snapshot N" to see historical state. This enables audits and learning from past decisions.
+
+3. \textbf{Safe migration windows:} Compaction and optimization can run during snapshot creation without blocking writes.
+
+\subsubsection*{Snapshot Frequency}
+
+Snapshots are created:
+\item Periodically (e.g., every hour or every N atoms)
+\item Before risky operations (migrations, compactions)
+\item On demand (via MCP tools for testing)
+
+The frequency balances recovery speed against storage cost. More frequent snapshots = faster recovery but more storage.
+
+\subsection*{Bitemporal Preservation}
+
+Bitemporal preservation is CMC's most powerful feature. It enables both historical accuracy ("what did we know then?") and current truth ("what do we know now?").
+
+\subsubsection*{The Two Time Axes}
+
+CMC preserves two independent time dimensions:
+
+1. \textbf{Transaction time (tx\_time):} When the atom was written (immutable, set by CMC server)
+   - Answers: "What did we believe at 14:00 on Tuesday?"
+   - Enables: Historical replay, audit trails, learning from past decisions
+
+2. \textbf{Valid time (valid\_time):} What period the content describes (mutable, set by authoring tool)
+   - Answers: "What do we believe now about Monday's event?"
+   - Enables: Current truth queries, knowledge evolution tracking
+
+\subsubsection*{Bitemporal Queries}
+
+The dual-axis model enables powerful queries:
+
+\item \textbf{Transaction-time replay:} "Show me the world as of Tuesday 14:00" (replay journal up to that point)
+\item \textbf{Valid-time filtering:} "What do we currently believe about events in January?" (filter by valid\_time)
+\item \textbf{Temporal evolution:} "Show me how our understanding of X changed over time" (query successor chains)
+
+\subsubsection*{Successor Relationships}
+
+When knowledge evolves, successors preserve history:
+\item Successors reference predecessor atom IDs
+\item \texttt{valid\_time} is narrowed or extended as appropriate
+\item \texttt{tx\_time} records when the update occurred
+\item Full history chain remains queryable
+
+This enables learning from past decisions and understanding why current knowledge exists.
+
+\subsection*{Retrieval Patterns}
+
+CMC supports multiple retrieval patterns that compose together. This enables flexible queries while maintaining performance.
+
+\subsubsection*{By Content}
+
+Full-text search with scoring, filtered by tags/time:
+\item Search across atom content using semantic or keyword matching
+\item Rank results by relevance score
+\item Filter by tags, time ranges, or provenance
+
+\textbf{Use case:} "Find all atoms mentioning 'confidence routing' from the last week"
+
+\subsubsection*{By Tags}
+
+Structured queries using tag hierarchies:
+\item Exact tag matches: \texttt{{chapter: "05", type: "evidence"}}
+\item Tag hierarchies: \texttt{{chapter: "05", *}} (all tags starting with chapter=05)
+\item Tag composition: Combine multiple tag filters with AND/OR logic
+
+\textbf{Use case:} "Find all evidence atoms for Chapter 5"
+
+\subsubsection*{By Time}
+
+As-of queries using transaction or valid time:
+\item Transaction-time queries: "Show atoms written before Tuesday 14:00"
+\item Valid-time queries: "Show atoms valid during January 2025"
+\item Time range queries: Combine both axes for precise temporal filtering
+
+\textbf{Use case:} "What did we know about X as of last Tuesday, and what do we know now?"
+
+\subsubsection*{By Provenance}
+
+Filter by agent, thread, tool for audits and reviews:
+\item Agent filtering: "Show all atoms created by Agent Max"
+\item Thread filtering: "Show all atoms from thread 'north-star-orchestration'"
+\item Tool filtering: "Show all atoms created via 'store\_memory' tool"
+
+\textbf{Use case:} "Audit all changes made by Agent Aether in the last 24 hours"
+
+\subsubsection*{Composition}
+
+Typical retrieval flow:
+1. Narrow by tags/time (fast filtering)
+2. Rank by content relevance (semantic scoring)
+3. Filter by provenance (audit requirements)
+4. Return top N results with summaries
+
+This composition enables both fast queries and deep audits without sacrificing performance.
+
+\subsection*{Interfaces (Chat/IDE + MCP Tools)}
+
+CMC integrates seamlessly with the universal interface from Chapter 2. Chat issues intents; IDE shows artifacts; MCP tools persist/retrieve atoms.
+
+\subsubsection*{Authoring Workflow}
+
+The typical authoring path demonstrates CMC integration:
+
+1. \textbf{Draft claim:} Author writes prose in chapter.md
+2. \textbf{Add Tier A anchor:} Author adds citation to evidence.jsonl
+3. \textbf{Store atom:} MCP tool \texttt{store\_memory} creates atom with tags
+4. \textbf{Commit snapshot:} On milestone, create snapshot for fast recovery
+
+This workflow ensures evidence lives both in-line (evidence.jsonl) and in durable memory (CMC atoms).
+
+\subsubsection*{MCP Tool Integration}
+
+CMC exposes three primary MCP tools:
+
+\item \textbf{\texttt{store\_memory}:} Create atoms with content, tags, metadata
+\item \textbf{\texttt{retrieve\_memory}:} Query atoms by content, tags, time, provenance
+\item \textbf{\texttt{get\_memory\_stats}:} Get observability metrics (counts, growth rates)
+
+These tools enable the proof loop from Chapter 3: plan → execute → verify → record → message.
+
+\subsubsection*{Evidence and Metrics}
+
+Evidence and metrics live next to prose:
+\item Reviewers can verify claims by running examples
+\item Evidence atoms link back to prose via tags
+\item Metrics track system health and growth
+
+This integration makes CMC transparent—authors see evidence, reviewers verify it, and the system remembers it.
+
+\subsection*{Operational Safeguards}
+
+CMC includes multiple safeguards to ensure integrity and enable recovery:
+
+\subsubsection*{Provenance Everywhere}
+
+Every atom carries complete provenance:
+\item \textbf{Who:} Agent or user who created it
+\item \textbf{When:} Transaction time (tx\_time) and valid time (valid\_time)
+\item \textbf{Why:} Rationale or intent from authoring tool
+\item \textbf{What:} References to related atoms, threads, tools
+
+Audits traverse by agent, thread, or tool without manual reconstruction. This enables accountability and learning.
+
+\subsubsection*{Snapshots Before Risky Changes}
+
+Before risky operations (migrations, compactions, major updates):
+1. Create a snapshot
+2. Verify snapshot integrity
+3. Proceed with operation
+4. If operation fails, rollback to snapshot
+
+Rollbacks are deterministic because snapshots are consistent checkpoints.
+
+\subsubsection*{Quarantine on Mismatch}
+
+When integrity checks detect corruption:
+1. Isolate the corrupt segment immediately
+2. Report violation with full context (which segment, what check failed)
+3. Recover from last good snapshot
+4. Replay journal tail to restore consistency
+
+This ensures corruption never propagates and recovery is always possible.
+
+\subsubsection*{Human-First Summaries}
+
+CMC provides readable summaries for common queries:
+\item Memory statistics (counts, growth rates)
+\item Recent atoms by tag or time
+\item Provenance trails for audits
+
+Raw JSON is available for deep inspection, but summaries enable quick understanding without diving into details.
+
+Runnable Examples (PowerShell)
+``\texttt{powershell
+\section*{Store an atom}
+\_\_MATH\_BLOCK\_0\_\_true; type='example' } } } | ConvertTo-Json -Depth 6
+Invoke-WebRequest -Uri 'http://localhost:5001/mcp/execute' -Method POST -ContentType 'application/json' -Body \_\_MATH\_BLOCK\_1\_\_stats = @{ tool='get\_memory\_stats'; arguments=@{} } | ConvertTo-Json -Depth 6
+Invoke-WebRequest -Uri 'http://localhost:5001/mcp/execute' -Method POST -ContentType 'application/json' -Body \_\_MATH\_BLOCK\_2\_\_qry = @{ tool='retrieve\_memory'; arguments=@{ query='CMC'; tags=@{ chapter='05' }; limit=5 } } | ConvertTo-Json -Depth 6
+Invoke-WebRequest -Uri 'http://localhost:5001/mcp/execute' -Method POST -ContentType 'application/json' -Body \_\_MATH\_BLOCK\_3\_\_report = @{
+  tool='store\_memory';
+  arguments=@{
+    content="CMC snapshot verified \_\_MATH\_BLOCK\_4\_\_report |
+  Select-Object -ExpandProperty Content
+}`\texttt{
+
+\subsection*{Runnable Example 5: Query Atoms by Tag and Valid Time}
+PowerShell
+}`\texttt{powershell
+\_\_MATH\_BLOCK\_5\_\_body |
+  Select-Object -ExpandProperty Content
+}`\texttt{
+This proves bitemporal indexing is live: the query filters both by tags and valid-time range, just as described in }knowledge\_architecture/systems/cmc/T2\_architecture.md\texttt{.
+
+\subsection*{Edge Cases and Failure Modes}
+
+Real systems encounter failures. CMC handles them gracefully:
+
+\subsubsection*{Disk Corruption}
+
+\textbf{Scenario:} Journal segment becomes corrupted (disk failure, bit rot)
+
+\textbf{Response:}
+1. Quarantine corrupt range immediately
+2. Restore from last good snapshot
+3. Replay journal tail to restore consistency
+4. Report corruption with full context for investigation
+
+\textbf{Prevention:} Periodic integrity scans, redundant storage, checksums
+
+\subsubsection*{Clock Skew}
+
+\textbf{Scenario:} Authoring tool and CMC server have different clocks
+
+\textbf{Response:}
+\item Prefer }tx\_time\texttt{ generated by server (single source of truth)
+\item Annotate }valid\_time\texttt{ with source if provided by authoring tool
+\item Log clock skew warnings for investigation
+
+\textbf{Prevention:} NTP synchronization, server-generated timestamps
+
+\subsubsection*{Large Payloads}
+
+\textbf{Scenario:} Atom content exceeds size limits
+
+\textbf{Response:}
+\item Store payload externally (object storage, file system)
+\item Keep checksums and sizes in atom metadata
+\item Atom contains reference URI, not inline content
+
+\textbf{Prevention:} Size limits, external storage for large payloads
+
+\subsubsection*{Concurrent Writes}
+
+\textbf{Scenario:} Multiple agents write atoms simultaneously
+
+\textbf{Response:}
+\item Journal segments batch writes atomically
+\item Hash chains ensure ordering
+\item Snapshots capture consistent views
+
+\textbf{Prevention:} Atomic batching, deterministic ordering
+
+Each failure mode has a documented response that preserves integrity and enables recovery.
+
+\subsection*{Operational Runbook: Snapshot Restore (Wave 1 Standard)}
+}knowledge\_architecture/systems/cmc/L3\_detailed.md\texttt{ documents the precise steps operators follow before risky maintenance:
+
+1. Run }python north\_star\_project/scripts/run\_chain.py --check-deps ch05\_memory\_cmc\texttt{ to confirm dependencies (HHNI, SEG, APOE) are green.
+2. Execute the snapshot plan defined in }packages/cmc\_service/advanced\_pipelines.py\texttt{ (}SnapshotManager.create()\texttt{), storing the manifest ID inside CMC via }store\_memory\texttt{.
+3. Perform the migration or remediation work.
+4. If gates fail or integrity drops, call }SnapshotManager.restore(manifest\_id)\texttt{ and replay the journal tail (}replay\_journal.py --from manifest\_id\texttt{).
+5. Log the outcome to CMC (as shown in Runnable Example 4) and post the summary to }coordination/epic\_standards\_overhaul/comms/SHARED\_MESSAGE\_BOARD.md`.
+
+Because every step writes an atom, HHNI can reconstruct the entire runbook after the fact, and SEG can prove which manifests were used in production.
+
+\subsection*{Future Work}
+
+CMC is production-ready but continues to evolve:
+
+\subsubsection*{Compaction with Tiered Storage}
+
+For very large journals:
+\item Tiered storage (hot/cold/archive)
+\item Compaction removes obsolete atoms
+\item Maintains bitemporal queries across tiers
+
+\textbf{Status:} Design phase, not blocking current use
+
+\subsubsection*{Cross-Workspace Sync}
+
+For multi-workspace scenarios:
+\item CRDT-ish successor rules for conflict resolution
+\item Sync protocol for atom replication
+\item Conflict detection and resolution
+
+\textbf{Status:} Research phase, future enhancement
+
+\subsubsection*{Richer Retrieval Operators}
+
+Combining structure and semantics:
+\item Graph queries (follow successor chains)
+\item Semantic similarity (vector search)
+\item Temporal joins (correlate by time)
+
+\textbf{Status:} Incremental enhancement, current retrieval sufficient
+
+These enhancements improve CMC without breaking existing functionality.
+
+\subsection*{Connection to Other Systems}
+
+CMC is the foundation that enables other AIM-OS systems:
+
+\subsubsection*{HHNI (Chapter 6)}
+
+HHNI uses CMC atoms as its data source. Tags enable hierarchical navigation, and snapshots provide fast traversal. Without CMC, HHNI cannot retrieve knowledge efficiently.
+
+\subsubsection*{VIF (Chapter 7)}
+
+VIF stores confidence scores as CMC atoms. Bitemporal queries enable "what was our confidence then vs. now" analysis. Provenance tracks which agent or tool recorded each confidence score.
+
+\subsubsection*{APOE (Chapter 8)}
+
+APOE stores execution plans as CMC atoms. Plans reference evidence atoms, creating a knowledge graph. Snapshots enable point-in-time plan analysis.
+
+\subsubsection*{SEG (Chapter 9)}
+
+SEG uses CMC atoms as evidence nodes. Provenance links create the evidence graph. Bitemporal queries enable contradiction detection across time.
+
+\subsubsection*{SDF-CVF (Chapter 10)}
+
+SDF-CVF stores quality gate results as CMC atoms. Audit trails enable learning from quality failures. Snapshots capture quality state at milestones.
+
+\subsection*{Governance Hooks and Policy Alignment}
+
+orth\_star\_project/policy/gates.json elevates CMC to Tier S, so the interface enforces:
+\item \textbf{Confidence floor (vif\_min ≥ 0.90):} Writes below this value route into SIS for reinforcement before the atom is accepted.
+\item \textbf{Intelligent gate telemetry:} 
+orth\_star\_project/scripts/run\_chain.py --run-gates ch05\_memory\_cmc calculates relevance, density, completion, and thoroughness scores, then stores the output beside metrics.yaml for auditors.
+\item \textbf{Authority enforcement:} The command server checks the active persona (Chapter 16 authority map) before executing destructive operations such as snapshot deletion or compaction.
+
+Runnable Examples 4 and 5 show how operators attach gate metadata to every atom and validate retrieval scopes, keeping governance observable instead of implicit.
+
+
+\textbf{Key Insight:} CMC is not isolated—it is the substrate that makes all other systems possible. Every system stores its state in CMC, creating a unified knowledge graph.
+
+\subsection*{Checklist (CMC Completeness)}
+
+\item \textbf{Coverage:} Atom model, journal, snapshots, bitemporal preservation, retrieval patterns, interfaces, operational safeguards, edge cases, future work
+\item \textbf{Relevance:} Every section supports durability and auditability—CMC's core purpose
+\item \textbf{Balance:} Conceptual explanation (atoms, bitemporal) balances with operational detail (safeguards, edge cases)
+\item \textbf{Minimum substance:} Runnable examples, architecture diagram reference, comprehensive edge cases, integration with other systems
+
+This chapter demonstrates that CMC is production-ready and essential to AIM-OS. Without it, consciousness continuity is impossible.
+

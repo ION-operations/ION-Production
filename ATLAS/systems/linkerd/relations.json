@@ -1,0 +1,25 @@
+{
+  "system_slug": "linkerd",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-05",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Linkerd targets Kubernetes as primary deployment in upstream documentation."
+    },
+    {
+      "type": "competes_with",
+      "target": "istio",
+      "evidence_tier": "INFERRED",
+      "notes": "Substitutable service-mesh class on Kubernetes in many deployments."
+    },
+    {
+      "type": "integrates_with",
+      "target": "opentelemetry",
+      "evidence_tier": "INFERRED",
+      "notes": "Mesh telemetry often feeds OTel-class pipelines."
+    }
+  ]
+}

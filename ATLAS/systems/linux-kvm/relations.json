@@ -1,0 +1,89 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "KVM is a Linux kernel virtualization subsystem exposing hardware-assisted virtualization to userspace per kernel documentation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "firecracker",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "Firecracker requires KVM on supported Linux hosts per upstream Firecracker documentation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-namespaces",
+      "evidence_tier": "INFERRED",
+      "notes": "Contrasting isolation models: KVM runs guests with separate kernel contexts vs namespaces isolating processes within one kernel."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-cgroups",
+      "evidence_tier": "INFERRED",
+      "notes": "cgroups limit host resources for processes; KVM guests are a different abstraction layer from cgroup-scoped containers."
+    },
+    {
+      "type": "integrates_with",
+      "target": "docker",
+      "evidence_tier": "INFERRED",
+      "notes": "Docker Engine’s default Linux containers use namespaces/cgroups; KVM addresses hardware virtualization, not the same mechanism."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "Kubernetes can orchestrate KVM-backed runtimes in some stacks (e.g. VM-class sandboxes); distinct from default OCI Linux containers."
+    },
+    {
+      "type": "integrates_with",
+      "target": "confidential-computing",
+      "evidence_tier": "INFERRED",
+      "notes": "Confidential VMs may compose KVM-style virtualization with TEE hardware features depending on platform and stack."
+    },
+    {
+      "type": "integrates_with",
+      "target": "virtio",
+      "evidence_tier": "INFERRED",
+      "notes": "KVM guests commonly attach virtio paravirtual devices; virtio is the device transport, KVM is the hypervisor API."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-vhost",
+      "evidence_tier": "INFERRED",
+      "notes": "KVM-hosted virtio guests may use vhost backends on the host for efficient I/O; KVM is VM control, vhost is the I/O path."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-vfio",
+      "evidence_tier": "INFERRED",
+      "notes": "KVM guests may attach devices via VFIO-mediated passthrough; KVM is the hypervisor API, VFIO is the device/IOMMU assignment path."
+    },
+    {
+      "type": "integrates_with",
+      "target": "qemu",
+      "evidence_tier": "INFERRED",
+      "notes": "QEMU drives KVM on Linux hosts for hardware-accelerated virtualization; KVM is the kernel API, QEMU is the userspace VMM."
+    },
+    {
+      "type": "integrates_with",
+      "target": "libvirt",
+      "evidence_tier": "INFERRED",
+      "notes": "libvirt commonly orchestrates KVM-backed QEMU domains on Linux; KVM is the hypervisor API, libvirt is the management layer."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubevirt",
+      "evidence_tier": "INFERRED",
+      "notes": "KubeVirt VM workloads use KVM-backed QEMU on Linux nodes; KVM is the kernel API, KubeVirt orchestrates via Kubernetes."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kata-containers",
+      "evidence_tier": "INFERRED",
+      "notes": "Kata Containers accelerates guest VMs with KVM on Linux nodes; KVM is the kernel API, Kata composes it for OCI execution."
+    }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "system_slug": "opengl-es",
+  "schema_version": "1.0",
+  "last_reviewed": "2026-04-03",
+  "edges": [
+    {
+      "type": "integrates_with",
+      "target": "opengl",
+      "evidence_tier": "INFERRED",
+      "notes": "OpenGL ES is the embedded/mobile profile within the broader Khronos OpenGL family (shared specification culture)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "webgl",
+      "evidence_tier": "INFERRED",
+      "notes": "WebGL 1.0/2.0 normatively tracks OpenGL ES 2.0/3.0-class API baselines (Khronos WebGL materials)."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-kernel",
+      "evidence_tier": "INFERRED",
+      "notes": "Typical GLES drivers and EGL stacks on Linux-based mobile and embedded hosts."
+    },
+    {
+      "type": "competes_with",
+      "target": "vulkan",
+      "evidence_tier": "INFERRED",
+      "notes": "Overlapping mobile/embedded GPU API space; Vulkan adoption competes with GLES on newer platforms."
+    }
+  ]
+}

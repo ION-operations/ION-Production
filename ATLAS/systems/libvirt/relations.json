@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "edges": [
+    {
+      "type": "depends_on",
+      "target": "linux-kernel",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "libvirt’s daemon and drivers target Linux hosts for KVM/QEMU-class virtualization per upstream documentation."
+    },
+    {
+      "type": "integrates_with",
+      "target": "qemu",
+      "evidence_tier": "DOCUMENTED",
+      "notes": "libvirt manages QEMU domains and device models as documented; QEMU is the VMM, libvirt is the management layer."
+    },
+    {
+      "type": "integrates_with",
+      "target": "linux-kvm",
+      "evidence_tier": "INFERRED",
+      "notes": "KVM-backed QEMU domains are a common libvirt deployment pattern on Linux; KVM is the kernel API, libvirt orchestrates the stack."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubernetes",
+      "evidence_tier": "INFERRED",
+      "notes": "KubeVirt-class stacks may compose libvirt/QEMU/KVM on nodes; cite product-specific docs per claim."
+    },
+    {
+      "type": "integrates_with",
+      "target": "kubevirt",
+      "evidence_tier": "INFERRED",
+      "notes": "KubeVirt node stacks commonly use libvirt/QEMU/KVM paths; libvirt is node-local management, KubeVirt is the Kubernetes integration layer."
+    }
+  ]
+}

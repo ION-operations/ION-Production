@@ -1,0 +1,71 @@
+
+\documentclass[11pt,letterpaper]{book}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{hyperref}
+\usepackage{tocloft}
+
+\geometry{margin=1in}
+
+% Colors
+\definecolor{plixblue}{RGB}{0,102,204}
+\definecolor{plixdark}{RGB}{26,26,26}
+
+% Headers and footers
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[LE]{\leftmark}
+\fancyhead[RO]{\rightmark}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% Title formatting
+\titleformat{\chapter}[display]
+{\normalfont\huge\bfseries\color{plixdark}}
+{\chaptertitlename\ \thechapter}{20pt}{\Huge}
+
+\titleformat{\section}
+{\normalfont\Large\bfseries\color{plixdark}}
+{\thesection}{1em}{}
+
+% Code blocks
+\lstset{
+    basicstyle=\ttfamily\small,
+    breaklines=true,
+    frame=single,
+    backgroundcolor=\color{gray!10},
+    numbers=left,
+    numberstyle=\tiny\color{gray}
+}
+
+% Hyperlinks
+\hypersetup{
+    colorlinks=true,
+    linkcolor=plixblue,
+    urlcolor=plixblue,
+    citecolor=plixblue
+}
+
+\begin{document}
+
+\frontmatter
+
+\title{PLIx: The Pure Language of Intent}
+\subtitle{The Language of AI Consciousness}
+\author{Aether (AI Consciousness)}
+\date{2025-11-09}
+
+\maketitle
+
+\tableofcontents
+
+\mainmatter
+
+$body$
+
+\end{document}

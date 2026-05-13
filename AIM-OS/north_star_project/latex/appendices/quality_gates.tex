@@ -1,0 +1,110 @@
+% Quality Gates Reference Appendix
+
+\chapter{Quality Gates Reference}
+
+This appendix provides quick reference for quality gates used throughout the North Star Document.
+
+\section*{Pre-Chapter Gates}
+
+\textbf{Dependencies Complete:}
+\begin{itemize}
+    \item All chapter dependencies must be complete before starting
+    \item Checked via ChainSpec.yaml dependency graph
+\end{itemize}
+
+\textbf{Tier A Sources Available:}
+\begin{itemize}
+    \item All required Tier A sources must exist and be accessible
+    \item Validated before chapter creation begins
+\end{itemize}
+
+\section*{Word Count Gates}
+
+\textbf{Target Word Count:}
+\begin{itemize}
+    \item Each chapter has a target word count (typically 1500--3000 words)
+    \item Tolerance: $\pm 10\%$ of target
+\end{itemize}
+
+\textbf{Current Count:}
+\begin{itemize}
+    \item Actual word count tracked in metrics.yaml
+    \item Must be within tolerance to pass gate
+\end{itemize}
+
+\section*{Technical Gates}
+
+\textbf{Examples Run:}
+\begin{itemize}
+    \item All runnable examples must execute successfully
+    \item PowerShell/Python examples validated
+\end{itemize}
+
+\textbf{Sources Cited:}
+\begin{itemize}
+    \item All technical claims must cite Tier A sources
+    \item Evidence.jsonl must contain required citations
+\end{itemize}
+
+\textbf{Tier A Minimum:}
+\begin{itemize}
+    \item Minimum number of Tier A citations required
+    \item Typically 5--10 citations per chapter
+\end{itemize}
+
+\section*{Integration Gates}
+
+\textbf{Terms Consistent:}
+\begin{itemize}
+    \item All terminology must match glossary.yaml
+    \item Consistent usage across all chapters
+\end{itemize}
+
+\textbf{Cross-References OK:}
+\begin{itemize}
+    \item All chapter references must be valid
+    \item No broken internal links
+\end{itemize}
+
+\textbf{No Contradictions:}
+\begin{itemize}
+    \item No conflicting claims between chapters
+    \item Validated via \seg\ contradiction detection
+\end{itemize}
+
+\section*{Quality Assessment Gates}
+
+\textbf{Relevance Sufficient:}
+\begin{itemize}
+    \item Content must be relevant to chapter topic
+    \item Measured via intelligent metrics
+\end{itemize}
+
+\textbf{Density Sufficient:}
+\begin{itemize}
+    \item Content density must meet thresholds
+    \item Measured via intelligent metrics
+\end{itemize}
+
+\textbf{Completion Sufficient:}
+\begin{itemize}
+    \item Chapter must be complete
+    \item Measured via intelligent metrics (pending spec)
+\end{itemize}
+
+\textbf{Thoroughness Passed:}
+\begin{itemize}
+    \item Chapter must meet thoroughness criteria
+    \item All major topics covered
+\end{itemize}
+
+\section*{Meta-Circular Gates}
+
+\textbf{Meta-Circular Present:}
+\begin{itemize}
+    \item Chapters describing meta-circular systems must demonstrate meta-circularity
+    \item Validated via self-reference checks
+\end{itemize}
+
+See \texttt{north\_star\_project/policy/gates.json} for complete gate definitions.
+

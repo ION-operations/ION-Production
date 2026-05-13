@@ -1,0 +1,598 @@
+{
+  system_id: "ai_collaboration_system",
+  system_name: "AI Collaboration System",
+  version: "1.0.0",
+  last_updated: "2025-01-27T20:50:00Z",
+  map_type: "system_topology",
+  internal_topology: {
+    core_components: [
+      {
+        component_id: "ai_communication_engine",
+        name: "AI Communication Engine",
+        type: "communication_engine",
+        tier: 2,
+        description: "Manages communication between AI systems and agents",
+        ports: {
+          input: [
+            "communication_requests",
+            "communication_rules",
+          ],
+          output: [
+            "communication_responses",
+            "communication_status",
+          ],
+        },
+        dependencies: [
+          "message_router",
+          "protocol_handler",
+        ],
+        blast_radius: "platform",
+        must_never: [
+          "Communicate without validation",
+          "Skip communication rules",
+          "Ignore protocol requirements",
+          "Bypass communication validation",
+        ],
+      },
+      {
+        component_id: "collaboration_coordinator",
+        name: "Collaboration Coordinator",
+        type: "coordination_engine",
+        tier: 2,
+        description: "Coordinates collaboration between AI systems and agents",
+        ports: {
+          input: [
+            "collaboration_requests",
+            "coordination_rules",
+          ],
+          output: [
+            "collaboration_status",
+            "coordination_events",
+          ],
+        },
+        dependencies: [
+          "coordination_rules",
+          "workflow_manager",
+        ],
+        blast_radius: "platform",
+        must_never: [
+          "Coordinate without validation",
+          "Skip coordination rules",
+          "Ignore workflow requirements",
+          "Bypass coordination validation",
+        ],
+      },
+      {
+        component_id: "task_distributor",
+        name: "Task Distributor",
+        type: "distribution_engine",
+        tier: 2,
+        description: "Distributes tasks among AI systems and agents",
+        ports: {
+          input: [
+            "task_requests",
+            "distribution_rules",
+          ],
+          output: [
+            "task_assignments",
+            "distribution_status",
+          ],
+        },
+        dependencies: [
+          "distribution_rules",
+          "load_balancer",
+        ],
+        blast_radius: "platform",
+        must_never: [
+          "Distribute tasks without validation",
+          "Skip distribution rules",
+          "Ignore load balancing requirements",
+          "Bypass distribution validation",
+        ],
+      },
+      {
+        component_id: "knowledge_sharer",
+        name: "Knowledge Sharer",
+        type: "sharing_engine",
+        tier: 2,
+        description: "Shares knowledge and insights between AI systems",
+        ports: {
+          input: [
+            "knowledge_requests",
+            "sharing_rules",
+          ],
+          output: [
+            "shared_knowledge",
+            "sharing_status",
+          ],
+        },
+        dependencies: [
+          "sharing_rules",
+          "knowledge_processor",
+        ],
+        blast_radius: "platform",
+        must_never: [
+          "Share knowledge without validation",
+          "Skip sharing rules",
+          "Ignore knowledge requirements",
+          "Bypass sharing validation",
+        ],
+      },
+      {
+        component_id: "collaboration_monitor",
+        name: "Collaboration Monitor",
+        type: "monitoring_engine",
+        tier: 2,
+        description: "Monitors collaboration performance and effectiveness",
+        ports: {
+          input: [
+            "monitoring_requests",
+            "monitoring_rules",
+          ],
+          output: [
+            "monitoring_reports",
+            "performance_metrics",
+          ],
+        },
+        dependencies: [
+          "monitoring_rules",
+          "metrics_collector",
+        ],
+        blast_radius: "platform",
+        must_never: [
+          "Monitor without validation",
+          "Skip monitoring rules",
+          "Ignore performance requirements",
+          "Bypass monitoring validation",
+        ],
+      },
+    ],
+    supporting_components: [
+      {
+        component_id: "message_router",
+        name: "Message Router",
+        type: "routing_engine",
+        tier: 1,
+        description: "Routes messages between AI systems",
+        ports: {
+          input: [
+            "message_requests",
+            "routing_rules",
+          ],
+          output: [
+            "routed_messages",
+            "routing_status",
+          ],
+        },
+        dependencies: [
+          "routing_rules",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Route messages without validation",
+          "Skip routing rules",
+          "Ignore routing requirements",
+          "Bypass routing validation",
+        ],
+      },
+      {
+        component_id: "protocol_handler",
+        name: "Protocol Handler",
+        type: "protocol_engine",
+        tier: 1,
+        description: "Handles communication protocols between AI systems",
+        ports: {
+          input: [
+            "protocol_requests",
+            "protocol_rules",
+          ],
+          output: [
+            "protocol_responses",
+            "protocol_status",
+          ],
+        },
+        dependencies: [
+          "protocol_rules",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Handle protocols without validation",
+          "Skip protocol rules",
+          "Ignore protocol requirements",
+          "Bypass protocol validation",
+        ],
+      },
+      {
+        component_id: "workflow_manager",
+        name: "Workflow Manager",
+        type: "workflow_engine",
+        tier: 1,
+        description: "Manages collaboration workflows",
+        ports: {
+          input: [
+            "workflow_requests",
+            "workflow_rules",
+          ],
+          output: [
+            "workflow_status",
+            "workflow_events",
+          ],
+        },
+        dependencies: [
+          "workflow_rules",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Manage workflows without validation",
+          "Skip workflow rules",
+          "Ignore workflow requirements",
+          "Bypass workflow validation",
+        ],
+      },
+      {
+        component_id: "load_balancer",
+        name: "Load Balancer",
+        type: "balancing_engine",
+        tier: 1,
+        description: "Balances load across AI systems",
+        ports: {
+          input: [
+            "load_requests",
+            "balancing_rules",
+          ],
+          output: [
+            "load_balance",
+            "balancing_status",
+          ],
+        },
+        dependencies: [
+          "balancing_rules",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Balance load without validation",
+          "Skip balancing rules",
+          "Ignore load requirements",
+          "Bypass balancing validation",
+        ],
+      },
+      {
+        component_id: "knowledge_processor",
+        name: "Knowledge Processor",
+        type: "processing_engine",
+        tier: 1,
+        description: "Processes knowledge for sharing between AI systems",
+        ports: {
+          input: [
+            "knowledge_data",
+            "processing_rules",
+          ],
+          output: [
+            "processed_knowledge",
+            "processing_status",
+          ],
+        },
+        dependencies: [
+          "processing_rules",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Process knowledge without validation",
+          "Skip processing rules",
+          "Ignore knowledge requirements",
+          "Bypass processing validation",
+        ],
+      },
+    ],
+  },
+  boundary_tendrils: {
+    input_ports: [
+      {
+        port_id: "communication_requests_input",
+        name: "Communication Requests Input",
+        type: "data_input",
+        protocol: "json",
+        description: "Receives communication requests between AI systems",
+        required: true,
+        validation: "communication_requests_schema",
+      },
+      {
+        port_id: "collaboration_requests_input",
+        name: "Collaboration Requests Input",
+        type: "data_input",
+        protocol: "json",
+        description: "Receives collaboration requests between AI systems",
+        required: true,
+        validation: "collaboration_requests_schema",
+      },
+      {
+        port_id: "task_requests_input",
+        name: "Task Requests Input",
+        type: "data_input",
+        protocol: "json",
+        description: "Receives task requests for distribution",
+        required: true,
+        validation: "task_requests_schema",
+      },
+    ],
+    output_ports: [
+      {
+        port_id: "communication_responses_output",
+        name: "Communication Responses Output",
+        type: "data_output",
+        protocol: "json",
+        description: "Outputs communication responses between AI systems",
+        required: true,
+        validation: "communication_responses_schema",
+      },
+      {
+        port_id: "collaboration_status_output",
+        name: "Collaboration Status Output",
+        type: "data_output",
+        protocol: "json",
+        description: "Outputs collaboration status and events",
+        required: true,
+        validation: "collaboration_status_schema",
+      },
+      {
+        port_id: "task_assignments_output",
+        name: "Task Assignments Output",
+        type: "data_output",
+        protocol: "json",
+        description: "Outputs task assignments to AI systems",
+        required: true,
+        validation: "task_assignments_schema",
+      },
+    ],
+  },
+  data_flow: {
+    primary_flow: [
+      {
+        step: 1,
+        component: "ai_communication_engine",
+        action: "Manage AI communication",
+        input: [
+          "communication_requests",
+          "communication_rules",
+        ],
+        output: [
+          "communication_responses",
+          "communication_status",
+        ],
+      },
+      {
+        step: 2,
+        component: "collaboration_coordinator",
+        action: "Coordinate collaboration",
+        input: [
+          "collaboration_requests",
+          "coordination_rules",
+        ],
+        output: [
+          "collaboration_status",
+          "coordination_events",
+        ],
+      },
+      {
+        step: 3,
+        component: "task_distributor",
+        action: "Distribute tasks",
+        input: [
+          "task_requests",
+          "distribution_rules",
+        ],
+        output: [
+          "task_assignments",
+          "distribution_status",
+        ],
+      },
+      {
+        step: 4,
+        component: "knowledge_sharer",
+        action: "Share knowledge",
+        input: [
+          "knowledge_requests",
+          "sharing_rules",
+        ],
+        output: [
+          "shared_knowledge",
+          "sharing_status",
+        ],
+      },
+      {
+        step: 5,
+        component: "collaboration_monitor",
+        action: "Monitor collaboration",
+        input: [
+          "monitoring_requests",
+          "monitoring_rules",
+        ],
+        output: [
+          "monitoring_reports",
+          "performance_metrics",
+        ],
+      },
+    ],
+    secondary_flows: [
+      {
+        flow_name: "communication_processing",
+        components: [
+          "ai_communication_engine",
+          "message_router",
+          "protocol_handler",
+        ],
+        description: "Processes communication between AI systems",
+      },
+      {
+        flow_name: "collaboration_management",
+        components: [
+          "collaboration_coordinator",
+          "workflow_manager",
+        ],
+        description: "Manages collaboration workflows",
+      },
+      {
+        flow_name: "task_management",
+        components: [
+          "task_distributor",
+          "load_balancer",
+        ],
+        description: "Manages task distribution and load balancing",
+      },
+    ],
+  },
+  security_boundaries: {
+    tier_0: {
+      components: [
+        "message_router",
+        "protocol_handler",
+        "workflow_manager",
+        "load_balancer",
+        "knowledge_processor",
+      ],
+      description: "Supporting components with basic security requirements",
+    },
+    tier_1: {
+      components: [
+        "ai_communication_engine",
+        "collaboration_coordinator",
+        "task_distributor",
+        "knowledge_sharer",
+      ],
+      description: "Processing components with standard security requirements",
+    },
+    tier_2: {
+      components: [
+        "collaboration_monitor",
+      ],
+      description: "Core component with comprehensive security requirements",
+    },
+  },
+  performance_characteristics: {
+    latency: {
+      ai_communication: "< 1 second",
+      collaboration_coordination: "< 2 seconds",
+      task_distribution: "< 1 second",
+      knowledge_sharing: "< 3 seconds",
+    },
+    throughput: {
+      communications_per_minute: 5000,
+      collaborations_per_hour: 1000,
+      tasks_per_hour: 2000,
+      knowledge_shares_per_hour: 500,
+    },
+    resource_usage: {
+      cpu_usage: "< 35%",
+      memory_usage: "< 250MB",
+      disk_usage: "< 1GB",
+    },
+  },
+  monitoring_points: [
+    {
+      point_id: "ai_communication_rate",
+      name: "AI Communication Rate",
+      type: "counter",
+      description: "Number of AI communications per minute",
+    },
+    {
+      point_id: "collaboration_coordination_time",
+      name: "Collaboration Coordination Time",
+      type: "duration",
+      description: "Time taken for collaboration coordination",
+    },
+    {
+      point_id: "task_distribution_efficiency",
+      name: "Task Distribution Efficiency",
+      type: "gauge",
+      description: "Efficiency of task distribution",
+    },
+    {
+      point_id: "knowledge_sharing_effectiveness",
+      name: "Knowledge Sharing Effectiveness",
+      type: "gauge",
+      description: "Effectiveness of knowledge sharing",
+    },
+  ],
+  error_handling: {
+    retry_policies: {
+      ai_communication: "3 retries with exponential backoff",
+      collaboration_coordination: "2 retries with linear backoff",
+      task_distribution: "3 retries with exponential backoff",
+    },
+    circuit_breakers: {
+      collaboration_service: "Open after 5 consecutive failures",
+      communication_service: "Open after 3 consecutive failures",
+    },
+    fallback_strategies: {
+      ai_communication_failure: "Use cached communication data",
+      collaboration_coordination_failure: "Use basic coordination",
+      task_distribution_failure: "Use simple task assignment",
+    },
+  },
+  deployment_considerations: {
+    scalability: {
+      horizontal_scaling: "Supported via load balancer",
+      vertical_scaling: "Supported via resource allocation",
+      auto_scaling: "Supported via metrics-based scaling",
+    },
+    availability: {
+      target_uptime: "99.9%",
+      redundancy: "Multi-instance deployment",
+      failover: "Automatic failover to standby instances",
+    },
+    maintenance: {
+      rolling_updates: "Supported",
+      downtime: "Minimal during updates",
+      rollback: "Supported via version management",
+    },
+  },
+  metadata: {
+    created: "2025-01-27T20:50:00Z",
+    updated: "2025-11-02T16:50:00Z",
+    author: "aether",
+    status: "production",
+    version: "1.0.0",
+  },
+  confidenceRouting: {
+    high: "Read T0 executive summary (100 words) or code directly",
+    medium: "Read T0 + T1 overview (500 words) + T2 architecture (2k words)",
+    low: "Read T0 + T1 + T2 + T3 detailed (10k words)",
+    veryLow: "Read T0 + T1 + T2 + T3 + T4 complete (15k+ words) or ask for help",
+  },
+  relatedSystems: [
+    {
+      system: "apoe",
+      relationship: "AI Collaboration System coordinates with APOE for orchestration",
+      whenToUse: "When implementing multi-AI orchestration or understanding task distribution",
+      docs: [
+        "systems/apoe/T2_architecture.md#ai-collaboration",
+      ],
+      priority: "required",
+    },
+    {
+      system: "cmc",
+      relationship: "AI Collaboration System stores collaboration data in CMC",
+      whenToUse: "When implementing collaboration storage or understanding memory persistence",
+      docs: [
+        "systems/cmc/T2_architecture.md#ai-collaboration",
+      ],
+      priority: "required",
+    },
+    {
+      system: "seg",
+      relationship: "AI Collaboration System uses SEG for knowledge sharing",
+      whenToUse: "When implementing knowledge synthesis or understanding evidence graphs",
+      docs: [
+        "systems/seg/T2_architecture.md#ai-collaboration",
+      ],
+      priority: "required",
+    },
+  ],
+  documentation: {
+    T0: "knowledge_architecture/systems/ai_collaboration_system/T0_executive.md",
+    T1: "knowledge_architecture/systems/ai_collaboration_system/T1_overview.md",
+    T2: "knowledge_architecture/systems/ai_collaboration_system/T2_architecture.md",
+    T3: "knowledge_architecture/systems/ai_collaboration_system/T3_detailed.md",
+    T4: "knowledge_architecture/systems/ai_collaboration_system/T4_complete.md",
+  },
+}

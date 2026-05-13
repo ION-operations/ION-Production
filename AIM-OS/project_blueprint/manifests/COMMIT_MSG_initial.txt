@@ -1,0 +1,18 @@
+chore(repo): AIM-ION — orphan Git foundation (no AIM-OS history)
+
+This repository is intentionally disconnected from the AIM-OS remote and branch graph.
+All prior commit history was removed; this is root commit v1.
+
+Provenance (filesystem lineage only):
+- Last mirrored source tree: AIM-OS-GIT working copy at /home/sev/AIMOS - Builds/AIM-OS-GIT
+- Last known upstream commit before refoundation: 812bc34ab41d2cf10674f33faa8976a0b5224554
+- Branch name at mirror time: aimos-march-2026-update
+- Upstream remote at mirror time: https://github.com/sev-32/AIM-OS.git
+- Rsync mirror date: 2026-04-05 (see project_blueprint/99_COPY_PROVENANCE.md)
+- Git refoundation date: 2026-04-05
+
+Policy:
+- No remotes configured after init — add origin only when the new canonical remote exists.
+- .gitignore inherited from AIM-OS (large corpora, secrets, node_modules, binaries excluded).
+
+See project_blueprint/07_GIT_FOUNDATION.md and manifests/INITIAL_REPO_AUDIT.md.

@@ -1,0 +1,179 @@
+{
+  "systemId": "lucid-ide.systemCortex",
+  "humanName": "Lucid IDE System Cortex",
+  "version": "v1.0.0",
+  "status": "production",
+  
+  "intent": {
+    "purpose": "Provide comprehensive system analysis and monitoring interface with architecture hierarchy tree, code browser, version history tracking, and enhanced reactor integration",
+    "must_not_regress": [
+      "Must not lose system state",
+      "Must not break code browsing",
+      "Must not expose sensitive code",
+      "Must not exceed 100ms render time",
+      "Must not break hierarchy tree rendering"
+    ],
+    "why_it_exists": "Transforms complex codebase into navigable, understandable system architecture enabling developers to explore, analyze, and understand system structure through interactive visualization and code browsing."
+  },
+  
+  "classification": {
+    "security_level": "high",
+    "perf_sensitivity": "high",
+    "ownership": "lucid-ide",
+    "sideEffects": [
+      "Browses codebase",
+      "Analyzes system architecture",
+      "Tracks version history",
+      "Visualizes system structure"
+    ]
+  },
+  
+  "internalNodes": [
+    {
+      "id": "systemCortex",
+      "responsibility": "Main System Cortex component (900+ lines) orchestrating all analysis features",
+      "must_never": [
+        "Lose system state",
+        "Break code browsing",
+        "Expose sensitive code"
+      ],
+      "perf_budget_ms": 100,
+      "status": "production"
+    },
+    {
+      "id": "codeBrowser",
+      "responsibility": "Code browser for navigating and viewing codebase",
+      "must_never": [
+        "Lose navigation state",
+        "Break file loading",
+        "Expose unauthorized files"
+      ],
+      "perf_budget_ms": 200,
+      "status": "production"
+    },
+    {
+      "id": "systemHierarchyTree",
+      "responsibility": "System hierarchy tree visualization",
+      "must_never": [
+        "Lose hierarchy state",
+        "Break tree expansion",
+        "Corrupt hierarchy data"
+      ],
+      "perf_budget_ms": 50,
+      "status": "production"
+    },
+    {
+      "id": "versionHistory",
+      "responsibility": "Version history tracking and visualization",
+      "must_never": [
+        "Lose version data",
+        "Break history navigation",
+        "Corrupt version information"
+      ],
+      "perf_budget_ms": 100,
+      "status": "production"
+    },
+    {
+      "id": "cortexService",
+      "responsibility": "Cortex service managing system analysis and data",
+      "must_never": [
+        "Lose service state",
+        "Break data retrieval",
+        "Expose system internals"
+      ],
+      "perf_budget_ms": 200,
+      "status": "production"
+    },
+    {
+      "id": "waveEngine",
+      "responsibility": "Wave engine for context flow visualization",
+      "must_never": [
+        "Lose wave state",
+        "Break flow visualization",
+        "Cause performance degradation"
+      ],
+      "perf_budget_ms": 16,
+      "status": "production"
+    }
+  ],
+  
+  "systemMap": {
+    "mapFile": "./system.map.lucid.json5"
+  },
+  
+  "foresight": {
+    "predictedRisks": [
+      {
+        "risk_id": "code_browser_security",
+        "description": "Code browser could expose sensitive files or allow path traversal",
+        "likelihood": "medium",
+        "blast_radius_if_real": "sensitive_data_exposure",
+        "mitigation": "Path sanitization, authorization checks, file access controls",
+        "watchpoint": "if unauthorized_file_access detected, halt system"
+      },
+      {
+        "risk_id": "large_component_performance",
+        "description": "Main component large (900+ lines) could cause performance issues",
+        "likelihood": "medium",
+        "blast_radius_if_real": "system_cortex_unusable",
+        "mitigation": "Refactor into smaller components, code splitting",
+        "watchpoint": "if render_time > 100ms for 10 consecutive renders, alert"
+      }
+    ],
+    "killSwitch": "system-cortex.enabled=false",
+    "emergencyProcedures": [
+      "Freeze all code browsing",
+      "Disable file access",
+      "Switch to read-only mode",
+      "Notify security team"
+    ]
+  },
+  
+  "integrations": {
+    "cortexService": {
+      "protocol": "internal",
+      "whatIsExchanged": ["system_analysis", "code_data"],
+      "security": "high",
+      "rateLimit": "unlimited"
+    },
+    "enhancedReactor": {
+      "protocol": "react-props",
+      "whatIsExchanged": ["visualization_data", "node_data"],
+      "security": "low",
+      "rateLimit": "unlimited"
+    },
+    "waveEngine": {
+      "protocol": "internal",
+      "whatIsExchanged": ["context_flow", "wave_data"],
+      "security": "low",
+      "rateLimit": "unlimited"
+    }
+  },
+  
+  "performance": {
+    "metrics": {
+      "render_time_ms": "target < 100ms",
+      "code_load_time_ms": "target < 200ms",
+      "hierarchy_render_time_ms": "target < 50ms",
+      "memory_usage_mb": "target < 300MB"
+    },
+    "optimization": [
+      "Code splitting",
+      "Lazy loading",
+      "Caching",
+      "Virtual scrolling"
+    ],
+    "monitoring": ["render_time", "code_load_time", "memory_usage"]
+  },
+  
+  "documentation": {
+    "l0_executive": "knowledge_architecture/systems/lucid-ide/system-cortex/L0_executive.md",
+    "l1_overview": "knowledge_architecture/systems/lucid-ide/system-cortex/L1_overview.md",
+    "l2_architecture": "knowledge_architecture/systems/lucid-ide/system-cortex/L2_architecture.md",
+    "l3_detailed": "knowledge_architecture/systems/lucid-ide/system-cortex/L3_detailed.md",
+    "l4_complete": "knowledge_architecture/systems/lucid-ide/system-cortex/L4_complete.md",
+    "system_map": "knowledge_architecture/systems/lucid-ide/system-cortex/system.map.lucid.json5",
+    "usage_envelope": "knowledge_architecture/systems/lucid-ide/system-cortex/usage.envelope.md"
+  }
+}
+

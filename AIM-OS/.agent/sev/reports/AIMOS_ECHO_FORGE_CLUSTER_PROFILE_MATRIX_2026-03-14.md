@@ -1,0 +1,18 @@
+# AIMOS Echo Forge Cluster Profile Matrix - 2026-03-14
+
+Work package: `CONSOLIDATION_WORK_PACKAGE_10_2026-03-14`
+Status: evidence-only Echo Forge cluster profile matrix
+
+## Surface Matrix
+
+| Surface | Host or runtime shape | Main technologies | Local file and subsystem scale | Major visible capabilities | Best-known intended role from docs and manifests | Direct evidence |
+| --- | --- | --- | --- | --- | --- | --- |
+| `echo-forge-loop/` | Browser-first Vite app root that also carries the local server and Supabase sibling surfaces | React 18, TypeScript, Vite, Tailwind, shadcn/ui, TanStack Query, Supabase JS, Monaco, xterm | `src/` contains `155` files across `15` subdirectories; `src/components/` alone contains `109` files across `6` subdirectories; root also carries `docs/`, `public/`, `server/`, and `supabase/` | Goal-to-run chat flow, real-time mission-control rendering of the 9-phase pipeline, 25+ dashboard panels, run history, memory, journal, cognition, trust, evolution, and context views, plus switchable local or Supabase chat backends | Full Echo Forge product shell and operator-facing cognition dashboard | `README.md` frames a full-stack 9-phase cognition pipeline with mission-control UI; `docs/ECHO_FORGE_LOOP_APP_DOCUMENTATION.md` maps chat, dashboard, run-control, and panel flows; `package.json` shows the browser-app dependency stack |
+| `echo-forge-loop/server/` | Local Python service runtime exposing the Echo Forge loop over FastAPI and SSE | Python, FastAPI, Uvicorn, local JSON memory stores, provider abstraction, terminal and filesystem helpers | subtree contains `46` files across `6` subdirectories; `memory/` contains `8` files across `1` subdirectory; visible modules cover chat loop, evolution, diagnostics, filesystem, terminal, research, and provider selection | 9-phase cognition pipeline, `/chat` and `/functions/v1/aim-chat` streaming endpoints, `/research`, `/health`, `/memory/stats`, evolution status, and IDE-style filesystem and terminal APIs | Local execution and streaming backend for Echo Forge, especially for development, privacy-local use, or launcher-driven local mode | `server/main.py` exposes SSE chat plus research, health, filesystem, terminal, and evolution endpoints; `server/aim_chat_loop.py` implements the 9-phase pipeline and local memory/traces; `requirements.txt` lists `fastapi` and `uvicorn` |
+| `echo-forge-loop/supabase/` | Hosted backend and persistence surface built around Supabase Edge Functions plus SQL migrations | Deno TypeScript edge functions, `@supabase/supabase-js`, Supabase config, Postgres SQL migrations | subtree contains `21` files across `10` subdirectories; `functions/` contains `9` files across `8` subdirectories; `migrations/` contains `11` SQL files | Cloud `aim-chat` function, AI step/journal/verify/test/audit/research functions, project config, and persistent schema for events, tasks, journal entries, context banks, knowledge graph, test runs, atoms, witnesses, execution plans, and related records | Cloud-mode execution and durable persistence adjunct for the Echo Forge organism | `config.toml` declares the Supabase project and edge functions; `functions/aim-chat/index.ts` creates atoms, witnesses, execution plans, cognitive snapshots, and evidence graph records; migrations define events, snapshots, tasks, journal, context, knowledge, and test-run tables |
+
+## Net Local Reading
+
+1. `echo-forge-loop/` is the user-facing product shell for the whole Echo Forge organism.
+2. `echo-forge-loop/server/` is the local execution and streaming engine for that organism.
+3. `echo-forge-loop/supabase/` is the hosted function and persistence spine for that organism.

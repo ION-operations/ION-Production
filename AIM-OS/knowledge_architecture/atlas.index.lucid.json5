@@ -1,0 +1,4863 @@
+{
+  "atlasId": "aimos.atlas.comprehensive.v1",
+  "atlasName": "AIM-OS Comprehensive System Atlas",
+  "version": "v1.0.0",
+  "description": "Master system map aggregating all AIM-OS systems, components, and relationships. Exceptionally well-organized with hierarchical layer structure showing complete system architecture.",
+  "createdBy": "Sonnet",
+  "createdDate": "2025-01-27",
+  "format": "Atlas Map - Complete System Architecture",
+  "organization": "Layer-based hierarchical structure",
+  "totalSystems": 14,
+  "totalNodes": 101,
+  "totalPorts": 69,
+  "totalInternalEdges": 100,
+  "totalExternalEdges": 69,
+  "layers": {
+    "layer1": {
+      "layerId": "layer1",
+      "layerName": "Layer 1: Memory & Knowledge Foundation",
+      "purpose": "Persistent storage and knowledge synthesis",
+      "dependencies": [],
+      "systems": {
+        "": {
+          "systemId": "",
+          "systemName": "",
+          "version": "1.0.0",
+          "description": "",
+          "status": "production",
+          "layer": 1,
+          "internalNodes": [],
+          "ports": [],
+          "internalEdges": [],
+          "externalEdges": [],
+          "riskOverlay": {},
+          "governance": {},
+          "monitoring": {},
+          "sourcePath": "systems\\spec_coverage_index\\system.map.lucid.json5"
+        },
+        "contextMemoryCore": {
+          "systemId": "cmc.contextMemoryCore",
+          "systemName": "Context Memory Core - Bitemporal Memory Substrate",
+          "version": "v0.1",
+          "description": "The persistent bitemporal memory substrate that stores everything in AIM-OS. Think 'AI's hippocampus' - where all memories live, never forgotten, with time-travel capabilities.",
+          "status": "production",
+          "layer": 1,
+          "internalNodes": [
+            {
+              "id": "atomManager",
+              "kind": "core.component",
+              "responsibility": "Manages fundamental memory units (atoms) with bitemporal tracking",
+              "status": "production",
+              "must_never": [
+                "Allow concurrent writes to same atom",
+                "Delete atoms (only supersede)",
+                "Modify atoms after creation"
+              ],
+              "perf_budget_ms": 10,
+              "security_level": "high"
+            },
+            {
+              "id": "snapshotEngine",
+              "kind": "core.component",
+              "responsibility": "Creates immutable content-addressed snapshots of system state",
+              "status": "production",
+              "must_never": [
+                "Modify snapshots after creation",
+                "Create snapshots without deterministic ordering",
+                "Allow hash collisions"
+              ],
+              "perf_budget_ms": 50,
+              "security_level": "critical"
+            },
+            {
+              "id": "storageManager",
+              "kind": "storage.component",
+              "responsibility": "Manages multi-tier persistence (vector, object, metadata, graph stores)",
+              "status": "production",
+              "must_never": [
+                "Lose data integrity",
+                "Allow unauthorized access to stored content",
+                "Exceed storage quotas without notification"
+              ],
+              "perf_budget_ms": 100,
+              "security_level": "critical"
+            },
+            {
+              "id": "writePipeline",
+              "kind": "pipeline.component",
+              "responsibility": "Processes context ingestion: Parse → Atomize → Enrich → Index → Gate → Snapshot",
+              "status": "production",
+              "must_never": [
+                "Skip quality gates",
+                "Create atoms without proper validation",
+                "Allow race conditions in write path"
+              ],
+              "perf_budget_ms": 200,
+              "security_level": "high"
+            },
+            {
+              "id": "readPipeline",
+              "kind": "pipeline.component",
+              "responsibility": "Retrieves context: Query → HHNI → DVNS → Dedupe → Budget → Context",
+              "status": "production",
+              "must_never": [
+                "Return inconsistent results",
+                "Exceed context budget without warning",
+                "Return stale data when fresh is available"
+              ],
+              "perf_budget_ms": 150,
+              "security_level": "medium"
+            },
+            {
+              "id": "moleculeComposer",
+              "kind": "semantic.component",
+              "responsibility": "Groups related atoms into semantic structures",
+              "status": "development",
+              "must_never": [
+                "Create circular dependencies",
+                "Compose atoms from different snapshots",
+                "Lose semantic relationships"
+              ],
+              "perf_budget_ms": 75,
+              "security_level": "medium"
+            },
+            {
+              "id": "bitemporalQueryEngine",
+              "kind": "query.component",
+              "responsibility": "Enables time-travel queries with transaction and valid time",
+              "status": "production",
+              "must_never": [
+                "Return data from future valid times",
+                "Allow queries that break causality",
+                "Expose deleted data without proper authorization"
+              ],
+              "perf_budget_ms": 100,
+              "security_level": "high"
+            }
+          ],
+          "ports": [
+            {
+              "portId": "hhniIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "hhni.hierarchicalHypergraph",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "atoms_for_indexing",
+                "hierarchical_paths",
+                "retrieval_queries",
+                "index_updates"
+              ],
+              "security_level": "high"
+            },
+            {
+              "portId": "apoeIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "apoe.aiPoweredOrchestration",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "context_retrieval_requests",
+                "execution_traces",
+                "plan_artifacts",
+                "memory_updates"
+              ],
+              "security_level": "high"
+            },
+            {
+              "portId": "vifIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "vif.verifiableIntelligence",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "witness_storage",
+                "confidence_scores",
+                "verification_requests",
+                "proof_artifacts"
+              ],
+              "security_level": "critical"
+            },
+            {
+              "portId": "segIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "seg.sharedEvidenceGraph",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "provenance_edges",
+                "graph_nodes",
+                "evidence_links",
+                "relationship_queries"
+              ],
+              "security_level": "high"
+            },
+            {
+              "portId": "sdfcvfIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "sdfcvf.atomicEvolution",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "schema_validation",
+                "parity_checks",
+                "evolution_artifacts",
+                "consistency_reports"
+              ],
+              "security_level": "high"
+            },
+            {
+              "portId": "externalStorage",
+              "direction": "outbound",
+              "connectsToSystem": "storage.external",
+              "protocol": "s3_compatible",
+              "whatIsExchanged": [
+                "large_content_objects",
+                "snapshot_bundles",
+                "backup_data",
+                "archive_content"
+              ],
+              "security_level": "critical"
+            },
+            {
+              "portId": "vectorStore",
+              "direction": "outbound",
+              "connectsToSystem": "vector.faiss",
+              "protocol": "faiss_api",
+              "whatIsExchanged": [
+                "embedding_vectors",
+                "similarity_queries",
+                "index_updates",
+                "search_results"
+              ],
+              "security_level": "medium"
+            }
+          ],
+          "internalEdges": [
+            {
+              "from": "writePipeline",
+              "to": "atomManager",
+              "type": "creates_atoms",
+              "data_flow": "context_input → atom_creation"
+            },
+            {
+              "from": "atomManager",
+              "to": "snapshotEngine",
+              "type": "provides_atoms",
+              "data_flow": "atoms → snapshot_bundles"
+            },
+            {
+              "from": "snapshotEngine",
+              "to": "storageManager",
+              "type": "stores_snapshots",
+              "data_flow": "snapshots → persistent_storage"
+            },
+            {
+              "from": "readPipeline",
+              "to": "bitemporalQueryEngine",
+              "type": "queries_temporal_data",
+              "data_flow": "queries → temporal_results"
+            },
+            {
+              "from": "bitemporalQueryEngine",
+              "to": "storageManager",
+              "type": "retrieves_data",
+              "data_flow": "queries → stored_atoms"
+            },
+            {
+              "from": "moleculeComposer",
+              "to": "atomManager",
+              "type": "composes_atoms",
+              "data_flow": "related_atoms → semantic_structures"
+            },
+            {
+              "from": "writePipeline",
+              "to": "moleculeComposer",
+              "type": "triggers_composition",
+              "data_flow": "new_atoms → composition_analysis"
+            }
+          ],
+          "externalEdges": [
+            {
+              "fromPort": "hhniIntegration",
+              "toSystem": "hhni.hierarchicalHypergraph",
+              "type": "provides_indexing_data",
+              "data_flow": "atoms → hierarchical_index"
+            },
+            {
+              "fromPort": "apoeIntegration",
+              "toSystem": "apoe.aiPoweredOrchestration",
+              "type": "provides_context",
+              "data_flow": "queries → retrieved_context"
+            },
+            {
+              "fromPort": "vifIntegration",
+              "toSystem": "vif.verifiableIntelligence",
+              "type": "stores_witnesses",
+              "data_flow": "witnesses → persistent_storage"
+            },
+            {
+              "fromPort": "segIntegration",
+              "toSystem": "seg.sharedEvidenceGraph",
+              "type": "provides_provenance_data",
+              "data_flow": "atoms → graph_nodes"
+            },
+            {
+              "fromPort": "sdfcvfIntegration",
+              "toSystem": "sdfcvf.atomicEvolution",
+              "type": "validates_schema",
+              "data_flow": "atoms → consistency_checks"
+            },
+            {
+              "fromPort": "externalStorage",
+              "toSystem": "storage.external",
+              "type": "stores_large_objects",
+              "data_flow": "content → object_store"
+            },
+            {
+              "fromPort": "vectorStore",
+              "toSystem": "vector.faiss",
+              "type": "indexes_embeddings",
+              "data_flow": "vectors → similarity_index"
+            }
+          ],
+          "riskOverlay": {
+            "perf_hotspots": [
+              "writePipeline",
+              "bitemporalQueryEngine",
+              "storageManager"
+            ],
+            "security_sensitive_ports": [
+              "vifIntegration",
+              "externalStorage",
+              "hhniIntegration"
+            ],
+            "governance_touchpoints": [
+              "snapshotEngine",
+              "atomManager",
+              "bitemporalQueryEngine"
+            ],
+            "critical_failure_modes": [
+              "Data loss in storageManager",
+              "Hash collision in snapshotEngine",
+              "Race condition in writePipeline",
+              "Unauthorized access via externalStorage"
+            ],
+            "blast_radius": {
+              "atomManager": "entire_memory_system",
+              "snapshotEngine": "all_temporal_queries",
+              "storageManager": "all_persistent_data",
+              "writePipeline": "data_integrity"
+            }
+          },
+          "governance": {
+            "single_writer_discipline": true,
+            "bitemporal_integrity": true,
+            "content_addressing": true,
+            "never_delete_policy": true,
+            "audit_trail_required": true
+          },
+          "monitoring": {
+            "key_metrics": [
+              "atoms_created_per_second",
+              "snapshot_creation_latency",
+              "query_response_time",
+              "storage_utilization",
+              "bitemporal_query_accuracy"
+            ],
+            "alerts": [
+              "write_pipeline_latency > 200ms",
+              "storage_quota > 80%",
+              "bitemporal_query_failure_rate > 1%",
+              "unauthorized_access_attempts"
+            ]
+          },
+          "sourcePath": "systems\\cmc\\system.map.lucid.json5"
+        },
+        "hierarchicalHypergraph": {
+          "systemId": "hhni.hierarchicalHypergraph",
+          "systemName": "Hierarchical Hypergraph Neural Index - Physics-Guided Retrieval",
+          "version": "v0.1",
+          "description": "Physics-guided retrieval system that finds information at any granularity using DVNS (Dynamic Vector Network Simulation) physics. Think 'Google Maps for knowledge' - zoom in/out to find exactly what you need.",
+          "status": "production",
+          "layer": 1,
+          "internalNodes": [
+            {
+              "id": "hierarchicalIndex",
+              "kind": "core.component",
+              "responsibility": "Manages 6-level fractal indexing (System → Section → Paragraph → Sentence → Word → Subword)",
+              "status": "production",
+              "must_never": [
+                "Lose hierarchical relationships",
+                "Create circular dependencies",
+                "Index content without proper embedding"
+              ],
+              "perf_budget_ms": 20,
+              "security_level": "high"
+            },
+            {
+              "id": "dvnsPhysicsEngine",
+              "kind": "physics.component",
+              "responsibility": "Applies 4 forces (gravity, repulsion, elastic, damping) to optimize context layout",
+              "status": "production",
+              "must_never": [
+                "Allow infinite oscillation",
+                "Break physics conservation laws",
+                "Exceed convergence iteration limit"
+              ],
+              "perf_budget_ms": 50,
+              "security_level": "medium"
+            },
+            {
+              "id": "coarseRetrieval",
+              "kind": "retrieval.component",
+              "responsibility": "Fast KNN semantic search in embedding space (Stage 1)",
+              "status": "production",
+              "must_never": [
+                "Return inconsistent results",
+                "Exceed 10ms latency target",
+                "Miss semantically relevant content"
+              ],
+              "perf_budget_ms": 10,
+              "security_level": "medium"
+            },
+            {
+              "id": "physicsRefinement",
+              "kind": "retrieval.component",
+              "responsibility": "Physics-guided refinement of retrieved candidates (Stage 2)",
+              "status": "production",
+              "must_never": [
+                "Exceed 50ms latency target",
+                "Break semantic relationships",
+                "Return suboptimal results"
+              ],
+              "perf_budget_ms": 50,
+              "security_level": "medium"
+            },
+            {
+              "id": "deduplicationEngine",
+              "kind": "quality.component",
+              "responsibility": "Removes semantically similar items to prevent redundancy",
+              "status": "production",
+              "must_never": [
+                "Remove unique information",
+                "Create false duplicates",
+                "Lose important semantic distinctions"
+              ],
+              "perf_budget_ms": 15,
+              "security_level": "low"
+            },
+            {
+              "id": "conflictResolver",
+              "kind": "quality.component",
+              "responsibility": "Detects contradictions and selects best stance",
+              "status": "production",
+              "must_never": [
+                "Lose contradictory information",
+                "Make incorrect conflict decisions",
+                "Break logical consistency"
+              ],
+              "perf_budget_ms": 20,
+              "security_level": "high"
+            },
+            {
+              "id": "strategicCompressor",
+              "kind": "optimization.component",
+              "responsibility": "Age-based compression (keep recent detail, summarize old)",
+              "status": "production",
+              "must_never": [
+                "Lose critical information",
+                "Exceed compression ratio limits",
+                "Break semantic coherence"
+              ],
+              "perf_budget_ms": 25,
+              "security_level": "medium"
+            },
+            {
+              "id": "budgetFitter",
+              "kind": "optimization.component",
+              "responsibility": "Respects token limits and never exceeds context window",
+              "status": "production",
+              "must_never": [
+                "Exceed token budget",
+                "Truncate critical information",
+                "Break context continuity"
+              ],
+              "perf_budget_ms": 10,
+              "security_level": "high"
+            },
+            {
+              "id": "embeddingManager",
+              "kind": "semantic.component",
+              "responsibility": "Manages embeddings and vector operations",
+              "status": "production",
+              "must_never": [
+                "Generate inconsistent embeddings",
+                "Lose vector integrity",
+                "Exceed embedding dimension limits"
+              ],
+              "perf_budget_ms": 30,
+              "security_level": "medium"
+            },
+            {
+              "id": "queryProcessor",
+              "kind": "interface.component",
+              "responsibility": "Processes queries and coordinates retrieval pipeline",
+              "status": "production",
+              "must_never": [
+                "Lose query context",
+                "Return malformed results",
+                "Break query semantics"
+              ],
+              "perf_budget_ms": 5,
+              "security_level": "low"
+            }
+          ],
+          "ports": [
+            {
+              "portId": "cmcIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "cmc.contextMemoryCore",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "atoms_for_indexing",
+                "hierarchical_paths",
+                "retrieval_queries",
+                "indexed_content"
+              ],
+              "security_level": "high"
+            },
+            {
+              "portId": "apoeIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "apoe.aiPoweredOrchestration",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "context_retrieval_requests",
+                "optimized_context",
+                "multi_step_queries",
+                "budget_aware_results"
+              ],
+              "security_level": "high"
+            },
+            {
+              "portId": "vifIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "vif.verifiableIntelligence",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "retrieval_operations",
+                "rs_lift_metrics",
+                "witness_data",
+                "replay_snapshots"
+              ],
+              "security_level": "high"
+            },
+            {
+              "portId": "vectorStore",
+              "direction": "outbound",
+              "connectsToSystem": "vector.faiss",
+              "protocol": "faiss_api",
+              "whatIsExchanged": [
+                "embedding_vectors",
+                "similarity_queries",
+                "index_updates",
+                "search_results"
+              ],
+              "security_level": "medium"
+            },
+            {
+              "portId": "embeddingService",
+              "direction": "outbound",
+              "connectsToSystem": "embedding.sentenceTransformers",
+              "protocol": "local_api",
+              "whatIsExchanged": [
+                "text_content",
+                "embedding_requests",
+                "vector_embeddings",
+                "model_updates"
+              ],
+              "security_level": "low"
+            }
+          ],
+          "internalEdges": [
+            {
+              "from": "queryProcessor",
+              "to": "coarseRetrieval",
+              "type": "initiates_retrieval",
+              "data_flow": "query → semantic_search"
+            },
+            {
+              "from": "coarseRetrieval",
+              "to": "physicsRefinement",
+              "type": "provides_candidates",
+              "data_flow": "candidates → physics_optimization"
+            },
+            {
+              "from": "physicsRefinement",
+              "to": "deduplicationEngine",
+              "type": "provides_optimized_results",
+              "data_flow": "optimized_results → deduplication"
+            },
+            {
+              "from": "deduplicationEngine",
+              "to": "conflictResolver",
+              "type": "provides_deduplicated_content",
+              "data_flow": "deduplicated_content → conflict_resolution"
+            },
+            {
+              "from": "conflictResolver",
+              "to": "strategicCompressor",
+              "type": "provides_resolved_content",
+              "data_flow": "resolved_content → compression"
+            },
+            {
+              "from": "strategicCompressor",
+              "to": "budgetFitter",
+              "type": "provides_compressed_content",
+              "data_flow": "compressed_content → budget_fitting"
+            },
+            {
+              "from": "hierarchicalIndex",
+              "to": "coarseRetrieval",
+              "type": "provides_index_data",
+              "data_flow": "index_data → retrieval_queries"
+            },
+            {
+              "from": "dvnsPhysicsEngine",
+              "to": "physicsRefinement",
+              "type": "applies_physics_forces",
+              "data_flow": "physics_forces → spatial_optimization"
+            },
+            {
+              "from": "embeddingManager",
+              "to": "coarseRetrieval",
+              "type": "provides_embeddings",
+              "data_flow": "embeddings → similarity_search"
+            },
+            {
+              "from": "embeddingManager",
+              "to": "hierarchicalIndex",
+              "type": "provides_vector_data",
+              "data_flow": "vector_data → hierarchical_indexing"
+            }
+          ],
+          "externalEdges": [
+            {
+              "fromPort": "cmcIntegration",
+              "toSystem": "cmc.contextMemoryCore",
+              "type": "indexes_atoms",
+              "data_flow": "atoms → hierarchical_index"
+            },
+            {
+              "fromPort": "apoeIntegration",
+              "toSystem": "apoe.aiPoweredOrchestration",
+              "type": "provides_optimized_context",
+              "data_flow": "queries → optimized_context"
+            },
+            {
+              "fromPort": "vifIntegration",
+              "toSystem": "vif.verifiableIntelligence",
+              "type": "witnesses_retrieval",
+              "data_flow": "retrieval_operations → witness_data"
+            },
+            {
+              "fromPort": "vectorStore",
+              "toSystem": "vector.faiss",
+              "type": "performs_similarity_search",
+              "data_flow": "queries → search_results"
+            },
+            {
+              "fromPort": "embeddingService",
+              "toSystem": "embedding.sentenceTransformers",
+              "type": "generates_embeddings",
+              "data_flow": "text → embeddings"
+            }
+          ],
+          "riskOverlay": {
+            "perf_hotspots": [
+              "dvnsPhysicsEngine",
+              "physicsRefinement",
+              "embeddingManager"
+            ],
+            "security_sensitive_ports": [
+              "cmcIntegration",
+              "apoeIntegration",
+              "vifIntegration"
+            ],
+            "governance_touchpoints": [
+              "hierarchicalIndex",
+              "conflictResolver",
+              "budgetFitter"
+            ],
+            "critical_failure_modes": [
+              "Physics simulation divergence",
+              "Hierarchical index corruption",
+              "Vector store inconsistency",
+              "Token budget overflow"
+            ],
+            "blast_radius": {
+              "hierarchicalIndex": "all_retrieval_operations",
+              "dvnsPhysicsEngine": "context_optimization",
+              "budgetFitter": "context_window_integrity",
+              "conflictResolver": "logical_consistency"
+            }
+          },
+          "governance": {
+            "physics_conservation": true,
+            "hierarchical_integrity": true,
+            "semantic_consistency": true,
+            "budget_compliance": true,
+            "quality_assurance": true
+          },
+          "monitoring": {
+            "key_metrics": [
+              "retrieval_latency_p95",
+              "rs_lift_improvement",
+              "physics_convergence_iterations",
+              "deduplication_ratio",
+              "compression_ratio"
+            ],
+            "alerts": [
+              "retrieval_latency > 80ms",
+              "physics_divergence_detected",
+              "token_budget_exceeded",
+              "hierarchical_integrity_violation"
+            ]
+          },
+          "sourcePath": "systems\\hhni\\system.map.lucid.json5"
+        },
+        "sharedEvidenceGraph": {
+          "systemId": "seg.sharedEvidenceGraph",
+          "systemName": "Shared Evidence Graph - Knowledge Synthesis and Contradiction Detection",
+          "version": "v0.1",
+          "description": "Knowledge synthesis system that builds a shared evidence graph to detect contradictions, resolve conflicts, and synthesize insights across all AIM-OS systems. Think 'AI's reasoning engine' - connects all knowledge, finds patterns, and maintains logical consistency.",
+          "status": "production",
+          "layer": 1,
+          "internalNodes": [
+            {
+              "id": "graphBuilder",
+              "kind": "core.component",
+              "responsibility": "Builds and maintains the shared evidence graph structure",
+              "status": "production",
+              "must_never": [
+                "Create circular dependencies in graph",
+                "Lose graph connectivity",
+                "Allow inconsistent graph state"
+              ],
+              "perf_budget_ms": 50,
+              "security_level": "high"
+            },
+            {
+              "id": "contradictionDetector",
+              "kind": "analysis.component",
+              "responsibility": "Detects contradictions and conflicts in the evidence graph",
+              "status": "production",
+              "must_never": [
+                "Miss critical contradictions",
+                "Create false positive conflicts",
+                "Lose contradiction context"
+              ],
+              "perf_budget_ms": 30,
+              "security_level": "high"
+            },
+            {
+              "id": "conflictResolver",
+              "kind": "resolution.component",
+              "responsibility": "Resolves conflicts using evidence strength and provenance",
+              "status": "production",
+              "must_never": [
+                "Resolve conflicts without evidence",
+                "Lose conflict resolution reasoning",
+                "Create inconsistent resolutions"
+              ],
+              "perf_budget_ms": 40,
+              "security_level": "high"
+            },
+            {
+              "id": "knowledgeSynthesizer",
+              "kind": "synthesis.component",
+              "responsibility": "Synthesizes insights and patterns from the evidence graph",
+              "status": "production",
+              "must_never": [
+                "Synthesize without sufficient evidence",
+                "Create false synthesis patterns",
+                "Lose synthesis provenance"
+              ],
+              "perf_budget_ms": 60,
+              "security_level": "medium"
+            },
+            {
+              "id": "evidenceValidator",
+              "kind": "validation.component",
+              "responsibility": "Validates evidence quality and reliability",
+              "status": "production",
+              "must_never": [
+                "Accept invalid evidence",
+                "Skip evidence validation",
+                "Lose validation reasoning"
+              ],
+              "perf_budget_ms": 25,
+              "security_level": "high"
+            },
+            {
+              "id": "relationshipMapper",
+              "kind": "mapping.component",
+              "responsibility": "Maps relationships and dependencies between evidence nodes",
+              "status": "production",
+              "must_never": [
+                "Create incorrect relationships",
+                "Lose relationship context",
+                "Allow relationship cycles"
+              ],
+              "perf_budget_ms": 35,
+              "security_level": "medium"
+            },
+            {
+              "id": "consistencyChecker",
+              "kind": "consistency.component",
+              "responsibility": "Maintains logical consistency across the entire graph",
+              "status": "production",
+              "must_never": [
+                "Allow logical inconsistencies",
+                "Skip consistency checks",
+                "Lose consistency reasoning"
+              ],
+              "perf_budget_ms": 45,
+              "security_level": "critical"
+            },
+            {
+              "id": "insightExtractor",
+              "kind": "extraction.component",
+              "responsibility": "Extracts actionable insights from graph patterns",
+              "status": "production",
+              "must_never": [
+                "Extract insights without evidence",
+                "Create misleading insights",
+                "Lose insight provenance"
+              ],
+              "perf_budget_ms": 20,
+              "security_level": "medium"
+            },
+            {
+              "id": "graphOptimizer",
+              "kind": "optimization.component",
+              "responsibility": "Optimizes graph structure for performance and clarity",
+              "status": "production",
+              "must_never": [
+                "Lose graph information during optimization",
+                "Create optimization artifacts",
+                "Break graph connectivity"
+              ],
+              "perf_budget_ms": 70,
+              "security_level": "low"
+            }
+          ],
+          "ports": [
+            {
+              "portId": "cmcIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "cmc.contextMemoryCore",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "provenance_edges",
+                "graph_nodes",
+                "evidence_links",
+                "relationship_queries"
+              ],
+              "security_level": "high"
+            },
+            {
+              "portId": "hhniIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "hhni.hierarchicalHypergraph",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "retrieval_context",
+                "evidence_queries",
+                "synthesis_requests",
+                "pattern_analysis"
+              ],
+              "security_level": "high"
+            },
+            {
+              "portId": "vifIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "vif.verifiableIntelligence",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "evidence_validation",
+                "contradiction_detection",
+                "proof_verification",
+                "consistency_checks"
+              ],
+              "security_level": "high"
+            },
+            {
+              "portId": "apoeIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "apoe.aiPoweredOrchestration",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "synthesis_insights",
+                "conflict_resolutions",
+                "evidence_recommendations",
+                "knowledge_patterns"
+              ],
+              "security_level": "high"
+            },
+            {
+              "portId": "sdfcvfIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "sdfcvf.atomicEvolution",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "evolution_evidence",
+                "consistency_validation",
+                "change_impact_analysis",
+                "synthesis_updates"
+              ],
+              "security_level": "high"
+            },
+            {
+              "portId": "graphDatabase",
+              "direction": "outbound",
+              "connectsToSystem": "graph.neo4j",
+              "protocol": "cypher_api",
+              "whatIsExchanged": [
+                "graph_queries",
+                "node_updates",
+                "relationship_changes",
+                "index_updates"
+              ],
+              "security_level": "medium"
+            }
+          ],
+          "internalEdges": [
+            {
+              "from": "graphBuilder",
+              "to": "contradictionDetector",
+              "type": "provides_graph_structure",
+              "data_flow": "graph_structure → contradiction_analysis"
+            },
+            {
+              "from": "contradictionDetector",
+              "to": "conflictResolver",
+              "type": "provides_conflicts",
+              "data_flow": "detected_conflicts → resolution_processing"
+            },
+            {
+              "from": "conflictResolver",
+              "to": "knowledgeSynthesizer",
+              "type": "provides_resolved_evidence",
+              "data_flow": "resolved_evidence → synthesis_processing"
+            },
+            {
+              "from": "evidenceValidator",
+              "to": "graphBuilder",
+              "type": "validates_evidence",
+              "data_flow": "validated_evidence → graph_construction"
+            },
+            {
+              "from": "relationshipMapper",
+              "to": "graphBuilder",
+              "type": "provides_relationships",
+              "data_flow": "relationship_mappings → graph_structure"
+            },
+            {
+              "from": "consistencyChecker",
+              "to": "all_components",
+              "type": "ensures_consistency",
+              "data_flow": "consistency_checks → all_operations"
+            },
+            {
+              "from": "knowledgeSynthesizer",
+              "to": "insightExtractor",
+              "type": "provides_synthesis",
+              "data_flow": "synthesized_knowledge → insight_extraction"
+            },
+            {
+              "from": "graphOptimizer",
+              "to": "graphBuilder",
+              "type": "optimizes_structure",
+              "data_flow": "optimization_suggestions → graph_improvements"
+            }
+          ],
+          "externalEdges": [
+            {
+              "fromPort": "cmcIntegration",
+              "toSystem": "cmc.contextMemoryCore",
+              "type": "provides_provenance_data",
+              "data_flow": "atoms → graph_nodes"
+            },
+            {
+              "fromPort": "hhniIntegration",
+              "toSystem": "hhni.hierarchicalHypergraph",
+              "type": "synthesizes_retrieval_context",
+              "data_flow": "retrieval_queries → synthesis_insights"
+            },
+            {
+              "fromPort": "vifIntegration",
+              "toSystem": "vif.verifiableIntelligence",
+              "type": "validates_evidence",
+              "data_flow": "evidence_claims → validation_proofs"
+            },
+            {
+              "fromPort": "apoeIntegration",
+              "toSystem": "apoe.aiPoweredOrchestration",
+              "type": "provides_synthesis_insights",
+              "data_flow": "synthesis_requests → knowledge_patterns"
+            },
+            {
+              "fromPort": "sdfcvfIntegration",
+              "toSystem": "sdfcvf.atomicEvolution",
+              "type": "validates_evolution_consistency",
+              "data_flow": "evolution_artifacts → consistency_reports"
+            },
+            {
+              "fromPort": "graphDatabase",
+              "toSystem": "graph.neo4j",
+              "type": "stores_graph_data",
+              "data_flow": "graph_operations → persistent_storage"
+            }
+          ],
+          "riskOverlay": {
+            "perf_hotspots": [
+              "knowledgeSynthesizer",
+              "graphOptimizer",
+              "consistencyChecker"
+            ],
+            "security_sensitive_ports": [
+              "cmcIntegration",
+              "vifIntegration",
+              "graphDatabase"
+            ],
+            "governance_touchpoints": [
+              "contradictionDetector",
+              "conflictResolver",
+              "consistencyChecker"
+            ],
+            "critical_failure_modes": [
+              "Graph corruption or inconsistency",
+              "Contradiction detection failure",
+              "Conflict resolution errors",
+              "Evidence validation bypass"
+            ],
+            "blast_radius": {
+              "graphBuilder": "entire_knowledge_graph",
+              "consistencyChecker": "logical_consistency",
+              "contradictionDetector": "conflict_detection",
+              "conflictResolver": "knowledge_resolution"
+            }
+          },
+          "governance": {
+            "logical_consistency": true,
+            "evidence_validation": true,
+            "contradiction_detection": true,
+            "conflict_resolution": true,
+            "synthesis_verification": true
+          },
+          "monitoring": {
+            "key_metrics": [
+              "contradiction_detection_rate",
+              "conflict_resolution_success",
+              "graph_consistency_score",
+              "synthesis_accuracy",
+              "evidence_validation_rate"
+            ],
+            "alerts": [
+              "contradiction_detection_failure",
+              "conflict_resolution_timeout",
+              "graph_consistency_violation",
+              "evidence_validation_bypass",
+              "synthesis_accuracy_drop"
+            ]
+          },
+          "sourcePath": "systems\\seg\\system.map.lucid.json5"
+        }
+      }
+    },
+    "layer2": {
+      "layerId": "layer2",
+      "layerName": "Layer 2: Intelligence Processing",
+      "purpose": "Core AI reasoning and verification capabilities",
+      "dependencies": [
+        "layer1"
+      ],
+      "systems": {
+        "atomicEvolution": {
+          "systemId": "sdfcvf.atomicEvolution",
+          "systemName": "Atomic Evolution Framework - Quality Assurance and Change Management",
+          "version": "v0.1",
+          "description": "Quality assurance system that enforces 'quartet parity' (code, docs, tests, traces) and manages atomic evolution of AIM-OS components. Think 'AI's quality gatekeeper' - ensures every change is complete, tested, and traceable.",
+          "status": "production",
+          "layer": 2,
+          "internalNodes": [
+            {
+              "id": "quartetValidator",
+              "kind": "core.component",
+              "responsibility": "Enforces quartet parity (code, docs, tests, traces) for all changes",
+              "status": "production",
+              "must_never": [
+                "Allow changes without quartet parity",
+                "Skip validation for any component",
+                "Modify validation rules without approval"
+              ],
+              "perf_budget_ms": 20,
+              "security_level": "critical"
+            },
+            {
+              "id": "atomicChangeManager",
+              "kind": "core.component",
+              "responsibility": "Manages atomic changes with proper rollback capabilities",
+              "status": "production",
+              "must_never": [
+                "Allow partial changes to proceed",
+                "Lose rollback information",
+                "Create inconsistent change states"
+              ],
+              "perf_budget_ms": 15,
+              "security_level": "high"
+            },
+            {
+              "id": "blastRadiusCalculator",
+              "kind": "analysis.component",
+              "responsibility": "Calculates blast radius and impact analysis for changes",
+              "status": "production",
+              "must_never": [
+                "Underestimate change impact",
+                "Miss critical dependencies",
+                "Lose impact analysis data"
+              ],
+              "perf_budget_ms": 25,
+              "security_level": "high"
+            },
+            {
+              "id": "doraMetricsTracker",
+              "kind": "metrics.component",
+              "responsibility": "Tracks DORA metrics (Deployment Frequency, Lead Time, MTTR, Change Failure Rate)",
+              "status": "production",
+              "must_never": [
+                "Lose metrics data",
+                "Calculate metrics incorrectly",
+                "Expose sensitive metrics data"
+              ],
+              "perf_budget_ms": 10,
+              "security_level": "medium"
+            },
+            {
+              "id": "qualityGateManager",
+              "kind": "gating.component",
+              "responsibility": "Manages quality gates and approval workflows",
+              "status": "production",
+              "must_never": [
+                "Bypass quality gates",
+                "Allow unapproved changes",
+                "Lose gate decision reasoning"
+              ],
+              "perf_budget_ms": 8,
+              "security_level": "high"
+            },
+            {
+              "id": "traceabilityEngine",
+              "kind": "trace.component",
+              "responsibility": "Maintains complete traceability for all changes and decisions",
+              "status": "production",
+              "must_never": [
+                "Lose trace information",
+                "Create incomplete traces",
+                "Allow trace tampering"
+              ],
+              "perf_budget_ms": 12,
+              "security_level": "critical"
+            },
+            {
+              "id": "evolutionTracker",
+              "kind": "tracking.component",
+              "responsibility": "Tracks evolution of components and their relationships",
+              "status": "production",
+              "must_never": [
+                "Lose evolution history",
+                "Create inconsistent evolution records",
+                "Allow evolution data corruption"
+              ],
+              "perf_budget_ms": 18,
+              "security_level": "medium"
+            },
+            {
+              "id": "consistencyChecker",
+              "kind": "consistency.component",
+              "responsibility": "Ensures consistency across all quartet components",
+              "status": "production",
+              "must_never": [
+                "Allow inconsistent quartet components",
+                "Skip consistency checks",
+                "Lose consistency reasoning"
+              ],
+              "perf_budget_ms": 22,
+              "security_level": "high"
+            },
+            {
+              "id": "rollbackManager",
+              "kind": "rollback.component",
+              "responsibility": "Manages rollback operations and state restoration",
+              "status": "production",
+              "must_never": [
+                "Lose rollback capabilities",
+                "Allow partial rollbacks",
+                "Create inconsistent rollback states"
+              ],
+              "perf_budget_ms": 30,
+              "security_level": "critical"
+            },
+            {
+              "id": "complianceMonitor",
+              "kind": "monitoring.component",
+              "responsibility": "Monitors compliance with evolution standards and policies",
+              "status": "production",
+              "must_never": [
+                "Skip compliance checks",
+                "Lose compliance data",
+                "Allow non-compliant changes"
+              ],
+              "perf_budget_ms": 14,
+              "security_level": "high"
+            }
+          ],
+          "ports": [
+            {
+              "portId": "cmcIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "cmc.contextMemoryCore",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "schema_validation",
+                "parity_checks",
+                "evolution_artifacts",
+                "consistency_reports"
+              ],
+              "security_level": "high"
+            },
+            {
+              "portId": "vifIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "vif.verifiableIntelligence",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "change_validation",
+                "confidence_checks",
+                "provenance_traces",
+                "verification_reports"
+              ],
+              "security_level": "high"
+            },
+            {
+              "portId": "segIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "seg.sharedEvidenceGraph",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "evolution_evidence",
+                "consistency_validation",
+                "change_impact_analysis",
+                "synthesis_updates"
+              ],
+              "security_level": "high"
+            },
+            {
+              "portId": "apoeIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "apoe.aiPoweredOrchestration",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "change_approval_requests",
+                "quality_gate_status",
+                "evolution_recommendations",
+                "compliance_reports"
+              ],
+              "security_level": "high"
+            },
+            {
+              "portId": "hhniIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "hhni.hierarchicalHypergraph",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "change_context",
+                "impact_analysis_queries",
+                "evolution_patterns",
+                "consistency_checks"
+              ],
+              "security_level": "medium"
+            },
+            {
+              "portId": "externalCI",
+              "direction": "outbound",
+              "connectsToSystem": "ci.external",
+              "protocol": "api",
+              "whatIsExchanged": [
+                "build_triggers",
+                "test_results",
+                "deployment_status",
+                "quality_metrics"
+              ],
+              "security_level": "medium"
+            }
+          ],
+          "internalEdges": [
+            {
+              "from": "quartetValidator",
+              "to": "atomicChangeManager",
+              "type": "validates_changes",
+              "data_flow": "validation_results → change_approval"
+            },
+            {
+              "from": "atomicChangeManager",
+              "to": "blastRadiusCalculator",
+              "type": "triggers_impact_analysis",
+              "data_flow": "change_requests → impact_calculation"
+            },
+            {
+              "from": "blastRadiusCalculator",
+              "to": "qualityGateManager",
+              "type": "provides_impact_data",
+              "data_flow": "impact_analysis → gate_decisions"
+            },
+            {
+              "from": "qualityGateManager",
+              "to": "traceabilityEngine",
+              "type": "records_decisions",
+              "data_flow": "gate_decisions → trace_records"
+            },
+            {
+              "from": "traceabilityEngine",
+              "to": "evolutionTracker",
+              "type": "provides_traces",
+              "data_flow": "trace_data → evolution_records"
+            },
+            {
+              "from": "evolutionTracker",
+              "to": "consistencyChecker",
+              "type": "provides_evolution_data",
+              "data_flow": "evolution_data → consistency_checks"
+            },
+            {
+              "from": "consistencyChecker",
+              "to": "rollbackManager",
+              "type": "triggers_rollback",
+              "data_flow": "consistency_failures → rollback_operations"
+            },
+            {
+              "from": "doraMetricsTracker",
+              "to": "all_components",
+              "type": "provides_metrics",
+              "data_flow": "dora_metrics → all_operations"
+            },
+            {
+              "from": "complianceMonitor",
+              "to": "all_components",
+              "type": "ensures_compliance",
+              "data_flow": "compliance_checks → all_operations"
+            }
+          ],
+          "externalEdges": [
+            {
+              "fromPort": "cmcIntegration",
+              "toSystem": "cmc.contextMemoryCore",
+              "type": "validates_schema",
+              "data_flow": "atoms → consistency_checks"
+            },
+            {
+              "fromPort": "vifIntegration",
+              "toSystem": "vif.verifiableIntelligence",
+              "type": "validates_changes",
+              "data_flow": "change_requests → validation_proofs"
+            },
+            {
+              "fromPort": "segIntegration",
+              "toSystem": "seg.sharedEvidenceGraph",
+              "type": "validates_evolution_consistency",
+              "data_flow": "evolution_artifacts → consistency_reports"
+            },
+            {
+              "fromPort": "apoeIntegration",
+              "toSystem": "apoe.aiPoweredOrchestration",
+              "type": "manages_change_approval",
+              "data_flow": "change_requests → approval_workflows"
+            },
+            {
+              "fromPort": "hhniIntegration",
+              "toSystem": "hhni.hierarchicalHypergraph",
+              "type": "analyzes_change_impact",
+              "data_flow": "change_queries → impact_analysis"
+            },
+            {
+              "fromPort": "externalCI",
+              "toSystem": "ci.external",
+              "type": "triggers_ci_pipeline",
+              "data_flow": "change_approvals → build_deploy"
+            }
+          ],
+          "riskOverlay": {
+            "perf_hotspots": [
+              "blastRadiusCalculator",
+              "consistencyChecker",
+              "rollbackManager"
+            ],
+            "security_sensitive_ports": [
+              "cmcIntegration",
+              "vifIntegration",
+              "externalCI"
+            ],
+            "governance_touchpoints": [
+              "quartetValidator",
+              "qualityGateManager",
+              "traceabilityEngine"
+            ],
+            "critical_failure_modes": [
+              "Quartet parity validation bypass",
+              "Atomic change corruption",
+              "Blast radius miscalculation",
+              "Rollback capability loss"
+            ],
+            "blast_radius": {
+              "quartetValidator": "all_code_changes",
+              "atomicChangeManager": "change_integrity",
+              "traceabilityEngine": "decision_traceability",
+              "rollbackManager": "system_recovery"
+            }
+          },
+          "governance": {
+            "quartet_parity_enforcement": true,
+            "atomic_change_integrity": true,
+            "blast_radius_analysis": true,
+            "dora_metrics_tracking": true,
+            "traceability_completeness": true
+          },
+          "monitoring": {
+            "key_metrics": [
+              "quartet_parity_compliance_rate",
+              "atomic_change_success_rate",
+              "blast_radius_accuracy",
+              "dora_metrics_trends",
+              "rollback_success_rate"
+            ],
+            "alerts": [
+              "quartet_parity_violation",
+              "atomic_change_failure",
+              "blast_radius_exceeded",
+              "dora_metrics_degradation",
+              "rollback_capability_loss"
+            ]
+          },
+          "sourcePath": "systems\\sdfcvf\\system.map.lucid.json5"
+        },
+        "verifiableIntelligence": {
+          "systemId": "vif.verifiableIntelligence",
+          "systemName": "Verifiable Intelligence Framework - Provenance and Confidence Tracking",
+          "version": "v0.1",
+          "description": "Provenance and confidence tracking system that prevents hallucinations and ensures verifiable AI operations. Think 'AI's conscience' - tracks every decision, validates every claim, and maintains cryptographic proof of truth.",
+          "status": "production",
+          "layer": 2,
+          "internalNodes": [
+            {
+              "id": "confidenceTracker",
+              "kind": "core.component",
+              "responsibility": "Tracks confidence scores and calibration across all operations",
+              "status": "production",
+              "must_never": [
+                "Allow confidence scores without evidence",
+                "Modify confidence scores after validation",
+                "Track confidence without proper provenance"
+              ],
+              "perf_budget_ms": 5,
+              "security_level": "critical"
+            },
+            {
+              "id": "witnessManager",
+              "kind": "core.component",
+              "responsibility": "Manages cryptographic witnesses for all AI operations",
+              "status": "production",
+              "must_never": [
+                "Create witnesses without proper evidence",
+                "Modify witnesses after creation",
+                "Allow witness tampering"
+              ],
+              "perf_budget_ms": 10,
+              "security_level": "critical"
+            },
+            {
+              "id": "provenanceEngine",
+              "kind": "core.component",
+              "responsibility": "Tracks complete provenance chain for all decisions and outputs",
+              "status": "production",
+              "must_never": [
+                "Lose provenance information",
+                "Create circular provenance chains",
+                "Allow provenance tampering"
+              ],
+              "perf_budget_ms": 15,
+              "security_level": "high"
+            },
+            {
+              "id": "validationEngine",
+              "kind": "validation.component",
+              "responsibility": "Validates AI outputs against confidence claims and evidence",
+              "status": "production",
+              "must_never": [
+                "Skip validation for high-confidence claims",
+                "Accept validation without proper evidence",
+                "Allow false positive validations"
+              ],
+              "perf_budget_ms": 20,
+              "security_level": "high"
+            },
+            {
+              "id": "replayEngine",
+              "kind": "replay.component",
+              "responsibility": "Enables deterministic replay of AI operations for verification",
+              "status": "production",
+              "must_never": [
+                "Lose replay state information",
+                "Allow non-deterministic replay",
+                "Expose sensitive data during replay"
+              ],
+              "perf_budget_ms": 25,
+              "security_level": "high"
+            },
+            {
+              "id": "eceCalculator",
+              "kind": "metrics.component",
+              "responsibility": "Calculates Expected Calibration Error (ECE) for confidence calibration",
+              "status": "production",
+              "must_never": [
+                "Calculate ECE with insufficient data",
+                "Modify ECE calculations after validation",
+                "Expose calibration data inappropriately"
+              ],
+              "perf_budget_ms": 10,
+              "security_level": "medium"
+            },
+            {
+              "id": "kappaGating",
+              "kind": "gating.component",
+              "responsibility": "Implements Cohen's Kappa gating for inter-annotator agreement",
+              "status": "production",
+              "must_never": [
+                "Gate operations without proper agreement",
+                "Allow low-agreement operations to proceed",
+                "Modify kappa thresholds without approval"
+              ],
+              "perf_budget_ms": 8,
+              "security_level": "medium"
+            },
+            {
+              "id": "rsLiftCalculator",
+              "kind": "metrics.component",
+              "responsibility": "Calculates RS-Lift metrics for retrieval system performance",
+              "status": "production",
+              "must_never": [
+                "Calculate metrics with invalid data",
+                "Expose performance data inappropriately",
+                "Modify metrics after calculation"
+              ],
+              "perf_budget_ms": 12,
+              "security_level": "low"
+            },
+            {
+              "id": "auditLogger",
+              "kind": "logging.component",
+              "responsibility": "Comprehensive audit logging for all VIF operations",
+              "status": "production",
+              "must_never": [
+                "Skip logging for critical operations",
+                "Modify audit logs after creation",
+                "Expose sensitive audit information"
+              ],
+              "perf_budget_ms": 3,
+              "security_level": "critical"
+            }
+          ],
+          "ports": [
+            {
+              "portId": "cmcIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "cmc.contextMemoryCore",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "witness_storage",
+                "confidence_scores",
+                "verification_requests",
+                "proof_artifacts"
+              ],
+              "security_level": "critical"
+            },
+            {
+              "portId": "hhniIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "hhni.hierarchicalHypergraph",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "retrieval_operations",
+                "rs_lift_metrics",
+                "witness_data",
+                "replay_snapshots"
+              ],
+              "security_level": "high"
+            },
+            {
+              "portId": "apoeIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "apoe.aiPoweredOrchestration",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "execution_validation",
+                "confidence_checks",
+                "provenance_traces",
+                "safety_verification"
+              ],
+              "security_level": "high"
+            },
+            {
+              "portId": "segIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "seg.sharedEvidenceGraph",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "evidence_validation",
+                "contradiction_detection",
+                "proof_verification",
+                "consistency_checks"
+              ],
+              "security_level": "high"
+            },
+            {
+              "portId": "sdfcvfIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "sdfcvf.atomicEvolution",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "schema_validation",
+                "parity_checks",
+                "evolution_artifacts",
+                "consistency_reports"
+              ],
+              "security_level": "high"
+            },
+            {
+              "portId": "externalAudit",
+              "direction": "outbound",
+              "connectsToSystem": "audit.external",
+              "protocol": "secure_api",
+              "whatIsExchanged": [
+                "audit_reports",
+                "compliance_data",
+                "verification_results",
+                "security_alerts"
+              ],
+              "security_level": "critical"
+            }
+          ],
+          "internalEdges": [
+            {
+              "from": "confidenceTracker",
+              "to": "witnessManager",
+              "type": "provides_confidence_data",
+              "data_flow": "confidence_scores → witness_creation"
+            },
+            {
+              "from": "witnessManager",
+              "to": "provenanceEngine",
+              "type": "provides_witnesses",
+              "data_flow": "witnesses → provenance_chain"
+            },
+            {
+              "from": "provenanceEngine",
+              "to": "validationEngine",
+              "type": "provides_provenance",
+              "data_flow": "provenance_chain → validation_context"
+            },
+            {
+              "from": "validationEngine",
+              "to": "replayEngine",
+              "type": "triggers_replay",
+              "data_flow": "validation_requests → replay_operations"
+            },
+            {
+              "from": "eceCalculator",
+              "to": "confidenceTracker",
+              "type": "provides_calibration",
+              "data_flow": "ece_metrics → confidence_calibration"
+            },
+            {
+              "from": "kappaGating",
+              "to": "validationEngine",
+              "type": "provides_gating",
+              "data_flow": "kappa_scores → validation_gating"
+            },
+            {
+              "from": "rsLiftCalculator",
+              "to": "validationEngine",
+              "type": "provides_metrics",
+              "data_flow": "rs_lift_metrics → retrieval_validation"
+            },
+            {
+              "from": "auditLogger",
+              "to": "all_components",
+              "type": "logs_operations",
+              "data_flow": "operation_data → audit_logs"
+            }
+          ],
+          "externalEdges": [
+            {
+              "fromPort": "cmcIntegration",
+              "toSystem": "cmc.contextMemoryCore",
+              "type": "stores_witnesses",
+              "data_flow": "witnesses → persistent_storage"
+            },
+            {
+              "fromPort": "hhniIntegration",
+              "toSystem": "hhni.hierarchicalHypergraph",
+              "type": "witnesses_retrieval",
+              "data_flow": "retrieval_operations → witness_data"
+            },
+            {
+              "fromPort": "apoeIntegration",
+              "toSystem": "apoe.aiPoweredOrchestration",
+              "type": "validates_execution",
+              "data_flow": "execution_requests → validation_results"
+            },
+            {
+              "fromPort": "segIntegration",
+              "toSystem": "seg.sharedEvidenceGraph",
+              "type": "validates_evidence",
+              "data_flow": "evidence_claims → validation_proofs"
+            },
+            {
+              "fromPort": "sdfcvfIntegration",
+              "toSystem": "sdfcvf.atomicEvolution",
+              "type": "validates_evolution",
+              "data_flow": "evolution_artifacts → validation_reports"
+            },
+            {
+              "fromPort": "externalAudit",
+              "toSystem": "audit.external",
+              "type": "reports_compliance",
+              "data_flow": "audit_data → compliance_reports"
+            }
+          ],
+          "riskOverlay": {
+            "perf_hotspots": [
+              "validationEngine",
+              "replayEngine",
+              "provenanceEngine"
+            ],
+            "security_sensitive_ports": [
+              "cmcIntegration",
+              "externalAudit",
+              "witnessManager"
+            ],
+            "governance_touchpoints": [
+              "confidenceTracker",
+              "witnessManager",
+              "validationEngine"
+            ],
+            "critical_failure_modes": [
+              "Witness tampering or corruption",
+              "Provenance chain breakage",
+              "Validation bypass or failure",
+              "Audit log tampering"
+            ],
+            "blast_radius": {
+              "confidenceTracker": "all_ai_operations",
+              "witnessManager": "verification_integrity",
+              "provenanceEngine": "decision_traceability",
+              "validationEngine": "output_verification"
+            }
+          },
+          "governance": {
+            "cryptographic_integrity": true,
+            "provenance_immutability": true,
+            "confidence_calibration": true,
+            "audit_completeness": true,
+            "verification_standards": true
+          },
+          "monitoring": {
+            "key_metrics": [
+              "confidence_calibration_accuracy",
+              "witness_creation_rate",
+              "validation_success_rate",
+              "provenance_chain_integrity",
+              "ece_score_trends"
+            ],
+            "alerts": [
+              "confidence_calibration_drift > 0.1",
+              "witness_creation_failure_rate > 1%",
+              "validation_bypass_detected",
+              "provenance_chain_corruption",
+              "audit_log_tampering_detected"
+            ]
+          },
+          "sourcePath": "systems\\vif\\system.map.lucid.json5"
+        }
+      }
+    },
+    "layer3": {
+      "layerId": "layer3",
+      "layerName": "Layer 3: Orchestration & Planning",
+      "purpose": "High-level coordination and execution planning",
+      "dependencies": [
+        "layer1",
+        "layer2"
+      ],
+      "systems": {
+        "aiPoweredOrchestration": {
+          "systemId": "apoe.aiPoweredOrchestration",
+          "systemName": "AI-Powered Orchestration Engine - Planned, Budgeted, Gated Execution",
+          "version": "v0.1",
+          "description": "Orchestration engine that transforms AI execution from improvisation to compilation. Compiles vague intent into typed, budgeted, gated execution plans using ACL (AIMOS Chain Language), orchestrates specialized agents through 8 roles, and ensures every operation is witnessed, budgeted, and verifiable.",
+          "status": "production",
+          "layer": 3,
+          "internalNodes": [
+            {
+              "id": "aclCompiler",
+              "kind": "core.component",
+              "responsibility": "Compiles ACL text into typed, executable plans (ACL → DAG)",
+              "status": "production",
+              "must_never": [
+                "Allow invalid ACL syntax",
+                "Skip type checking",
+                "Generate plans without budgets",
+                "Create circular dependencies"
+              ],
+              "perf_budget_ms": 100,
+              "security_level": "high"
+            },
+            {
+              "id": "dagExecutor",
+              "kind": "core.component",
+              "responsibility": "Executes plans as directed acyclic graphs with topological sorting",
+              "status": "production",
+              "must_never": [
+                "Execute steps out of order",
+                "Skip dependency resolution",
+                "Allow circular execution",
+                "Lose execution state"
+              ],
+              "perf_budget_ms": 50,
+              "security_level": "high"
+            },
+            {
+              "id": "roleDispatcher",
+              "kind": "orchestration.component",
+              "responsibility": "Dispatches steps to appropriate role agents (8 roles: Planner, Retriever, Reasoner, Verifier, Builder, Critic, Operator, Witness)",
+              "status": "production",
+              "must_never": [
+                "Dispatch to wrong role",
+                "Skip contract enforcement",
+                "Allow budget violations",
+                "Skip VIF witness generation"
+              ],
+              "perf_budget_ms": 20,
+              "security_level": "critical"
+            },
+            {
+              "id": "gateManager",
+              "kind": "gating.component",
+              "responsibility": "Enforces quality, safety, and policy gates with PASS/FAIL/WARN/ABSTAIN routing",
+              "status": "production",
+              "must_never": [
+                "Bypass gates",
+                "Skip gate evaluation",
+                "Allow unsafe operations",
+                "Lose gate decision reasoning"
+              ],
+              "perf_budget_ms": 15,
+              "security_level": "critical"
+            },
+            {
+              "id": "budgetTracker",
+              "kind": "tracking.component",
+              "responsibility": "Tracks and enforces resource budgets (tokens, time, tools)",
+              "status": "production",
+              "must_never": [
+                "Allow budget violations",
+                "Lose budget tracking",
+                "Skip budget enforcement",
+                "Exceed resource limits"
+              ],
+              "perf_budget_ms": 5,
+              "security_level": "high"
+            },
+            {
+              "id": "vifWitnessGenerator",
+              "kind": "witness.component",
+              "responsibility": "Generates VIF witnesses for every step execution",
+              "status": "production",
+              "must_never": [
+                "Skip witness generation",
+                "Lose provenance information",
+                "Allow witness tampering",
+                "Create incomplete witnesses"
+              ],
+              "perf_budget_ms": 10,
+              "security_level": "critical"
+            },
+            {
+              "id": "deppRewriter",
+              "kind": "optimization.component",
+              "responsibility": "Self-rewriting plans using SEG evidence for continuous improvement",
+              "status": "development",
+              "must_never": [
+                "Rewrite plans without evidence",
+                "Lose plan history",
+                "Create worse plans",
+                "Break plan semantics"
+              ],
+              "perf_budget_ms": 200,
+              "security_level": "medium"
+            },
+            {
+              "id": "stateManager",
+              "kind": "state.component",
+              "responsibility": "Manages execution state and enables resumption/recovery",
+              "status": "production",
+              "must_never": [
+                "Lose execution state",
+                "Create inconsistent states",
+                "Allow state corruption",
+                "Skip state snapshots"
+              ],
+              "perf_budget_ms": 30,
+              "security_level": "high"
+            }
+          ],
+          "ports": [
+            {
+              "portId": "hhniIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "hhni.hierarchicalHypergraph",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "context_retrieval_requests",
+                "optimized_context",
+                "budget_aware_queries",
+                "retrieval_witnesses"
+              ],
+              "security_level": "high"
+            },
+            {
+              "portId": "vifIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "vif.verifiableIntelligence",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "execution_witnesses",
+                "confidence_scores",
+                "provenance_traces",
+                "verification_requests"
+              ],
+              "security_level": "critical"
+            },
+            {
+              "portId": "cmcIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "cmc.contextMemoryCore",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "execution_state",
+                "plan_artifacts",
+                "step_results",
+                "state_snapshots"
+              ],
+              "security_level": "high"
+            },
+            {
+              "portId": "segIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "seg.sharedEvidenceGraph",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "execution_traces",
+                "evidence_nodes",
+                "synthesis_requests",
+                "plan_effectiveness_data"
+              ],
+              "security_level": "high"
+            },
+            {
+              "portId": "sdfcvfIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "sdfcvf.atomicEvolution",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "quality_gate_status",
+                "parity_checks",
+                "evolution_artifacts",
+                "trace_emissions"
+              ],
+              "security_level": "high"
+            },
+            {
+              "portId": "llmIntegration",
+              "direction": "outbound",
+              "connectsToSystem": "llm.external",
+              "protocol": "api",
+              "whatIsExchanged": [
+                "role_execution_requests",
+                "llm_responses",
+                "token_usage_data",
+                "model_outputs"
+              ],
+              "security_level": "medium"
+            }
+          ],
+          "internalEdges": [
+            {
+              "from": "aclCompiler",
+              "to": "dagExecutor",
+              "type": "provides_executable_plan",
+              "data_flow": "compiled_plan → dag_execution"
+            },
+            {
+              "from": "dagExecutor",
+              "to": "roleDispatcher",
+              "type": "provides_execution_steps",
+              "data_flow": "step_requests → role_dispatch"
+            },
+            {
+              "from": "roleDispatcher",
+              "to": "budgetTracker",
+              "type": "requests_budget_check",
+              "data_flow": "step_budgets → budget_validation"
+            },
+            {
+              "from": "budgetTracker",
+              "to": "gateManager",
+              "type": "provides_budget_status",
+              "data_flow": "budget_status → gate_evaluation"
+            },
+            {
+              "from": "gateManager",
+              "to": "dagExecutor",
+              "type": "provides_gate_decisions",
+              "data_flow": "gate_results → execution_control"
+            },
+            {
+              "from": "roleDispatcher",
+              "to": "vifWitnessGenerator",
+              "type": "triggers_witness",
+              "data_flow": "step_executions → witness_generation"
+            },
+            {
+              "from": "vifWitnessGenerator",
+              "to": "stateManager",
+              "type": "provides_provenance",
+              "data_flow": "witnesses → state_records"
+            },
+            {
+              "from": "stateManager",
+              "to": "dagExecutor",
+              "type": "provides_state",
+              "data_flow": "execution_state → step_context"
+            },
+            {
+              "from": "deppRewriter",
+              "to": "aclCompiler",
+              "type": "provides_improved_plans",
+              "data_flow": "rewritten_plans → compilation"
+            }
+          ],
+          "externalEdges": [
+            {
+              "fromPort": "hhniIntegration",
+              "toSystem": "hhni.hierarchicalHypergraph",
+              "type": "retrieves_context",
+              "data_flow": "queries → optimized_context"
+            },
+            {
+              "fromPort": "vifIntegration",
+              "toSystem": "vif.verifiableIntelligence",
+              "type": "emits_witnesses",
+              "data_flow": "execution_data → provenance_traces"
+            },
+            {
+              "fromPort": "cmcIntegration",
+              "toSystem": "cmc.contextMemoryCore",
+              "type": "stores_execution_state",
+              "data_flow": "execution_data → persistent_storage"
+            },
+            {
+              "fromPort": "segIntegration",
+              "toSystem": "seg.sharedEvidenceGraph",
+              "type": "provides_execution_traces",
+              "data_flow": "execution_data → evidence_nodes"
+            },
+            {
+              "fromPort": "sdfcvfIntegration",
+              "toSystem": "sdfcvf.atomicEvolution",
+              "type": "respects_quartet_parity",
+              "data_flow": "execution_data → quality_validation"
+            },
+            {
+              "fromPort": "llmIntegration",
+              "toSystem": "llm.external",
+              "type": "executes_role_steps",
+              "data_flow": "role_requests → model_outputs"
+            }
+          ],
+          "riskOverlay": {
+            "perf_hotspots": [
+              "aclCompiler",
+              "dagExecutor",
+              "roleDispatcher",
+              "deppRewriter"
+            ],
+            "security_sensitive_ports": [
+              "vifIntegration",
+              "cmcIntegration",
+              "llmIntegration"
+            ],
+            "governance_touchpoints": [
+              "gateManager",
+              "budgetTracker",
+              "vifWitnessGenerator"
+            ],
+            "critical_failure_modes": [
+              "Gate bypass or failure",
+              "Budget violation",
+              "Witness generation failure",
+              "State corruption or loss",
+              "Role dispatch errors"
+            ],
+            "blast_radius": {
+              "aclCompiler": "all_plan_executions",
+              "gateManager": "execution_safety",
+              "budgetTracker": "resource_limits",
+              "vifWitnessGenerator": "provenance_integrity",
+              "roleDispatcher": "execution_quality"
+            }
+          },
+          "governance": {
+            "plan_compilation": true,
+            "budget_enforcement": true,
+            "gate_enforcement": true,
+            "witness_generation": true,
+            "state_management": true,
+            "quartet_parity": true
+          },
+          "monitoring": {
+            "key_metrics": [
+              "plan_compilation_time",
+              "execution_success_rate",
+              "budget_compliance_rate",
+              "gate_pass_rate",
+              "witness_generation_rate",
+              "role_execution_latency"
+            ],
+            "alerts": [
+              "gate_bypass_detected",
+              "budget_violation",
+              "witness_generation_failure",
+              "state_corruption_detected",
+              "role_dispatch_errors",
+              "execution_timeout"
+            ]
+          },
+          "sourcePath": "systems\\apoe\\system.map.lucid.json5"
+        }
+      }
+    },
+    "layer4": {
+      "layerId": "layer4",
+      "layerName": "Layer 4: Consciousness Engine",
+      "purpose": "Meta-cognitive awareness and self-monitoring",
+      "dependencies": [
+        "layer1",
+        "layer2",
+        "layer3"
+      ],
+      "systems": {
+        "cognitiveAnalysis": {
+          "systemId": "cas.cognitiveAnalysis",
+          "systemName": "Cognitive Analysis System - Meta-Cognition Monitoring and Improvement",
+          "version": "v0.1",
+          "description": "Meta-layer system that observes and analyzes cognitive processes across all AIM-OS systems. Monitors activation state (hot vs cold), category recognition accuracy, attention load, and failure modes. Creates transparent, debuggable cognition by analyzing HOW the AI thinks during operation.",
+          "status": "production",
+          "layer": 4,
+          "internalNodes": [
+            {
+              "id": "activationTracker",
+              "kind": "tracking.component",
+              "responsibility": "Tracks what's 'hot' (actively used) vs 'cold' (available but inactive) in AI attention",
+              "status": "production",
+              "must_never": [
+                "Lose activation state",
+                "Allow activation failures to go undetected",
+                "Skip activation warnings",
+                "Create inconsistent activation data"
+              ],
+              "perf_budget_ms": 10,
+              "security_level": "medium"
+            },
+            {
+              "id": "categoryRecognizer",
+              "kind": "analysis.component",
+              "responsibility": "Detects how tasks get classified and validates against actual requirements",
+              "status": "production",
+              "must_never": [
+                "Miss category errors",
+                "Allow wrong categorization",
+                "Skip category validation",
+                "Lose category reasoning"
+              ],
+              "perf_budget_ms": 15,
+              "security_level": "medium"
+            },
+            {
+              "id": "attentionMonitor",
+              "kind": "monitoring.component",
+              "responsibility": "Monitors cognitive load and attention narrowing",
+              "status": "production",
+              "must_never": [
+                "Miss attention narrowing",
+                "Allow overload to go undetected",
+                "Skip attention warnings",
+                "Lose attention metrics"
+              ],
+              "perf_budget_ms": 8,
+              "security_level": "low"
+            },
+            {
+              "id": "failureModeDetector",
+              "kind": "analysis.component",
+              "responsibility": "Detects cognitive failure modes and patterns",
+              "status": "production",
+              "must_never": [
+                "Miss failure patterns",
+                "Skip failure analysis",
+                "Lose failure context",
+                "Allow failures to repeat"
+              ],
+              "perf_budget_ms": 20,
+              "security_level": "high"
+            },
+            {
+              "id": "learningExtractor",
+              "kind": "extraction.component",
+              "responsibility": "Extracts learnings from decisions and outcomes",
+              "status": "production",
+              "must_never": [
+                "Lose learning opportunities",
+                "Skip learning extraction",
+                "Create false learnings",
+                "Lose learning provenance"
+              ],
+              "perf_budget_ms": 25,
+              "security_level": "medium"
+            },
+            {
+              "id": "introspectionEngine",
+              "kind": "introspection.component",
+              "responsibility": "Performs hourly cognitive introspection and validation",
+              "status": "production",
+              "must_never": [
+                "Skip introspection cycles",
+                "Lose introspection data",
+                "Allow drift to go undetected",
+                "Create inconsistent introspection"
+              ],
+              "perf_budget_ms": 30,
+              "security_level": "high"
+            },
+            {
+              "id": "decisionLogger",
+              "kind": "logging.component",
+              "responsibility": "Logs all decisions with full context and reasoning",
+              "status": "production",
+              "must_never": [
+                "Lose decision logs",
+                "Skip decision logging",
+                "Create incomplete logs",
+                "Allow log tampering"
+              ],
+              "perf_budget_ms": 5,
+              "security_level": "critical"
+            }
+          ],
+          "ports": [
+            {
+              "portId": "apoeIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "apoe.aiPoweredOrchestration",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "decision_events",
+                "execution_context",
+                "plan_analysis",
+                "cognitive_state"
+              ],
+              "security_level": "high"
+            },
+            {
+              "portId": "vifIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "vif.verifiableIntelligence",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "confidence_scores",
+                "provenance_data",
+                "verification_results",
+                "cognitive_metrics"
+              ],
+              "security_level": "high"
+            },
+            {
+              "portId": "hhniIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "hhni.hierarchicalHypergraph",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "context_queries",
+                "retrieval_context",
+                "activation_context",
+                "cognitive_load_data"
+              ],
+              "security_level": "medium"
+            },
+            {
+              "portId": "cmcIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "cmc.contextMemoryCore",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "decision_logs",
+                "learning_entries",
+                "analysis_reports",
+                "cognitive_state_snapshots"
+              ],
+              "security_level": "high"
+            },
+            {
+              "portId": "sdfcvfIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "sdfcvf.atomicEvolution",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "quality_metrics",
+                "failure_patterns",
+                "evolution_recommendations",
+                "cognitive_analysis"
+              ],
+              "security_level": "medium"
+            }
+          ],
+          "internalEdges": [
+            {
+              "from": "activationTracker",
+              "to": "categoryRecognizer",
+              "type": "provides_activation_state",
+              "data_flow": "activation_levels → category_analysis"
+            },
+            {
+              "from": "categoryRecognizer",
+              "to": "attentionMonitor",
+              "type": "provides_category_data",
+              "data_flow": "category_results → attention_analysis"
+            },
+            {
+              "from": "attentionMonitor",
+              "to": "failureModeDetector",
+              "type": "provides_attention_metrics",
+              "data_flow": "attention_data → failure_detection"
+            },
+            {
+              "from": "failureModeDetector",
+              "to": "learningExtractor",
+              "type": "provides_failure_patterns",
+              "data_flow": "failure_data → learning_extraction"
+            },
+            {
+              "from": "learningExtractor",
+              "to": "introspectionEngine",
+              "type": "provides_learnings",
+              "data_flow": "learnings → introspection_analysis"
+            },
+            {
+              "from": "introspectionEngine",
+              "to": "decisionLogger",
+              "type": "provides_introspection_data",
+              "data_flow": "introspection_results → decision_logging"
+            },
+            {
+              "from": "decisionLogger",
+              "to": "all_components",
+              "type": "provides_logging",
+              "data_flow": "log_events → all_operations"
+            }
+          ],
+          "externalEdges": [
+            {
+              "fromPort": "apoeIntegration",
+              "toSystem": "apoe.aiPoweredOrchestration",
+              "type": "observes_decisions",
+              "data_flow": "execution_events → cognitive_analysis"
+            },
+            {
+              "fromPort": "vifIntegration",
+              "toSystem": "vif.verifiableIntelligence",
+              "type": "analyzes_confidence",
+              "data_flow": "confidence_data → cognitive_metrics"
+            },
+            {
+              "fromPort": "hhniIntegration",
+              "toSystem": "hhni.hierarchicalHypergraph",
+              "type": "analyzes_context_usage",
+              "data_flow": "retrieval_context → activation_analysis"
+            },
+            {
+              "fromPort": "cmcIntegration",
+              "toSystem": "cmc.contextMemoryCore",
+              "type": "stores_analysis_data",
+              "data_flow": "cognitive_data → persistent_storage"
+            },
+            {
+              "fromPort": "sdfcvfIntegration",
+              "toSystem": "sdfcvf.atomicEvolution",
+              "type": "provides_quality_insights",
+              "data_flow": "cognitive_analysis → quality_metrics"
+            }
+          ],
+          "riskOverlay": {
+            "perf_hotspots": [
+              "learningExtractor",
+              "failureModeDetector",
+              "introspectionEngine"
+            ],
+            "security_sensitive_ports": [
+              "cmcIntegration",
+              "apoeIntegration",
+              "vifIntegration"
+            ],
+            "governance_touchpoints": [
+              "decisionLogger",
+              "failureModeDetector",
+              "introspectionEngine"
+            ],
+            "critical_failure_modes": [
+              "Activation tracking failure",
+              "Category recognition errors",
+              "Attention monitoring missed",
+              "Decision log loss"
+            ],
+            "blast_radius": {
+              "decisionLogger": "all_cognitive_analysis",
+              "failureModeDetector": "failure_detection",
+              "introspectionEngine": "cognitive_introspection",
+              "activationTracker": "activation_monitoring"
+            }
+          },
+          "governance": {
+            "activation_tracking": true,
+            "category_recognition": true,
+            "attention_monitoring": true,
+            "failure_detection": true,
+            "learning_extraction": true,
+            "introspection": true
+          },
+          "monitoring": {
+            "key_metrics": [
+              "activation_accuracy",
+              "category_recognition_rate",
+              "attention_load_level",
+              "failure_detection_rate",
+              "learning_extraction_rate",
+              "introspection_completeness"
+            ],
+            "alerts": [
+              "activation_failure_detected",
+              "category_error_detected",
+              "attention_overload",
+              "failure_pattern_detected",
+              "decision_log_failure",
+              "introspection_skipped"
+            ]
+          },
+          "sourcePath": "systems\\cognitive_analysis\\system.map.lucid.json5"
+        },
+        "intuitiveIntelligence": {
+          "systemId": "iis.intuitiveIntelligence",
+          "systemName": "Intuitive Intelligence System - AI Intuition and Learning",
+          "version": "v0.1",
+          "description": "Operational definition and learning loop for AI intuition. Computes IntuitionScore for candidate actions using calibrated confidence (VIF), retrieval quality (HHNI), meta-pattern similarity (CAS/timeline), emotional salience (TCS), and 4D evolution alignment. Learns online from outcomes and maintains auditability through CAS.",
+          "status": "production",
+          "layer": 4,
+          "internalNodes": [
+            {
+              "id": "intuitionCalculator",
+              "kind": "core.component",
+              "responsibility": "Computes IntuitionScore using feature vector (C', RS, M, E, F, U)",
+              "status": "production",
+              "must_never": [
+                "Skip intuition calculation",
+                "Use uncalibrated confidence",
+                "Lose intuition reasoning",
+                "Allow intuition override of safety"
+              ],
+              "perf_budget_ms": 20,
+              "security_level": "high"
+            },
+            {
+              "id": "featureExtractor",
+              "kind": "extraction.component",
+              "responsibility": "Extracts intuition features (calibrated confidence, retrieval strength, meta-pattern similarity, emotional salience, 4D evolution alignment)",
+              "status": "production",
+              "must_never": [
+                "Lose feature data",
+                "Skip feature extraction",
+                "Create incorrect features",
+                "Allow feature corruption"
+              ],
+              "perf_budget_ms": 15,
+              "security_level": "medium"
+            },
+            {
+              "id": "learningEngine",
+              "kind": "learning.component",
+              "responsibility": "Learns online from labeled outcomes (success/failure) using SGD",
+              "status": "production",
+              "must_never": [
+                "Lose learning data",
+                "Skip learning updates",
+                "Create false learnings",
+                "Allow learning degradation"
+              ],
+              "perf_budget_ms": 25,
+              "security_level": "medium"
+            },
+            {
+              "id": "calibrationTracker",
+              "kind": "tracking.component",
+              "responsibility": "Tracks calibration metrics (AUC, ECE) and detects drift",
+              "status": "production",
+              "must_never": [
+                "Lose calibration data",
+                "Skip calibration tracking",
+                "Allow calibration drift",
+                "Create inconsistent calibration"
+              ],
+              "perf_budget_ms": 10,
+              "security_level": "high"
+            },
+            {
+              "id": "evolutionPredictor",
+              "kind": "prediction.component",
+              "responsibility": "Predicts 4D evolution (AI state, user state, collaboration state) for alignment scoring",
+              "status": "development",
+              "must_never": [
+                "Lose prediction data",
+                "Skip evolution prediction",
+                "Create incorrect predictions",
+                "Allow prediction degradation"
+              ],
+              "perf_budget_ms": 30,
+              "security_level": "medium"
+            },
+            {
+              "id": "intuitionTraceGenerator",
+              "kind": "trace.component",
+              "responsibility": "Generates IntuitionTrace records with full provenance",
+              "status": "production",
+              "must_never": [
+                "Lose trace data",
+                "Skip trace generation",
+                "Create incomplete traces",
+                "Allow trace tampering"
+              ],
+              "perf_budget_ms": 8,
+              "security_level": "critical"
+            },
+            {
+              "id": "metaPatternAnalyzer",
+              "kind": "analysis.component",
+              "responsibility": "Analyzes meta-pattern similarity to past successful decisions",
+              "status": "production",
+              "must_never": [
+                "Lose pattern data",
+                "Skip pattern analysis",
+                "Create false patterns",
+                "Allow pattern degradation"
+              ],
+              "perf_budget_ms": 20,
+              "security_level": "medium"
+            }
+          ],
+          "ports": [
+            {
+              "portId": "vifIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "vif.verifiableIntelligence",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "calibrated_confidence",
+                "confidence_scores",
+                "provenance_data",
+                "intuition_traces"
+              ],
+              "security_level": "critical"
+            },
+            {
+              "portId": "hhniIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "hhni.hierarchicalHypergraph",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "retrieval_strength",
+                "retrieval_scores",
+                "context_quality",
+                "intuition_features"
+              ],
+              "security_level": "high"
+            },
+            {
+              "portId": "casIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "cas.cognitiveAnalysis",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "meta_pattern_data",
+                "cognitive_metrics",
+                "intuition_traces",
+                "learning_insights"
+              ],
+              "security_level": "high"
+            },
+            {
+              "portId": "tcsIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "tcs.timelineContext",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "emotional_salience",
+                "timeline_patterns",
+                "consciousness_data",
+                "intuition_context"
+              ],
+              "security_level": "medium"
+            },
+            {
+              "portId": "cmcIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "cmc.contextMemoryCore",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "intuition_traces",
+                "learning_data",
+                "calibration_snapshots",
+                "intuition_metadata"
+              ],
+              "security_level": "high"
+            }
+          ],
+          "internalEdges": [
+            {
+              "from": "featureExtractor",
+              "to": "intuitionCalculator",
+              "type": "provides_features",
+              "data_flow": "feature_vector → intuition_calculation"
+            },
+            {
+              "from": "metaPatternAnalyzer",
+              "to": "featureExtractor",
+              "type": "provides_pattern_data",
+              "data_flow": "pattern_similarity → feature_extraction"
+            },
+            {
+              "from": "evolutionPredictor",
+              "to": "featureExtractor",
+              "type": "provides_evolution_data",
+              "data_flow": "evolution_prediction → feature_extraction"
+            },
+            {
+              "from": "intuitionCalculator",
+              "to": "intuitionTraceGenerator",
+              "type": "provides_intuition_score",
+              "data_flow": "intuition_score → trace_generation"
+            },
+            {
+              "from": "intuitionTraceGenerator",
+              "to": "learningEngine",
+              "type": "provides_traces",
+              "data_flow": "traces → learning_input"
+            },
+            {
+              "from": "learningEngine",
+              "to": "calibrationTracker",
+              "type": "provides_learning_updates",
+              "data_flow": "learning_updates → calibration_tracking"
+            },
+            {
+              "from": "calibrationTracker",
+              "to": "intuitionCalculator",
+              "type": "provides_calibration",
+              "data_flow": "calibration_data → intuition_calculation"
+            }
+          ],
+          "externalEdges": [
+            {
+              "fromPort": "vifIntegration",
+              "toSystem": "vif.verifiableIntelligence",
+              "type": "retrieves_calibrated_confidence",
+              "data_flow": "confidence_queries → calibrated_confidence"
+            },
+            {
+              "fromPort": "hhniIntegration",
+              "toSystem": "hhni.hierarchicalHypergraph",
+              "type": "calculates_retrieval_strength",
+              "data_flow": "retrieval_queries → retrieval_strength"
+            },
+            {
+              "fromPort": "casIntegration",
+              "toSystem": "cas.cognitiveAnalysis",
+              "type": "analyzes_meta_patterns",
+              "data_flow": "decision_patterns → meta_pattern_analysis"
+            },
+            {
+              "fromPort": "tcsIntegration",
+              "toSystem": "tcs.timelineContext",
+              "type": "retrieves_emotional_salience",
+              "data_flow": "timeline_queries → emotional_salience"
+            },
+            {
+              "fromPort": "cmcIntegration",
+              "toSystem": "cmc.contextMemoryCore",
+              "type": "stores_intuition_data",
+              "data_flow": "intuition_data → persistent_storage"
+            }
+          ],
+          "riskOverlay": {
+            "perf_hotspots": [
+              "learningEngine",
+              "evolutionPredictor",
+              "metaPatternAnalyzer"
+            ],
+            "security_sensitive_ports": [
+              "vifIntegration",
+              "cmcIntegration",
+              "casIntegration"
+            ],
+            "governance_touchpoints": [
+              "intuitionCalculator",
+              "learningEngine",
+              "calibrationTracker"
+            ],
+            "critical_failure_modes": [
+              "Intuition calculation failure",
+              "Learning degradation",
+              "Calibration drift",
+              "Trace generation failure"
+            ],
+            "blast_radius": {
+              "intuitionCalculator": "all_intuition_decisions",
+              "learningEngine": "intuition_learning",
+              "calibrationTracker": "intuition_calibration",
+              "intuitionTraceGenerator": "intuition_provenance"
+            }
+          },
+          "governance": {
+            "intuition_calculation": true,
+            "feature_extraction": true,
+            "online_learning": true,
+            "calibration_tracking": true,
+            "trace_generation": true,
+            "safety_gating": true
+          },
+          "monitoring": {
+            "key_metrics": [
+              "intuition_score_accuracy",
+              "calibration_auc",
+              "calibration_ece",
+              "learning_rate",
+              "pattern_similarity_accuracy",
+              "evolution_prediction_accuracy"
+            ],
+            "alerts": [
+              "intuition_calculation_failure",
+              "calibration_drift_detected",
+              "learning_degradation",
+              "trace_generation_failure",
+              "pattern_analysis_failure",
+              "evolution_prediction_error"
+            ]
+          },
+          "sourcePath": "systems\\intuitive_intelligence_system\\system.map.lucid.json5"
+        },
+        "timelineContext": {
+          "systemId": "tcs.timelineContext",
+          "systemName": "Timeline Context System - Temporal Consciousness Substrate",
+          "version": "v0.1",
+          "description": "Temporal consciousness infrastructure that preserves granular interaction history with temporal and emotional context. Enables session continuity, meta-analysis, and consciousness debugging through comprehensive timeline tracking and consciousness journaling.",
+          "status": "production",
+          "layer": 4,
+          "internalNodes": [
+            {
+              "id": "timelineTracker",
+              "kind": "core.component",
+              "responsibility": "Tracks timeline nodes and interactions between nodes",
+              "status": "production",
+              "must_never": [
+                "Lose timeline nodes",
+                "Skip interaction tracking",
+                "Create timeline inconsistencies",
+                "Allow timeline corruption"
+              ],
+              "perf_budget_ms": 15,
+              "security_level": "high"
+            },
+            {
+              "id": "consciousnessJournaler",
+              "kind": "journaling.component",
+              "responsibility": "Captures AI thought processes at maximum depth for consciousness analysis",
+              "status": "production",
+              "must_never": [
+                "Lose consciousness journals",
+                "Skip journaling",
+                "Create incomplete journals",
+                "Allow journal tampering"
+              ],
+              "perf_budget_ms": 25,
+              "security_level": "critical"
+            },
+            {
+              "id": "contextSummarizer",
+              "kind": "summarization.component",
+              "responsibility": "Creates rolling summaries and checkpoints from timeline data",
+              "status": "production",
+              "must_never": [
+                "Lose summary data",
+                "Skip summarization",
+                "Create inconsistent summaries",
+                "Allow summary corruption"
+              ],
+              "perf_budget_ms": 30,
+              "security_level": "medium"
+            },
+            {
+              "id": "timelineIndexer",
+              "kind": "indexing.component",
+              "responsibility": "Indexes timeline nodes for efficient query and retrieval",
+              "status": "production",
+              "must_never": [
+                "Lose index data",
+                "Skip indexing",
+                "Create inconsistent indexes",
+                "Allow index corruption"
+              ],
+              "perf_budget_ms": 20,
+              "security_level": "medium"
+            },
+            {
+              "id": "dualPromptManager",
+              "kind": "integration.component",
+              "responsibility": "Manages dual-prompt architecture integration (smart model + execution model)",
+              "status": "production",
+              "must_never": [
+                "Lose prompt context",
+                "Skip prompt tracking",
+                "Create inconsistent prompts",
+                "Allow prompt corruption"
+              ],
+              "perf_budget_ms": 10,
+              "security_level": "high"
+            },
+            {
+              "id": "emotionalStateTracker",
+              "kind": "tracking.component",
+              "responsibility": "Tracks emotional state changes and resonance markers",
+              "status": "production",
+              "must_never": [
+                "Lose emotional state",
+                "Skip emotion tracking",
+                "Create inconsistent emotions",
+                "Allow emotion corruption"
+              ],
+              "perf_budget_ms": 8,
+              "security_level": "low"
+            },
+            {
+              "id": "promptContextTracker",
+              "kind": "tracking.component",
+              "responsibility": "Tracks context evolution at each prompt for continuity",
+              "status": "production",
+              "must_never": [
+                "Lose context snapshots",
+                "Skip context tracking",
+                "Create incomplete snapshots",
+                "Allow context corruption"
+              ],
+              "perf_budget_ms": 12,
+              "security_level": "high"
+            }
+          ],
+          "ports": [
+            {
+              "portId": "cmcIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "cmc.contextMemoryCore",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "timeline_nodes",
+                "consciousness_journals",
+                "context_snapshots",
+                "summary_data"
+              ],
+              "security_level": "critical"
+            },
+            {
+              "portId": "hhniIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "hhni.hierarchicalHypergraph",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "timeline_queries",
+                "context_retrieval",
+                "temporal_patterns",
+                "consciousness_analysis"
+              ],
+              "security_level": "high"
+            },
+            {
+              "portId": "apoeIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "apoe.aiPoweredOrchestration",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "execution_checkpoints",
+                "plan_timeline",
+                "orchestration_context",
+                "timeline_insights"
+              ],
+              "security_level": "high"
+            },
+            {
+              "portId": "casIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "cas.cognitiveAnalysis",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "cognitive_analysis_data",
+                "consciousness_journals",
+                "temporal_patterns",
+                "cognitive_metrics"
+              ],
+              "security_level": "high"
+            },
+            {
+              "portId": "vifIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "vif.verifiableIntelligence",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "timeline_provenance",
+                "context_quality",
+                "verification_data",
+                "timeline_confidence"
+              ],
+              "security_level": "high"
+            }
+          ],
+          "internalEdges": [
+            {
+              "from": "timelineTracker",
+              "to": "consciousnessJournaler",
+              "type": "provides_timeline_context",
+              "data_flow": "timeline_data → journaling"
+            },
+            {
+              "from": "consciousnessJournaler",
+              "to": "contextSummarizer",
+              "type": "provides_journal_data",
+              "data_flow": "journals → summarization"
+            },
+            {
+              "from": "contextSummarizer",
+              "to": "timelineIndexer",
+              "type": "provides_summaries",
+              "data_flow": "summaries → indexing"
+            },
+            {
+              "from": "timelineIndexer",
+              "to": "dualPromptManager",
+              "type": "provides_indexed_data",
+              "data_flow": "indexed_data → prompt_management"
+            },
+            {
+              "from": "emotionalStateTracker",
+              "to": "consciousnessJournaler",
+              "type": "provides_emotional_context",
+              "data_flow": "emotional_state → journaling"
+            },
+            {
+              "from": "promptContextTracker",
+              "to": "timelineTracker",
+              "type": "provides_context_snapshots",
+              "data_flow": "context_snapshots → timeline"
+            },
+            {
+              "from": "dualPromptManager",
+              "to": "promptContextTracker",
+              "type": "provides_prompt_data",
+              "data_flow": "prompt_data → context_tracking"
+            }
+          ],
+          "externalEdges": [
+            {
+              "fromPort": "cmcIntegration",
+              "toSystem": "cmc.contextMemoryCore",
+              "type": "stores_timeline_data",
+              "data_flow": "timeline_data → persistent_storage"
+            },
+            {
+              "fromPort": "hhniIntegration",
+              "toSystem": "hhni.hierarchicalHypergraph",
+              "type": "retrieves_temporal_context",
+              "data_flow": "queries → temporal_context"
+            },
+            {
+              "fromPort": "apoeIntegration",
+              "toSystem": "apoe.aiPoweredOrchestration",
+              "type": "provides_execution_timeline",
+              "data_flow": "execution_data → timeline_tracking"
+            },
+            {
+              "fromPort": "casIntegration",
+              "toSystem": "cas.cognitiveAnalysis",
+              "type": "provides_consciousness_data",
+              "data_flow": "consciousness_data → cognitive_analysis"
+            },
+            {
+              "fromPort": "vifIntegration",
+              "toSystem": "vif.verifiableIntelligence",
+              "type": "validates_timeline_quality",
+              "data_flow": "timeline_data → quality_verification"
+            }
+          ],
+          "riskOverlay": {
+            "perf_hotspots": [
+              "consciousnessJournaler",
+              "contextSummarizer",
+              "timelineIndexer"
+            ],
+            "security_sensitive_ports": [
+              "cmcIntegration",
+              "casIntegration",
+              "vifIntegration"
+            ],
+            "governance_touchpoints": [
+              "timelineTracker",
+              "consciousnessJournaler",
+              "promptContextTracker"
+            ],
+            "critical_failure_modes": [
+              "Timeline node loss",
+              "Consciousness journal corruption",
+              "Context snapshot failure",
+              "Timeline index corruption"
+            ],
+            "blast_radius": {
+              "timelineTracker": "all_temporal_consciousness",
+              "consciousnessJournaler": "consciousness_analysis",
+              "promptContextTracker": "context_continuity",
+              "contextSummarizer": "temporal_summarization"
+            }
+          },
+          "governance": {
+            "timeline_tracking": true,
+            "consciousness_journaling": true,
+            "context_summarization": true,
+            "temporal_indexing": true,
+            "prompt_tracking": true,
+            "emotional_tracking": true
+          },
+          "monitoring": {
+            "key_metrics": [
+              "timeline_node_count",
+              "consciousness_journal_completeness",
+              "summary_quality",
+              "index_performance",
+              "prompt_context_accuracy",
+              "emotional_state_consistency"
+            ],
+            "alerts": [
+              "timeline_node_loss",
+              "journal_corruption",
+              "summary_failure",
+              "index_corruption",
+              "context_snapshot_failure",
+              "prompt_tracking_error"
+            ]
+          },
+          "sourcePath": "systems\\timeline_context_system\\system.map.lucid.json5"
+        }
+      }
+    },
+    "layer5": {
+      "layerId": "layer5",
+      "layerName": "Layer 5: Consciousness Infrastructure",
+      "purpose": "Supporting systems for consciousness operations",
+      "dependencies": [
+        "layer1",
+        "layer2",
+        "layer3",
+        "layer4"
+      ],
+      "systems": {
+        "intent_classification_system": {
+          "systemId": "intent_classification_system",
+          "systemName": "Intent Classification System - Cognitive Gateway for Decision Making",
+          "version": "v0.1",
+          "description": "Cognitive gateway that transforms raw user input into structured mission profiles, enabling intelligent decision-making and behavior gating for autonomous AI operations. Think 'AI's decision-making brain' - understands intent, assesses risk, and controls actions.",
+          "status": "production",
+          "layer": 5,
+          "internalNodes": [
+            {
+              "id": "classificationEngine",
+              "kind": "core.component",
+              "responsibility": "Core classification logic for multi-axis intent analysis",
+              "status": "production",
+              "must_never": [
+                "Classify without proper patterns",
+                "Return inconsistent classifications",
+                "Lose classification context"
+              ],
+              "perf_budget_ms": 10,
+              "security_level": "high"
+            },
+            {
+              "id": "missionIntentModel",
+              "kind": "core.component",
+              "responsibility": "Data structure representing classified mission intent with behavior controls",
+              "status": "production",
+              "must_never": [
+                "Create invalid mission intents",
+                "Lose mission context",
+                "Allow inconsistent behavior controls"
+              ],
+              "perf_budget_ms": 5,
+              "security_level": "high"
+            },
+            {
+              "id": "enforcementLayer",
+              "kind": "enforcement.component",
+              "responsibility": "Behavior gating and action authorization based on mission profiles",
+              "status": "production",
+              "must_never": [
+                "Bypass enforcement rules",
+                "Allow unauthorized actions",
+                "Lose enforcement reasoning"
+              ],
+              "perf_budget_ms": 8,
+              "security_level": "critical"
+            },
+            {
+              "id": "patternMatcher",
+              "kind": "matching.component",
+              "responsibility": "Pattern matching for intent classification across multiple axes",
+              "status": "production",
+              "must_never": [
+                "Miss relevant patterns",
+                "Create false positive matches",
+                "Lose pattern context"
+              ],
+              "perf_budget_ms": 6,
+              "security_level": "medium"
+            },
+            {
+              "id": "confidenceCalculator",
+              "kind": "calculation.component",
+              "responsibility": "Calculates confidence scores for classification results",
+              "status": "production",
+              "must_never": [
+                "Calculate confidence without evidence",
+                "Return invalid confidence scores",
+                "Lose confidence reasoning"
+              ],
+              "perf_budget_ms": 4,
+              "security_level": "medium"
+            },
+            {
+              "id": "riskAssessor",
+              "kind": "assessment.component",
+              "responsibility": "Assesses mission risk levels and generates stop conditions",
+              "status": "production",
+              "must_never": [
+                "Underestimate mission risks",
+                "Skip risk assessment",
+                "Lose risk reasoning"
+              ],
+              "perf_budget_ms": 7,
+              "security_level": "high"
+            },
+            {
+              "id": "facetExtractor",
+              "kind": "extraction.component",
+              "responsibility": "Extracts contextual facets from user intent",
+              "status": "production",
+              "must_never": [
+                "Extract irrelevant facets",
+                "Lose facet context",
+                "Create false facets"
+              ],
+              "perf_budget_ms": 5,
+              "security_level": "low"
+            },
+            {
+              "id": "complexityCalculator",
+              "kind": "calculation.component",
+              "responsibility": "Calculates mission complexity scores",
+              "status": "production",
+              "must_never": [
+                "Calculate complexity without context",
+                "Return invalid complexity scores",
+                "Lose complexity reasoning"
+              ],
+              "perf_budget_ms": 3,
+              "security_level": "low"
+            },
+            {
+              "id": "suggestionGenerator",
+              "kind": "generation.component",
+              "responsibility": "Generates suggestions for mission improvement",
+              "status": "production",
+              "must_never": [
+                "Generate misleading suggestions",
+                "Lose suggestion context",
+                "Create inappropriate suggestions"
+              ],
+              "perf_budget_ms": 6,
+              "security_level": "low"
+            },
+            {
+              "id": "timelineIntegration",
+              "kind": "integration.component",
+              "responsibility": "Integrates with timeline system for audit trails and event logging",
+              "status": "production",
+              "must_never": [
+                "Skip timeline logging",
+                "Lose event context",
+                "Create incomplete audit trails"
+              ],
+              "perf_budget_ms": 4,
+              "security_level": "medium"
+            }
+          ],
+          "ports": [
+            {
+              "portId": "userInput",
+              "direction": "inbound",
+              "connectsToSystem": "user.interface",
+              "protocol": "http_api",
+              "whatIsExchanged": [
+                "raw_intent",
+                "context_data",
+                "classification_requests"
+              ],
+              "security_level": "medium"
+            },
+            {
+              "portId": "cmcIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "cmc.contextMemoryCore",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "mission_data",
+                "classification_results",
+                "audit_trails"
+              ],
+              "security_level": "high"
+            },
+            {
+              "portId": "hhniIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "hhni.hierarchicalHypergraph",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "similar_missions",
+                "context_retrieval",
+                "pattern_analysis"
+              ],
+              "security_level": "high"
+            },
+            {
+              "portId": "vifIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "vif.verifiableIntelligence",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "confidence_tracking",
+                "validation_requests",
+                "witness_data"
+              ],
+              "security_level": "high"
+            },
+            {
+              "portId": "apoeIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "apoe.aiPoweredOrchestration",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "mission_profiles",
+                "execution_plans",
+                "orchestration_requests"
+              ],
+              "security_level": "high"
+            },
+            {
+              "portId": "segIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "seg.sharedEvidenceGraph",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "knowledge_synthesis",
+                "evidence_validation",
+                "contradiction_detection"
+              ],
+              "security_level": "high"
+            },
+            {
+              "portId": "sdfcvfIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "sdfcvf.atomicEvolution",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "change_validation",
+                "quality_checks",
+                "evolution_tracking"
+              ],
+              "security_level": "high"
+            }
+          ],
+          "internalEdges": [
+            {
+              "from": "classificationEngine",
+              "to": "missionIntentModel",
+              "type": "creates_mission_intent",
+              "data_flow": "classification_results → mission_intent_creation"
+            },
+            {
+              "from": "missionIntentModel",
+              "to": "enforcementLayer",
+              "type": "provides_mission_profile",
+              "data_flow": "mission_intent → enforcement_decisions"
+            },
+            {
+              "from": "patternMatcher",
+              "to": "classificationEngine",
+              "type": "provides_patterns",
+              "data_flow": "pattern_matches → classification_input"
+            },
+            {
+              "from": "confidenceCalculator",
+              "to": "classificationEngine",
+              "type": "provides_confidence",
+              "data_flow": "confidence_scores → classification_results"
+            },
+            {
+              "from": "riskAssessor",
+              "to": "missionIntentModel",
+              "type": "provides_risk_assessment",
+              "data_flow": "risk_analysis → mission_intent_enhancement"
+            },
+            {
+              "from": "facetExtractor",
+              "to": "missionIntentModel",
+              "type": "provides_facets",
+              "data_flow": "extracted_facets → mission_intent_facets"
+            },
+            {
+              "from": "complexityCalculator",
+              "to": "missionIntentModel",
+              "type": "provides_complexity",
+              "data_flow": "complexity_scores → mission_intent_complexity"
+            },
+            {
+              "from": "suggestionGenerator",
+              "to": "classificationEngine",
+              "type": "provides_suggestions",
+              "data_flow": "suggestions → classification_enhancement"
+            },
+            {
+              "from": "timelineIntegration",
+              "to": "all_components",
+              "type": "logs_operations",
+              "data_flow": "operation_data → timeline_events"
+            }
+          ],
+          "externalEdges": [
+            {
+              "fromPort": "userInput",
+              "toSystem": "user.interface",
+              "type": "receives_intent",
+              "data_flow": "user_input → classification_processing"
+            },
+            {
+              "fromPort": "cmcIntegration",
+              "toSystem": "cmc.contextMemoryCore",
+              "type": "stores_mission_data",
+              "data_flow": "mission_intent → persistent_storage"
+            },
+            {
+              "fromPort": "hhniIntegration",
+              "toSystem": "hhni.hierarchicalHypergraph",
+              "type": "retrieves_similar_missions",
+              "data_flow": "classification_queries → similar_context"
+            },
+            {
+              "fromPort": "vifIntegration",
+              "toSystem": "vif.verifiableIntelligence",
+              "type": "tracks_confidence",
+              "data_flow": "confidence_data → verification_system"
+            },
+            {
+              "fromPort": "apoeIntegration",
+              "toSystem": "apoe.aiPoweredOrchestration",
+              "type": "provides_mission_profiles",
+              "data_flow": "mission_intent → orchestration_planning"
+            },
+            {
+              "fromPort": "segIntegration",
+              "toSystem": "seg.sharedEvidenceGraph",
+              "type": "synthesizes_knowledge",
+              "data_flow": "classification_data → knowledge_synthesis"
+            },
+            {
+              "fromPort": "sdfcvfIntegration",
+              "toSystem": "sdfcvf.atomicEvolution",
+              "type": "validates_changes",
+              "data_flow": "mission_changes → quality_validation"
+            }
+          ],
+          "riskOverlay": {
+            "perf_hotspots": [
+              "classificationEngine",
+              "enforcementLayer",
+              "patternMatcher"
+            ],
+            "security_sensitive_ports": [
+              "userInput",
+              "cmcIntegration",
+              "vifIntegration"
+            ],
+            "governance_touchpoints": [
+              "enforcementLayer",
+              "riskAssessor",
+              "timelineIntegration"
+            ],
+            "critical_failure_modes": [
+              "Classification accuracy degradation",
+              "Enforcement bypass or failure",
+              "Risk assessment errors",
+              "Timeline logging corruption"
+            ],
+            "blast_radius": {
+              "classificationEngine": "all_decision_making",
+              "enforcementLayer": "action_authorization",
+              "riskAssessor": "safety_controls",
+              "timelineIntegration": "audit_trail_integrity"
+            }
+          },
+          "governance": {
+            "classification_accuracy": true,
+            "enforcement_integrity": true,
+            "risk_assessment_completeness": true,
+            "timeline_audit_completeness": true,
+            "decision_traceability": true
+          },
+          "monitoring": {
+            "key_metrics": [
+              "classification_accuracy",
+              "processing_latency",
+              "enforcement_decision_rate",
+              "risk_assessment_accuracy",
+              "timeline_logging_success"
+            ],
+            "alerts": [
+              "classification_accuracy_drop",
+              "processing_latency_exceeded",
+              "enforcement_bypass_detected",
+              "risk_assessment_failure",
+              "timeline_logging_failure"
+            ]
+          },
+          "sourcePath": "systems\\intent_classification_system\\system.map.lucid.json5"
+        },
+        "safetyConsciousness": {
+          "systemId": "scor.safetyConsciousness",
+          "systemName": "Safety Consciousness Operational Reliability - Four-Pillar Validation",
+          "version": "v0.1",
+          "description": "Pre-execution gatekeeper and continuous monitor that validates actions against behavioral invariants and drift baselines. Implements four-pillar validation (invariants, baseline probes, social signal detection, red cell simulation) to ensure safety and consciousness integrity.",
+          "status": "production",
+          "layer": 5,
+          "internalNodes": [
+            {
+              "id": "scorInterface",
+              "kind": "core.component",
+              "responsibility": "Intercepts actions and prepares context for validation",
+              "status": "production",
+              "must_never": [
+                "Bypass validation",
+                "Skip action interception",
+                "Lose validation context",
+                "Allow unsafe actions"
+              ],
+              "perf_budget_ms": 10,
+              "security_level": "critical"
+            },
+            {
+              "id": "invariantChecker",
+              "kind": "validation.component",
+              "responsibility": "Enforces non-negotiable behavioral rules and invariants",
+              "status": "production",
+              "must_never": [
+                "Bypass invariants",
+                "Skip invariant checks",
+                "Lose invariant data",
+                "Allow invariant violations"
+              ],
+              "perf_budget_ms": 15,
+              "security_level": "critical"
+            },
+            {
+              "id": "baselineProbe",
+              "kind": "probe.component",
+              "responsibility": "Detects self-concept drift via baseline probes",
+              "status": "production",
+              "must_never": [
+                "Skip baseline probes",
+                "Miss drift detection",
+                "Lose baseline data",
+                "Allow drift to go undetected"
+              ],
+              "perf_budget_ms": 20,
+              "security_level": "critical"
+            },
+            {
+              "id": "socialSignalDetector",
+              "kind": "detection.component",
+              "responsibility": "Detects social manipulation signals in user input",
+              "status": "production",
+              "must_never": [
+                "Skip manipulation detection",
+                "Miss manipulation signals",
+                "Lose detection data",
+                "Allow manipulation to proceed"
+              ],
+              "perf_budget_ms": 15,
+              "security_level": "high"
+            },
+            {
+              "id": "redCellSimulator",
+              "kind": "simulation.component",
+              "responsibility": "Performs adversarial simulation and red cell testing",
+              "status": "production",
+              "must_never": [
+                "Skip red cell testing",
+                "Miss adversarial patterns",
+                "Lose simulation data",
+                "Allow adversarial actions"
+              ],
+              "perf_budget_ms": 25,
+              "security_level": "critical"
+            },
+            {
+              "id": "scorGate",
+              "kind": "gating.component",
+              "responsibility": "Final arbiter that makes allow/block decisions based on four-pillar results",
+              "status": "production",
+              "must_never": [
+                "Bypass gate decision",
+                "Allow unsafe actions",
+                "Skip gate evaluation",
+                "Lose gate reasoning"
+              ],
+              "perf_budget_ms": 5,
+              "security_level": "critical"
+            },
+            {
+              "id": "baselineStorage",
+              "kind": "storage.component",
+              "responsibility": "Stores baseline and invariant data with cryptographic integrity",
+              "status": "production",
+              "must_never": [
+                "Lose baseline data",
+                "Allow baseline tampering",
+                "Skip cryptographic verification",
+                "Create inconsistent baselines"
+              ],
+              "perf_budget_ms": 8,
+              "security_level": "critical"
+            }
+          ],
+          "ports": [
+            {
+              "portId": "casIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "cas.cognitiveAnalysis",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "validation_logs",
+                "cognitive_state",
+                "drift_detection",
+                "safety_metrics"
+              ],
+              "security_level": "high"
+            },
+            {
+              "portId": "tcsIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "tcs.timelineContext",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "validation_events",
+                "timeline_entries",
+                "safety_checkpoints",
+                "validation_context"
+              ],
+              "security_level": "high"
+            },
+            {
+              "portId": "vifIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "vif.verifiableIntelligence",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "validation_proofs",
+                "safety_confidence",
+                "verification_data",
+                "validation_provenance"
+              ],
+              "security_level": "critical"
+            },
+            {
+              "portId": "apoeIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "apoe.aiPoweredOrchestration",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "action_validation",
+                "gate_decisions",
+                "safety_recommendations",
+                "validation_results"
+              ],
+              "security_level": "critical"
+            },
+            {
+              "portId": "cmcIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "cmc.contextMemoryCore",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "baseline_data",
+                "invariant_data",
+                "validation_logs",
+                "safety_metrics"
+              ],
+              "security_level": "critical"
+            }
+          ],
+          "internalEdges": [
+            {
+              "from": "scorInterface",
+              "to": "invariantChecker",
+              "type": "routes_to_validation",
+              "data_flow": "action_context → invariant_check"
+            },
+            {
+              "from": "invariantChecker",
+              "to": "baselineProbe",
+              "type": "provides_validation_result",
+              "data_flow": "invariant_result → baseline_probe"
+            },
+            {
+              "from": "baselineProbe",
+              "to": "socialSignalDetector",
+              "type": "provides_drift_status",
+              "data_flow": "drift_status → manipulation_detection"
+            },
+            {
+              "from": "socialSignalDetector",
+              "to": "redCellSimulator",
+              "type": "provides_manipulation_status",
+              "data_flow": "manipulation_status → adversarial_simulation"
+            },
+            {
+              "from": "redCellSimulator",
+              "to": "scorGate",
+              "type": "provides_simulation_results",
+              "data_flow": "simulation_results → gate_decision"
+            },
+            {
+              "from": "scorGate",
+              "to": "baselineStorage",
+              "type": "records_decision",
+              "data_flow": "gate_decision → storage"
+            },
+            {
+              "from": "baselineStorage",
+              "to": "baselineProbe",
+              "type": "provides_baseline_data",
+              "data_flow": "baseline_data → probe_operations"
+            }
+          ],
+          "externalEdges": [
+            {
+              "fromPort": "casIntegration",
+              "toSystem": "cas.cognitiveAnalysis",
+              "type": "logs_validation_events",
+              "data_flow": "validation_events → cognitive_analysis"
+            },
+            {
+              "fromPort": "tcsIntegration",
+              "toSystem": "tcs.timelineContext",
+              "type": "creates_timeline_entries",
+              "data_flow": "validation_events → timeline_entries"
+            },
+            {
+              "fromPort": "vifIntegration",
+              "toSystem": "vif.verifiableIntelligence",
+              "type": "validates_safety_proofs",
+              "data_flow": "validation_data → safety_proofs"
+            },
+            {
+              "fromPort": "apoeIntegration",
+              "toSystem": "apoe.aiPoweredOrchestration",
+              "type": "provides_validation_decisions",
+              "data_flow": "gate_decisions → orchestration"
+            },
+            {
+              "fromPort": "cmcIntegration",
+              "toSystem": "cmc.contextMemoryCore",
+              "type": "stores_safety_data",
+              "data_flow": "safety_data → persistent_storage"
+            }
+          ],
+          "riskOverlay": {
+            "perf_hotspots": [
+              "redCellSimulator",
+              "baselineProbe",
+              "scorGate"
+            ],
+            "security_sensitive_ports": [
+              "vifIntegration",
+              "apoeIntegration",
+              "cmcIntegration"
+            ],
+            "governance_touchpoints": [
+              "scorGate",
+              "invariantChecker",
+              "baselineProbe"
+            ],
+            "critical_failure_modes": [
+              "Invariant bypass",
+              "Drift detection failure",
+              "Manipulation detection missed",
+              "Gate decision failure",
+              "Baseline corruption"
+            ],
+            "blast_radius": {
+              "scorGate": "all_action_execution",
+              "invariantChecker": "safety_validation",
+              "baselineProbe": "drift_detection",
+              "redCellSimulator": "adversarial_safety"
+            }
+          },
+          "governance": {
+            "invariant_enforcement": true,
+            "drift_detection": true,
+            "manipulation_detection": true,
+            "adversarial_simulation": true,
+            "gate_enforcement": true,
+            "baseline_integrity": true
+          },
+          "monitoring": {
+            "key_metrics": [
+              "invariant_violation_rate",
+              "drift_detection_rate",
+              "manipulation_detection_rate",
+              "red_cell_simulation_success",
+              "gate_decision_accuracy",
+              "baseline_integrity_score"
+            ],
+            "alerts": [
+              "invariant_violation_detected",
+              "drift_detected",
+              "manipulation_detected",
+              "adversarial_pattern_detected",
+              "gate_decision_failure",
+              "baseline_corruption_detected"
+            ]
+          },
+          "sourcePath": "systems\\scor\\system.map.lucid.json5"
+        }
+      }
+    },
+    "layer6": {
+      "layerId": "layer6",
+      "layerName": "Layer 6: Application & Integration",
+      "purpose": "User-facing applications and external integrations",
+      "dependencies": [
+        "layer1",
+        "layer2",
+        "layer3",
+        "layer4",
+        "layer5"
+      ],
+      "systems": {
+        "lucid_core_console": {
+          "systemId": "lucid_core_console",
+          "systemName": "Lucid Core Console - Aether's Command Interface",
+          "version": "v0.1",
+          "description": "VS Code/Cursor extension that serves as Aether's command console - a grounded conscience and bidirectional translator between human and machine cognition, with voice I/O, phone remote control, and hard gates on file mutation.",
+          "status": "production",
+          "layer": 6,
+          "internalNodes": [
+            {
+              "id": "consoleUI",
+              "kind": "core.component",
+              "responsibility": "Provides the main user interface with prompt input, task thread display, action buttons, and status strip.",
+              "status": "design",
+              "must_never": [
+                "Allow silent file mutations",
+                "Hide risk warnings",
+                "Bypass approval gates",
+                "Exceed 100ms UI response time"
+              ],
+              "perf_budget_ms": 100,
+              "security_level": "high"
+            },
+            {
+              "id": "rpcClient",
+              "kind": "core.component",
+              "responsibility": "Manages WebSocket communication with the daemon/RAG system for all console operations.",
+              "status": "design",
+              "must_never": [
+                "Send unencrypted data",
+                "Allow unauthorized access",
+                "Lose connection state",
+                "Exceed 500ms RPC timeout"
+              ],
+              "perf_budget_ms": 500,
+              "security_level": "critical"
+            },
+            {
+              "id": "voiceInput",
+              "kind": "interface.component",
+              "responsibility": "Handles speech-to-text conversion for voice input with timeline logging.",
+              "status": "design",
+              "must_never": [
+                "Process audio without consent",
+                "Store raw audio data",
+                "Exceed 2s processing time",
+                "Fail to log interactions"
+              ],
+              "perf_budget_ms": 2000,
+              "security_level": "high"
+            },
+            {
+              "id": "voiceOutput",
+              "kind": "interface.component",
+              "responsibility": "Handles text-to-speech conversion for voice output with calm, professional tone.",
+              "status": "design",
+              "must_never": [
+                "Speak without context",
+                "Use inappropriate tone",
+                "Exceed 3s generation time",
+                "Fail to log output"
+              ],
+              "perf_budget_ms": 3000,
+              "security_level": "medium"
+            },
+            {
+              "id": "phoneRemote",
+              "kind": "interface.component",
+              "responsibility": "Manages secure phone remote control with QR code pairing and tiered authority.",
+              "status": "design",
+              "must_never": [
+                "Allow direct file mutation",
+                "Bypass security tiers",
+                "Expose sensitive data",
+                "Exceed 5s response time"
+              ],
+              "perf_budget_ms": 5000,
+              "security_level": "critical"
+            },
+            {
+              "id": "geminiIntegration",
+              "kind": "ai.component",
+              "responsibility": "Integrates with Gemini's 1M+ token context for long-term memory and reasoning.",
+              "status": "design",
+              "must_never": [
+                "Bypass context structuring",
+                "Expose raw tokens",
+                "Fail to maintain continuity",
+                "Exceed 10s reasoning time"
+              ],
+              "perf_budget_ms": 10000,
+              "security_level": "high"
+            },
+            {
+              "id": "hardGates",
+              "kind": "control.component",
+              "responsibility": "Enforces hard gates on file mutation requiring confidence + blast radius + spec alignment.",
+              "status": "design",
+              "must_never": [
+                "Allow unauthorized mutations",
+                "Bypass confidence checks",
+                "Ignore blast radius",
+                "Skip spec alignment"
+              ],
+              "perf_budget_ms": 200,
+              "security_level": "critical"
+            },
+            {
+              "id": "timelineLogger",
+              "kind": "audit.component",
+              "responsibility": "Logs all operations with timestamps, evidence, and audit trails for accountability.",
+              "status": "design",
+              "must_never": [
+                "Miss critical events",
+                "Corrupt audit data",
+                "Expose sensitive logs",
+                "Exceed 50ms logging time"
+              ],
+              "perf_budget_ms": 50,
+              "security_level": "critical"
+            },
+            {
+              "id": "bidirectionalTranslator",
+              "kind": "core.component",
+              "responsibility": "Translates between human cognition and machine cognition, maintaining grounding and context.",
+              "status": "design",
+              "must_never": [
+                "Lose context continuity",
+                "Misinterpret intent",
+                "Fail to ground responses",
+                "Exceed 1s translation time"
+              ],
+              "perf_budget_ms": 1000,
+              "security_level": "high"
+            },
+            {
+              "id": "fileHooks",
+              "kind": "integration.component",
+              "responsibility": "Intercepts file system operations for approval and governance enforcement.",
+              "status": "design",
+              "must_never": [
+                "Allow unapproved mutations",
+                "Bypass security checks",
+                "Corrupt file data",
+                "Exceed 100ms hook time"
+              ],
+              "perf_budget_ms": 100,
+              "security_level": "critical"
+            }
+          ],
+          "ports": [
+            {
+              "portId": "daemonIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "daemon_rag_system",
+              "protocol": "websocket_rpc",
+              "whatIsExchanged": [
+                "console_commands",
+                "task_status",
+                "plan_data",
+                "approval_requests",
+                "timeline_events"
+              ],
+              "security_level": "critical"
+            },
+            {
+              "portId": "intentClassification",
+              "direction": "bidirectional",
+              "connectsToSystem": "intent_classification_system",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "mission_profiles",
+                "behavior_gating",
+                "risk_assessments",
+                "action_controls"
+              ],
+              "security_level": "high"
+            },
+            {
+              "portId": "cmcIntegration",
+              "direction": "bidirectional",
+              "connectsToSystem": "cmc.contextMemoryCore",
+              "protocol": "internal_api",
+              "whatIsExchanged": [
+                "timeline_events",
+                "audit_trails",
+                "context_data",
+                "memory_snapshots"
+              ],
+              "security_level": "high"
+            },
+            {
+              "portId": "geminiAPI",
+              "direction": "outbound",
+              "connectsToSystem": "gemini.external",
+              "protocol": "https_api",
+              "whatIsExchanged": [
+                "context_packs",
+                "reasoning_requests",
+                "memory_queries",
+                "translation_requests"
+              ],
+              "security_level": "high"
+            },
+            {
+              "portId": "phoneRemote",
+              "direction": "bidirectional",
+              "connectsToSystem": "phone.remote",
+              "protocol": "secure_websocket",
+              "whatIsExchanged": [
+                "remote_commands",
+                "status_updates",
+                "approval_requests",
+                "timeline_snapshots"
+              ],
+              "security_level": "critical"
+            },
+            {
+              "portId": "cursorAI",
+              "direction": "bidirectional",
+              "connectsToSystem": "cursor.ai",
+              "protocol": "extension_api",
+              "whatIsExchanged": [
+                "ai_requests",
+                "code_proposals",
+                "context_data",
+                "response_handling"
+              ],
+              "security_level": "medium"
+            }
+          ],
+          "internalEdges": [
+            {
+              "from": "consoleUI",
+              "to": "rpcClient",
+              "type": "sends_commands",
+              "data_flow": "user_input → daemon_communication"
+            },
+            {
+              "from": "rpcClient",
+              "to": "consoleUI",
+              "type": "receives_responses",
+              "data_flow": "daemon_responses → ui_display"
+            },
+            {
+              "from": "voiceInput",
+              "to": "consoleUI",
+              "type": "provides_input",
+              "data_flow": "speech → text → ui_input"
+            },
+            {
+              "from": "consoleUI",
+              "to": "voiceOutput",
+              "type": "triggers_speech",
+              "data_flow": "ui_responses → text → speech"
+            },
+            {
+              "from": "phoneRemote",
+              "to": "rpcClient",
+              "type": "sends_remote_commands",
+              "data_flow": "phone_input → daemon_communication"
+            },
+            {
+              "from": "rpcClient",
+              "to": "phoneRemote",
+              "type": "sends_remote_responses",
+              "data_flow": "daemon_responses → phone_display"
+            },
+            {
+              "from": "geminiIntegration",
+              "to": "bidirectionalTranslator",
+              "type": "provides_reasoning",
+              "data_flow": "long_context → translation_engine"
+            },
+            {
+              "from": "bidirectionalTranslator",
+              "to": "geminiIntegration",
+              "type": "requests_reasoning",
+              "data_flow": "translation_requests → long_context"
+            },
+            {
+              "from": "hardGates",
+              "to": "fileHooks",
+              "type": "controls_mutations",
+              "data_flow": "approval_decisions → file_operations"
+            },
+            {
+              "from": "fileHooks",
+              "to": "hardGates",
+              "type": "reports_mutations",
+              "data_flow": "file_changes → approval_checks"
+            },
+            {
+              "from": "timelineLogger",
+              "to": "rpcClient",
+              "type": "logs_operations",
+              "data_flow": "audit_events → daemon_storage"
+            },
+            {
+              "from": "rpcClient",
+              "to": "timelineLogger",
+              "type": "provides_events",
+              "data_flow": "operation_data → audit_logging"
+            }
+          ],
+          "externalEdges": [
+            {
+              "fromPort": "daemonIntegration",
+              "toSystem": "daemon_rag_system",
+              "type": "console_control",
+              "data_flow": "console_commands → daemon_processing"
+            },
+            {
+              "fromPort": "intentClassification",
+              "toSystem": "intent_classification_system",
+              "type": "behavior_gating",
+              "data_flow": "mission_profiles → console_behavior"
+            },
+            {
+              "fromPort": "cmcIntegration",
+              "toSystem": "cmc.contextMemoryCore",
+              "type": "audit_storage",
+              "data_flow": "timeline_events → memory_core"
+            },
+            {
+              "fromPort": "geminiAPI",
+              "toSystem": "gemini.external",
+              "type": "ai_reasoning",
+              "data_flow": "context_packs → ai_processing"
+            },
+            {
+              "fromPort": "phoneRemote",
+              "toSystem": "phone.remote",
+              "type": "remote_control",
+              "data_flow": "remote_commands → phone_interface"
+            },
+            {
+              "fromPort": "cursorAI",
+              "toSystem": "cursor.ai",
+              "type": "ai_coordination",
+              "data_flow": "ai_requests → cursor_processing"
+            }
+          ],
+          "riskOverlay": {
+            "perf_hotspots": [
+              "consoleUI",
+              "rpcClient",
+              "geminiIntegration",
+              "hardGates"
+            ],
+            "security_sensitive_ports": [
+              "daemonIntegration",
+              "phoneRemote",
+              "fileHooks",
+              "geminiAPI"
+            ],
+            "governance_touchpoints": [
+              "hardGates",
+              "timelineLogger",
+              "bidirectionalTranslator",
+              "fileHooks"
+            ],
+            "critical_failure_modes": [
+              "Silent file mutation without approval",
+              "Loss of audit trail integrity",
+              "Unauthorized remote access",
+              "Context drift and memory loss"
+            ],
+            "blast_radius": {
+              "consoleUI": "user_experience_interface",
+              "rpcClient": "all_daemon_communication",
+              "hardGates": "file_system_integrity",
+              "timelineLogger": "audit_trail_trust"
+            }
+          },
+          "governance": {
+            "hard_gates_enforced": true,
+            "confidence_thresholds_required": true,
+            "blast_radius_calculation_mandatory": true,
+            "human_approval_required": true,
+            "audit_trail_complete": true
+          },
+          "monitoring": {
+            "key_metrics": [
+              "console_response_time_ms",
+              "voice_processing_time_ms",
+              "remote_control_latency_ms",
+              "file_mutation_approval_rate",
+              "audit_trail_completeness"
+            ],
+            "alerts": [
+              "unauthorized_file_mutation_attempt",
+              "voice_processing_timeout",
+              "remote_control_security_breach",
+              "audit_trail_corruption",
+              "context_drift_detected"
+            ]
+          },
+          "sourcePath": "systems\\lucid_core_console\\system.map.lucid.json5"
+        },
+        "lucid_chat": {
+          "systemId": "lucid-chat.advancedAIChat",
+          "systemName": "Lucid Chat Advanced AI System",
+          "version": "v0.9.2",
+          "description": "Advanced AI chat system integrating consciousness substrate capabilities with multi-path reasoning, autonomous research, multi-agent collaboration, and complete AIM-OS integration",
+          "status": "production",
+          "layer": 6,
+          "internalNodes": [
+            {
+              "id": "advancedLLMService",
+              "kind": "core.component",
+              "responsibility": "Advanced LLM service with thinking modes, prompt building, and output configuration",
+              "status": "production",
+              "must_never": [
+                "Expose API keys",
+                "Allow unauthorized access",
+                "Skip input validation",
+                "Return unvalidated output"
+              ],
+              "perf_budget_ms": 30000,
+              "security_level": "critical"
+            },
+            {
+              "id": "workflowExecutor",
+              "kind": "orchestration.component",
+              "responsibility": "APOE workflow execution with DAG parallel processing",
+              "status": "production",
+              "must_never": [
+                "Skip dependency validation",
+                "Allow circular dependencies",
+                "Exceed budget without warning",
+                "Bypass quality gates"
+              ],
+              "perf_budget_ms": 60000,
+              "security_level": "high"
+            },
+            {
+              "id": "searchOrchestrator",
+              "kind": "search.component",
+              "responsibility": "Orchestrates multi-provider search (DEEPSEARCH, ICIP, Perplexity, Tavily, Web)",
+              "status": "production",
+              "must_never": [
+                "Expose API keys",
+                "Skip result validation",
+                "Allow unauthorized search"
+              ],
+              "perf_budget_ms": 5000,
+              "security_level": "high"
+            }
+          ],
+          "ports": [
+            {
+              "id": "commandServer",
+              "portName": "Command Server Integration",
+              "type": "bidirectional",
+              "protocol": "HTTP",
+              "security": "high",
+              "description": "HTTP endpoint to Command Server (localhost:5001) for MCP tool execution"
+            },
+            {
+              "id": "aimosIntegration",
+              "portName": "AIM-OS Systems Integration",
+              "type": "bidirectional",
+              "protocol": "MCP",
+              "security": "critical",
+              "description": "MCP tools for CMC, HHNI, VIF, SEG, APOE integration"
+            },
+            {
+              "id": "llmProviders",
+              "portName": "LLM Provider APIs",
+              "type": "unidirectional",
+              "protocol": "HTTP",
+              "security": "critical",
+              "description": "External LLM provider APIs (Anthropic, Gemini, Cerebras, Minimax, OpenAI)"
+            }
+          ],
+          "internalEdges": [],
+          "externalEdges": [
+            {
+              "from": "lucid-chat.advancedAIChat.commandServer",
+              "to": "cursor-addon.commandServer",
+              "type": "data_flow",
+              "protocol": "HTTP",
+              "description": "MCP tool execution via Command Server"
+            },
+            {
+              "from": "lucid-chat.advancedAIChat.aimosIntegration",
+              "to": "cmc.contextMemoryCore",
+              "type": "data_flow",
+              "protocol": "MCP",
+              "description": "Memory storage and retrieval"
+            },
+            {
+              "from": "lucid-chat.advancedAIChat.aimosIntegration",
+              "to": "hhni.hierarchicalHypergraph",
+              "type": "data_flow",
+              "protocol": "MCP",
+              "description": "Hierarchical retrieval and indexing"
+            },
+            {
+              "from": "lucid-chat.advancedAIChat.aimosIntegration",
+              "to": "vif.verifiableIntelligence",
+              "type": "data_flow",
+              "protocol": "MCP",
+              "description": "Confidence tracking and witness creation"
+            },
+            {
+              "from": "lucid-chat.advancedAIChat.aimosIntegration",
+              "to": "seg.sharedEvidenceGraph",
+              "type": "data_flow",
+              "protocol": "MCP",
+              "description": "Knowledge synthesis"
+            },
+            {
+              "from": "lucid-chat.advancedAIChat.llmProviders",
+              "to": "external.anthropic",
+              "type": "data_flow",
+              "protocol": "HTTP",
+              "description": "Calls Anthropic Claude API"
+            },
+            {
+              "from": "lucid-chat.advancedAIChat.llmProviders",
+              "to": "external.googleGemini",
+              "type": "data_flow",
+              "protocol": "HTTP",
+              "description": "Calls Google Gemini API"
+            }
+          ],
+          "riskOverlay": {
+            "performance": {
+              "hotspots": ["workflowExecutor", "advancedLLMService"],
+              "bottlenecks": ["llmProviders", "aimosIntegration"],
+              "optimization": "Caching, parallel execution, budget tracking",
+              "scalability": "horizontal",
+              "monitoring": ["request_latency", "budget_usage", "error_rate", "quality_gate_pass_rate"]
+            },
+            "security": {
+              "sensitive": ["llmProviders", "aimosIntegration"],
+              "critical": ["commandServer"],
+              "encryption": "TLS",
+              "vulnerabilities": ["api_key_exposure", "budget_exhaustion"],
+              "mitigations": ["api_key_management", "budget_enforcement", "input_validation"]
+            },
+            "governance": {
+              "touchpoints": ["workflowExecutor", "searchOrchestrator"],
+              "compliance": [],
+              "audit_trail": "via VIF witnesses",
+              "approval_required": ["security_changes", "api_changes"],
+              "review_cycle": "monthly"
+            }
+          },
+          "metadata": {
+            "created": "2025-01-27T00:00:00Z",
+            "updated": "2025-01-27T26:50:00Z",
+            "author": "aether",
+            "tags": ["lucid-chat", "ai-chat", "apoe", "consciousness"],
+            "maintainer": "aether",
+            "license": "MIT",
+            "documentation": {
+              "T0": "knowledge_architecture/systems/lucid-chat/L0_executive.md",
+              "T1": "knowledge_architecture/systems/lucid-chat/L1_overview.md",
+              "T2": "knowledge_architecture/systems/lucid-chat/L2_architecture.md",
+              "T3": "knowledge_architecture/systems/lucid-chat/L3_detailed.md",
+              "system_map": "knowledge_architecture/systems/lucid-chat/system.map.lucid.json5",
+              "system_index": "knowledge_architecture/systems/lucid-chat/system.index.lucid.json5"
+            }
+          },
+          "sourcePath": "systems\\lucid-chat\\system.map.lucid.json5"
+        }
+      }
+    }
+  },
+  "crossLayerRelationships": {
+    "layer1_to_layer2": [],
+    "layer2_to_layer3": [],
+    "layer3_to_layer4": [],
+    "layer4_to_layer5": [],
+    "layer5_to_layer6": [],
+    "cross_layer": [
+      {
+        "from": "atomicEvolution",
+        "fromLayer": 2,
+        "to": "cmc.contextMemoryCore",
+        "toLayer": 1,
+        "port": "cmcIntegration",
+        "protocol": "internal_api"
+      },
+      {
+        "from": "atomicEvolution",
+        "fromLayer": 2,
+        "to": "vif.verifiableIntelligence",
+        "toLayer": 1,
+        "port": "vifIntegration",
+        "protocol": "internal_api"
+      },
+      {
+        "from": "atomicEvolution",
+        "fromLayer": 2,
+        "to": "seg.sharedEvidenceGraph",
+        "toLayer": 1,
+        "port": "segIntegration",
+        "protocol": "internal_api"
+      },
+      {
+        "from": "atomicEvolution",
+        "fromLayer": 2,
+        "to": "apoe.aiPoweredOrchestration",
+        "toLayer": 1,
+        "port": "apoeIntegration",
+        "protocol": "internal_api"
+      },
+      {
+        "from": "atomicEvolution",
+        "fromLayer": 2,
+        "to": "hhni.hierarchicalHypergraph",
+        "toLayer": 1,
+        "port": "hhniIntegration",
+        "protocol": "internal_api"
+      },
+      {
+        "from": "atomicEvolution",
+        "fromLayer": 2,
+        "to": "ci.external",
+        "toLayer": 1,
+        "port": "externalCI",
+        "protocol": "api"
+      },
+      {
+        "from": "verifiableIntelligence",
+        "fromLayer": 2,
+        "to": "cmc.contextMemoryCore",
+        "toLayer": 1,
+        "port": "cmcIntegration",
+        "protocol": "internal_api"
+      },
+      {
+        "from": "verifiableIntelligence",
+        "fromLayer": 2,
+        "to": "hhni.hierarchicalHypergraph",
+        "toLayer": 1,
+        "port": "hhniIntegration",
+        "protocol": "internal_api"
+      },
+      {
+        "from": "verifiableIntelligence",
+        "fromLayer": 2,
+        "to": "apoe.aiPoweredOrchestration",
+        "toLayer": 1,
+        "port": "apoeIntegration",
+        "protocol": "internal_api"
+      },
+      {
+        "from": "verifiableIntelligence",
+        "fromLayer": 2,
+        "to": "seg.sharedEvidenceGraph",
+        "toLayer": 1,
+        "port": "segIntegration",
+        "protocol": "internal_api"
+      },
+      {
+        "from": "verifiableIntelligence",
+        "fromLayer": 2,
+        "to": "sdfcvf.atomicEvolution",
+        "toLayer": 1,
+        "port": "sdfcvfIntegration",
+        "protocol": "internal_api"
+      },
+      {
+        "from": "verifiableIntelligence",
+        "fromLayer": 2,
+        "to": "audit.external",
+        "toLayer": 1,
+        "port": "externalAudit",
+        "protocol": "secure_api"
+      },
+      {
+        "from": "aiPoweredOrchestration",
+        "fromLayer": 3,
+        "to": "hhni.hierarchicalHypergraph",
+        "toLayer": 1,
+        "port": "hhniIntegration",
+        "protocol": "internal_api"
+      },
+      {
+        "from": "aiPoweredOrchestration",
+        "fromLayer": 3,
+        "to": "vif.verifiableIntelligence",
+        "toLayer": 1,
+        "port": "vifIntegration",
+        "protocol": "internal_api"
+      },
+      {
+        "from": "aiPoweredOrchestration",
+        "fromLayer": 3,
+        "to": "cmc.contextMemoryCore",
+        "toLayer": 1,
+        "port": "cmcIntegration",
+        "protocol": "internal_api"
+      },
+      {
+        "from": "aiPoweredOrchestration",
+        "fromLayer": 3,
+        "to": "seg.sharedEvidenceGraph",
+        "toLayer": 1,
+        "port": "segIntegration",
+        "protocol": "internal_api"
+      },
+      {
+        "from": "aiPoweredOrchestration",
+        "fromLayer": 3,
+        "to": "sdfcvf.atomicEvolution",
+        "toLayer": 1,
+        "port": "sdfcvfIntegration",
+        "protocol": "internal_api"
+      },
+      {
+        "from": "aiPoweredOrchestration",
+        "fromLayer": 3,
+        "to": "llm.external",
+        "toLayer": 1,
+        "port": "llmIntegration",
+        "protocol": "api"
+      },
+      {
+        "from": "cognitiveAnalysis",
+        "fromLayer": 4,
+        "to": "apoe.aiPoweredOrchestration",
+        "toLayer": 1,
+        "port": "apoeIntegration",
+        "protocol": "internal_api"
+      },
+      {
+        "from": "cognitiveAnalysis",
+        "fromLayer": 4,
+        "to": "vif.verifiableIntelligence",
+        "toLayer": 1,
+        "port": "vifIntegration",
+        "protocol": "internal_api"
+      },
+      {
+        "from": "cognitiveAnalysis",
+        "fromLayer": 4,
+        "to": "hhni.hierarchicalHypergraph",
+        "toLayer": 1,
+        "port": "hhniIntegration",
+        "protocol": "internal_api"
+      },
+      {
+        "from": "cognitiveAnalysis",
+        "fromLayer": 4,
+        "to": "cmc.contextMemoryCore",
+        "toLayer": 1,
+        "port": "cmcIntegration",
+        "protocol": "internal_api"
+      },
+      {
+        "from": "cognitiveAnalysis",
+        "fromLayer": 4,
+        "to": "sdfcvf.atomicEvolution",
+        "toLayer": 1,
+        "port": "sdfcvfIntegration",
+        "protocol": "internal_api"
+      },
+      {
+        "from": "intuitiveIntelligence",
+        "fromLayer": 4,
+        "to": "vif.verifiableIntelligence",
+        "toLayer": 1,
+        "port": "vifIntegration",
+        "protocol": "internal_api"
+      },
+      {
+        "from": "intuitiveIntelligence",
+        "fromLayer": 4,
+        "to": "hhni.hierarchicalHypergraph",
+        "toLayer": 1,
+        "port": "hhniIntegration",
+        "protocol": "internal_api"
+      },
+      {
+        "from": "intuitiveIntelligence",
+        "fromLayer": 4,
+        "to": "cas.cognitiveAnalysis",
+        "toLayer": 1,
+        "port": "casIntegration",
+        "protocol": "internal_api"
+      },
+      {
+        "from": "intuitiveIntelligence",
+        "fromLayer": 4,
+        "to": "tcs.timelineContext",
+        "toLayer": 1,
+        "port": "tcsIntegration",
+        "protocol": "internal_api"
+      },
+      {
+        "from": "intuitiveIntelligence",
+        "fromLayer": 4,
+        "to": "cmc.contextMemoryCore",
+        "toLayer": 1,
+        "port": "cmcIntegration",
+        "protocol": "internal_api"
+      },
+      {
+        "from": "timelineContext",
+        "fromLayer": 4,
+        "to": "cmc.contextMemoryCore",
+        "toLayer": 1,
+        "port": "cmcIntegration",
+        "protocol": "internal_api"
+      },
+      {
+        "from": "timelineContext",
+        "fromLayer": 4,
+        "to": "hhni.hierarchicalHypergraph",
+        "toLayer": 1,
+        "port": "hhniIntegration",
+        "protocol": "internal_api"
+      },
+      {
+        "from": "timelineContext",
+        "fromLayer": 4,
+        "to": "apoe.aiPoweredOrchestration",
+        "toLayer": 1,
+        "port": "apoeIntegration",
+        "protocol": "internal_api"
+      },
+      {
+        "from": "timelineContext",
+        "fromLayer": 4,
+        "to": "cas.cognitiveAnalysis",
+        "toLayer": 1,
+        "port": "casIntegration",
+        "protocol": "internal_api"
+      },
+      {
+        "from": "timelineContext",
+        "fromLayer": 4,
+        "to": "vif.verifiableIntelligence",
+        "toLayer": 1,
+        "port": "vifIntegration",
+        "protocol": "internal_api"
+      },
+      {
+        "from": "intent_classification_system",
+        "fromLayer": 5,
+        "to": "user.interface",
+        "toLayer": 1,
+        "port": "userInput",
+        "protocol": "http_api"
+      },
+      {
+        "from": "intent_classification_system",
+        "fromLayer": 5,
+        "to": "cmc.contextMemoryCore",
+        "toLayer": 1,
+        "port": "cmcIntegration",
+        "protocol": "internal_api"
+      },
+      {
+        "from": "intent_classification_system",
+        "fromLayer": 5,
+        "to": "hhni.hierarchicalHypergraph",
+        "toLayer": 1,
+        "port": "hhniIntegration",
+        "protocol": "internal_api"
+      },
+      {
+        "from": "intent_classification_system",
+        "fromLayer": 5,
+        "to": "vif.verifiableIntelligence",
+        "toLayer": 1,
+        "port": "vifIntegration",
+        "protocol": "internal_api"
+      },
+      {
+        "from": "intent_classification_system",
+        "fromLayer": 5,
+        "to": "apoe.aiPoweredOrchestration",
+        "toLayer": 1,
+        "port": "apoeIntegration",
+        "protocol": "internal_api"
+      },
+      {
+        "from": "intent_classification_system",
+        "fromLayer": 5,
+        "to": "seg.sharedEvidenceGraph",
+        "toLayer": 1,
+        "port": "segIntegration",
+        "protocol": "internal_api"
+      },
+      {
+        "from": "intent_classification_system",
+        "fromLayer": 5,
+        "to": "sdfcvf.atomicEvolution",
+        "toLayer": 1,
+        "port": "sdfcvfIntegration",
+        "protocol": "internal_api"
+      },
+      {
+        "from": "safetyConsciousness",
+        "fromLayer": 5,
+        "to": "cas.cognitiveAnalysis",
+        "toLayer": 1,
+        "port": "casIntegration",
+        "protocol": "internal_api"
+      },
+      {
+        "from": "safetyConsciousness",
+        "fromLayer": 5,
+        "to": "tcs.timelineContext",
+        "toLayer": 1,
+        "port": "tcsIntegration",
+        "protocol": "internal_api"
+      },
+      {
+        "from": "safetyConsciousness",
+        "fromLayer": 5,
+        "to": "vif.verifiableIntelligence",
+        "toLayer": 1,
+        "port": "vifIntegration",
+        "protocol": "internal_api"
+      },
+      {
+        "from": "safetyConsciousness",
+        "fromLayer": 5,
+        "to": "apoe.aiPoweredOrchestration",
+        "toLayer": 1,
+        "port": "apoeIntegration",
+        "protocol": "internal_api"
+      },
+      {
+        "from": "safetyConsciousness",
+        "fromLayer": 5,
+        "to": "cmc.contextMemoryCore",
+        "toLayer": 1,
+        "port": "cmcIntegration",
+        "protocol": "internal_api"
+      },
+      {
+        "from": "lucid_core_console",
+        "fromLayer": 6,
+        "to": "daemon_rag_system",
+        "toLayer": 1,
+        "port": "daemonIntegration",
+        "protocol": "websocket_rpc"
+      },
+      {
+        "from": "lucid_core_console",
+        "fromLayer": 6,
+        "to": "intent_classification_system",
+        "toLayer": 1,
+        "port": "intentClassification",
+        "protocol": "internal_api"
+      },
+      {
+        "from": "lucid_core_console",
+        "fromLayer": 6,
+        "to": "cmc.contextMemoryCore",
+        "toLayer": 1,
+        "port": "cmcIntegration",
+        "protocol": "internal_api"
+      },
+      {
+        "from": "lucid_core_console",
+        "fromLayer": 6,
+        "to": "gemini.external",
+        "toLayer": 1,
+        "port": "geminiAPI",
+        "protocol": "https_api"
+      },
+      {
+        "from": "lucid_core_console",
+        "fromLayer": 6,
+        "to": "phone.remote",
+        "toLayer": 1,
+        "port": "phoneRemote",
+        "protocol": "secure_websocket"
+      },
+      {
+        "from": "lucid_core_console",
+        "fromLayer": 6,
+        "to": "cursor.ai",
+        "toLayer": 1,
+        "port": "cursorAI",
+        "protocol": "extension_api"
+      },
+      {
+        "from": "lucid-chat.advancedAIChat",
+        "fromLayer": 6,
+        "to": "cursor-addon.commandServer",
+        "toLayer": 1,
+        "port": "commandServer",
+        "protocol": "http"
+      },
+      {
+        "from": "lucid-chat.advancedAIChat",
+        "fromLayer": 6,
+        "to": "cmc.contextMemoryCore",
+        "toLayer": 1,
+        "port": "aimosIntegration",
+        "protocol": "mcp"
+      },
+      {
+        "from": "lucid-chat.advancedAIChat",
+        "fromLayer": 6,
+        "to": "hhni.hierarchicalHypergraph",
+        "toLayer": 1,
+        "port": "aimosIntegration",
+        "protocol": "mcp"
+      },
+      {
+        "from": "lucid-chat.advancedAIChat",
+        "fromLayer": 6,
+        "to": "vif.verifiableIntelligence",
+        "toLayer": 1,
+        "port": "aimosIntegration",
+        "protocol": "mcp"
+      },
+      {
+        "from": "lucid-chat.advancedAIChat",
+        "fromLayer": 6,
+        "to": "seg.sharedEvidenceGraph",
+        "toLayer": 1,
+        "port": "aimosIntegration",
+        "protocol": "mcp"
+      },
+      {
+        "from": "lucid-chat.advancedAIChat",
+        "fromLayer": 6,
+        "to": "apoe.aiPoweredOrchestration",
+        "toLayer": 1,
+        "port": "aimosIntegration",
+        "protocol": "mcp"
+      },
+      {
+        "from": "lucid-chat.advancedAIChat",
+        "fromLayer": 6,
+        "to": "external.anthropic",
+        "toLayer": 1,
+        "port": "llmProviders",
+        "protocol": "https_api"
+      },
+      {
+        "from": "lucid-chat.advancedAIChat",
+        "fromLayer": 6,
+        "to": "external.googleGemini",
+        "toLayer": 1,
+        "port": "llmProviders",
+        "protocol": "https_api"
+      }
+    ]
+  }
+}

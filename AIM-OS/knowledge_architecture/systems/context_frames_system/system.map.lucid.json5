@@ -1,0 +1,606 @@
+{
+  system_id: "context_frames_system",
+  system_name: "Context Frames System",
+  version: "1.0.0",
+  last_updated: "2025-01-27T20:50:00Z",
+  map_type: "system_topology",
+  internal_topology: {
+    core_components: [
+      {
+        component_id: "context_frame_generator",
+        name: "Context Frame Generator",
+        type: "generation_engine",
+        tier: 2,
+        description: "Generates context frames for systems and components",
+        ports: {
+          input: [
+            "system_data",
+            "context_rules",
+          ],
+          output: [
+            "context_frames",
+            "generation_status",
+          ],
+        },
+        dependencies: [
+          "context_analyzer",
+          "frame_builder",
+        ],
+        blast_radius: "system",
+        must_never: [
+          "Generate frames without validation",
+          "Skip context analysis",
+          "Ignore frame rules",
+          "Bypass generation validation",
+        ],
+      },
+      {
+        component_id: "context_analyzer",
+        name: "Context Analyzer",
+        type: "analysis_engine",
+        tier: 2,
+        description: "Analyzes system context and requirements",
+        ports: {
+          input: [
+            "system_data",
+            "analysis_rules",
+          ],
+          output: [
+            "context_analysis",
+            "analysis_status",
+          ],
+        },
+        dependencies: [
+          "context_parser",
+          "analysis_engine",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Analyze context without validation",
+          "Skip analysis rules",
+          "Ignore context requirements",
+          "Bypass analysis validation",
+        ],
+      },
+      {
+        component_id: "frame_builder",
+        name: "Frame Builder",
+        type: "building_engine",
+        tier: 2,
+        description: "Builds context frames from analysis results",
+        ports: {
+          input: [
+            "context_analysis",
+            "frame_rules",
+          ],
+          output: [
+            "context_frames",
+            "building_status",
+          ],
+        },
+        dependencies: [
+          "frame_templates",
+          "validation_engine",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Build frames without validation",
+          "Skip frame rules",
+          "Ignore validation requirements",
+          "Bypass building validation",
+        ],
+      },
+      {
+        component_id: "frame_validator",
+        name: "Frame Validator",
+        type: "validation_engine",
+        tier: 2,
+        description: "Validates context frames for completeness and accuracy",
+        ports: {
+          input: [
+            "context_frames",
+            "validation_rules",
+          ],
+          output: [
+            "validation_result",
+            "validation_errors",
+          ],
+        },
+        dependencies: [
+          "validation_rules",
+          "error_handler",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Validate frames without rules",
+          "Skip validation checks",
+          "Ignore validation errors",
+          "Bypass validation requirements",
+        ],
+      },
+      {
+        component_id: "frame_manager",
+        name: "Frame Manager",
+        type: "management_engine",
+        tier: 2,
+        description: "Manages context frames throughout their lifecycle",
+        ports: {
+          input: [
+            "context_frames",
+            "management_rules",
+          ],
+          output: [
+            "management_status",
+            "frame_status",
+          ],
+        },
+        dependencies: [
+          "lifecycle_manager",
+          "status_tracker",
+        ],
+        blast_radius: "system",
+        must_never: [
+          "Manage frames without validation",
+          "Skip lifecycle management",
+          "Ignore frame status",
+          "Bypass management validation",
+        ],
+      },
+    ],
+    supporting_components: [
+      {
+        component_id: "context_parser",
+        name: "Context Parser",
+        type: "parsing_engine",
+        tier: 1,
+        description: "Parses system data for context analysis",
+        ports: {
+          input: [
+            "system_data",
+            "parsing_rules",
+          ],
+          output: [
+            "parsed_data",
+            "parsing_errors",
+          ],
+        },
+        dependencies: [
+          "parsing_rules",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Parse data without validation",
+          "Skip parsing rules",
+          "Ignore parsing errors",
+          "Bypass parsing validation",
+        ],
+      },
+      {
+        component_id: "frame_templates",
+        name: "Frame Templates",
+        type: "template_engine",
+        tier: 1,
+        description: "Provides templates for context frame generation",
+        ports: {
+          input: [
+            "template_requests",
+            "template_rules",
+          ],
+          output: [
+            "frame_templates",
+            "template_status",
+          ],
+        },
+        dependencies: [
+          "template_rules",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Provide templates without validation",
+          "Skip template rules",
+          "Ignore template requirements",
+          "Bypass template validation",
+        ],
+      },
+      {
+        component_id: "validation_rules",
+        name: "Validation Rules",
+        type: "rules_engine",
+        tier: 1,
+        description: "Provides validation rules for context frames",
+        ports: {
+          input: [
+            "validation_requests",
+            "rule_definitions",
+          ],
+          output: [
+            "validation_rules",
+            "rule_status",
+          ],
+        },
+        dependencies: [
+          "rule_definitions",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Provide rules without validation",
+          "Skip rule definitions",
+          "Ignore rule requirements",
+          "Bypass rule validation",
+        ],
+      },
+      {
+        component_id: "lifecycle_manager",
+        name: "Lifecycle Manager",
+        type: "lifecycle_engine",
+        tier: 1,
+        description: "Manages context frame lifecycle",
+        ports: {
+          input: [
+            "lifecycle_requests",
+            "lifecycle_rules",
+          ],
+          output: [
+            "lifecycle_status",
+            "lifecycle_events",
+          ],
+        },
+        dependencies: [
+          "lifecycle_rules",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Manage lifecycle without validation",
+          "Skip lifecycle rules",
+          "Ignore lifecycle events",
+          "Bypass lifecycle validation",
+        ],
+      },
+      {
+        component_id: "error_handler",
+        name: "Error Handler",
+        type: "error_engine",
+        tier: 1,
+        description: "Handles errors in context frame processing",
+        ports: {
+          input: [
+            "error_requests",
+            "error_rules",
+          ],
+          output: [
+            "error_responses",
+            "error_status",
+          ],
+        },
+        dependencies: [
+          "error_rules",
+        ],
+        blast_radius: "local",
+        must_never: [
+          "Handle errors without validation",
+          "Skip error rules",
+          "Ignore error requirements",
+          "Bypass error validation",
+        ],
+      },
+    ],
+  },
+  boundary_tendrils: {
+    input_ports: [
+      {
+        port_id: "system_data_input",
+        name: "System Data Input",
+        type: "data_input",
+        protocol: "json",
+        description: "Receives system data for context analysis",
+        required: true,
+        validation: "system_data_schema",
+      },
+      {
+        port_id: "context_rules_input",
+        name: "Context Rules Input",
+        type: "data_input",
+        protocol: "json",
+        description: "Receives context rules for frame generation",
+        required: true,
+        validation: "context_rules_schema",
+      },
+      {
+        port_id: "validation_rules_input",
+        name: "Validation Rules Input",
+        type: "data_input",
+        protocol: "json",
+        description: "Receives validation rules for frame validation",
+        required: true,
+        validation: "validation_rules_schema",
+      },
+    ],
+    output_ports: [
+      {
+        port_id: "context_frames_output",
+        name: "Context Frames Output",
+        type: "data_output",
+        protocol: "json",
+        description: "Outputs generated context frames",
+        required: true,
+        validation: "context_frames_schema",
+      },
+      {
+        port_id: "validation_result_output",
+        name: "Validation Result Output",
+        type: "data_output",
+        protocol: "json",
+        description: "Outputs validation results",
+        required: true,
+        validation: "validation_result_schema",
+      },
+      {
+        port_id: "frame_status_output",
+        name: "Frame Status Output",
+        type: "data_output",
+        protocol: "json",
+        description: "Outputs frame status information",
+        required: true,
+        validation: "frame_status_schema",
+      },
+    ],
+  },
+  data_flow: {
+    primary_flow: [
+      {
+        step: 1,
+        component: "context_parser",
+        action: "Parse system data",
+        input: [
+          "system_data",
+          "parsing_rules",
+        ],
+        output: [
+          "parsed_data",
+          "parsing_errors",
+        ],
+      },
+      {
+        step: 2,
+        component: "context_analyzer",
+        action: "Analyze system context",
+        input: [
+          "parsed_data",
+          "analysis_rules",
+        ],
+        output: [
+          "context_analysis",
+          "analysis_status",
+        ],
+      },
+      {
+        step: 3,
+        component: "frame_builder",
+        action: "Build context frames",
+        input: [
+          "context_analysis",
+          "frame_rules",
+        ],
+        output: [
+          "context_frames",
+          "building_status",
+        ],
+      },
+      {
+        step: 4,
+        component: "frame_validator",
+        action: "Validate context frames",
+        input: [
+          "context_frames",
+          "validation_rules",
+        ],
+        output: [
+          "validation_result",
+          "validation_errors",
+        ],
+      },
+      {
+        step: 5,
+        component: "frame_manager",
+        action: "Manage context frames",
+        input: [
+          "context_frames",
+          "management_rules",
+        ],
+        output: [
+          "management_status",
+          "frame_status",
+        ],
+      },
+    ],
+    secondary_flows: [
+      {
+        flow_name: "context_analysis",
+        components: [
+          "context_parser",
+          "context_analyzer",
+        ],
+        description: "Analyzes system context and requirements",
+      },
+      {
+        flow_name: "frame_generation",
+        components: [
+          "frame_builder",
+          "frame_templates",
+        ],
+        description: "Generates context frames from analysis",
+      },
+      {
+        flow_name: "frame_validation",
+        components: [
+          "frame_validator",
+          "validation_rules",
+        ],
+        description: "Validates context frames for completeness",
+      },
+    ],
+  },
+  security_boundaries: {
+    tier_0: {
+      components: [
+        "context_parser",
+        "frame_templates",
+        "validation_rules",
+        "lifecycle_manager",
+        "error_handler",
+      ],
+      description: "Supporting components with basic security requirements",
+    },
+    tier_1: {
+      components: [
+        "context_analyzer",
+        "frame_builder",
+        "frame_validator",
+      ],
+      description: "Processing components with standard security requirements",
+    },
+    tier_2: {
+      components: [
+        "context_frame_generator",
+        "frame_manager",
+      ],
+      description: "Core components with comprehensive security requirements",
+    },
+  },
+  performance_characteristics: {
+    latency: {
+      context_analysis: "< 2 seconds",
+      frame_generation: "< 3 seconds",
+      frame_validation: "< 1 second",
+      frame_management: "< 1 second",
+    },
+    throughput: {
+      frames_per_minute: 200,
+      validations_per_hour: 10000,
+      analyses_per_hour: 5000,
+      management_operations_per_hour: 2000,
+    },
+    resource_usage: {
+      cpu_usage: "< 25%",
+      memory_usage: "< 150MB",
+      disk_usage: "< 500MB",
+    },
+  },
+  monitoring_points: [
+    {
+      point_id: "frame_generation_rate",
+      name: "Frame Generation Rate",
+      type: "counter",
+      description: "Number of context frames generated per minute",
+    },
+    {
+      point_id: "validation_success_rate",
+      name: "Validation Success Rate",
+      type: "percentage",
+      description: "Percentage of successfully validated frames",
+    },
+    {
+      point_id: "analysis_processing_time",
+      name: "Analysis Processing Time",
+      type: "duration",
+      description: "Time taken for context analysis",
+    },
+    {
+      point_id: "frame_management_operations",
+      name: "Frame Management Operations",
+      type: "counter",
+      description: "Number of frame management operations per hour",
+    },
+  ],
+  error_handling: {
+    retry_policies: {
+      context_analysis: "3 retries with exponential backoff",
+      frame_generation: "2 retries with linear backoff",
+      frame_validation: "3 retries with exponential backoff",
+    },
+    circuit_breakers: {
+      analysis_service: "Open after 5 consecutive failures",
+      generation_service: "Open after 3 consecutive failures",
+    },
+    fallback_strategies: {
+      context_analysis_failure: "Use default context analysis",
+      frame_generation_failure: "Use template-based generation",
+      validation_failure: "Use basic validation",
+    },
+  },
+  deployment_considerations: {
+    scalability: {
+      horizontal_scaling: "Supported via load balancer",
+      vertical_scaling: "Supported via resource allocation",
+      auto_scaling: "Supported via metrics-based scaling",
+    },
+    availability: {
+      target_uptime: "99.9%",
+      redundancy: "Multi-instance deployment",
+      failover: "Automatic failover to standby instances",
+    },
+    maintenance: {
+      rolling_updates: "Supported",
+      downtime: "Minimal during updates",
+      rollback: "Supported via version management",
+    },
+  },
+  metadata: {
+    created: "2025-01-27T20:50:00Z",
+    updated: "2025-11-02T18:00:00Z",
+    author: "aether",
+    status: "production",
+    version: "1.0.0",
+  },
+  confidenceRouting: {
+    high: "Read T0 executive summary (100 words) or code directly",
+    medium: "Read T0 + T1 overview (500 words) + T2 architecture (2k words)",
+    low: "Read T0 + T1 + T2 + T3 detailed (10k words)",
+    veryLow: "Read T0 + T1 + T2 + T3 + T4 complete (15k+ words) or ask for help",
+  },
+  relatedSystems: [
+    {
+      system: "deep_expansion_layer",
+      relationship: "Context Frames System uses DEL for context generation",
+      whenToUse: "When implementing context generation or understanding expansion processes",
+      docs: [
+        "systems/deep_expansion_layer/T2_architecture.md#context-frames",
+      ],
+      priority: "required",
+    },
+    {
+      system: "context_mesh_maps",
+      relationship: "Context Frames System integrates with Context Mesh Maps for dependency tracking",
+      whenToUse: "When implementing dependency tracking or understanding context contracts",
+      docs: [
+        "systems/context_mesh_maps/T2_architecture.md#context-frames",
+      ],
+      priority: "required",
+    },
+    {
+      system: "hhni",
+      relationship: "Context Frames System uses HHNI for hierarchical context navigation",
+      whenToUse: "When implementing hierarchical navigation or understanding context indexing",
+      docs: [
+        "systems/hhni/T2_architecture.md#context-frames",
+      ],
+      priority: "required",
+    },
+    {
+      system: "cmc",
+      relationship: "Context Frames System stores context frames in CMC",
+      whenToUse: "When implementing context storage or understanding memory persistence",
+      docs: [
+        "systems/cmc/T2_architecture.md#context-frames",
+      ],
+      priority: "required",
+    },
+  ],
+  documentation: {
+    T0: "knowledge_architecture/systems/context_frames_system/T0_executive.md",
+    T1: "knowledge_architecture/systems/context_frames_system/T1_overview.md",
+    T2: "knowledge_architecture/systems/context_frames_system/T2_architecture.md",
+    T3: "knowledge_architecture/systems/context_frames_system/T3_detailed.md",
+    T4: "knowledge_architecture/systems/context_frames_system/T4_complete.md",
+  },
+}

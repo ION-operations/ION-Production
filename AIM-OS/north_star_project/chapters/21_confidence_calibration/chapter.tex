@@ -1,0 +1,520 @@
+% Chapter converted from Markdown
+% Auto-generated - do not edit manually
+
+\section*{Chapter 21 - Confidence Calibration}
+
+
+\subsection*{Purpose}
+\item Detail the mathematical calibration of confidence signals (VIF, authority, capability) to keep decisions reliable.
+\item Describe Bayesian update routines, calibration experiments, and dashboards that track confidence accuracy.
+\item Provide runnable commands to observe calibration data and adjust confidence.
+
+\subsection*{Calibration Model}
+
+Confidence is treated as a probability distribution updated via Bayes' rule:
+``\texttt{
+posterior = prior * likelihood / evidence
+}`\texttt{
+
+\textbf{Component Details:}
+
+\textbf{Prior Distribution:}
+\item Historical accuracy of the system/persona in similar contexts
+\item Formula: }prior = Beta(α, β)\texttt{ where α = successes, β = failures
+\item Updated after each outcome: }α\_new = α + success\texttt{, }β\_new = β + failure\texttt{
+\item Mean: }E[prior] = α / (α + β)\texttt{
+
+\textbf{Likelihood Function:}
+\item Probability of observing current evidence if claim is correct
+\item Sources: quality gates (SDF-CVF), tests (quartet parity), audits (CAS)
+\item Formula: }likelihood = P(evidence | claim\_true)\texttt{
+\item Combined: }likelihood = ∏ P(gate\_i | claim\_true)\texttt{ for all gates i
+
+\textbf{Evidence (Normalization):}
+\item Ensures probabilities sum to 1.0
+\item Formula: }evidence = prior \textit{ likelihood + (1 - prior) } (1 - likelihood)\texttt{
+\item Marginal probability of observing the evidence
+
+\textbf{Posterior Distribution:}
+\item Updated confidence after observing evidence
+\item Formula: }posterior = (prior * likelihood) / evidence\texttt{
+\item Mean: }E[posterior] = (α + successes) / (α + β + total\_observations)\texttt{
+
+\textbf{Calibration Curves:}
+\item Map predicted confidence to observed success rates
+\item Bins: [0.0-0.1], [0.1-0.2], ..., [0.9-1.0]
+\item For each bin: }calibration = observed\_success\_rate / predicted\_confidence\texttt{
+\item Perfect calibration: calibration = 1.0 for all bins
+\item Deviations trigger rebalancing via prior updates
+
+\subsection*{Confidence Types}
+
+AIM-OS distinguishes four confidence types to prevent inflation:
+
+\textbf{Type 1: Direction Confidence}
+\item Question: "Is this the RIGHT choice?"
+\item Example: VIF implementation = 0.95 (clearly serves OBJ-03)
+\item Context: Strategic alignment
+
+\textbf{Type 2: Execution Confidence}
+\item Question: "Can I DO this successfully?"
+\item Example: VIF implementation = 0.65 (never built code from docs)
+\item Context: Technical capability
+
+\textbf{Type 3: Autonomous Confidence}
+\item Question: "Can I do this ALONE without help?"
+\item Example: VIF implementation = 0.60 (will need questions answered)
+\item Context: Self-sufficiency
+
+\textbf{Type 4: Collaborative Confidence}
+\item Question: "Can I do this WITH support?"
+\item Example: VIF implementation = 0.75 (can ask when stuck)
+\item Context: Team collaboration
+
+\textbf{Calibration Model Per Type:}
+}`\texttt{python
+calibration\_model = {
+    "documentation\_tasks": {
+        "bias": -0.05,  \# Slightly underconfident
+        "accuracy": 0.95  \# Usually correct
+    },
+    "code\_tasks": {
+        "bias": +0.20,  \# OVERCONFIDENT (predicted 0.85, actual 0.65)
+        "accuracy": 0.70  \# Sometimes struggle
+    },
+    "organizational\_tasks": {
+        "bias": 0.00,  \# Well calibrated
+        "accuracy": 0.90
+    }
+}
+
+\section*{When making new decision:}
+raw\_confidence = my\_intuition()  \# 0.85
+task\_category = classify(task)  \# "code\_tasks"
+calibrated\_confidence = raw\_confidence - calibration\_model[task\_category]["bias"]
+\section*{0.85 - 0.20 = 0.65 ← HONEST confidence}
+}`\texttt{
+
+\subsection*{Runnable Examples}
+
+\subsubsection*{Example 1: Read Calibration Metrics}
+}`\texttt{powershell
+\section*{Read current confidence metrics (includes calibration summary)}
+\_\_MATH\_BLOCK\_0\_\_true;
+        include\_ece=\_\_MATH\_BLOCK\_1\_\_result = Invoke-WebRequest -Uri 'http://localhost:5001/mcp/execute' }
+    -Method POST -ContentType 'application/json' -Body \_\_MATH\_BLOCK\_2\_\_(\_\_MATH\_BLOCK\_3\_\_(\_\_MATH\_BLOCK\_4\_\_result.calibration.bins | ForEach-Object {
+    Write-Host "  [\_\_MATH\_BLOCK\_5\_\_\_.range)]: Predicted=\_\_MATH\_BLOCK\_6\_\_\_.predicted), Observed=\_\_MATH\_BLOCK\_7\_\_\_.observed), Count=\_\_MATH\_BLOCK\_8\_\_\_.count)"
+}
+``\texttt{
+
+\subsubsection*{Example 2: Track Confidence Update}
+}`\texttt{powershell
+\section*{Record a confidence update after validation}
+\_\_MATH\_BLOCK\_9\_\_update |
+    Select-Object -ExpandProperty Content | ConvertFrom-Json
+``\texttt{
+
+\subsubsection*{Example 3: Calculate Calibration Bias}
+}`\texttt{powershell
+\section*{Query confidence history for bias calculation}
+\_\_MATH\_BLOCK\_10\_\_messages = Invoke-WebRequest -Uri 'http://localhost:5001/mcp/execute' }
+    -Method POST -ContentType 'application/json' -Body \_\_MATH\_BLOCK\_11\_\_bias = @{}
+\_\_MATH\_BLOCK\_12\_\_\_.tags.task\_category } | Group-Object { \_\_MATH\_BLOCK\_13\_\_category = \_\_MATH\_BLOCK\_14\_\_predictions = \_\_MATH\_BLOCK\_15\_\_\_.tags.predicted\_confidence }
+    \_\_MATH\_BLOCK\_16\_\_\_.Group | ForEach-Object { \_\_MATH\_BLOCK\_17\_\_bias[\_\_MATH\_BLOCK\_18\_\_predictions | Measure-Object -Average).Average - (\_\_MATH\_BLOCK\_19\_\_bias.GetEnumerator() | ForEach-Object {
+    Write-Host "  \_\_MATH\_BLOCK\_20\_\_\_.Key): \_\_MATH\_BLOCK\_21\_\_\_.Value)"
+}
+``\texttt{
+
+\subsection*{Calibration Workflow}
+1. Record prediction (confidence before execution).
+2. Run validations (examples, audits, deployments).
+3. Compare outcome with prediction; compute calibration error.
+4. Update priors and weightings; log results in CAS + SEG.
+
+\subsection*{Expected Calibration Error (ECE)}
+
+ECE measures how well-calibrated probabilistic predictions are:
+
+\textbf{Formula:}
+}`\texttt{
+ECE = Σ (|B\_m| / n) * |acc(B\_m) - conf(B\_m)|
+}`\texttt{
+
+Where:
+\item }B\_m\texttt{: Bin m containing predictions
+\item }|B\_m|\texttt{: Number of predictions in bin m
+\item }n\texttt{: Total number of predictions
+\item }acc(B\_m)\texttt{: Actual accuracy in bin m
+\item }conf(B\_m)\texttt{: Average predicted confidence in bin m
+
+\textbf{Interpretation:}
+\item ECE = 0.0: Perfect calibration (predicted = actual)
+\item ECE < 0.05: Well calibrated
+\item ECE > 0.10: Poor calibration (requires adjustment)
+
+\textbf{Binning Strategy:}
+\item Optimal bin count: }sqrt(n)\texttt{ where n = number of predictions
+\item Equal-width bins: [0.0-0.1], [0.1-0.2], ..., [0.9-1.0]
+\item Equal-frequency bins: Each bin contains equal number of predictions
+
+\subsection*{Metrics \& Dashboards}
+
+\textbf{Brier Score:}
+\item Measures accuracy of probabilistic predictions
+\item Formula: }Brier = (1/n) * Σ (predicted\_i - actual\_i)²\texttt{
+\item Range: [0.0, 1.0] where 0.0 = perfect, 1.0 = worst
+\item Decomposes into: }Brier = Calibration + Resolution + Uncertainty\texttt{
+  - Calibration: How well probabilities match frequencies
+  - Resolution: How well predictions distinguish outcomes
+  - Uncertainty: Inherent unpredictability
+
+\textbf{Calibration Bins:}
+\item Bucket predictions into bins (e.g., 0.5-0.6, 0.6-0.7, etc.)
+\item Compare expected vs actual success rates
+\item Visualize as calibration plot: predicted (x-axis) vs observed (y-axis)
+\item Perfect calibration: diagonal line (y = x)
+
+\textbf{VIF Drift:}
+\item Monitors changes after calibration updates
+\item Formula: }drift = |VIF\_new - VIF\_old|\texttt{
+\item Threshold: drift > 0.10 triggers review
+\item Tracks: per-system, per-persona, per-task-type
+
+\textbf{Confidence Gap Log:}
+\item Highlights systems consistently over/under confident
+\item Overconfidence: predicted > actual (bias > 0)
+\item Underconfidence: predicted < actual (bias < 0)
+\item Tracks: bias per task category, temporal trends, improvement velocity
+
+\subsection*{Failure Modes \& Mitigations}
+\item \textbf{Overconfidence:} tighten gates; require additional evidence; adjust priors.
+\item \textbf{Underconfidence:} encourage more automation; add proof tasks; revisit penalties.
+\item \textbf{Data sparsity:} increase sampling; run synthetic experiments; aggregate across similar contexts.
+\item \textbf{Model drift:} retrain calibration curves; run regression tests.
+
+\subsection*{Integration}
+\item \textbf{VIF:} uses calibrated confidence to gate work; stores updates per chapter/system.
+\item \textbf{CAS:} awareness dashboards display calibration status; anomalies trigger alerts.
+\item \textbf{SDF-CVF:} quality results feed likelihood calculations.
+\item \textbf{APOE/SIS:} improvements proposed when calibration error exceeds thresholds.
+
+\subsection*{Mathematical Foundations}
+
+Confidence calibration in AIM-OS is grounded in Bayesian probability theory and statistical learning. The mathematical framework ensures that confidence signals accurately reflect the true probability of success.
+
+\subsubsection*{Bayesian Update Theory}
+
+\textbf{Bayesian Inference Framework:}
+\item \textbf{Prior Belief:} Initial confidence based on historical performance
+\item \textbf{Evidence:} Observed outcomes from quality gates, tests, audits
+\item \textbf{Posterior Belief:} Updated confidence after observing evidence
+\item \textbf{Conjugate Prior:} Beta distribution for binary outcomes (success/failure)
+
+\textbf{Beta Distribution Properties:}
+\item Parameters: α (successes), β (failures)
+\item Mean: }E[θ] = α / (α + β)\texttt{
+\item Variance: }Var[θ] = (α × β) / ((α + β)² × (α + β + 1))\texttt{
+\item Mode: }(α - 1) / (α + β - 2)\texttt{ for α, β > 1
+\item Conjugate: Beta-Binomial conjugacy enables efficient updates
+
+\textbf{Update Rule:}
+}`\texttt{
+α\_new = α\_old + successes
+β\_new = β\_old + failures
+}`\texttt{
+
+\textbf{Confidence Interval:}
+\item 95\% credible interval: }[Beta(α, β).ppf(0.025), Beta(α, β).ppf(0.975)]\texttt{
+\item Provides uncertainty quantification alongside point estimate
+
+\subsubsection*{Calibration Theory}
+
+\textbf{Perfect Calibration Definition:}
+A system is perfectly calibrated if, for all confidence levels c:
+}`\texttt{
+P(success | predicted\_confidence = c) = c
+}`\texttt{
+
+\textbf{Calibration Error:}
+\item Measures deviation from perfect calibration
+\item Formula: }CE = E[|predicted - actual|]\texttt{
+\item Decomposes into: systematic bias + random error
+
+\textbf{Calibration Curve:}
+\item Maps predicted confidence to observed success rate
+\item Perfect calibration: diagonal line (y = x)
+\item Overconfidence: curve below diagonal
+\item Underconfidence: curve above diagonal
+
+\subsubsection*{Statistical Learning Framework}
+
+\textbf{Online Learning:}
+\item Updates calibration model after each outcome
+\item Exponential moving average: }θ\_t = α × θ\_{t-1} + (1 - α) × x\_t\texttt{
+\item Adaptive learning rate: decreases over time for stability
+
+\textbf{Task Category Clustering:}
+\item Groups similar tasks for bias estimation
+\item Features: task type, complexity, domain, tools used
+\item Clustering: k-means or hierarchical clustering
+\item Bias per cluster: }bias\_k = mean(predicted\_k - actual\_k)\texttt{
+
+\subsection*{Calibration Algorithms}
+
+AIM-OS implements several calibration algorithms to maintain accurate confidence signals:
+
+\subsubsection*{Algorithm 1: Beta-Binomial Calibration}
+
+\textbf{Purpose:} Update confidence using Beta-Binomial conjugacy
+
+\textbf{Algorithm:}
+}`\texttt{python
+def beta\_binomial\_calibration(prior\_alpha, prior\_beta, successes, failures):
+    """
+    Update Beta prior with observed outcomes.
+    
+    Args:
+        prior\_alpha: Prior α parameter (successes)
+        prior\_beta: Prior β parameter (failures)
+        successes: Observed successes
+        failures: Observed failures
+    
+    Returns:
+        Updated (α, β) parameters
+    """
+    alpha\_new = prior\_alpha + successes
+    beta\_new = prior\_beta + failures
+    return alpha\_new, beta\_new
+
+\section*{Example usage}
+alpha, beta = beta\_binomial\_calibration(α=10, β=2, successes=5, failures=1)
+confidence = alpha / (alpha + beta)  \# Updated confidence
+}`\texttt{
+
+\textbf{Properties:}
+\item Efficient: O(1) update time
+\item Memory: Stores only (α, β) parameters
+\item Interpretable: Direct probability interpretation
+
+\subsubsection*{Algorithm 2: Platt Scaling}
+
+\textbf{Purpose:} Calibrate confidence scores using logistic regression
+
+\textbf{Algorithm:}
+}`\texttt{python
+def platt\_scaling(raw\_scores, labels):
+    """
+    Calibrate raw confidence scores using Platt scaling.
+    
+    Args:
+        raw\_scores: Raw confidence scores [0, 1]
+        labels: Binary outcomes (0 = failure, 1 = success)
+    
+    Returns:
+        Calibrated scores
+    """
+    from sklearn.calibration import CalibratedClassifierCV
+    from sklearn.linear\_model import LogisticRegression
+    
+    \# Fit Platt scaling
+    platt = CalibratedClassifierCV(
+        LogisticRegression(),
+        method='sigmoid',
+        cv=5
+    )
+    platt.fit(raw\_scores.reshape(-1, 1), labels)
+    
+    \# Calibrate new scores
+    calibrated = platt.predict\_proba(raw\_scores.reshape(-1, 1))[:, 1]
+    return calibrated
+}`\texttt{
+
+\textbf{Properties:}
+\item Non-parametric: No distribution assumptions
+\item Flexible: Adapts to any score distribution
+\item Requires: Calibration dataset
+
+\subsubsection*{Algorithm 3: Isotonic Regression}
+
+\textbf{Purpose:} Non-parametric calibration using isotonic regression
+
+\textbf{Algorithm:}
+}`\texttt{python
+def isotonic\_calibration(raw\_scores, labels):
+    """
+    Calibrate using isotonic regression (piecewise constant).
+    
+    Args:
+        raw\_scores: Raw confidence scores [0, 1]
+        labels: Binary outcomes (0 = failure, 1 = success)
+    
+    Returns:
+        Calibrated scores
+    """
+    from sklearn.isotonic import IsotonicRegression
+    
+    \# Fit isotonic regression
+    iso = IsotonicRegression(out\_of\_bounds='clip')
+    iso.fit(raw\_scores, labels)
+    
+    \# Calibrate new scores
+    calibrated = iso.transform(raw\_scores)
+    return calibrated
+}`\texttt{
+
+\textbf{Properties:}
+\item Non-parametric: No distribution assumptions
+\item Monotonic: Preserves score ordering
+\item Flexible: Piecewise constant mapping
+
+\subsubsection*{Algorithm 4: Temperature Scaling}
+
+\textbf{Purpose:} Single-parameter calibration for neural network outputs
+
+\textbf{Algorithm:}
+}`\texttt{python
+def temperature\_scaling(logits, temperature):
+    """
+    Calibrate logits using temperature scaling.
+    
+    Args:
+        logits: Raw logits from model
+        temperature: Temperature parameter (T > 0)
+    
+    Returns:
+        Calibrated probabilities
+    """
+    import torch.nn.functional as F
+    
+    \# Apply temperature scaling
+    scaled\_logits = logits / temperature
+    calibrated = F.softmax(scaled\_logits, dim=-1)
+    return calibrated
+
+\section*{Optimal temperature via cross-validation}
+def find\_optimal\_temperature(logits, labels, temp\_range=[0.1, 10.0]):
+    """
+    Find optimal temperature via cross-validation.
+    """
+    best\_temp = 1.0
+    best\_ece = float('inf')
+    
+    for temp in np.linspace(temp\_range[0], temp\_range[1], 100):
+        calibrated = temperature\_scaling(logits, temp)
+        ece = calculate\_ece(calibrated, labels)
+        if ece < best\_ece:
+            best\_ece = ece
+            best\_temp = temp
+    
+    return best\_temp
+}`\texttt{
+
+\textbf{Properties:}
+\item Simple: Single parameter to tune
+\item Efficient: O(n) computation
+\item Effective: Works well for neural networks
+
+\subsection*{System Architecture}
+
+The confidence calibration system integrates with all AIM-OS systems to provide accurate confidence signals:
+
+\subsubsection*{Core Components}
+
+\textbf{1. Calibration Tracker}
+\item \textbf{Purpose:} Records predicted confidence and actual outcomes
+\item \textbf{Storage:} CMC atoms tagged }confidence\_calibration\texttt{
+\item \textbf{Schema:} }{task\_id, predicted, actual, task\_category, timestamp, confidence\_type}\texttt{
+\item \textbf{Updates:} Real-time updates after each task completion
+
+\textbf{2. Bias Calculator}
+\item \textbf{Purpose:} Calculates calibration bias per task category
+\item \textbf{Algorithm:} Mean difference between predicted and actual
+\item \textbf{Output:} Bias per category: }bias\_k = mean(predicted\_k - actual\_k)\texttt{
+\item \textbf{Updates:} Recalculated after each batch of outcomes
+
+\textbf{3. Calibration Model}
+\item \textbf{Purpose:} Stores calibration parameters per task category
+\item \textbf{Storage:} CMC atoms tagged }calibration\_model\texttt{
+\item \textbf{Schema:} }{category, bias, accuracy, sample\_size, last\_updated}\texttt{
+\item \textbf{Usage:} Applied to raw confidence before reporting
+
+\textbf{4. ECE Calculator}
+\item \textbf{Purpose:} Computes Expected Calibration Error
+\item \textbf{Algorithm:} Binned calibration error calculation
+\item \textbf{Binning:} Optimal bin count: }sqrt(n)\texttt{ where n = predictions
+\item \textbf{Output:} ECE score and calibration curve
+
+\textbf{5. Dashboard Generator}
+\item \textbf{Purpose:} Generates calibration dashboards and reports
+\item \textbf{Visualizations:} Calibration curves, bias plots, ECE trends
+\item \textbf{Alerts:} Triggers when ECE > 0.10 or bias exceeds thresholds
+\item \textbf{Integration:} CAS dashboards, VIF confidence displays
+
+\subsubsection*{Data Flow}
+
+\textbf{Calibration Flow:}
+}`\texttt{
+Task Start → Record Predicted Confidence → Execute Task → 
+Record Actual Outcome → Calculate Error → Update Calibration Model → 
+Apply Calibration to Future Predictions
+}`\texttt{
+
+\textbf{Bias Calculation Flow:}
+}`\texttt{
+Collect Outcomes → Group by Task Category → Calculate Mean Error → 
+Update Bias Model → Store in CMC → Apply to Raw Confidence
+}`\texttt{
+
+\textbf{ECE Calculation Flow:}
+}`\texttt{
+Collect Predictions → Bin by Confidence Level → Calculate Observed Rate → 
+Compare to Predicted → Compute ECE → Generate Calibration Curve
+}``
+
+\subsection*{Operational Guidance}
+
+\subsubsection*{Calibration Best Practices}
+
+\textbf{1. Regular Calibration Updates}
+\item Update calibration models after every 20-50 outcomes
+\item Recalculate bias per category weekly
+\item Recompute ECE monthly
+\item Review calibration curves quarterly
+
+\textbf{2. Task Category Management}
+\item Define clear task categories (documentation, code, organizational)
+\item Ensure sufficient samples per category (minimum 10 outcomes)
+\item Merge similar categories if sample size too small
+\item Split categories if bias varies significantly within category
+
+\textbf{3. Confidence Type Selection}
+\item Use Direction Confidence for strategic decisions
+\item Use Execution Confidence for technical tasks
+\item Use Autonomous Confidence for independent work
+\item Use Collaborative Confidence for team tasks
+
+\textbf{4. Calibration Thresholds}
+\item ECE < 0.05: Well calibrated, continue monitoring
+\item ECE 0.05-0.10: Acceptable, minor adjustments needed
+\item ECE > 0.10: Poor calibration, requires recalibration
+\item Bias > 0.15: Significant bias, immediate correction needed
+
+\subsubsection*{Troubleshooting Guide}
+
+\textbf{Problem: High ECE (> 0.10)}
+\item \textbf{Causes:} Model drift, insufficient data, category mismatch
+\item \textbf{Solutions:} Recalibrate model, increase sample size, refine categories
+
+\textbf{Problem: Persistent Overconfidence}
+\item \textbf{Causes:} Optimistic priors, insufficient penalty for failures
+\item \textbf{Solutions:} Adjust priors downward, increase failure weight, tighten gates
+
+\textbf{Problem: Persistent Underconfidence}
+\item \textbf{Causes:} Pessimistic priors, excessive penalty for failures
+\item \textbf{Solutions:} Adjust priors upward, decrease failure weight, encourage automation
+
+\textbf{Problem: Category-Specific Bias}
+\item \textbf{Causes:} Different difficulty levels, different success criteria
+\item \textbf{Solutions:} Split categories, adjust category-specific priors, refine task classification
+
+\subsection*{Mathematical Foundations}
