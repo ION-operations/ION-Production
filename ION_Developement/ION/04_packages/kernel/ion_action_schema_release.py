@@ -18,7 +18,7 @@ from typing import Any, Mapping
 
 import yaml
 
-from .ion_workspace_paths import display_path, resolve_ion_path
+from .ion_workspace_paths import display_path, resolve_ion_path, resolve_repo_root
 
 DOMAIN_ID = "CUSTOM_GPT_ACTION_RELEASE"
 DEFAULT_SERVER_URL = "https://ion-actions.helixion.net"
@@ -88,11 +88,7 @@ class Operation:
 
 
 def _resolve_repo_root(start: str | Path | None = None) -> Path:
-    candidate = Path(start or ".").expanduser().resolve()
-    for path in (candidate, *candidate.parents):
-        if (path / "ION/REPO_AUTHORITY.md").exists():
-            return path
-    return candidate
+    return resolve_repo_root(start)
 
 
 def _load_yaml_text(text: str) -> dict[str, Any]:

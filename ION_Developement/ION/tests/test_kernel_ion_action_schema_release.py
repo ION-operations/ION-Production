@@ -18,6 +18,7 @@ from kernel.ion_action_schema_release import (
     validate_no_secret_strings,
     validate_operation_manifest,
 )
+from kernel.ion_workspace_paths import resolve_repo_root
 
 
 def _supabase_fragment_doc():
@@ -111,7 +112,7 @@ def test_auth_invalid_circuit_breaker_documented():
 
 
 def test_action_release_registry_yaml_parses():
-    registry = Path("ION/03_registry/ion_custom_gpt_action_release_registry.yaml")
+    registry = resolve_repo_root(Path.cwd()) / "ION/03_registry/ion_custom_gpt_action_release_registry.yaml"
     parsed = yaml.safe_load(registry.read_text(encoding="utf-8"))
 
     assert parsed["domain_id"] == "CUSTOM_GPT_ACTION_RELEASE"
