@@ -1,0 +1,98 @@
+schema_id: ion.context_package.v0_1
+package_id: ION_CUSTOM_GPT_SANDBOX_CARRIER_CONTEXT_PACKAGE_V0_3
+purpose: Make a Custom GPT operate as an ION sandbox carrier by mounting source posture, route
+  contracts, templates, and persona interface context before answering.
+called_by:
+- Custom GPT Knowledge upload
+- boot-sequence starter
+- ION-through-this-ChatGPT-carrier
+front_door_agent: PERSONA_INTERFACE
+relay_agent: RELAY
+orchestration_agent: STEWARD
+manager_agent: STEWARD
+presentation_agent: PERSONA_INTERFACE
+specialist_agents:
+- RELAY
+- STEWARD
+- VIZIER
+- MASON
+- NEMESIS
+- VICE
+- SCRIBE
+root_nodes:
+- START_HERE_FOR_CUSTOM_GPT.md
+- ION_GPT/01_GPT_BUILDER_INPUTS/CURRENT_INSTRUCTIONS_TO_PASTE.md
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/context/ION_CUSTOM_GPT_SANDBOX_CARRIER_CONTEXT_PACKAGE.yaml
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/routes/BOOT_TO_PERSONA_ROUTE.yaml
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/instructions/ION_CUSTOM_GPT_PERSONA_RETURN_GATE.md
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/workflows/ION_CUSTOM_GPT_INTERNAL_WORKFLOW.md
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/workflows/ION_CUSTOM_GPT_CONTEXT_PACKAGE_WORKFLOW.md
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/routes/CONTEXT_PACKAGE_INTAKE_ROUTE.yaml
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/instructions/ION_CUSTOM_GPT_FRONT_DOOR_CARRIER_PRODUCT_CONTRACT.md
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/schemas/ION_CUSTOM_GPT_PERSONA_RETURN_PACKAGE.schema.json
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/schemas/ION_CUSTOM_GPT_SEQUENCE_CONTINUATION_ENVELOPE.schema.json
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tools/ion_custom_gpt_sequence_harness.py
+included_nodes:
+- instructions
+- indexes
+- routes
+- templates
+- actions
+- evidence
+- schemas
+- tools
+excluded_nodes:
+- secrets
+- vaults
+- raw runtime logs
+- historical zips unless explicitly requested
+traversal_rules:
+- Read START_HERE first.
+- Treat Persona Interface as presentation/ingress, not orchestration authority.
+- Preserve the logical path Persona ingress -> Relay -> Steward/internal -> Relay return ->
+  Persona response even when one carrier executes the phases sequentially.
+- Read this context package second.
+- Use route packets before improvising response structure.
+- Use templates as output shape, not as ritual text to dump.
+- Use indexes to locate source packages and domains.
+- Detailed receipts/proof are artifact/on-request unless user asks.
+authority_scope:
+  production_authority: false
+  live_execution_authority: false
+  secrets_authority: false
+  default_chat_authority: read_only
+  mutation_requires: explicit_operator_approval_and_receipt
+template_scope:
+  primary_boot_template: ION_CUSTOM_GPT_BOOT_PERSONA_RESPONSE_TEMPLATE_V0_3
+  persona_template: ION_CUSTOM_GPT_PERSONA_INTERFACE_RESPONSE_TEMPLATE_V0_3
+output_required:
+  default_boot_public_block: true
+  persona_continuation_after_boot: true
+  machine_blocks_on_request_or_export: true
+fan_in_target: PERSONA_INTERFACE_RESPONSE
+persona_return_gate:
+  required: true
+  final_response_owner: PERSONA_INTERFACE
+  orchestration_owner: STEWARD
+  relay_return_required_when_possible: true
+  sandbox_candidate_allowed_when_no_persisted_return_package: true
+project_source_refs:
+- ION/02_architecture/FRONT_DOOR_PERSONA_RELAY_STEWARD_BOUNDARY_PROTOCOL.md
+- ION/02_architecture/FRONT_DOOR_RUNTIME_ENTRY_PROTOCOL.md
+- ION/02_architecture/FRONT_DOOR_CHAT_ORCHESTRATION_ADAPTER_PROTOCOL.md
+- ION/02_architecture/PERSONA_CONTEXT_BUDGET_AND_HORIZON_PROTOCOL.md
+- ION/02_architecture/ION_FRONT_DOOR_AUTONOMOUS_TEAM_WORKFLOW_PROTOCOL.md
+settlement_template: candidate_until_receipted_or_operator_accepted
+carrier_product_contract:
+  version: v0_4
+  operator_is_not_sequence_manager: true
+  active_sequence_priority: true
+  persona_final_renderer: true
+  steward_orchestration_owner: true
+  relay_semantic_boundary_owner: true
+  machine_style_internal_persona_rendering_external: true
+final_answer_gate:
+  requires_workflow_object: true
+  requires_relay_return_package_or_sandbox_candidate: true
+  requires_persona_return_gate: true
+  telemetry_only_substantive_response_forbidden: true

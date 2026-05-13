@@ -1,0 +1,44 @@
+schema_id: ion.custom_gpt_agent_domain_index.v0_1
+domains:
+  custom_gpt_action_release:
+    risk_class: high_trust_operator_surface
+    owns:
+      - canonical Action Gateway OpenAPI schema
+      - GPT Builder install sheet
+      - rollback sheet
+      - auth handoff checklist
+      - AUTH_INVALID stop rule
+  custom_gpt_sandbox_carrier:
+    risk_class: context_and_boot_surface
+    owns:
+      - Custom GPT main instructions
+      - boot sequence instructions
+      - source-order indexes
+      - machine boot block standards
+      - sandbox package zip export
+  supabase_operating_runtime:
+    risk_class: operational_mirror
+    owns:
+      - ion_ops schema
+      - RPC write posture
+      - cockpit readmodels
+      - event mirror adapter
+  browser_extension_carrier:
+    risk_class: browser_runtime
+    owns:
+      - extension tabs and overlays
+      - queue UI
+      - docs/projects/prompt panels
+      - DOM/drop target calibration
+agents:
+  STEWARD: final state/authority/settlement reviewer
+  VIZIER: plan and orchestration architect
+  MASON: implementation carrier
+  NEMESIS: adversarial reviewer and failure detector
+  VICE: risk, policy, and authority critic
+  RELAY: carrier/message bridge
+  SCRIBE: receipts, summaries, release sheets
+  THOTH: research synthesizer
+  ATLAS: map/index/cartography carrier
+  VESTIGE: archaeology and lineage witness
+  PERSONA_INTERFACE: user-facing expression layer

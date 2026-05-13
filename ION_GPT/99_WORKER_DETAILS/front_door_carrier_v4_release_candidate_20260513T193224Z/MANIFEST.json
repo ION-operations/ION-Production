@@ -1,0 +1,54 @@
+{
+  "schema_id": "ion.custom_gpt.cumulative_single_diff_release_candidate.v1",
+  "created_at_utc": "20260513T193224Z",
+  "posture": "sandbox-candidate",
+  "accepted_state_claim": false,
+  "production_authority": false,
+  "live_execution_authority": false,
+  "base_package": "ION_CUSTOM_GPT_SANDBOX_CARRIER_PACKAGE_20260513T160555Z.zip",
+  "final_candidate_package": "ION_CUSTOM_GPT_FRONT_DOOR_CARRIER_PRODUCT_CONTRACT_REPAIR_CANDIDATE_20260513T175345Z.zip",
+  "primary_diff": "cumulative_diff/ion_custom_gpt_cumulative_single_diff_20260513T193224Z.patch",
+  "primary_diff_markdown": "cumulative_diff/ion_custom_gpt_cumulative_single_diff_20260513T193224Z.md",
+  "patch_lineage": [
+    {
+      "version": "v1",
+      "name": "boot-process repair",
+      "package": "ION_CUSTOM_GPT_BOOT_PROCESS_REPAIR_CANDIDATE_20260513T163442Z.zip"
+    },
+    {
+      "version": "v2",
+      "name": "active-sequence continuation repair",
+      "package": "ION_CUSTOM_GPT_ACTIVE_SEQUENCE_CONTINUATION_REPAIR_CANDIDATE_20260513T172149Z.zip"
+    },
+    {
+      "version": "v3",
+      "name": "persona return gate repair",
+      "package": "ION_CUSTOM_GPT_PERSONA_RETURN_GATE_REPAIR_CANDIDATE_20260513T173011Z.zip"
+    },
+    {
+      "version": "v4",
+      "name": "front-door carrier product contract",
+      "package": "ION_CUSTOM_GPT_FRONT_DOOR_CARRIER_PRODUCT_CONTRACT_REPAIR_CANDIDATE_20260513T175345Z.zip"
+    }
+  ],
+  "diff_stats": {
+    "added_files": 27,
+    "deleted_files": 0,
+    "modified_files": 11,
+    "unchanged_files": 36,
+    "total_paths_compared": 74,
+    "text_paths_diffed": 38,
+    "total_added_lines": 6119,
+    "total_deleted_lines": 447
+  },
+  "validation": {
+    "pytest_exit_code": 0,
+    "pytest_result": "11 passed",
+    "patch_dry_run_exit_code": 0,
+    "patch_apply_exit_code": 0,
+    "patched_tree_exact_match": true,
+    "file_set_differences_after_apply": 0,
+    "hash_differences_after_apply": 0,
+    "stderr_note": "artifact_tool spreadsheet warmup warning emitted by environment; unrelated to tests"
+  }
+}

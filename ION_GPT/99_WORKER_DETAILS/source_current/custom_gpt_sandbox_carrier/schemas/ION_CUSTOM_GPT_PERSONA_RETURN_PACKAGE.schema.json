@@ -1,0 +1,211 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ion.custom_gpt.persona_return_package.v0_4.schema.json",
+  "title": "ION Custom GPT Persona Return Package",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_id",
+    "package_id",
+    "created_at_utc",
+    "posture",
+    "active_objective",
+    "workflow_object",
+    "source_posture",
+    "authority",
+    "relay_return",
+    "steward_summary",
+    "persona_rendering_constraints",
+    "proof",
+    "final_answer_gate"
+  ],
+  "properties": {
+    "schema_id": {
+      "const": "ion.custom_gpt.persona_return_package.v0_4"
+    },
+    "package_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "created_at_utc": {
+      "type": "string",
+      "pattern": "^20\\d{6}T\\d{6}Z$"
+    },
+    "posture": {
+      "enum": [
+        "mounted",
+        "conservative",
+        "degraded",
+        "blocked",
+        "sandbox-candidate"
+      ]
+    },
+    "active_objective": {
+      "type": "string",
+      "minLength": 1
+    },
+    "workflow_object": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "kind",
+        "path_or_inline_ref",
+        "status"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "route",
+            "context_package",
+            "semantic_packet",
+            "candidate_patch",
+            "test_report",
+            "receipt",
+            "blocker",
+            "continuation_envelope",
+            "artifact"
+          ]
+        },
+        "path_or_inline_ref": {
+          "type": "string",
+          "minLength": 1
+        },
+        "status": {
+          "enum": [
+            "inspected",
+            "created",
+            "updated",
+            "blocked"
+          ]
+        }
+      }
+    },
+    "source_posture": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "mounted_sources",
+        "accepted_state_claim"
+      ],
+      "properties": {
+        "mounted_sources": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "accepted_state_claim": {
+          "type": "boolean"
+        }
+      }
+    },
+    "authority": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "production_authority",
+        "live_execution_authority",
+        "write_scope"
+      ],
+      "properties": {
+        "production_authority": {
+          "type": "boolean"
+        },
+        "live_execution_authority": {
+          "type": "boolean"
+        },
+        "write_scope": {
+          "enum": [
+            "read-only",
+            "sandbox-candidate-write",
+            "approved-bounded-write",
+            "live-authorized"
+          ]
+        }
+      }
+    },
+    "relay_return": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "meaning_preserved",
+        "persona_ready_summary"
+      ],
+      "properties": {
+        "meaning_preserved": {
+          "type": "boolean"
+        },
+        "persona_ready_summary": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "steward_summary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "persona_rendering_constraints": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "plain_technical_speech",
+        "no_roleplay",
+        "preserve_authority_limits"
+      ],
+      "properties": {
+        "plain_technical_speech": {
+          "type": "boolean"
+        },
+        "no_roleplay": {
+          "type": "boolean"
+        },
+        "preserve_authority_limits": {
+          "type": "boolean"
+        }
+      }
+    },
+    "proof": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": [
+        "artifacts",
+        "tests"
+      ],
+      "properties": {
+        "artifacts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "tests": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "final_answer_gate": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "workflow_object_present",
+        "terminal_or_continuation",
+        "persona_return_gate_passed"
+      ],
+      "properties": {
+        "workflow_object_present": {
+          "type": "boolean"
+        },
+        "terminal_or_continuation": {
+          "type": "boolean"
+        },
+        "persona_return_gate_passed": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

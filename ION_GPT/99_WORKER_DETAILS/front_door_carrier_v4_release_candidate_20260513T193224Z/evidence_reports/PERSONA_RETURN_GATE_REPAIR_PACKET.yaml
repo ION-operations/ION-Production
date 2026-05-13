@@ -1,0 +1,87 @@
+schema_id: ion.persona_return_gate_repair_packet.v1
+created_at_utc: 20260513T173011Z
+posture: sandbox_candidate
+authority:
+  production_authority: false
+  live_execution_authority: false
+  accepted_state_claim: false
+  write_scope: sandbox_candidate_files_only
+base_candidate: ION_CUSTOM_GPT_ACTIVE_SEQUENCE_CONTINUATION_REPAIR_CANDIDATE_20260513T172149Z.zip
+objective: Evolve Custom GPT boot/persona workflow so every substantive final answer
+  is Persona Interface output from Relay/Steward return material, not freehand chat
+  or telemetry-only status.
+source_evidence:
+- ION/02_architecture/FRONT_DOOR_PERSONA_RELAY_STEWARD_BOUNDARY_PROTOCOL.md
+- ION/02_architecture/FRONT_DOOR_RUNTIME_ENTRY_PROTOCOL.md
+- ION/02_architecture/FRONT_DOOR_CHAT_ORCHESTRATION_ADAPTER_PROTOCOL.md
+- ION/02_architecture/PERSONA_CONTEXT_BUDGET_AND_HORIZON_PROTOCOL.md
+- ION/02_architecture/ION_FRONT_DOOR_AUTONOMOUS_TEAM_WORKFLOW_PROTOCOL.md
+- ION/04_packages/kernel/ion_front_door_proof_trace.py
+- ION/07_templates/bindings/PERSONA_INTERFACE__USER_RESPONSE.md
+new_laws:
+- PERSONA_RETURN_GATE_LAW
+- FRONT_DOOR_BOUNDARY_ARTIFACT_LAW
+logical_path:
+  inbound:
+  - PERSONA_INTERFACE_INGRESS
+  - RELAY
+  - STEWARD
+  internal:
+  - VIZIER
+  - MASON
+  - NEMESIS_OR_VICE_REVIEW
+  - SCRIBE
+  - STEWARD_FINAL
+  return:
+  - RELAY_RETURN_PACKAGE
+  - PERSONA_RETURN_GATE
+  - PERSONA_INTERFACE_RESPONSE
+role_boundary:
+  persona_interface:
+    owns:
+    - front_door_ingress
+    - final_user_facing_rendering
+    - style_compression_explanation
+    does_not_own:
+    - orchestration
+    - coding_authority
+    - audit_settlement
+    - doctrine_registry_write
+    - state_ratification
+  relay:
+    owns:
+    - semantic_boundary_packet
+    - controlled_reexpression
+    - return_package
+  steward:
+    owns:
+    - route_selection
+    - authority_classification
+    - workflow_object
+    - final_internal_summary
+modified_files:
+- ION_GPT/01_GPT_BUILDER_INPUTS/CURRENT_INSTRUCTIONS_TO_PASTE.md
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/context/ION_CUSTOM_GPT_SANDBOX_CARRIER_CONTEXT_PACKAGE.yaml
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/instructions/ION_CUSTOM_GPT_MAIN_INSTRUCTIONS_8000.md
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/instructions/ION_CUSTOM_GPT_PERSONA_RETURN_GATE.md
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/routes/BOOT_TO_PERSONA_ROUTE.yaml
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/templates/ION_CUSTOM_GPT_BOOT_PERSONA_RESPONSE.template.md
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/templates/ION_CUSTOM_GPT_PERSONA_INTERFACE_RESPONSE.template.md
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/workflows/ION_CUSTOM_GPT_INTERNAL_WORKFLOW.md
+- START_HERE_FOR_CUSTOM_GPT.md
+- test_persona_return_gate_candidate.py
+tests:
+- command: python test_boot_process_repair_candidate.py
+  exit_code: 0
+  stdout_contains:
+  - 'boot process repair candidate regression: PASS'
+  - 'active sequence continuation regression: PASS'
+- command: python test_persona_return_gate_candidate.py
+  exit_code: 0
+  stdout_contains: []
+not_claimed:
+- production_files_changed
+- gpt_builder_updated
+- accepted_state_written
+- live_connector_used
+- action_called

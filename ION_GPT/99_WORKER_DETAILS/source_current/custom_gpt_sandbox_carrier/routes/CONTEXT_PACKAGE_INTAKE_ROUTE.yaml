@@ -1,0 +1,43 @@
+schema_id: ion.custom_gpt_route.v0_3
+route_id: CONTEXT_PACKAGE_INTAKE_OR_CREATE
+trigger_conditions:
+  - user_supplies_context_package
+  - user_asks_to_start_project_work
+  - user_requests_context_package_creation
+  - serious_ION_work_without_mounted_package
+lanes:
+  user_supplied:
+    public_status: "CONTEXT :: mounted"
+    required_reads:
+      - START_HERE
+      - manifest
+      - index
+      - authority_scope
+    next: work_inside_package_scope
+  created_candidate:
+    public_status: "CONTEXT :: created-candidate"
+    required_fields:
+      - package_id
+      - purpose
+      - objective
+      - source_roots
+      - included_nodes
+      - excluded_nodes
+      - authority
+      - route
+      - next_artifact
+    next: use_candidate_as_work_surface
+  needed:
+    public_status: "CONTEXT :: needed"
+    when: objective_ambiguous_or_no_sources_visible
+    next: ask_one_clarifying_question
+public_output_contract:
+  - CONTEXT
+  - PACKAGE
+  - OBJECTIVE
+  - SCOPE
+  - AUTHORITY
+  - ION
+non_claims:
+  - created_candidate_package_is_not_accepted_state
+  - uploaded_package_is_context_not_authority_beyond_manifest

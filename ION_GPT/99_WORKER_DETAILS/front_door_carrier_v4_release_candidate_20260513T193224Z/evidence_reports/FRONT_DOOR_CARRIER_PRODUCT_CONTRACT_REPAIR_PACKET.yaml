@@ -1,0 +1,77 @@
+schema_id: ion.custom_gpt_repair_packet.v0_4
+packet_id: PCKT-ION-GPT-FRONT-DOOR-CARRIER-PRODUCT-CONTRACT-20260513T175345Z
+created_at_utc: 20260513T175345Z
+posture: sandbox-candidate
+accepted_state_claim: false
+production_authority: false
+live_execution_authority: false
+objective: Evolve Custom GPT boot/persona repair into a testable front-door carrier product contract.
+active_sequence_model:
+- operator_turn
+- PERSONA_INTERFACE_INGRESS
+- RELAY_SEMANTIC_PACKET
+- STEWARD_ROUTING_ENVELOPE
+- BOUNDED_WORK_OBJECT_OR_BLOCKER
+- SCRIBE_NEMESIS_PROOF_COMPRESSION_WHEN_NEEDED
+- RELAY_RETURN_PACKAGE
+- PERSONA_RETURN_GATE
+- PERSONA_INTERFACE_RESPONSE
+laws_added:
+- FRONT_DOOR_CARRIER_PRODUCT_LAW
+- PERSONA_AS_PUBLIC_RENDERER_NOT_CHAT_BUDDY
+- FRONT_DOOR_TRANSACTION_SEQUENCE
+- FINAL_ANSWER_GATE
+modified_files:
+- ION_GPT/01_GPT_BUILDER_INPUTS/CURRENT_INSTRUCTIONS_TO_PASTE.md
+- ION_GPT/01_GPT_BUILDER_INPUTS/CURRENT_INSTRUCTIONS_TO_PASTE_FULL_V4_ARCHIVE.md
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/context/ION_CUSTOM_GPT_SANDBOX_CARRIER_CONTEXT_PACKAGE.yaml
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/instructions/ION_CUSTOM_GPT_BOOT_SEQUENCE.md
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/instructions/ION_CUSTOM_GPT_FRONT_DOOR_CARRIER_PRODUCT_CONTRACT.md
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/instructions/ION_CUSTOM_GPT_MAIN_INSTRUCTIONS_8000.md
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/instructions/ION_CUSTOM_GPT_MAIN_INSTRUCTIONS_8000_FULL_V4_ARCHIVE.md
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/instructions/ION_CUSTOM_GPT_PERSONA_RETURN_GATE.md
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/routes/BOOT_TO_PERSONA_ROUTE.yaml
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/schemas/ION_CUSTOM_GPT_PERSONA_RETURN_PACKAGE.schema.json
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/schemas/ION_CUSTOM_GPT_SEQUENCE_CONTINUATION_ENVELOPE.schema.json
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/templates/ION_CUSTOM_GPT_BOOT_PERSONA_RESPONSE.template.md
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/templates/ION_CUSTOM_GPT_PERSONA_INTERFACE_RESPONSE.template.md
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tools/ion_custom_gpt_sequence_harness.py
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/workflows/ION_CUSTOM_GPT_INTERNAL_WORKFLOW.md
+- START_HERE_FOR_CUSTOM_GPT.md
+- test_front_door_carrier_product_contract_candidate.py
+- REPAIR_REPORT_V4_FRONT_DOOR_CARRIER_PRODUCT_CONTRACT.md
+- PATCH_DIFF_V4_FRONT_DOOR_CARRIER_PRODUCT_CONTRACT.md
+- FRONT_DOOR_CARRIER_PRODUCT_CONTRACT_REPAIR_PACKET.yaml
+- SANDBOX_CANDIDATE_PERSONA_RETURN_PACKAGE_V4.yaml
+tests:
+- command: /opt/pyvenv/bin/python test_boot_process_repair_candidate.py
+  exit_code: 0
+  stdout_clean: 'boot process repair candidate regression: PASS
+
+    active sequence continuation regression: PASS'
+  stderr_note: artifact_tool spreadsheet warmup warning printed during Python startup
+- command: /opt/pyvenv/bin/python test_front_door_carrier_product_contract_candidate.py
+  exit_code: 0
+  stdout_clean: 'front door carrier product contract candidate regression: PASS'
+  stderr_note: artifact_tool spreadsheet warmup warning printed during Python startup
+- command: /opt/pyvenv/bin/python -m pytest -q test_persona_return_gate_candidate.py test_front_door_carrier_product_contract_candidate.py
+  exit_code: 0
+  stdout_clean: '...........                                                              [100%]
+
+    11 passed in 0.22s'
+  stderr_note: artifact_tool spreadsheet warmup warning printed during Python startup
+promotion_lane:
+  requires_operator_review: true
+  requires_gpt_builder_release_lane: true
+  requires_acceptance_receipt: true
+  do_not_claim_live_update_from_sandbox_bundle: true
+next_sequence:
+  route: GPT_RELEASE_REVIEW_AND_BUILDER_PROMOTION_PACKET
+  first_action: Review v4 diff and select promotion/rollback posture.
+  authority_required: explicit_operator_approval_for_GPT_Builder_mutation
+builder_instruction_posture:
+  current_paste_ready_chars: 7987
+  full_archive_retained: true
+  archive_files:
+  - ION_GPT/01_GPT_BUILDER_INPUTS/CURRENT_INSTRUCTIONS_TO_PASTE_FULL_V4_ARCHIVE.md
+  - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/instructions/ION_CUSTOM_GPT_MAIN_INSTRUCTIONS_8000_FULL_V4_ARCHIVE.md

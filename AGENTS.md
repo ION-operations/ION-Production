@@ -68,11 +68,25 @@ Do not declare a workpacket, diff, package, or artifact absent before checking t
 
 Do not give operator-facing GPT Builder instructions from memory or fragments.
 
-Canonical full schema:
+Canonical GPT Builder Action schemas:
 
 ```text
-ION_GPT/custom_gpt_action_gateway/openapi.yaml
+ION_GPT/03_ACTIONS/ion-actions.helixion.net/SCHEMA_TO_PASTE.yaml
+ION_GPT/03_ACTIONS/ion.helixion.net_mcp/SCHEMA_TO_PASTE.yaml
 ```
+
+Worker/source evidence for the Action Gateway schema:
+
+```text
+ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_action_gateway/openapi.yaml
+```
+
+That worker/source path is evidence/reference only, not the GPT Builder install
+target.
+
+Do not use the former `ION_GPT/custom_gpt_action_gateway/openapi.yaml` path as
+an install target. That path is historical/stale after the ION_GPT folder
+reorganization.
 
 Release tooling:
 

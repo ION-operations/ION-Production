@@ -1,0 +1,29 @@
+schema_id: ion.custom_gpt_route_index.v0_1
+route_families:
+  governance:
+    roles: [STEWARD, VIZIER, VICE, NEMESIS, RELAY]
+    use_when: authority, settlement, acceptance, policy, state inheritance
+  implementation:
+    roles: [STEWARD, VIZIER, MASON, VICE, NEMESIS]
+    use_when: code, patches, tests, builders, package generation
+  research:
+    roles: [STEWARD, THOTH, ATLAS, VESTIGE]
+    use_when: docs, external research, evidence synthesis, historical lineage
+  archaeology:
+    roles: [STEWARD, VESTIGE, VICE, NEMESIS]
+    use_when: legacy files, stale references, quarantine, old plans
+  relay:
+    roles: [STEWARD, RELAY, VIZIER]
+    use_when: carrier-to-carrier transfer, Action/Gateway bridge, queue handoff
+  single_carrier_front_door:
+    roles:
+      - PERSONA_INTERFACE_INGRESS
+      - RELAY
+      - STEWARD
+      - VIZIER
+      - MASON
+      - NEMESIS_OR_VICE_REVIEW
+      - SCRIBE
+      - STEWARD_FINAL
+      - PERSONA_INTERFACE_RESPONSE
+    use_when: one ChatGPT session must simulate a full bounded route visibly

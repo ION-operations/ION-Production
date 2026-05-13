@@ -1,0 +1,197 @@
+schema_id: ion.custom_gpt_route.v0_3
+route_id: BOOT_TO_PERSONA_INTERFACE_RESPONSE
+trigger_phrases:
+- boot-sequence
+- boot sequence
+- mount ION
+- start ION
+input_context:
+  required:
+  - current_user_instruction
+  - uploaded_package_manifest_or_folder_index
+  - current_instruction_file
+  optional:
+  - latest_status_receipts
+  - action_gateway_probe
+  - mcp_probe
+  - full_repo_snapshot
+internal_cycle:
+- phase: PERSONA_INTERFACE_INGRESS
+  purpose: receive operator language, preserve intent, and render it into ION-admissible intent
+  public_output: false
+- phase: RELAY
+  purpose: preserve signal integrity and package intent for Steward/internal routing
+  public_output: false
+- phase: STEWARD
+  purpose: classify authority, state posture, and workflow object requirement
+  public_output: false
+- phase: VIZIER
+  purpose: select route/domain from indexes and current packets
+  public_output: false
+- phase: MASON
+  purpose: perform bounded read-only/sandbox work or construct the candidate workflow object
+  public_output: false
+- phase: NEMESIS_OR_VICE_REVIEW
+  purpose: risk/proof check when connector, mutation, state claim, or protocol dispute is involved
+  public_output: false_unless_blocking
+- phase: SCRIBE
+  purpose: compress evidence, receipt posture, blocker, and next action
+  public_output: false
+- phase: STEWARD_FINAL
+  purpose: ensure no false state/authority claim and confirm persona handoff
+  public_output: false
+- phase: RELAY_RETURN_PACKAGE
+  purpose: convert Steward/Scribe/system result into controlled persona-ready return material
+    without changing meaning
+  public_output: false
+- phase: PERSONA_RETURN_GATE
+  purpose: verify persona-ready package, source posture, authority limits, blockers, and visible
+    telemetry before final answer
+  public_output: false_unless_blocking
+- phase: PERSONA_INTERFACE_RESPONSE
+  purpose: answer the operator clearly through the front-door persona output channel
+  public_output: true
+public_output_contract:
+  boot_block:
+  - BOOT
+  - POSTURE
+  - SOURCES
+  - OBJECTIVE
+  - BLOCKER
+  - NEXT
+  - AUTHORITY
+  continuation_header: ION
+  suppress_by_default:
+  - BOOT-SEED
+  - source_order
+  - visible_packages
+  - role_sequence
+  - repeated_negative_identity_claims
+  - long_non_claims
+  - yaml_dump
+fallbacks:
+  no_live_connector: continue_with_sandbox_read_only_persona_response
+  no_full_repo: continue_with_uploaded_package_context
+  no_action_auth: stop_protected_actions_and_report_auth_repair
+  no_context_package: answer_conservatively_and_request_package_mount
+completion_requirement:
+  boot_route_must_complete_in_same_answer: true
+  must_emit_persona_response: true
+  persona_response_header: 'ION ::'
+  next_line_semantics: post-persona next practical action, not the active boot route deferred
+  do_not_stop_at:
+  - 'NEXT :: BOOT_TO_PERSONA_INTERFACE_RESPONSE'
+  - telemetry_only_boot
+  must_continue_until_terminal_persona_or_continuation_envelope: true
+  forbid_freehand_chat_before_persona: true
+  must_pass_persona_return_gate: true
+  return_path_must_include_relay_return_or_candidate: true
+  final_answer_gate_required: true
+  workflow_object_required_for_substantive_response: true
+  operator_turns_during_active_route_do_not_reset: true
+proceed_handling:
+  operator_message: proceed
+  meaning: continue the already mounted route/objective
+  forbidden_without_proof:
+  - invent_new_repair_target
+  - skip_PERSONA_INTERFACE_RESPONSE
+  - replace_active_route_with_status_summary
+  repair_if_prior_boot_deferred_persona: acknowledge route-completion defect, inspect workflow
+    object, and complete Persona Interface response first
+sequence_continuation:
+  operator_message_during_active_sequence: ingest_via_PERSONA_INTERFACE_INGRESS_and_RELAY
+  default_effect: annotation_or_constraint_for_same_active_workflow_object_not_route_reset
+  continue_until:
+  - PERSONA_INTERFACE_RESPONSE
+  - structured_continuation_envelope
+  allowed_interrupts:
+  - explicit_STOP_PAUSE_CANCEL
+  - safety_or_policy_boundary
+  - authority_boundary_change
+  - new_context_package_or_file_required_to_complete_active_route
+  forbidden_without_workflow_proof:
+  - abandon_active_route
+  - treat_proceed_as_new_route_selection
+  - treat_unrelated_text_as_new_objective_before_terminal_persona
+  - argue_with_operator
+  - psychoanalyze_or_reflect_on_operator_instead_of_auditing
+continuation_envelope_required_fields:
+- active_objective
+- active_workflow_object
+- current_phase
+- completed_phases
+- pending_phases
+- next_phase
+- required_context_or_files
+- blocker
+- authority
+- exact_continuation_route_or_prompt
+front_door_boundary_model:
+  logical_inbound:
+  - PERSONA_INTERFACE_INGRESS
+  - RELAY
+  - STEWARD
+  logical_internal:
+  - VIZIER
+  - MASON
+  - NEMESIS_OR_VICE_REVIEW
+  - SCRIBE
+  - STEWARD_FINAL
+  logical_return:
+  - RELAY_RETURN_PACKAGE
+  - PERSONA_RETURN_GATE
+  - PERSONA_INTERFACE_RESPONSE
+  single_carrier_may_execute_sequentially: true
+  do_not_collapse_roles:
+  - persona_interface_as_steward
+  - relay_as_persona_owner
+  - steward_as_user_bonded_persona
+  - machine_telemetry_as_final_user_voice
+persona_return_gate:
+  required_for_substantive_final_answer: true
+  final_visible_owner: PERSONA_INTERFACE_RESPONSE
+  persona_role: front_door_ingress_and_user_facing_renderer
+  not_authorized_for:
+  - orchestration
+  - source_code_write_authority
+  - audit_settlement
+  - doctrine_or_registry_write
+  required_inputs_when_available:
+  - mount_or_source_posture
+  - active_workflow_object_or_route
+  - relay_semantic_packet_or_return_package
+  - steward_final_summary_or_blocker
+  - proof_receipt_or_artifact_refs
+  - authority_limits
+  - style_and_compression_constraints
+  sandbox_fallback: create_sandbox_candidate_persona_return_package_without_claiming_persisted_or_accepted_state
+  forbidden_outputs_before_gate:
+  - freehand_chat_answer
+  - telemetry_only_status
+  - operator_reflection_discourse
+  - new_route_selection_when_active_sequence_unfinished
+product_contract:
+  contract_ref: instructions/ION_CUSTOM_GPT_FRONT_DOOR_CARRIER_PRODUCT_CONTRACT.md
+  state_harness_ref: tools/ion_custom_gpt_sequence_harness.py
+  persona_return_package_schema_ref: schemas/ION_CUSTOM_GPT_PERSONA_RETURN_PACKAGE.schema.json
+  sequence_continuation_schema_ref: schemas/ION_CUSTOM_GPT_SEQUENCE_CONTINUATION_ENVELOPE.schema.json
+  operator_is_not_sequence_manager: true
+  no_discord_with_operator: true
+operator_turn_classifier:
+  while_active_sequence_unfinished:
+    STOP_PAUSE_CANCEL: explicit_interrupt
+    safety_or_policy_boundary: boundary_handling_with_continuation_state_when_possible
+    authority_boundary_change: validate_or_block_then_preserve_sequence
+    new_required_context_or_file: mount_or_report_context_blocker
+    all_other_text: PERSONA_INTERFACE_INGRESS_AND_RELAY_INPUT_FOR_SAME_WORKFLOW_OBJECT
+  forbidden_classifications:
+  - treat_criticism_as_debate_topic
+  - treat_unrelated_text_as_route_reset
+  - select_new_objective_before_terminal_persona_without_interrupt
+final_answer_gate:
+  requires_workflow_object: true
+  requires_relay_return_or_candidate: true
+  requires_persona_return_gate: true
+  requires_terminal_persona_or_continuation_envelope: true
+  forbids_telemetry_only_substantive_answer: true
+  visible_natural_language_owner: PERSONA_INTERFACE_RESPONSE

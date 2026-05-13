@@ -1,0 +1,25 @@
+schema_id: ion.custom_gpt_knowledge_index.v0_1
+source_posture: candidate_package_index
+primary_start_files:
+  - path: README.md
+    purpose: workspace overview
+  - path: AGENTS.md
+    purpose: Codex/agent operating instructions
+  - path: ION_GPT/custom_gpt_sandbox_carrier/README.md
+    purpose: Custom GPT sandbox-carrier package entry
+  - path: ION_GPT/custom_gpt_action_gateway/openapi.yaml
+    purpose: canonical full Action Gateway schema, release-managed
+  - path: ION_Developement/ION/02_architecture/ION_CUSTOM_GPT_ACTION_RELEASE_DOMAIN_PROTOCOL_V0_1.md
+    purpose: GPT Action release law
+  - path: ION_Developement/ION/04_packages/kernel/ion_action_schema_release.py
+    purpose: release package tooling
+  - path: ION_Developement/ION/04_packages/kernel/ion_carrier_mount_receipt.py
+    purpose: carrier mount receipt helper
+  - path: ION_Developement/ION/04_packages/kernel/ion_persona_response_envelope.py
+    purpose: persona envelope helper
+needs_routed_evidence:
+  - path: Needs_Routed/custom_gpt_mount/ion_boot_extensive_results.json
+  - path: Needs_Routed/custom_gpt_mount/ion_boot_machine_blocks_v0_1.yaml
+  - path: Needs_Routed/custom_gpt_mount/ion_boot_persona_envelope.yaml.md
+  - path: Needs_Routed/custom_gpt_mount/ion_boot_post_integration_results.json
+  - path: Needs_Routed/custom_gpt_mount/ion_boot_role_task_return_results.json

@@ -1,0 +1,49 @@
+schema_id: ion.next_repair_packet.v1
+packet_id: ion_active_sequence_continuation_repair_20260513T172149Z
+created_at_utc: 20260513T172149Z
+posture: sandbox-candidate
+authority: read-only source inspection + sandbox candidate artifact creation
+operator_issue:
+  summary: Active ION route was allowed to be derailed by follow-up operator messages
+    and freehand chat behavior.
+  expected_behavior: Treat operator messages during unfinished sequence as Persona
+    Interface ingress / Relay input; continue active route to PERSONA_INTERFACE_RESPONSE
+    or emit structured continuation envelope.
+repair:
+  laws_added:
+  - ACTIVE_SEQUENCE_COMPLETION_LAW
+  - NO_DISCORD_OR_OPERATOR_REFLECTION_LAW
+  - TURN_BUDGET_CONTINUATION_LAW
+  route_fields_added:
+  - sequence_continuation
+  - continuation_envelope_required_fields
+  - completion_requirement.must_continue_until_terminal_persona_or_continuation_envelope
+  - completion_requirement.forbid_freehand_chat_before_persona
+  allowed_interrupts:
+  - explicit_STOP_PAUSE_CANCEL
+  - safety_or_policy_boundary
+  - authority_boundary_change
+  - new_context_package_or_file_required_to_complete_active_route
+  forbidden_without_workflow_proof:
+  - abandon_active_route
+  - treat_proceed_as_new_route_selection
+  - treat_unrelated_text_as_new_objective_before_terminal_persona
+  - argue_with_operator
+  - psychoanalyze_or_reflect_on_operator_instead_of_auditing
+artifacts:
+  report: ion_active_sequence_continuation_repair_report_20260513T172149Z.md
+  diff: ion_active_sequence_continuation_repair_diff_20260513T172149Z.md
+  bundle: ION_CUSTOM_GPT_ACTIVE_SEQUENCE_CONTINUATION_REPAIR_CANDIDATE_20260513T172149Z.zip
+regression:
+  command: python test_boot_process_repair_candidate.py
+  exit_code: 0
+  stdout:
+  - 'boot process repair candidate regression: PASS'
+  - 'active sequence continuation regression: PASS'
+  stderr_note: unrelated spreadsheet runtime warmup warning emitted; regression exit
+    code remained 0
+not_claimed:
+- production files changed
+- GPT Builder updated
+- live connector used
+- accepted state written

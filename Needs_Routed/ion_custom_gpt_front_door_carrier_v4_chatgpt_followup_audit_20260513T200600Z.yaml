@@ -1,0 +1,63 @@
+schema_id: ion.custom_gpt.front_door_carrier_v4.chatgpt_followup_audit.v1
+created_at_utc: 20260513T200600Z
+posture: sandbox-candidate-followup-patch
+accepted_state_claim: false
+production_authority: false
+live_execution_authority: false
+source_evidence:
+  - Codex return pasted by operator
+  - ION GPT follow-up audit pasted by operator
+  - local branch codex/ion-custom-gpt-front-door-carrier-v4
+confirmed:
+  v4_tests_pre_followup: 11 passed
+  current_instruction_file_chars: 7987
+  front_door_contract_present: true
+  persona_return_gate_present: true
+defects_found:
+  - id: YAML_PARSE_CONTEXT_PACKAGE_INTAKE_ROUTE
+    severity: release-blocking
+    path: ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/routes/CONTEXT_PACKAGE_INTAKE_ROUTE.yaml
+    detail: >-
+      public_status values containing CONTEXT double-colon markers were unquoted.
+  - id: AGENTS_ACTION_SCHEMA_PATH_STALE
+    severity: release-blocking-for-operator-docs
+    path: AGENTS.md
+    detail: >-
+      Root AGENTS.md needed current ION_GPT/03_ACTIONS schema targets plus worker/source evidence path.
+  - id: UPLOAD_WORKER_DETAILS_STALE_IN_PRODUCTION_SNAPSHOT
+    severity: release-quality
+    path: ION_GPT/02_PACKAGES_TO_UPLOAD/WORKER_DETAILS/
+    detail: >-
+      Follow-up audit referenced stale production snapshot path. The local tree keeps worker manifests in ION_GPT/99_WORKER_DETAILS/gpt_upload_set_worker_details to keep the upload folder user-clean.
+  - id: UPLOAD_ZIPS_LOCAL_VERIFICATION_REQUIRED
+    severity: evidence-gap
+    path: ION_GPT/02_PACKAGES_TO_UPLOAD/UPLOAD_THESE_ZIPS/
+    detail: >-
+      Actual local upload zips must be verified against the current 194402 manifest.
+patch_files:
+  - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/routes/CONTEXT_PACKAGE_INTAKE_ROUTE.yaml
+  - AGENTS.md
+  - ION_GPT/99_WORKER_DETAILS/gpt_upload_set_worker_details/CURRENT_UPLOAD_FILES.json
+  - ION_GPT/99_WORKER_DETAILS/gpt_upload_set_worker_details/CURRENT_UPLOAD_FILES.md
+  - ION_GPT/99_WORKER_DETAILS/gpt_upload_set_worker_details/UPLOAD_SET_MANIFEST.yaml
+  - Needs_Routed/ion_custom_gpt_front_door_carrier_v4_chatgpt_followup_audit_20260513T200600Z.yaml
+validation:
+  post_patch_yaml_json_parse: passed
+  post_patch_v4_pytest: 11 passed
+  upload_manifest_hash_verification: passed
+upload_set_decision:
+  decision: 9-file set
+  rationale: >-
+    The current front-door carrier source is carried by ION_GPT_ACTION_RELEASE_AND_BUILDER_INPUTS plus ION_PRODUCTION_WORKSPACE_SNAPSHOT. A tenth focused carrier zip can be built later if the operator wants a smaller isolated carrier-only upload.
+next:
+  - Run YAML/JSON parse checks over ION_GPT and this receipt.
+  - Run v4 pytest suite.
+  - Verify local upload zips against current manifest.
+  - Commit only after validation passes and operator approves.
+non_claims:
+  - no accepted state claimed
+  - no GPT Builder update performed
+  - no Git push
+  - no deployment
+  - no service restart
+  - no live connector mutation

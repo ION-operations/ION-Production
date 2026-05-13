@@ -1,0 +1,55 @@
+schema_id: ion.custom_gpt.front_door_carrier_v4.codex_settlement.v1
+posture: sandbox-candidate
+accepted_state_claim: false
+production_authority: false
+live_execution_authority: false
+branch: codex/ion-custom-gpt-front-door-carrier-v4
+zip_path: Needs_Routed/ION_CUSTOM_GPT_CUMULATIVE_SINGLE_DIFF_RELEASE_CANDIDATE_20260513T193224Z.zip
+zip_sha256: 457b611a5441c62e7be30ebd1bbb2613c0fe219eb17d98ea54db7da8dfee8c1a
+patch_path: ION_GPT/99_WORKER_DETAILS/front_door_carrier_v4_release_candidate_20260513T193224Z/cumulative_diff/ion_custom_gpt_cumulative_single_diff_20260513T193224Z.patch
+patch_sha256: 9714f3acdbdeaefce8ea4550b7845351beb929b788947a63ed8478c7dfea31a6
+files_changed:
+  summary:
+    - Integrated v4 front-door carrier instructions into the user-facing GPT Builder paste file.
+    - Integrated v4 source contracts, route, schemas, harness, templates, workflow, context package, and tests into the sandbox carrier source lane.
+    - Preserved v4 release evidence under worker details instead of cluttering the user-facing ION_GPT root.
+    - Rebuilt current GPT upload zips and moved older upload zips into historical storage.
+    - Fixed the upload-set builder to avoid nested zip packages.
+    - Corrected AGENTS.md action schema paths after the ION_GPT folder reorganization.
+tests_run:
+  - command: PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -q ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tests/test_boot_process_repair_candidate.py ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tests/test_persona_return_gate_candidate.py ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tests/test_front_door_carrier_product_contract_candidate.py
+    exit_code: 0
+    result: 11 passed
+  - command: PYTHONDONTWRITEBYTECODE=1 python3 -m py_compile ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tools/ion_custom_gpt_sequence_harness.py ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tests/test_boot_process_repair_candidate.py ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tests/test_persona_return_gate_candidate.py ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tests/test_front_door_carrier_product_contract_candidate.py
+    exit_code: 0
+    result: Python compile passed
+  - command: YAML/JSON parse checks for v4 context, route, schemas, and release manifest
+    exit_code: 0
+    result: parse checks passed
+  - command: PYTHONDONTWRITEBYTECODE=1 python3 -m py_compile ION_Developement/ION/04_packages/kernel/ion_custom_gpt_upload_set_builder.py
+    exit_code: 0
+    result: Python compile passed
+  - command: PYTHONPATH=ION_Developement/ION/04_packages python3 -m kernel.ion_custom_gpt_upload_set_builder --workspace-root . --output-root ION_EXPORTS_LOCAL --package all --json
+    exit_code: 0
+    result: upload package set built at 20260513T194402Z
+validation:
+  boot_sequence_same_turn_persona_response: pass
+  proceed_continues_active_route: pass
+  active_sequence_priority: pass
+  persona_return_gate: pass
+  steward_orchestration_persona_presentation_split: pass
+  upload_folder_current_zips_refreshed: pass
+  nested_zip_builder_defect_repaired: pass
+blockers:
+  - none for candidate integration
+next:
+  - Review the changed ION_GPT files and receipt.
+  - If approved, commit the scoped v4 Custom GPT package/update-set changes.
+  - Update GPT Builder only after reviewing the paste file and upload zips.
+non_claims:
+  - no accepted state claimed
+  - no GPT Builder update performed
+  - no services restarted
+  - no live Action/MCP mutation invoked
+  - no production deployment
+  - no git push

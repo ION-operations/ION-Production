@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ion.custom_gpt.sequence_continuation_envelope.v0_4.schema.json",
+  "title": "ION Custom GPT Sequence Continuation Envelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "ion_sequence_continuation"
+  ],
+  "properties": {
+    "ion_sequence_continuation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "active_objective",
+        "active_workflow_object",
+        "current_phase",
+        "completed_phases",
+        "pending_phases",
+        "next_phase",
+        "required_context_or_files",
+        "blocker",
+        "authority",
+        "exact_continuation_route_or_prompt"
+      ],
+      "properties": {
+        "active_objective": {
+          "type": "string",
+          "minLength": 1
+        },
+        "active_workflow_object": {
+          "type": "string",
+          "minLength": 1
+        },
+        "current_phase": {
+          "type": "string",
+          "minLength": 1
+        },
+        "completed_phases": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "pending_phases": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "next_phase": {
+          "type": "string",
+          "minLength": 1
+        },
+        "required_context_or_files": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "blocker": {
+          "type": "string"
+        },
+        "authority": {
+          "enum": [
+            "read-only",
+            "sandbox-candidate-write",
+            "approved-bounded-write",
+            "live-authorized"
+          ]
+        },
+        "exact_continuation_route_or_prompt": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

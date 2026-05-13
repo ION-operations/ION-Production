@@ -1,0 +1,19 @@
+schema_id: ion.custom_gpt_boot_review_evidence_manifest.v0_1
+status: candidate_evidence
+source_folder: Needs_Routed/custom_gpt_mount
+files:
+  - path: Needs_Routed/custom_gpt_mount/ion_boot_extensive_results.json
+    role: raw_boot_results
+  - path: Needs_Routed/custom_gpt_mount/ion_boot_machine_blocks_v0_1.yaml
+    role: proposed_machine_blocks
+  - path: Needs_Routed/custom_gpt_mount/ion_boot_persona_envelope.yaml.md
+    role: persona_envelope
+  - path: Needs_Routed/custom_gpt_mount/ion_boot_post_integration_results.json
+    role: post_integration_results
+  - path: Needs_Routed/custom_gpt_mount/ion_boot_role_task_return_results.json
+    role: role_return_results
+known_findings:
+  - DEGRADED_BOOT_READY posture is valid when package context mounts but live connectors are blocked.
+  - Boot output should not be prose-only.
+  - AUTH_INVALID must stop protected Action calls.
+  - Queue/workflow status mismatch requires repair before claiming clean boot.
