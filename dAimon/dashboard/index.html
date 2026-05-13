@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>dAimon — ION Continuity Bridge Dashboard</title>
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main class="wrap">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">dAimon · live evidence console</p>
+        <h1>Governed inheritance for Gemini-era agents</h1>
+        <p class="lede">The dashboard separates proven live behavior from pending trace gates: MongoDB-backed continuity, receipt-cleared Gemini handoff, excluded state, and the Agent Builder MCP proof boundary.</p>
+      </div>
+      <div class="status" id="headlineStatus">
+        <span class="dot"></span>
+        <strong>Loading evidence</strong>
+        <small>No accepted state mutation</small>
+      </div>
+    </header>
+
+    <section class="law">
+      <strong>ION law</strong>
+      <span>Output is candidate until grounded, proof-marked, settled, receipted, and carried forward.</span>
+    </section>
+
+    <section class="metrics" id="metrics">
+      <article><strong>–</strong><span>routes</span></article>
+      <article><strong>–</strong><span>capabilities</span></article>
+      <article><strong>–</strong><span>trace rows</span></article>
+      <article><strong>false</strong><span>accepted state changed</span></article>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <p class="eyebrow">Evidence package</p>
+          <h2>Claims, proof, and boundaries</h2>
+        </div>
+        <button id="loadEvidence">Load evidence</button>
+      </div>
+      <div id="claims" class="claim-list"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <p class="eyebrow">Live vertical slice</p>
+          <h2>Import → settle → receipt → MongoDB → Gemini</h2>
+        </div>
+      </div>
+      <div id="phases" class="phase-grid"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <p class="eyebrow">Route trace</p>
+          <h2>Objective → domain → agent → capability → proof</h2>
+        </div>
+        <button id="loadTrace">Load sample trace</button>
+      </div>
+      <div id="routes" class="routes"></div>
+    </section>
+
+    <section class="grid">
+      <article class="card">
+        <h3>1. Import</h3>
+        <p>Files and chat exports enter quarantine as witness material.</p>
+      </article>
+      <article class="card">
+        <h3>2. Classify</h3>
+        <p>Continuity objects receive authority, proof, and inheritance posture.</p>
+      </article>
+      <article class="card">
+        <h3>3. Route</h3>
+        <p>Objectives are bound to an ION domain, agent role, and capability path.</p>
+      </article>
+      <article class="card">
+        <h3>4. Settle</h3>
+        <p>Only proof-marked and settled objects can enter future context.</p>
+      </article>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <p class="eyebrow">Judged evidence</p>
+          <h2>MongoDB MCP visibility trace</h2>
+        </div>
+        <button id="loadMcpTrace">Load MCP trace</button>
+      </div>
+      <div id="mcpTraceRows" class="trace-table"></div>
+      <ul class="checks">
+        <li>Agent Builder trace must show MongoDB MCP tool use.</li>
+        <li>Retrieval must filter for accepted or inheritable objects only.</li>
+        <li>Gemini answer must cite receipt IDs or receipt hashes.</li>
+        <li>Rejected, deferred, and proof-debt objects must not be inherited as state.</li>
+      </ul>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <p class="eyebrow">Video agent</p>
+          <h2>Self-demonstrating demo package</h2>
+        </div>
+      </div>
+      <div id="videoScenes" class="scene-list"></div>
+    </section>
+  </main>
+
+  <script>
+    const fallback = {
+      route_counts: { total: 6, routed: 5, deferred: 1 },
+      capability_count: 12,
+      route_rule_count: 5,
+      trace_rows: [],
+      routes: []
+    };
+    const mcpFallback = {
+      trace_rows: [],
+      accepted_state_changed: false,
+      external_mutation_attempted: false
+    };
+    const evidenceFallback = {
+      headline_status: "load_sample_outputs",
+      metrics: {
+        objects_classified: 0,
+        inheritable_returned_from_mongodb: 0,
+        gemini_candidate_object_count: 0,
+        excluded_count: 0,
+        live_agent_builder_mcp_proven: false
+      },
+      claims: [],
+      phases: [],
+      video_scenes: []
+    };
+
+    async function loadEvidence() {
+      let data = evidenceFallback;
+      try {
+        const res = await fetch("../sample_outputs/dashboard_evidence_trace.json", { cache: "no-store" });
+        if (res.ok) data = await res.json();
+      } catch (err) {
+        console.warn("Using fallback evidence", err);
+      }
+      renderEvidence(data);
+    }
+
+    async function loadTrace() {
+      let data = fallback;
+      try {
+        const res = await fetch("../sample_outputs/capability_graph_dashboard_trace.json", { cache: "no-store" });
+        if (res.ok) data = await res.json();
+      } catch (err) {
+        console.warn("Using fallback trace", err);
+      }
+      render(data);
+    }
+
+    async function loadMcpTrace() {
+      let data = mcpFallback;
+      try {
+        const res = await fetch("../sample_outputs/mcp_trace_dashboard_trace.json", { cache: "no-store" });
+        if (res.ok) data = await res.json();
+      } catch (err) {
+        console.warn("Using fallback MCP trace", err);
+      }
+      renderMcpTrace(data);
+    }
+
+    function render(data) {
+      const routes = data.routes || [];
+      const traceRows = data.trace_rows || [];
+      document.getElementById("metrics").innerHTML = `
+        <article><strong>${routes.length || data.route_counts?.total || 0}</strong><span>routes</span></article>
+        <article><strong>${data.capability_count || 0}</strong><span>capabilities</span></article>
+        <article><strong>${traceRows.length}</strong><span>trace rows</span></article>
+        <article><strong>${String(data.accepted_state_changed === true)}</strong><span>accepted state changed</span></article>
+      `;
+      const target = document.getElementById("routes");
+      if (!routes.length) {
+        target.innerHTML = `<div class="empty">No route trace loaded yet. Click “Load sample trace.”</div>`;
+        return;
+      }
+      target.innerHTML = routes.map(route => `
+        <article class="route">
+          <div class="route-head">
+            <div>
+              <small>${route.route_status} · ${route.route_id}</small>
+              <h3>${escapeHtml(route.objective)}</h3>
+            </div>
+            <span class="badge">${escapeHtml(route.domain)}</span>
+          </div>
+          <div class="chips">
+            <span>Agent: ${escapeHtml(route.agent_role)}</span>
+            <span>Ceiling: ${escapeHtml(route.authority_ceiling)}</span>
+            <span>Receipt: ${route.receipt_required ? "required" : "not yet"}</span>
+          </div>
+          <ol class="trace">
+            ${(route.trace || []).map(step => `<li><strong>${escapeHtml(step.step)}</strong><em>${escapeHtml(step.status)}</em></li>`).join("")}
+          </ol>
+        </article>
+      `).join("");
+    }
+
+    function renderEvidence(data) {
+      const metrics = data.metrics || {};
+      const headline = document.getElementById("headlineStatus");
+      headline.innerHTML = `
+        <span class="dot"></span>
+        <strong>${escapeHtml(String(data.headline_status || "evidence loaded").replaceAll("_", " "))}</strong>
+        <small>accepted_state_changed=${String(data.accepted_state_changed === true)}</small>
+      `;
+      document.getElementById("metrics").innerHTML = `
+        <article><strong>${metrics.objects_classified || 0}</strong><span>objects classified</span></article>
+        <article><strong>${metrics.inheritable_returned_from_mongodb || 0}</strong><span>MongoDB inherited</span></article>
+        <article><strong>${metrics.gemini_candidate_object_count || 0}</strong><span>Gemini candidates</span></article>
+        <article><strong>${metrics.live_agent_builder_mcp_proven ? "true" : "pending"}</strong><span>Agent Builder MCP</span></article>
+      `;
+      const claims = data.claims || [];
+      document.getElementById("claims").innerHTML = claims.length ? claims.map(claim => `
+        <article class="claim ${claim.non_claim ? "claim-muted" : ""}">
+          <div>
+            <strong>${escapeHtml(claim.claim_id)}</strong>
+            <p>${escapeHtml(claim.claim)}</p>
+          </div>
+          <span class="status-pill">${escapeHtml(claim.status)}</span>
+        </article>
+      `).join("") : `<div class="empty">No evidence package loaded.</div>`;
+
+      const phases = data.phases || [];
+      document.getElementById("phases").innerHTML = phases.length ? phases.map(phase => `
+        <article class="phase">
+          <strong>${escapeHtml(phase.phase)}</strong>
+          <span>${escapeHtml(phase.status)}</span>
+          <small>${escapeHtml(phase.receipt_id || phase.model || phase.returned_count || phase.objects_written || "")}</small>
+        </article>
+      `).join("") : `<div class="empty">No live phase summary loaded.</div>`;
+
+      const scenes = data.video_scenes || [];
+      document.getElementById("videoScenes").innerHTML = scenes.length ? scenes.map(scene => `
+        <article class="scene">
+          <span>${scene.scene}</span>
+          <div>
+            <strong>${escapeHtml(scene.title)}</strong>
+            <p>${escapeHtml(scene.screen)}</p>
+          </div>
+        </article>
+      `).join("") : `<div class="empty">No video scenes loaded.</div>`;
+    }
+
+    function renderMcpTrace(data) {
+      const rows = data.trace_rows || [];
+      const target = document.getElementById("mcpTraceRows");
+      if (!rows.length) {
+        target.innerHTML = `<div class="empty">No MCP trace loaded yet. Click "Load MCP trace."</div>`;
+        return;
+      }
+      target.innerHTML = rows.map(row => `
+        <article class="trace-row">
+          <strong>${escapeHtml(row.phase)}</strong>
+          <span>${escapeHtml(row.status)}</span>
+          <small>${escapeHtml(row.evidence)}</small>
+          <p>${escapeHtml(row.detail)}</p>
+        </article>
+      `).join("");
+    }
+
+    function escapeHtml(text) {
+      return String(text || "").replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+
+    document.getElementById("loadTrace").addEventListener("click", loadTrace);
+    document.getElementById("loadMcpTrace").addEventListener("click", loadMcpTrace);
+    document.getElementById("loadEvidence").addEventListener("click", loadEvidence);
+    loadEvidence();
+    render(fallback);
+    renderMcpTrace(mcpFallback);
+  </script>
+</body>
+</html>

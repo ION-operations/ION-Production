@@ -1,0 +1,136 @@
+{
+  "schema": "daimon.connector_expansion_plan.v0_1",
+  "ok": true,
+  "connector_count": 5,
+  "connector_ids": [
+    "custom_gpt_actions",
+    "gitlab",
+    "arize_phoenix",
+    "elastic",
+    "fivetran"
+  ],
+  "connectors": [
+    {
+      "connector_id": "custom_gpt_actions",
+      "name": "ION Custom GPT Action Gateway",
+      "status": "custom_gpt_visibility_action_proven_read_only",
+      "priority": 1,
+      "required_env_names": [
+        "ION_ACTION_GATEWAY_TOKEN"
+      ],
+      "proof_gate_count": 4,
+      "next_gate": "Keep ionGatewayDaimonVisibility as the default dAimon Companion action; expand next with GitLab read-only readiness rather than MCP JSON-RPC mutation paths.",
+      "evidence": [
+        {
+          "path": "ION/09_integrations/custom_gpt_action_gateway/openapi.yaml",
+          "exists": null
+        },
+        {
+          "path": "ION/05_context/current/custom_gpt_capsule_system/DAIMON_COMPANION_ACTION_GATEWAY_VISIBILITY_SETUP_20260510.md",
+          "exists": null
+        },
+        {
+          "path": "sample_outputs/custom_gpt_action_visibility_smoke.json",
+          "exists": true
+        },
+        {
+          "path": "sample_outputs/demo_evidence_package.json",
+          "exists": true
+        }
+      ],
+      "live_integration_claimed": true
+    },
+    {
+      "connector_id": "gitlab",
+      "name": "GitLab",
+      "status": "planned_read_only_setup",
+      "priority": 2,
+      "required_env_names": [
+        "GITLAB_BASE_URL",
+        "GITLAB_PROJECT_ID",
+        "GITLAB_TOKEN"
+      ],
+      "proof_gate_count": 4,
+      "next_gate": "Add GITLAB_BASE_URL, GITLAB_PROJECT_ID, and a read-only GITLAB_TOKEN locally, then run a read-only GitLab readiness probe.",
+      "evidence": [
+        {
+          "path": "docs/gitlab_connection_readiness.md",
+          "exists": true
+        },
+        {
+          "path": "docs/partner_ecosystem_expansion.md",
+          "exists": true
+        }
+      ],
+      "live_integration_claimed": false
+    },
+    {
+      "connector_id": "arize_phoenix",
+      "name": "Arize Phoenix",
+      "status": "readiness_script_present",
+      "priority": 3,
+      "required_env_names": [
+        "PHOENIX_COLLECTOR_ENDPOINT",
+        "PHOENIX_API_KEY",
+        "PHOENIX_PROJECT_NAME"
+      ],
+      "proof_gate_count": 3,
+      "next_gate": "Run scripts/check_phoenix_readiness.py and attach a trace receipt to a live dAimon run.",
+      "evidence": [
+        {
+          "path": "docs/credential_handoff.md",
+          "exists": true
+        },
+        {
+          "path": "sample_outputs/phoenix_readiness.json",
+          "exists": true
+        }
+      ],
+      "live_integration_claimed": false
+    },
+    {
+      "connector_id": "elastic",
+      "name": "Elastic",
+      "status": "planned_manifest_fixture",
+      "priority": 4,
+      "required_env_names": [
+        "ELASTIC_ENDPOINT",
+        "ELASTIC_API_KEY",
+        "ELASTIC_INDEX_PREFIX"
+      ],
+      "proof_gate_count": 3,
+      "next_gate": "Add a local Elastic adapter manifest fixture for receipt/evidence search.",
+      "evidence": [
+        {
+          "path": "docs/partner_ecosystem_expansion.md",
+          "exists": true
+        }
+      ],
+      "live_integration_claimed": false
+    },
+    {
+      "connector_id": "fivetran",
+      "name": "Fivetran",
+      "status": "planned_manifest_fixture",
+      "priority": 5,
+      "required_env_names": [
+        "FIVETRAN_API_KEY",
+        "FIVETRAN_API_SECRET",
+        "FIVETRAN_CONNECTOR_ID"
+      ],
+      "proof_gate_count": 3,
+      "next_gate": "Add a Fivetran connector manifest fixture for enterprise ingestion.",
+      "evidence": [
+        {
+          "path": "docs/partner_ecosystem_expansion.md",
+          "exists": true
+        }
+      ],
+      "live_integration_claimed": false
+    }
+  ],
+  "next_priority_connector": "custom_gpt_actions",
+  "state_boundary": "connector readiness records are setup evidence, not live integration proof",
+  "accepted_state_changed": false,
+  "external_mutation_attempted": false
+}

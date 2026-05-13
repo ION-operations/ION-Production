@@ -1,0 +1,28 @@
+# Python/runtime
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.venv/
+venv/
+
+# Local secrets and deployment state
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.jsonl
+
+# Local/editor files
+.DS_Store
+.idea/
+.vscode/
+
+# Logs and temporary outputs
+*.log
+tmp/
+dist/
+build/

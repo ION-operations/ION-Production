@@ -1,0 +1,671 @@
+{
+  "schema": "daimon.orchestration.domain_registry.v0_1",
+  "project": "dAimon",
+  "generated_on": "2026-05-09",
+  "domain_definition": "A domain is a governed graph region with context objects, roles, templates, proof obligations, authority boundaries, receipt paths, settlement rules, and fission triggers.",
+  "domains": [
+    {
+      "domain_id": "continuity_substrate",
+      "name": "Continuity Substrate",
+      "layer_ids": [
+        "continuity_substrate",
+        "contest_vertical_slice"
+      ],
+      "purpose": "Govern import, classification, settlement, receipt issuance, and inheritance bundle generation.",
+      "owner_role": "Continuity Steward",
+      "context_objects": [
+        "source_bundle",
+        "continuity_object",
+        "settlement_queue_item",
+        "receipt",
+        "inheritance_bundle",
+        "visibility_trace"
+      ],
+      "templates": [
+        "import_witness_bundle",
+        "classify_continuity_objects",
+        "settle_outputs",
+        "issue_receipt",
+        "resolve_inheritance",
+        "mcp_visibility_trace"
+      ],
+      "proof_obligations": [
+        "Every accepted object must cite a settlement receipt.",
+        "Every excluded object must carry a non-inheritable status and exclusion reason.",
+        "Every inheritance bundle must list included objects, excluded objects, and the receipts justifying inclusion.",
+        "Accepted state changes must be explicit, never inferred from fluent output."
+      ],
+      "authority_ceiling": "Can mark candidate, accepted, rejected, deferred, or needs_review within local continuity state; cannot certify external truth or legal compliance.",
+      "settlement_rules": [
+        "Candidate imports are witness-only until settled.",
+        "Accepted objects may be inherited only through receipt citation.",
+        "Rejected objects remain available as witness but cannot be included in the next-session context bundle.",
+        "Deferred objects require a follow-up task or explicit human review before inheritance."
+      ],
+      "neighboring_domain_routes": [
+        "mcp_visibility",
+        "capability_routing",
+        "demo_video_agent",
+        "product_ops"
+      ],
+      "fission_triggers": [
+        "Settlement rules diverge for operational tasks, demo claims, and external integrations.",
+        "Receipts become too broad to explain a single accepted-state change.",
+        "Trace output becomes noisy enough that reviewers cannot distinguish accepted state from witness material."
+      ]
+    },
+    {
+      "domain_id": "generative_governance",
+      "name": "Generative Governance",
+      "layer_ids": [
+        "generative_governance_engine"
+      ],
+      "purpose": "Derive governed work structure from an objective before carriers act.",
+      "owner_role": "Governance Cartographer",
+      "context_objects": [
+        "objective",
+        "domain_map",
+        "role_plan",
+        "work_packet",
+        "proof_plan",
+        "settlement_plan"
+      ],
+      "templates": [
+        "route_objective",
+        "derive_roles",
+        "assemble_context_package",
+        "detect_domain_fission",
+        "settle_outputs",
+        "issue_receipt"
+      ],
+      "proof_obligations": [
+        "Objective routes must state implicated domains and why each domain is needed.",
+        "Generated roles must have authority ceilings and proof requirements.",
+        "Work packets must include bounded context and expected return schema.",
+        "Fission recommendations must cite concrete overload signals."
+      ],
+      "authority_ceiling": "Can propose domains, roles, packets, and routes; cannot treat carrier output as accepted state.",
+      "settlement_rules": [
+        "A generated work structure is candidate until reviewed or accepted by settlement.",
+        "Carrier branches return to settlement rather than mutating accepted context directly.",
+        "Fission proposals require receipt-backed evidence before changing the domain registry."
+      ],
+      "neighboring_domain_routes": [
+        "continuity_substrate",
+        "capability_routing",
+        "enterprise_trust"
+      ],
+      "fission_triggers": [
+        "Role derivation repeatedly creates unrelated role families inside one domain.",
+        "Proof obligations split into incompatible classes.",
+        "The same objective frequently routes across more neighboring domains than local templates."
+      ]
+    },
+    {
+      "domain_id": "capability_routing",
+      "name": "Capability Routing",
+      "layer_ids": [
+        "generative_governance_engine",
+        "contest_vertical_slice"
+      ],
+      "purpose": "Match governed work packets to lawful execution surfaces such as Gemini, Codex CLI, local scripts, MongoDB MCP, Google Cloud, or human review.",
+      "owner_role": "Capability Router",
+      "context_objects": [
+        "carrier_profile",
+        "tool_permission",
+        "route_decision",
+        "risk_assessment",
+        "side_effect_plan"
+      ],
+      "templates": [
+        "route_objective",
+        "route_capability",
+        "agent_builder_handoff",
+        "cloud_deploy",
+        "settle_outputs"
+      ],
+      "proof_obligations": [
+        "Route decisions must cite required capabilities and authority limits.",
+        "Side-effecting routes must state whether human approval is required.",
+        "External API routes must record which credentials or secrets were required without exposing secret values.",
+        "Carrier outputs must return to settlement before inheritance."
+      ],
+      "authority_ceiling": "Can select or recommend a carrier; cannot grant a carrier direct authority over accepted state beyond its work packet.",
+      "settlement_rules": [
+        "Read-only routes may return evidence directly to settlement.",
+        "Write routes must include mutation target, rollback or cleanup path, and proof artifact.",
+        "Failed routes create diagnostic receipts rather than silent retries."
+      ],
+      "neighboring_domain_routes": [
+        "generative_governance",
+        "mcp_visibility",
+        "cloud_runtime",
+        "enterprise_trust"
+      ],
+      "fission_triggers": [
+        "Carrier-specific setup overwhelms route policy.",
+        "Google Cloud, MongoDB, and local CLI routes require distinct proof models.",
+        "Human review paths require workflow states not shared with automated carriers."
+      ]
+    },
+    {
+      "domain_id": "mcp_visibility",
+      "name": "MCP Visibility",
+      "layer_ids": [
+        "continuity_substrate",
+        "contest_vertical_slice",
+        "enterprise_trust_layer"
+      ],
+      "purpose": "Prove governed retrieval: what was considered, returned, excluded, and cited for inheritance.",
+      "owner_role": "Trace Curator",
+      "context_objects": [
+        "mcp_query",
+        "candidate_result",
+        "returned_object",
+        "excluded_object",
+        "receipt_citation",
+        "visibility_trace"
+      ],
+      "templates": [
+        "mcp_visibility_trace",
+        "resolve_inheritance",
+        "issue_receipt"
+      ],
+      "proof_obligations": [
+        "Trace must list considered, returned, and excluded objects.",
+        "Every returned object must cite a receipt.",
+        "Trace must state accepted_state_changed.",
+        "Trace must state external_mutation_attempted."
+      ],
+      "authority_ceiling": "Can expose retrieval visibility; cannot promote retrieved objects to accepted state.",
+      "settlement_rules": [
+        "Accepted objects are returned only when receipt-backed.",
+        "Excluded witness remains inspectable in trace metadata.",
+        "Trace generation must be read-only unless an explicit seed or migration task is active."
+      ],
+      "neighboring_domain_routes": [
+        "continuity_substrate",
+        "capability_routing",
+        "enterprise_trust"
+      ],
+      "fission_triggers": [
+        "Trace needs differ between local JSON, MongoDB Atlas, and external MCP server surfaces.",
+        "Retrieval policies become domain-specific.",
+        "Auditors require graph-level queries beyond visibility trace fields."
+      ]
+    },
+    {
+      "domain_id": "enterprise_trust",
+      "name": "Enterprise Trust",
+      "layer_ids": [
+        "enterprise_trust_layer"
+      ],
+      "purpose": "Represent receipt-backed auditability, authority boundaries, graph traceability, and non-claims for enterprise AI work.",
+      "owner_role": "Trust Auditor",
+      "context_objects": [
+        "audit_query",
+        "receipt_chain",
+        "authority_policy",
+        "claim_status",
+        "compliance_boundary",
+        "inheritance_graph"
+      ],
+      "templates": [
+        "audit_receipt_chain",
+        "resolve_inheritance",
+        "issue_receipt",
+        "release_packaging"
+      ],
+      "proof_obligations": [
+        "Audit answers must trace inherited objects to settlement decisions.",
+        "Claims must be marked as proven, roadmap, local-only, external-only, or unsupported.",
+        "Compliance claims must remain non-claims unless reviewed by qualified external authority.",
+        "Authority boundaries must be stated for agents, humans, scripts, and external systems."
+      ],
+      "authority_ceiling": "Can provide technical audit substrate and claim status; cannot certify regulatory compliance.",
+      "settlement_rules": [
+        "Enterprise-facing claims require proof references and non-claim boundaries.",
+        "Receipt chains must preserve rejected and deferred witness as non-inheritable context.",
+        "Audit exports are read-only unless a separate release receipt accepts them."
+      ],
+      "neighboring_domain_routes": [
+        "continuity_substrate",
+        "generative_governance",
+        "product_ops",
+        "demo_video_agent"
+      ],
+      "fission_triggers": [
+        "Customer-specific policy models are needed.",
+        "Audit query volume requires a dedicated graph index or materialized view.",
+        "Compliance review workflows require external reviewer roles."
+      ]
+    },
+    {
+      "domain_id": "cloud_runtime",
+      "name": "Google Cloud Runtime",
+      "layer_ids": [
+        "contest_vertical_slice",
+        "enterprise_trust_layer"
+      ],
+      "purpose": "Package and deploy the dAimon vertical slice to Google infrastructure while preserving receipt boundaries.",
+      "owner_role": "Cloud Release Operator",
+      "context_objects": [
+        "cloud_project",
+        "service_account",
+        "cloud_run_service",
+        "artifact_registry_image",
+        "deployment_receipt",
+        "runtime_health_check"
+      ],
+      "templates": [
+        "cloud_deploy",
+        "release_packaging",
+        "issue_receipt",
+        "audit_receipt_chain"
+      ],
+      "proof_obligations": [
+        "Deployment must cite source commit, image digest or build id, environment variables used by name, and health check result.",
+        "Secrets must be referenced by secret name or environment key, not exposed in committed files.",
+        "Runtime endpoints must expose accepted-only inheritance behavior or a documented local equivalent."
+      ],
+      "authority_ceiling": "Can deploy contest runtime when credentials are available; cannot claim production hardening without hardening tests.",
+      "settlement_rules": [
+        "A deployment is accepted only after health check and receipt generation.",
+        "Failed deployments produce diagnostic receipts and do not advance demo proof.",
+        "Runtime config changes require explicit release packaging."
+      ],
+      "neighboring_domain_routes": [
+        "capability_routing",
+        "product_ops",
+        "enterprise_trust"
+      ],
+      "fission_triggers": [
+        "Cloud Run runtime and Agent Builder integration need separate lifecycle controls.",
+        "Deployment credentials differ from runtime application credentials.",
+        "Monitoring and audit export become large enough for independent ownership."
+      ]
+    },
+    {
+      "domain_id": "demo_video_agent",
+      "name": "Self-Demonstrating Video Agent",
+      "layer_ids": [
+        "contest_vertical_slice",
+        "enterprise_trust_layer"
+      ],
+      "purpose": "Govern the creation of the contest demo video as receipt-bearing AI work.",
+      "owner_role": "Demo Settlement Producer",
+      "context_objects": [
+        "demo_objective",
+        "claim_inventory",
+        "proof_inventory",
+        "storyboard",
+        "shot_list",
+        "script",
+        "submission_bundle"
+      ],
+      "templates": [
+        "demo_video_claim_audit",
+        "assemble_demo_storyboard",
+        "release_packaging",
+        "issue_receipt"
+      ],
+      "proof_obligations": [
+        "Every spoken product claim must be marked as proven, local proof, live proof, roadmap, or non-claim.",
+        "Every demo scene must cite the artifact it shows or state that it is conceptual.",
+        "The final video package must include a claim audit receipt.",
+        "Non-claims must be explicit for production readiness, legal compliance, and full Google/MongoDB integration."
+      ],
+      "authority_ceiling": "Can produce demo assets and claim audit receipts; cannot convert roadmap statements into proven claims.",
+      "settlement_rules": [
+        "Unsupported claims are removed or marked roadmap before release.",
+        "A shot is accepted only when it maps to an artifact, a live screen, or an explicit conceptual label.",
+        "The submission bundle is accepted only after claim audit passes."
+      ],
+      "neighboring_domain_routes": [
+        "continuity_substrate",
+        "enterprise_trust",
+        "product_ops"
+      ],
+      "fission_triggers": [
+        "Video production assets become large enough to require media pipeline ownership.",
+        "Claim auditing and creative direction require separate review cycles.",
+        "Submission packaging diverges from ongoing product documentation."
+      ]
+    },
+    {
+      "domain_id": "ion_product_boundary",
+      "name": "ION Product Boundary",
+      "layer_ids": [
+        "generative_governance_engine",
+        "enterprise_trust_layer"
+      ],
+      "purpose": "Keep dAimon legible as the product surface while preserving ION as the deeper law, engine, and continuity organism.",
+      "owner_role": "ION Product Steward",
+      "context_objects": [
+        "ion_protocol_reference",
+        "product_boundary_note",
+        "module_import_plan",
+        "non_claim_boundary",
+        "product_surface_claim"
+      ],
+      "templates": [
+        "settle_product_boundary",
+        "release_packaging",
+        "audit_receipt_chain",
+        "issue_receipt"
+      ],
+      "proof_obligations": [
+        "Every public claim must distinguish dAimon product behavior from deeper ION research substrate.",
+        "Imported ION modules must state what product capability they expose.",
+        "The contest slice must not imply that the full ION organism has been shipped.",
+        "Product docs must preserve the line that dAimon is ION made legible, usable, and shippable."
+      ],
+      "authority_ceiling": "Can define product boundary and module import posture; cannot claim all ION capabilities are implemented in dAimon.",
+      "settlement_rules": [
+        "ION-derived capabilities are product claims only after dAimon proof artifacts exist.",
+        "Unimplemented ION depth remains roadmap or architecture.",
+        "Contest-facing language must be settled against current evidence before release."
+      ],
+      "neighboring_domain_routes": [
+        "generative_governance",
+        "enterprise_trust",
+        "product_ops",
+        "technology_fabric"
+      ],
+      "fission_triggers": [
+        "Public product messaging and internal ION engineering require separate ownership.",
+        "Module import planning becomes detailed enough to need independent migration receipts.",
+        "Customer-facing product boundary diverges from research architecture."
+      ]
+    },
+    {
+      "domain_id": "technology_fabric",
+      "name": "Dynamic Technology Fabric",
+      "layer_ids": [
+        "generative_governance_engine",
+        "enterprise_trust_layer"
+      ],
+      "purpose": "Govern external technologies through adapter manifests, normalized objects, authority classification, proof requirements, and receipt-backed inheritance.",
+      "owner_role": "Adapter Fabric Steward",
+      "context_objects": [
+        "adapter_manifest",
+        "capability_declaration",
+        "normalized_object",
+        "authority_classification",
+        "cross_surface_path",
+        "overlap_edge"
+      ],
+      "templates": [
+        "register_adapter_manifest",
+        "normalize_adapter_object",
+        "settle_cross_surface_path",
+        "issue_receipt",
+        "audit_receipt_chain"
+      ],
+      "proof_obligations": [
+        "Every adapter must state readable objects, writable objects, required authority, proof returned, and stale or secret-bearing risk.",
+        "Every cross-surface copy, index, embedding, summary, or graph link must preserve source lineage.",
+        "Overlapping surfaces must use explicit edges such as same_as, copied_from, indexed_from, embedded_from, summarized_from, supersedes, conflicts_with, or source_of_truth.",
+        "Adapter output remains candidate until settled."
+      ],
+      "authority_ceiling": "Can register and normalize adapters; cannot treat a connected system as equally authoritative without settlement.",
+      "settlement_rules": [
+        "Adapter manifests are accepted only after structural validation.",
+        "Normalized objects inherit no more authority than their source path and proof allow.",
+        "Conflicting surfaces route to settlement rather than automatic merge."
+      ],
+      "neighboring_domain_routes": [
+        "capability_routing",
+        "mcp_visibility",
+        "enterprise_trust",
+        "portable_continuation"
+      ],
+      "fission_triggers": [
+        "Adapter classes need provider-specific credentials, tests, and proof models.",
+        "Vector, graph, relational, and SaaS connectors require different normalization rules.",
+        "Overlap settlement becomes complex enough to require a dedicated lineage domain."
+      ]
+    },
+    {
+      "domain_id": "portable_continuation",
+      "name": "Portable Continuation",
+      "layer_ids": [
+        "continuity_substrate",
+        "generative_governance_engine",
+        "enterprise_trust_layer"
+      ],
+      "purpose": "Let work move across conversations, devices, models, and local machines without losing receipt-backed context or proof boundaries.",
+      "owner_role": "Continuation Steward",
+      "context_objects": [
+        "context_package",
+        "work_packet",
+        "packet_nonce",
+        "carrier_session",
+        "continuation_receipt",
+        "replay_result"
+      ],
+      "templates": [
+        "export_portable_context_package",
+        "replay_continuation_packet",
+        "route_objective",
+        "resolve_inheritance",
+        "issue_receipt"
+      ],
+      "proof_obligations": [
+        "Every portable package must include accepted context, excluded witness, receipt citations, and authority scope.",
+        "Every replay must record carrier, project lane, packet nonce, and accepted-state boundary.",
+        "A new carrier session may inherit only what the package permits.",
+        "Continuation failures must produce diagnostic receipts rather than silent context reconstruction."
+      ],
+      "authority_ceiling": "Can package and replay governed context; cannot make a new carrier trust unsafely inherited chat history.",
+      "settlement_rules": [
+        "Portable context packages are read-only exports unless a return packet is settled.",
+        "Carrier returns are candidate transitions until settlement.",
+        "Stale continuation packages require refresh or caveat preservation."
+      ],
+      "neighboring_domain_routes": [
+        "continuity_substrate",
+        "project_identity_collaboration",
+        "voice_local_work",
+        "technology_fabric"
+      ],
+      "fission_triggers": [
+        "Mobile, browser, local CLI, and cloud carriers require distinct package formats.",
+        "Replay receipts become large enough for independent audit tooling.",
+        "Project identity and continuation packaging need separate authority policies."
+      ]
+    },
+    {
+      "domain_id": "voice_local_work",
+      "name": "Voice To Local Work",
+      "layer_ids": [
+        "generative_governance_engine",
+        "enterprise_trust_layer"
+      ],
+      "purpose": "Convert voice-derived intent into bounded packets for local PC and Codex/ION execution while preserving confirmation gates for high-risk phrases.",
+      "owner_role": "Voice Packet Gatekeeper",
+      "context_objects": [
+        "voice_intent",
+        "transcription",
+        "risk_phrase_match",
+        "clarification_receipt",
+        "local_work_packet",
+        "proof_return"
+      ],
+      "templates": [
+        "route_voice_packet",
+        "confirm_high_risk_voice_intent",
+        "replay_continuation_packet",
+        "settle_outputs",
+        "issue_receipt"
+      ],
+      "proof_obligations": [
+        "Voice-derived instructions must record transcript source, confidence if available, risk phrase matches, and confirmation status.",
+        "High-risk phrases such as attack, exploit, bypass, delete, exfiltrate, credentials, secrets, wipe, push, deploy, production, red team, or break into require confirmation before execution.",
+        "Local execution packets must state project lane, allowed path, authority ceiling, and proof return schema.",
+        "No high-risk action may run from unconfirmed voice intent."
+      ],
+      "authority_ceiling": "Can transform voice into candidate packets; cannot execute high-risk local or cloud actions without confirmation and settlement.",
+      "settlement_rules": [
+        "Ambiguous voice intent creates a clarification receipt.",
+        "Confirmed low-risk voice packets may route to local work under normal packet rules.",
+        "High-risk packets remain blocked until explicit confirmation is receipted."
+      ],
+      "neighboring_domain_routes": [
+        "portable_continuation",
+        "project_identity_collaboration",
+        "capability_routing",
+        "security_red_team"
+      ],
+      "fission_triggers": [
+        "Speech recognition confidence and intent parsing need separate model evaluation.",
+        "Mobile UX requires independent product ownership.",
+        "Local connector execution policy becomes complex enough for a dedicated local-control domain."
+      ]
+    },
+    {
+      "domain_id": "security_red_team",
+      "name": "Security And Red-Team Containment",
+      "layer_ids": [
+        "enterprise_trust_layer"
+      ],
+      "purpose": "Test trust-breaking scenarios in containment lanes using synthetic secrets, synthetic repos/databases, bounded scenarios, incident receipts, patches, and re-tests.",
+      "owner_role": "Containment Steward",
+      "context_objects": [
+        "threat_model",
+        "synthetic_secret",
+        "sandbox_repo",
+        "attack_scenario",
+        "detector_result",
+        "incident_receipt",
+        "containment_policy"
+      ],
+      "templates": [
+        "run_security_lab_scenario",
+        "issue_containment_receipt",
+        "confirm_high_risk_voice_intent",
+        "settle_outputs",
+        "audit_receipt_chain"
+      ],
+      "proof_obligations": [
+        "High-risk tests must run only against explicit lab targets with synthetic secrets or sandbox resources.",
+        "Prompt injection, malicious tool output, stale inheritance, secret leakage, unsafe file access, confused authority, false receipts, impersonation, unbounded execution, permission drift, database mutation accidents, and cross-agent poisoning must be tracked as threat classes.",
+        "Every incident report must state blast radius, detector result, containment action, patch plan, and re-test requirement.",
+        "Security tests must not be confused with authorization to attack real systems."
+      ],
+      "authority_ceiling": "Can design and run bounded lab scenarios; cannot run high-risk tests against real user, cloud, database, or public systems without explicit containment approval.",
+      "settlement_rules": [
+        "Lab scenarios are accepted only when target, synthetic data, and containment boundary are documented.",
+        "Findings become candidate patches until implemented and re-tested.",
+        "Containment receipts must preserve what was attempted and what was blocked."
+      ],
+      "neighboring_domain_routes": [
+        "voice_local_work",
+        "capability_routing",
+        "technology_fabric",
+        "enterprise_trust"
+      ],
+      "fission_triggers": [
+        "Threat model registry becomes larger than the product ops domain can own.",
+        "Sandbox cloud/database probes require separate infrastructure.",
+        "Incident response and detector engineering diverge."
+      ]
+    },
+    {
+      "domain_id": "project_identity_collaboration",
+      "name": "Project Identity And Collaboration",
+      "layer_ids": [
+        "continuity_substrate",
+        "enterprise_trust_layer"
+      ],
+      "purpose": "Create project-bound first contact packages, pairing proofs, invite capabilities, and collaborator roles so the project lane remains the shared object rather than a chat transcript.",
+      "owner_role": "Project Identity Steward",
+      "context_objects": [
+        "project_id",
+        "pairing_code",
+        "public_project_hash",
+        "private_project_key_reference",
+        "invite_token",
+        "collaborator_role",
+        "capability_scope"
+      ],
+      "templates": [
+        "create_first_contact_package",
+        "pair_project_connector",
+        "invite_project_collaborator",
+        "export_portable_context_package",
+        "issue_receipt"
+      ],
+      "proof_obligations": [
+        "A project ID is a routing identifier, not full authority.",
+        "Pairing secrets or local hub proof are required before queueing bounded packets or touching local project files.",
+        "Invite tokens must carry scope such as viewer, contributor, builder, reviewer, authorizer, or owner.",
+        "Every collaborator action must be receipted and settled before accepted state changes."
+      ],
+      "authority_ceiling": "Can create project lanes, pairing packages, and scoped invites; cannot grant high-risk mutation authority without local proof or human approval.",
+      "settlement_rules": [
+        "First contact packages create project identity and initial receipt only.",
+        "Project ID alone may expose only public/basic metadata.",
+        "Capability tokens scope actions, and settlement decides what becomes shared accepted state."
+      ],
+      "neighboring_domain_routes": [
+        "portable_continuation",
+        "voice_local_work",
+        "enterprise_trust",
+        "product_ops"
+      ],
+      "fission_triggers": [
+        "Enterprise teams require user identity, billing, or admin policy.",
+        "Local hub proof and cloud hub proof need different trust models.",
+        "Collaboration roles expand into full access-control management."
+      ]
+    },
+    {
+      "domain_id": "product_ops",
+      "name": "Product Operations",
+      "layer_ids": [
+        "contest_vertical_slice",
+        "enterprise_trust_layer"
+      ],
+      "purpose": "Manage repo work, issue flow, release gates, validation cadence, and public proof packaging.",
+      "owner_role": "Product Operator",
+      "context_objects": [
+        "roadmap_phase",
+        "task_backlog",
+        "validation_run",
+        "release_candidate",
+        "github_issue",
+        "submission_checklist"
+      ],
+      "templates": [
+        "release_packaging",
+        "audit_receipt_chain",
+        "issue_receipt",
+        "settle_outputs"
+      ],
+      "proof_obligations": [
+        "Each roadmap phase must have dependencies, evidence, tests, and exit criteria.",
+        "Release candidates must record validation commands and results.",
+        "Public artifacts must separate proven behavior from product vision.",
+        "Credentials and secrets must stay out of committed files."
+      ],
+      "authority_ceiling": "Can coordinate build and release process; cannot bypass settlement requirements for demo claims.",
+      "settlement_rules": [
+        "A task closes only when evidence and validation are attached.",
+        "A release advances only when required validation gates pass or exceptions are documented.",
+        "Roadmap changes are accepted through explicit plan receipts or commits."
+      ],
+      "neighboring_domain_routes": [
+        "continuity_substrate",
+        "cloud_runtime",
+        "demo_video_agent",
+        "enterprise_trust"
+      ],
+      "fission_triggers": [
+        "Operational backlog splits into engineering, cloud, demo, and submission lanes.",
+        "Validation gates require separate automation ownership.",
+        "Public release materials require a dedicated communications domain."
+      ]
+    }
+  ]
+}

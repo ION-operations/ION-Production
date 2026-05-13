@@ -1,0 +1,113 @@
+{
+  "schema": "daimon.live_vertical_slice_summary.v0_1",
+  "ok": true,
+  "session_id": "daimon_live_vertical_slice_20260509",
+  "mongo_database": "ion_continuity_bridge",
+  "mongo_collection": "daimon_continuity_objects",
+  "index_result": {
+    "indexes_ensured": false,
+    "reason": "not requested"
+  },
+  "phases": [
+    {
+      "phase": "import",
+      "status": "ok",
+      "objects_classified": 12
+    },
+    {
+      "phase": "settle",
+      "status": "ok",
+      "decisions_applied": 12
+    },
+    {
+      "phase": "receipt",
+      "status": "ok",
+      "receipt_id": "receipt_daimon_live_vertical_slice_20260509_live_seed_001"
+    },
+    {
+      "phase": "mongodb_write",
+      "status": "ok",
+      "objects_written": 12,
+      "queue_items_written": 12
+    },
+    {
+      "phase": "mongodb_accepted_only_read",
+      "status": "ok",
+      "returned_count": 5
+    },
+    {
+      "phase": "mcp_visibility_trace",
+      "status": "ok",
+      "returned_count": 5
+    },
+    {
+      "phase": "gemini_handoff",
+      "status": "ok",
+      "model": "models/gemini-2.5-flash",
+      "candidate_receipt_id": "receipt_daimon_live_vertical_slice_20260509_gemini_candidate_001"
+    },
+    {
+      "phase": "gemini_candidate_persistence",
+      "status": "ok",
+      "candidate_objects_written": 1,
+      "queue_items_written": 1,
+      "receipt_id": "receipt_daimon_live_vertical_slice_20260509_gemini_candidate_001"
+    }
+  ],
+  "objects_classified": 12,
+  "objects_written": 12,
+  "settlement_queue_items_written": 12,
+  "receipt_id": "receipt_daimon_live_vertical_slice_20260509_live_seed_001",
+  "inheritable_count_local": 5,
+  "inheritable_returned_from_mongodb": 5,
+  "trace_returned_object_count": 5,
+  "gemini": {
+    "schema": "daimon.gemini_handoff_summary.v0_1",
+    "ok": true,
+    "provider": "generativelanguage.googleapis.com",
+    "model": "models/gemini-2.5-flash",
+    "model_selection": {
+      "models_list_status": 200,
+      "model_count": 50,
+      "selected_model": "models/gemini-2.5-flash",
+      "selection_reason": "preferred_or_known_generate_content_model"
+    },
+    "status_code": 200,
+    "context_object_count": 5,
+    "receipt_ids": [
+      "receipt_daimon_live_vertical_slice_20260509_live_seed_001"
+    ],
+    "gemini_output_captured_as_candidate": true,
+    "candidate_object_count": 1,
+    "candidate_receipt_id": "receipt_daimon_live_vertical_slice_20260509_gemini_candidate_001",
+    "candidate_inheritance_status": "NOT_INHERITABLE_AS_STATE_WITHOUT_SETTLEMENT",
+    "accepted_state_changed": false,
+    "external_mutation_attempted": false,
+    "external_service_called": true,
+    "non_claim": "This proves a Gemini carrier handoff, not automatic trust in Gemini output."
+  },
+  "claim_status": {
+    "local_governance_pipeline": "proven_local",
+    "mongodb_live_seed_and_inheritance": "proven_live_mongodb",
+    "gemini_receipt_cleared_handoff": "proven_live_google",
+    "full_vertical_slice_end_to_end": "proven_live"
+  },
+  "artifacts": [
+    "sample_outputs/live_vertical_slice_summary.json",
+    "sample_outputs/live_vertical_slice_receipt.json",
+    "sample_outputs/live_vertical_slice_inheritance_bundle.json",
+    "sample_outputs/live_vertical_slice_mcp_trace.json",
+    "sample_outputs/gemini_handoff_context_bundle.json",
+    "sample_outputs/gemini_handoff_request.json",
+    "sample_outputs/gemini_handoff_response.json",
+    "sample_outputs/gemini_candidate_output.json",
+    "sample_outputs/gemini_handoff_summary.json"
+  ],
+  "accepted_state_changed": false,
+  "external_mutation_attempted": true,
+  "non_claims": [
+    "MongoDB writes are candidate demo records, not accepted ION production state.",
+    "Gemini output is captured as candidate and is not automatically trusted.",
+    "This script proves API-level Gemini handoff, not complete Google Agent Builder deployment."
+  ]
+}

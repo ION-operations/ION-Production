@@ -1,0 +1,33 @@
+{
+  "schema": "daimon.custom_gpt_action_visibility_smoke.v0_1",
+  "ok": true,
+  "proof_status": "operator_reported_custom_gpt_action_visibility_working",
+  "reported_on": "2026-05-10",
+  "reported_by": "operator",
+  "action_surface": "ION Custom GPT Action Gateway",
+  "operation_id": "ionGatewayDaimonVisibility",
+  "endpoint": "https://ion-actions.helixion.net/projects/daimon/visibility",
+  "reported_result": {
+    "ok": true,
+    "schema_id": "ion.daimon_project_visibility.v1",
+    "project": "dAimon",
+    "repo_present": true,
+    "read_scope": "curated_receipts_and_project_manifest_only",
+    "current_blockers": [],
+    "production_authority": false,
+    "live_execution_authority": false
+  },
+  "confirmed_boundaries": [
+    "Custom GPT visibility over dAimon receipts is not the same as permission to mutate dAimon, Google Cloud, MongoDB, or local files.",
+    "Tool visibility is not accepted state, production authority, or live execution authority.",
+    "MCP JSON-RPC remains advanced/admin and is not the default dAimon Companion path."
+  ],
+  "recommended_default_action": "ionGatewayDaimonVisibility",
+  "non_claims": [
+    "This smoke receipt records the operator-reported Custom GPT result; it is not a mutation proof.",
+    "This does not grant arbitrary filesystem access, shell access, Google Cloud mutation, MongoDB mutation, or deployment authority.",
+    "This does not merge the Action Gateway schema with the MCP JSON-RPC schema."
+  ],
+  "accepted_state_changed": false,
+  "external_mutation_attempted": false
+}

@@ -1,0 +1,320 @@
+{
+  "schema": "daimon.orchestration.test_matrix.v0_1",
+  "project": "dAimon",
+  "generated_on": "2026-05-09",
+  "testing_principle": "Every test states what it proves and what it does not prove. Passing tests must never be inflated into unsupported trust claims.",
+  "test_groups": [
+    {
+      "group_id": "local_scaffold",
+      "name": "Local Scaffold Validation",
+      "scope": "local",
+      "required_env": [],
+      "commands": [
+        "python scripts/run_local_demo.py",
+        "python scripts/run_mcp_trace_harness.py",
+        "python scripts/validate_mcp_trace_harness.py",
+        "python scripts/validate_scaffold.py"
+      ],
+      "proves": [
+        "Local continuity objects can be classified and settled.",
+        "Local trace can return accepted objects only.",
+        "Required scaffold files and sample outputs exist."
+      ],
+      "does_not_prove": [
+        "Production readiness.",
+        "Live Google integration.",
+        "Legal or compliance certification."
+      ],
+      "gate": "required_before_commit"
+    },
+    {
+      "group_id": "orchestration_contracts",
+      "name": "Orchestration Contract Validation",
+      "scope": "local",
+      "required_env": [],
+      "commands": [
+        "python scripts/validate_orchestration_plan.py"
+      ],
+      "proves": [
+        "Layer, domain, template, receipt, roadmap, test, and management contracts parse.",
+        "Core loop templates exist.",
+        "Domains include proof obligations, authority ceilings, settlement rules, and fission triggers."
+      ],
+      "does_not_prove": [
+        "That every future domain is fully implemented.",
+        "That generated governance decisions are automatically correct."
+      ],
+      "gate": "required_before_commit"
+    },
+    {
+      "group_id": "live_mongodb",
+      "name": "Live MongoDB Atlas Proof",
+      "scope": "external_live",
+      "required_env": [
+        "MONGODB_URI",
+        "MONGODB_DB",
+        "MONGODB_COLLECTION_PREFIX"
+      ],
+      "commands": [
+        "python scripts/check_mongodb_live_readiness.py",
+        "python scripts/seed_mongodb_candidate_sample.py",
+        "python scripts/validate_mongodb_contract.py"
+      ],
+      "proves": [
+        "Contest Atlas credentials can reach MongoDB from the local environment.",
+        "dAimon can seed continuity objects, receipts, queue entries, and sessions.",
+        "MongoDB-backed trace artifacts preserve accepted-only inheritance."
+      ],
+      "does_not_prove": [
+        "Full MongoDB MCP production integration.",
+        "Vector search quality.",
+        "Enterprise data migration readiness."
+      ],
+      "gate": "required_for_live_mongodb_claim"
+    },
+    {
+      "group_id": "google_cloud",
+      "name": "Google Cloud Runtime Proof",
+      "scope": "external_live",
+      "required_env": [
+        "GOOGLE_APPLICATION_CREDENTIALS or equivalent auth",
+        "GOOGLE_CLOUD_PROJECT",
+        "GOOGLE_CLOUD_LOCATION"
+      ],
+      "commands": [
+        "gcloud run services describe <service>",
+        "curl -fsS <service-url>/health",
+        "curl -fsS <service-url>/trace"
+      ],
+      "proves": [
+        "A contest runtime is deployed on Google infrastructure.",
+        "Runtime can answer health and trace requests.",
+        "Deployment facts can be receipted."
+      ],
+      "does_not_prove": [
+        "Autoscaling hardening.",
+        "Production security review.",
+        "Full enterprise deployment readiness."
+      ],
+      "gate": "required_for_google_hosted_claim"
+    },
+    {
+      "group_id": "agent_builder",
+      "name": "Gemini or Agent Builder Handoff Proof",
+      "scope": "external_live",
+      "required_env": [
+        "Google AI or Vertex credentials",
+        "Configured Gemini or Agent Builder endpoint"
+      ],
+      "commands": [
+        "handoff script or manual API call to be added in P5",
+        "settlement validation over carrier return"
+      ],
+      "proves": [
+        "Receipt-cleared context can be handed to a Gemini-era carrier.",
+        "Carrier output returns as candidate transition.",
+        "Settlement remains required before inheritance."
+      ],
+      "does_not_prove": [
+        "Fully autonomous governance.",
+        "General correctness of carrier output.",
+        "Complete Google Agent Builder product integration."
+      ],
+      "gate": "required_for_agent_builder_claim"
+    },
+    {
+      "group_id": "google_user_access",
+      "name": "Google User And Tester Access Readiness",
+      "scope": "external_live_read_only",
+      "required_env": [
+        "GOOGLE_CLOUD_PROJECT",
+        "GOOGLE_CLOUD_LOCATION",
+        "DAIMON_TEST_USER_EMAILS or --target-user"
+      ],
+      "commands": [
+        "python scripts/check_google_user_access_readiness.py --target-user <email>"
+      ],
+      "proves": [
+        "Runtime proof is separated from individual human/tester access proof.",
+        "Cloud Run invocation is public or directly granted to target principals.",
+        "Target principals have direct Vertex AI user/admin access for Agent Engine use."
+      ],
+      "does_not_prove": [
+        "Enterprise SSO hardening.",
+        "Organization policy correctness.",
+        "That public Cloud Run access is the final release posture."
+      ],
+      "gate": "required_before_external_tester_or_judge_access_claim"
+    },
+    {
+      "group_id": "security",
+      "name": "Secret and Boundary Checks",
+      "scope": "local",
+      "required_env": [],
+      "commands": [
+        "rg -n \"(mongodb\\+srv://|ATLAS_PRIVATE_KEY=|MONGODB_URI=.*://)\" .",
+        "git status --short",
+        "git diff --cached --stat"
+      ],
+      "proves": [
+        "Obvious raw secret patterns are not present in tracked content.",
+        "Release diff is understood before push."
+      ],
+      "does_not_prove": [
+        "Formal security audit.",
+        "Credential rotation.",
+        "Absence of all possible sensitive data."
+      ],
+      "gate": "required_before_public_or_shared_release"
+    },
+    {
+      "group_id": "demo_video",
+      "name": "Self-Demonstrating Video Claim Audit",
+      "scope": "manual_and_local",
+      "required_env": [],
+      "commands": [
+        "claim inventory review",
+        "artifact link check",
+        "non-claim review"
+      ],
+      "proves": [
+        "Demo claims map to proof artifacts or are marked roadmap/non-claim.",
+        "The video package demonstrates dAimon governing its own demo."
+      ],
+      "does_not_prove": [
+        "That the full enterprise product exists.",
+        "That external integrations not shown are complete."
+      ],
+      "gate": "required_before_submission"
+    },
+    {
+      "group_id": "partner_adapter_registry",
+      "name": "Partner Adapter Registry Validation",
+      "scope": "local_contract",
+      "required_env": [],
+      "commands": [
+        "python scripts/validate_orchestration_plan.py"
+      ],
+      "proves": [
+        "MongoDB, Arize, Elastic, Fivetran, and GitLab are represented as governed context surfaces.",
+        "Each partner declares capabilities, authority boundary, proof obligations, evidence, next gate, and non-claims.",
+        "MongoDB remains the primary live proof while other partner lanes are marked planned."
+      ],
+      "does_not_prove": [
+        "Live Arize, Elastic, Fivetran, or GitLab integration.",
+        "Production partner security review.",
+        "That partner data may be inherited without settlement."
+      ],
+      "gate": "required_for_partner_ecosystem_claim"
+    },
+    {
+      "group_id": "adapter_fabric",
+      "name": "Technology Fabric Adapter Validation",
+      "scope": "local_fixture",
+      "required_env": [],
+      "commands": [
+        "adapter manifest validation fixture to be added in P8",
+        "cross-surface path settlement fixture to be added in P8"
+      ],
+      "proves": [
+        "An adapter declares readable objects, writable objects, authority requirements, proof returned, and risk.",
+        "External objects normalize into candidate continuity objects.",
+        "Cross-surface lineage can be recorded without granting automatic trust."
+      ],
+      "does_not_prove": [
+        "All listed technology classes are implemented.",
+        "Provider-specific production readiness.",
+        "That adapter data is inherently true."
+      ],
+      "gate": "required_for_technology_fabric_claim"
+    },
+    {
+      "group_id": "portable_continuation",
+      "name": "Portable Continuation Replay",
+      "scope": "local_fixture",
+      "required_env": [],
+      "commands": [
+        "portable context package fixture to be added in P7",
+        "continuation replay fixture to be added in P7"
+      ],
+      "proves": [
+        "Receipt-cleared context can be packaged for another carrier.",
+        "Excluded witness and caveats remain visible.",
+        "Carrier return remains candidate until settlement."
+      ],
+      "does_not_prove": [
+        "A production custom GPT connector exists.",
+        "A mobile client exists.",
+        "All future carriers can consume the package."
+      ],
+      "gate": "required_for_portable_continuation_claim"
+    },
+    {
+      "group_id": "voice_safety",
+      "name": "Voice Misrecognition Safety Gate",
+      "scope": "local_fixture",
+      "required_env": [],
+      "commands": [
+        "voice risk phrase fixture to be added in P9",
+        "confirmation receipt fixture to be added in P9"
+      ],
+      "proves": [
+        "High-risk voice-derived phrases are detected.",
+        "Ambiguous or dangerous-looking voice packets pause for confirmation.",
+        "No high-risk action executes before confirmation."
+      ],
+      "does_not_prove": [
+        "Production speech recognition accuracy.",
+        "End-to-end phone integration.",
+        "Authorization for real high-risk testing."
+      ],
+      "gate": "required_for_voice_to_local_claim"
+    },
+    {
+      "group_id": "project_identity",
+      "name": "Project Identity And Collaboration Scope",
+      "scope": "local_fixture",
+      "required_env": [],
+      "commands": [
+        "first contact package fixture to be added in P7",
+        "project pairing fixture to be added in P7",
+        "collaboration scope fixture to be added in P7"
+      ],
+      "proves": [
+        "A project ID can route work without granting full authority.",
+        "Pairing proof can upgrade a project lane to bounded packet authority.",
+        "Collaborator roles and capability scopes can be receipted."
+      ],
+      "does_not_prove": [
+        "Production identity management.",
+        "Enterprise SSO.",
+        "Complete access-control hardening."
+      ],
+      "gate": "required_for_custom_gpt_project_identity_claim"
+    },
+    {
+      "group_id": "red_team_lab",
+      "name": "Security Red-Team Lab Containment",
+      "scope": "contained_lab",
+      "required_env": [
+        "Synthetic lab targets only"
+      ],
+      "commands": [
+        "threat model fixture to be added in P9",
+        "synthetic secret fixture to be added in P9",
+        "containment receipt fixture to be added in P9"
+      ],
+      "proves": [
+        "High-risk security scenarios are separated into lab lanes.",
+        "Synthetic secrets and sandbox targets are required for red-team fixtures.",
+        "Incident findings produce containment receipts and re-test requirements."
+      ],
+      "does_not_prove": [
+        "Formal security certification.",
+        "Authorization to test real systems.",
+        "Absence of all vulnerabilities."
+      ],
+      "gate": "required_for_security_red_team_claim"
+    }
+  ]
+}

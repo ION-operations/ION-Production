@@ -1,0 +1,39 @@
+{
+  "schema": "daimon.gemini_handoff_response.v0_1",
+  "provider": "generativelanguage.googleapis.com",
+  "status_code": 200,
+  "model": "models/gemini-2.5-flash",
+  "raw_response": {
+    "candidates": [
+      {
+        "content": {
+          "parts": [
+            {
+              "text": "TRUSTED_CONTEXT_USED:\nThe next dAimon session will inherit context from the provided objects, all of which have an `inheritance_status` of \"INHERITABLE_AFTER_RECEIPT\" and an `acceptance_status` of \"settled_accept_sample\". The `receipt_ids` include \"receipt_sample_session_20260509_sample_001\".\n\nSpecifically, the inherited context includes:\n- The recommendation that ION should use MongoDB as a continuity substrate for accepted context and receipts (object_id: co_cc0948fbe8, receipt_id: receipt_sample_session_20260509_sample_001).\n- Operator notes detailing that a contest demo should show two sessions, with Session B inheriting only accepted, receipt-cleared state, not the entire raw chat export (object_id: co_aca2497a16, receipt_id: receipt_sample_session_20260509_sample_001).\n- The project requirement to be a functional agent powered by Gemini and Google Cloud Agent Builder with a partner MCP server (object_id: co_6370b8cb72, receipt_id: receipt_sample_session_20260509_sample_001).\n- The description of MongoDB MCP Server as a way to interact with MongoDB data and deployments from AI clients (object_id: co_aa614a60a5, receipt_id: receipt_sample_session_20260509_sample_001).\n- The ION core law stating that output is not state until grounded, proof-marked, settled, receipted, and carried forward (object_id: co_d120fe4812, receipt_id: receipt_sample_session_20260509_sample_001).\n\nCANDIDATE_OUTPUT:\nThe next dAimon session is expected to inherit a set of receipt-cleared, accepted context objects. This includes the architectural recommendation to use MongoDB for continuity, the operational requirement for the contest demo to show selective inheritance in Session B, and external references detailing project requirements for a Gemini/Google Cloud Agent Builder powered agent with a MongoDB MCP server, along with the definition of MongoDB MCP Server. Crucially, the ION core law regarding state acceptance will also be inherited. This ensures that the subsequent session operates with a clear understanding of what constitutes accepted and inheritable information.\n\nNON_CLAIMS:\nGemini output is not accepted state. Rejected, deferred, witness-only, and proof-debt objects are excluded from this context payload."
+            }
+          ],
+          "role": "model"
+        },
+        "finishReason": "STOP",
+        "index": 0
+      }
+    ],
+    "usageMetadata": {
+      "promptTokenCount": 1305,
+      "candidatesTokenCount": 583,
+      "totalTokenCount": 1888,
+      "promptTokensDetails": [
+        {
+          "modality": "TEXT",
+          "tokenCount": 1305
+        }
+      ],
+      "serviceTier": "standard"
+    },
+    "modelVersion": "gemini-2.5-flash",
+    "responseId": "K_v_aembNpSV1MkPu8H2oQc"
+  },
+  "output_text": "TRUSTED_CONTEXT_USED:\nThe next dAimon session will inherit context from the provided objects, all of which have an `inheritance_status` of \"INHERITABLE_AFTER_RECEIPT\" and an `acceptance_status` of \"settled_accept_sample\". The `receipt_ids` include \"receipt_sample_session_20260509_sample_001\".\n\nSpecifically, the inherited context includes:\n- The recommendation that ION should use MongoDB as a continuity substrate for accepted context and receipts (object_id: co_cc0948fbe8, receipt_id: receipt_sample_session_20260509_sample_001).\n- Operator notes detailing that a contest demo should show two sessions, with Session B inheriting only accepted, receipt-cleared state, not the entire raw chat export (object_id: co_aca2497a16, receipt_id: receipt_sample_session_20260509_sample_001).\n- The project requirement to be a functional agent powered by Gemini and Google Cloud Agent Builder with a partner MCP server (object_id: co_6370b8cb72, receipt_id: receipt_sample_session_20260509_sample_001).\n- The description of MongoDB MCP Server as a way to interact with MongoDB data and deployments from AI clients (object_id: co_aa614a60a5, receipt_id: receipt_sample_session_20260509_sample_001).\n- The ION core law stating that output is not state until grounded, proof-marked, settled, receipted, and carried forward (object_id: co_d120fe4812, receipt_id: receipt_sample_session_20260509_sample_001).\n\nCANDIDATE_OUTPUT:\nThe next dAimon session is expected to inherit a set of receipt-cleared, accepted context objects. This includes the architectural recommendation to use MongoDB for continuity, the operational requirement for the contest demo to show selective inheritance in Session B, and external references detailing project requirements for a Gemini/Google Cloud Agent Builder powered agent with a MongoDB MCP server, along with the definition of MongoDB MCP Server. Crucially, the ION core law regarding state acceptance will also be inherited. This ensures that the subsequent session operates with a clear understanding of what constitutes accepted and inheritable information.\n\nNON_CLAIMS:\nGemini output is not accepted state. Rejected, deferred, witness-only, and proof-debt objects are excluded from this context payload.",
+  "accepted_state_changed": false,
+  "external_mutation_attempted": false
+}

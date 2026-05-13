@@ -1,0 +1,228 @@
+{
+  "schema": "daimon.connector_expansion_registry.v0_1",
+  "project": "dAimon",
+  "generated_on": "2026-05-10",
+  "state_boundary": "connector readiness records are setup evidence, not live integration proof",
+  "connector_targets": [
+    {
+      "connector_id": "custom_gpt_actions",
+      "name": "ION Custom GPT Action Gateway",
+      "category": "custom_gpt_action_surface",
+      "status": "custom_gpt_visibility_action_proven_read_only",
+      "priority": 1,
+      "connection_surface": {
+        "public_gateway": "https://ion-actions.helixion.net",
+        "schema_url": "https://ion-actions.helixion.net/openapi.yaml",
+        "local_health": "http://127.0.0.1:8777/health",
+        "daimon_visibility_operation": "ionGatewayDaimonVisibility",
+        "daimon_visibility_path": "/projects/daimon/visibility"
+      },
+      "required_env": [
+        "ION_ACTION_GATEWAY_TOKEN"
+      ],
+      "secret_handling": "Token is configured in the Custom GPT builder auth field and local gateway env only; never paste it into chat or commit it.",
+      "read_capabilities": [
+        "read gateway health",
+        "read bounded policy",
+        "read dAimon project visibility",
+        "read queue/status/receipt surfaces when explicitly requested"
+      ],
+      "write_capabilities": [
+        "validate bounded action packets",
+        "submit approved bounded action packets with idempotency key and operator approval evidence"
+      ],
+      "authority_boundary": "Custom GPT tool visibility is not permission; production, live execution, deployment, broad filesystem, and secret access remain refused.",
+      "proof_gates": [
+        "local gateway health returns ION_CUSTOM_GPT_ACTION_GATEWAY_READY",
+        "GPT Builder imports openapi.yaml without schema errors",
+        "ionGatewayDaimonVisibility returns current dAimon proof status",
+        "mutating submit remains blocked without explicit approval evidence"
+      ],
+      "current_evidence": [
+        "ION/09_integrations/custom_gpt_action_gateway/openapi.yaml",
+        "ION/05_context/current/custom_gpt_capsule_system/DAIMON_COMPANION_ACTION_GATEWAY_VISIBILITY_SETUP_20260510.md",
+        "sample_outputs/custom_gpt_action_visibility_smoke.json",
+        "sample_outputs/demo_evidence_package.json"
+      ],
+      "next_gate": "Keep ionGatewayDaimonVisibility as the default dAimon Companion action; expand next with GitLab read-only readiness rather than MCP JSON-RPC mutation paths.",
+      "non_claims": [
+        "This does not grant the Custom GPT arbitrary local PC access.",
+        "This does not expose secrets or environment files.",
+        "This does not make Custom GPT output accepted dAimon state."
+      ]
+    },
+    {
+      "connector_id": "gitlab",
+      "name": "GitLab",
+      "category": "software_lifecycle_governance",
+      "status": "planned_read_only_setup",
+      "priority": 2,
+      "connection_surface": {
+        "base_url_env": "GITLAB_BASE_URL",
+        "project_id_env": "GITLAB_PROJECT_ID",
+        "token_env": "GITLAB_TOKEN",
+        "first_api_probe": "GET /api/v4/projects/:id"
+      },
+      "required_env": [
+        "GITLAB_BASE_URL",
+        "GITLAB_PROJECT_ID",
+        "GITLAB_TOKEN"
+      ],
+      "secret_handling": "Use a GitLab project access token or personal access token with least privilege. Store it in ignored .env or CI secrets only.",
+      "read_capabilities": [
+        "read project metadata",
+        "read issues",
+        "read merge requests",
+        "read pipeline and job status",
+        "read security and code review evidence when scopes allow"
+      ],
+      "write_capabilities": [
+        "create candidate issues or comments after explicit approval",
+        "attach dAimon receipt links to GitLab artifacts after review gates"
+      ],
+      "authority_boundary": "GitLab reads can become witness evidence; comments/issues/MR edits remain candidate SDLC actions until CI, review, and receipt gates settle them.",
+      "proof_gates": [
+        "read-only project metadata probe succeeds",
+        "issue/MR fixture maps into continuity objects",
+        "CI/security status is cited in a receipt candidate",
+        "write mutation remains disabled until operator approval"
+      ],
+      "current_evidence": [
+        "docs/gitlab_connection_readiness.md",
+        "docs/partner_ecosystem_expansion.md"
+      ],
+      "next_gate": "Add GITLAB_BASE_URL, GITLAB_PROJECT_ID, and a read-only GITLAB_TOKEN locally, then run a read-only GitLab readiness probe.",
+      "non_claims": [
+        "Live GitLab integration is not implemented yet.",
+        "dAimon does not replace human code review, CI, security approval, or merge authority.",
+        "GitLab token values must not be pasted into chat."
+      ]
+    },
+    {
+      "connector_id": "arize_phoenix",
+      "name": "Arize Phoenix",
+      "category": "observability_and_evaluation",
+      "status": "readiness_script_present",
+      "priority": 3,
+      "connection_surface": {
+        "endpoint_env": "PHOENIX_COLLECTOR_ENDPOINT",
+        "api_key_env": "PHOENIX_API_KEY",
+        "project_env": "PHOENIX_PROJECT_NAME",
+        "readiness_script": "scripts/check_phoenix_readiness.py"
+      },
+      "required_env": [
+        "PHOENIX_COLLECTOR_ENDPOINT",
+        "PHOENIX_API_KEY",
+        "PHOENIX_PROJECT_NAME"
+      ],
+      "secret_handling": "Phoenix keys stay in ignored .env or CI secrets only.",
+      "read_capabilities": [
+        "read trace setup readiness",
+        "inspect run trace receipts once emitted"
+      ],
+      "write_capabilities": [
+        "emit OpenTelemetry/OpenInference spans for dAimon runs"
+      ],
+      "authority_boundary": "Observability evidence explains behavior but does not settle truth or inheritance.",
+      "proof_gates": [
+        "readiness probe succeeds",
+        "dAimon run emits trace spans",
+        "trace receipt links model calls, retrieval, and settlement decision"
+      ],
+      "current_evidence": [
+        "docs/credential_handoff.md",
+        "sample_outputs/phoenix_readiness.json"
+      ],
+      "next_gate": "Run scripts/check_phoenix_readiness.py and attach a trace receipt to a live dAimon run.",
+      "non_claims": [
+        "Live Arize/Phoenix tracing is not part of the primary contest proof unless a trace receipt exists.",
+        "Trace visibility is not accepted state."
+      ]
+    },
+    {
+      "connector_id": "elastic",
+      "name": "Elastic",
+      "category": "evidence_search_and_retrieval",
+      "status": "planned_manifest_fixture",
+      "priority": 4,
+      "connection_surface": {
+        "endpoint_env": "ELASTIC_ENDPOINT",
+        "api_key_env": "ELASTIC_API_KEY",
+        "index_prefix_env": "ELASTIC_INDEX_PREFIX"
+      },
+      "required_env": [
+        "ELASTIC_ENDPOINT",
+        "ELASTIC_API_KEY",
+        "ELASTIC_INDEX_PREFIX"
+      ],
+      "secret_handling": "Elastic API keys stay in ignored .env or CI secrets only.",
+      "read_capabilities": [
+        "search receipts",
+        "search proof artifacts",
+        "retrieve rejected/deferred witness objects without inheriting them"
+      ],
+      "write_capabilities": [
+        "index receipt summaries",
+        "index artifact metadata",
+        "index claim and non-claim records"
+      ],
+      "authority_boundary": "Search discovers evidence; settlement decides whether the evidence changes inheritance.",
+      "proof_gates": [
+        "local receipt index fixture",
+        "search result trace",
+        "exclusion proof for non-inheritable objects"
+      ],
+      "current_evidence": [
+        "docs/partner_ecosystem_expansion.md"
+      ],
+      "next_gate": "Add a local Elastic adapter manifest fixture for receipt/evidence search.",
+      "non_claims": [
+        "Live Elastic integration is not implemented.",
+        "Search relevance is not proof of truth."
+      ]
+    },
+    {
+      "connector_id": "fivetran",
+      "name": "Fivetran",
+      "category": "enterprise_data_ingestion",
+      "status": "planned_manifest_fixture",
+      "priority": 5,
+      "connection_surface": {
+        "api_key_env": "FIVETRAN_API_KEY",
+        "api_secret_env": "FIVETRAN_API_SECRET",
+        "connector_id_env": "FIVETRAN_CONNECTOR_ID"
+      },
+      "required_env": [
+        "FIVETRAN_API_KEY",
+        "FIVETRAN_API_SECRET",
+        "FIVETRAN_CONNECTOR_ID"
+      ],
+      "secret_handling": "Fivetran credentials stay in ignored .env or CI secrets only.",
+      "read_capabilities": [
+        "read connector metadata",
+        "read sync state",
+        "read schema/freshness evidence"
+      ],
+      "write_capabilities": [
+        "propose connector setup packets",
+        "record ingestion receipts"
+      ],
+      "authority_boundary": "Ingested enterprise data starts as witness or candidate context; settlement controls inheritance.",
+      "proof_gates": [
+        "connector metadata fixture",
+        "source-to-destination lineage receipt",
+        "freshness and authority classification"
+      ],
+      "current_evidence": [
+        "docs/partner_ecosystem_expansion.md"
+      ],
+      "next_gate": "Add a Fivetran connector manifest fixture for enterprise ingestion.",
+      "non_claims": [
+        "Live Fivetran integration is not implemented.",
+        "Ingestion does not make data automatically trusted or current."
+      ]
+    }
+  ],
+  "accepted_state_changed": false,
+  "external_mutation_attempted": false
+}

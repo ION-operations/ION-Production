@@ -1,0 +1,184 @@
+{
+  "schema": "daimon.orchestration.product_layers.v0_1",
+  "project": "dAimon",
+  "generated_on": "2026-05-09",
+  "positioning": {
+    "first_principle": "AI output is not state. AI output is a candidate transition.",
+    "product_claim": "dAimon is governed inheritance for AI work.",
+    "carrier_posture": "Carrier-agnostic, with Gemini and Google infrastructure as primary contest surfaces.",
+    "contest_boundary": "A contest-bounded vertical slice of the enterprise trust layer, not a production compliance platform."
+  },
+  "layers": [
+    {
+      "layer_id": "continuity_substrate",
+      "name": "Continuity Substrate",
+      "question_answered": "What may the next AI session inherit?",
+      "responsibilities": [
+        "Import messy AI work as witness material rather than trusted state.",
+        "Classify source material into governed continuity objects.",
+        "Route objects into settlement queues with explicit proof requirements.",
+        "Issue receipts that separate accepted state, rejected witness, deferred material, and caveated claims.",
+        "Build inheritance bundles containing only receipt-cleared objects."
+      ],
+      "entrypoints": [
+        "scripts/run_local_demo.py",
+        "scripts/run_mcp_trace_harness.py",
+        "scripts/seed_mongodb_candidate_sample.py"
+      ],
+      "current_status": "implemented_local_vertical_slice",
+      "evidence": [
+        "sample_outputs/local_demo_summary.json",
+        "sample_outputs/local_mcp_trace.json",
+        "sample_outputs/mongodb_candidate_seed_summary.json",
+        "sample_outputs/mongodb_candidate_seed_mcp_trace.json"
+      ],
+      "next_build_targets": [
+        "Persist every continuity object and receipt through MongoDB Atlas in the default contest path.",
+        "Expose accepted-only inheritance through a small API surface.",
+        "Add dashboard review states for accepted, rejected, deferred, and needs_review objects."
+      ],
+      "tests": [
+        "python scripts/run_local_demo.py",
+        "python scripts/run_mcp_trace_harness.py",
+        "python scripts/validate_mcp_trace_harness.py",
+        "python scripts/validate_mongodb_contract.py"
+      ]
+    },
+    {
+      "layer_id": "generative_governance_engine",
+      "name": "Generative Governance Engine",
+      "question_answered": "What kind of governed intelligence does this problem require?",
+      "responsibilities": [
+        "Translate an objective into implicated domains, context packages, roles, templates, proof obligations, and settlement paths.",
+        "Generate work packets for carriers without granting them authority to mutate accepted state directly.",
+        "Detect when a domain has become too broad, noisy, or proof-divergent and should undergo domain fission.",
+        "Route work by capability, authority, context requirement, risk, side effects, and settlement target.",
+        "Settle branch outputs into receipts before any future session inherits them."
+      ],
+      "entrypoints": [
+        "orchestration/domain_registry.json",
+        "orchestration/template_registry.json",
+        "orchestration/build_roadmap.json"
+      ],
+      "current_status": "planned_with_machine_readable_contracts",
+      "evidence": [
+        "docs/full_orchestration_plan.md",
+        "sample_outputs/orchestration_validation.json"
+      ],
+      "next_build_targets": [
+        "Implement objective-to-domain cartography.",
+        "Generate context packages from accepted receipts.",
+        "Produce work packets for Gemini, Codex CLI, local scripts, and human reviewers.",
+        "Add fission recommendations when domain signals exceed threshold."
+      ],
+      "tests": [
+        "python scripts/validate_orchestration_plan.py"
+      ]
+    },
+    {
+      "layer_id": "enterprise_trust_layer",
+      "name": "Enterprise Trust Layer",
+      "question_answered": "How can an enterprise prove what its AI work relied on?",
+      "responsibilities": [
+        "Represent every meaningful AI action as a receipt-bearing graph event.",
+        "Trace inherited context back to settlement decisions and proof artifacts.",
+        "Preserve rejected and deferred objects as witness without letting them become trusted state.",
+        "Expose audit queries across receipts, objects, domains, routes, validations, and releases.",
+        "Maintain clean non-claims for legal, compliance, and production readiness boundaries."
+      ],
+      "entrypoints": [
+        "docs/full_orchestration_plan.md",
+        "orchestration/receipt_registry.json",
+        "orchestration/partner_adapter_registry.json",
+        "orchestration/test_matrix.json"
+      ],
+      "current_status": "product_horizon_with_contest_slice",
+      "evidence": [
+        "README.md",
+        "docs/architecture.md",
+        "docs/github_actions_validate_template.yml"
+      ],
+      "next_build_targets": [
+        "Add graph query API over MongoDB-backed continuity data.",
+        "Add audit export for receipt chains and inheritance bundles.",
+        "Add enterprise role and authority policy models.",
+        "Add partner adapter manifests for Arize, Elastic, Fivetran, and GitLab.",
+        "Add hosted dashboard with receipt drill-down and claim status."
+      ],
+      "tests": [
+        "python scripts/validate_scaffold.py",
+        "python scripts/validate_orchestration_plan.py"
+      ]
+    },
+    {
+      "layer_id": "partner_adapter_fabric",
+      "name": "Partner Adapter Fabric",
+      "question_answered": "How can dAimon connect partner systems without confusing integration with trust?",
+      "responsibilities": [
+        "Represent each partner as a governed context surface with read/write capabilities, authority boundaries, proof obligations, and non-claims.",
+        "Normalize partner outputs into candidate continuity objects before settlement.",
+        "Preserve source-specific provenance, freshness, and authority metadata.",
+        "Expose adapter status without claiming unproven live integration.",
+        "Route future partner work through receipt and inheritance gates."
+      ],
+      "entrypoints": [
+        "docs/partner_ecosystem_expansion.md",
+        "orchestration/partner_adapter_registry.json"
+      ],
+      "current_status": "mongodb_live_proof_with_planned_partner_lanes",
+      "evidence": [
+        "sample_outputs/live_vertical_slice_summary.json",
+        "sample_outputs/live_vertical_slice_mcp_trace.json",
+        "orchestration/partner_adapter_registry.json"
+      ],
+      "next_build_targets": [
+        "Capture Agent Builder/MongoDB MCP trace as the first live partner proof.",
+        "Add Arize/Phoenix trace fixture for dAimon runs.",
+        "Add Elastic receipt/evidence search fixture.",
+        "Add GitLab issue/MR receipt fixture.",
+        "Add Fivetran connector metadata fixture."
+      ],
+      "tests": [
+        "python scripts/validate_orchestration_plan.py",
+        "python scripts/validate_mongodb_contract.py",
+        "python scripts/validate_agent_builder_mcp_trace.py"
+      ]
+    },
+    {
+      "layer_id": "contest_vertical_slice",
+      "name": "Contest Vertical Slice",
+      "question_answered": "Can the trust primitive be demonstrated end to end inside the hackathon boundary?",
+      "responsibilities": [
+        "Show messy AI work entering as candidate material.",
+        "Show classification into objects and settlement queue entries.",
+        "Show accepted-only visibility trace with receipt citations.",
+        "Show excluded witness objects remaining visible but non-inheritable.",
+        "Show a next-session bundle for Gemini-era agents.",
+        "Show the demo package itself governed by claims, proof, and non-claims."
+      ],
+      "entrypoints": [
+        "scripts/run_local_demo.py",
+        "scripts/seed_mongodb_candidate_sample.py",
+        "docs/self_demonstrating_video_agent.md"
+      ],
+      "current_status": "local_and_mongodb_seeded",
+      "evidence": [
+        "sample_outputs/local_demo_summary.json",
+        "sample_outputs/mongodb_live_readiness.json",
+        "sample_outputs/mongodb_candidate_seed_summary.json",
+        "sample_outputs/mongodb_candidate_seed_mcp_trace.json"
+      ],
+      "next_build_targets": [
+        "Add minimal web dashboard for settlement and trace inspection.",
+        "Add Google Cloud Run deployment path.",
+        "Add Gemini or Agent Builder handoff proof.",
+        "Package self-demonstrating video assets and claim audit receipts."
+      ],
+      "tests": [
+        "python scripts/check_mongodb_live_readiness.py",
+        "python scripts/seed_mongodb_candidate_sample.py",
+        "python scripts/validate_orchestration_plan.py"
+      ]
+    }
+  ]
+}

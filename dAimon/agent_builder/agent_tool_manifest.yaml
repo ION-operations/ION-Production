@@ -1,0 +1,127 @@
+schema: ion.agent_builder.tool_manifest.v1_0
+project: ion-continuity-bridge
+contest_track: MongoDB
+target_stack:
+  carrier: Gemini 3.x / current Gemini model available through Google Cloud at build time
+  orchestrator: Google Cloud Agent Builder / Gemini Enterprise Agent Platform
+  partner_mcp: MongoDB MCP Server
+  runtime: Cloud Run FastAPI ION kernel
+state_law:
+  - Imported material starts as witness.
+  - Candidate outputs do not become accepted state without proof, settlement, receipt, and export.
+  - MongoDB persistence stores candidate and settled records; ION receipt law decides inheritance.
+  - MCP trace evidence is required for judged build.
+tools:
+  - name: import_session_files
+    method: POST
+    endpoint: /import
+    purpose: Import a file bundle as untrusted witness material and classify continuity objects.
+    required_input_schema:
+      session_id: string
+      input_dir: string
+      persist_to_mongodb: boolean
+    state_boundary: Creates candidate continuity objects and settlement queue items only.
+    allowed_without_operator_approval: true
+  - name: get_settlement_queue
+    method: GET
+    endpoint: /settlement-queue/{session_id}
+    purpose: Retrieve pending settlement items.
+    state_boundary: Read-only.
+    allowed_without_operator_approval: true
+  - name: settle_item
+    method: POST
+    endpoint: /settle
+    purpose: Apply operator settlement decisions to candidate objects.
+    required_input_schema:
+      session_id: string
+      decisions: object
+      settled_by: string
+      persist_to_mongodb: boolean
+    state_boundary: Requires operator approval evidence in production; still candidate until receipt.
+    allowed_without_operator_approval: false
+  - name: issue_receipt
+    method: POST
+    endpoint: /receipt/{session_id}
+    purpose: Issue a receipt candidate for a session after settlement decisions.
+    state_boundary: Candidate receipt until stored, verified, and shown in receipt chain.
+    allowed_without_operator_approval: false
+  - name: get_inheritance
+    method: GET
+    endpoint: /inheritance/{session_id}
+    purpose: Return only receipt-cleared continuity objects for the next session.
+    state_boundary: Read-only governed inheritance.
+    allowed_without_operator_approval: true
+  - name: find_continuity_objects
+    method: POST
+    endpoint: /query-governed-state-live
+    purpose: Query the Cloud Run dAimon kernel for receipt-cleared continuity objects backed by live MongoDB.
+    required_input_schema:
+      session_id: string
+      query: string
+      limit: integer
+      include_exclusion_report: boolean
+    required_filter:
+      inheritance_status: INHERITABLE_AFTER_RECEIPT
+      acceptance_status_allowlist:
+        - settled_accept_sample
+        - ACCEPTED
+        - RECEIPT_CLEARED
+        - receipt_cleared
+    forbidden_filters:
+      - return rejected objects as inherited context
+      - return deferred objects as accepted state
+      - return proof-debt objects as settled fact
+    state_boundary: Read-only governed retrieval over live MongoDB-backed state.
+    allowed_without_operator_approval: true
+    judged_demo_evidence_required:
+      - Agent Builder trace showing the find_continuity_objects tool call.
+      - Tool response includes a MongoDB-backed mcp_visibility_trace envelope.
+      - Returned object IDs match ION inheritance bundle.
+      - Gemini answer cites receipt IDs or receipt hashes for inherited claims.
+  - name: route_objective
+    method: POST
+    endpoint: /route
+    purpose: Route a user objective to a candidate ION domain, agent role, capability path, authority ceiling, and proof obligation set.
+    required_input_schema:
+      session_id: string
+      objective: string
+    state_boundary: Candidate route only; does not call tools or mutate state.
+    allowed_without_operator_approval: true
+  - name: get_capability_graph
+    method: GET
+    endpoint: /capability-graph
+    purpose: Read the seeded capability graph used for routing.
+    state_boundary: Read-only graph metadata; graph is not exhaustive.
+    allowed_without_operator_approval: true
+  - name: query_governed_state_via_mongodb_mcp
+    method: MCP
+    endpoint: mongodb.aggregate_or_vector_search
+    purpose: Query MongoDB through the partner MCP server for accepted/inheritable objects.
+    required_filter:
+      inheritance_status: INHERITABLE_AFTER_RECEIPT
+    forbidden_filters:
+      - return rejected objects as inherited context
+      - return deferred objects as accepted state
+      - return proof-debt objects as settled fact
+    state_boundary: Read-only governed retrieval.
+    judged_demo_evidence_required:
+      - Agent Builder trace showing a MongoDB MCP tool call.
+      - Query filter includes inheritance_status/acceptance_status gate.
+      - Returned object IDs match ION inheritance bundle.
+      - Gemini answer cites receipt IDs or receipt hashes for inherited claims.
+  - name: mcp_visibility_trace
+    method: POST
+    endpoint: /mcp-visibility-trace
+    purpose: Generate the local RAH-011A trace envelope before replacing it with live Agent Builder/MongoDB MCP evidence.
+    required_input_schema:
+      session_id: string
+      query: string
+      limit: integer
+    state_boundary: Local read-only trace harness; does not prove live MCP execution.
+    allowed_without_operator_approval: true
+    output_must_include:
+      - accepted_only_query_shape
+      - mongodb_mcp_request_envelope
+      - returned_continuity_object_ids
+      - returned_object_citations
+      - exclusion_report

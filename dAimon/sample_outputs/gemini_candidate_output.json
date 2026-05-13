@@ -1,0 +1,75 @@
+{
+  "schema": "daimon.gemini_candidate_output.v0_1",
+  "session_id": "sample_session_20260509",
+  "gemini_output_captured_as_candidate": true,
+  "candidate_objects": [
+    {
+      "object_id": "co_12d2eed21b",
+      "session_id": "sample_session_20260509",
+      "source_file": "gemini_handoff_response.json",
+      "source_format": "gemini_generate_content",
+      "text": "TRUSTED_CONTEXT_USED:\nThe next dAimon session will inherit context from the provided objects, all of which have an `inheritance_status` of \"INHERITABLE_AFTER_RECEIPT\" and an `acceptance_status` of \"settled_accept_sample\". The `receipt_ids` include \"receipt_sample_session_20260509_sample_001\".\n\nSpecifically, the inherited context includes:\n- The recommendation that ION should use MongoDB as a continuity substrate for accepted context and receipts (object_id: co_cc0948fbe8, receipt_id: receipt_sample_session_20260509_sample_001).\n- Operator notes detailing that a contest demo should show two sessions, with Session B inheriting only accepted, receipt-cleared state, not the entire raw chat export (object_id: co_aca2497a16, receipt_id: receipt_sample_session_20260509_sample_001).\n- The project requirement to be a functional agent powered by Gemini and Google Cloud Agent Builder with a partner MCP server (object_id: co_6370b8cb72, receipt_id: receipt_sample_session_20260509_sample_001).\n- The description of MongoDB MCP Server as a way to interact with MongoDB data and deployments from AI clients (object_id: co_aa614a60a5, receipt_id: receipt_sample_session_20260509_sample_001).\n- The ION core law stating that output is not state until grounded, proof-marked, settled, receipted, and carried forward (object_id: co_d120fe4812, receipt_id: receipt_sample_session_20260509_sample_001).\n\nCANDIDATE_OUTPUT:\nThe next dAimon session is expected to inherit a set of receipt-cleared, accepted context objects. This includes the architectural recommendation to use MongoDB for continuity, the operational requirement for the contest demo to show selective inheritance in Session B, and external references detailing project requirements for a Gemini/Google Cloud Agent Builder powered agent with a MongoDB MCP server, along with the definition of MongoDB MCP Server. Crucially, the ION core law regarding state acceptance will also be inherited. This ensures that the subsequent session operates with a clear understanding of what constitutes accepted and inheritable information.\n\nNON_CLAIMS:\nGemini output is not accepted state. Rejected, deferred, witness-only, and proof-debt objects are excluded from this context payload.",
+      "declared_type": "assistant_synthesis",
+      "inferred_role": "RECEIPT_REFERENCE",
+      "authority_class": "unclassified_witness",
+      "authority_score": 35,
+      "acceptance_status": "candidate_needs_settlement",
+      "acceptance_role": "WITNESS_OR_CANDIDATE",
+      "inheritance_status": "NOT_INHERITABLE_AS_STATE_WITHOUT_SETTLEMENT",
+      "requires_settlement": true,
+      "proof_status": "HAS_EVIDENCE_POINTER",
+      "risk_flags": [
+        "low_authority_import"
+      ],
+      "text_hash": "c7f9cf72cdeffeda",
+      "created_at": "2026-05-10T03:27:42.612690Z",
+      "settled_at": null,
+      "settled_by": null,
+      "settlement_decision": null
+    }
+  ],
+  "settlement_queue": [
+    {
+      "queue_id": "sq_415ffe7db0",
+      "object_id": "co_12d2eed21b",
+      "session_id": "sample_session_20260509",
+      "text": "TRUSTED_CONTEXT_USED:\nThe next dAimon session will inherit context from the provided objects, all of which have an `inheritance_status` of \"INHERITABLE_AFTER_RECEIPT\" and an `acceptance_status` of \"settled_accept_sample\". The `receipt_ids` include \"receipt_sample_session_20260509_sample_001\".\n\nSpecifically, the inherited context includes:\n- The recommendation that ION should use MongoDB as a continuity substrate for accepted context and receipts (object_id: co_cc0948fbe8, receipt_id: receipt_sample_session_20260509_sample_001).\n- Operator notes detailing that a contest demo should show two sessions, with Session B inheriting only accepted, receipt-cleared state, not the entire raw chat export (object_id: co_aca2497a16, receipt_id: receipt_sample_session_20260509_sample_001).\n- The project requirement to be a functional agent powered by Gemini and Google Cloud Agent Builder with a partner MCP server (object_id: co_6370b8cb72, receipt_id: receipt_sample_session_20260509_sample_001).\n- The description of MongoDB MCP Server as a way to interact with MongoDB data and deployments from AI clients (object_id: co_aa614a60a5, receipt_id: receipt_sample_session_20260509_sample_001).\n- The ION core law stating that output is not state until grounded, proof-marked, settled, receipted, and carried forward (object_id: co_d120fe4812, receipt_id: receipt_sample_session_20260509_sample_001).\n\nCANDIDATE_OUTPUT:\nThe next dAimon session is expected to inherit a set of receipt-cleared, accepted context objects. This includes the architectural recommendation to use MongoDB for continuity, the operational requirement for the contest demo to show selective inheritance in Session B, and external references detailing project requirements for a Gemini/Google Cloud Agent Builder powered agent with a MongoDB MCP server, along with the definition of MongoDB MCP Server. Crucially, the ION core law regarding state acceptance will also be inherited. This ensures that the subsequent session operates with a clear understanding of what constitutes accepted and inheritable information.\n\nNON_CLAIMS:\nGemini output is not accepted state. Rejected, deferred, witness-only, and proof-debt objects are excluded from this context payload.",
+      "inferred_role": "RECEIPT_REFERENCE",
+      "authority_score": 35,
+      "settlement_options": [
+        "ACCEPT",
+        "REJECT",
+        "DEFER",
+        "REQUEST_PROOF"
+      ],
+      "settled": false,
+      "settlement_decision": null,
+      "settled_at": null,
+      "settled_by": null,
+      "created_at": "2026-05-10T03:27:42.612872Z"
+    }
+  ],
+  "candidate_receipt": {
+    "receipt_id": "receipt_sample_session_20260509_gemini_candidate_001",
+    "session_id": "sample_session_20260509",
+    "receipt_type": "GEMINI_CANDIDATE_RETURN",
+    "issued_at": "2026-05-10T03:27:42.613003Z",
+    "issued_by": "gemini_handoff_demo",
+    "accepted_state_changed": false,
+    "external_mutation_attempted": false,
+    "objects_classified": 1,
+    "objects_settled": 0,
+    "proof_debt_count": 0,
+    "non_claims": [
+      "Gemini output was captured as candidate witness material.",
+      "Gemini output is not accepted state and is not inheritable without later settlement.",
+      "The live API call proves carrier handoff only, not complete Agent Builder deployment."
+    ],
+    "inheritable_objects": [],
+    "proof_hash": "sha256:2873512bf60a00eb4676c74abe69c794899e0670c0fee2dc0c4662968dad96c0"
+  },
+  "inheritance_status": "NOT_INHERITABLE_AS_STATE_WITHOUT_SETTLEMENT",
+  "accepted_state_changed": false,
+  "external_mutation_attempted": false,
+  "non_claim": "Gemini output is candidate witness material until a later settlement accepts or rejects it."
+}

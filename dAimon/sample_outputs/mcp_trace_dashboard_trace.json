@@ -1,0 +1,39 @@
+{
+  "accepted_state_changed": false,
+  "external_mutation_attempted": false,
+  "non_claim": "Dashboard rows are local harness evidence, not a live Agent Builder or MongoDB MCP run.",
+  "schema": "ion.mcp_trace.dashboard_trace.v0_2",
+  "session_id": "sample_session_20260509",
+  "trace_rows": [
+    {
+      "detail": "5 receipt-cleared object IDs selected for retrieval.",
+      "evidence": "sample_outputs/inheritance_bundle.json",
+      "phase": "inheritance_bundle",
+      "status": "observed"
+    },
+    {
+      "detail": "{'session_id': 'sample_session_20260509', 'inheritance_status': 'INHERITABLE_AFTER_RECEIPT', 'acceptance_status': {'$in': ['settled_accept_sample', 'ACCEPTED', 'RECEIPT_CLEARED', 'receipt_cleared']}}",
+      "evidence": "accepted_only_query_shape.filter",
+      "phase": "accepted_only_query_shape",
+      "status": "gated"
+    },
+    {
+      "detail": "mongodb.aggregate on ion_continuity_bridge.continuity_objects",
+      "evidence": "mongodb_mcp_request_envelope.arguments.pipeline",
+      "phase": "mongodb_mcp_request_envelope",
+      "status": "read_only"
+    },
+    {
+      "detail": "co_cc0948fbe8, co_aca2497a16, co_6370b8cb72, co_aa614a60a5, co_d120fe4812",
+      "evidence": "returned_object_citations",
+      "phase": "returned_object_ids",
+      "status": "receipt_cited"
+    },
+    {
+      "detail": "7 non-inheritable objects excluded; overlap=[]",
+      "evidence": "exclusion_report",
+      "phase": "excluded_non_inheritable",
+      "status": "excluded"
+    }
+  ]
+}

@@ -1,0 +1,342 @@
+{
+  "schema": "daimon.dashboard_evidence_trace.v0_1",
+  "generated_at": "2026-05-10T22:45:10.357726Z",
+  "headline_status": "live_vertical_slice_proven_agent_builder_mcp_proven",
+  "metrics": {
+    "objects_classified": 12,
+    "objects_written": 12,
+    "inheritable_returned_from_mongodb": 5,
+    "trace_returned_object_count": 5,
+    "gemini_candidate_object_count": 1,
+    "excluded_count": 7,
+    "live_agent_builder_mcp_proven": true,
+    "cloud_run_live_proven": true,
+    "google_user_access_proven": true,
+    "connector_target_count": 5
+  },
+  "claims": [
+    {
+      "claim_id": "local_governance_pipeline",
+      "claim": "dAimon imports, classifies, settles, receipts, and exports governed inheritance.",
+      "status": "proven_local",
+      "evidence": [
+        "sample_outputs/local_demo_summary.json",
+        "sample_outputs/live_vertical_slice_summary.json"
+      ],
+      "non_claim": false
+    },
+    {
+      "claim_id": "mongodb_live_seed_and_inheritance",
+      "claim": "dAimon can write candidate demo records to MongoDB and read only receipt-cleared inherited objects back.",
+      "status": "proven_live_mongodb",
+      "evidence": [
+        "sample_outputs/mongodb_live_readiness.json",
+        "sample_outputs/live_vertical_slice_mcp_trace.json"
+      ],
+      "non_claim": false
+    },
+    {
+      "claim_id": "gemini_receipt_cleared_handoff",
+      "claim": "Gemini receives a receipt-cleared context bundle and returns candidate output.",
+      "status": "proven_live_google",
+      "evidence": [
+        "sample_outputs/gemini_handoff_summary.json",
+        "sample_outputs/gemini_candidate_output.json"
+      ],
+      "checks": {
+        "gemini_ok": true,
+        "finish_reason_stop": true,
+        "candidate_not_inheritable": true
+      },
+      "non_claim": false
+    },
+    {
+      "claim_id": "cloud_run_kernel_live_endpoint",
+      "claim": "The dAimon kernel can run on Cloud Run and query live MongoDB-backed receipt-cleared state.",
+      "status": "proven_live_cloud_run",
+      "evidence": [
+        "sample_outputs/cloud_run_deploy_summary.json",
+        "sample_outputs/cloud_run_live_health.json"
+      ],
+      "blockers": [],
+      "non_claim": false
+    },
+    {
+      "claim_id": "agent_builder_mongodb_mcp_tool_trace",
+      "claim": "Agent Builder called MongoDB MCP with an accepted-only retrieval filter.",
+      "status": "proven_live_agent_builder_mcp",
+      "evidence": [
+        "sample_outputs/agent_builder_mcp_trace_validation.json"
+      ],
+      "blockers": [],
+      "non_claim": false
+    },
+    {
+      "claim_id": "google_user_tester_access",
+      "claim": "Named Google user or tester accounts can access the shared dAimon Google surfaces.",
+      "status": "proven_google_user_access",
+      "evidence": [
+        "sample_outputs/google_user_access_readiness.json"
+      ],
+      "blockers": [],
+      "non_claim": false
+    },
+    {
+      "claim_id": "complete_enterprise_deployment",
+      "claim": "dAimon is production-ready enterprise governance.",
+      "status": "non_claim",
+      "evidence": [
+        "docs/contest_vertical_slice_plan.md"
+      ],
+      "non_claim": true
+    }
+  ],
+  "phases": [
+    {
+      "phase": "import",
+      "status": "ok",
+      "objects_classified": 12
+    },
+    {
+      "phase": "settle",
+      "status": "ok",
+      "decisions_applied": 12
+    },
+    {
+      "phase": "receipt",
+      "status": "ok",
+      "receipt_id": "receipt_daimon_live_vertical_slice_20260509_live_seed_001"
+    },
+    {
+      "phase": "mongodb_write",
+      "status": "ok",
+      "objects_written": 12,
+      "queue_items_written": 12
+    },
+    {
+      "phase": "mongodb_accepted_only_read",
+      "status": "ok",
+      "returned_count": 5
+    },
+    {
+      "phase": "mcp_visibility_trace",
+      "status": "ok",
+      "returned_count": 5
+    },
+    {
+      "phase": "gemini_handoff",
+      "status": "ok",
+      "model": "models/gemini-2.5-flash",
+      "candidate_receipt_id": "receipt_daimon_live_vertical_slice_20260509_gemini_candidate_001"
+    },
+    {
+      "phase": "gemini_candidate_persistence",
+      "status": "ok",
+      "candidate_objects_written": 1,
+      "queue_items_written": 1,
+      "receipt_id": "receipt_daimon_live_vertical_slice_20260509_gemini_candidate_001"
+    }
+  ],
+  "video_scenes": [
+    {
+      "scene": 1,
+      "title": "Failure Mode",
+      "screen": "Show messy AI work entering as witness material.",
+      "claim_ids": [
+        "local_governance_pipeline"
+      ],
+      "evidence": [
+        "sample_inputs/",
+        "sample_outputs/continuity_objects.json"
+      ]
+    },
+    {
+      "scene": 2,
+      "title": "Settlement Boundary",
+      "screen": "Show accepted, deferred, and proof-debt objects split before inheritance.",
+      "claim_ids": [
+        "local_governance_pipeline"
+      ],
+      "evidence": [
+        "sample_outputs/settlement_queue.json",
+        "sample_outputs/live_vertical_slice_receipt.json"
+      ]
+    },
+    {
+      "scene": 3,
+      "title": "MongoDB Accepted-Only Retrieval",
+      "screen": "Show the accepted-only query filter and returned object IDs.",
+      "claim_ids": [
+        "mongodb_live_seed_and_inheritance"
+      ],
+      "evidence": [
+        "sample_outputs/live_vertical_slice_mcp_trace.json"
+      ]
+    },
+    {
+      "scene": 4,
+      "title": "Gemini Handoff",
+      "screen": "Show Gemini receives only receipt-cleared objects and returns candidate output.",
+      "claim_ids": [
+        "gemini_receipt_cleared_handoff"
+      ],
+      "evidence": [
+        "sample_outputs/gemini_handoff_context_bundle.json",
+        "sample_outputs/gemini_candidate_output.json"
+      ]
+    },
+    {
+      "scene": 5,
+      "title": "Agent Builder MCP Gate",
+      "screen": "Show Cloud Run endpoint proof plus pending or attached Agent Builder/MongoDB MCP trace evidence.",
+      "claim_ids": [
+        "cloud_run_kernel_live_endpoint",
+        "agent_builder_mongodb_mcp_tool_trace"
+      ],
+      "evidence": [
+        "sample_outputs/cloud_run_live_health.json",
+        "sample_outputs/agent_builder_mcp_trace_validation.json"
+      ]
+    },
+    {
+      "scene": 6,
+      "title": "Tester Access Gate",
+      "screen": "Show runtime proof is separate from named Google account access readiness.",
+      "claim_ids": [
+        "google_user_tester_access"
+      ],
+      "evidence": [
+        "sample_outputs/google_user_access_readiness.json"
+      ]
+    },
+    {
+      "scene": 7,
+      "title": "Honest Boundary",
+      "screen": "Show non-claims and what remains roadmap.",
+      "claim_ids": [
+        "complete_enterprise_deployment"
+      ],
+      "evidence": [
+        "docs/contest_vertical_slice_plan.md"
+      ]
+    }
+  ],
+  "artifact_inventory": [
+    {
+      "path": "sample_outputs/live_vertical_slice_summary.json",
+      "purpose": "One-command end-to-end live proof.",
+      "exists": true,
+      "required": true
+    },
+    {
+      "path": "sample_outputs/live_vertical_slice_mcp_trace.json",
+      "purpose": "Accepted-only MongoDB trace envelope.",
+      "exists": true,
+      "required": true
+    },
+    {
+      "path": "sample_outputs/gemini_handoff_summary.json",
+      "purpose": "Gemini API handoff summary.",
+      "exists": true,
+      "required": true
+    },
+    {
+      "path": "sample_outputs/gemini_candidate_output.json",
+      "purpose": "Gemini return captured as candidate.",
+      "exists": true,
+      "required": true
+    },
+    {
+      "path": "sample_outputs/cloud_run_deploy_summary.json",
+      "purpose": "Cloud Run deploy summary.",
+      "exists": true,
+      "required": false
+    },
+    {
+      "path": "sample_outputs/cloud_run_live_health.json",
+      "purpose": "Cloud Run live health and evidence check.",
+      "exists": true,
+      "required": false
+    },
+    {
+      "path": "sample_outputs/agent_builder_mcp_trace_validation.json",
+      "purpose": "Agent Builder/MongoDB MCP trace gate.",
+      "exists": true,
+      "required": true
+    },
+    {
+      "path": "sample_outputs/agent_builder_mcp_trace.json",
+      "purpose": "Optional live Agent Builder trace export.",
+      "exists": true,
+      "required": false
+    },
+    {
+      "path": "sample_outputs/google_user_access_readiness.json",
+      "purpose": "Named Google user/tester access readiness gate.",
+      "exists": true,
+      "required": false
+    },
+    {
+      "path": "sample_outputs/custom_gpt_action_visibility_smoke.json",
+      "purpose": "Custom GPT Action Gateway dAimon visibility smoke receipt.",
+      "exists": true,
+      "required": false
+    },
+    {
+      "path": "sample_outputs/connector_expansion_plan.json",
+      "purpose": "Connector expansion readiness plan.",
+      "exists": true,
+      "required": false
+    },
+    {
+      "path": "docs/contest_vertical_slice_plan.md",
+      "purpose": "Claim and non-claim boundaries.",
+      "exists": true,
+      "required": true
+    },
+    {
+      "path": "docs/google_user_access_readiness.md",
+      "purpose": "Google tester access readiness protocol.",
+      "exists": true,
+      "required": true
+    },
+    {
+      "path": "docs/custom_gpt_action_connection.md",
+      "purpose": "Custom GPT Action connection setup.",
+      "exists": true,
+      "required": true
+    },
+    {
+      "path": "docs/gitlab_connection_readiness.md",
+      "purpose": "GitLab read-only connector setup.",
+      "exists": true,
+      "required": true
+    },
+    {
+      "path": "docs/self_demonstrating_video_agent.md",
+      "purpose": "Governed demo-video plan.",
+      "exists": true,
+      "required": true
+    },
+    {
+      "path": "docs/ui_canon_product_plan.md",
+      "purpose": "UI canon product planning boundary.",
+      "exists": true,
+      "required": true
+    },
+    {
+      "path": "orchestration/ui_surface_plan.json",
+      "purpose": "Structured UI surface plan.",
+      "exists": true,
+      "required": true
+    },
+    {
+      "path": "orchestration/connector_expansion_registry.json",
+      "purpose": "Structured connector expansion registry.",
+      "exists": true,
+      "required": true
+    }
+  ],
+  "accepted_state_changed": false,
+  "external_mutation_attempted": false
+}

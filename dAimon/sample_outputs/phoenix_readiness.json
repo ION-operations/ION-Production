@@ -1,0 +1,21 @@
+{
+  "ok": true,
+  "stage": "trace_export_attempted",
+  "project_name": "daimon",
+  "configured_endpoint": "https://app.phoenix.arize.com/s/crinkedart",
+  "successful_endpoint": "https://app.phoenix.arize.com/s/crinkedart",
+  "fallback_endpoint": "https://app.phoenix.arize.com/s/crinkedart/v1/traces",
+  "api_key_present": true,
+  "attempts": [
+    {
+      "endpoint": "https://app.phoenix.arize.com/s/crinkedart",
+      "ok": true,
+      "error": null,
+      "export_log_tail": "? OpenTelemetry Tracing Details ?\n|  Phoenix Project: daimon\n|  Span Processor: SimpleSpanProcessor\n|  Collector Endpoint: https://app.phoenix.arize.com/s/crinkedart\n|  Transport: HTTP + protobuf\n|  Transport Headers: {'api_key': '****', 'authorization': '****'}\n|  \n|  Using a default SpanProcessor. `add_span_processor` will overwrite this default.\n|  \n|  ?? WARNING: It is strongly advised to use a BatchSpanProcessor in production environments.\n|  \n|  `register` has set this TracerProvider as the global OpenTelemetry default.\n|  To disable this behavior, call `register` with `set_global_tracer_provider=False`.\n\n"
+    }
+  ],
+  "blockers": [],
+  "schema": "daimon.phoenix_readiness.v0_1",
+  "accepted_state_changed": false,
+  "external_mutation_attempted": true
+}

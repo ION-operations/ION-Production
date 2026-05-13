@@ -1,0 +1,68 @@
+{
+  "schema": "daimon.agent_builder_mcp_trace_validation.v0_1",
+  "ok": true,
+  "proof_status": "proven_live_agent_builder_mcp",
+  "trace_path": "sample_outputs/agent_builder_mcp_trace.json",
+  "trace_kind": "agent_builder_trace_export",
+  "live_mcp_execution_proven": true,
+  "mongodb_mcp_tool_observed": true,
+  "inheritance_gate_observed": true,
+  "acceptance_gate_observed": true,
+  "expected_inherited_ids": [
+    "co_1a12003911",
+    "co_2081120602",
+    "co_6b1f991eb0",
+    "co_981c8f7eed",
+    "co_d3026ecf2d"
+  ],
+  "observed_object_ids": [
+    "co_1a12003911",
+    "co_1e2d385724",
+    "co_2081120602",
+    "co_22d65a85b0",
+    "co_258163f105",
+    "co_50ba35b86a",
+    "co_6b1f991eb0",
+    "co_7313833f42",
+    "co_972623ea2e",
+    "co_981c8f7eed",
+    "co_ad458ba568",
+    "co_bc18d8f96c",
+    "co_cb959c8f5e",
+    "co_d3026ecf2d",
+    "co_da8c45e990"
+  ],
+  "observed_excluded_object_ids": [
+    "co_1e2d385724",
+    "co_22d65a85b0",
+    "co_258163f105",
+    "co_50ba35b86a",
+    "co_7313833f42",
+    "co_972623ea2e",
+    "co_ad458ba568",
+    "co_bc18d8f96c",
+    "co_cb959c8f5e",
+    "co_da8c45e990"
+  ],
+  "missing_expected_object_ids": [],
+  "unexpected_object_ids": [],
+  "expected_receipt_ids": [
+    "receipt_daimon_live_vertical_slice_20260509_live_seed_001"
+  ],
+  "observed_receipt_ids": [
+    "receipt_cleared",
+    "receipt_daimon_live_vertical_slice_20260509_gemini_candidate_001",
+    "receipt_daimon_live_vertical_slice_20260509_live_seed_001",
+    "receipt_ids",
+    "receipt_proof_hash"
+  ],
+  "missing_expected_receipt_ids": [],
+  "read_only_review": {
+    "possible_write_terms": [],
+    "state_boundary": "trace validation is read-only and does not mutate accepted state"
+  },
+  "errors": [],
+  "warnings": [],
+  "accepted_state_changed": false,
+  "external_mutation_attempted": false
+}

@@ -1,0 +1,399 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "ION Continuity Bridge Tools",
+    "version": "1.1.0-candidate"
+  },
+  "servers": [
+    {
+      "url": "https://ION_CLOUD_RUN_URL_PLACEHOLDER"
+    }
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "operationId": "health",
+        "summary": "Read service health and MongoDB persistence gate."
+      }
+    },
+    "/live-vertical-slice-evidence/{session_id}": {
+      "get": {
+        "operationId": "live_vertical_slice_evidence",
+        "summary": "Read live MongoDB-backed evidence for a seeded dAimon vertical slice session.",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 25
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cloud Run live evidence summary"
+          }
+        },
+        "x-ion-boundary": {
+          "state_claim": "read_only_cloud_run_evidence_query",
+          "accepted_state_changed": false,
+          "external_mutation_attempted": false
+        }
+      }
+    },
+    "/import": {
+      "post": {
+        "operationId": "import_session_files",
+        "summary": "Import untrusted files as candidate continuity objects.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "session_id",
+                  "input_dir"
+                ],
+                "properties": {
+                  "session_id": {
+                    "type": "string"
+                  },
+                  "input_dir": {
+                    "type": "string"
+                  },
+                  "persist_to_mongodb": {
+                    "type": "boolean",
+                    "default": false
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Import summary"
+          }
+        }
+      }
+    },
+    "/settlement-queue/{session_id}": {
+      "get": {
+        "operationId": "get_settlement_queue",
+        "summary": "Read pending settlement queue.",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Settlement queue"
+          }
+        }
+      }
+    },
+    "/settle": {
+      "post": {
+        "operationId": "settle_item",
+        "summary": "Apply operator settlement decisions to candidate objects.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "session_id",
+                  "decisions"
+                ],
+                "properties": {
+                  "session_id": {
+                    "type": "string"
+                  },
+                  "decisions": {
+                    "type": "object",
+                    "additionalProperties": {
+                      "type": "string",
+                      "enum": [
+                        "ACCEPT",
+                        "REJECT",
+                        "DEFER",
+                        "REQUEST_PROOF"
+                      ]
+                    }
+                  },
+                  "settled_by": {
+                    "type": "string"
+                  },
+                  "persist_to_mongodb": {
+                    "type": "boolean",
+                    "default": false
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Settlement result"
+          }
+        }
+      }
+    },
+    "/receipt/{session_id}": {
+      "post": {
+        "operationId": "issue_receipt",
+        "summary": "Issue a receipt candidate.",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "persist_to_mongodb",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Receipt candidate"
+          }
+        }
+      }
+    },
+    "/inheritance/{session_id}": {
+      "get": {
+        "operationId": "get_inheritance",
+        "summary": "Return receipt-cleared inheritance bundle.",
+        "parameters": [
+          {
+            "name": "session_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Inheritance bundle"
+          }
+        }
+      }
+    },
+    "/query-governed-state": {
+      "post": {
+        "operationId": "query_governed_state",
+        "summary": "Local simulated governed-state query with MongoDB MCP trace envelope; judged build must attach live MCP evidence.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "session_id",
+                  "query"
+                ],
+                "properties": {
+                  "session_id": {
+                    "type": "string"
+                  },
+                  "query": {
+                    "type": "string"
+                  },
+                  "limit": {
+                    "type": "integer",
+                    "default": 5
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Governed state query results"
+          }
+        }
+      }
+    },
+    "/query-governed-state-live": {
+      "post": {
+        "operationId": "find_continuity_objects",
+        "summary": "Read receipt-cleared continuity objects from live MongoDB-backed dAimon state.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "session_id"
+                ],
+                "properties": {
+                  "session_id": {
+                    "type": "string"
+                  },
+                  "query": {
+                    "type": "string",
+                    "default": "Find receipt-cleared continuity objects for the next Gemini session."
+                  },
+                  "limit": {
+                    "type": "integer",
+                    "default": 5
+                  },
+                  "include_exclusion_report": {
+                    "type": "boolean",
+                    "default": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Live MongoDB-backed governed continuity objects and trace envelope"
+          }
+        },
+        "x-ion-boundary": {
+          "state_claim": "read_only_live_mongodb_adapter_query",
+          "accepted_state_changed": false,
+          "external_mutation_attempted": false,
+          "required_filter": {
+            "inheritance_status": "INHERITABLE_AFTER_RECEIPT",
+            "acceptance_status_allowlist": [
+              "settled_accept_sample",
+              "ACCEPTED",
+              "RECEIPT_CLEARED",
+              "receipt_cleared"
+            ]
+          }
+        }
+      }
+    },
+    "/mcp-visibility-trace": {
+      "post": {
+        "operationId": "mcp_visibility_trace",
+        "summary": "Build a local MongoDB MCP visibility trace for the receipt-cleared inheritance bundle.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "session_id"
+                ],
+                "properties": {
+                  "session_id": {
+                    "type": "string"
+                  },
+                  "query": {
+                    "type": "string",
+                    "default": "Show governed continuity available to the next Gemini session."
+                  },
+                  "limit": {
+                    "type": "integer",
+                    "default": 25
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "MCP visibility trace envelope, returned IDs, receipt citations, and exclusion report"
+          }
+        },
+        "x-ion-boundary": {
+          "state_claim": "local_trace_harness_only",
+          "accepted_state_changed": false,
+          "external_mutation_attempted": false,
+          "live_mcp_execution_proven": false
+        }
+      }
+    },
+    "/capability-graph": {
+      "get": {
+        "summary": "Read candidate capability graph seed",
+        "operationId": "get_capability_graph",
+        "responses": {
+          "200": {
+            "description": "Capability graph metadata and seed nodes"
+          }
+        }
+      }
+    },
+    "/route": {
+      "post": {
+        "summary": "Route an objective to a candidate ION domain/agent/capability path",
+        "operationId": "route_objective",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "objective"
+                ],
+                "properties": {
+                  "session_id": {
+                    "type": "string",
+                    "default": "route_session"
+                  },
+                  "objective": {
+                    "type": "string",
+                    "description": "Operator or agent objective to route"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Candidate route with authority ceiling, capabilities, proof obligations, and trace"
+          }
+        },
+        "x-ion-boundary": {
+          "state_claim": "candidate_route_only",
+          "accepted_state_changed": false,
+          "requires_receipt_before_inheritance": true,
+          "tool_visibility_not_permission": true
+        }
+      }
+    }
+  }
+}

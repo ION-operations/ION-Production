@@ -1,0 +1,51 @@
+{
+  "schema": "ion.mongodb_mcp_visibility_contract.v1_1",
+  "contest_track": "MongoDB",
+  "required_partner_mcp_server": "MongoDB MCP Server",
+  "why_it_matters": "The judged demo must show the partner MCP is used for governed-state retrieval, not merely that the backend writes to MongoDB.",
+  "minimum_evidence": [
+    "MCP server configuration present in repository with credentials excluded.",
+    "Agent Builder/Gemini tool path named query_governed_state_via_mongodb_mcp.",
+    "Trace log or screenshot showing an MCP aggregate/vector search call.",
+    "MCP query includes inheritance_status == INHERITABLE_AFTER_RECEIPT or equivalent filter.",
+    "Returned object IDs match the ION inheritance bundle and receipt IDs.",
+    "Excluded rejected/deferred/proof-debt object IDs are listed with zero returned overlap."
+  ],
+  "local_harness_artifacts": [
+    "sample_outputs/mcp_visibility_trace.json",
+    "sample_outputs/mcp_trace_dashboard_trace.json",
+    "scripts/run_mcp_trace_harness.py",
+    "scripts/validate_mcp_trace_harness.py"
+  ],
+  "required_trace_fields": [
+    "accepted_only_query_shape",
+    "mongodb_mcp_request_envelope",
+    "returned_continuity_object_ids",
+    "returned_object_citations",
+    "exclusion_report",
+    "answer_citation_trace",
+    "dashboard_trace_rows"
+  ],
+  "accepted_only_filter": {
+    "inheritance_status": "INHERITABLE_AFTER_RECEIPT",
+    "acceptance_status": {
+      "$in": [
+        "settled_accept_sample",
+        "ACCEPTED",
+        "RECEIPT_CLEARED",
+        "receipt_cleared"
+      ]
+    }
+  },
+  "allowed_operations": [
+    "read accepted continuity objects",
+    "run aggregate queries",
+    "run vector search over receipt-cleared objects",
+    "inspect indexes for demo evidence"
+  ],
+  "forbidden_operations": [
+    "write accepted state without ION receipt validator",
+    "return raw imported chat memory as inherited state",
+    "include rejected/deferred/proof-debt objects in next-session context"
+  ]
+}

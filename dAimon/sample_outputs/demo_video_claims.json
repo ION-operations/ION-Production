@@ -1,0 +1,164 @@
+{
+  "schema": "daimon.demo_video_claims.v0_1",
+  "claims": [
+    {
+      "claim_id": "local_governance_pipeline",
+      "claim": "dAimon imports, classifies, settles, receipts, and exports governed inheritance.",
+      "status": "proven_local",
+      "evidence": [
+        "sample_outputs/local_demo_summary.json",
+        "sample_outputs/live_vertical_slice_summary.json"
+      ],
+      "non_claim": false
+    },
+    {
+      "claim_id": "mongodb_live_seed_and_inheritance",
+      "claim": "dAimon can write candidate demo records to MongoDB and read only receipt-cleared inherited objects back.",
+      "status": "proven_live_mongodb",
+      "evidence": [
+        "sample_outputs/mongodb_live_readiness.json",
+        "sample_outputs/live_vertical_slice_mcp_trace.json"
+      ],
+      "non_claim": false
+    },
+    {
+      "claim_id": "gemini_receipt_cleared_handoff",
+      "claim": "Gemini receives a receipt-cleared context bundle and returns candidate output.",
+      "status": "proven_live_google",
+      "evidence": [
+        "sample_outputs/gemini_handoff_summary.json",
+        "sample_outputs/gemini_candidate_output.json"
+      ],
+      "checks": {
+        "gemini_ok": true,
+        "finish_reason_stop": true,
+        "candidate_not_inheritable": true
+      },
+      "non_claim": false
+    },
+    {
+      "claim_id": "cloud_run_kernel_live_endpoint",
+      "claim": "The dAimon kernel can run on Cloud Run and query live MongoDB-backed receipt-cleared state.",
+      "status": "proven_live_cloud_run",
+      "evidence": [
+        "sample_outputs/cloud_run_deploy_summary.json",
+        "sample_outputs/cloud_run_live_health.json"
+      ],
+      "blockers": [],
+      "non_claim": false
+    },
+    {
+      "claim_id": "agent_builder_mongodb_mcp_tool_trace",
+      "claim": "Agent Builder called MongoDB MCP with an accepted-only retrieval filter.",
+      "status": "proven_live_agent_builder_mcp",
+      "evidence": [
+        "sample_outputs/agent_builder_mcp_trace_validation.json"
+      ],
+      "blockers": [],
+      "non_claim": false
+    },
+    {
+      "claim_id": "google_user_tester_access",
+      "claim": "Named Google user or tester accounts can access the shared dAimon Google surfaces.",
+      "status": "proven_google_user_access",
+      "evidence": [
+        "sample_outputs/google_user_access_readiness.json"
+      ],
+      "blockers": [],
+      "non_claim": false
+    },
+    {
+      "claim_id": "complete_enterprise_deployment",
+      "claim": "dAimon is production-ready enterprise governance.",
+      "status": "non_claim",
+      "evidence": [
+        "docs/contest_vertical_slice_plan.md"
+      ],
+      "non_claim": true
+    }
+  ],
+  "scenes": [
+    {
+      "scene": 1,
+      "title": "Failure Mode",
+      "screen": "Show messy AI work entering as witness material.",
+      "claim_ids": [
+        "local_governance_pipeline"
+      ],
+      "evidence": [
+        "sample_inputs/",
+        "sample_outputs/continuity_objects.json"
+      ]
+    },
+    {
+      "scene": 2,
+      "title": "Settlement Boundary",
+      "screen": "Show accepted, deferred, and proof-debt objects split before inheritance.",
+      "claim_ids": [
+        "local_governance_pipeline"
+      ],
+      "evidence": [
+        "sample_outputs/settlement_queue.json",
+        "sample_outputs/live_vertical_slice_receipt.json"
+      ]
+    },
+    {
+      "scene": 3,
+      "title": "MongoDB Accepted-Only Retrieval",
+      "screen": "Show the accepted-only query filter and returned object IDs.",
+      "claim_ids": [
+        "mongodb_live_seed_and_inheritance"
+      ],
+      "evidence": [
+        "sample_outputs/live_vertical_slice_mcp_trace.json"
+      ]
+    },
+    {
+      "scene": 4,
+      "title": "Gemini Handoff",
+      "screen": "Show Gemini receives only receipt-cleared objects and returns candidate output.",
+      "claim_ids": [
+        "gemini_receipt_cleared_handoff"
+      ],
+      "evidence": [
+        "sample_outputs/gemini_handoff_context_bundle.json",
+        "sample_outputs/gemini_candidate_output.json"
+      ]
+    },
+    {
+      "scene": 5,
+      "title": "Agent Builder MCP Gate",
+      "screen": "Show Cloud Run endpoint proof plus pending or attached Agent Builder/MongoDB MCP trace evidence.",
+      "claim_ids": [
+        "cloud_run_kernel_live_endpoint",
+        "agent_builder_mongodb_mcp_tool_trace"
+      ],
+      "evidence": [
+        "sample_outputs/cloud_run_live_health.json",
+        "sample_outputs/agent_builder_mcp_trace_validation.json"
+      ]
+    },
+    {
+      "scene": 6,
+      "title": "Tester Access Gate",
+      "screen": "Show runtime proof is separate from named Google account access readiness.",
+      "claim_ids": [
+        "google_user_tester_access"
+      ],
+      "evidence": [
+        "sample_outputs/google_user_access_readiness.json"
+      ]
+    },
+    {
+      "scene": 7,
+      "title": "Honest Boundary",
+      "screen": "Show non-claims and what remains roadmap.",
+      "claim_ids": [
+        "complete_enterprise_deployment"
+      ],
+      "evidence": [
+        "docs/contest_vertical_slice_plan.md"
+      ]
+    }
+  ]
+}

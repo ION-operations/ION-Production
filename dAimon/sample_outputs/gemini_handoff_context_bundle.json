@@ -1,0 +1,75 @@
+{
+  "schema": "daimon.gemini_handoff_context.v0_1",
+  "session_id": "sample_session_20260509",
+  "receipt_ids": [
+    "receipt_sample_session_20260509_sample_001"
+  ],
+  "receipt_proof_hash": "sha256:bc1d80e2c830bff982ba7e79f0657a527960cfcfca2dfdf6e589fb2f96bd943e",
+  "inheritance_rule": "Only objects listed here are receipt-cleared context. Gemini output must return as candidate.",
+  "objects": [
+    {
+      "object_id": "co_cc0948fbe8",
+      "source_file": "sample_assistant_export.json",
+      "inferred_role": "RECEIPT_REFERENCE",
+      "authority_class": "assistant_synthesis",
+      "authority_score": 45,
+      "acceptance_status": "settled_accept_sample",
+      "inheritance_status": "INHERITABLE_AFTER_RECEIPT",
+      "proof_status": "HAS_EVIDENCE_POINTER",
+      "text_hash": "e6e03ffed54536e4",
+      "text_excerpt": "ION should use MongoDB as a continuity substrate for accepted context and receipts."
+    },
+    {
+      "object_id": "co_aca2497a16",
+      "source_file": "sample_project_notes.md",
+      "inferred_role": "RECEIPT_REFERENCE",
+      "authority_class": "unclassified_witness",
+      "authority_score": 35,
+      "acceptance_status": "settled_accept_sample",
+      "inheritance_status": "INHERITABLE_AFTER_RECEIPT",
+      "proof_status": "HAS_EVIDENCE_POINTER",
+      "text_hash": "3ea383ed8b514b5a",
+      "text_excerpt": "# Operator notes\n\nThe contest demo should show two sessions.\n\nSession A imports messy AI work and classifies continuity objects.\n\nSession B must inherit only accepted, receipt-cleared state \u2014 not the entire raw chat export."
+    },
+    {
+      "object_id": "co_6370b8cb72",
+      "source_file": "sample_sources.csv",
+      "inferred_role": "SOURCE_REFERENCE",
+      "authority_class": "source_manifest_or_external_reference",
+      "authority_score": 72,
+      "acceptance_status": "settled_accept_sample",
+      "inheritance_status": "INHERITABLE_AFTER_RECEIPT",
+      "proof_status": "HAS_EVIDENCE_POINTER",
+      "text_hash": "c3bb3e3ede1f5ba5",
+      "text_excerpt": "https://rapid-agent.devpost.com/ says the project must be a functional agent powered by Gemini and Google Cloud Agent Builder with a partner MCP server."
+    },
+    {
+      "object_id": "co_aa614a60a5",
+      "source_file": "sample_sources.csv",
+      "inferred_role": "SOURCE_REFERENCE",
+      "authority_class": "source_manifest_or_external_reference",
+      "authority_score": 72,
+      "acceptance_status": "settled_accept_sample",
+      "inheritance_status": "INHERITABLE_AFTER_RECEIPT",
+      "proof_status": "HAS_EVIDENCE_POINTER",
+      "text_hash": "08a5e0397688e94c",
+      "text_excerpt": "https://www.mongodb.com/docs/mcp-server/overview/ describes MongoDB MCP Server as a way to interact with MongoDB data and deployments from AI clients."
+    },
+    {
+      "object_id": "co_d120fe4812",
+      "source_file": "sample_sources.csv",
+      "inferred_role": "SOURCE_REFERENCE",
+      "authority_class": "source_manifest_or_external_reference",
+      "authority_score": 72,
+      "acceptance_status": "settled_accept_sample",
+      "inheritance_status": "INHERITABLE_AFTER_RECEIPT",
+      "proof_status": "HAS_EVIDENCE_POINTER",
+      "text_hash": "55d0cdb9c9b4be6b",
+      "text_excerpt": "ION core law: output is not state until grounded proof-marked settled receipted and carried forward."
+    }
+  ],
+  "non_claims": [
+    "Gemini output is not accepted state.",
+    "Rejected, deferred, witness-only, and proof-debt objects are excluded from this context payload."
+  ]
+}

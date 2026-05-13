@@ -1,0 +1,270 @@
+{
+  "schema": "ion.capability_graph.seed.v1_0",
+  "generated_at": "2026-05-09T16:53:41Z",
+  "state_claim": "candidate graph seed; not exhaustive",
+  "capabilities": [
+    {
+      "capability_id": "google_agent_platform",
+      "system_family": "Google Cloud",
+      "capability_name": "Gemini Enterprise Agent Platform / Vertex AI Agent Builder",
+      "ion_domain": "ORCHESTRATION",
+      "agent_role": "STEWARD_ROUTER",
+      "primary_function": "Build, deploy, govern, and optimize enterprise-grade agents",
+      "mvp_priority": "P0",
+      "proof_obligation": "tool contract + route receipt",
+      "authority_boundary": "orchestrates; does not decide accepted state alone",
+      "contest_use": "registered tool/action surface for Gemini agent"
+    },
+    {
+      "capability_id": "google_adk",
+      "system_family": "Google Cloud",
+      "capability_name": "Agent Development Kit",
+      "ion_domain": "AGENT_RUNTIME",
+      "agent_role": "DOMAIN_EXECUTOR",
+      "primary_function": "Build/debug/deploy code-first multi-agent systems",
+      "mvp_priority": "P1",
+      "proof_obligation": "runtime trace + template compliance",
+      "authority_boundary": "executor produces proposals",
+      "contest_use": "future code-first agent implementation path"
+    },
+    {
+      "capability_id": "google_agent_registry",
+      "system_family": "Google Cloud",
+      "capability_name": "Agent Registry",
+      "ion_domain": "CAPABILITY_REGISTRY",
+      "agent_role": "RUNTIME_CARTOGRAPHER",
+      "primary_function": "Catalog agents, tools, MCP servers",
+      "mvp_priority": "P1",
+      "proof_obligation": "registry freshness receipt",
+      "authority_boundary": "registry evidence is not acceptance",
+      "contest_use": "maps to ION capability registry"
+    },
+    {
+      "capability_id": "google_agent_gateway",
+      "system_family": "Google Cloud",
+      "capability_name": "Agent Gateway",
+      "ion_domain": "TOOL_AUTHORITY",
+      "agent_role": "GATEKEEPER",
+      "primary_function": "Policy enforcement for agent tool calls",
+      "mvp_priority": "P1",
+      "proof_obligation": "policy decision receipt",
+      "authority_boundary": "tool visibility != permission",
+      "contest_use": "maps to ION action gateway law"
+    },
+    {
+      "capability_id": "gemini_3_1_pro",
+      "system_family": "Google AI",
+      "capability_name": "Gemini 3.1 Pro Preview",
+      "ion_domain": "LLM_CARRIER",
+      "agent_role": "DOMAIN_LOCAL_INTELLIGENCE",
+      "primary_function": "Reasoning/tool-use carrier for complex workflows",
+      "mvp_priority": "P0",
+      "proof_obligation": "model/version freshness check",
+      "authority_boundary": "model output is candidate only",
+      "contest_use": "primary judged carrier"
+    },
+    {
+      "capability_id": "cloud_run",
+      "system_family": "Google Cloud",
+      "capability_name": "Cloud Run",
+      "ion_domain": "SERVICE_RUNTIME",
+      "agent_role": "RUNTIME_CARTOGRAPHER",
+      "primary_function": "Host ION kernel API",
+      "mvp_priority": "P0",
+      "proof_obligation": "deployment receipt + health check",
+      "authority_boundary": "runtime is infrastructure, not state law",
+      "contest_use": "backend service target"
+    },
+    {
+      "capability_id": "mongodb_mcp",
+      "system_family": "MongoDB",
+      "capability_name": "MongoDB MCP Server",
+      "ion_domain": "MCP_GATEWAY",
+      "agent_role": "CONTEXT_GATEWAY",
+      "primary_function": "Expose MongoDB data/deployments to agentic tools",
+      "mvp_priority": "P0",
+      "proof_obligation": "MCP trace receipt",
+      "authority_boundary": "MCP query result is witness until classified",
+      "contest_use": "required partner MCP integration"
+    },
+    {
+      "capability_id": "mongodb_atlas",
+      "system_family": "MongoDB",
+      "capability_name": "MongoDB Atlas",
+      "ion_domain": "STATE_SUBSTRATE",
+      "agent_role": "STATE_KEEPER",
+      "primary_function": "Store continuity objects, receipts, sessions, capability graph",
+      "mvp_priority": "P0",
+      "proof_obligation": "write receipt + hash",
+      "authority_boundary": "stored document not accepted unless status says accepted",
+      "contest_use": "persistent contest state"
+    },
+    {
+      "capability_id": "mongodb_vector_search",
+      "system_family": "MongoDB",
+      "capability_name": "Atlas Vector Search",
+      "ion_domain": "RETRIEVAL",
+      "agent_role": "CONTEXT_CARTOGRAPHER",
+      "primary_function": "Retrieve accepted continuity/capability nodes by meaning",
+      "mvp_priority": "P0",
+      "proof_obligation": "query trace + accepted-only filter",
+      "authority_boundary": "retrieval is not acceptance",
+      "contest_use": "governed retrieval demo"
+    },
+    {
+      "capability_id": "ion_kernel",
+      "system_family": "ION",
+      "capability_name": "ION Kernel",
+      "ion_domain": "SETTLEMENT_LAW",
+      "agent_role": "STEWARD",
+      "primary_function": "Classify, gate, settle, receipt, export inheritance",
+      "mvp_priority": "P0",
+      "proof_obligation": "validation manifest + receipt",
+      "authority_boundary": "only human/steward settlement lands state",
+      "contest_use": "core differentiator"
+    },
+    {
+      "capability_id": "ion_capability_graph",
+      "system_family": "ION",
+      "capability_name": "ION Capability Graph",
+      "ion_domain": "DOMAIN_TECH_SYNC",
+      "agent_role": "INFRA_CARTOGRAPHER",
+      "primary_function": "Bind domain, agent, capability, proof, route, receipt",
+      "mvp_priority": "P0",
+      "proof_obligation": "route receipt + capability evidence",
+      "authority_boundary": "route is candidate until approved",
+      "contest_use": "new v0.9 differentiator"
+    },
+    {
+      "capability_id": "ion_dashboard",
+      "system_family": "ION",
+      "capability_name": "Functional Dashboard Trace",
+      "ion_domain": "OPERATOR_VISIBILITY",
+      "agent_role": "RUNTIME_CARTOGRAPHER",
+      "primary_function": "Show route, proof debt, settlement, receipt, and inheritance traces to judges/operators",
+      "mvp_priority": "P0",
+      "proof_obligation": "dashboard trace JSON + validation manifest",
+      "authority_boundary": "visibility surface only; not settlement authority",
+      "contest_use": "judge-facing route trace and governance demo"
+    }
+  ],
+  "route_rules": [
+    {
+      "rule_id": "route_source_authority",
+      "keywords": [
+        "source",
+        "docs",
+        "citation",
+        "current",
+        "verify",
+        "evidence"
+      ],
+      "domain": "SOURCE_AUTHORITY",
+      "agent_role": "CANON_LIBRARIAN",
+      "capabilities": [
+        "google_agent_platform",
+        "mongodb_vector_search",
+        "ion_kernel"
+      ],
+      "authority_ceiling": "read_only_candidate_synthesis",
+      "proof_obligations": [
+        "fresh official source pointer",
+        "retrieval trace",
+        "receipt candidate"
+      ]
+    },
+    {
+      "rule_id": "route_settlement",
+      "keywords": [
+        "accept",
+        "settle",
+        "approve",
+        "inherit",
+        "state"
+      ],
+      "domain": "SETTLEMENT_LAW",
+      "agent_role": "STEWARD",
+      "capabilities": [
+        "ion_kernel",
+        "mongodb_atlas"
+      ],
+      "authority_ceiling": "human_gate_required",
+      "proof_obligations": [
+        "settlement decision",
+        "receipt",
+        "state-surface sync"
+      ]
+    },
+    {
+      "rule_id": "route_retrieval",
+      "keywords": [
+        "remember",
+        "inherit",
+        "retrieve",
+        "what do we know",
+        "next session"
+      ],
+      "domain": "RETRIEVAL",
+      "agent_role": "CONTEXT_CARTOGRAPHER",
+      "capabilities": [
+        "mongodb_mcp",
+        "mongodb_vector_search",
+        "ion_kernel"
+      ],
+      "authority_ceiling": "accepted_objects_only",
+      "proof_obligations": [
+        "accepted-only filter",
+        "MCP trace",
+        "retrieval receipt"
+      ]
+    },
+    {
+      "rule_id": "route_external_mutation_block",
+      "keywords": [
+        "production",
+        "deploy",
+        "write live",
+        "mutate external",
+        "push"
+      ],
+      "domain": "TOOL_AUTHORITY",
+      "agent_role": "GATEKEEPER",
+      "capabilities": [
+        "google_agent_gateway",
+        "ion_kernel"
+      ],
+      "authority_ceiling": "blocked_without_explicit_operator_approval",
+      "proof_obligations": [
+        "approval evidence",
+        "tool policy decision",
+        "mutation receipt"
+      ]
+    },
+    {
+      "rule_id": "route_transfer_context",
+      "keywords": [
+        "handoff",
+        "summary",
+        "resume",
+        "continue",
+        "next packet",
+        "export",
+        "bundle"
+      ],
+      "domain": "TRANSFER_CONTEXT",
+      "agent_role": "SCRIBE",
+      "capabilities": [
+        "ion_kernel",
+        "mongodb_atlas",
+        "ion_dashboard"
+      ],
+      "authority_ceiling": "candidate_export_only",
+      "proof_obligations": [
+        "receipt references",
+        "non-claims",
+        "state-surface sync",
+        "export manifest"
+      ]
+    }
+  ]
+}

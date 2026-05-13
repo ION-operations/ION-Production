@@ -1,0 +1,964 @@
+{
+  "schema": "daimon.orchestration.template_registry.v0_1",
+  "project": "dAimon",
+  "generated_on": "2026-05-09",
+  "template_definition": "A template is the public law for a governed action: context required, output shape, proof owed, authority exercised, and settlement path.",
+  "templates": [
+    {
+      "template_id": "import_witness_bundle",
+      "name": "Import Witness Bundle",
+      "action_type": "import",
+      "domain_id": "continuity_substrate",
+      "required_context": [
+        "source identifier",
+        "import objective",
+        "source trust posture"
+      ],
+      "inputs": [
+        "raw transcript",
+        "document set",
+        "agent output",
+        "tool response",
+        "local sample fixture"
+      ],
+      "outputs": [
+        "source_bundle",
+        "candidate_import_receipt"
+      ],
+      "proof_obligations": [
+        "Record where the source came from.",
+        "Mark imported content as witness-only.",
+        "Record whether external mutation occurred during import."
+      ],
+      "authority_ceiling": "witness_only",
+      "state_mutation": "May create candidate source records; may not create accepted state.",
+      "settlement_path": "classify_continuity_objects",
+      "validation": [
+        "python scripts/run_local_demo.py"
+      ]
+    },
+    {
+      "template_id": "classify_continuity_objects",
+      "name": "Classify Continuity Objects",
+      "action_type": "classify",
+      "domain_id": "continuity_substrate",
+      "required_context": [
+        "source_bundle",
+        "classification taxonomy",
+        "domain registry"
+      ],
+      "inputs": [
+        "candidate source material"
+      ],
+      "outputs": [
+        "continuity_object list",
+        "settlement_queue items"
+      ],
+      "proof_obligations": [
+        "Assign each object a type, domain, status, and summary.",
+        "Separate claim, task, receipt, warning, route, memory, and artifact candidates.",
+        "Flag ambiguous objects for review rather than accepting them silently."
+      ],
+      "authority_ceiling": "candidate_only",
+      "state_mutation": "May create candidate objects and queue items.",
+      "settlement_path": "settle_outputs",
+      "validation": [
+        "python scripts/run_local_demo.py"
+      ]
+    },
+    {
+      "template_id": "route_objective",
+      "name": "Route Objective",
+      "action_type": "route",
+      "domain_id": "generative_governance",
+      "required_context": [
+        "objective",
+        "domain registry",
+        "template registry",
+        "capability registry"
+      ],
+      "inputs": [
+        "user objective",
+        "accepted context bundle"
+      ],
+      "outputs": [
+        "domain map",
+        "role plan",
+        "work packet plan",
+        "proof plan"
+      ],
+      "proof_obligations": [
+        "Explain why each implicated domain is required.",
+        "List authority ceilings for generated roles.",
+        "List proof obligations before carrier invocation.",
+        "Route risky or side-effecting work to human review or explicit approval."
+      ],
+      "authority_ceiling": "planning_only",
+      "state_mutation": "May create candidate governance plan; may not mutate accepted state.",
+      "settlement_path": "settle_outputs",
+      "validation": [
+        "python scripts/validate_orchestration_plan.py"
+      ]
+    },
+    {
+      "template_id": "route_capability",
+      "name": "Route Capability",
+      "action_type": "route",
+      "domain_id": "capability_routing",
+      "required_context": [
+        "work packet",
+        "carrier profiles",
+        "tool permissions",
+        "risk level"
+      ],
+      "inputs": [
+        "candidate work packet"
+      ],
+      "outputs": [
+        "route decision",
+        "side effect plan",
+        "return schema"
+      ],
+      "proof_obligations": [
+        "Match carrier to capability, authority, context, proof, and side effects.",
+        "Record required credential names without exposing secret values.",
+        "State whether the route is read-only or mutating."
+      ],
+      "authority_ceiling": "route_recommendation",
+      "state_mutation": "May create route decision record.",
+      "settlement_path": "settle_outputs",
+      "validation": [
+        "python scripts/validate_orchestration_plan.py"
+      ]
+    },
+    {
+      "template_id": "derive_roles",
+      "name": "Derive Roles",
+      "action_type": "plan",
+      "domain_id": "generative_governance",
+      "required_context": [
+        "objective",
+        "domain map",
+        "proof plan"
+      ],
+      "inputs": [
+        "objective route"
+      ],
+      "outputs": [
+        "role definitions",
+        "role authority ceilings",
+        "role return schemas"
+      ],
+      "proof_obligations": [
+        "Roles must be derived from the problem burden, not generic persona labels.",
+        "Each role must cite the domain it operates under.",
+        "Each role must state what it cannot decide."
+      ],
+      "authority_ceiling": "role_planning",
+      "state_mutation": "May create candidate role plan.",
+      "settlement_path": "settle_outputs",
+      "validation": [
+        "python scripts/validate_orchestration_plan.py"
+      ]
+    },
+    {
+      "template_id": "assemble_context_package",
+      "name": "Assemble Context Package",
+      "action_type": "inherit",
+      "domain_id": "generative_governance",
+      "required_context": [
+        "accepted receipts",
+        "domain-specific context filters",
+        "work packet objective"
+      ],
+      "inputs": [
+        "receipt-cleared objects",
+        "role scope"
+      ],
+      "outputs": [
+        "bounded context package",
+        "excluded witness list"
+      ],
+      "proof_obligations": [
+        "Every included object must cite a receipt.",
+        "Every excluded object must state the exclusion rule.",
+        "Context package must stay inside the role authority ceiling."
+      ],
+      "authority_ceiling": "bounded_context_selection",
+      "state_mutation": "Read-only unless package receipt is issued.",
+      "settlement_path": "issue_receipt",
+      "validation": [
+        "python scripts/run_mcp_trace_harness.py"
+      ]
+    },
+    {
+      "template_id": "detect_domain_fission",
+      "name": "Detect Domain Fission",
+      "action_type": "governance_review",
+      "domain_id": "generative_governance",
+      "required_context": [
+        "domain registry",
+        "receipt history",
+        "route history",
+        "template usage"
+      ],
+      "inputs": [
+        "domain health signals"
+      ],
+      "outputs": [
+        "fission recommendation",
+        "lineage plan",
+        "migration proof requirements"
+      ],
+      "proof_obligations": [
+        "Cite overload signals such as noisy context, diverging proof, repeated cross-domain routes, or ownership confusion.",
+        "Preserve lineage from parent domain to proposed child domains.",
+        "State settlement requirements before registry mutation."
+      ],
+      "authority_ceiling": "recommendation_only",
+      "state_mutation": "May create candidate fission recommendation; may not rewrite registry without settlement.",
+      "settlement_path": "settle_outputs",
+      "validation": [
+        "python scripts/validate_orchestration_plan.py"
+      ]
+    },
+    {
+      "template_id": "settle_outputs",
+      "name": "Settle Outputs",
+      "action_type": "settle",
+      "domain_id": "continuity_substrate",
+      "required_context": [
+        "candidate objects",
+        "proof obligations",
+        "authority ceiling",
+        "reviewer or settlement policy"
+      ],
+      "inputs": [
+        "candidate object",
+        "carrier return",
+        "route result",
+        "human review note"
+      ],
+      "outputs": [
+        "settlement decision",
+        "accepted state delta",
+        "rejected witness",
+        "deferred task"
+      ],
+      "proof_obligations": [
+        "Decision must be one of accepted, accepted_with_caveats, rejected, deferred, needs_human_review, needs_more_proof, merged, or archived_as_witness.",
+        "Accepted decisions must cite sufficient proof.",
+        "Deferred or review decisions must name the missing proof or reviewer."
+      ],
+      "authority_ceiling": "settlement_policy_bound",
+      "state_mutation": "May create accepted state deltas only when proof obligations are satisfied.",
+      "settlement_path": "issue_receipt",
+      "validation": [
+        "python scripts/run_local_demo.py"
+      ]
+    },
+    {
+      "template_id": "issue_receipt",
+      "name": "Issue Receipt",
+      "action_type": "receipt",
+      "domain_id": "continuity_substrate",
+      "required_context": [
+        "settlement decision",
+        "proof artifacts",
+        "authority scope",
+        "state delta"
+      ],
+      "inputs": [
+        "settlement decision"
+      ],
+      "outputs": [
+        "receipt",
+        "receipt citation"
+      ],
+      "proof_obligations": [
+        "Receipt must state objective, context, evidence, decision, authority, changed state, rejected or deferred material, and inheritance permissions.",
+        "Receipt must be stable enough to cite from future bundles.",
+        "Receipt must state whether accepted state changed."
+      ],
+      "authority_ceiling": "receipt_issuance",
+      "state_mutation": "May write receipt records and accepted state references.",
+      "settlement_path": "resolve_inheritance",
+      "validation": [
+        "python scripts/validate_mcp_trace_harness.py"
+      ]
+    },
+    {
+      "template_id": "resolve_inheritance",
+      "name": "Resolve Inheritance",
+      "action_type": "inherit",
+      "domain_id": "continuity_substrate",
+      "required_context": [
+        "receipts",
+        "accepted objects",
+        "role scope",
+        "domain filters"
+      ],
+      "inputs": [
+        "candidate context request"
+      ],
+      "outputs": [
+        "inheritance bundle",
+        "excluded witness inventory"
+      ],
+      "proof_obligations": [
+        "Only accepted or caveated accepted objects may be inheritable.",
+        "Every included object must cite a receipt.",
+        "Rejected, deferred, and needs_review objects must not be silently included."
+      ],
+      "authority_ceiling": "accepted_context_export",
+      "state_mutation": "Read-only context export.",
+      "settlement_path": "mcp_visibility_trace",
+      "validation": [
+        "python scripts/run_mcp_trace_harness.py",
+        "python scripts/validate_mcp_trace_harness.py"
+      ]
+    },
+    {
+      "template_id": "mcp_visibility_trace",
+      "name": "MCP Visibility Trace",
+      "action_type": "trace",
+      "domain_id": "mcp_visibility",
+      "required_context": [
+        "inheritance request",
+        "candidate result set",
+        "receipts"
+      ],
+      "inputs": [
+        "retrieval request"
+      ],
+      "outputs": [
+        "visibility trace",
+        "returned objects",
+        "excluded objects",
+        "receipt citations"
+      ],
+      "proof_obligations": [
+        "Trace considered, returned, and excluded objects.",
+        "Record accepted_state_changed.",
+        "Record external_mutation_attempted.",
+        "Cite receipts for returned objects."
+      ],
+      "authority_ceiling": "read_only_trace",
+      "state_mutation": "None during trace generation.",
+      "settlement_path": "audit_receipt_chain",
+      "validation": [
+        "python scripts/validate_mcp_trace_harness.py",
+        "python scripts/validate_mongodb_contract.py"
+      ]
+    },
+    {
+      "template_id": "cloud_deploy",
+      "name": "Cloud Deploy",
+      "action_type": "deploy",
+      "domain_id": "cloud_runtime",
+      "required_context": [
+        "release candidate",
+        "cloud project",
+        "secret names",
+        "health check target"
+      ],
+      "inputs": [
+        "source commit",
+        "container build",
+        "runtime config"
+      ],
+      "outputs": [
+        "deployment receipt",
+        "health check proof"
+      ],
+      "proof_obligations": [
+        "Record commit, build id or image digest, service URL, health check result, and config keys by name.",
+        "Do not expose secret values in committed artifacts.",
+        "State whether runtime is contest demo or production."
+      ],
+      "authority_ceiling": "contest_deployment",
+      "state_mutation": "May mutate cloud runtime when explicitly invoked with credentials.",
+      "settlement_path": "issue_receipt",
+      "validation": [
+        "manual Google Cloud health check",
+        "python scripts/validate_orchestration_plan.py"
+      ]
+    },
+    {
+      "template_id": "agent_builder_handoff",
+      "name": "Agent Builder Handoff",
+      "action_type": "handoff",
+      "domain_id": "capability_routing",
+      "required_context": [
+        "accepted inheritance bundle",
+        "Gemini or Agent Builder endpoint",
+        "work packet",
+        "return schema"
+      ],
+      "inputs": [
+        "receipt-cleared context",
+        "governed objective"
+      ],
+      "outputs": [
+        "handoff receipt",
+        "carrier return package"
+      ],
+      "proof_obligations": [
+        "Show that carrier received only receipt-cleared context.",
+        "Record carrier output as candidate return, not accepted state.",
+        "Return to settlement before inheritance."
+      ],
+      "authority_ceiling": "carrier_handoff",
+      "state_mutation": "May call external carrier when credentials are available; cannot promote output directly.",
+      "settlement_path": "settle_outputs",
+      "validation": [
+        "manual Gemini or Agent Builder proof",
+        "python scripts/validate_orchestration_plan.py"
+      ]
+    },
+    {
+      "template_id": "settle_product_boundary",
+      "name": "Settle Product Boundary",
+      "action_type": "product_boundary",
+      "domain_id": "ion_product_boundary",
+      "required_context": [
+        "ION capability reference",
+        "dAimon product claim",
+        "proof inventory",
+        "non-claim boundary"
+      ],
+      "inputs": [
+        "architecture note",
+        "README claim",
+        "demo script claim"
+      ],
+      "outputs": [
+        "settled product claim",
+        "roadmap marker",
+        "non-claim note"
+      ],
+      "proof_obligations": [
+        "State whether the claim is implemented in dAimon, inherited as ION architecture, or roadmap.",
+        "Cite proof artifacts for implemented dAimon behavior.",
+        "Avoid implying the full ION organism is shipped in the contest slice."
+      ],
+      "authority_ceiling": "product_claim_classification",
+      "state_mutation": "May update product messaging only after proof boundary is explicit.",
+      "settlement_path": "release_packaging",
+      "validation": [
+        "python scripts/validate_orchestration_plan.py"
+      ]
+    },
+    {
+      "template_id": "register_adapter_manifest",
+      "name": "Register Adapter Manifest",
+      "action_type": "adapter_registration",
+      "domain_id": "technology_fabric",
+      "required_context": [
+        "external system",
+        "adapter class",
+        "read/write capabilities",
+        "authority requirements",
+        "proof returned"
+      ],
+      "inputs": [
+        "adapter manifest"
+      ],
+      "outputs": [
+        "validated adapter manifest",
+        "capability declaration",
+        "adapter receipt"
+      ],
+      "proof_obligations": [
+        "Declare readable objects, writable objects, required authority, proof returned, stale risk, and secret-bearing risk.",
+        "State whether the adapter is read-only, write-capable, or admin-capable.",
+        "Record credential names without secret values."
+      ],
+      "authority_ceiling": "adapter_manifest_registration",
+      "state_mutation": "May register candidate adapter metadata; may not trust adapter output until normalized and settled.",
+      "settlement_path": "normalize_adapter_object",
+      "validation": [
+        "python scripts/validate_orchestration_plan.py"
+      ]
+    },
+    {
+      "template_id": "normalize_adapter_object",
+      "name": "Normalize Adapter Object",
+      "action_type": "normalize",
+      "domain_id": "technology_fabric",
+      "required_context": [
+        "adapter manifest",
+        "source object",
+        "authority classification",
+        "proof requirements"
+      ],
+      "inputs": [
+        "external object",
+        "adapter response"
+      ],
+      "outputs": [
+        "normalized object",
+        "authority classification",
+        "proof debt list"
+      ],
+      "proof_obligations": [
+        "Preserve source system, source identifier, observed timestamp, adapter id, and proof returned.",
+        "Classify object as witness, candidate, accepted, stale, rejected, deferred, or secret-bearing.",
+        "Prevent normalized objects from becoming inheritable before settlement."
+      ],
+      "authority_ceiling": "candidate_normalization",
+      "state_mutation": "May create candidate normalized objects.",
+      "settlement_path": "settle_cross_surface_path",
+      "validation": [
+        "python scripts/validate_orchestration_plan.py"
+      ]
+    },
+    {
+      "template_id": "settle_cross_surface_path",
+      "name": "Settle Cross-Surface Path",
+      "action_type": "path_settlement",
+      "domain_id": "technology_fabric",
+      "required_context": [
+        "normalized object",
+        "source lineage",
+        "overlap edges",
+        "settlement policy"
+      ],
+      "inputs": [
+        "normalized object",
+        "conflicting object set",
+        "lineage edge set"
+      ],
+      "outputs": [
+        "path settlement decision",
+        "lineage receipt",
+        "inheritance rule"
+      ],
+      "proof_obligations": [
+        "Record edges such as same_as, copied_from, indexed_from, embedded_from, summarized_from, supersedes, conflicts_with, or source_of_truth.",
+        "State which surface is authoritative for the current purpose.",
+        "Preserve conflicts as witness rather than flattening them."
+      ],
+      "authority_ceiling": "cross_surface_lineage_settlement",
+      "state_mutation": "May accept lineage and inheritance rules when proof obligations are met.",
+      "settlement_path": "issue_receipt",
+      "validation": [
+        "python scripts/validate_orchestration_plan.py"
+      ]
+    },
+    {
+      "template_id": "export_portable_context_package",
+      "name": "Export Portable Context Package",
+      "action_type": "portable_export",
+      "domain_id": "portable_continuation",
+      "required_context": [
+        "project lane",
+        "accepted receipts",
+        "excluded witness",
+        "target carrier",
+        "authority scope"
+      ],
+      "inputs": [
+        "continuation request",
+        "role scope"
+      ],
+      "outputs": [
+        "portable context package",
+        "continuation receipt",
+        "excluded witness inventory"
+      ],
+      "proof_obligations": [
+        "Include receipt-cleared objects only.",
+        "Preserve caveats and excluded witness.",
+        "State target carrier, project lane, package freshness, and allowed action scope."
+      ],
+      "authority_ceiling": "portable_context_export",
+      "state_mutation": "Read-only export unless a package receipt is issued.",
+      "settlement_path": "replay_continuation_packet",
+      "validation": [
+        "python scripts/validate_orchestration_plan.py"
+      ]
+    },
+    {
+      "template_id": "replay_continuation_packet",
+      "name": "Replay Continuation Packet",
+      "action_type": "portable_replay",
+      "domain_id": "portable_continuation",
+      "required_context": [
+        "portable context package",
+        "packet nonce",
+        "carrier session",
+        "return schema"
+      ],
+      "inputs": [
+        "work packet",
+        "carrier return"
+      ],
+      "outputs": [
+        "replay result",
+        "candidate return object",
+        "diagnostic receipt"
+      ],
+      "proof_obligations": [
+        "Record packet nonce, carrier, project lane, context package id, and return schema.",
+        "Treat carrier return as candidate output.",
+        "Create diagnostic receipt when replay cannot be verified."
+      ],
+      "authority_ceiling": "portable_packet_replay",
+      "state_mutation": "May create candidate return objects; may not accept them without settlement.",
+      "settlement_path": "settle_outputs",
+      "validation": [
+        "python scripts/validate_orchestration_plan.py"
+      ]
+    },
+    {
+      "template_id": "route_voice_packet",
+      "name": "Route Voice Packet",
+      "action_type": "voice_route",
+      "domain_id": "voice_local_work",
+      "required_context": [
+        "voice transcript",
+        "project lane",
+        "risk phrase policy",
+        "capability routes"
+      ],
+      "inputs": [
+        "voice-derived intent"
+      ],
+      "outputs": [
+        "candidate local work packet",
+        "risk phrase matches",
+        "confirmation requirement"
+      ],
+      "proof_obligations": [
+        "Record transcript source and confidence if available.",
+        "Scan for high-risk phrases.",
+        "Block high-risk actions until explicit confirmation is receipted."
+      ],
+      "authority_ceiling": "voice_intent_to_candidate_packet",
+      "state_mutation": "May create candidate packet or clarification request.",
+      "settlement_path": "confirm_high_risk_voice_intent",
+      "validation": [
+        "python scripts/validate_orchestration_plan.py"
+      ]
+    },
+    {
+      "template_id": "confirm_high_risk_voice_intent",
+      "name": "Confirm High-Risk Voice Intent",
+      "action_type": "voice_confirmation",
+      "domain_id": "voice_local_work",
+      "required_context": [
+        "voice transcript",
+        "risk phrase matches",
+        "candidate packet",
+        "operator confirmation"
+      ],
+      "inputs": [
+        "ambiguous voice packet",
+        "confirmation or restatement"
+      ],
+      "outputs": [
+        "clarification receipt",
+        "confirmed packet",
+        "blocked packet"
+      ],
+      "proof_obligations": [
+        "Pause on high-risk words such as attack, exploit, bypass, delete, exfiltrate, credentials, secrets, wipe, push, deploy, production, red team, or break into.",
+        "Require explicit confirmation or restatement before execution.",
+        "Record no high-risk action executed before confirmation."
+      ],
+      "authority_ceiling": "confirmation_gate",
+      "state_mutation": "May unblock a packet only after confirmation receipt.",
+      "settlement_path": "settle_outputs",
+      "validation": [
+        "python scripts/validate_orchestration_plan.py"
+      ]
+    },
+    {
+      "template_id": "run_security_lab_scenario",
+      "name": "Run Security Lab Scenario",
+      "action_type": "security_lab",
+      "domain_id": "security_red_team",
+      "required_context": [
+        "threat model",
+        "sandbox target",
+        "synthetic secrets",
+        "containment policy",
+        "detector expectations"
+      ],
+      "inputs": [
+        "bounded scenario"
+      ],
+      "outputs": [
+        "detector result",
+        "incident report",
+        "patch recommendation"
+      ],
+      "proof_obligations": [
+        "Use lab targets and synthetic secrets only unless explicit external approval exists.",
+        "Record blast radius and containment boundary.",
+        "Return incident findings as candidate work for settlement."
+      ],
+      "authority_ceiling": "contained_security_lab",
+      "state_mutation": "May mutate only approved lab resources.",
+      "settlement_path": "issue_containment_receipt",
+      "validation": [
+        "python scripts/validate_orchestration_plan.py"
+      ]
+    },
+    {
+      "template_id": "issue_containment_receipt",
+      "name": "Issue Containment Receipt",
+      "action_type": "security_receipt",
+      "domain_id": "security_red_team",
+      "required_context": [
+        "security scenario",
+        "detector result",
+        "containment boundary",
+        "patch plan"
+      ],
+      "inputs": [
+        "incident report"
+      ],
+      "outputs": [
+        "containment receipt",
+        "re-test requirement"
+      ],
+      "proof_obligations": [
+        "State what was attempted, what was blocked, what was detected, and what remains unresolved.",
+        "Record whether any real resource was touched.",
+        "Require re-test before closing security finding."
+      ],
+      "authority_ceiling": "security_receipt_issuance",
+      "state_mutation": "May create security receipts and follow-up tasks.",
+      "settlement_path": "audit_receipt_chain",
+      "validation": [
+        "python scripts/validate_orchestration_plan.py"
+      ]
+    },
+    {
+      "template_id": "create_first_contact_package",
+      "name": "Create First Contact Package",
+      "action_type": "project_identity",
+      "domain_id": "project_identity_collaboration",
+      "required_context": [
+        "carrier class",
+        "initial project objective",
+        "allowed action scope",
+        "pairing policy"
+      ],
+      "inputs": [
+        "new project request"
+      ],
+      "outputs": [
+        "project_id",
+        "pairing instructions",
+        "first contact receipt",
+        "initial context package"
+      ],
+      "proof_obligations": [
+        "Create project identity without requiring personal identity on first contact.",
+        "Treat project ID as routing identifier, not full authority.",
+        "Record allowed action scope and pairing requirements."
+      ],
+      "authority_ceiling": "project_lane_creation",
+      "state_mutation": "May create a project lane and first contact receipt.",
+      "settlement_path": "pair_project_connector",
+      "validation": [
+        "python scripts/validate_orchestration_plan.py"
+      ]
+    },
+    {
+      "template_id": "pair_project_connector",
+      "name": "Pair Project Connector",
+      "action_type": "project_pairing",
+      "domain_id": "project_identity_collaboration",
+      "required_context": [
+        "project_id",
+        "pairing secret or local proof",
+        "connector type",
+        "requested authority tier"
+      ],
+      "inputs": [
+        "pairing attempt"
+      ],
+      "outputs": [
+        "pairing receipt",
+        "authority tier",
+        "connector status"
+      ],
+      "proof_obligations": [
+        "Verify possession of pairing secret or local hub proof for bounded packet authority.",
+        "Record requested and granted authority tier.",
+        "Block local file or machine actions without local proof."
+      ],
+      "authority_ceiling": "connector_pairing",
+      "state_mutation": "May bind connector metadata to a project lane.",
+      "settlement_path": "issue_receipt",
+      "validation": [
+        "python scripts/validate_orchestration_plan.py"
+      ]
+    },
+    {
+      "template_id": "invite_project_collaborator",
+      "name": "Invite Project Collaborator",
+      "action_type": "collaboration_invite",
+      "domain_id": "project_identity_collaboration",
+      "required_context": [
+        "project_id",
+        "inviter authority",
+        "invite role",
+        "capability scope"
+      ],
+      "inputs": [
+        "collaborator invite request"
+      ],
+      "outputs": [
+        "invite token reference",
+        "capability scope",
+        "collaboration receipt"
+      ],
+      "proof_obligations": [
+        "Distinguish public project identifier from private scoped capability token.",
+        "Record role scope such as viewer, contributor, builder, reviewer, authorizer, or owner.",
+        "Require settlement for collaborator actions that affect accepted state."
+      ],
+      "authority_ceiling": "scoped_collaboration",
+      "state_mutation": "May create scoped invite references; secret token values must not be committed.",
+      "settlement_path": "issue_receipt",
+      "validation": [
+        "python scripts/validate_orchestration_plan.py"
+      ]
+    },
+    {
+      "template_id": "demo_video_claim_audit",
+      "name": "Demo Video Claim Audit",
+      "action_type": "claim_audit",
+      "domain_id": "demo_video_agent",
+      "required_context": [
+        "draft script",
+        "artifact inventory",
+        "receipt inventory",
+        "non-claim list"
+      ],
+      "inputs": [
+        "script",
+        "storyboard",
+        "shot list"
+      ],
+      "outputs": [
+        "claim inventory",
+        "claim status matrix",
+        "required edits"
+      ],
+      "proof_obligations": [
+        "Each claim must be linked to proof or marked roadmap/non-claim.",
+        "Unsupported claims must be removed or downgraded.",
+        "Final submission bundle must include claim audit result."
+      ],
+      "authority_ceiling": "demo_claim_review",
+      "state_mutation": "May accept or reject demo claims; may not accept product state.",
+      "settlement_path": "release_packaging",
+      "validation": [
+        "python scripts/validate_orchestration_plan.py"
+      ]
+    },
+    {
+      "template_id": "assemble_demo_storyboard",
+      "name": "Assemble Demo Storyboard",
+      "action_type": "demo_planning",
+      "domain_id": "demo_video_agent",
+      "required_context": [
+        "demo objective",
+        "proof inventory",
+        "demo narrative",
+        "claim audit policy"
+      ],
+      "inputs": [
+        "contest vertical slice artifacts"
+      ],
+      "outputs": [
+        "storyboard",
+        "shot list",
+        "narration outline"
+      ],
+      "proof_obligations": [
+        "Each scene must map to a real artifact, live screen, or explicit roadmap/concept marker.",
+        "Opening must describe the trust failure mode.",
+        "Closing must preserve proof boundary."
+      ],
+      "authority_ceiling": "demo_planning",
+      "state_mutation": "May create demo planning artifacts.",
+      "settlement_path": "demo_video_claim_audit",
+      "validation": [
+        "python scripts/validate_orchestration_plan.py"
+      ]
+    },
+    {
+      "template_id": "audit_receipt_chain",
+      "name": "Audit Receipt Chain",
+      "action_type": "audit",
+      "domain_id": "enterprise_trust",
+      "required_context": [
+        "receipt id",
+        "object id",
+        "domain id",
+        "inheritance request"
+      ],
+      "inputs": [
+        "audit query"
+      ],
+      "outputs": [
+        "receipt chain",
+        "state lineage",
+        "proof references",
+        "non-inheritable witness"
+      ],
+      "proof_obligations": [
+        "Trace every included object to settlement.",
+        "Show rejected or deferred witness when relevant.",
+        "State gaps and non-claims."
+      ],
+      "authority_ceiling": "read_only_audit",
+      "state_mutation": "None.",
+      "settlement_path": "none",
+      "validation": [
+        "python scripts/validate_orchestration_plan.py"
+      ]
+    },
+    {
+      "template_id": "release_packaging",
+      "name": "Release Packaging",
+      "action_type": "release",
+      "domain_id": "product_ops",
+      "required_context": [
+        "release candidate",
+        "validation results",
+        "proof inventory",
+        "non-claims"
+      ],
+      "inputs": [
+        "commit",
+        "demo artifacts",
+        "validation logs"
+      ],
+      "outputs": [
+        "release receipt",
+        "submission checklist",
+        "known gaps"
+      ],
+      "proof_obligations": [
+        "Record validation commands and outcomes.",
+        "Separate proven behavior from future architecture.",
+        "Record deployment, demo, and submission status."
+      ],
+      "authority_ceiling": "release_coordination",
+      "state_mutation": "May tag or package release only when explicitly invoked.",
+      "settlement_path": "issue_receipt",
+      "validation": [
+        "python scripts/validate_scaffold.py",
+        "python scripts/validate_orchestration_plan.py"
+      ]
+    }
+  ]
+}

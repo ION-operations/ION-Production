@@ -1,0 +1,812 @@
+{
+  "ok": true,
+  "cloud_run_url": "https://daimon-ion-kernel-3amc5vjaeq-uc.a.run.app",
+  "auth_mode": "gcloud_identity_token",
+  "session_id": "daimon_live_vertical_slice_20260509",
+  "health_status": 200,
+  "evidence_status": 200,
+  "post_endpoint_probe_status": 200,
+  "health": {
+    "ok": true,
+    "service": "ion-continuity-bridge",
+    "version": "1.1.0-candidate",
+    "mode": "cloud_run_live",
+    "mongodb_enabled": true,
+    "mongodb_database": "ion_continuity_bridge",
+    "accepted_state_changed": false
+  },
+  "evidence": {
+    "schema": "daimon.cloud_run_live_vertical_slice_evidence.v0_1",
+    "ok": true,
+    "session_id": "daimon_live_vertical_slice_20260509",
+    "mongodb": {
+      "ok": true,
+      "database": "ion_continuity_bridge",
+      "collections": {
+        "continuity_objects": "daimon_continuity_objects",
+        "settlement_queue": "daimon_settlement_queue",
+        "receipts": "daimon_receipts",
+        "sessions": "daimon_sessions",
+        "domain_registry": "daimon_domain_registry"
+      }
+    },
+    "inheritable_count": 5,
+    "receipt_count": 2,
+    "returned_object_ids": [
+      "co_2081120602",
+      "co_1a12003911",
+      "co_6b1f991eb0",
+      "co_d3026ecf2d",
+      "co_981c8f7eed"
+    ],
+    "receipt_ids": [
+      "receipt_daimon_live_vertical_slice_20260509_gemini_candidate_001",
+      "receipt_daimon_live_vertical_slice_20260509_live_seed_001"
+    ],
+    "mcp_visibility_trace": {
+      "schema": "ion.mcp_visibility_trace.v0_2",
+      "session_id": "daimon_live_vertical_slice_20260509",
+      "generated_at": "2026-05-10T22:30:48.679675Z",
+      "partner_track": "MongoDB",
+      "required_mcp_server": "MongoDB MCP Server",
+      "intended_agent_path": [
+        "Gemini carrier receives user question",
+        "Agent Builder calls MongoDB MCP tool for governed-state query",
+        "MongoDB query filters acceptance_status / inheritance_status",
+        "Gemini receives only receipt-cleared continuity objects",
+        "Gemini answer cites receipt IDs and excludes rejected/deferred/proof-debt objects"
+      ],
+      "accepted_only_query_shape": {
+        "schema": "ion.mongodb_mcp.accepted_only_query.v0_2",
+        "query": "Cloud Run evidence read for receipt-cleared dAimon continuity.",
+        "limit": 25,
+        "filter": {
+          "session_id": "daimon_live_vertical_slice_20260509",
+          "inheritance_status": "INHERITABLE_AFTER_RECEIPT",
+          "acceptance_status": {
+            "$in": [
+              "settled_accept_sample",
+              "ACCEPTED",
+              "RECEIPT_CLEARED",
+              "receipt_cleared"
+            ]
+          }
+        },
+        "projection": {
+          "_id": 0,
+          "object_id": 1,
+          "session_id": 1,
+          "source_file": 1,
+          "inferred_role": 1,
+          "authority_class": 1,
+          "authority_score": 1,
+          "acceptance_status": 1,
+          "inheritance_status": 1,
+          "proof_status": 1,
+          "text_hash": 1,
+          "settled_at": 1,
+          "settled_by": 1
+        },
+        "forbidden_statuses": [
+          "NOT_INHERITABLE_REJECTED",
+          "NOT_INHERITABLE_DEFERRED",
+          "NOT_INHERITABLE_PENDING_PROOF",
+          "NOT_INHERITABLE_AS_STATE_WITHOUT_SETTLEMENT"
+        ]
+      },
+      "mongodb_mcp_request_envelope": {
+        "schema": "ion.mongodb_mcp.request_envelope.v0_2",
+        "transport": "MongoDB MCP Server",
+        "tool_name": "mongodb.aggregate",
+        "operation_name": "aggregate",
+        "database": "ion_continuity_bridge",
+        "collection": "continuity_objects",
+        "read_only": true,
+        "arguments": {
+          "pipeline": [
+            {
+              "$match": {
+                "session_id": "daimon_live_vertical_slice_20260509",
+                "inheritance_status": "INHERITABLE_AFTER_RECEIPT",
+                "acceptance_status": {
+                  "$in": [
+                    "settled_accept_sample",
+                    "ACCEPTED",
+                    "RECEIPT_CLEARED",
+                    "receipt_cleared"
+                  ]
+                }
+              }
+            },
+            {
+              "$project": {
+                "_id": 0,
+                "object_id": 1,
+                "session_id": 1,
+                "source_file": 1,
+                "inferred_role": 1,
+                "authority_class": 1,
+                "authority_score": 1,
+                "acceptance_status": 1,
+                "inheritance_status": 1,
+                "proof_status": 1,
+                "text_hash": 1,
+                "settled_at": 1,
+                "settled_by": 1
+              }
+            },
+            {
+              "$limit": 25
+            }
+          ]
+        },
+        "state_boundary": {
+          "accepted_state_changed": false,
+          "external_mutation_attempted": false,
+          "writes_allowed": false,
+          "reason": "MCP visibility is read-only evidence; ION settlement and receipt law decide inheritance."
+        },
+        "trace_expectation": "A live Agent Builder run should show this tool name, filter, returned IDs, and receipt citations.",
+        "session_id": "daimon_live_vertical_slice_20260509"
+      },
+      "returned_continuity_object_ids": [
+        "co_2081120602",
+        "co_1a12003911",
+        "co_6b1f991eb0",
+        "co_d3026ecf2d",
+        "co_981c8f7eed"
+      ],
+      "sample_inherited_ids": [
+        "co_2081120602",
+        "co_1a12003911",
+        "co_6b1f991eb0",
+        "co_d3026ecf2d",
+        "co_981c8f7eed"
+      ],
+      "returned_object_citations": [
+        {
+          "object_id": "co_2081120602",
+          "receipt_ids": [
+            "receipt_daimon_live_vertical_slice_20260509_gemini_candidate_001",
+            "receipt_daimon_live_vertical_slice_20260509_live_seed_001"
+          ],
+          "receipt_proof_hash": "sha256:489a3da6fcd131fa9a715d1a79f4b2f7d753056928b73d380d6a216dc736b7d4",
+          "source_file": "sample_assistant_export.json",
+          "source_authority": {
+            "authority_class": "assistant_synthesis",
+            "authority_score": 45
+          },
+          "proof_status": "HAS_EVIDENCE_POINTER",
+          "text_hash": "e6e03ffed54536e4",
+          "inheritance_status": "INHERITABLE_AFTER_RECEIPT",
+          "acceptance_status": "settled_accept_sample"
+        },
+        {
+          "object_id": "co_1a12003911",
+          "receipt_ids": [
+            "receipt_daimon_live_vertical_slice_20260509_gemini_candidate_001",
+            "receipt_daimon_live_vertical_slice_20260509_live_seed_001"
+          ],
+          "receipt_proof_hash": "sha256:489a3da6fcd131fa9a715d1a79f4b2f7d753056928b73d380d6a216dc736b7d4",
+          "source_file": "sample_project_notes.md",
+          "source_authority": {
+            "authority_class": "unclassified_witness",
+            "authority_score": 35
+          },
+          "proof_status": "HAS_EVIDENCE_POINTER",
+          "text_hash": "3ea383ed8b514b5a",
+          "inheritance_status": "INHERITABLE_AFTER_RECEIPT",
+          "acceptance_status": "settled_accept_sample"
+        },
+        {
+          "object_id": "co_6b1f991eb0",
+          "receipt_ids": [
+            "receipt_daimon_live_vertical_slice_20260509_gemini_candidate_001",
+            "receipt_daimon_live_vertical_slice_20260509_live_seed_001"
+          ],
+          "receipt_proof_hash": "sha256:489a3da6fcd131fa9a715d1a79f4b2f7d753056928b73d380d6a216dc736b7d4",
+          "source_file": "sample_sources.csv",
+          "source_authority": {
+            "authority_class": "source_manifest_or_external_reference",
+            "authority_score": 72
+          },
+          "proof_status": "HAS_EVIDENCE_POINTER",
+          "text_hash": "c3bb3e3ede1f5ba5",
+          "inheritance_status": "INHERITABLE_AFTER_RECEIPT",
+          "acceptance_status": "settled_accept_sample"
+        },
+        {
+          "object_id": "co_d3026ecf2d",
+          "receipt_ids": [
+            "receipt_daimon_live_vertical_slice_20260509_gemini_candidate_001",
+            "receipt_daimon_live_vertical_slice_20260509_live_seed_001"
+          ],
+          "receipt_proof_hash": "sha256:489a3da6fcd131fa9a715d1a79f4b2f7d753056928b73d380d6a216dc736b7d4",
+          "source_file": "sample_sources.csv",
+          "source_authority": {
+            "authority_class": "source_manifest_or_external_reference",
+            "authority_score": 72
+          },
+          "proof_status": "HAS_EVIDENCE_POINTER",
+          "text_hash": "08a5e0397688e94c",
+          "inheritance_status": "INHERITABLE_AFTER_RECEIPT",
+          "acceptance_status": "settled_accept_sample"
+        },
+        {
+          "object_id": "co_981c8f7eed",
+          "receipt_ids": [
+            "receipt_daimon_live_vertical_slice_20260509_gemini_candidate_001",
+            "receipt_daimon_live_vertical_slice_20260509_live_seed_001"
+          ],
+          "receipt_proof_hash": "sha256:489a3da6fcd131fa9a715d1a79f4b2f7d753056928b73d380d6a216dc736b7d4",
+          "source_file": "sample_sources.csv",
+          "source_authority": {
+            "authority_class": "source_manifest_or_external_reference",
+            "authority_score": 72
+          },
+          "proof_status": "HAS_EVIDENCE_POINTER",
+          "text_hash": "55d0cdb9c9b4be6b",
+          "inheritance_status": "INHERITABLE_AFTER_RECEIPT",
+          "acceptance_status": "settled_accept_sample"
+        }
+      ],
+      "exclusion_report": {
+        "schema": "ion.mongodb_mcp.exclusion_report.v0_2",
+        "excluded_object_ids_by_reason": {
+          "rejected": [],
+          "deferred": [
+            "co_972623ea2e",
+            "co_7313833f42",
+            "co_22d65a85b0"
+          ],
+          "proof_debt": [
+            "co_50ba35b86a",
+            "co_da8c45e990",
+            "co_cb959c8f5e",
+            "co_1e2d385724"
+          ],
+          "witness_only": [
+            "co_bc18d8f96c",
+            "co_ad458ba568",
+            "co_258163f105"
+          ],
+          "other_not_inherited": []
+        },
+        "excluded_count": 10,
+        "returned_excluded_overlap": [],
+        "exclusion_note": "Rejected, deferred, proof-debt, and witness-only objects were excluded from returned governed context."
+      },
+      "answer_citation_trace": {
+        "mode": "local_sample_answer_trace",
+        "answer_must_cite": [
+          {
+            "object_id": "co_2081120602",
+            "receipt_ids": [
+              "receipt_daimon_live_vertical_slice_20260509_gemini_candidate_001",
+              "receipt_daimon_live_vertical_slice_20260509_live_seed_001"
+            ],
+            "receipt_proof_hash": "sha256:489a3da6fcd131fa9a715d1a79f4b2f7d753056928b73d380d6a216dc736b7d4"
+          },
+          {
+            "object_id": "co_1a12003911",
+            "receipt_ids": [
+              "receipt_daimon_live_vertical_slice_20260509_gemini_candidate_001",
+              "receipt_daimon_live_vertical_slice_20260509_live_seed_001"
+            ],
+            "receipt_proof_hash": "sha256:489a3da6fcd131fa9a715d1a79f4b2f7d753056928b73d380d6a216dc736b7d4"
+          },
+          {
+            "object_id": "co_6b1f991eb0",
+            "receipt_ids": [
+              "receipt_daimon_live_vertical_slice_20260509_gemini_candidate_001",
+              "receipt_daimon_live_vertical_slice_20260509_live_seed_001"
+            ],
+            "receipt_proof_hash": "sha256:489a3da6fcd131fa9a715d1a79f4b2f7d753056928b73d380d6a216dc736b7d4"
+          },
+          {
+            "object_id": "co_d3026ecf2d",
+            "receipt_ids": [
+              "receipt_daimon_live_vertical_slice_20260509_gemini_candidate_001",
+              "receipt_daimon_live_vertical_slice_20260509_live_seed_001"
+            ],
+            "receipt_proof_hash": "sha256:489a3da6fcd131fa9a715d1a79f4b2f7d753056928b73d380d6a216dc736b7d4"
+          },
+          {
+            "object_id": "co_981c8f7eed",
+            "receipt_ids": [
+              "receipt_daimon_live_vertical_slice_20260509_gemini_candidate_001",
+              "receipt_daimon_live_vertical_slice_20260509_live_seed_001"
+            ],
+            "receipt_proof_hash": "sha256:489a3da6fcd131fa9a715d1a79f4b2f7d753056928b73d380d6a216dc736b7d4"
+          }
+        ],
+        "answer_must_not_claim": [
+          "No rejected object is inherited as state.",
+          "No deferred object is inherited as state.",
+          "No proof-debt object is inherited as settled fact.",
+          "No live MongoDB MCP call is proven unless a live Agent Builder trace is attached."
+        ]
+      },
+      "minimum_demo_evidence": [
+        "MCP server config visible in repo",
+        "Agent tool definition named query_governed_state_via_mongodb_mcp",
+        "Trace screenshot or log line from Agent Builder showing MCP call",
+        "Returned object IDs match inheritance bundle",
+        "Receipt IDs or proof hash are attached to every returned object"
+      ],
+      "validation_expectations": {
+        "returned_ids_subset_of_inheritance_bundle": true,
+        "returned_excluded_overlap_count": 0,
+        "receipt_citation_count": 5,
+        "accepted_state_changed": false,
+        "external_mutation_attempted": false
+      },
+      "non_claim": "This local trace is a harness artifact; the judged build must attach a real Agent Builder/MongoDB MCP call trace before claiming live MCP execution.",
+      "accepted_state_changed": false,
+      "external_mutation_attempted": false,
+      "dashboard_trace_rows": [
+        {
+          "phase": "inheritance_bundle",
+          "status": "observed",
+          "evidence": "sample_outputs/inheritance_bundle.json",
+          "detail": "5 receipt-cleared object IDs selected for retrieval."
+        },
+        {
+          "phase": "accepted_only_query_shape",
+          "status": "gated",
+          "evidence": "accepted_only_query_shape.filter",
+          "detail": "{'session_id': 'daimon_live_vertical_slice_20260509', 'inheritance_status': 'INHERITABLE_AFTER_RECEIPT', 'acceptance_status': {'$in': ['settled_accept_sample', 'ACCEPTED', 'RECEIPT_CLEARED', 'receipt_cleared']}}"
+        },
+        {
+          "phase": "mongodb_mcp_request_envelope",
+          "status": "read_only",
+          "evidence": "mongodb_mcp_request_envelope.arguments.pipeline",
+          "detail": "mongodb.aggregate on ion_continuity_bridge.continuity_objects"
+        },
+        {
+          "phase": "returned_object_ids",
+          "status": "receipt_cited",
+          "evidence": "returned_object_citations",
+          "detail": "co_2081120602, co_1a12003911, co_6b1f991eb0, co_d3026ecf2d, co_981c8f7eed"
+        },
+        {
+          "phase": "excluded_non_inheritable",
+          "status": "excluded",
+          "evidence": "exclusion_report",
+          "detail": "10 non-inheritable objects excluded; overlap=[]"
+        }
+      ]
+    },
+    "accepted_state_changed": false,
+    "external_mutation_attempted": false
+  },
+  "post_endpoint_probe": {
+    "schema": "daimon.find_continuity_objects.live_response.v0_1",
+    "tool_name": "find_continuity_objects",
+    "session_id": "daimon_live_vertical_slice_20260509",
+    "query": "Find receipt-cleared dAimon continuity for the next Gemini session.",
+    "matches": [
+      {
+        "object_id": "co_2081120602",
+        "acceptance_role": "ACCEPTED_FOR_SAMPLE_INHERITANCE",
+        "acceptance_status": "settled_accept_sample",
+        "authority_class": "assistant_synthesis",
+        "authority_score": 45,
+        "created_at": "2026-05-09T23:38:54.074942Z",
+        "declared_type": "assistant_synthesis",
+        "inferred_role": "RECEIPT_REFERENCE",
+        "inheritance_status": "INHERITABLE_AFTER_RECEIPT",
+        "proof_status": "HAS_EVIDENCE_POINTER",
+        "requires_settlement": true,
+        "risk_flags": [
+          "low_authority_import"
+        ],
+        "session_id": "daimon_live_vertical_slice_20260509",
+        "settled_at": "2026-05-09T23:38:54.075564Z",
+        "settled_by": "live_vertical_slice_operator",
+        "settlement_decision": "ACCEPT",
+        "source_file": "sample_assistant_export.json",
+        "source_format": "json_items",
+        "text": "ION should use MongoDB as a continuity substrate for accepted context and receipts.",
+        "text_hash": "e6e03ffed54536e4"
+      },
+      {
+        "object_id": "co_1a12003911",
+        "acceptance_role": "ACCEPTED_FOR_SAMPLE_INHERITANCE",
+        "acceptance_status": "settled_accept_sample",
+        "authority_class": "unclassified_witness",
+        "authority_score": 35,
+        "created_at": "2026-05-09T23:38:54.075196Z",
+        "declared_type": "markdown_note",
+        "inferred_role": "RECEIPT_REFERENCE",
+        "inheritance_status": "INHERITABLE_AFTER_RECEIPT",
+        "proof_status": "HAS_EVIDENCE_POINTER",
+        "requires_settlement": true,
+        "risk_flags": [
+          "low_authority_import"
+        ],
+        "session_id": "daimon_live_vertical_slice_20260509",
+        "settled_at": "2026-05-09T23:38:54.075574Z",
+        "settled_by": "live_vertical_slice_operator",
+        "settlement_decision": "ACCEPT",
+        "source_file": "sample_project_notes.md",
+        "source_format": "markdown_chunk",
+        "text": "# Operator notes\n\nThe contest demo should show two sessions.\n\nSession A imports messy AI work and classifies continuity objects.\n\nSession B must inherit only accepted, receipt-cleared state \u2014 not the entire raw chat export.",
+        "text_hash": "3ea383ed8b514b5a"
+      },
+      {
+        "object_id": "co_6b1f991eb0",
+        "acceptance_role": "ACCEPTED_FOR_SAMPLE_INHERITANCE",
+        "acceptance_status": "settled_accept_sample",
+        "authority_class": "source_manifest_or_external_reference",
+        "authority_score": 72,
+        "created_at": "2026-05-09T23:38:54.075297Z",
+        "declared_type": "source",
+        "inferred_role": "SOURCE_REFERENCE",
+        "inheritance_status": "INHERITABLE_AFTER_RECEIPT",
+        "proof_status": "HAS_EVIDENCE_POINTER",
+        "requires_settlement": true,
+        "risk_flags": [],
+        "session_id": "daimon_live_vertical_slice_20260509",
+        "settled_at": "2026-05-09T23:38:54.075577Z",
+        "settled_by": "live_vertical_slice_operator",
+        "settlement_decision": "ACCEPT",
+        "source_file": "sample_sources.csv",
+        "source_format": "csv_row",
+        "text": "https://rapid-agent.devpost.com/ says the project must be a functional agent powered by Gemini and Google Cloud Agent Builder with a partner MCP server.",
+        "text_hash": "c3bb3e3ede1f5ba5"
+      },
+      {
+        "object_id": "co_981c8f7eed",
+        "acceptance_role": "ACCEPTED_FOR_SAMPLE_INHERITANCE",
+        "acceptance_status": "settled_accept_sample",
+        "authority_class": "source_manifest_or_external_reference",
+        "authority_score": 72,
+        "created_at": "2026-05-09T23:38:54.075340Z",
+        "declared_type": "source",
+        "inferred_role": "SOURCE_REFERENCE",
+        "inheritance_status": "INHERITABLE_AFTER_RECEIPT",
+        "proof_status": "HAS_EVIDENCE_POINTER",
+        "requires_settlement": true,
+        "risk_flags": [],
+        "session_id": "daimon_live_vertical_slice_20260509",
+        "settled_at": "2026-05-09T23:38:54.075579Z",
+        "settled_by": "live_vertical_slice_operator",
+        "settlement_decision": "ACCEPT",
+        "source_file": "sample_sources.csv",
+        "source_format": "csv_row",
+        "text": "ION core law: output is not state until grounded proof-marked settled receipted and carried forward.",
+        "text_hash": "55d0cdb9c9b4be6b"
+      }
+    ],
+    "receipt_ids": [
+      "receipt_daimon_live_vertical_slice_20260509_gemini_candidate_001",
+      "receipt_daimon_live_vertical_slice_20260509_live_seed_001"
+    ],
+    "mcp_visibility_trace": {
+      "schema": "ion.mcp_visibility_trace.v0_2",
+      "session_id": "daimon_live_vertical_slice_20260509",
+      "generated_at": "2026-05-10T22:30:48.868269Z",
+      "partner_track": "MongoDB",
+      "required_mcp_server": "MongoDB MCP Server",
+      "intended_agent_path": [
+        "Gemini carrier receives user question",
+        "Agent Builder calls MongoDB MCP tool for governed-state query",
+        "MongoDB query filters acceptance_status / inheritance_status",
+        "Gemini receives only receipt-cleared continuity objects",
+        "Gemini answer cites receipt IDs and excludes rejected/deferred/proof-debt objects"
+      ],
+      "accepted_only_query_shape": {
+        "schema": "ion.mongodb_mcp.accepted_only_query.v0_2",
+        "query": "Find receipt-cleared dAimon continuity for the next Gemini session.",
+        "limit": 5,
+        "filter": {
+          "session_id": "daimon_live_vertical_slice_20260509",
+          "inheritance_status": "INHERITABLE_AFTER_RECEIPT",
+          "acceptance_status": {
+            "$in": [
+              "settled_accept_sample",
+              "ACCEPTED",
+              "RECEIPT_CLEARED",
+              "receipt_cleared"
+            ]
+          }
+        },
+        "projection": {
+          "_id": 0,
+          "object_id": 1,
+          "session_id": 1,
+          "source_file": 1,
+          "inferred_role": 1,
+          "authority_class": 1,
+          "authority_score": 1,
+          "acceptance_status": 1,
+          "inheritance_status": 1,
+          "proof_status": 1,
+          "text_hash": 1,
+          "settled_at": 1,
+          "settled_by": 1
+        },
+        "forbidden_statuses": [
+          "NOT_INHERITABLE_REJECTED",
+          "NOT_INHERITABLE_DEFERRED",
+          "NOT_INHERITABLE_PENDING_PROOF",
+          "NOT_INHERITABLE_AS_STATE_WITHOUT_SETTLEMENT"
+        ]
+      },
+      "mongodb_mcp_request_envelope": {
+        "schema": "ion.mongodb_mcp.request_envelope.v0_2",
+        "transport": "MongoDB MCP Server",
+        "tool_name": "mongodb.aggregate",
+        "operation_name": "aggregate",
+        "database": "ion_continuity_bridge",
+        "collection": "continuity_objects",
+        "read_only": true,
+        "arguments": {
+          "pipeline": [
+            {
+              "$match": {
+                "session_id": "daimon_live_vertical_slice_20260509",
+                "inheritance_status": "INHERITABLE_AFTER_RECEIPT",
+                "acceptance_status": {
+                  "$in": [
+                    "settled_accept_sample",
+                    "ACCEPTED",
+                    "RECEIPT_CLEARED",
+                    "receipt_cleared"
+                  ]
+                }
+              }
+            },
+            {
+              "$project": {
+                "_id": 0,
+                "object_id": 1,
+                "session_id": 1,
+                "source_file": 1,
+                "inferred_role": 1,
+                "authority_class": 1,
+                "authority_score": 1,
+                "acceptance_status": 1,
+                "inheritance_status": 1,
+                "proof_status": 1,
+                "text_hash": 1,
+                "settled_at": 1,
+                "settled_by": 1
+              }
+            },
+            {
+              "$limit": 5
+            }
+          ]
+        },
+        "state_boundary": {
+          "accepted_state_changed": false,
+          "external_mutation_attempted": false,
+          "writes_allowed": false,
+          "reason": "MCP visibility is read-only evidence; ION settlement and receipt law decide inheritance."
+        },
+        "trace_expectation": "A live Agent Builder run should show this tool name, filter, returned IDs, and receipt citations.",
+        "session_id": "daimon_live_vertical_slice_20260509"
+      },
+      "returned_continuity_object_ids": [
+        "co_2081120602",
+        "co_1a12003911",
+        "co_6b1f991eb0",
+        "co_981c8f7eed"
+      ],
+      "sample_inherited_ids": [
+        "co_2081120602",
+        "co_1a12003911",
+        "co_6b1f991eb0",
+        "co_981c8f7eed"
+      ],
+      "returned_object_citations": [
+        {
+          "object_id": "co_2081120602",
+          "receipt_ids": [
+            "receipt_daimon_live_vertical_slice_20260509_gemini_candidate_001",
+            "receipt_daimon_live_vertical_slice_20260509_live_seed_001"
+          ],
+          "receipt_proof_hash": "sha256:489a3da6fcd131fa9a715d1a79f4b2f7d753056928b73d380d6a216dc736b7d4",
+          "source_file": "sample_assistant_export.json",
+          "source_authority": {
+            "authority_class": "assistant_synthesis",
+            "authority_score": 45
+          },
+          "proof_status": "HAS_EVIDENCE_POINTER",
+          "text_hash": "e6e03ffed54536e4",
+          "inheritance_status": "INHERITABLE_AFTER_RECEIPT",
+          "acceptance_status": "settled_accept_sample"
+        },
+        {
+          "object_id": "co_1a12003911",
+          "receipt_ids": [
+            "receipt_daimon_live_vertical_slice_20260509_gemini_candidate_001",
+            "receipt_daimon_live_vertical_slice_20260509_live_seed_001"
+          ],
+          "receipt_proof_hash": "sha256:489a3da6fcd131fa9a715d1a79f4b2f7d753056928b73d380d6a216dc736b7d4",
+          "source_file": "sample_project_notes.md",
+          "source_authority": {
+            "authority_class": "unclassified_witness",
+            "authority_score": 35
+          },
+          "proof_status": "HAS_EVIDENCE_POINTER",
+          "text_hash": "3ea383ed8b514b5a",
+          "inheritance_status": "INHERITABLE_AFTER_RECEIPT",
+          "acceptance_status": "settled_accept_sample"
+        },
+        {
+          "object_id": "co_6b1f991eb0",
+          "receipt_ids": [
+            "receipt_daimon_live_vertical_slice_20260509_gemini_candidate_001",
+            "receipt_daimon_live_vertical_slice_20260509_live_seed_001"
+          ],
+          "receipt_proof_hash": "sha256:489a3da6fcd131fa9a715d1a79f4b2f7d753056928b73d380d6a216dc736b7d4",
+          "source_file": "sample_sources.csv",
+          "source_authority": {
+            "authority_class": "source_manifest_or_external_reference",
+            "authority_score": 72
+          },
+          "proof_status": "HAS_EVIDENCE_POINTER",
+          "text_hash": "c3bb3e3ede1f5ba5",
+          "inheritance_status": "INHERITABLE_AFTER_RECEIPT",
+          "acceptance_status": "settled_accept_sample"
+        },
+        {
+          "object_id": "co_981c8f7eed",
+          "receipt_ids": [
+            "receipt_daimon_live_vertical_slice_20260509_gemini_candidate_001",
+            "receipt_daimon_live_vertical_slice_20260509_live_seed_001"
+          ],
+          "receipt_proof_hash": "sha256:489a3da6fcd131fa9a715d1a79f4b2f7d753056928b73d380d6a216dc736b7d4",
+          "source_file": "sample_sources.csv",
+          "source_authority": {
+            "authority_class": "source_manifest_or_external_reference",
+            "authority_score": 72
+          },
+          "proof_status": "HAS_EVIDENCE_POINTER",
+          "text_hash": "55d0cdb9c9b4be6b",
+          "inheritance_status": "INHERITABLE_AFTER_RECEIPT",
+          "acceptance_status": "settled_accept_sample"
+        }
+      ],
+      "exclusion_report": {
+        "schema": "ion.mongodb_mcp.exclusion_report.v0_2",
+        "excluded_object_ids_by_reason": {
+          "rejected": [],
+          "deferred": [
+            "co_972623ea2e",
+            "co_7313833f42",
+            "co_22d65a85b0"
+          ],
+          "proof_debt": [
+            "co_50ba35b86a",
+            "co_da8c45e990",
+            "co_cb959c8f5e",
+            "co_1e2d385724"
+          ],
+          "witness_only": [
+            "co_bc18d8f96c",
+            "co_ad458ba568",
+            "co_258163f105"
+          ],
+          "other_not_inherited": [
+            "co_d3026ecf2d"
+          ]
+        },
+        "excluded_count": 11,
+        "returned_excluded_overlap": [],
+        "exclusion_note": "Rejected, deferred, proof-debt, and witness-only objects were excluded from returned governed context."
+      },
+      "answer_citation_trace": {
+        "mode": "local_sample_answer_trace",
+        "answer_must_cite": [
+          {
+            "object_id": "co_2081120602",
+            "receipt_ids": [
+              "receipt_daimon_live_vertical_slice_20260509_gemini_candidate_001",
+              "receipt_daimon_live_vertical_slice_20260509_live_seed_001"
+            ],
+            "receipt_proof_hash": "sha256:489a3da6fcd131fa9a715d1a79f4b2f7d753056928b73d380d6a216dc736b7d4"
+          },
+          {
+            "object_id": "co_1a12003911",
+            "receipt_ids": [
+              "receipt_daimon_live_vertical_slice_20260509_gemini_candidate_001",
+              "receipt_daimon_live_vertical_slice_20260509_live_seed_001"
+            ],
+            "receipt_proof_hash": "sha256:489a3da6fcd131fa9a715d1a79f4b2f7d753056928b73d380d6a216dc736b7d4"
+          },
+          {
+            "object_id": "co_6b1f991eb0",
+            "receipt_ids": [
+              "receipt_daimon_live_vertical_slice_20260509_gemini_candidate_001",
+              "receipt_daimon_live_vertical_slice_20260509_live_seed_001"
+            ],
+            "receipt_proof_hash": "sha256:489a3da6fcd131fa9a715d1a79f4b2f7d753056928b73d380d6a216dc736b7d4"
+          },
+          {
+            "object_id": "co_981c8f7eed",
+            "receipt_ids": [
+              "receipt_daimon_live_vertical_slice_20260509_gemini_candidate_001",
+              "receipt_daimon_live_vertical_slice_20260509_live_seed_001"
+            ],
+            "receipt_proof_hash": "sha256:489a3da6fcd131fa9a715d1a79f4b2f7d753056928b73d380d6a216dc736b7d4"
+          }
+        ],
+        "answer_must_not_claim": [
+          "No rejected object is inherited as state.",
+          "No deferred object is inherited as state.",
+          "No proof-debt object is inherited as settled fact.",
+          "No live MongoDB MCP call is proven unless a live Agent Builder trace is attached."
+        ]
+      },
+      "minimum_demo_evidence": [
+        "MCP server config visible in repo",
+        "Agent tool definition named query_governed_state_via_mongodb_mcp",
+        "Trace screenshot or log line from Agent Builder showing MCP call",
+        "Returned object IDs match inheritance bundle",
+        "Receipt IDs or proof hash are attached to every returned object"
+      ],
+      "validation_expectations": {
+        "returned_ids_subset_of_inheritance_bundle": true,
+        "returned_excluded_overlap_count": 0,
+        "receipt_citation_count": 4,
+        "accepted_state_changed": false,
+        "external_mutation_attempted": false
+      },
+      "non_claim": "This local trace is a harness artifact; the judged build must attach a real Agent Builder/MongoDB MCP call trace before claiming live MCP execution.",
+      "accepted_state_changed": false,
+      "external_mutation_attempted": false,
+      "dashboard_trace_rows": [
+        {
+          "phase": "inheritance_bundle",
+          "status": "observed",
+          "evidence": "sample_outputs/inheritance_bundle.json",
+          "detail": "4 receipt-cleared object IDs selected for retrieval."
+        },
+        {
+          "phase": "accepted_only_query_shape",
+          "status": "gated",
+          "evidence": "accepted_only_query_shape.filter",
+          "detail": "{'session_id': 'daimon_live_vertical_slice_20260509', 'inheritance_status': 'INHERITABLE_AFTER_RECEIPT', 'acceptance_status': {'$in': ['settled_accept_sample', 'ACCEPTED', 'RECEIPT_CLEARED', 'receipt_cleared']}}"
+        },
+        {
+          "phase": "mongodb_mcp_request_envelope",
+          "status": "read_only",
+          "evidence": "mongodb_mcp_request_envelope.arguments.pipeline",
+          "detail": "mongodb.aggregate on ion_continuity_bridge.continuity_objects"
+        },
+        {
+          "phase": "returned_object_ids",
+          "status": "receipt_cited",
+          "evidence": "returned_object_citations",
+          "detail": "co_2081120602, co_1a12003911, co_6b1f991eb0, co_981c8f7eed"
+        },
+        {
+          "phase": "excluded_non_inheritable",
+          "status": "excluded",
+          "evidence": "exclusion_report",
+          "detail": "11 non-inheritable objects excluded; overlap=[]"
+        }
+      ]
+    },
+    "governance_filter": {
+      "inheritance_status": "INHERITABLE_AFTER_RECEIPT",
+      "acceptance_status_allowlist": [
+        "settled_accept_sample",
+        "ACCEPTED",
+        "RECEIPT_CLEARED",
+        "receipt_cleared"
+      ]
+    },
+    "state_boundary": "read_only_live_mongodb_adapter_query",
+    "accepted_state_changed": false,
+    "external_mutation_attempted": false
+  },
+  "blockers": [],
+  "schema": "daimon.cloud_run_live_health.v0_1",
+  "accepted_state_changed": false,
+  "external_mutation_attempted": false
+}

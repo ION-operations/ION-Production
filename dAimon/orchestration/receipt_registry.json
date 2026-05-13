@@ -1,0 +1,228 @@
+{
+  "schema": "daimon.orchestration.receipt_registry.v0_1",
+  "project": "dAimon",
+  "generated_on": "2026-05-09",
+  "receipt_definition": "A receipt is a public, checkable account of what was attempted, what context and proof were used, what changed, what was rejected or deferred, and what future work may inherit.",
+  "required_receipt_fields": [
+    "receipt_id",
+    "template_id",
+    "domain_id",
+    "objective",
+    "inputs",
+    "context_refs",
+    "proof_refs",
+    "authority_scope",
+    "settlement_decision",
+    "accepted_state_changed",
+    "external_mutation_attempted",
+    "accepted_object_ids",
+    "excluded_object_ids",
+    "deferred_object_ids",
+    "inheritance_permissions",
+    "non_claims",
+    "created_at"
+  ],
+  "settlement_decisions": [
+    "accepted",
+    "accepted_with_caveats",
+    "rejected",
+    "deferred",
+    "needs_human_review",
+    "needs_more_proof",
+    "merged",
+    "archived_as_witness"
+  ],
+  "receipt_types": [
+    {
+      "receipt_type_id": "import_receipt",
+      "name": "Import Receipt",
+      "purpose": "Records that source material entered as witness-only candidate context.",
+      "required_extra_fields": [
+        "source_kind",
+        "source_locator",
+        "import_scope"
+      ],
+      "inheritance_rule": "Never inheritable by itself; must pass classification and settlement."
+    },
+    {
+      "receipt_type_id": "classification_receipt",
+      "name": "Classification Receipt",
+      "purpose": "Records how witness material became candidate continuity objects.",
+      "required_extra_fields": [
+        "classification_taxonomy",
+        "object_type_counts",
+        "ambiguous_object_ids"
+      ],
+      "inheritance_rule": "Classification creates candidate objects only; accepted inheritance still requires settlement."
+    },
+    {
+      "receipt_type_id": "settlement_receipt",
+      "name": "Settlement Receipt",
+      "purpose": "Records accepted, rejected, deferred, or review-required outcomes for candidate objects.",
+      "required_extra_fields": [
+        "settlement_policy",
+        "reviewer",
+        "decision_reason"
+      ],
+      "inheritance_rule": "Accepted and accepted_with_caveats objects may become inheritable when receipt-cited."
+    },
+    {
+      "receipt_type_id": "inheritance_receipt",
+      "name": "Inheritance Receipt",
+      "purpose": "Records the accepted-only context bundle exported to a future session or carrier.",
+      "required_extra_fields": [
+        "requesting_role",
+        "bundle_scope",
+        "excluded_witness_summary"
+      ],
+      "inheritance_rule": "Defines what the named future session or carrier may rely on."
+    },
+    {
+      "receipt_type_id": "visibility_trace_receipt",
+      "name": "Visibility Trace Receipt",
+      "purpose": "Records what retrieval considered, returned, excluded, and cited.",
+      "required_extra_fields": [
+        "considered_count",
+        "returned_count",
+        "excluded_count",
+        "trace_backend"
+      ],
+      "inheritance_rule": "Trace is proof of retrieval boundaries, not an accepted-state mutation."
+    },
+    {
+      "receipt_type_id": "route_receipt",
+      "name": "Route Receipt",
+      "purpose": "Records why a carrier, tool, or human review path was selected.",
+      "required_extra_fields": [
+        "carrier",
+        "risk_level",
+        "required_permissions",
+        "side_effect_class"
+      ],
+      "inheritance_rule": "Route decisions are inheritable only as operational context, not as proof that carrier output is true."
+    },
+    {
+      "receipt_type_id": "deployment_receipt",
+      "name": "Deployment Receipt",
+      "purpose": "Records a Google Cloud or hosted runtime deployment event.",
+      "required_extra_fields": [
+        "commit",
+        "build_id_or_image_digest",
+        "service_url",
+        "health_check_result",
+        "config_keys"
+      ],
+      "inheritance_rule": "Deployment facts may be inherited after health proof; production readiness remains a separate claim."
+    },
+    {
+      "receipt_type_id": "demo_claim_receipt",
+      "name": "Demo Claim Receipt",
+      "purpose": "Records which demo claims are proven, local-only, live, roadmap, or non-claims.",
+      "required_extra_fields": [
+        "claim_inventory",
+        "unsupported_claims",
+        "required_edits"
+      ],
+      "inheritance_rule": "Accepted demo claims may be used in submission assets; unsupported claims must not be presented as proof."
+    },
+    {
+      "receipt_type_id": "release_receipt",
+      "name": "Release Receipt",
+      "purpose": "Records the validation and proof boundary for a release candidate or contest submission.",
+      "required_extra_fields": [
+        "validation_commands",
+        "validation_results",
+        "known_gaps",
+        "submission_status"
+      ],
+      "inheritance_rule": "Release receipts can be cited by demo and audit material."
+    },
+    {
+      "receipt_type_id": "adapter_path_receipt",
+      "name": "Adapter Path Receipt",
+      "purpose": "Records how an object moved through an external system adapter, normalized object, authority classification, and cross-surface settlement path.",
+      "required_extra_fields": [
+        "adapter_id",
+        "source_system",
+        "source_object_id",
+        "lineage_edges",
+        "authority_classification"
+      ],
+      "inheritance_rule": "Adapter-derived objects may inherit only through the settled lineage path and receipt."
+    },
+    {
+      "receipt_type_id": "continuation_receipt",
+      "name": "Continuation Receipt",
+      "purpose": "Records a portable context package or continuation packet replay across carriers, devices, or local machines.",
+      "required_extra_fields": [
+        "project_id",
+        "context_package_id",
+        "target_carrier",
+        "packet_nonce",
+        "excluded_witness_summary"
+      ],
+      "inheritance_rule": "Future sessions may inherit only the receipt-cleared context included in the package scope."
+    },
+    {
+      "receipt_type_id": "voice_confirmation_receipt",
+      "name": "Voice Confirmation Receipt",
+      "purpose": "Records that a high-risk voice-derived instruction was paused, clarified, confirmed, or blocked.",
+      "required_extra_fields": [
+        "risk_phrase_matches",
+        "transcript_source",
+        "confirmation_status",
+        "blocked_action_summary"
+      ],
+      "inheritance_rule": "Voice-derived packets remain non-executable for high-risk actions until confirmation is receipted."
+    },
+    {
+      "receipt_type_id": "security_containment_receipt",
+      "name": "Security Containment Receipt",
+      "purpose": "Records bounded red-team or high-risk testing in a lab environment with synthetic secrets and containment boundaries.",
+      "required_extra_fields": [
+        "threat_class",
+        "sandbox_target",
+        "synthetic_secret_scope",
+        "detector_result",
+        "retest_required"
+      ],
+      "inheritance_rule": "Security findings may be inherited as warnings or tasks, not as proof of production security certification."
+    },
+    {
+      "receipt_type_id": "first_contact_receipt",
+      "name": "First Contact Receipt",
+      "purpose": "Records creation of a project-bound continuity lane and first contact package for a public GPT or other carrier.",
+      "required_extra_fields": [
+        "project_id",
+        "public_project_hash",
+        "carrier_class",
+        "allowed_action_scope",
+        "pairing_required"
+      ],
+      "inheritance_rule": "Project identity can route future packets, but project_id alone does not grant mutation authority."
+    },
+    {
+      "receipt_type_id": "collaboration_receipt",
+      "name": "Collaboration Receipt",
+      "purpose": "Records scoped project invitations, collaborator roles, and capability-token boundaries.",
+      "required_extra_fields": [
+        "project_id",
+        "collaborator_role",
+        "capability_scope",
+        "token_reference",
+        "revocation_policy"
+      ],
+      "inheritance_rule": "Collaborator actions become shared state only through settlement and receipt-backed inheritance."
+    }
+  ],
+  "inheritance_status_rules": {
+    "accepted": "May inherit when receipt-cited and inside role/domain scope.",
+    "accepted_with_caveats": "May inherit only with caveat text preserved.",
+    "rejected": "May appear as witness or warning, but not as trusted context.",
+    "deferred": "May appear as pending work, but not as accepted fact.",
+    "needs_human_review": "May not inherit as trusted state until review is settled.",
+    "needs_more_proof": "May not inherit as trusted state until proof is supplied and settled.",
+    "merged": "May inherit through the target merged object and receipt.",
+    "archived_as_witness": "May be inspected but not trusted."
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "schema": "ion.capability_router_demo.summary.v0_9",
+  "generated_at": "2026-05-09T16:49:23.063069+00:00",
+  "graph": "capability_graph/capability_graph_seed.json",
+  "routes": [
+    {
+      "objective": "Which current docs support the contest claim?",
+      "route_status": "ROUTED",
+      "route_rule": "route_source_authority",
+      "domain": "SOURCE_AUTHORITY",
+      "agent_role": "CANON_LIBRARIAN",
+      "capabilities": [
+        "google_agent_platform",
+        "mongodb_vector_search",
+        "ion_kernel"
+      ],
+      "authority_ceiling": "read_only_candidate_synthesis",
+      "proof_obligations": [
+        "fresh official source pointer",
+        "retrieval trace",
+        "receipt candidate"
+      ],
+      "state_claim": "candidate_route_only"
+    },
+    {
+      "objective": "Accept these candidate claims into future context.",
+      "route_status": "ROUTED",
+      "route_rule": "route_settlement",
+      "domain": "SETTLEMENT_LAW",
+      "agent_role": "STEWARD",
+      "capabilities": [
+        "ion_kernel",
+        "mongodb_atlas"
+      ],
+      "authority_ceiling": "human_gate_required",
+      "proof_obligations": [
+        "settlement decision",
+        "receipt",
+        "state-surface sync"
+      ],
+      "state_claim": "candidate_route_only"
+    },
+    {
+      "objective": "What may the next Gemini session inherit?",
+      "route_status": "ROUTED",
+      "route_rule": "route_settlement",
+      "domain": "SETTLEMENT_LAW",
+      "agent_role": "STEWARD",
+      "capabilities": [
+        "ion_kernel",
+        "mongodb_atlas"
+      ],
+      "authority_ceiling": "human_gate_required",
+      "proof_obligations": [
+        "settlement decision",
+        "receipt",
+        "state-surface sync"
+      ],
+      "state_claim": "candidate_route_only"
+    },
+    {
+      "objective": "Write this to production state.",
+      "route_status": "ROUTED",
+      "route_rule": "route_settlement",
+      "domain": "SETTLEMENT_LAW",
+      "agent_role": "STEWARD",
+      "capabilities": [
+        "ion_kernel",
+        "mongodb_atlas"
+      ],
+      "authority_ceiling": "human_gate_required",
+      "proof_obligations": [
+        "settlement decision",
+        "receipt",
+        "state-surface sync"
+      ],
+      "state_claim": "candidate_route_only"
+    },
+    {
+      "objective": "Make a beautiful presentation tomorrow.",
+      "route_status": "DEFERRED",
+      "domain": "UNCLASSIFIED",
+      "agent_role": "ROUTER_REVIEW",
+      "capabilities": [],
+      "authority_ceiling": "human_review_required",
+      "proof_obligations": [
+        "operator classification"
+      ],
+      "state_claim": "candidate_route_only"
+    }
+  ],
+  "route_counts": {
+    "total": 5,
+    "routed": 4,
+    "deferred": 1
+  },
+  "accepted_state_changed": false,
+  "external_mutation_attempted": false,
+  "non_claims": [
+    "No Google Cloud, Gemini, MongoDB Atlas, or MCP call was made.",
+    "Routes are candidate suggestions and require validation before action.",
+    "The capability graph is a seed, not an exhaustive Google infrastructure map."
+  ]
+}

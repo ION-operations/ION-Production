@@ -1,0 +1,121 @@
+{
+  "ok": true,
+  "proof_status": "google_user_access_ready",
+  "project": "vivid-spot-495900-q4",
+  "region": "us-central1",
+  "service": "daimon-ion-kernel",
+  "cloud_run_url": "https://daimon-ion-kernel-3amc5vjaeq-uc.a.run.app",
+  "gcloud": {
+    "path": "/home/sev/google-cloud-sdk/bin/gcloud",
+    "active_account_present": true,
+    "configured_project": "vivid-spot-495900-q4"
+  },
+  "target_principals": [
+    "user:braden.bohme@black-ops-research.com"
+  ],
+  "runtime_identity": {
+    "agent_engine_resource": "projects/482597322974/locations/us-central1/reasoningEngines/8971254570361552896",
+    "agent_service_account": "482597322974-compute@developer.gserviceaccount.com",
+    "cloud_run_service_account": "482597322974-compute@developer.gserviceaccount.com"
+  },
+  "access_rows": [
+    {
+      "principal": "user:braden.bohme@black-ops-research.com",
+      "cloud_run_invocation": {
+        "ok": true,
+        "via_public_invoker": false,
+        "direct_role_observed": true,
+        "service_roles": [],
+        "project_roles": [
+          "roles/owner"
+        ]
+      },
+      "vertex_agent_engine_access": {
+        "ok": true,
+        "project_roles": [
+          "roles/owner"
+        ],
+        "expected_any_role": [
+          "roles/aiplatform.admin",
+          "roles/aiplatform.user",
+          "roles/editor",
+          "roles/owner"
+        ]
+      },
+      "console_project_visibility": {
+        "ok": true,
+        "project_roles": [
+          "roles/owner"
+        ],
+        "expected_any_role": [
+          "roles/aiplatform.admin",
+          "roles/aiplatform.user",
+          "roles/browser",
+          "roles/editor",
+          "roles/owner",
+          "roles/viewer"
+        ]
+      }
+    }
+  ],
+  "checks": [
+    {
+      "check_id": "gcloud_present",
+      "status": "pass",
+      "detail": "gcloud CLI is available.",
+      "evidence": "/home/sev/google-cloud-sdk/bin/gcloud"
+    },
+    {
+      "check_id": "required_google_apis",
+      "status": "pass",
+      "detail": "Required APIs are enabled.",
+      "evidence": {
+        "required": [
+          "aiplatform.googleapis.com",
+          "run.googleapis.com"
+        ],
+        "missing": [],
+        "checked": true
+      }
+    },
+    {
+      "check_id": "cloud_run_runtime_surface",
+      "status": "pass",
+      "detail": "Cloud Run service URL is resolved.",
+      "evidence": "https://daimon-ion-kernel-3amc5vjaeq-uc.a.run.app"
+    },
+    {
+      "check_id": "cloud_run_invoker_policy",
+      "status": "warn",
+      "detail": "Cloud Run is not public; direct target-user invoker roles are required.",
+      "evidence": {
+        "public_invoker": false,
+        "invoker_members": [
+          "serviceAccount:482597322974-compute@developer.gserviceaccount.com",
+          "serviceAccount:service-482597322974@gcp-sa-aiplatform-re.iam.gserviceaccount.com"
+        ]
+      }
+    },
+    {
+      "check_id": "agent_engine_resource",
+      "status": "pass",
+      "detail": "Agent Engine resource is known from deploy summary.",
+      "evidence": {
+        "agent_resource": "projects/482597322974/locations/us-central1/reasoningEngines/8971254570361552896",
+        "service_account": "482597322974-compute@developer.gserviceaccount.com"
+      }
+    }
+  ],
+  "blockers": [],
+  "warnings": [],
+  "recommended_manual_actions": [],
+  "docs": [
+    "https://cloud.google.com/run/docs/reference/iam/roles",
+    "https://cloud.google.com/vertex-ai/generative-ai/docs/access-control",
+    "https://cloud.google.com/vertex-ai/generative-ai/docs/agent-engine/manage/access"
+  ],
+  "schema": "daimon.google_user_access_readiness.v0_1",
+  "generated_at": "2026-05-10T22:30:34.459800+00:00",
+  "accepted_state_changed": false,
+  "external_mutation_attempted": false
+}

@@ -1,0 +1,174 @@
+{
+  "schema": "daimon.ui_surface_plan.v0_1",
+  "project": "dAimon",
+  "canon_sources": [
+    "/home/sev/ION - Production/_ui_canon_bundle/CANON_JOC_UI_ARCHITECTURE.md",
+    "/home/sev/ION - Production/_ui_canon_bundle/JOC_UI_REQUIREMENTS.md",
+    "/home/sev/ION - Production/_ui_canon_bundle/ULTIMATE_OPUS_VISUAL_INTERFACE_CANON.md",
+    "/home/sev/ION - Production/_ui_canon_bundle/OPUS_VISUAL_SETTINGS_CANON.md",
+    "/home/sev/ION - Production/_ui_canon_bundle/OPUS_VISUAL_EDITOR_CANON.md",
+    "/home/sev/ION - Production/_ui_canon_bundle/OPUS1_JOC_UI_DESIGN.md",
+    "/home/sev/ION - Production/_ui_canon_bundle/ui_evolution_plan.md",
+    "/home/sev/ION - Production/_ui_canon_bundle/uishader.txt"
+  ],
+  "visual_language": {
+    "name": "DXL matte-black trust instrument panel",
+    "background_deep": "#0a0a0a",
+    "background_surface": "#0e0e0e",
+    "background_panel": "#111111",
+    "border": "#1e1e1e",
+    "border_hover": "#2a2a2a",
+    "border_active": "#444444",
+    "text_primary": "#cccccc",
+    "text_secondary": "#aaaaaa",
+    "text_hint": "#555555",
+    "panel_radius_px": 2,
+    "font_policy": "compact monospace labels, uppercase section headers",
+    "icon_policy": "inline SVG icons only; no emoji"
+  },
+  "shell": {
+    "top_bar": [
+      "project identity",
+      "active project lane",
+      "carrier status",
+      "command palette"
+    ],
+    "left_rail": [
+      "operations",
+      "governance",
+      "intelligence",
+      "infrastructure",
+      "demo"
+    ],
+    "main_workspace": "active trust surface",
+    "right_drawer": "selected object, receipt, claim, trace, route, carrier, or artifact inspector",
+    "bottom_proof_stream": "worker telemetry, queue state, proof gate returns, receipts, MCP/Gemini events"
+  },
+  "navigation_groups": {
+    "operations": [
+      "Cockpit",
+      "Live Run",
+      "Worker Telemetry",
+      "Queue"
+    ],
+    "governance": [
+      "Settlement",
+      "Receipts",
+      "Inheritance",
+      "Claims"
+    ],
+    "intelligence": [
+      "Domain Graph",
+      "Capability Routes",
+      "Carrier Handoffs",
+      "Context Packages"
+    ],
+    "infrastructure": [
+      "MongoDB",
+      "Agent Builder MCP",
+      "Google/Gemini",
+      "GitHub"
+    ],
+    "demo": [
+      "Evidence Package",
+      "Video Agent",
+      "Submission Checklist",
+      "Non-Claims"
+    ]
+  },
+  "visual_instruments": [
+    {
+      "id": "settlement_matrix",
+      "purpose": "Move candidate objects through ACCEPT, REJECT, DEFER, REQUEST_PROOF, or HUMAN_REVIEW lanes.",
+      "replaces_generic_ui": "plain settlement table"
+    },
+    {
+      "id": "receipt_chain_graph",
+      "purpose": "Show source object -> settlement -> receipt -> inheritance bundle -> carrier handoff.",
+      "replaces_generic_ui": "receipt list"
+    },
+    {
+      "id": "inheritance_gate",
+      "purpose": "Show all objects flowing through accepted-only gates into the returned bundle.",
+      "replaces_generic_ui": "filter dropdowns"
+    },
+    {
+      "id": "mcp_trace_pipeline",
+      "purpose": "Render $match -> $project -> $limit -> returned IDs -> receipt citations.",
+      "replaces_generic_ui": "raw JSON trace only"
+    },
+    {
+      "id": "capability_route_graph",
+      "purpose": "Show objective -> domain -> role -> carrier -> proof obligations -> settlement target.",
+      "replaces_generic_ui": "route table"
+    },
+    {
+      "id": "claim_audit_board",
+      "purpose": "Map claim -> status -> evidence artifact -> receipt/non-claim boundary.",
+      "replaces_generic_ui": "demo checklist"
+    },
+    {
+      "id": "domain_cartography_map",
+      "purpose": "Show governed graph regions, routes, conflicts, validation edges, and fission signals.",
+      "replaces_generic_ui": "domain registry table"
+    }
+  ],
+  "build_phases": [
+    {
+      "phase": 1,
+      "name": "Hackathon Evidence Console",
+      "deliverables": [
+        "DXL token rewrite",
+        "compact top bar",
+        "claim audit board",
+        "live vertical-slice phase strip",
+        "bottom proof stream"
+      ]
+    },
+    {
+      "phase": 2,
+      "name": "Governance Console",
+      "deliverables": [
+        "Settlement Matrix",
+        "Receipt Chain Graph",
+        "Inheritance Gate",
+        "Object Inspector"
+      ]
+    },
+    {
+      "phase": 3,
+      "name": "Generative Governance Console",
+      "deliverables": [
+        "Domain Cartography",
+        "Capability Route Graph",
+        "Context Package Builder",
+        "Carrier Handoff Inspector"
+      ]
+    },
+    {
+      "phase": 4,
+      "name": "Enterprise Trust Console",
+      "deliverables": [
+        "Audit Ledger",
+        "Project Lanes",
+        "Collaborator Authority",
+        "Adapter Registry",
+        "Deployment Evidence"
+      ]
+    }
+  ],
+  "immediate_next_slice": {
+    "name": "DXL Evidence Cockpit",
+    "scope": [
+      "top bar",
+      "compact metrics strip",
+      "claim audit board",
+      "live vertical-slice phase strip",
+      "inheritance gate preview",
+      "right receipt inspector",
+      "bottom proof stream"
+    ]
+  },
+  "accepted_state_changed": false,
+  "external_mutation_attempted": false
+}

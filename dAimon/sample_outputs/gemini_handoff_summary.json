@@ -1,0 +1,25 @@
+{
+  "schema": "daimon.gemini_handoff_summary.v0_1",
+  "ok": true,
+  "provider": "generativelanguage.googleapis.com",
+  "model": "models/gemini-2.5-flash",
+  "model_selection": {
+    "models_list_status": 200,
+    "model_count": 50,
+    "selected_model": "models/gemini-2.5-flash",
+    "selection_reason": "preferred_or_known_generate_content_model"
+  },
+  "status_code": 200,
+  "context_object_count": 5,
+  "receipt_ids": [
+    "receipt_sample_session_20260509_sample_001"
+  ],
+  "gemini_output_captured_as_candidate": true,
+  "candidate_object_count": 1,
+  "candidate_receipt_id": "receipt_sample_session_20260509_gemini_candidate_001",
+  "candidate_inheritance_status": "NOT_INHERITABLE_AS_STATE_WITHOUT_SETTLEMENT",
+  "accepted_state_changed": false,
+  "external_mutation_attempted": false,
+  "external_service_called": true,
+  "non_claim": "This proves a Gemini carrier handoff, not automatic trust in Gemini output."
+}

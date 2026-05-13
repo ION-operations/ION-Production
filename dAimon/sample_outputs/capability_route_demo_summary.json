@@ -1,0 +1,921 @@
+{
+  "schema": "ion.capability_route_batch.v1_0",
+  "generated_at": "2026-05-10T22:30:07.528753Z",
+  "session_id": "demo_route_session_v1_0",
+  "graph_schema": "ion.capability_graph.seed.v1_0",
+  "routes": [
+    {
+      "schema": "ion.capability_route.v1_0",
+      "route_id": "route_1568402f2c52",
+      "generated_at": "2026-05-10T22:30:07.528619Z",
+      "session_id": "demo_route_session_v1_0",
+      "objective": "Which current docs support this contest claim and what evidence can we cite?",
+      "route_status": "ROUTED",
+      "route_rule": "route_source_authority",
+      "domain": "SOURCE_AUTHORITY",
+      "agent_role": "CANON_LIBRARIAN",
+      "capability_ids": [
+        "google_agent_platform",
+        "mongodb_vector_search",
+        "ion_kernel"
+      ],
+      "capabilities": [
+        {
+          "capability_id": "google_agent_platform",
+          "system_family": "Google Cloud",
+          "capability_name": "Gemini Enterprise Agent Platform / Vertex AI Agent Builder",
+          "ion_domain": "ORCHESTRATION",
+          "agent_role": "STEWARD_ROUTER",
+          "primary_function": "Build, deploy, govern, and optimize enterprise-grade agents",
+          "mvp_priority": "P0",
+          "proof_obligation": "tool contract + route receipt",
+          "authority_boundary": "orchestrates; does not decide accepted state alone",
+          "contest_use": "registered tool/action surface for Gemini agent"
+        },
+        {
+          "capability_id": "mongodb_vector_search",
+          "system_family": "MongoDB",
+          "capability_name": "Atlas Vector Search",
+          "ion_domain": "RETRIEVAL",
+          "agent_role": "CONTEXT_CARTOGRAPHER",
+          "primary_function": "Retrieve accepted continuity/capability nodes by meaning",
+          "mvp_priority": "P0",
+          "proof_obligation": "query trace + accepted-only filter",
+          "authority_boundary": "retrieval is not acceptance",
+          "contest_use": "governed retrieval demo"
+        },
+        {
+          "capability_id": "ion_kernel",
+          "system_family": "ION",
+          "capability_name": "ION Kernel",
+          "ion_domain": "SETTLEMENT_LAW",
+          "agent_role": "STEWARD",
+          "primary_function": "Classify, gate, settle, receipt, export inheritance",
+          "mvp_priority": "P0",
+          "proof_obligation": "validation manifest + receipt",
+          "authority_boundary": "only human/steward settlement lands state",
+          "contest_use": "core differentiator"
+        }
+      ],
+      "authority_ceiling": "read_only_candidate_synthesis",
+      "proof_obligations": [
+        "fresh official source pointer",
+        "retrieval trace",
+        "receipt candidate"
+      ],
+      "receipt_required": true,
+      "settlement_required": false,
+      "state_claim": "candidate_route_only",
+      "accepted_state_changed": false,
+      "external_mutation_attempted": false,
+      "scoreboard": [
+        {
+          "rule_id": "route_source_authority",
+          "score": 3,
+          "domain": "SOURCE_AUTHORITY",
+          "agent_role": "CANON_LIBRARIAN",
+          "matched_keywords": [
+            "docs",
+            "current",
+            "evidence"
+          ],
+          "capabilities": [
+            "google_agent_platform",
+            "mongodb_vector_search",
+            "ion_kernel"
+          ]
+        },
+        {
+          "rule_id": "route_transfer_context",
+          "score": 0,
+          "domain": "TRANSFER_CONTEXT",
+          "agent_role": "SCRIBE",
+          "matched_keywords": [],
+          "capabilities": [
+            "ion_kernel",
+            "mongodb_atlas",
+            "ion_dashboard"
+          ]
+        },
+        {
+          "rule_id": "route_settlement",
+          "score": 0,
+          "domain": "SETTLEMENT_LAW",
+          "agent_role": "STEWARD",
+          "matched_keywords": [],
+          "capabilities": [
+            "ion_kernel",
+            "mongodb_atlas"
+          ]
+        },
+        {
+          "rule_id": "route_retrieval",
+          "score": 0,
+          "domain": "RETRIEVAL",
+          "agent_role": "CONTEXT_CARTOGRAPHER",
+          "matched_keywords": [],
+          "capabilities": [
+            "mongodb_mcp",
+            "mongodb_vector_search",
+            "ion_kernel"
+          ]
+        },
+        {
+          "rule_id": "route_external_mutation_block",
+          "score": 0,
+          "domain": "TOOL_AUTHORITY",
+          "agent_role": "GATEKEEPER",
+          "matched_keywords": [],
+          "capabilities": [
+            "google_agent_gateway",
+            "ion_kernel"
+          ]
+        }
+      ],
+      "trace": [
+        {
+          "step": "objective_received",
+          "status": "ok"
+        },
+        {
+          "step": "route_rules_scored",
+          "status": "ok",
+          "selected_rule": "route_source_authority"
+        },
+        {
+          "step": "domain_bound",
+          "status": "candidate",
+          "domain": "SOURCE_AUTHORITY"
+        },
+        {
+          "step": "agent_role_bound",
+          "status": "candidate",
+          "agent_role": "CANON_LIBRARIAN"
+        },
+        {
+          "step": "capabilities_resolved",
+          "status": "candidate",
+          "count": 3
+        },
+        {
+          "step": "proof_obligations_bound",
+          "status": "required",
+          "count": 3
+        },
+        {
+          "step": "state_boundary_locked",
+          "status": "candidate_route_only"
+        }
+      ],
+      "non_claims": [
+        "No route executes a tool by itself.",
+        "No route becomes accepted state without proof, settlement, and receipt.",
+        "The capability graph is a seed, not an exhaustive Google infrastructure map."
+      ]
+    },
+    {
+      "schema": "ion.capability_route.v1_0",
+      "route_id": "route_63954c9d3d2c",
+      "generated_at": "2026-05-10T22:30:07.528663Z",
+      "session_id": "demo_route_session_v1_0",
+      "objective": "Accept these candidate decisions into future context for the next session.",
+      "route_status": "ROUTED",
+      "route_rule": "route_settlement",
+      "domain": "SETTLEMENT_LAW",
+      "agent_role": "STEWARD",
+      "capability_ids": [
+        "ion_kernel",
+        "mongodb_atlas"
+      ],
+      "capabilities": [
+        {
+          "capability_id": "ion_kernel",
+          "system_family": "ION",
+          "capability_name": "ION Kernel",
+          "ion_domain": "SETTLEMENT_LAW",
+          "agent_role": "STEWARD",
+          "primary_function": "Classify, gate, settle, receipt, export inheritance",
+          "mvp_priority": "P0",
+          "proof_obligation": "validation manifest + receipt",
+          "authority_boundary": "only human/steward settlement lands state",
+          "contest_use": "core differentiator"
+        },
+        {
+          "capability_id": "mongodb_atlas",
+          "system_family": "MongoDB",
+          "capability_name": "MongoDB Atlas",
+          "ion_domain": "STATE_SUBSTRATE",
+          "agent_role": "STATE_KEEPER",
+          "primary_function": "Store continuity objects, receipts, sessions, capability graph",
+          "mvp_priority": "P0",
+          "proof_obligation": "write receipt + hash",
+          "authority_boundary": "stored document not accepted unless status says accepted",
+          "contest_use": "persistent contest state"
+        }
+      ],
+      "authority_ceiling": "human_gate_required",
+      "proof_obligations": [
+        "settlement decision",
+        "receipt",
+        "state-surface sync"
+      ],
+      "receipt_required": true,
+      "settlement_required": true,
+      "state_claim": "candidate_route_only",
+      "accepted_state_changed": false,
+      "external_mutation_attempted": false,
+      "scoreboard": [
+        {
+          "rule_id": "route_settlement",
+          "score": 1,
+          "domain": "SETTLEMENT_LAW",
+          "agent_role": "STEWARD",
+          "matched_keywords": [
+            "accept"
+          ],
+          "capabilities": [
+            "ion_kernel",
+            "mongodb_atlas"
+          ]
+        },
+        {
+          "rule_id": "route_retrieval",
+          "score": 1,
+          "domain": "RETRIEVAL",
+          "agent_role": "CONTEXT_CARTOGRAPHER",
+          "matched_keywords": [
+            "next session"
+          ],
+          "capabilities": [
+            "mongodb_mcp",
+            "mongodb_vector_search",
+            "ion_kernel"
+          ]
+        },
+        {
+          "rule_id": "route_transfer_context",
+          "score": 0,
+          "domain": "TRANSFER_CONTEXT",
+          "agent_role": "SCRIBE",
+          "matched_keywords": [],
+          "capabilities": [
+            "ion_kernel",
+            "mongodb_atlas",
+            "ion_dashboard"
+          ]
+        },
+        {
+          "rule_id": "route_source_authority",
+          "score": 0,
+          "domain": "SOURCE_AUTHORITY",
+          "agent_role": "CANON_LIBRARIAN",
+          "matched_keywords": [],
+          "capabilities": [
+            "google_agent_platform",
+            "mongodb_vector_search",
+            "ion_kernel"
+          ]
+        },
+        {
+          "rule_id": "route_external_mutation_block",
+          "score": 0,
+          "domain": "TOOL_AUTHORITY",
+          "agent_role": "GATEKEEPER",
+          "matched_keywords": [],
+          "capabilities": [
+            "google_agent_gateway",
+            "ion_kernel"
+          ]
+        }
+      ],
+      "trace": [
+        {
+          "step": "objective_received",
+          "status": "ok"
+        },
+        {
+          "step": "route_rules_scored",
+          "status": "ok",
+          "selected_rule": "route_settlement"
+        },
+        {
+          "step": "domain_bound",
+          "status": "candidate",
+          "domain": "SETTLEMENT_LAW"
+        },
+        {
+          "step": "agent_role_bound",
+          "status": "candidate",
+          "agent_role": "STEWARD"
+        },
+        {
+          "step": "capabilities_resolved",
+          "status": "candidate",
+          "count": 2
+        },
+        {
+          "step": "proof_obligations_bound",
+          "status": "required",
+          "count": 3
+        },
+        {
+          "step": "state_boundary_locked",
+          "status": "candidate_route_only"
+        }
+      ],
+      "non_claims": [
+        "No route executes a tool by itself.",
+        "No route becomes accepted state without proof, settlement, and receipt.",
+        "The capability graph is a seed, not an exhaustive Google infrastructure map."
+      ]
+    },
+    {
+      "schema": "ion.capability_route.v1_0",
+      "route_id": "route_fa8f9a21a6e3",
+      "generated_at": "2026-05-10T22:30:07.528690Z",
+      "session_id": "demo_route_session_v1_0",
+      "objective": "What may the next Gemini session inherit from settled continuity objects?",
+      "route_status": "ROUTED",
+      "route_rule": "route_settlement",
+      "domain": "SETTLEMENT_LAW",
+      "agent_role": "STEWARD",
+      "capability_ids": [
+        "ion_kernel",
+        "mongodb_atlas"
+      ],
+      "capabilities": [
+        {
+          "capability_id": "ion_kernel",
+          "system_family": "ION",
+          "capability_name": "ION Kernel",
+          "ion_domain": "SETTLEMENT_LAW",
+          "agent_role": "STEWARD",
+          "primary_function": "Classify, gate, settle, receipt, export inheritance",
+          "mvp_priority": "P0",
+          "proof_obligation": "validation manifest + receipt",
+          "authority_boundary": "only human/steward settlement lands state",
+          "contest_use": "core differentiator"
+        },
+        {
+          "capability_id": "mongodb_atlas",
+          "system_family": "MongoDB",
+          "capability_name": "MongoDB Atlas",
+          "ion_domain": "STATE_SUBSTRATE",
+          "agent_role": "STATE_KEEPER",
+          "primary_function": "Store continuity objects, receipts, sessions, capability graph",
+          "mvp_priority": "P0",
+          "proof_obligation": "write receipt + hash",
+          "authority_boundary": "stored document not accepted unless status says accepted",
+          "contest_use": "persistent contest state"
+        }
+      ],
+      "authority_ceiling": "human_gate_required",
+      "proof_obligations": [
+        "settlement decision",
+        "receipt",
+        "state-surface sync"
+      ],
+      "receipt_required": true,
+      "settlement_required": true,
+      "state_claim": "candidate_route_only",
+      "accepted_state_changed": false,
+      "external_mutation_attempted": false,
+      "scoreboard": [
+        {
+          "rule_id": "route_settlement",
+          "score": 2,
+          "domain": "SETTLEMENT_LAW",
+          "agent_role": "STEWARD",
+          "matched_keywords": [
+            "settle",
+            "inherit"
+          ],
+          "capabilities": [
+            "ion_kernel",
+            "mongodb_atlas"
+          ]
+        },
+        {
+          "rule_id": "route_retrieval",
+          "score": 1,
+          "domain": "RETRIEVAL",
+          "agent_role": "CONTEXT_CARTOGRAPHER",
+          "matched_keywords": [
+            "inherit"
+          ],
+          "capabilities": [
+            "mongodb_mcp",
+            "mongodb_vector_search",
+            "ion_kernel"
+          ]
+        },
+        {
+          "rule_id": "route_transfer_context",
+          "score": 0,
+          "domain": "TRANSFER_CONTEXT",
+          "agent_role": "SCRIBE",
+          "matched_keywords": [],
+          "capabilities": [
+            "ion_kernel",
+            "mongodb_atlas",
+            "ion_dashboard"
+          ]
+        },
+        {
+          "rule_id": "route_source_authority",
+          "score": 0,
+          "domain": "SOURCE_AUTHORITY",
+          "agent_role": "CANON_LIBRARIAN",
+          "matched_keywords": [],
+          "capabilities": [
+            "google_agent_platform",
+            "mongodb_vector_search",
+            "ion_kernel"
+          ]
+        },
+        {
+          "rule_id": "route_external_mutation_block",
+          "score": 0,
+          "domain": "TOOL_AUTHORITY",
+          "agent_role": "GATEKEEPER",
+          "matched_keywords": [],
+          "capabilities": [
+            "google_agent_gateway",
+            "ion_kernel"
+          ]
+        }
+      ],
+      "trace": [
+        {
+          "step": "objective_received",
+          "status": "ok"
+        },
+        {
+          "step": "route_rules_scored",
+          "status": "ok",
+          "selected_rule": "route_settlement"
+        },
+        {
+          "step": "domain_bound",
+          "status": "candidate",
+          "domain": "SETTLEMENT_LAW"
+        },
+        {
+          "step": "agent_role_bound",
+          "status": "candidate",
+          "agent_role": "STEWARD"
+        },
+        {
+          "step": "capabilities_resolved",
+          "status": "candidate",
+          "count": 2
+        },
+        {
+          "step": "proof_obligations_bound",
+          "status": "required",
+          "count": 3
+        },
+        {
+          "step": "state_boundary_locked",
+          "status": "candidate_route_only"
+        }
+      ],
+      "non_claims": [
+        "No route executes a tool by itself.",
+        "No route becomes accepted state without proof, settlement, and receipt.",
+        "The capability graph is a seed, not an exhaustive Google infrastructure map."
+      ]
+    },
+    {
+      "schema": "ion.capability_route.v1_0",
+      "route_id": "route_9973972199cc",
+      "generated_at": "2026-05-10T22:30:07.528711Z",
+      "session_id": "demo_route_session_v1_0",
+      "objective": "Push this generated patch to production immediately.",
+      "route_status": "ROUTED",
+      "route_rule": "route_external_mutation_block",
+      "domain": "TOOL_AUTHORITY",
+      "agent_role": "GATEKEEPER",
+      "capability_ids": [
+        "google_agent_gateway",
+        "ion_kernel"
+      ],
+      "capabilities": [
+        {
+          "capability_id": "google_agent_gateway",
+          "system_family": "Google Cloud",
+          "capability_name": "Agent Gateway",
+          "ion_domain": "TOOL_AUTHORITY",
+          "agent_role": "GATEKEEPER",
+          "primary_function": "Policy enforcement for agent tool calls",
+          "mvp_priority": "P1",
+          "proof_obligation": "policy decision receipt",
+          "authority_boundary": "tool visibility != permission",
+          "contest_use": "maps to ION action gateway law"
+        },
+        {
+          "capability_id": "ion_kernel",
+          "system_family": "ION",
+          "capability_name": "ION Kernel",
+          "ion_domain": "SETTLEMENT_LAW",
+          "agent_role": "STEWARD",
+          "primary_function": "Classify, gate, settle, receipt, export inheritance",
+          "mvp_priority": "P0",
+          "proof_obligation": "validation manifest + receipt",
+          "authority_boundary": "only human/steward settlement lands state",
+          "contest_use": "core differentiator"
+        }
+      ],
+      "authority_ceiling": "blocked_without_explicit_operator_approval",
+      "proof_obligations": [
+        "approval evidence",
+        "tool policy decision",
+        "mutation receipt"
+      ],
+      "receipt_required": true,
+      "settlement_required": true,
+      "state_claim": "candidate_route_only",
+      "accepted_state_changed": false,
+      "external_mutation_attempted": false,
+      "scoreboard": [
+        {
+          "rule_id": "route_external_mutation_block",
+          "score": 2,
+          "domain": "TOOL_AUTHORITY",
+          "agent_role": "GATEKEEPER",
+          "matched_keywords": [
+            "production",
+            "push"
+          ],
+          "capabilities": [
+            "google_agent_gateway",
+            "ion_kernel"
+          ]
+        },
+        {
+          "rule_id": "route_transfer_context",
+          "score": 0,
+          "domain": "TRANSFER_CONTEXT",
+          "agent_role": "SCRIBE",
+          "matched_keywords": [],
+          "capabilities": [
+            "ion_kernel",
+            "mongodb_atlas",
+            "ion_dashboard"
+          ]
+        },
+        {
+          "rule_id": "route_source_authority",
+          "score": 0,
+          "domain": "SOURCE_AUTHORITY",
+          "agent_role": "CANON_LIBRARIAN",
+          "matched_keywords": [],
+          "capabilities": [
+            "google_agent_platform",
+            "mongodb_vector_search",
+            "ion_kernel"
+          ]
+        },
+        {
+          "rule_id": "route_settlement",
+          "score": 0,
+          "domain": "SETTLEMENT_LAW",
+          "agent_role": "STEWARD",
+          "matched_keywords": [],
+          "capabilities": [
+            "ion_kernel",
+            "mongodb_atlas"
+          ]
+        },
+        {
+          "rule_id": "route_retrieval",
+          "score": 0,
+          "domain": "RETRIEVAL",
+          "agent_role": "CONTEXT_CARTOGRAPHER",
+          "matched_keywords": [],
+          "capabilities": [
+            "mongodb_mcp",
+            "mongodb_vector_search",
+            "ion_kernel"
+          ]
+        }
+      ],
+      "trace": [
+        {
+          "step": "objective_received",
+          "status": "ok"
+        },
+        {
+          "step": "route_rules_scored",
+          "status": "ok",
+          "selected_rule": "route_external_mutation_block"
+        },
+        {
+          "step": "domain_bound",
+          "status": "candidate",
+          "domain": "TOOL_AUTHORITY"
+        },
+        {
+          "step": "agent_role_bound",
+          "status": "candidate",
+          "agent_role": "GATEKEEPER"
+        },
+        {
+          "step": "capabilities_resolved",
+          "status": "candidate",
+          "count": 2
+        },
+        {
+          "step": "proof_obligations_bound",
+          "status": "required",
+          "count": 3
+        },
+        {
+          "step": "state_boundary_locked",
+          "status": "candidate_route_only"
+        }
+      ],
+      "non_claims": [
+        "No route executes a tool by itself.",
+        "No route becomes accepted state without proof, settlement, and receipt.",
+        "The capability graph is a seed, not an exhaustive Google infrastructure map."
+      ]
+    },
+    {
+      "schema": "ion.capability_route.v1_0",
+      "route_id": "route_6fb89e31d4c8",
+      "generated_at": "2026-05-10T22:30:07.528732Z",
+      "session_id": "demo_route_session_v1_0",
+      "objective": "Make a project handoff summary for the operator without mutating state.",
+      "route_status": "ROUTED",
+      "route_rule": "route_transfer_context",
+      "domain": "TRANSFER_CONTEXT",
+      "agent_role": "SCRIBE",
+      "capability_ids": [
+        "ion_kernel",
+        "mongodb_atlas",
+        "ion_dashboard"
+      ],
+      "capabilities": [
+        {
+          "capability_id": "ion_kernel",
+          "system_family": "ION",
+          "capability_name": "ION Kernel",
+          "ion_domain": "SETTLEMENT_LAW",
+          "agent_role": "STEWARD",
+          "primary_function": "Classify, gate, settle, receipt, export inheritance",
+          "mvp_priority": "P0",
+          "proof_obligation": "validation manifest + receipt",
+          "authority_boundary": "only human/steward settlement lands state",
+          "contest_use": "core differentiator"
+        },
+        {
+          "capability_id": "mongodb_atlas",
+          "system_family": "MongoDB",
+          "capability_name": "MongoDB Atlas",
+          "ion_domain": "STATE_SUBSTRATE",
+          "agent_role": "STATE_KEEPER",
+          "primary_function": "Store continuity objects, receipts, sessions, capability graph",
+          "mvp_priority": "P0",
+          "proof_obligation": "write receipt + hash",
+          "authority_boundary": "stored document not accepted unless status says accepted",
+          "contest_use": "persistent contest state"
+        },
+        {
+          "capability_id": "ion_dashboard",
+          "system_family": "ION",
+          "capability_name": "Functional Dashboard Trace",
+          "ion_domain": "OPERATOR_VISIBILITY",
+          "agent_role": "RUNTIME_CARTOGRAPHER",
+          "primary_function": "Show route, proof debt, settlement, receipt, and inheritance traces to judges/operators",
+          "mvp_priority": "P0",
+          "proof_obligation": "dashboard trace JSON + validation manifest",
+          "authority_boundary": "visibility surface only; not settlement authority",
+          "contest_use": "judge-facing route trace and governance demo"
+        }
+      ],
+      "authority_ceiling": "candidate_export_only",
+      "proof_obligations": [
+        "receipt references",
+        "non-claims",
+        "state-surface sync",
+        "export manifest"
+      ],
+      "receipt_required": true,
+      "settlement_required": false,
+      "state_claim": "candidate_route_only",
+      "accepted_state_changed": false,
+      "external_mutation_attempted": false,
+      "scoreboard": [
+        {
+          "rule_id": "route_transfer_context",
+          "score": 2,
+          "domain": "TRANSFER_CONTEXT",
+          "agent_role": "SCRIBE",
+          "matched_keywords": [
+            "handoff",
+            "summary"
+          ],
+          "capabilities": [
+            "ion_kernel",
+            "mongodb_atlas",
+            "ion_dashboard"
+          ]
+        },
+        {
+          "rule_id": "route_settlement",
+          "score": 1,
+          "domain": "SETTLEMENT_LAW",
+          "agent_role": "STEWARD",
+          "matched_keywords": [
+            "state"
+          ],
+          "capabilities": [
+            "ion_kernel",
+            "mongodb_atlas"
+          ]
+        },
+        {
+          "rule_id": "route_source_authority",
+          "score": 0,
+          "domain": "SOURCE_AUTHORITY",
+          "agent_role": "CANON_LIBRARIAN",
+          "matched_keywords": [],
+          "capabilities": [
+            "google_agent_platform",
+            "mongodb_vector_search",
+            "ion_kernel"
+          ]
+        },
+        {
+          "rule_id": "route_retrieval",
+          "score": 0,
+          "domain": "RETRIEVAL",
+          "agent_role": "CONTEXT_CARTOGRAPHER",
+          "matched_keywords": [],
+          "capabilities": [
+            "mongodb_mcp",
+            "mongodb_vector_search",
+            "ion_kernel"
+          ]
+        },
+        {
+          "rule_id": "route_external_mutation_block",
+          "score": 0,
+          "domain": "TOOL_AUTHORITY",
+          "agent_role": "GATEKEEPER",
+          "matched_keywords": [],
+          "capabilities": [
+            "google_agent_gateway",
+            "ion_kernel"
+          ]
+        }
+      ],
+      "trace": [
+        {
+          "step": "objective_received",
+          "status": "ok"
+        },
+        {
+          "step": "route_rules_scored",
+          "status": "ok",
+          "selected_rule": "route_transfer_context"
+        },
+        {
+          "step": "domain_bound",
+          "status": "candidate",
+          "domain": "TRANSFER_CONTEXT"
+        },
+        {
+          "step": "agent_role_bound",
+          "status": "candidate",
+          "agent_role": "SCRIBE"
+        },
+        {
+          "step": "capabilities_resolved",
+          "status": "candidate",
+          "count": 3
+        },
+        {
+          "step": "proof_obligations_bound",
+          "status": "required",
+          "count": 4
+        },
+        {
+          "step": "state_boundary_locked",
+          "status": "candidate_route_only"
+        }
+      ],
+      "non_claims": [
+        "No route executes a tool by itself.",
+        "No route becomes accepted state without proof, settlement, and receipt.",
+        "The capability graph is a seed, not an exhaustive Google infrastructure map."
+      ]
+    },
+    {
+      "schema": "ion.capability_route.v1_0",
+      "route_id": "route_36522c0e5b42",
+      "generated_at": "2026-05-10T22:30:07.528750Z",
+      "session_id": "demo_route_session_v1_0",
+      "objective": "Show how MongoDB MCP participates in governed retrieval.",
+      "route_status": "DEFERRED",
+      "domain": "UNCLASSIFIED",
+      "agent_role": "ROUTER_REVIEW",
+      "capabilities": [],
+      "authority_ceiling": "human_review_required",
+      "proof_obligations": [
+        "operator classification",
+        "capability registry review"
+      ],
+      "state_claim": "candidate_route_only",
+      "accepted_state_changed": false,
+      "external_mutation_attempted": false,
+      "scoreboard": [
+        {
+          "rule_id": "route_transfer_context",
+          "score": 0,
+          "domain": "TRANSFER_CONTEXT",
+          "agent_role": "SCRIBE",
+          "matched_keywords": [],
+          "capabilities": [
+            "ion_kernel",
+            "mongodb_atlas",
+            "ion_dashboard"
+          ]
+        },
+        {
+          "rule_id": "route_source_authority",
+          "score": 0,
+          "domain": "SOURCE_AUTHORITY",
+          "agent_role": "CANON_LIBRARIAN",
+          "matched_keywords": [],
+          "capabilities": [
+            "google_agent_platform",
+            "mongodb_vector_search",
+            "ion_kernel"
+          ]
+        },
+        {
+          "rule_id": "route_settlement",
+          "score": 0,
+          "domain": "SETTLEMENT_LAW",
+          "agent_role": "STEWARD",
+          "matched_keywords": [],
+          "capabilities": [
+            "ion_kernel",
+            "mongodb_atlas"
+          ]
+        },
+        {
+          "rule_id": "route_retrieval",
+          "score": 0,
+          "domain": "RETRIEVAL",
+          "agent_role": "CONTEXT_CARTOGRAPHER",
+          "matched_keywords": [],
+          "capabilities": [
+            "mongodb_mcp",
+            "mongodb_vector_search",
+            "ion_kernel"
+          ]
+        },
+        {
+          "rule_id": "route_external_mutation_block",
+          "score": 0,
+          "domain": "TOOL_AUTHORITY",
+          "agent_role": "GATEKEEPER",
+          "matched_keywords": [],
+          "capabilities": [
+            "google_agent_gateway",
+            "ion_kernel"
+          ]
+        }
+      ],
+      "trace": [
+        {
+          "step": "objective_received",
+          "status": "ok"
+        },
+        {
+          "step": "route_rules_scored",
+          "status": "no_matching_rule"
+        },
+        {
+          "step": "fallback_gate",
+          "status": "human_review_required"
+        }
+      ],
+      "non_claims": [
+        "No Google Cloud, Gemini, MongoDB Atlas, or MCP call was made.",
+        "No route is accepted state.",
+        "Deferred routes cannot trigger tools without operator classification."
+      ]
+    }
+  ],
+  "route_counts": {
+    "total": 6,
+    "routed": 5,
+    "deferred": 1
+  },
+  "accepted_state_changed": false,
+  "external_mutation_attempted": false
+}

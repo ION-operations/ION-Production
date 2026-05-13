@@ -1,0 +1,55 @@
+{
+  "schema": "ion.domain_agent_registry.seed.v0_9",
+  "generated_at": "2026-05-09T16:49:15Z",
+  "domains": [
+    {
+      "domain": "SOURCE_AUTHORITY",
+      "purpose": "Classify and verify official/current source evidence.",
+      "agent_roles": [
+        "CANON_LIBRARIAN",
+        "CONTEXT_CARTOGRAPHER"
+      ],
+      "authority_ceiling": "read-only until settlement",
+      "receipt_family": "source_check_receipt"
+    },
+    {
+      "domain": "SETTLEMENT_LAW",
+      "purpose": "Determine what candidate output may become future context.",
+      "agent_roles": [
+        "STEWARD",
+        "RECEIPT_KEEPER"
+      ],
+      "authority_ceiling": "human/steward gate",
+      "receipt_family": "settlement_receipt"
+    },
+    {
+      "domain": "RETRIEVAL",
+      "purpose": "Retrieve only lawful context for the next action.",
+      "agent_roles": [
+        "CONTEXT_CARTOGRAPHER"
+      ],
+      "authority_ceiling": "accepted/witness distinction preserved",
+      "receipt_family": "retrieval_receipt"
+    },
+    {
+      "domain": "TOOL_AUTHORITY",
+      "purpose": "Prevent tool visibility from becoming permission.",
+      "agent_roles": [
+        "GATEKEEPER",
+        "RUNTIME_CARTOGRAPHER"
+      ],
+      "authority_ceiling": "policy enforced",
+      "receipt_family": "tool_policy_receipt"
+    },
+    {
+      "domain": "DOMAIN_TECH_SYNC",
+      "purpose": "Bind domain, agent role, infrastructure capability, proof, and receipt path.",
+      "agent_roles": [
+        "INFRA_CARTOGRAPHER",
+        "VIZIER"
+      ],
+      "authority_ceiling": "candidate route until validated",
+      "receipt_family": "route_receipt"
+    }
+  ]
+}

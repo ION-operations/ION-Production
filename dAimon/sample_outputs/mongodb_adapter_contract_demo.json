@@ -1,0 +1,21 @@
+{
+  "schema": "ion.mongodb_adapter_contract_demo.v0_8",
+  "mongodb_config_enabled": false,
+  "durable_adapter_blocked": true,
+  "blocked_message": "MongoDB adapter requested while disabled or missing MONGODB_URI",
+  "null_adapter_summary": {
+    "adapter": "NullMongoAdapter",
+    "calls": [
+      {
+        "operation": "attempt_persist_continuity_objects",
+        "payload_type": "list",
+        "accepted_state_changed": false,
+        "external_mutation_attempted": false
+      }
+    ],
+    "accepted_state_changed": false,
+    "external_mutation_attempted": false
+  },
+  "accepted_state_changed": false,
+  "external_mutation_attempted": false
+}

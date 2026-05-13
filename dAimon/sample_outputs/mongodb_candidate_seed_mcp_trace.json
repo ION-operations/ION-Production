@@ -1,0 +1,320 @@
+{
+  "schema": "ion.mcp_visibility_trace.v0_2",
+  "session_id": "sample_session_20260509",
+  "generated_at": "2026-05-09T23:01:23.744808Z",
+  "partner_track": "MongoDB",
+  "required_mcp_server": "MongoDB MCP Server",
+  "intended_agent_path": [
+    "Gemini carrier receives user question",
+    "Agent Builder calls MongoDB MCP tool for governed-state query",
+    "MongoDB query filters acceptance_status / inheritance_status",
+    "Gemini receives only receipt-cleared continuity objects",
+    "Gemini answer cites receipt IDs and excludes rejected/deferred/proof-debt objects"
+  ],
+  "accepted_only_query_shape": {
+    "schema": "ion.mongodb_mcp.accepted_only_query.v0_2",
+    "query": "Show governed continuity that Gemini may inherit through MongoDB MCP.",
+    "limit": 25,
+    "filter": {
+      "session_id": "sample_session_20260509",
+      "inheritance_status": "INHERITABLE_AFTER_RECEIPT",
+      "acceptance_status": {
+        "$in": [
+          "settled_accept_sample",
+          "ACCEPTED",
+          "RECEIPT_CLEARED",
+          "receipt_cleared"
+        ]
+      }
+    },
+    "projection": {
+      "_id": 0,
+      "object_id": 1,
+      "session_id": 1,
+      "source_file": 1,
+      "inferred_role": 1,
+      "authority_class": 1,
+      "authority_score": 1,
+      "acceptance_status": 1,
+      "inheritance_status": 1,
+      "proof_status": 1,
+      "text_hash": 1,
+      "settled_at": 1,
+      "settled_by": 1
+    },
+    "forbidden_statuses": [
+      "NOT_INHERITABLE_REJECTED",
+      "NOT_INHERITABLE_DEFERRED",
+      "NOT_INHERITABLE_PENDING_PROOF",
+      "NOT_INHERITABLE_AS_STATE_WITHOUT_SETTLEMENT"
+    ]
+  },
+  "mongodb_mcp_request_envelope": {
+    "schema": "ion.mongodb_mcp.request_envelope.v0_2",
+    "transport": "MongoDB MCP Server",
+    "tool_name": "mongodb.aggregate",
+    "operation_name": "aggregate",
+    "database": "ion_continuity_bridge",
+    "collection": "daimon_continuity_objects",
+    "read_only": true,
+    "arguments": {
+      "pipeline": [
+        {
+          "$match": {
+            "session_id": "sample_session_20260509",
+            "inheritance_status": "INHERITABLE_AFTER_RECEIPT",
+            "acceptance_status": {
+              "$in": [
+                "settled_accept_sample",
+                "ACCEPTED",
+                "RECEIPT_CLEARED",
+                "receipt_cleared"
+              ]
+            }
+          }
+        },
+        {
+          "$project": {
+            "_id": 0,
+            "object_id": 1,
+            "session_id": 1,
+            "source_file": 1,
+            "inferred_role": 1,
+            "authority_class": 1,
+            "authority_score": 1,
+            "acceptance_status": 1,
+            "inheritance_status": 1,
+            "proof_status": 1,
+            "text_hash": 1,
+            "settled_at": 1,
+            "settled_by": 1
+          }
+        },
+        {
+          "$limit": 25
+        }
+      ]
+    },
+    "state_boundary": {
+      "accepted_state_changed": false,
+      "external_mutation_attempted": false,
+      "writes_allowed": false,
+      "reason": "MCP visibility is read-only evidence; ION settlement and receipt law decide inheritance."
+    },
+    "trace_expectation": "A live Agent Builder run should show this tool name, filter, returned IDs, and receipt citations.",
+    "session_id": "sample_session_20260509"
+  },
+  "returned_continuity_object_ids": [
+    "co_cc0948fbe8",
+    "co_aca2497a16",
+    "co_6370b8cb72",
+    "co_aa614a60a5",
+    "co_d120fe4812"
+  ],
+  "sample_inherited_ids": [
+    "co_cc0948fbe8",
+    "co_aca2497a16",
+    "co_6370b8cb72",
+    "co_aa614a60a5",
+    "co_d120fe4812"
+  ],
+  "returned_object_citations": [
+    {
+      "object_id": "co_cc0948fbe8",
+      "receipt_ids": [
+        "receipt_sample_session_20260509_sample_001"
+      ],
+      "receipt_proof_hash": "sha256:bc1d80e2c830bff982ba7e79f0657a527960cfcfca2dfdf6e589fb2f96bd943e",
+      "source_file": "sample_assistant_export.json",
+      "source_authority": {
+        "authority_class": "assistant_synthesis",
+        "authority_score": 45
+      },
+      "proof_status": "HAS_EVIDENCE_POINTER",
+      "text_hash": "e6e03ffed54536e4",
+      "inheritance_status": "INHERITABLE_AFTER_RECEIPT",
+      "acceptance_status": "settled_accept_sample"
+    },
+    {
+      "object_id": "co_aca2497a16",
+      "receipt_ids": [
+        "receipt_sample_session_20260509_sample_001"
+      ],
+      "receipt_proof_hash": "sha256:bc1d80e2c830bff982ba7e79f0657a527960cfcfca2dfdf6e589fb2f96bd943e",
+      "source_file": "sample_project_notes.md",
+      "source_authority": {
+        "authority_class": "unclassified_witness",
+        "authority_score": 35
+      },
+      "proof_status": "HAS_EVIDENCE_POINTER",
+      "text_hash": "3ea383ed8b514b5a",
+      "inheritance_status": "INHERITABLE_AFTER_RECEIPT",
+      "acceptance_status": "settled_accept_sample"
+    },
+    {
+      "object_id": "co_6370b8cb72",
+      "receipt_ids": [
+        "receipt_sample_session_20260509_sample_001"
+      ],
+      "receipt_proof_hash": "sha256:bc1d80e2c830bff982ba7e79f0657a527960cfcfca2dfdf6e589fb2f96bd943e",
+      "source_file": "sample_sources.csv",
+      "source_authority": {
+        "authority_class": "source_manifest_or_external_reference",
+        "authority_score": 72
+      },
+      "proof_status": "HAS_EVIDENCE_POINTER",
+      "text_hash": "c3bb3e3ede1f5ba5",
+      "inheritance_status": "INHERITABLE_AFTER_RECEIPT",
+      "acceptance_status": "settled_accept_sample"
+    },
+    {
+      "object_id": "co_aa614a60a5",
+      "receipt_ids": [
+        "receipt_sample_session_20260509_sample_001"
+      ],
+      "receipt_proof_hash": "sha256:bc1d80e2c830bff982ba7e79f0657a527960cfcfca2dfdf6e589fb2f96bd943e",
+      "source_file": "sample_sources.csv",
+      "source_authority": {
+        "authority_class": "source_manifest_or_external_reference",
+        "authority_score": 72
+      },
+      "proof_status": "HAS_EVIDENCE_POINTER",
+      "text_hash": "08a5e0397688e94c",
+      "inheritance_status": "INHERITABLE_AFTER_RECEIPT",
+      "acceptance_status": "settled_accept_sample"
+    },
+    {
+      "object_id": "co_d120fe4812",
+      "receipt_ids": [
+        "receipt_sample_session_20260509_sample_001"
+      ],
+      "receipt_proof_hash": "sha256:bc1d80e2c830bff982ba7e79f0657a527960cfcfca2dfdf6e589fb2f96bd943e",
+      "source_file": "sample_sources.csv",
+      "source_authority": {
+        "authority_class": "source_manifest_or_external_reference",
+        "authority_score": 72
+      },
+      "proof_status": "HAS_EVIDENCE_POINTER",
+      "text_hash": "55d0cdb9c9b4be6b",
+      "inheritance_status": "INHERITABLE_AFTER_RECEIPT",
+      "acceptance_status": "settled_accept_sample"
+    }
+  ],
+  "exclusion_report": {
+    "schema": "ion.mongodb_mcp.exclusion_report.v0_2",
+    "excluded_object_ids_by_reason": {
+      "rejected": [],
+      "deferred": [
+        "co_c952412c4b",
+        "co_bc25196c0d",
+        "co_6f06b12438"
+      ],
+      "proof_debt": [
+        "co_a1c478867e",
+        "co_db4123bf75",
+        "co_502d943492",
+        "co_dba6d2e953"
+      ],
+      "witness_only": [],
+      "other_not_inherited": []
+    },
+    "excluded_count": 7,
+    "returned_excluded_overlap": [],
+    "exclusion_note": "Rejected, deferred, proof-debt, and witness-only objects were excluded from returned governed context."
+  },
+  "answer_citation_trace": {
+    "mode": "local_sample_answer_trace",
+    "answer_must_cite": [
+      {
+        "object_id": "co_cc0948fbe8",
+        "receipt_ids": [
+          "receipt_sample_session_20260509_sample_001"
+        ],
+        "receipt_proof_hash": "sha256:bc1d80e2c830bff982ba7e79f0657a527960cfcfca2dfdf6e589fb2f96bd943e"
+      },
+      {
+        "object_id": "co_aca2497a16",
+        "receipt_ids": [
+          "receipt_sample_session_20260509_sample_001"
+        ],
+        "receipt_proof_hash": "sha256:bc1d80e2c830bff982ba7e79f0657a527960cfcfca2dfdf6e589fb2f96bd943e"
+      },
+      {
+        "object_id": "co_6370b8cb72",
+        "receipt_ids": [
+          "receipt_sample_session_20260509_sample_001"
+        ],
+        "receipt_proof_hash": "sha256:bc1d80e2c830bff982ba7e79f0657a527960cfcfca2dfdf6e589fb2f96bd943e"
+      },
+      {
+        "object_id": "co_aa614a60a5",
+        "receipt_ids": [
+          "receipt_sample_session_20260509_sample_001"
+        ],
+        "receipt_proof_hash": "sha256:bc1d80e2c830bff982ba7e79f0657a527960cfcfca2dfdf6e589fb2f96bd943e"
+      },
+      {
+        "object_id": "co_d120fe4812",
+        "receipt_ids": [
+          "receipt_sample_session_20260509_sample_001"
+        ],
+        "receipt_proof_hash": "sha256:bc1d80e2c830bff982ba7e79f0657a527960cfcfca2dfdf6e589fb2f96bd943e"
+      }
+    ],
+    "answer_must_not_claim": [
+      "No rejected object is inherited as state.",
+      "No deferred object is inherited as state.",
+      "No proof-debt object is inherited as settled fact.",
+      "No live MongoDB MCP call is proven unless a live Agent Builder trace is attached."
+    ]
+  },
+  "minimum_demo_evidence": [
+    "MCP server config visible in repo",
+    "Agent tool definition named query_governed_state_via_mongodb_mcp",
+    "Trace screenshot or log line from Agent Builder showing MCP call",
+    "Returned object IDs match inheritance bundle",
+    "Receipt IDs or proof hash are attached to every returned object"
+  ],
+  "validation_expectations": {
+    "returned_ids_subset_of_inheritance_bundle": true,
+    "returned_excluded_overlap_count": 0,
+    "receipt_citation_count": 5,
+    "accepted_state_changed": false,
+    "external_mutation_attempted": false
+  },
+  "non_claim": "This local trace is a harness artifact; the judged build must attach a real Agent Builder/MongoDB MCP call trace before claiming live MCP execution.",
+  "accepted_state_changed": false,
+  "external_mutation_attempted": false,
+  "dashboard_trace_rows": [
+    {
+      "phase": "inheritance_bundle",
+      "status": "observed",
+      "evidence": "sample_outputs/inheritance_bundle.json",
+      "detail": "5 receipt-cleared object IDs selected for retrieval."
+    },
+    {
+      "phase": "accepted_only_query_shape",
+      "status": "gated",
+      "evidence": "accepted_only_query_shape.filter",
+      "detail": "{'session_id': 'sample_session_20260509', 'inheritance_status': 'INHERITABLE_AFTER_RECEIPT', 'acceptance_status': {'$in': ['settled_accept_sample', 'ACCEPTED', 'RECEIPT_CLEARED', 'receipt_cleared']}}"
+    },
+    {
+      "phase": "mongodb_mcp_request_envelope",
+      "status": "read_only",
+      "evidence": "mongodb_mcp_request_envelope.arguments.pipeline",
+      "detail": "mongodb.aggregate on ion_continuity_bridge.daimon_continuity_objects"
+    },
+    {
+      "phase": "returned_object_ids",
+      "status": "receipt_cited",
+      "evidence": "returned_object_citations",
+      "detail": "co_cc0948fbe8, co_aca2497a16, co_6370b8cb72, co_aa614a60a5, co_d120fe4812"
+    },
+    {
+      "phase": "excluded_non_inheritable",
+      "status": "excluded",
+      "evidence": "exclusion_report",
+      "detail": "7 non-inheritable objects excluded; overlap=[]"
+    }
+  ]
+}

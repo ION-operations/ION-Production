@@ -1,0 +1,22 @@
+{
+  "ok": true,
+  "stage": "deployed",
+  "project": "vivid-spot-495900-q4",
+  "region": "us-central1",
+  "service": "daimon-ion-kernel",
+  "image": "us-central1-docker.pkg.dev/vivid-spot-495900-q4/daimon/daimon-ion-kernel:20260510034418",
+  "cloud_run_url": "https://daimon-ion-kernel-3amc5vjaeq-uc.a.run.app",
+  "commands_run": [
+    "gcloud services enable run/cloudbuild/artifactregistry/secretmanager",
+    "gcloud secrets versions add",
+    "gcloud builds submit",
+    "gcloud run deploy"
+  ],
+  "secret_inputs_present": {
+    "MONGODB_URI": true
+  },
+  "external_mutation_attempted": true,
+  "schema": "daimon.cloud_run_deploy_summary.v0_1",
+  "generated_at": "2026-05-10T03:45:18.150110+00:00",
+  "accepted_state_changed": false
+}

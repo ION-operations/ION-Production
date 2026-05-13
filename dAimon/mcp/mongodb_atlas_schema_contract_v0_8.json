@@ -1,0 +1,85 @@
+{
+  "schema": "ion.mongodb_atlas_collections.v0_8",
+  "database": "ion_continuity_bridge",
+  "collections": {
+    "continuity_objects": {
+      "purpose": "Every imported claim/source/task/decision as witness or candidate continuity object.",
+      "required_indexes": [
+        {
+          "keys": {
+            "object_id": 1
+          },
+          "unique": true
+        },
+        {
+          "keys": {
+            "session_id": 1,
+            "inheritance_status": 1
+          }
+        },
+        {
+          "keys": {
+            "session_id": 1,
+            "acceptance_status": 1
+          }
+        },
+        {
+          "keys": {
+            "text": "text"
+          },
+          "optional": true
+        }
+      ],
+      "vector_search": {
+        "field": "embedding",
+        "index_name": "ion_continuity_vector_index",
+        "gate": "Only query documents with inheritance_status == INHERITABLE_AFTER_RECEIPT for next-session inheritance."
+      }
+    },
+    "settlement_queue": {
+      "purpose": "Operator review queue for candidate objects.",
+      "required_indexes": [
+        {
+          "keys": {
+            "queue_id": 1
+          },
+          "unique": true
+        }
+      ]
+    },
+    "receipts": {
+      "purpose": "Receipt candidates and accepted receipts.",
+      "required_indexes": [
+        {
+          "keys": {
+            "receipt_id": 1
+          },
+          "unique": true
+        },
+        {
+          "keys": {
+            "session_id": 1
+          }
+        }
+      ]
+    },
+    "sessions": {
+      "purpose": "Session metadata and context package pointers.",
+      "required_indexes": [
+        {
+          "keys": {
+            "session_id": 1
+          },
+          "unique": true
+        }
+      ]
+    },
+    "domain_registry": {
+      "purpose": "Optional domain cards and graph regions for later project ingestion."
+    }
+  },
+  "non_claims": [
+    "This schema does not create remote Atlas collections in sandbox.",
+    "Vector index creation must be validated in MongoDB Atlas or through MongoDB MCP in the judged build."
+  ]
+}

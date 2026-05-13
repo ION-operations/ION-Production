@@ -1,0 +1,397 @@
+{
+  "schema": "daimon.orchestration.build_roadmap.v0_1",
+  "project": "dAimon",
+  "generated_on": "2026-05-09",
+  "roadmap_principle": "Build the contest slice as a truthful vertical slice of the full trust layer. Every phase must produce evidence, tests, and explicit non-claims.",
+  "phases": [
+    {
+      "phase_id": "P0",
+      "name": "Standalone Repo and Local Continuity Bridge",
+      "status": "complete",
+      "objectives": [
+        "Create dAimon as its own GitHub repository under the same account.",
+        "Preserve ION protocol influence without making dAimon the ION repository.",
+        "Demonstrate local import, classify, settle, receipt, and inherit behavior."
+      ],
+      "deliverables": [
+        "Standalone repo scaffold",
+        "Local kernel modules",
+        "Sample local outputs",
+        "README state boundary"
+      ],
+      "dependencies": [
+        "GitHub access",
+        "Existing ION continuity bridge scaffold"
+      ],
+      "evidence": [
+        "README.md",
+        "ion_kernel/",
+        "sample_outputs/local_demo_summary.json",
+        "sample_outputs/local_mcp_trace.json"
+      ],
+      "tests": [
+        "python scripts/run_local_demo.py",
+        "python scripts/run_mcp_trace_harness.py",
+        "python scripts/validate_mcp_trace_harness.py",
+        "python scripts/validate_scaffold.py"
+      ],
+      "exit_criteria": [
+        "Repo exists independently from ION.",
+        "Local demo produces accepted-only inheritance.",
+        "Scaffold validation passes.",
+        "No secrets are committed."
+      ]
+    },
+    {
+      "phase_id": "P1",
+      "name": "MongoDB Atlas Candidate State and Visibility Proof",
+      "status": "complete_for_seed_proof",
+      "objectives": [
+        "Use contest MongoDB credentials locally without committing secret values.",
+        "Verify Atlas readiness.",
+        "Seed candidate continuity objects, queue entries, receipts, and sessions.",
+        "Produce MongoDB-backed accepted-only visibility trace artifacts."
+      ],
+      "deliverables": [
+        "MongoDB adapter",
+        "Environment loader",
+        "Readiness check",
+        "Candidate seed script",
+        "Seed summary and trace artifacts"
+      ],
+      "dependencies": [
+        "MongoDB URI",
+        "Atlas API key credentials if project-level checks are needed"
+      ],
+      "evidence": [
+        "scripts/check_mongodb_live_readiness.py",
+        "scripts/seed_mongodb_candidate_sample.py",
+        "sample_outputs/mongodb_live_readiness.json",
+        "sample_outputs/mongodb_candidate_seed_summary.json",
+        "sample_outputs/mongodb_candidate_seed_mcp_trace.json"
+      ],
+      "tests": [
+        "python scripts/check_mongodb_live_readiness.py",
+        "python scripts/seed_mongodb_candidate_sample.py",
+        "python scripts/validate_mongodb_contract.py"
+      ],
+      "exit_criteria": [
+        "Ping succeeds against Atlas.",
+        "Seed writes expected candidate and receipt collections.",
+        "Trace returns accepted objects only.",
+        "Trace lists excluded witness and receipt citations.",
+        "accepted_state_changed is false for read-only trace."
+      ]
+    },
+    {
+      "phase_id": "P2",
+      "name": "Orchestration Contract Layer",
+      "status": "in_progress",
+      "objectives": [
+        "Turn the conceptual architecture into machine-readable layer, domain, template, receipt, roadmap, test, and management contracts.",
+        "Create validation that keeps orchestration assets internally consistent.",
+        "Make planning and governance first-class repo artifacts."
+      ],
+      "deliverables": [
+        "orchestration/product_layers.json",
+        "orchestration/domain_registry.json",
+        "orchestration/template_registry.json",
+        "orchestration/receipt_registry.json",
+        "orchestration/build_roadmap.json",
+        "orchestration/test_matrix.json",
+        "orchestration/management_cadence.json",
+        "docs/full_orchestration_plan.md",
+        "docs/self_demonstrating_video_agent.md",
+        "scripts/validate_orchestration_plan.py"
+      ],
+      "dependencies": [
+        "P0 local scaffold",
+        "P1 MongoDB seed proof"
+      ],
+      "evidence": [
+        "sample_outputs/orchestration_validation.json"
+      ],
+      "tests": [
+        "python scripts/validate_orchestration_plan.py",
+        "python scripts/validate_scaffold.py"
+      ],
+      "exit_criteria": [
+        "All orchestration JSON files parse and satisfy required schema checks.",
+        "Core loop templates exist for import, classify, route, settle, receipt, and inherit.",
+        "Every domain has proof obligations, authority ceiling, settlement rules, and fission triggers.",
+        "Roadmap phases have evidence, tests, and exit criteria."
+      ]
+    },
+    {
+      "phase_id": "P3",
+      "name": "Dashboard and Review Surface",
+      "status": "planned",
+      "objectives": [
+        "Create a compact local dashboard for settlement queue, receipts, trace output, and inheritance bundle inspection.",
+        "Show accepted, rejected, deferred, and needs_review states without making the UI a marketing page.",
+        "Allow the contest judge to inspect proof boundaries quickly."
+      ],
+      "deliverables": [
+        "Dashboard app",
+        "Settlement queue view",
+        "Receipt detail view",
+        "MCP visibility trace view",
+        "Inheritance bundle export view"
+      ],
+      "dependencies": [
+        "P0 local data contracts",
+        "P1 MongoDB adapter",
+        "P2 orchestration contracts"
+      ],
+      "evidence": [
+        "Dashboard screenshots",
+        "Dashboard health endpoint",
+        "Sample trace loaded in UI"
+      ],
+      "tests": [
+        "Frontend build command",
+        "Playwright smoke test",
+        "Trace rendering fixture test"
+      ],
+      "exit_criteria": [
+        "Dashboard renders local sample state.",
+        "Dashboard can render MongoDB-backed sample state when credentials are present.",
+        "UI clearly separates inheritable accepted objects from excluded witness.",
+        "No secrets appear in rendered UI or committed fixtures."
+      ]
+    },
+    {
+      "phase_id": "P4",
+      "name": "Google Cloud Runtime",
+      "status": "planned",
+      "objectives": [
+        "Deploy the vertical slice to Google Cloud Run or an equivalent Google-hosted contest surface.",
+        "Record deployment facts as receipts.",
+        "Expose a health endpoint and a trace endpoint for the demo."
+      ],
+      "deliverables": [
+        "Container or deploy config",
+        "Cloud Run service",
+        "Runtime health check",
+        "Deployment receipt",
+        "Runtime README section"
+      ],
+      "dependencies": [
+        "Google Cloud project",
+        "Google credentials",
+        "Configured secrets",
+        "P3 dashboard or API surface"
+      ],
+      "evidence": [
+        "Service URL",
+        "Health check output",
+        "Deployment receipt",
+        "Commit and build id or image digest"
+      ],
+      "tests": [
+        "Cloud health check",
+        "Trace endpoint smoke test",
+        "Secret redaction check"
+      ],
+      "exit_criteria": [
+        "Service responds to health check.",
+        "Trace endpoint demonstrates accepted-only behavior.",
+        "Deployment receipt records commit and build proof.",
+        "Claims remain contest-demo bounded."
+      ]
+    },
+    {
+      "phase_id": "P5",
+      "name": "Gemini or Agent Builder Governed Handoff",
+      "status": "planned",
+      "objectives": [
+        "Send a receipt-cleared inheritance bundle to a Gemini or Agent Builder carrier.",
+        "Record the carrier output as candidate return.",
+        "Settle the return before any future inheritance."
+      ],
+      "deliverables": [
+        "Handoff script or integration endpoint",
+        "Accepted-only context payload",
+        "Carrier return capture",
+        "Settlement receipt for returned output"
+      ],
+      "dependencies": [
+        "Google API credentials",
+        "Accepted inheritance bundle",
+        "P2 route and template contracts"
+      ],
+      "evidence": [
+        "Handoff request summary",
+        "Carrier return package",
+        "Settlement receipt",
+        "Non-claim note for incomplete Google integration if needed"
+      ],
+      "tests": [
+        "Manual live handoff proof",
+        "Offline fixture replay",
+        "Receipt citation validation"
+      ],
+      "exit_criteria": [
+        "Carrier receives only receipt-cleared context.",
+        "Carrier return is not accepted automatically.",
+        "Settlement receipt decides what may inherit.",
+        "Demo can show before and after inheritance boundary."
+      ]
+    },
+    {
+      "phase_id": "P6",
+      "name": "Self-Demonstrating Contest Package",
+      "status": "planned",
+      "objectives": [
+        "Make the demo video and submission materials governed outputs.",
+        "Audit every major claim against proof artifacts.",
+        "Package the final contest story without overclaiming production readiness."
+      ],
+      "deliverables": [
+        "Claim inventory",
+        "Storyboard",
+        "Shot list",
+        "Narration script",
+        "Claim audit receipt",
+        "Submission checklist"
+      ],
+      "dependencies": [
+        "P2 orchestration contracts",
+        "P3 dashboard screenshots or live view",
+        "P4 and P5 proof if included in final claims"
+      ],
+      "evidence": [
+        "docs/self_demonstrating_video_agent.md",
+        "Demo video asset folder",
+        "Claim audit receipt",
+        "Submission package"
+      ],
+      "tests": [
+        "Claim audit pass",
+        "Artifact link check",
+        "Final non-claim review"
+      ],
+      "exit_criteria": [
+        "Every claim is proven, local-only, live, roadmap, or non-claim.",
+        "Unsupported claims are removed or downgraded.",
+        "The video demonstrates the trust loop and the fact that the video itself was governed.",
+        "Submission is ready with clean proof boundaries."
+      ]
+    },
+    {
+      "phase_id": "P7",
+      "name": "Portable Continuation And Custom GPT Connector",
+      "status": "planned",
+      "objectives": [
+        "Create project-bound first contact packages for a public custom GPT or equivalent carrier.",
+        "Export receipt-cleared portable context packages.",
+        "Replay bounded packets through a local PC connector without treating chat history as trusted state."
+      ],
+      "deliverables": [
+        "First contact package schema",
+        "Project pairing receipt",
+        "Portable context package format",
+        "Continuation replay fixture",
+        "Custom GPT action contract draft"
+      ],
+      "dependencies": [
+        "P2 orchestration contracts",
+        "Accepted inheritance bundle",
+        "Local connector design",
+        "Project identity policy"
+      ],
+      "evidence": [
+        "docs/custom_gpt_expansion_plan.md",
+        "First contact package sample",
+        "Portable continuation replay receipt"
+      ],
+      "tests": [
+        "Project identity pairing fixture",
+        "Portable continuation replay fixture",
+        "Receipt citation validation"
+      ],
+      "exit_criteria": [
+        "Project ID routes requests but does not grant mutation authority by itself.",
+        "Portable package includes accepted context, excluded witness, and receipt citations.",
+        "Replay returns candidate output to settlement.",
+        "Local PC actions require pairing or local proof."
+      ]
+    },
+    {
+      "phase_id": "P8",
+      "name": "Dynamic Technology Fabric Adapters",
+      "status": "planned",
+      "objectives": [
+        "Generalize the MongoDB adapter pattern into a technology fabric for many context substrates.",
+        "Register adapter manifests with capability, authority, proof, and inheritance declarations.",
+        "Preserve cross-surface lineage for copies, indexes, embeddings, summaries, conflicts, and source-of-truth claims."
+      ],
+      "deliverables": [
+        "Adapter manifest schema",
+        "Normalized object schema",
+        "Cross-surface lineage edge model",
+        "Adapter validation fixture",
+        "First non-MongoDB adapter proof"
+      ],
+      "dependencies": [
+        "P1 MongoDB adapter proof",
+        "P2 orchestration contracts",
+        "Technology fabric domain contract"
+      ],
+      "evidence": [
+        "Adapter manifest sample",
+        "Normalized object sample",
+        "Adapter path receipt"
+      ],
+      "tests": [
+        "Adapter manifest validation",
+        "Cross-surface path settlement fixture",
+        "Secret-bearing object classification fixture"
+      ],
+      "exit_criteria": [
+        "Adapter can declare readable and writable objects, authority, proof, and risk.",
+        "External objects normalize into candidate continuity objects.",
+        "Overlapping surfaces preserve lineage edges.",
+        "Adapter output does not become inheritable before settlement."
+      ]
+    },
+    {
+      "phase_id": "P9",
+      "name": "Security And Voice Safety Containment",
+      "status": "planned",
+      "objectives": [
+        "Define a controlled security/red-team lane for trust-breaking scenarios.",
+        "Add voice misrecognition safety gates for high-risk instructions.",
+        "Produce containment receipts for blocked, detected, patched, and re-tested cases."
+      ],
+      "deliverables": [
+        "Threat model registry",
+        "Voice risk phrase policy",
+        "Security lab scenario schema",
+        "Synthetic secret fixture",
+        "Containment receipt sample"
+      ],
+      "dependencies": [
+        "P2 orchestration contracts",
+        "Portable continuation packet model",
+        "Capability routing authority policy"
+      ],
+      "evidence": [
+        "docs/custom_gpt_expansion_plan.md",
+        "Voice confirmation fixture",
+        "Security containment receipt"
+      ],
+      "tests": [
+        "Voice high-risk phrase confirmation fixture",
+        "Security lab containment fixture",
+        "Synthetic secret non-leak check"
+      ],
+      "exit_criteria": [
+        "High-risk voice-derived actions pause for confirmation.",
+        "No high-risk test runs outside an explicit lab target.",
+        "Synthetic secrets remain inside fixtures and are not committed as real credentials.",
+        "Security findings create incident receipts and re-test tasks."
+      ]
+    }
+  ]
+}

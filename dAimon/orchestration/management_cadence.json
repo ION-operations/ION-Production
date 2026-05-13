@@ -1,0 +1,238 @@
+{
+  "schema": "daimon.orchestration.management_cadence.v0_1",
+  "project": "dAimon",
+  "generated_on": "2026-05-09",
+  "operating_principle": "Manage dAimon as a trust product from the first commit: every task has a proof target, every claim has a boundary, and every release has validation.",
+  "cadences": [
+    {
+      "cadence_id": "session_start",
+      "name": "Session Start",
+      "frequency": "every build session",
+      "steps": [
+        "Read README.md, docs/full_orchestration_plan.md, and current roadmap phase.",
+        "Check git status before editing.",
+        "Identify whether the active task touches local continuity, MongoDB, Google Cloud, demo assets, or release operations.",
+        "State expected proof artifact before implementation starts."
+      ],
+      "outputs": [
+        "active objective",
+        "domain route",
+        "proof target",
+        "risk notes"
+      ]
+    },
+    {
+      "cadence_id": "daily_build_loop",
+      "name": "Daily Build Loop",
+      "frequency": "daily during contest sprint",
+      "steps": [
+        "Pick the highest-value roadmap phase blocker.",
+        "Implement the smallest coherent proof-producing increment.",
+        "Run required validation group from orchestration/test_matrix.json.",
+        "Update docs or sample outputs when behavior changes.",
+        "Commit with a message that names the proof gained."
+      ],
+      "outputs": [
+        "code or docs increment",
+        "validation result",
+        "updated proof artifact",
+        "commit"
+      ]
+    },
+    {
+      "cadence_id": "settlement_review",
+      "name": "Settlement Review",
+      "frequency": "whenever candidate output is produced",
+      "steps": [
+        "Identify candidate outputs and their domain.",
+        "Check template proof obligations.",
+        "Decide accepted, accepted_with_caveats, rejected, deferred, needs_human_review, needs_more_proof, merged, or archived_as_witness.",
+        "Issue or update receipt.",
+        "Update inheritance bundle only from accepted receipt-backed objects."
+      ],
+      "outputs": [
+        "settlement decision",
+        "receipt",
+        "inheritance permission update"
+      ]
+    },
+    {
+      "cadence_id": "integration_gate",
+      "name": "Integration Gate",
+      "frequency": "before using external services in claims",
+      "steps": [
+        "Confirm required credentials are present locally or in GitHub Secrets.",
+        "Run readiness check.",
+        "Execute the smallest live proof.",
+        "Save redacted proof artifact.",
+        "Record non-claims for anything not proven live."
+      ],
+      "outputs": [
+        "readiness proof",
+        "live proof artifact",
+        "non-claim notes"
+      ]
+    },
+    {
+      "cadence_id": "release_candidate",
+      "name": "Release Candidate",
+      "frequency": "before demo submission or shared milestone",
+      "steps": [
+        "Run local scaffold and orchestration validations.",
+        "Run live MongoDB proof if the release claims MongoDB integration.",
+        "Run Google Cloud proof if the release claims hosted Google infrastructure.",
+        "Run Agent Builder or Gemini proof if the release claims live carrier handoff.",
+        "Run demo claim audit.",
+        "Record known gaps and non-claims."
+      ],
+      "outputs": [
+        "release receipt",
+        "validation summary",
+        "known gaps",
+        "submission checklist"
+      ]
+    },
+    {
+      "cadence_id": "first_contact_pairing",
+      "name": "First Contact Pairing",
+      "frequency": "when a public GPT or new carrier creates a project lane",
+      "steps": [
+        "Create project-bound first contact package.",
+        "Record project ID as routing identifier only.",
+        "Issue first contact receipt.",
+        "Require pairing secret or local hub proof before bounded local packets.",
+        "Record allowed action scope."
+      ],
+      "outputs": [
+        "project lane",
+        "first contact receipt",
+        "pairing instructions",
+        "authority tier"
+      ]
+    },
+    {
+      "cadence_id": "voice_packet_gate",
+      "name": "Voice Packet Gate",
+      "frequency": "whenever voice-derived intent is used",
+      "steps": [
+        "Record transcript source and risk phrase matches.",
+        "Classify high-risk phrases as possible transcription ambiguity.",
+        "Pause for confirmation or restatement when required.",
+        "Issue clarification receipt.",
+        "Route only confirmed or low-risk packets."
+      ],
+      "outputs": [
+        "candidate voice packet",
+        "risk phrase report",
+        "clarification receipt",
+        "route decision"
+      ]
+    },
+    {
+      "cadence_id": "security_lab_gate",
+      "name": "Security Lab Gate",
+      "frequency": "before any high-risk or red-team scenario",
+      "steps": [
+        "Confirm scenario is bounded to lab resources.",
+        "Use synthetic secrets and sandbox targets.",
+        "Record containment boundary and detector expectations.",
+        "Run scenario only after containment is explicit.",
+        "Issue containment receipt and re-test requirement."
+      ],
+      "outputs": [
+        "threat scenario",
+        "containment boundary",
+        "detector result",
+        "containment receipt"
+      ]
+    }
+  ],
+  "work_lanes": [
+    {
+      "lane_id": "kernel",
+      "name": "Continuity Kernel",
+      "owned_domains": [
+        "continuity_substrate",
+        "mcp_visibility"
+      ],
+      "definition_of_done": [
+        "Behavior is covered by local validation.",
+        "Accepted-only inheritance is preserved.",
+        "Receipts cite proof and excluded witness is retained."
+      ]
+    },
+    {
+      "lane_id": "integrations",
+      "name": "Integrations",
+      "owned_domains": [
+        "capability_routing",
+        "cloud_runtime"
+      ],
+      "definition_of_done": [
+        "Credentials are referenced by name, not value.",
+        "Live proof artifact exists when integration is claimed.",
+        "Carrier output returns to settlement."
+      ]
+    },
+    {
+      "lane_id": "product_surface",
+      "name": "Product Surface",
+      "owned_domains": [
+        "product_ops",
+        "enterprise_trust"
+      ],
+      "definition_of_done": [
+        "UI or docs make accepted, rejected, deferred, and needs_review states visible.",
+        "Claims separate proven behavior from roadmap.",
+        "Release evidence is easy to inspect."
+      ]
+    },
+    {
+      "lane_id": "demo_package",
+      "name": "Demo Package",
+      "owned_domains": [
+        "demo_video_agent"
+      ],
+      "definition_of_done": [
+        "Every claim maps to an artifact or non-claim label.",
+        "Storyboard shows the trust failure mode and the governed solution.",
+        "Final package includes claim audit receipt."
+      ]
+    },
+    {
+      "lane_id": "continuation_identity",
+      "name": "Continuation And Identity",
+      "owned_domains": [
+        "portable_continuation",
+        "project_identity_collaboration",
+        "voice_local_work"
+      ],
+      "definition_of_done": [
+        "Project identity is separated from full user identity.",
+        "Portable packages include receipt-cleared context and excluded witness.",
+        "Voice-derived high-risk actions are gated by confirmation receipts."
+      ]
+    },
+    {
+      "lane_id": "fabric_security",
+      "name": "Fabric And Security",
+      "owned_domains": [
+        "technology_fabric",
+        "security_red_team",
+        "ion_product_boundary"
+      ],
+      "definition_of_done": [
+        "Adapters declare capability, authority, proof, and risk.",
+        "Cross-surface paths preserve lineage before inheritance.",
+        "High-risk tests run only inside explicit containment lanes."
+      ]
+    }
+  ],
+  "repo_rules": [
+    "Do not commit raw credentials.",
+    "Treat .env as local contest configuration only.",
+    "Keep dAimon independent from the ION repository while preserving protocol lineage in docs.",
+    "Prefer proof-producing increments over broad unvalidated rewrites.",
+    "When a claim cannot be proven yet, mark it roadmap or non-claim."
+  ]
+}
