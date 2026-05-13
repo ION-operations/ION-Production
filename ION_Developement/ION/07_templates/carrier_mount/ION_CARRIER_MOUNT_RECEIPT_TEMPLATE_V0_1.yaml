@@ -1,0 +1,37 @@
+schema_id: ion.carrier_mount_receipt.template.v1
+status: active_candidate
+purpose: "Template for carrier-wide mount receipts used by Codex, browser, MCP, and future carriers."
+required_fields:
+  carrier_mount:
+    - agent_tag
+    - carrier
+    - carrier_instance_id
+    - conversation_tag
+    - context_instance_id
+    - branch_id
+    - parent_context_id
+    - current_packet
+    - model_lane
+    - loaded_refs
+    - authority
+    - source_posture
+    - return_target
+authority_defaults:
+  production_authority: false
+  live_execution_authority: false
+  accepted_state_authority: false
+  settlement_required: true
+loaded_ref_source_types:
+  - package
+  - repo
+  - mcp
+  - memory
+  - user
+  - inferred
+fallback:
+  mode: receipt_only
+  reason: "persona_or_context_not_proven"
+non_claims:
+  - "mount receipt is candidate operational evidence until accepted by settlement"
+  - "persona presentation does not grant authority"
+  - "hidden reasoning is never exposed"

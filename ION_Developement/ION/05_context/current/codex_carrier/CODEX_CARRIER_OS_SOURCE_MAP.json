@@ -1,0 +1,404 @@
+{
+  "accepted_state_authority": false,
+  "agent_registry": {
+    "agent_count": 11,
+    "path": "ION/05_context/current/codex_carrier/CODEX_AGENT_REGISTRY.json"
+  },
+  "browser_control_authority": false,
+  "cockpit_projection": {
+    "drift_signal_count": 3,
+    "git_dirty": true,
+    "path": "ION/05_context/current/codex_carrier/CODEX_CARRIER_COCKPIT_SNAPSHOT.json"
+  },
+  "codex_native_capability_bindings": [
+    {
+      "authority": "orientation_only_until_receipt",
+      "capability": "sessions_resume",
+      "ion_binding": "CODEX_SESSION_REGISTRY + branch capsule"
+    },
+    {
+      "authority": "diagnostic_continuity_only",
+      "capability": "memories",
+      "ion_binding": "memory policy + raw-context diagnostic lane"
+    },
+    {
+      "authority": "role_context_not_state",
+      "capability": "AGENTS.md",
+      "ion_binding": "carrier instructions + ION mount contract"
+    },
+    {
+      "authority": "configuration_evidence_only",
+      "capability": "config.toml",
+      "ion_binding": "sanitized local PC audit; values redacted"
+    },
+    {
+      "authority": "guardrail_not_acceptance",
+      "capability": "hooks",
+      "ion_binding": "mount/session/sync/proof preflight hooks"
+    },
+    {
+      "authority": "deterministic_wrapper_only",
+      "capability": "slash_commands",
+      "ion_binding": "CODEX_SLASH_COMMAND_REGISTRY"
+    },
+    {
+      "authority": "candidate_subbranch_only",
+      "capability": "subagents",
+      "ion_binding": "child branch capsules + parent settlement target"
+    },
+    {
+      "authority": "transport_not_law",
+      "capability": "MCP",
+      "ion_binding": "read-only/dry-run local bridge projections"
+    },
+    {
+      "authority": "not_authorized_by_default",
+      "capability": "app_server_remote_control",
+      "ion_binding": "cockpit service map + explicit approval gates"
+    },
+    {
+      "authority": "proposal_not_merge",
+      "capability": "git_review",
+      "ion_binding": "stage/commit proposal evidence + human push gate"
+    }
+  ],
+  "content_root": "/home/sev/ION - Production/ION_CODEX FULL/ION",
+  "context_mirror_policy": {
+    "accepted_state_authority": false,
+    "default_exclude_globs": [
+      ".git/**",
+      ".ion_private/**",
+      ".env*",
+      "**/*token*",
+      "**/*secret*",
+      "**/*credential*",
+      "ION/05_context/current/action_gateway/runtime/**",
+      "ION/05_context/current/chatgpt_connector/runtime/**",
+      "ION/05_context/current/codex_capsule_chat/response_runs/**"
+    ],
+    "default_include_refs": [
+      "ION/REPO_AUTHORITY.md",
+      "ION/02_architecture/ION_MOUNT_CONTRACT.md",
+      "ION/02_architecture/CODEX_CARRIER_OS_RUNTIME_PROTOCOL.md",
+      "ION/02_architecture/CODEX_COMMIT_BOUNDARY_AUDIT_PROTOCOL.md",
+      "ION/02_architecture/CODEX_SOURCE_BUNDLE_STAGE_REVIEW_PROTOCOL.md",
+      "ION/05_context/current/codex_carrier/CODEX_CARRIER_OS_SOURCE_MAP.json",
+      "ION/05_context/current/codex_carrier/CODEX_CARRIER_COCKPIT_SNAPSHOT.json",
+      "ION/05_context/current/codex_carrier/CODEX_SESSION_REGISTRY.json",
+      "ION/05_context/current/codex_carrier/CODEX_CARRIER_EVENT_LEDGER.json",
+      "ION/05_context/current/codex_carrier/commit_boundary/CODEX_COMMIT_BOUNDARY_AUDIT.json",
+      "ION/05_context/current/codex_carrier/commit_boundary/CODEX_SOURCE_BUNDLE_STAGE_REVIEW.json"
+    ],
+    "drive_is_active_working_tree": false,
+    "drive_may_carry_curated_context_package": true,
+    "drive_may_carry_git_metadata": false,
+    "drive_may_carry_raw_codex_context_by_default": false,
+    "drive_may_carry_secrets": false,
+    "freshness_proof_required": true,
+    "generated_at": "2026-05-12T23:53:55+00:00",
+    "live_execution_authority": false,
+    "live_repo_runs_from_drive": false,
+    "mirror_role": "curated_context_visibility_lane",
+    "mount_receipt_required": true,
+    "path": "ION/05_context/current/codex_carrier/CODEX_CONTEXT_MIRROR_POLICY.json",
+    "production_authority": false,
+    "schema_id": "ion.codex_context_mirror_policy.v1",
+    "secrets_authority": false
+  },
+  "control_planes": [
+    {
+      "plane_id": "codex_carrier_domain",
+      "primary_ref": "ION/05_context/current/codex_carrier/CODEX_CARRIER_DOMAIN_REGISTRY.json",
+      "purpose": "carrier-domain registry, agents, required surfaces, authority boundary",
+      "status": "READY",
+      "surface": {
+        "bytes": 18263,
+        "exists": true,
+        "is_dir": false,
+        "is_file": true,
+        "path": "ION/05_context/current/codex_carrier/CODEX_CARRIER_DOMAIN_REGISTRY.json"
+      }
+    },
+    {
+      "plane_id": "codex_sessions",
+      "primary_ref": "ION/05_context/current/codex_carrier/CODEX_SESSION_REGISTRY.json",
+      "purpose": "Codex session registry and branch-capsule binding",
+      "status": "READY",
+      "surface": {
+        "bytes": 9489,
+        "exists": true,
+        "is_dir": false,
+        "is_file": true,
+        "path": "ION/05_context/current/codex_carrier/CODEX_SESSION_REGISTRY.json"
+      }
+    },
+    {
+      "plane_id": "codex_agents",
+      "primary_ref": "ION/05_context/current/codex_carrier/CODEX_AGENT_REGISTRY.json",
+      "purpose": "specialist/domain agent profile registry",
+      "status": "READY",
+      "surface": {
+        "bytes": 5515,
+        "exists": true,
+        "is_dir": false,
+        "is_file": true,
+        "path": "ION/05_context/current/codex_carrier/CODEX_AGENT_REGISTRY.json"
+      }
+    },
+    {
+      "plane_id": "raw_context_diagnostics",
+      "primary_ref": "ION/05_context/current/codex_carrier/CODEX_RAW_CONTEXT_SYNC_LANE_POLICY.md",
+      "purpose": "local-private raw Codex context manifests and redacted promotion path",
+      "status": "READY",
+      "surface": {
+        "bytes": 1053,
+        "exists": true,
+        "is_dir": false,
+        "is_file": true,
+        "path": "ION/05_context/current/codex_carrier/CODEX_RAW_CONTEXT_SYNC_LANE_POLICY.md"
+      }
+    },
+    {
+      "plane_id": "runtime_event_bus",
+      "primary_ref": "ION/05_context/current/codex_carrier/CODEX_CARRIER_EVENT_LEDGER.json",
+      "purpose": "public-safe event telemetry feeding cockpit/proof/drift displays",
+      "status": "READY",
+      "surface": {
+        "bytes": 7024,
+        "exists": true,
+        "is_dir": false,
+        "is_file": true,
+        "path": "ION/05_context/current/codex_carrier/CODEX_CARRIER_EVENT_LEDGER.json"
+      }
+    },
+    {
+      "plane_id": "cockpit_projection",
+      "primary_ref": "ION/05_context/current/codex_carrier/CODEX_CARRIER_COCKPIT_SNAPSHOT.json",
+      "purpose": "operator-visible graph, drift, proof, services, and context truth projection",
+      "status": "READY",
+      "surface": {
+        "bytes": 46677,
+        "exists": true,
+        "is_dir": false,
+        "is_file": true,
+        "path": "ION/05_context/current/codex_carrier/CODEX_CARRIER_COCKPIT_SNAPSHOT.json"
+      }
+    },
+    {
+      "plane_id": "context_mirror",
+      "primary_ref": "ION/05_context/current/codex_carrier/CODEX_CONTEXT_MIRROR_POLICY.json",
+      "purpose": "curated Google Drive/context mirror policy; never active working tree",
+      "status": "READY",
+      "surface": {
+        "bytes": 1843,
+        "exists": true,
+        "is_dir": false,
+        "is_file": true,
+        "path": "ION/05_context/current/codex_carrier/CODEX_CONTEXT_MIRROR_POLICY.json"
+      }
+    },
+    {
+      "plane_id": "slash_commands",
+      "primary_ref": "ION/05_context/current/codex_carrier/CODEX_SLASH_COMMAND_REGISTRY.json",
+      "purpose": "deterministic Codex command wrappers for mount/status/proof/sync/handoff",
+      "status": "READY",
+      "surface": {
+        "bytes": 2731,
+        "exists": true,
+        "is_dir": false,
+        "is_file": true,
+        "path": "ION/05_context/current/codex_carrier/CODEX_SLASH_COMMAND_REGISTRY.json"
+      }
+    },
+    {
+      "plane_id": "commit_boundary_audit",
+      "primary_ref": "ION/05_context/current/codex_carrier/commit_boundary/CODEX_COMMIT_BOUNDARY_AUDIT.json",
+      "purpose": "path-level dirty-tree classification and candidate stage-manifest proposal; no git mutation",
+      "status": "READY",
+      "surface": {
+        "bytes": 79102,
+        "exists": true,
+        "is_dir": false,
+        "is_file": true,
+        "path": "ION/05_context/current/codex_carrier/commit_boundary/CODEX_COMMIT_BOUNDARY_AUDIT.json"
+      }
+    },
+    {
+      "plane_id": "source_bundle_stage_review",
+      "primary_ref": "ION/05_context/current/codex_carrier/commit_boundary/CODEX_SOURCE_BUNDLE_STAGE_REVIEW.json",
+      "purpose": "first safe source/protocol/schema/test stage proposal derived from commit-boundary audit; no git mutation",
+      "status": "READY",
+      "surface": {
+        "bytes": 47998,
+        "exists": true,
+        "is_dir": false,
+        "is_file": true,
+        "path": "ION/05_context/current/codex_carrier/commit_boundary/CODEX_SOURCE_BUNDLE_STAGE_REVIEW.json"
+      }
+    }
+  ],
+  "domain_registry": {
+    "agent_count": 11,
+    "mcp_read_only_tools": [
+      "ion.codex.carrier.status",
+      "ion.codex.carrier.cockpit",
+      "ion.codex.carrier.events",
+      "ion.codex.carrier.os",
+      "ion.codex.raw_context.status"
+    ],
+    "ok": true,
+    "verdict": "ION_CODEX_CARRIER_DOMAIN_READY"
+  },
+  "drive_runtime_authority": false,
+  "findings": [],
+  "generated_at": "2026-05-12T23:53:55+00:00",
+  "github_push_authority": false,
+  "live_execution_authority": false,
+  "non_claims": [
+    "Codex Carrier OS source map does not start Codex or mutate local services.",
+    "Source map is candidate/projection state until proof gates and settlement accept changes.",
+    "Drive/context mirror is curated visibility, not an active repo or runtime authority.",
+    "Raw Codex context remains local-private by default; manifests are not raw content."
+  ],
+  "ok": true,
+  "packet_ref": "PCKT-ION-CODEX-CARRIER-OPERATING-SYSTEM-ORCHESTRATION-001",
+  "path": "ION/05_context/current/codex_carrier/CODEX_CARRIER_OS_SOURCE_MAP.json",
+  "production_authority": false,
+  "protocol_ref": "ION/02_architecture/CODEX_CARRIER_OS_RUNTIME_PROTOCOL.md",
+  "raw_context_sync_lane": {
+    "manifest_count": 1,
+    "ok": true,
+    "private_storage_ref": ".ion_private/codex_raw_context",
+    "raw_content_exported": false,
+    "verdict": "ION_CODEX_RAW_CONTEXT_SYNC_LANE_READY"
+  },
+  "role_split": {
+    "codex_cli": "bounded local implementation/build/test worker",
+    "gpt001": "live carrier/MCP/Action coordinator and local-state verifier",
+    "ion": "law, receipts, branch capsules, settlement, continuity",
+    "operator": "final operational authority",
+    "sev_gpt_pro": "architecture/Nemesis/orchestration review"
+  },
+  "runtime_event_bus": {
+    "event_count": 3,
+    "events_dir": "ION/05_context/current/codex_carrier/events",
+    "path": "ION/05_context/current/codex_carrier/CODEX_CARRIER_EVENT_LEDGER.json",
+    "recent_event_count": 3
+  },
+  "runtime_loop": [
+    "operator_intent",
+    "work_packet",
+    "context_package",
+    "carrier_mount_receipt",
+    "codex_session_registration",
+    "branch_capsule_binding",
+    "local_codex_execution",
+    "raw_context_manifest_optional",
+    "proof_bearing_return",
+    "runtime_event_emission",
+    "cockpit_projection",
+    "proof_gate",
+    "settlement_request",
+    "steward_or_operator_decision",
+    "receipt",
+    "next_context_inheritance"
+  ],
+  "schema_id": "ion.codex_carrier_os_source_map.v1",
+  "secrets_authority": false,
+  "session_registry": {
+    "active_session_count": 1,
+    "path": "ION/05_context/current/codex_carrier/CODEX_SESSION_REGISTRY.json",
+    "session_count": 1
+  },
+  "shell_root": "/home/sev/ION - Production/ION_CODEX FULL",
+  "slash_command_registry": {
+    "accepted_state_authority": false,
+    "browser_control_authority": false,
+    "command_count": 12,
+    "commands": [
+      {
+        "command": "/ion-mount",
+        "maps_to": "kernel.ion_carrier_onboard / carrier-domain status",
+        "mode": "read_only",
+        "mutates": false
+      },
+      {
+        "command": "/ion-identity",
+        "maps_to": "current carrier/session/branch identity card",
+        "mode": "read_only",
+        "mutates": false
+      },
+      {
+        "command": "/ion-packet",
+        "maps_to": "current packet + write scope + blockers",
+        "mode": "read_only",
+        "mutates": false
+      },
+      {
+        "command": "/ion-branch",
+        "maps_to": "branch capsule status and raw-context manifest ref",
+        "mode": "read_only",
+        "mutates": false
+      },
+      {
+        "command": "/ion-sync",
+        "maps_to": "rolling context + event append with confirmation",
+        "mode": "candidate_write",
+        "mutates": true
+      },
+      {
+        "command": "/ion-proof",
+        "maps_to": "proof ledger/status; candidate evidence refs only",
+        "mode": "read_only_or_candidate_write",
+        "mutates": "confirmation_required"
+      },
+      {
+        "command": "/ion-git-plan",
+        "maps_to": "git status/stage manifest proposal; no commit/push",
+        "mode": "read_only",
+        "mutates": false
+      },
+      {
+        "command": "/ion-commit-boundary",
+        "maps_to": "kernel.ion_codex_commit_boundary_audit path classification + candidate stage manifest",
+        "mode": "read_only",
+        "mutates": false
+      },
+      {
+        "command": "/ion-source-bundle",
+        "maps_to": "kernel.ion_codex_source_bundle_stage_review source/protocol/schema/test stage proposal",
+        "mode": "read_only",
+        "mutates": false
+      },
+      {
+        "command": "/ion-receipt",
+        "maps_to": "receipt proposal; acceptance remains Steward/operator gated",
+        "mode": "candidate_write",
+        "mutates": "confirmation_required"
+      },
+      {
+        "command": "/ion-settlement",
+        "maps_to": "settlement request package",
+        "mode": "candidate_write",
+        "mutates": "confirmation_required"
+      },
+      {
+        "command": "/ion-handoff",
+        "maps_to": "branch capsule handoff + event ledger",
+        "mode": "candidate_write",
+        "mutates": "confirmation_required"
+      }
+    ],
+    "drive_runtime_authority": false,
+    "generated_at": "2026-05-12T23:53:55+00:00",
+    "github_push_authority": false,
+    "live_execution_authority": false,
+    "path": "ION/05_context/current/codex_carrier/CODEX_SLASH_COMMAND_REGISTRY.json",
+    "production_authority": false,
+    "rule": "Slash commands are deterministic wrappers; they do not confer authority or accepted state.",
+    "schema_id": "ion.codex_slash_command_registry.v1",
+    "secrets_authority": false
+  },
+  "source_map_ready": true,
+  "verdict": "ION_CODEX_CARRIER_OS_READY"
+}

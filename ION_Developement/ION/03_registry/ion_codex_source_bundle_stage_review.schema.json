@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ion.codex_source_bundle_stage_review.v1",
+  "title": "ION Codex Source Bundle Stage Review",
+  "type": "object",
+  "required": [
+    "schema_id",
+    "generated_at",
+    "verdict",
+    "ok",
+    "source_bundle_stage_ready",
+    "source_bundle",
+    "excluded_bundles",
+    "candidate_stage_manifest",
+    "accepted_state_authority",
+    "git_mutation_performed"
+  ],
+  "properties": {
+    "schema_id": {"const": "ion.codex_source_bundle_stage_review.v1"},
+    "generated_at": {"type": "string"},
+    "verdict": {
+      "type": "string",
+      "enum": [
+        "ION_CODEX_SOURCE_BUNDLE_STAGE_REVIEW_READY",
+        "ION_CODEX_SOURCE_BUNDLE_STAGE_REVIEW_PARTIAL",
+        "ION_CODEX_SOURCE_BUNDLE_STAGE_REVIEW_BLOCKED"
+      ]
+    },
+    "ok": {"type": "boolean"},
+    "source_bundle_stage_ready": {"type": "boolean"},
+    "source_bundle": {"type": "object"},
+    "excluded_bundles": {"type": "array", "items": {"type": "object"}},
+    "candidate_stage_manifest": {"type": "object"},
+    "blocking_findings": {"type": "array", "items": {"type": "string"}},
+    "warning_findings": {"type": "array", "items": {"type": "string"}},
+    "accepted_state_authority": {"const": false},
+    "production_authority": {"const": false},
+    "live_execution_authority": {"const": false},
+    "secrets_authority": {"const": false},
+    "git_mutation_performed": {"const": false},
+    "git_push_authority": {"const": false},
+    "github_mutation_performed": {"const": false},
+    "raw_codex_context_promoted": {"const": false}
+  },
+  "additionalProperties": true
+}

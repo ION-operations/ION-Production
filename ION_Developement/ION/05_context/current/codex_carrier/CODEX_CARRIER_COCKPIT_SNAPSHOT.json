@@ -1,0 +1,1038 @@
+{
+  "agent_graph": {
+    "edges": [
+      {
+        "from": "CODEX_CARRIER_DOMAIN",
+        "kind": "defines_guarded_diagnostic_lane",
+        "to": "codex_raw_context_sync_lane"
+      },
+      {
+        "from": "CODEX_CARRIER_DOMAIN",
+        "kind": "emits_runtime_events",
+        "to": "codex_carrier_event_bus"
+      },
+      {
+        "from": "CODEX_CARRIER_DOMAIN",
+        "kind": "defines_agent_registry",
+        "to": "codex_agent_registry"
+      },
+      {
+        "from": "CODEX_CARRIER_DOMAIN",
+        "kind": "defines_agent",
+        "to": "codex_001"
+      },
+      {
+        "from": "codex_001",
+        "kind": "requires_branch_capsule",
+        "to": "branch_capsule_registry"
+      },
+      {
+        "from": "CODEX_CARRIER_DOMAIN",
+        "kind": "defines_agent",
+        "to": "codex_local_ion_mason"
+      },
+      {
+        "from": "codex_local_ion_mason",
+        "kind": "requires_branch_capsule",
+        "to": "branch_capsule_registry"
+      },
+      {
+        "from": "CODEX_CARRIER_DOMAIN",
+        "kind": "defines_agent",
+        "to": "codex_runtime_cartographer"
+      },
+      {
+        "from": "codex_runtime_cartographer",
+        "kind": "requires_branch_capsule",
+        "to": "branch_capsule_registry"
+      },
+      {
+        "from": "CODEX_CARRIER_DOMAIN",
+        "kind": "defines_agent",
+        "to": "codex_git_orchestration_steward"
+      },
+      {
+        "from": "codex_git_orchestration_steward",
+        "kind": "requires_branch_capsule",
+        "to": "branch_capsule_registry"
+      },
+      {
+        "from": "CODEX_CARRIER_DOMAIN",
+        "kind": "defines_agent",
+        "to": "codex_branch_capsule_architect"
+      },
+      {
+        "from": "codex_branch_capsule_architect",
+        "kind": "requires_branch_capsule",
+        "to": "branch_capsule_registry"
+      },
+      {
+        "from": "CODEX_CARRIER_DOMAIN",
+        "kind": "defines_agent",
+        "to": "codex_ui_joc_opus_canonist"
+      },
+      {
+        "from": "codex_ui_joc_opus_canonist",
+        "kind": "requires_branch_capsule",
+        "to": "branch_capsule_registry"
+      },
+      {
+        "from": "CODEX_CARRIER_DOMAIN",
+        "kind": "defines_agent",
+        "to": "codex_daimon_bridge_specialist"
+      },
+      {
+        "from": "codex_daimon_bridge_specialist",
+        "kind": "requires_branch_capsule",
+        "to": "branch_capsule_registry"
+      },
+      {
+        "from": "CODEX_CARRIER_DOMAIN",
+        "kind": "defines_agent",
+        "to": "codex_proof_nemesis"
+      },
+      {
+        "from": "codex_proof_nemesis",
+        "kind": "requires_branch_capsule",
+        "to": "branch_capsule_registry"
+      },
+      {
+        "from": "CODEX_CARRIER_DOMAIN",
+        "kind": "defines_agent",
+        "to": "codex_extension_cockpit_specialist"
+      },
+      {
+        "from": "codex_extension_cockpit_specialist",
+        "kind": "requires_branch_capsule",
+        "to": "branch_capsule_registry"
+      },
+      {
+        "from": "CODEX_CARRIER_DOMAIN",
+        "kind": "defines_agent",
+        "to": "codex_mcp_action_gateway_specialist"
+      },
+      {
+        "from": "codex_mcp_action_gateway_specialist",
+        "kind": "requires_branch_capsule",
+        "to": "branch_capsule_registry"
+      },
+      {
+        "from": "CODEX_CARRIER_DOMAIN",
+        "kind": "defines_agent",
+        "to": "codex_context_settler_assistant"
+      },
+      {
+        "from": "codex_context_settler_assistant",
+        "kind": "requires_branch_capsule",
+        "to": "branch_capsule_registry"
+      },
+      {
+        "from": "codex_001",
+        "kind": "owns_session",
+        "to": "codex_session_20260512T200233+0000_codex_001"
+      },
+      {
+        "from": "codex_session_20260512T200233+0000_codex_001",
+        "kind": "binds_branch_capsule",
+        "to": "ION/05_context/current/agent_context_branches/codex_carrier/codex_001/branch_20260512T200233+0000_codex_001/"
+      },
+      {
+        "from": "codex_session_20260512T200233+0000_codex_001",
+        "kind": "has_raw_context_manifest",
+        "to": "ION/05_context/current/codex_carrier/raw_context_manifests/rawctx_20260512T200233+0000_codex_001_codex_session_20260512t200233_0000_codex_001.json"
+      }
+    ],
+    "nodes": [
+      {
+        "id": "CODEX_CARRIER_DOMAIN",
+        "kind": "carrier_domain",
+        "status": "ION_CODEX_CARRIER_DOMAIN_READY"
+      },
+      {
+        "id": "codex_solo_base_context",
+        "kind": "shared_context",
+        "path": "ION/05_context/current/codex_solo/"
+      },
+      {
+        "id": "branch_capsule_registry",
+        "kind": "branch_registry",
+        "path": "ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json"
+      },
+      {
+        "id": "mcp_local_bridge",
+        "kind": "mcp_bridge",
+        "path": "ION/04_packages/kernel/ion_mcp_local_bridge.py"
+      },
+      {
+        "id": "codex_raw_context_sync_lane",
+        "kind": "guarded_diagnostic_lane",
+        "path": "ION/05_context/current/codex_carrier/CODEX_RAW_CONTEXT_SYNC_LANE_POLICY.md"
+      },
+      {
+        "id": "codex_carrier_event_bus",
+        "kind": "runtime_event_bus",
+        "path": "ION/05_context/current/codex_carrier/CODEX_CARRIER_EVENT_LEDGER.json"
+      },
+      {
+        "id": "codex_agent_registry",
+        "kind": "agent_registry",
+        "path": "ION/05_context/current/codex_carrier/CODEX_AGENT_REGISTRY.json"
+      },
+      {
+        "domain": "local_codex_cli_carrier_mount_and_binding",
+        "id": "codex_001",
+        "kind": "codex_agent"
+      },
+      {
+        "domain": "local_filesystem_build_test",
+        "id": "codex_local_ion_mason",
+        "kind": "codex_agent"
+      },
+      {
+        "domain": "runtime_and_service_inventory",
+        "id": "codex_runtime_cartographer",
+        "kind": "codex_agent"
+      },
+      {
+        "domain": "git_stage_commit_settlement_planning",
+        "id": "codex_git_orchestration_steward",
+        "kind": "codex_agent"
+      },
+      {
+        "domain": "branch_context_capsule_design",
+        "id": "codex_branch_capsule_architect",
+        "kind": "codex_agent"
+      },
+      {
+        "domain": "joc_opus_ui_canon_and_visual_proof",
+        "id": "codex_ui_joc_opus_canonist",
+        "kind": "codex_agent"
+      },
+      {
+        "domain": "daimon_bridge_and_sibling_repo_integration",
+        "id": "codex_daimon_bridge_specialist",
+        "kind": "codex_agent"
+      },
+      {
+        "domain": "proof_gate_adversarial_audit",
+        "id": "codex_proof_nemesis",
+        "kind": "codex_agent"
+      },
+      {
+        "domain": "browser_extension_and_local_cockpit",
+        "id": "codex_extension_cockpit_specialist",
+        "kind": "codex_agent"
+      },
+      {
+        "domain": "mcp_action_gateway_and_tool_boundary",
+        "id": "codex_mcp_action_gateway_specialist",
+        "kind": "codex_agent"
+      },
+      {
+        "domain": "context_settlement_preparation",
+        "id": "codex_context_settler_assistant",
+        "kind": "codex_agent"
+      },
+      {
+        "agent_tag": "codex_001",
+        "current_packet": "PCKT-ION-CODEX-LOCAL-PC-LIVE-CARRIER-MOUNT-002",
+        "id": "codex_session_20260512T200233+0000_codex_001",
+        "kind": "codex_session",
+        "path": "ION/05_context/current/codex_carrier/sessions/codex_session_20260512T200233+0000_codex_001.json",
+        "status": "ACTIVE"
+      }
+    ]
+  },
+  "agent_registry": {
+    "agent_count": 11,
+    "agents": [
+      {
+        "agent_tag": "codex_001",
+        "branch_capsule_required": true,
+        "code_name": "CODEX-001",
+        "default_write_scope": [
+          "ION/02_architecture/",
+          "ION/03_registry/",
+          "ION/04_packages/kernel/",
+          "ION/05_context/current/codex_carrier/",
+          "ION/05_context/current/codex_local_pc/",
+          "ION/05_context/current/agent_context_branches/",
+          "ION/tests/",
+          "diffs/",
+          "workpackets/"
+        ],
+        "domain": "local_codex_cli_carrier_mount_and_binding",
+        "role_hint": "operator-designated Codex CLI local-PC carrier for live mount audit and carrier-OS binding",
+        "settlement_required": true
+      },
+      {
+        "agent_tag": "codex_local_ion_mason",
+        "branch_capsule_required": true,
+        "default_write_scope": [
+          "ION/04_packages/kernel/",
+          "ION/tests/",
+          "ION/02_architecture/",
+          "ION/03_registry/",
+          "ION/05_context/current/codex_carrier/",
+          "diffs/",
+          "workpackets/"
+        ],
+        "domain": "local_filesystem_build_test",
+        "role_hint": "bounded implementation worker for repo-local code/docs/tests",
+        "settlement_required": true
+      },
+      {
+        "agent_tag": "codex_runtime_cartographer",
+        "branch_capsule_required": true,
+        "default_write_scope": [
+          "ION/05_context/current/codex_carrier/",
+          "diffs/",
+          "workpackets/"
+        ],
+        "domain": "runtime_and_service_inventory",
+        "role_hint": "read-first runtime/service/port/state cartography",
+        "settlement_required": true
+      },
+      {
+        "agent_tag": "codex_git_orchestration_steward",
+        "branch_capsule_required": true,
+        "default_write_scope": [
+          "ION/05_context/current/git_orchestration/",
+          "diffs/",
+          "workpackets/"
+        ],
+        "domain": "git_stage_commit_settlement_planning",
+        "role_hint": "git state classification and commit-proposal evidence, not autonomous push authority",
+        "settlement_required": true
+      },
+      {
+        "agent_tag": "codex_branch_capsule_architect",
+        "branch_capsule_required": true,
+        "default_write_scope": [
+          "ION/05_context/current/agent_context_branches/",
+          "ION/05_context/current/context_settlement/"
+        ],
+        "domain": "branch_context_capsule_design",
+        "role_hint": "branch capsule schemas, identity cards, and settlement inbox mechanics",
+        "settlement_required": true
+      },
+      {
+        "agent_tag": "codex_ui_joc_opus_canonist",
+        "branch_capsule_required": true,
+        "default_write_scope": [
+          "ION/08_ui/",
+          "ION/04_packages/kernel/ion_codex_chat_*",
+          "diffs/",
+          "workpackets/"
+        ],
+        "domain": "joc_opus_ui_canon_and_visual_proof",
+        "role_hint": "UI/cockpit implementation under JOC/OPUS canon with visual proof gates",
+        "settlement_required": true
+      },
+      {
+        "agent_tag": "codex_daimon_bridge_specialist",
+        "branch_capsule_required": true,
+        "default_write_scope": [
+          "ION/05_context/current/codex_carrier/",
+          "workpackets/",
+          "diffs/"
+        ],
+        "domain": "daimon_bridge_and_sibling_repo_integration",
+        "role_hint": "dAimon bridge planning and bounded integration evidence",
+        "settlement_required": true
+      },
+      {
+        "agent_tag": "codex_proof_nemesis",
+        "branch_capsule_required": true,
+        "default_write_scope": [
+          "ION/tests/",
+          "ION/05_context/current/codex_carrier/",
+          "diffs/"
+        ],
+        "domain": "proof_gate_adversarial_audit",
+        "role_hint": "adversarial validation, drift detection, and failure-mode attack",
+        "settlement_required": true
+      },
+      {
+        "agent_tag": "codex_extension_cockpit_specialist",
+        "branch_capsule_required": true,
+        "default_write_scope": [
+          "ION/09_integrations/browser_extension/",
+          "ION/08_ui/",
+          "ION/tests/",
+          "diffs/",
+          "workpackets/"
+        ],
+        "domain": "browser_extension_and_local_cockpit",
+        "role_hint": "extension/cockpit interface specialist with visual and approval-bound proof gates",
+        "settlement_required": true
+      },
+      {
+        "agent_tag": "codex_mcp_action_gateway_specialist",
+        "branch_capsule_required": true,
+        "default_write_scope": [
+          "ION/04_packages/kernel/ion_mcp*",
+          "ION/05_context/current/action_gateway/",
+          "ION/tests/",
+          "diffs/"
+        ],
+        "domain": "mcp_action_gateway_and_tool_boundary",
+        "role_hint": "MCP/Action Gateway routing, confirmation, and tool-boundary maintainer",
+        "settlement_required": true
+      },
+      {
+        "agent_tag": "codex_context_settler_assistant",
+        "branch_capsule_required": true,
+        "default_write_scope": [
+          "ION/05_context/current/context_settlement/",
+          "ION/05_context/current/codex_carrier/",
+          "workpackets/"
+        ],
+        "domain": "context_settlement_preparation",
+        "role_hint": "settlement request preparer that never accepts state by itself",
+        "settlement_required": true
+      }
+    ],
+    "path": "ION/05_context/current/codex_carrier/CODEX_AGENT_REGISTRY.json"
+  },
+  "automation_timeline": [
+    {
+      "actor": {
+        "agent_tag": "ion_pro_sev",
+        "carrier": "gpt_5_5_pro_sandbox"
+      },
+      "authority": {
+        "accepted_state_authority": false,
+        "live_execution_authority": false,
+        "production_authority": false,
+        "secrets_authority": false
+      },
+      "branch_id": null,
+      "created_at": "2026-05-12T20:01:19+00:00",
+      "detail": "Codex Carrier OS source-map/control-plane surfaces initialized as candidate state.",
+      "event_id": "evt_20260512T200119+0000_codex.carrier_os.initialized",
+      "event_type": "codex.carrier_os.initialized",
+      "evidence": [],
+      "packet_id": "PCKT-ION-CODEX-CARRIER-OPERATING-SYSTEM-ORCHESTRATION-001",
+      "path": "ION/05_context/current/codex_carrier/events/evt_20260512T200119+0000_codex.carrier_os.initialized.json",
+      "refs": [
+        "ION/05_context/current/codex_carrier/CODEX_CARRIER_OS_SOURCE_MAP.json",
+        "ION/05_context/current/codex_carrier/CODEX_SLASH_COMMAND_REGISTRY.json",
+        "ION/05_context/current/codex_carrier/CODEX_CONTEXT_MIRROR_POLICY.json"
+      ],
+      "schema_id": "ion.codex_carrier_runtime_event.v1",
+      "session_id": null,
+      "visibility": {
+        "cockpit": true,
+        "public_safe": true,
+        "raw_context_exported": false,
+        "redacted": true
+      }
+    },
+    {
+      "actor": {
+        "agent_tag": "codex_001",
+        "carrier": "codex_cli",
+        "session_id": "codex_session_20260512T200233+0000_codex_001"
+      },
+      "authority": {
+        "accepted_state_authority": false,
+        "live_execution_authority": false,
+        "production_authority": false,
+        "secrets_authority": false
+      },
+      "branch_id": "branch_20260512T200233+0000_codex_001",
+      "created_at": "2026-05-12T20:02:33+00:00",
+      "detail": "Public-safe raw Codex context manifest written; raw content remains local-private and unexported.",
+      "event_id": "evt_20260512T200233+0000_codex.raw_context.manifested",
+      "event_type": "codex.raw_context.manifested",
+      "evidence": [
+        "ION/05_context/current/codex_carrier/raw_context_manifests/rawctx_20260512T200233+0000_codex_001_codex_session_20260512t200233_0000_codex_001.json"
+      ],
+      "packet_id": "PCKT-ION-CODEX-LOCAL-PC-LIVE-CARRIER-MOUNT-002",
+      "path": "ION/05_context/current/codex_carrier/events/evt_20260512T200233+0000_codex.raw_context.manifested.json",
+      "refs": [
+        "ION/05_context/current/codex_carrier/raw_context_manifests/rawctx_20260512T200233+0000_codex_001_codex_session_20260512t200233_0000_codex_001.json",
+        "ION/05_context/current/agent_context_branches/codex_carrier/codex_001/branch_20260512T200233+0000_codex_001/RAW_CONTEXT_MANIFEST.json"
+      ],
+      "schema_id": "ion.codex_carrier_runtime_event.v1",
+      "session_id": "codex_session_20260512T200233+0000_codex_001",
+      "visibility": {
+        "cockpit": true,
+        "public_safe": true,
+        "raw_context_exported": false,
+        "redacted": true
+      }
+    },
+    {
+      "actor": {
+        "agent_tag": "codex_001",
+        "carrier": "codex_cli",
+        "session_id": "codex_session_20260512T200233+0000_codex_001"
+      },
+      "authority": {
+        "accepted_state_authority": false,
+        "live_execution_authority": false,
+        "production_authority": false,
+        "secrets_authority": false
+      },
+      "branch_id": "branch_20260512T200233+0000_codex_001",
+      "created_at": "2026-05-12T20:02:33+00:00",
+      "detail": "Codex carrier session registered with branch capsule and raw-context manifest lane.",
+      "event_id": "evt_20260512T200233+0000_codex.session.registered",
+      "event_type": "codex.session.registered",
+      "evidence": [
+        "ION/05_context/current/agent_context_branches/codex_carrier/codex_001/branch_20260512T200233+0000_codex_001/CAPSULE.md",
+        "ION/05_context/current/agent_context_branches/codex_carrier/codex_001/branch_20260512T200233+0000_codex_001/MINI.md",
+        "ION/05_context/current/agent_context_branches/codex_carrier/codex_001/branch_20260512T200233+0000_codex_001/ROLLING_CONTEXT.md",
+        "ION/05_context/current/agent_context_branches/codex_carrier/codex_001/branch_20260512T200233+0000_codex_001/BLOCKERS.md",
+        "ION/05_context/current/agent_context_branches/codex_carrier/codex_001/branch_20260512T200233+0000_codex_001/CODEX_SESSION.json",
+        "ION/05_context/current/agent_context_branches/codex_carrier/codex_001/branch_20260512T200233+0000_codex_001/STATUS.json",
+        "ION/05_context/current/agent_context_branches/codex_carrier/codex_001/branch_20260512T200233+0000_codex_001/RECEIPTS/",
+        "ION/05_context/current/agent_context_branches/codex_carrier/codex_001/branch_20260512T200233+0000_codex_001/TASK_RETURNS/",
+        "ION/05_context/current/agent_context_branches/codex_carrier/codex_001/branch_20260512T200233+0000_codex_001/PATCHES/",
+        "ION/05_context/current/agent_context_branches/codex_carrier/codex_001/branch_20260512T200233+0000_codex_001/RAW_CONTEXT_SUMMARIES/",
+        "ION/05_context/current/agent_context_branches/codex_carrier/codex_001/branch_20260512T200233+0000_codex_001/RAW_CONTEXT_EXCERPTS/",
+        "ION/05_context/current/codex_carrier/raw_context_manifests/rawctx_20260512T200233+0000_codex_001_codex_session_20260512t200233_0000_codex_001.json",
+        "ION/05_context/current/agent_context_branches/codex_carrier/codex_001/branch_20260512T200233+0000_codex_001/RAW_CONTEXT_MANIFEST.json"
+      ],
+      "packet_id": "PCKT-ION-CODEX-LOCAL-PC-LIVE-CARRIER-MOUNT-002",
+      "path": "ION/05_context/current/codex_carrier/events/evt_20260512T200233+0000_codex.session.registered.json",
+      "refs": [
+        "ION/05_context/current/codex_carrier/sessions/codex_session_20260512T200233+0000_codex_001.json",
+        "ION/05_context/current/agent_context_branches/codex_carrier/codex_001/branch_20260512T200233+0000_codex_001/",
+        "ION/05_context/current/codex_carrier/raw_context_manifests/rawctx_20260512T200233+0000_codex_001_codex_session_20260512t200233_0000_codex_001.json"
+      ],
+      "schema_id": "ion.codex_carrier_runtime_event.v1",
+      "session_id": "codex_session_20260512T200233+0000_codex_001",
+      "visibility": {
+        "cockpit": true,
+        "public_safe": true,
+        "raw_context_exported": false,
+        "redacted": true
+      }
+    }
+  ],
+  "context_truth_panel": {
+    "accepted_state_boundary": "Codex sessions, memories, and raw context are proposal/orientation/diagnostic continuity until proof gates and settlement accept receipts.",
+    "memory_policy_ref": "ION/05_context/current/codex_carrier/CODEX_MEMORY_POLICY.md",
+    "raw_context_committed_by_default": false,
+    "raw_context_mirrored_externally_by_default": false,
+    "raw_context_policy_ref": "ION/05_context/current/codex_carrier/CODEX_RAW_CONTEXT_SYNC_LANE_POLICY.md",
+    "shared_context_write_allowed": false
+  },
+  "domain_registry": {
+    "agent_count": 11,
+    "mcp_read_only_tools": [
+      "ion.codex.carrier.status",
+      "ion.codex.carrier.cockpit",
+      "ion.codex.carrier.events",
+      "ion.codex.carrier.os",
+      "ion.codex.raw_context.status"
+    ],
+    "path": "ION/05_context/current/codex_carrier/CODEX_CARRIER_DOMAIN_REGISTRY.json",
+    "verdict": "ION_CODEX_CARRIER_DOMAIN_READY"
+  },
+  "drift_signals": [
+    {
+      "path": "ION/05_context/current/codex_carrier/LOCAL_CODEX_PC_AUDIT.json",
+      "reason": "sanitized local ~/.codex and Codex CLI audit has not been written yet",
+      "signal_id": "codex_local_pc_audit_not_written",
+      "status": "CANDIDATE"
+    },
+    {
+      "porcelain_count": 89,
+      "reason": "working tree has tracked or untracked changes that need classification before settlement",
+      "sample": [
+        " M .codex/config.toml",
+        " M .gitignore",
+        " M ION/02_architecture/ION_CARRIER_TO_CARRIER_COMMUNICATION_PROTOCOL.md",
+        " M ION/03_registry/ion_skill_registry.yaml",
+        " M ION/04_packages/kernel/ion_codex_solo_context.py",
+        " M ION/04_packages/kernel/ion_mcp_local_bridge.py",
+        " M ION/05_context/current/ACTIVE_CARRIER_MESSAGE_QUEUE.json",
+        " M ION/05_context/current/ACTIVE_CODEX_CAPSULE_CHAT_MODEL.json",
+        " M ION/05_context/current/ACTIVE_OPERATOR_MESSAGE_QUEUE.json",
+        " M ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json",
+        " M ION/05_context/current/chatgpt_connector/codex_work_requests/2026-05-09T004941Z0000_prepare_a_bounded_ion_work_packet_report_for_the_next_local_ion_codex_or_role_ag.json",
+        " M ION/05_context/current/chatgpt_connector/runtime/agent_invocation_broker_state.json",
+        " M ION/05_context/current/chatgpt_connector/runtime/codex_queue_runner_state.json",
+        " M ION/05_context/current/codex_capsule_chat/state.json",
+        " M ION/tests/test_kernel_ion_codex_solo_context.py",
+        " M ION/tests/test_kernel_ion_mcp_local_bridge.py",
+        "?? ION/02_architecture/CODEX_CARRIER_DOMAIN_PROTOCOL.md",
+        "?? ION/02_architecture/CODEX_CARRIER_EVENT_BUS_PROTOCOL.md",
+        "?? ION/02_architecture/CODEX_CARRIER_OS_RUNTIME_PROTOCOL.md",
+        "?? ION/02_architecture/CODEX_RAW_CONTEXT_SYNC_LANE_PROTOCOL.md",
+        "?? ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_BOOTSTRAP_BINDING_PROTOCOL_V0_1.md",
+        "?? ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_MATERIAL_WORK_GUARD_PROTOCOL_V0_1.md",
+        "?? ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_REGISTRY_RECONCILIATION_PROTOCOL_V0_1.md",
+        "?? ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_SETTLEMENT_INTAKE_PROTOCOL_V0_1.md",
+        "?? ION/02_architecture/ION_CARRIER_MOUNT_AND_PERSONA_PRESENTATION_PROTOCOL_V0_1.md",
+        "?? ION/02_architecture/ION_GDRIVE_CONTEXT_MIRROR_PROTOCOL_V0_1.md",
+        "?? ION/02_architecture/ION_GITHUB_COMMS_FALLBACK_PROTOCOL.md",
+        "?? ION/03_registry/ion_carrier_mount_registry.yaml",
+        "?? ION/03_registry/ion_codex_carrier_runtime_event.schema.json",
+        "?? ION/03_registry/ion_codex_raw_context_manifest.schema.json",
+        "?? ION/03_registry/ion_gdrive_context_mirror_registry.yaml",
+        "?? ION/03_registry/ion_persona_presentation_registry.yaml",
+        "?? ION/04_packages/kernel/ion_agent_branch_capsule.py",
+        "?? ION/04_packages/kernel/ion_carrier_mount_receipt.py",
+        "?? ION/04_packages/kernel/ion_codex_carrier_domain.py",
+        "?? ION/04_packages/kernel/ion_codex_carrier_os.py",
+        "?? ION/04_packages/kernel/ion_codex_local_os_audit.py",
+        "?? ION/04_packages/kernel/ion_codex_local_pc_audit.py",
+        "?? ION/04_packages/kernel/ion_codex_local_pc_readiness.py",
+        "?? ION/04_packages/kernel/ion_codex_raw_context_sync.py"
+      ],
+      "signal_id": "git_worktree_dirty",
+      "status": "DRIFTED"
+    },
+    {
+      "reason": "Codex memory/raw context are bounded diagnostic continuity only; branch capsules and receipts govern durable state",
+      "signal_id": "codex_memory_boundary",
+      "status": "READY"
+    },
+    {
+      "reason": "Codex carrier sessions must not directly mutate shared Capsule/Mini/HOT_CONTEXT; settlement required",
+      "signal_id": "shared_context_write_boundary",
+      "status": "READY"
+    }
+  ],
+  "event_ledger": {
+    "accepted_state_authority": false,
+    "event_count": 3,
+    "event_schema_ref": "ION/03_registry/ion_codex_carrier_runtime_event.schema.json",
+    "event_types": [
+      "codex.carrier_os.initialized",
+      "codex.raw_context.manifested",
+      "codex.session.registered"
+    ],
+    "events_dir": "ION/05_context/current/codex_carrier/events",
+    "generated_at": "2026-05-12T20:02:33+00:00",
+    "live_execution_authority": false,
+    "path": "ION/05_context/current/codex_carrier/CODEX_CARRIER_EVENT_LEDGER.json",
+    "production_authority": false,
+    "recent_events": [
+      {
+        "actor": {
+          "agent_tag": "ion_pro_sev",
+          "carrier": "gpt_5_5_pro_sandbox"
+        },
+        "authority": {
+          "accepted_state_authority": false,
+          "live_execution_authority": false,
+          "production_authority": false,
+          "secrets_authority": false
+        },
+        "branch_id": null,
+        "created_at": "2026-05-12T20:01:19+00:00",
+        "detail": "Codex Carrier OS source-map/control-plane surfaces initialized as candidate state.",
+        "event_id": "evt_20260512T200119+0000_codex.carrier_os.initialized",
+        "event_type": "codex.carrier_os.initialized",
+        "evidence": [],
+        "packet_id": "PCKT-ION-CODEX-CARRIER-OPERATING-SYSTEM-ORCHESTRATION-001",
+        "path": "ION/05_context/current/codex_carrier/events/evt_20260512T200119+0000_codex.carrier_os.initialized.json",
+        "refs": [
+          "ION/05_context/current/codex_carrier/CODEX_CARRIER_OS_SOURCE_MAP.json",
+          "ION/05_context/current/codex_carrier/CODEX_SLASH_COMMAND_REGISTRY.json",
+          "ION/05_context/current/codex_carrier/CODEX_CONTEXT_MIRROR_POLICY.json"
+        ],
+        "schema_id": "ion.codex_carrier_runtime_event.v1",
+        "session_id": null,
+        "visibility": {
+          "cockpit": true,
+          "public_safe": true,
+          "raw_context_exported": false,
+          "redacted": true
+        }
+      },
+      {
+        "actor": {
+          "agent_tag": "codex_001",
+          "carrier": "codex_cli",
+          "session_id": "codex_session_20260512T200233+0000_codex_001"
+        },
+        "authority": {
+          "accepted_state_authority": false,
+          "live_execution_authority": false,
+          "production_authority": false,
+          "secrets_authority": false
+        },
+        "branch_id": "branch_20260512T200233+0000_codex_001",
+        "created_at": "2026-05-12T20:02:33+00:00",
+        "detail": "Public-safe raw Codex context manifest written; raw content remains local-private and unexported.",
+        "event_id": "evt_20260512T200233+0000_codex.raw_context.manifested",
+        "event_type": "codex.raw_context.manifested",
+        "evidence": [
+          "ION/05_context/current/codex_carrier/raw_context_manifests/rawctx_20260512T200233+0000_codex_001_codex_session_20260512t200233_0000_codex_001.json"
+        ],
+        "packet_id": "PCKT-ION-CODEX-LOCAL-PC-LIVE-CARRIER-MOUNT-002",
+        "path": "ION/05_context/current/codex_carrier/events/evt_20260512T200233+0000_codex.raw_context.manifested.json",
+        "refs": [
+          "ION/05_context/current/codex_carrier/raw_context_manifests/rawctx_20260512T200233+0000_codex_001_codex_session_20260512t200233_0000_codex_001.json",
+          "ION/05_context/current/agent_context_branches/codex_carrier/codex_001/branch_20260512T200233+0000_codex_001/RAW_CONTEXT_MANIFEST.json"
+        ],
+        "schema_id": "ion.codex_carrier_runtime_event.v1",
+        "session_id": "codex_session_20260512T200233+0000_codex_001",
+        "visibility": {
+          "cockpit": true,
+          "public_safe": true,
+          "raw_context_exported": false,
+          "redacted": true
+        }
+      },
+      {
+        "actor": {
+          "agent_tag": "codex_001",
+          "carrier": "codex_cli",
+          "session_id": "codex_session_20260512T200233+0000_codex_001"
+        },
+        "authority": {
+          "accepted_state_authority": false,
+          "live_execution_authority": false,
+          "production_authority": false,
+          "secrets_authority": false
+        },
+        "branch_id": "branch_20260512T200233+0000_codex_001",
+        "created_at": "2026-05-12T20:02:33+00:00",
+        "detail": "Codex carrier session registered with branch capsule and raw-context manifest lane.",
+        "event_id": "evt_20260512T200233+0000_codex.session.registered",
+        "event_type": "codex.session.registered",
+        "evidence": [
+          "ION/05_context/current/agent_context_branches/codex_carrier/codex_001/branch_20260512T200233+0000_codex_001/CAPSULE.md",
+          "ION/05_context/current/agent_context_branches/codex_carrier/codex_001/branch_20260512T200233+0000_codex_001/MINI.md",
+          "ION/05_context/current/agent_context_branches/codex_carrier/codex_001/branch_20260512T200233+0000_codex_001/ROLLING_CONTEXT.md",
+          "ION/05_context/current/agent_context_branches/codex_carrier/codex_001/branch_20260512T200233+0000_codex_001/BLOCKERS.md",
+          "ION/05_context/current/agent_context_branches/codex_carrier/codex_001/branch_20260512T200233+0000_codex_001/CODEX_SESSION.json",
+          "ION/05_context/current/agent_context_branches/codex_carrier/codex_001/branch_20260512T200233+0000_codex_001/STATUS.json",
+          "ION/05_context/current/agent_context_branches/codex_carrier/codex_001/branch_20260512T200233+0000_codex_001/RECEIPTS/",
+          "ION/05_context/current/agent_context_branches/codex_carrier/codex_001/branch_20260512T200233+0000_codex_001/TASK_RETURNS/",
+          "ION/05_context/current/agent_context_branches/codex_carrier/codex_001/branch_20260512T200233+0000_codex_001/PATCHES/",
+          "ION/05_context/current/agent_context_branches/codex_carrier/codex_001/branch_20260512T200233+0000_codex_001/RAW_CONTEXT_SUMMARIES/",
+          "ION/05_context/current/agent_context_branches/codex_carrier/codex_001/branch_20260512T200233+0000_codex_001/RAW_CONTEXT_EXCERPTS/",
+          "ION/05_context/current/codex_carrier/raw_context_manifests/rawctx_20260512T200233+0000_codex_001_codex_session_20260512t200233_0000_codex_001.json",
+          "ION/05_context/current/agent_context_branches/codex_carrier/codex_001/branch_20260512T200233+0000_codex_001/RAW_CONTEXT_MANIFEST.json"
+        ],
+        "packet_id": "PCKT-ION-CODEX-LOCAL-PC-LIVE-CARRIER-MOUNT-002",
+        "path": "ION/05_context/current/codex_carrier/events/evt_20260512T200233+0000_codex.session.registered.json",
+        "refs": [
+          "ION/05_context/current/codex_carrier/sessions/codex_session_20260512T200233+0000_codex_001.json",
+          "ION/05_context/current/agent_context_branches/codex_carrier/codex_001/branch_20260512T200233+0000_codex_001/",
+          "ION/05_context/current/codex_carrier/raw_context_manifests/rawctx_20260512T200233+0000_codex_001_codex_session_20260512t200233_0000_codex_001.json"
+        ],
+        "schema_id": "ion.codex_carrier_runtime_event.v1",
+        "session_id": "codex_session_20260512T200233+0000_codex_001",
+        "visibility": {
+          "cockpit": true,
+          "public_safe": true,
+          "raw_context_exported": false,
+          "redacted": true
+        }
+      }
+    ],
+    "schema_id": "ion.codex_carrier_event_ledger.v1",
+    "secrets_authority": false
+  },
+  "generated_at": "2026-05-12T20:02:33+00:00",
+  "live_execution_authority": false,
+  "local_pc_audit": {
+    "exists": false,
+    "path": "ION/05_context/current/codex_carrier/LOCAL_CODEX_PC_AUDIT.json",
+    "raw_file_names_exported": false,
+    "raw_memory_or_session_content_exported": false,
+    "status": "not_written"
+  },
+  "path": "ION/05_context/current/codex_carrier/CODEX_CARRIER_COCKPIT_SNAPSHOT.json",
+  "production_authority": false,
+  "project": {
+    "content_root": "/home/sev/ION - Production/ION_CODEX FULL/ION",
+    "domain_verdict": "ION_CODEX_CARRIER_DOMAIN_READY",
+    "git": {
+      "available": true,
+      "branch": "feature/codex-capsule-chat-active-root",
+      "dirty": true,
+      "porcelain_count": 89,
+      "porcelain_sample": [
+        " M .codex/config.toml",
+        " M .gitignore",
+        " M ION/02_architecture/ION_CARRIER_TO_CARRIER_COMMUNICATION_PROTOCOL.md",
+        " M ION/03_registry/ion_skill_registry.yaml",
+        " M ION/04_packages/kernel/ion_codex_solo_context.py",
+        " M ION/04_packages/kernel/ion_mcp_local_bridge.py",
+        " M ION/05_context/current/ACTIVE_CARRIER_MESSAGE_QUEUE.json",
+        " M ION/05_context/current/ACTIVE_CODEX_CAPSULE_CHAT_MODEL.json",
+        " M ION/05_context/current/ACTIVE_OPERATOR_MESSAGE_QUEUE.json",
+        " M ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json",
+        " M ION/05_context/current/chatgpt_connector/codex_work_requests/2026-05-09T004941Z0000_prepare_a_bounded_ion_work_packet_report_for_the_next_local_ion_codex_or_role_ag.json",
+        " M ION/05_context/current/chatgpt_connector/runtime/agent_invocation_broker_state.json",
+        " M ION/05_context/current/chatgpt_connector/runtime/codex_queue_runner_state.json",
+        " M ION/05_context/current/codex_capsule_chat/state.json",
+        " M ION/tests/test_kernel_ion_codex_solo_context.py",
+        " M ION/tests/test_kernel_ion_mcp_local_bridge.py",
+        "?? ION/02_architecture/CODEX_CARRIER_DOMAIN_PROTOCOL.md",
+        "?? ION/02_architecture/CODEX_CARRIER_EVENT_BUS_PROTOCOL.md",
+        "?? ION/02_architecture/CODEX_CARRIER_OS_RUNTIME_PROTOCOL.md",
+        "?? ION/02_architecture/CODEX_RAW_CONTEXT_SYNC_LANE_PROTOCOL.md",
+        "?? ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_BOOTSTRAP_BINDING_PROTOCOL_V0_1.md",
+        "?? ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_MATERIAL_WORK_GUARD_PROTOCOL_V0_1.md",
+        "?? ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_REGISTRY_RECONCILIATION_PROTOCOL_V0_1.md",
+        "?? ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_SETTLEMENT_INTAKE_PROTOCOL_V0_1.md",
+        "?? ION/02_architecture/ION_CARRIER_MOUNT_AND_PERSONA_PRESENTATION_PROTOCOL_V0_1.md",
+        "?? ION/02_architecture/ION_GDRIVE_CONTEXT_MIRROR_PROTOCOL_V0_1.md",
+        "?? ION/02_architecture/ION_GITHUB_COMMS_FALLBACK_PROTOCOL.md",
+        "?? ION/03_registry/ion_carrier_mount_registry.yaml",
+        "?? ION/03_registry/ion_codex_carrier_runtime_event.schema.json",
+        "?? ION/03_registry/ion_codex_raw_context_manifest.schema.json",
+        "?? ION/03_registry/ion_gdrive_context_mirror_registry.yaml",
+        "?? ION/03_registry/ion_persona_presentation_registry.yaml",
+        "?? ION/04_packages/kernel/ion_agent_branch_capsule.py",
+        "?? ION/04_packages/kernel/ion_carrier_mount_receipt.py",
+        "?? ION/04_packages/kernel/ion_codex_carrier_domain.py",
+        "?? ION/04_packages/kernel/ion_codex_carrier_os.py",
+        "?? ION/04_packages/kernel/ion_codex_local_os_audit.py",
+        "?? ION/04_packages/kernel/ion_codex_local_pc_audit.py",
+        "?? ION/04_packages/kernel/ion_codex_local_pc_readiness.py",
+        "?? ION/04_packages/kernel/ion_codex_raw_context_sync.py"
+      ]
+    },
+    "shell_root": "/home/sev/ION - Production/ION_CODEX FULL"
+  },
+  "raw_context_sync_lane": {
+    "accepted_state_authority": false,
+    "authority": {
+      "accepted_state_authority": false,
+      "browser_control_authority": false,
+      "live_execution_authority": false,
+      "production_authority": false,
+      "secrets_authority": false
+    },
+    "browser_control_authority": false,
+    "findings": [],
+    "generated_at": "2026-05-12T20:02:33+00:00",
+    "gitignore_guard": {
+      "exists": true,
+      "missing_patterns": [],
+      "ok": true,
+      "path": ".gitignore",
+      "present_patterns": [
+        ".ion_private/",
+        ".ion_private/codex_raw_context/"
+      ],
+      "required_patterns": [
+        ".ion_private/",
+        ".ion_private/codex_raw_context/"
+      ]
+    },
+    "live_execution_authority": false,
+    "manifest_count": 1,
+    "manifest_registry_ref": "ION/05_context/current/codex_carrier/raw_context_manifests",
+    "manifests": [
+      {
+        "agent_tag": "codex_001",
+        "branch_id": "branch_20260512T200233+0000_codex_001",
+        "created_at": "2026-05-12T20:02:33+00:00",
+        "manifest_id": "rawctx_20260512T200233+0000_codex_001_codex_session_20260512t200233_0000_codex_001",
+        "packet_id": "PCKT-ION-CODEX-LOCAL-PC-LIVE-CARRIER-MOUNT-002",
+        "path": "ION/05_context/current/codex_carrier/raw_context_manifests/rawctx_20260512T200233+0000_codex_001_codex_session_20260512t200233_0000_codex_001.json",
+        "promotion_state": "not_promoted",
+        "redaction_status": "not_exported",
+        "session_id": "codex_session_20260512T200233+0000_codex_001",
+        "snapshot_content_committed": false,
+        "snapshot_mirrored_externally": false,
+        "snapshot_storage_class": "local_private_gitignored"
+      }
+    ],
+    "ok": true,
+    "policy_ref": "ION/05_context/current/codex_carrier/CODEX_RAW_CONTEXT_SYNC_LANE_POLICY.md",
+    "private_storage_ref": ".ion_private/codex_raw_context",
+    "production_authority": false,
+    "promotion_path": [
+      "native_codex_session_or_memory",
+      "local_private_raw_snapshot",
+      "public_safe_manifest",
+      "redacted_diagnostic_excerpt_or_summary",
+      "proof_gate",
+      "receipt_or_settlement",
+      "inheritable_ion_state"
+    ],
+    "protocol_ref": "ION/02_architecture/CODEX_RAW_CONTEXT_SYNC_LANE_PROTOCOL.md",
+    "raw_content_committed_by_policy": false,
+    "raw_content_exported": false,
+    "raw_content_mirrored_externally_by_policy": false,
+    "schema_id": "ion.codex_raw_context_sync_lane.v1",
+    "secrets_authority": false,
+    "shell_root": "/home/sev/ION - Production/ION_CODEX FULL",
+    "surfaces": {
+      "manifests_dir": {
+        "bytes": null,
+        "exists": true,
+        "is_dir": true,
+        "is_file": false,
+        "path": "ION/05_context/current/codex_carrier/raw_context_manifests"
+      },
+      "manifests_readme": {
+        "bytes": 345,
+        "exists": true,
+        "is_dir": false,
+        "is_file": true,
+        "path": "ION/05_context/current/codex_carrier/raw_context_manifests/README.md"
+      },
+      "policy": {
+        "bytes": 1053,
+        "exists": true,
+        "is_dir": false,
+        "is_file": true,
+        "path": "ION/05_context/current/codex_carrier/CODEX_RAW_CONTEXT_SYNC_LANE_POLICY.md"
+      },
+      "private_raw_context_dir": {
+        "content_exported": false,
+        "entry_count_untrusted": null,
+        "exists": false,
+        "gitignored_required": true,
+        "is_dir": false,
+        "path": ".ion_private/codex_raw_context"
+      },
+      "protocol": {
+        "bytes": 4434,
+        "exists": true,
+        "is_dir": false,
+        "is_file": true,
+        "path": "ION/02_architecture/CODEX_RAW_CONTEXT_SYNC_LANE_PROTOCOL.md"
+      }
+    },
+    "verdict": "ION_CODEX_RAW_CONTEXT_SYNC_LANE_READY"
+  },
+  "schema_id": "ion.codex_carrier_cockpit_snapshot.v1",
+  "secrets_authority": false,
+  "service_port_map": [
+    {
+      "owner": "ION MCP preview",
+      "port": 8765,
+      "status_source": "local_runtime_or_tunnel_probe"
+    },
+    {
+      "owner": "Action Gateway",
+      "port": 8777,
+      "status_source": "local_runtime_probe"
+    },
+    {
+      "owner": "ION local cockpit",
+      "port": 8788,
+      "status_source": "local_runtime_probe"
+    },
+    {
+      "owner": "dAimon Gemini bridge",
+      "port": 8795,
+      "status_source": "local_runtime_probe"
+    },
+    {
+      "owner": "dAimon reserved secondary",
+      "port": 8796,
+      "status_source": "reservation_only"
+    }
+  ],
+  "session_registry": {
+    "active_session_count": 1,
+    "path": "ION/05_context/current/codex_carrier/CODEX_SESSION_REGISTRY.json",
+    "session_count": 1,
+    "sessions": [
+      {
+        "accepted_state_authority": false,
+        "agent_tag": "codex_001",
+        "branch_capsule_written_paths": [
+          "ION/05_context/current/agent_context_branches/codex_carrier/codex_001/branch_20260512T200233+0000_codex_001/CAPSULE.md",
+          "ION/05_context/current/agent_context_branches/codex_carrier/codex_001/branch_20260512T200233+0000_codex_001/MINI.md",
+          "ION/05_context/current/agent_context_branches/codex_carrier/codex_001/branch_20260512T200233+0000_codex_001/ROLLING_CONTEXT.md",
+          "ION/05_context/current/agent_context_branches/codex_carrier/codex_001/branch_20260512T200233+0000_codex_001/BLOCKERS.md",
+          "ION/05_context/current/agent_context_branches/codex_carrier/codex_001/branch_20260512T200233+0000_codex_001/CODEX_SESSION.json",
+          "ION/05_context/current/agent_context_branches/codex_carrier/codex_001/branch_20260512T200233+0000_codex_001/STATUS.json",
+          "ION/05_context/current/agent_context_branches/codex_carrier/codex_001/branch_20260512T200233+0000_codex_001/RECEIPTS/",
+          "ION/05_context/current/agent_context_branches/codex_carrier/codex_001/branch_20260512T200233+0000_codex_001/TASK_RETURNS/",
+          "ION/05_context/current/agent_context_branches/codex_carrier/codex_001/branch_20260512T200233+0000_codex_001/PATCHES/",
+          "ION/05_context/current/agent_context_branches/codex_carrier/codex_001/branch_20260512T200233+0000_codex_001/RAW_CONTEXT_SUMMARIES/",
+          "ION/05_context/current/agent_context_branches/codex_carrier/codex_001/branch_20260512T200233+0000_codex_001/RAW_CONTEXT_EXCERPTS/",
+          "ION/05_context/current/codex_carrier/raw_context_manifests/rawctx_20260512T200233+0000_codex_001_codex_session_20260512t200233_0000_codex_001.json",
+          "ION/05_context/current/agent_context_branches/codex_carrier/codex_001/branch_20260512T200233+0000_codex_001/RAW_CONTEXT_MANIFEST.json"
+        ],
+        "branch_id": "branch_20260512T200233+0000_codex_001",
+        "codex_thread_ref": "/home/sev/.codex/sessions/2026/05/12/rollout-2026-05-12T15-54-22-019e1dc1-35ca-7a61-99b4-5cdcc1ac587d.jsonl",
+        "created_at": "2026-05-12T20:02:33+00:00",
+        "current_packet": "PCKT-ION-CODEX-LOCAL-PC-LIVE-CARRIER-MOUNT-002",
+        "domain": "local_codex_cli_carrier_mount_and_binding",
+        "event_refs": [
+          "ION/05_context/current/codex_carrier/events/evt_20260512T200233+0000_codex.session.registered.json",
+          "ION/05_context/current/codex_carrier/events/evt_20260512T200233+0000_codex.raw_context.manifested.json"
+        ],
+        "ion_branch_capsule": "ION/05_context/current/agent_context_branches/codex_carrier/codex_001/branch_20260512T200233+0000_codex_001/",
+        "live_execution_authority": false,
+        "loaded_refs": [
+          "ION/REPO_AUTHORITY.md",
+          "ION/02_architecture/ION_MOUNT_CONTRACT.md",
+          "ION/02_architecture/CODEX_CARRIER_DOMAIN_PROTOCOL.md",
+          "ION/05_context/current/codex_carrier/CODEX_CARRIER_DOMAIN_REGISTRY.json"
+        ],
+        "memory_policy": {
+          "branch_capsule_governs_current_work": true,
+          "codex_memory_role": "bounded_diagnostic_continuity",
+          "memory_may_accept_state": false,
+          "memory_may_orient": true,
+          "raw_context_content_committable_by_default": false,
+          "raw_context_drive_mirror_allowed_by_default": false,
+          "raw_context_manifest_committable": true,
+          "raw_context_may_accept_state": false,
+          "raw_context_may_diagnose": true,
+          "raw_context_private_storage": ".ion_private/codex_raw_context/<agent_tag>/<session_id>/",
+          "raw_context_sync_lane": "manifest_only_by_default",
+          "raw_memory_export": "forbidden_without_explicit_review",
+          "receipt_or_settlement_required_for_durable_claims": true,
+          "schema_id": "ion.codex_carrier_memory_policy.v2",
+          "secrets_redaction_required": true
+        },
+        "model_lane": "codex_cli_local_pc",
+        "non_claims": [
+          "Session record does not prove a live Codex thread exists unless codex_thread_ref is locally verified.",
+          "Session record does not accept state or settle branch output.",
+          "Session record does not grant production, live execution, or secrets authority."
+        ],
+        "path": "ION/05_context/current/codex_carrier/sessions/codex_session_20260512T200233+0000_codex_001.json",
+        "production_authority": false,
+        "raw_context_manifest": {
+          "branch_capsule_manifest_ref": "ION/05_context/current/agent_context_branches/codex_carrier/codex_001/branch_20260512T200233+0000_codex_001/RAW_CONTEXT_MANIFEST.json",
+          "manifest_id": "rawctx_20260512T200233+0000_codex_001_codex_session_20260512t200233_0000_codex_001",
+          "path": "ION/05_context/current/codex_carrier/raw_context_manifests/rawctx_20260512T200233+0000_codex_001_codex_session_20260512t200233_0000_codex_001.json",
+          "promotion_state": "not_promoted",
+          "snapshot_content_committed": false,
+          "snapshot_mirrored_externally": false
+        },
+        "raw_context_manifest_ref": "ION/05_context/current/codex_carrier/raw_context_manifests/rawctx_20260512T200233+0000_codex_001_codex_session_20260512t200233_0000_codex_001.json",
+        "raw_context_sync": {
+          "accepted_state_authority": false,
+          "external_mirror_allowed": false,
+          "manifest_required": true,
+          "policy_ref": "ION/05_context/current/codex_carrier/CODEX_RAW_CONTEXT_SYNC_LANE_POLICY.md",
+          "private_storage_ref": ".ion_private/codex_raw_context/codex_001/codex_session_20260512t200233_0000_codex_001/",
+          "raw_content_committed": false
+        },
+        "repo_root": "/home/sev/ION - Production/ION_CODEX FULL",
+        "schema_id": "ion.codex_carrier_session.v1",
+        "secrets_authority": false,
+        "session_id": "codex_session_20260512T200233+0000_codex_001",
+        "session_label": "CODEX-001 local-PC live carrier mount audit and Codex Carrier OS binding",
+        "settlement_required": true,
+        "status": "ACTIVE",
+        "updated_at": "2026-05-12T20:02:33+00:00",
+        "write_scope": [
+          "ION/02_architecture/CODEX_CARRIER_DOMAIN_PROTOCOL.md",
+          "ION/04_packages/kernel/ion_codex_carrier_domain.py",
+          "ION/04_packages/kernel/ion_codex_local_pc_audit.py",
+          "ION/04_packages/kernel/ion_codex_local_pc_readiness.py",
+          "ION/04_packages/kernel/ion_codex_carrier_os.py",
+          "ION/04_packages/kernel/ion_codex_raw_context_sync.py",
+          "ION/05_context/current/codex_carrier",
+          "ION/05_context/current/codex_local_pc"
+        ]
+      }
+    ]
+  }
+}

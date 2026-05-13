@@ -1,0 +1,388 @@
+{
+  "blockers": [],
+  "capability_boundaries": {
+    "accepted_state_authority": false,
+    "codex_session_started": false,
+    "git_mutation_performed": false,
+    "github_mutation_performed": false,
+    "hidden_codex_memory_read": false,
+    "live_execution_authority": false,
+    "mcp_mutation_performed": false,
+    "network_access_used": false,
+    "production_authority": false,
+    "secret_values_read": false
+  },
+  "codex_cli": {
+    "codex_on_path": true,
+    "codex_path": "/home/sev/.npm-global/bin/codex",
+    "feature_help_probes": {
+      "app-server": {
+        "available": true,
+        "command": [
+          "/home/sev/.npm-global/bin/codex",
+          "app-server",
+          "--help"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "[experimental] Run the app server or related tooling\n\nUsage: codex app-server [OPTIONS] [COMMAND]\n\nCommands:\n  proxy                 Proxy stdio bytes to the running app-server control socket\n  generate-ts           [experimental] Generate TypeScript bindings for the app server protocol\n  generate-json-schema  [experimental] Generate JSON Schema for the app server protocol\n  help                  Print this message or the help of the given subcommand(s)\n\nOptions:\n  -c, --config <key=value>\n          Override a configuration value that would otherwise be loaded from `~/.codex/config.toml`.\n          Use a dotted path (`foo.bar.baz`) to override nested values. The `value` portion is parsed\n          as TOML. If it fails to parse as TOML, the raw string is used as a literal.\n          \n          Examples: - `-c model=\"o3\"` - `-c 'sandbox_permissions=[\"disk-full-read-access\"]'` - `-c\n          shell_environment_policy.inherit=all`\n\n      --enable <FEATURE>\n          Enable a feature (repeatable). Equivalent to `-c features.<name>=true`\n\n      --disable <FEATURE>\n          Disable a feature (repeatable). Equivalent to `-c features.<name>=false`\n\n      --listen <URL>\n          Transport endpoint URL. Supported values: `stdio://` (default), `unix://`, `unix://PATH`,\n          `ws://IP:PORT`, `off`\n          \n          [default: stdio://]\n\n      --analytics-default-enabled\n          Controls whether analytics are enabled by default.\n          \n          Analytics are disabled by default for app-server. Users have to explicitly opt in via the\n          `analytics` section in the config.toml file.\n          \n          However, for first-party use cases like the VSCode IDE extension, we default analytics to\n          be enabled by default by setting this flag. Users can still opt out by setting this in\n          their config.toml:\n          \n          ```toml [analytics] enabled = false ```\n          \n          See https://developers.openai.com/codex/config-advanced/#metrics for more details.\n\n      --ws-auth <MODE>\n          Websocket auth mode for non-loopback listeners\n          \n          [possible values: capability-token, signed-bearer-token]\n\n      --ws-token-file <PATH>\n          Absolute path to the capability-token file\n\n      --ws-token-sha256 <HEX>\n          Hex-encoded SHA-256 digest of the capability token\n\n      --ws-shared-secret-file <PATH>\n          Absolute path to the shared secret file for signed JWT bearer tokens\n\n      --ws-issuer <ISSUER>\n          Expected issuer for signed JWT bearer tokens\n\n      --ws-audience <AUDIENCE>\n          Expected audience for signed JWT bearer tokens\n\n      --ws-max-clock-skew-seconds <SECONDS>\n          Maximum clock skew when validating signed JWT bearer tokens\n\n  -h, --help\n          Print help (see a summary with '-h')\n"
+      },
+      "fork": {
+        "available": true,
+        "command": [
+          "/home/sev/.npm-global/bin/codex",
+          "fork",
+          "--help"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "Fork a previous interactive session (picker by default; use --last to fork the most recent)\n\nUsage: codex fork [OPTIONS] [SESSION_ID] [PROMPT]\n\nArguments:\n  [SESSION_ID]\n          Conversation/session id (UUID). When provided, forks this session. If omitted, use --last\n          to pick the most recent recorded session\n\n  [PROMPT]\n          Optional user prompt to start the session\n\nOptions:\n  -c, --config <key=value>\n          Override a configuration value that would otherwise be loaded from `~/.codex/config.toml`.\n          Use a dotted path (`foo.bar.baz`) to override nested values. The `value` portion is parsed\n          as TOML. If it fails to parse as TOML, the raw string is used as a literal.\n          \n          Examples: - `-c model=\"o3\"` - `-c 'sandbox_permissions=[\"disk-full-read-access\"]'` - `-c\n          shell_environment_policy.inherit=all`\n\n      --last\n          Fork the most recent session without showing the picker\n\n      --all\n          Show all sessions (disables cwd filtering and shows CWD column)\n\n      --enable <FEATURE>\n          Enable a feature (repeatable). Equivalent to `-c features.<name>=true`\n\n      --disable <FEATURE>\n          Disable a feature (repeatable). Equivalent to `-c features.<name>=false`\n\n      --remote <ADDR>\n          Connect the TUI to a remote app server websocket endpoint.\n          \n          Accepted forms: `ws://host:port` or `wss://host:port`.\n\n      --remote-auth-token-env <ENV_VAR>\n          Name of the environment variable containing the bearer token to send to a remote app\n          server websocket\n\n  -i, --image <FILE>...\n          Optional image(s) to attach to the initial prompt\n\n  -m, --model <MODEL>\n          Model the agent should use\n\n      --oss\n          Use open-source provider\n\n      --local-provider <OSS_PROVIDER>\n          Specify which local provider to use (lmstudio or ollama). If not specified with --oss,\n          will use config default or show selection\n\n  -p, --profile <CONFIG_PROFILE>\n          Configuration profile from config.toml to specify default options\n\n  -s, --sandbox <SANDBOX_MODE>\n          Select the sandbox policy to use when executing model-generated shell commands\n          \n          [possible values: read-only, workspace-write, danger-full-access]\n\n      --dangerously-bypass-approvals-and-sandbox\n          Skip all confirmation prompts and execute commands without sandboxing. EXTREMELY\n          DANGEROUS. Intended solely for running in environments that are externally sandboxed\n\n  -C, --cd <DIR>\n          Tell the agent to use the specified directory as its working root\n\n      --add-dir <DIR>\n          Additional directories that should be writable alongside the primary workspace\n\n  -a, --ask-for-approval <APPROVAL_POLICY>\n          Configure when the model requires human approval before executing a command\n\n          Possible values:\n          - untrusted:  Only run \"trusted\" commands (e.g. ls, cat, sed) without asking for user\n            approval. Will escalate to the user if the model proposes a command that is not in the\n            \"trusted\" set\n          - on-failure: DEPRECATED: Run all commands without asking for user approval. Only asks for\n            approval if a command fails to execute, in which case it will escalate to the user to\n            ask for un-sandboxed execution. Prefer `on-request` for interactive runs or `never` for\n            non-interactive runs\n          - on-request: The model decides when to ask the user for approval\n          - never:      Never ask for user approval Execution failures are immediately returned to\n            the model\n\n      --search\n          Enable live web search. When enabled, the native Responses `web_search` tool is available\n          to the model (no per\u2011call approval)\n\n      --no-alt-screen\n          Disable alternate screen mode\n          \n          Runs the TUI in inline mode, preserving terminal scrollback history. This is useful in\n          terminal multiplexers lik"
+      },
+      "remote-control": {
+        "available": true,
+        "command": [
+          "/home/sev/.npm-global/bin/codex",
+          "remote-control",
+          "--help"
+        ],
+        "returncode": 0,
+        "stderr": "",
+        "stdout": "[experimental] Start a headless app-server with remote control enabled\n\nUsage: codex remote-control [OPTIONS]\n\nOptions:\n  -c, --config <key=value>\n          Override a configuration value that would otherwise be loaded from `~/.codex/config.toml`.\n          Use a dotted path (`foo.bar.baz`) to override nested values. The `value` portion is parsed\n          as TOML. If it fails to parse as TOML, the raw string is used as a literal.\n          \n          Examples: - `-c model=\"o3\"` - `-c 'sandbox_permissions=[\"disk-full-read-access\"]'` - `-c\n          shell_environment_policy.inherit=all`\n\n      --enable <FEATURE>\n          Enable a feature (repeatable). Equivalent to `-c features.<name>=true`\n\n      --disable <FEATURE>\n          Disable a feature (repeatable). Equivalent to `-c features.<name>=false`\n\n  -h, --help\n          Print help (see a summary with '-h')\n"
+      }
+    },
+    "help_probe": {
+      "available": true,
+      "command": [
+        "/home/sev/.npm-global/bin/codex",
+        "--help"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "Codex CLI\n\nIf no subcommand is specified, options will be forwarded to the interactive CLI.\n\nUsage: codex [OPTIONS] [PROMPT]\n       codex [OPTIONS] <COMMAND> [ARGS]\n\nCommands:\n  exec            Run Codex non-interactively [aliases: e]\n  review          Run a code review non-interactively\n  login           Manage login\n  logout          Remove stored authentication credentials\n  mcp             Manage external MCP servers for Codex\n  plugin          Manage Codex plugins\n  mcp-server      Start Codex as an MCP server (stdio)\n  app-server      [experimental] Run the app server or related tooling\n  remote-control  [experimental] Start a headless app-server with remote control enabled\n  completion      Generate shell completion scripts\n  update          Update Codex to the latest version\n  sandbox         Run commands within a Codex-provided sandbox\n  debug           Debugging tools\n  apply           Apply the latest diff produced by Codex agent as a `git apply` to your local\n                  working tree [aliases: a]\n  resume          Resume a previous interactive session (picker by default; use --last to continue\n                  the most recent)\n  fork            Fork a previous interactive session (picker by default; use --last to fork the\n                  most recent)\n  cloud           [EXPERIMENTAL] Browse tasks from Codex Cloud and apply changes locally\n  exec-server     [EXPERIMENTAL] Run the standalone exec-server service\n  features        Inspect feature flags\n  help            Print this message or the help of the given subcommand(s)\n\nArguments:\n  [PROMPT]\n          Optional user prompt to start the session\n\nOptions:\n  -c, --config <key=value>\n          Override a configuration value that would otherwise be loaded from `~/.codex/config.toml`.\n          Use a dotted path (`foo.bar.baz`) to override nested values. The `value` portion is parsed\n          as TOML. If it fails to parse as TOML, the raw string is used as a literal.\n          \n          Examples: - `-c model=\"o3\"` - `-c 'sandbox_permissions=[\"disk-full-read-access\"]'` - `-c\n          shell_environment_policy.inherit=all`\n\n      --enable <FEATURE>\n          Enable a feature (repeatable). Equivalent to `-c features.<name>=true`\n\n      --disable <FEATURE>\n          Disable a feature (repeatable). Equivalent to `-c features.<name>=false`\n\n      --remote <ADDR>\n          Connect the TUI to a remote app server websocket endpoint.\n          \n          Accepted forms: `ws://host:port` or `wss://host:port`.\n\n      --remote-auth-token-env <ENV_VAR>\n          Name of the environment variable containing the bearer token to send to a remote app\n          server websocket\n\n  -i, --image <FILE>...\n          Optional image(s) to attach to the initial prompt\n\n  -m, --model <MODEL>\n          Model the agent should use\n\n      --oss\n          Use open-source provider\n\n      --local-provider <OSS_PROVIDER>\n          Specify which local provider to use (lmstudio or ollama). If not specified with --oss,\n          will use config default or show selection\n\n  -p, --profile <CONFIG_PROFILE>\n          Configuration profile from config.toml to specify default options\n\n  -s, --sandbox <SANDBOX_MODE>\n          Select the sandbox policy to use when executing model-generated shell commands\n          \n          [possible values: read-only, workspace-write, danger-full-access]\n\n      --dangerously-bypass-approvals-and-sandbox\n          Skip all confirmation prompts and execute commands without sandboxing. EXTREMELY\n          DANGEROUS. Intended solely for running in environments that are externally sandboxed\n\n  -C, --cd <DIR>\n          Tell the agent to use the specified directory as its working root\n\n      --add-dir <DIR>\n          Additional directories that should be writable alongside the primary workspace\n\n  -a, --ask-for-approval <APPROVAL_POLICY>\n          Configure when the model requires human approval before executing a command\n\n          Possible values:\n          - untrusted:  Only run \"trusted\" commands (e.g. ls, cat, sed) without asking for user\n            approval. Will escalate to the user if the model proposes a command that is not in the\n            \"trusted\" set\n          - on-failure: DEPRECATED: Run all commands without asking for user approval. Only asks for\n            approval if a command fails to execute, in which case it will escalate to the user to\n            ask for un-sandboxed execution. Prefer `on-request` for interactive runs or `never` for\n            non-interactive runs\n          - on-request: The model decides when to ask the user for approval\n          - never:      Never ask for user approval Execution failures are immediately returned to\n            the model\n\n      --search\n          Enable live web search. When enabled, the native Responses `web_search` tool is available\n          to the model (no per\u2011call approval)\n\n      --no-alt-screen\n          Disable alternate screen mode\n          \n          Runs the TUI in inline mode, preserving terminal scrollback history. This is useful in\n          terminal multiplexers like Zellij that follow the xterm spec strictly and disable\n          scrollback in alternate screen buffers.\n\n  -h, --help\n          Print help (see a summary with '-h')\n\n  -V, --version\n          Print version\n"
+    },
+    "not_claimed": [
+      "hidden Codex memories",
+      "session transcript contents",
+      "provider account state"
+    ],
+    "resume_help_probe": {
+      "available": true,
+      "command": [
+        "/home/sev/.npm-global/bin/codex",
+        "resume",
+        "--help"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "Resume a previous interactive session (picker by default; use --last to continue the most recent)\n\nUsage: codex resume [OPTIONS] [SESSION_ID] [PROMPT]\n\nArguments:\n  [SESSION_ID]\n          Conversation/session id (UUID) or thread name. UUIDs take precedence if it parses. If\n          omitted, use --last to pick the most recent recorded session\n\n  [PROMPT]\n          Optional user prompt to start the session\n\nOptions:\n  -c, --config <key=value>\n          Override a configuration value that would otherwise be loaded from `~/.codex/config.toml`.\n          Use a dotted path (`foo.bar.baz`) to override nested values. The `value` portion is parsed\n          as TOML. If it fails to parse as TOML, the raw string is used as a literal.\n          \n          Examples: - `-c model=\"o3\"` - `-c 'sandbox_permissions=[\"disk-full-read-access\"]'` - `-c\n          shell_environment_policy.inherit=all`\n\n      --last\n          Continue the most recent session without showing the picker\n\n      --all\n          Show all sessions (disables cwd filtering and shows CWD column)\n\n      --enable <FEATURE>\n          Enable a feature (repeatable). Equivalent to `-c features.<name>=true`\n\n      --disable <FEATURE>\n          Disable a feature (repeatable). Equivalent to `-c features.<name>=false`\n\n      --include-non-interactive\n          Include non-interactive sessions in the resume picker and --last selection\n\n      --remote <ADDR>\n          Connect the TUI to a remote app server websocket endpoint.\n          \n          Accepted forms: `ws://host:port` or `wss://host:port`.\n\n      --remote-auth-token-env <ENV_VAR>\n          Name of the environment variable containing the bearer token to send to a remote app\n          server websocket\n\n  -i, --image <FILE>...\n          Optional image(s) to attach to the initial prompt\n\n  -m, --model <MODEL>\n          Model the agent should use\n\n      --oss\n          Use open-source provider\n\n      --local-provider <OSS_PROVIDER>\n          Specify which local provider to use (lmstudio or ollama). If not specified with --oss,\n          will use config default or show selection\n\n  -p, --profile <CONFIG_PROFILE>\n          Configuration profile from config.toml to specify default options\n\n  -s, --sandbox <SANDBOX_MODE>\n          Select the sandbox policy to use when executing model-generated shell commands\n          \n          [possible values: read-only, workspace-write, danger-full-access]\n\n      --dangerously-bypass-approvals-and-sandbox\n          Skip all confirmation prompts and execute commands without sandboxing. EXTREMELY\n          DANGEROUS. Intended solely for running in environments that are externally sandboxed\n\n  -C, --cd <DIR>\n          Tell the agent to use the specified directory as its working root\n\n      --add-dir <DIR>\n          Additional directories that should be writable alongside the primary workspace\n\n  -a, --ask-for-approval <APPROVAL_POLICY>\n          Configure when the model requires human approval before executing a command\n\n          Possible values:\n          - untrusted:  Only run \"trusted\" commands (e.g. ls, cat, sed) without asking for user\n            approval. Will escalate to the user if the model proposes a command that is not in the\n            \"trusted\" set\n          - on-failure: DEPRECATED: Run all commands without asking for user approval. Only asks for\n            approval if a command fails to execute, in which case it will escalate to the user to\n            ask for un-sandboxed execution. Prefer `on-request` for interactive runs or `never` for\n            non-interactive runs\n          - on-request: The model decides when to ask the user for approval\n          - never:      Never ask for user approval Execution failures are immediately returned to\n            the model\n\n      --search\n          Enable live web search. When enabled, the native Responses `web_search` tool is available\n          to the model (no per\u2011call approval)\n\n      --no-alt-screen\n          Disable alternate screen mo"
+    },
+    "version": {
+      "available": true,
+      "command": [
+        "/home/sev/.npm-global/bin/codex",
+        "--version"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "codex-cli 0.130.0\n"
+    }
+  },
+  "content_root": "/home/sev/ION - Production/ION_CODEX FULL/ION",
+  "core_surfaces": {
+    "codex_carrier_domain_module": {
+      "bytes": 70243,
+      "exists": true,
+      "is_dir": false,
+      "is_file": true,
+      "label": "codex_carrier_domain_module",
+      "path": "ION/04_packages/kernel/ion_codex_carrier_domain.py",
+      "sha256": "ff8c93bace2c3b901fa4349f15ecdc5d920f4a615410b4888a21075e4063ef72"
+    },
+    "codex_carrier_domain_protocol": {
+      "bytes": 8230,
+      "exists": true,
+      "is_dir": false,
+      "is_file": true,
+      "label": "codex_carrier_domain_protocol",
+      "path": "ION/02_architecture/CODEX_CARRIER_DOMAIN_PROTOCOL.md",
+      "sha256": "41729cc26ba9cf65aeccdd50c6617ea9b97bea3e46a2d597eaf98aad041c8839"
+    },
+    "codex_cli_audit_module": {
+      "bytes": 7897,
+      "exists": true,
+      "is_dir": false,
+      "is_file": true,
+      "label": "codex_cli_audit_module",
+      "path": "ION/04_packages/kernel/ion_codex_cli_carrier_audit.py",
+      "sha256": "1dda350b85eb1c3d9be5d262779c4dde312498942707115e728a0ab769462b39"
+    },
+    "codex_cli_protocol": {
+      "bytes": 3824,
+      "exists": true,
+      "is_dir": false,
+      "is_file": true,
+      "label": "codex_cli_protocol",
+      "path": "ION/02_architecture/CODEX_CLI_CARRIER_PROTOCOL.md",
+      "sha256": "540b09f8d7f53d31675f719c780d1a71ad9f646d00f035658238b497432874f8"
+    },
+    "codex_cli_setup": {
+      "bytes": 3330,
+      "exists": true,
+      "is_dir": false,
+      "is_file": true,
+      "label": "codex_cli_setup",
+      "path": "ION/docs/setup/CODEX_CLI_ION_DOGFOOD_SETUP_V125.md",
+      "sha256": "080f68b93a7c195efbda0c9e20a250a037aa84a38d06dfdac62282caaee281e6"
+    },
+    "codex_solo_context_module": {
+      "bytes": 49358,
+      "exists": true,
+      "is_dir": false,
+      "is_file": true,
+      "label": "codex_solo_context_module",
+      "path": "ION/04_packages/kernel/ion_codex_solo_context.py",
+      "sha256": "5a780d590a1fa68c92a419bfcfdd7a053e2801b43cd8829b90477fc641a81dc0"
+    },
+    "codex_solo_hot_context": {
+      "bytes": 111214,
+      "exists": true,
+      "is_dir": false,
+      "is_file": true,
+      "label": "codex_solo_hot_context",
+      "path": "ION/05_context/current/codex_solo/HOT_CONTEXT.md",
+      "sha256": "d9a0ed5c219884fad18f4b3d3f3742b2ed6545015169756791dc3f39790a3685"
+    },
+    "codex_solo_route": {
+      "bytes": 19886,
+      "exists": true,
+      "is_dir": false,
+      "is_file": true,
+      "label": "codex_solo_route",
+      "path": "ION/05_context/current/codex_solo/ROUTE.json",
+      "sha256": "f41886c7dab537c5c1bbd701de6f5505a4813a7d0aa66a6ffb54a49766624ab0"
+    },
+    "codex_solo_status": {
+      "bytes": 52620,
+      "exists": true,
+      "is_dir": false,
+      "is_file": true,
+      "label": "codex_solo_status",
+      "path": "ION/05_context/current/codex_solo/STATUS.json",
+      "sha256": "674bb7b8303531b41930ca4b8db68638c25ba9215f657d7d526dcbaa774aaa1d"
+    },
+    "current_operating_packet": {
+      "bytes": 10144,
+      "exists": true,
+      "is_dir": false,
+      "is_file": true,
+      "label": "current_operating_packet",
+      "path": "ION/docs/setup/ION_CURRENT_OPERATING_PACKET_V119.md",
+      "sha256": "510f6b00b1e0b4cb565318a76485e0c674ffb3aa9198cbef6eb25922038f8820"
+    },
+    "github_data_plane_protocol": {
+      "bytes": 10909,
+      "exists": true,
+      "is_dir": false,
+      "is_file": true,
+      "label": "github_data_plane_protocol",
+      "path": "ION/02_architecture/ION_GITHUB_DATA_PLANE_PROTOCOL.md",
+      "sha256": "467f43edbe0804e41e6deb02952d2812dcaadd21d791296838e2ccf11c151de1"
+    },
+    "mcp_local_bridge_module": {
+      "bytes": 51807,
+      "exists": true,
+      "is_dir": false,
+      "is_file": true,
+      "label": "mcp_local_bridge_module",
+      "path": "ION/04_packages/kernel/ion_mcp_local_bridge.py",
+      "sha256": "55b31235bceea1077e25791174caa322cef245dbd33429f4f2604c468ca6a7a8"
+    },
+    "mount_contract": {
+      "bytes": 4003,
+      "exists": true,
+      "is_dir": false,
+      "is_file": true,
+      "label": "mount_contract",
+      "path": "ION/02_architecture/ION_MOUNT_CONTRACT.md",
+      "sha256": "468bbf85e8fa0f38e0cf9347fedb615dd68f59b77cfbb8ed94cadae79ee0f891"
+    },
+    "project_codex_config": {
+      "bytes": 2061,
+      "exists": true,
+      "is_dir": false,
+      "is_file": true,
+      "label": "project_codex_config",
+      "path": ".codex/config.toml",
+      "sha256": "b3e374253a2b86787790e22e61c6c6c4d56a70d1b99ddde31f75ca85ab0462c2"
+    },
+    "repo_authority": {
+      "bytes": 9259,
+      "exists": true,
+      "is_dir": false,
+      "is_file": true,
+      "label": "repo_authority",
+      "path": "ION/REPO_AUTHORITY.md",
+      "sha256": "804ed8430fc53e551d254af063ec414646a1c1bf94ceeec51c31769fa41aca1e"
+    },
+    "session_start_hook": {
+      "bytes": 2551,
+      "exists": true,
+      "is_dir": false,
+      "is_file": true,
+      "label": "session_start_hook",
+      "path": ".codex/hooks/ion_session_start_context.py",
+      "sha256": "d9c7b5396f7a7d00fd189f6158b6eaeb88d2fe4654008d48b71d6b3fbac5b9e9"
+    }
+  },
+  "generated_at": "2026-05-12T20:02:42+00:00",
+  "git": {
+    "allowed_branch_pattern": true,
+    "branch": "feature/codex-capsule-chat-active-root",
+    "dirty": true,
+    "git_available": true,
+    "head_short": "4527c6e",
+    "porcelain_count": 89,
+    "porcelain_sample": [
+      " M .codex/config.toml",
+      " M .gitignore",
+      " M ION/02_architecture/ION_CARRIER_TO_CARRIER_COMMUNICATION_PROTOCOL.md",
+      " M ION/03_registry/ion_skill_registry.yaml",
+      " M ION/04_packages/kernel/ion_codex_solo_context.py",
+      " M ION/04_packages/kernel/ion_mcp_local_bridge.py",
+      " M ION/05_context/current/ACTIVE_CARRIER_MESSAGE_QUEUE.json",
+      " M ION/05_context/current/ACTIVE_CODEX_CAPSULE_CHAT_MODEL.json",
+      " M ION/05_context/current/ACTIVE_OPERATOR_MESSAGE_QUEUE.json",
+      " M ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json",
+      " M ION/05_context/current/chatgpt_connector/codex_work_requests/2026-05-09T004941Z0000_prepare_a_bounded_ion_work_packet_report_for_the_next_local_ion_codex_or_role_ag.json",
+      " M ION/05_context/current/chatgpt_connector/runtime/agent_invocation_broker_state.json",
+      " M ION/05_context/current/chatgpt_connector/runtime/codex_queue_runner_state.json",
+      " M ION/05_context/current/codex_capsule_chat/state.json",
+      " M ION/tests/test_kernel_ion_codex_solo_context.py",
+      " M ION/tests/test_kernel_ion_mcp_local_bridge.py",
+      "?? ION/02_architecture/CODEX_CARRIER_DOMAIN_PROTOCOL.md",
+      "?? ION/02_architecture/CODEX_CARRIER_EVENT_BUS_PROTOCOL.md",
+      "?? ION/02_architecture/CODEX_CARRIER_OS_RUNTIME_PROTOCOL.md",
+      "?? ION/02_architecture/CODEX_RAW_CONTEXT_SYNC_LANE_PROTOCOL.md",
+      "?? ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_BOOTSTRAP_BINDING_PROTOCOL_V0_1.md",
+      "?? ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_MATERIAL_WORK_GUARD_PROTOCOL_V0_1.md",
+      "?? ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_REGISTRY_RECONCILIATION_PROTOCOL_V0_1.md",
+      "?? ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_SETTLEMENT_INTAKE_PROTOCOL_V0_1.md",
+      "?? ION/02_architecture/ION_CARRIER_MOUNT_AND_PERSONA_PRESENTATION_PROTOCOL_V0_1.md",
+      "?? ION/02_architecture/ION_GDRIVE_CONTEXT_MIRROR_PROTOCOL_V0_1.md",
+      "?? ION/02_architecture/ION_GITHUB_COMMS_FALLBACK_PROTOCOL.md",
+      "?? ION/03_registry/ion_carrier_mount_registry.yaml",
+      "?? ION/03_registry/ion_codex_carrier_runtime_event.schema.json",
+      "?? ION/03_registry/ion_codex_raw_context_manifest.schema.json",
+      "?? ION/03_registry/ion_gdrive_context_mirror_registry.yaml",
+      "?? ION/03_registry/ion_persona_presentation_registry.yaml",
+      "?? ION/04_packages/kernel/ion_agent_branch_capsule.py",
+      "?? ION/04_packages/kernel/ion_carrier_mount_receipt.py",
+      "?? ION/04_packages/kernel/ion_codex_carrier_domain.py",
+      "?? ION/04_packages/kernel/ion_codex_carrier_os.py",
+      "?? ION/04_packages/kernel/ion_codex_local_os_audit.py",
+      "?? ION/04_packages/kernel/ion_codex_local_pc_audit.py",
+      "?? ION/04_packages/kernel/ion_codex_local_pc_readiness.py",
+      "?? ION/04_packages/kernel/ion_codex_raw_context_sync.py",
+      "?? ION/04_packages/kernel/ion_gdrive_context_mirror.py",
+      "?? ION/04_packages/kernel/ion_github_comms_fallback.py",
+      "?? ION/05_context/current/agent_context_branches/codex_carrier/",
+      "?? ION/05_context/current/agent_context_branches/local_branch_capsule_consolidation/",
+      "?? ION/05_context/current/chatgpt_connector/patch_receipts/",
+      "?? ION/05_context/current/chatgpt_connector/runtime/bounded_patch_apply_idempotency_ledger.json",
+      "?? ION/05_context/current/codex_carrier/",
+      "?? ION/05_context/current/context_settlement/inbox/SETTLE_AGENT_BRANCH_CAPSULE_CONSOLIDATED_006_20260512.json",
+      "?? ION/07_templates/carrier_mount/",
+      "?? ION/07_templates/carriers/GITHUB_COMMS_FALLBACK_PACKET.md",
+      "?? ION/07_templates/gdrive_context_mirror/",
+      "?? ION/docs/setup/ION_CODEX_LOCAL_PC_OPERATING_PACKET.md",
+      "?? ION/tests/test_kernel_ion_agent_branch_capsule.py",
+      "?? ION/tests/test_kernel_ion_carrier_mount_receipt.py",
+      "?? ION/tests/test_kernel_ion_codex_carrier_domain.py",
+      "?? ION/tests/test_kernel_ion_codex_carrier_os.py",
+      "?? ION/tests/test_kernel_ion_codex_local_pc_readiness.py",
+      "?? ION/tests/test_kernel_ion_codex_raw_context_sync.py",
+      "?? ION/tests/test_kernel_ion_gdrive_context_mirror.py",
+      "?? ION/tests/test_kernel_ion_github_comms_fallback.py"
+    ],
+    "remote_origin": "https://github.com/ION-operations/ION.git",
+    "staged_count": 0,
+    "status_returncode": 0,
+    "unstaged_count": 16,
+    "untracked_count": 73
+  },
+  "github_comms_fallback": {
+    "auth_status": null,
+    "auth_status_checked": false,
+    "gh_on_path": true,
+    "gh_path": "/usr/bin/gh",
+    "mutation_performed": false,
+    "network_access_used": false,
+    "token_value_read": false,
+    "version": {
+      "available": true,
+      "command": [
+        "/usr/bin/gh",
+        "--version"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "gh version 2.4.0+dfsg1 (2022-03-23 Ubuntu 2.4.0+dfsg1-2)\nhttps://github.com/cli/cli/releases/latest\n"
+    }
+  },
+  "local_services": {
+    "action_gateway": {
+      "error": null,
+      "host": "127.0.0.1",
+      "listening": true,
+      "owner": "action_gateway",
+      "port": 8777
+    },
+    "daimon_gemini_bridge": {
+      "error": null,
+      "host": "127.0.0.1",
+      "listening": true,
+      "owner": "daimon_gemini_bridge",
+      "port": 8795
+    },
+    "daimon_reserved_secondary": {
+      "error": "ConnectionRefusedError",
+      "host": "127.0.0.1",
+      "listening": false,
+      "owner": "daimon_reserved_secondary",
+      "port": 8796
+    },
+    "ion_local_cockpit": {
+      "error": null,
+      "host": "127.0.0.1",
+      "listening": true,
+      "owner": "ion_local_cockpit",
+      "port": 8788
+    },
+    "ion_mcp_preview": {
+      "error": null,
+      "host": "127.0.0.1",
+      "listening": true,
+      "owner": "ion_mcp_preview",
+      "port": 8765
+    }
+  },
+  "missing_surfaces": [],
+  "next_actions": [
+    "Classify dirty files by stage manifest before treating the uploaded tree as merge-clean."
+  ],
+  "ok": false,
+  "partial": true,
+  "recommended_local_commands": [
+    "PYTHONPATH=ION/04_packages python3 -m kernel.ion_status --ion-root . --json",
+    "PYTHONPATH=ION/04_packages python3 -m kernel.ion_codex_cli_carrier_audit --ion-root . --json",
+    "PYTHONPATH=ION/04_packages python3 -m kernel.ion_codex_carrier_domain status --ion-root . --json",
+    "PYTHONPATH=ION/04_packages python3 -m kernel.ion_codex_local_pc_readiness --ion-root . --json --write",
+    "PYTHONPATH=ION/04_packages python3 -m kernel.ion_github_comms_fallback status --ion-root . --json"
+  ],
+  "schema_id": "ion.codex_local_pc_readiness.v1",
+  "shell_root": "/home/sev/ION - Production/ION_CODEX FULL",
+  "verdict": "ION_CODEX_LOCAL_PC_PARTIAL",
+  "warnings": [
+    "git_worktree_dirty"
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "authority": {
+    "accepted_state_authority": false,
+    "deployment_authority": false,
+    "live_execution_authority": false,
+    "production_authority": false
+  },
+  "branch_identity": {
+    "agent_tag": "codex_local_ion_mason",
+    "branch_id": "branch_codex_local_ion_mason_branch_capsule_006",
+    "context_instance_id": "ctx_20260512_codex_local_ion_mason_branch_capsule_006",
+    "conversation_tag": "local_branch_capsule_consolidation",
+    "parent_context_id": "ION_MAIN_CURRENT_CONTEXT"
+  },
+  "created_at": "2026-05-12T00:00:00Z",
+  "guard_evidence": {
+    "branch_id": "branch_codex_local_ion_mason_branch_capsule_006",
+    "context_instance_id": "ctx_20260512_codex_local_ion_mason_branch_capsule_006",
+    "findings": [],
+    "ok": true,
+    "verdict": "BRANCH_GUARD_READY"
+  },
+  "loaded_refs": [
+    "diffs/agent_branch_capsule_runtime_001.diff",
+    "diffs/agent_branch_capsule_bootstrap_002.diff",
+    "diffs/agent_branch_capsule_guard_003.diff",
+    "diffs/agent_branch_capsule_settlement_intake_004.diff",
+    "diffs/agent_branch_capsule_reconciliation_005.diff"
+  ],
+  "non_claims": [
+    "not accepted state",
+    "no C-number assigned",
+    "no shared context mutation claimed",
+    "no production deployment",
+    "no live Action/MCP mutation"
+  ],
+  "packet_id": "SETTLE_AGENT_BRANCH_CAPSULE_CONSOLIDATED_006_20260512",
+  "requested_write_scope": [
+    "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_BOOTSTRAP_BINDING_PROTOCOL_V0_1.md",
+    "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_MATERIAL_WORK_GUARD_PROTOCOL_V0_1.md",
+    "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_SETTLEMENT_INTAKE_PROTOCOL_V0_1.md",
+    "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_REGISTRY_RECONCILIATION_PROTOCOL_V0_1.md",
+    "ION/04_packages/kernel/ion_agent_branch_capsule.py",
+    "ION/04_packages/kernel/ion_codex_solo_context.py",
+    "ION/03_registry/ion_skill_registry.yaml",
+    "ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json",
+    "ION/tests/test_kernel_ion_agent_branch_capsule.py"
+  ],
+  "result_summary": "Candidate consolidated branch-capsule implementation for runtime helpers, guard preflight, settlement intake, reconciliation, and boot visibility.",
+  "root": "/home/sev/ION - Production/ION_CODEX FULL",
+  "schema": "ion.context_settlement.branch_capsule_request.v1",
+  "settlement_request": {
+    "direct_accepted_state_merge": false,
+    "requested_action": "REVIEW_BRANCH_CANDIDATE_OUTPUT",
+    "requires_human_or_steward_review": true
+  },
+  "source_refs": [],
+  "status": "CANDIDATE_SETTLEMENT_REQUEST",
+  "workload_diff": [
+    "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_BOOTSTRAP_BINDING_PROTOCOL_V0_1.md",
+    "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_MATERIAL_WORK_GUARD_PROTOCOL_V0_1.md",
+    "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_SETTLEMENT_INTAKE_PROTOCOL_V0_1.md",
+    "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_REGISTRY_RECONCILIATION_PROTOCOL_V0_1.md",
+    "ION/04_packages/kernel/ion_agent_branch_capsule.py",
+    "ION/04_packages/kernel/ion_codex_solo_context.py",
+    "ION/03_registry/ion_skill_registry.yaml",
+    "ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json",
+    "ION/tests/test_kernel_ion_agent_branch_capsule.py"
+  ]
+}

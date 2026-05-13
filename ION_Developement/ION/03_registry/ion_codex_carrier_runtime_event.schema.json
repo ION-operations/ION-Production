@@ -1,0 +1,50 @@
+{
+  "schema_id": "ion.codex_carrier_runtime_event.schema.v1",
+  "describes": "ion.codex_carrier_runtime_event.v1",
+  "type": "object",
+  "required": [
+    "schema_id",
+    "event_id",
+    "created_at",
+    "event_type",
+    "actor",
+    "refs",
+    "evidence",
+    "authority",
+    "visibility"
+  ],
+  "properties": {
+    "schema_id": {"const": "ion.codex_carrier_runtime_event.v1"},
+    "event_id": {"type": "string"},
+    "created_at": {"type": "string"},
+    "event_type": {"type": "string"},
+    "actor": {"type": "object"},
+    "packet_id": {"type": ["string", "null"]},
+    "branch_id": {"type": ["string", "null"]},
+    "session_id": {"type": ["string", "null"]},
+    "refs": {"type": "array", "items": {"type": "string"}},
+    "evidence": {"type": "array", "items": {"type": "string"}},
+    "detail": {"type": ["string", "null"]},
+    "authority": {
+      "type": "object",
+      "properties": {
+        "accepted_state_authority": {"const": false},
+        "production_authority": {"const": false},
+        "live_execution_authority": {"const": false},
+        "secrets_authority": {"const": false}
+      },
+      "required": ["accepted_state_authority", "production_authority", "live_execution_authority", "secrets_authority"]
+    },
+    "visibility": {
+      "type": "object",
+      "properties": {
+        "cockpit": {"type": "boolean"},
+        "public_safe": {"type": "boolean"},
+        "redacted": {"type": "boolean"},
+        "raw_context_exported": {"const": false}
+      },
+      "required": ["cockpit", "public_safe", "redacted", "raw_context_exported"]
+    }
+  },
+  "additionalProperties": true
+}

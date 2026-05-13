@@ -1,0 +1,32 @@
+schema_id: ion.carrier_mount_registry.v1
+status: active_candidate
+protocol: ION/02_architecture/ION_CARRIER_MOUNT_AND_PERSONA_PRESENTATION_PROTOCOL_V0_1.md
+template: ION/07_templates/carrier_mount/ION_CARRIER_MOUNT_RECEIPT_TEMPLATE_V0_1.yaml
+runtime_helper: ION/04_packages/kernel/ion_carrier_mount_receipt.py
+authority:
+  production_authority: false
+  live_execution_authority: false
+  accepted_state_authority: false
+mount_receipt_required_for:
+  - material_branch_return
+  - carrier_to_carrier_message
+  - persona_presented_response
+  - codex_startup_context
+canonical_fields:
+  - agent_tag
+  - carrier
+  - carrier_instance_id
+  - conversation_tag
+  - context_instance_id
+  - branch_id
+  - current_packet
+  - loaded_refs
+  - authority
+  - source_posture
+  - return_target
+fallback:
+  receipt_only_when_mount_incomplete: true
+non_claims:
+  - "registry does not grant accepted state"
+  - "registry does not grant persona authority"
+  - "registry does not start workers"

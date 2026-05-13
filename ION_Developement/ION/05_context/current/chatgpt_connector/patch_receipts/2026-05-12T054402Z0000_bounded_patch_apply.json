@@ -1,0 +1,28 @@
+{
+  "action": "ion_bounded_patch_apply",
+  "connector_id": "ION_CHATGPT_BROWSER_CONNECTOR",
+  "created_at": "2026-05-12T05:44:02+00:00",
+  "dedupe_key": "idempotency_key:mcp-smoke-policy-comment-revert-20260512-001",
+  "idempotency_source": "idempotency_key",
+  "implicit_idempotency_key": false,
+  "live_execution_authority": false,
+  "operations_sha256": "e8a976d6dd7284ef362af03f0ce776c624a3afb7dd1d01ab2c10ad9956a65366",
+  "preview": [
+    {
+      "diff": "--- a/ION/03_registry/ion_chatgpt_browser_mcp_tool_policy.yaml\n+++ b/ION/03_registry/ion_chatgpt_browser_mcp_tool_policy.yaml\n@@ -152,4 +152,3 @@\n production_authority: false\n live_execution_authority: false\n deployment_authority: false\n-# MCP_PREVIEW_SMOKE_ONLY: bounded patch apply generated and will be reverted\n",
+      "diff_bytes": 315,
+      "new_text_sha256": "fcab90ff434d9fd628ea0ee9310e893237e01a8f02afabbc9732c66b0e0d86d1",
+      "old_text_sha256": "360f85bc4cfbc8be7deaebbd7f5a76794745cf52b1135d4089b1e9dce6de8724",
+      "original_sha256": "d22f7b033fe27c3d4fea0bd407f1cdef61280e696b77588d408f52e345d4641a",
+      "path": "ION/03_registry/ion_chatgpt_browser_mcp_tool_policy.yaml",
+      "updated_sha256": "eb409abb1f9faedc95cd6a52cd3ab34226fb75526ebd866e0d1882ce19304a48"
+    }
+  ],
+  "production_authority": false,
+  "schema_id": "ion.chatgpt_browser_connector_bounded_patch_receipt.v1",
+  "settlement_required": true,
+  "status": "CANDIDATE_PATCH_APPLIED",
+  "touched_paths": [
+    "ION/03_registry/ion_chatgpt_browser_mcp_tool_policy.yaml"
+  ]
+}

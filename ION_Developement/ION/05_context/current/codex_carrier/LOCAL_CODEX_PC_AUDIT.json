@@ -1,0 +1,389 @@
+{
+  "accepted_state_authority": false,
+  "audit_scope": {
+    "codex_binary": "/home/sev/.npm-global/bin/codex",
+    "codex_home": "/home/sev/.codex",
+    "help_commands_ran": true,
+    "project_codex_config": "/home/sev/ION - Production/ION_CODEX FULL/.codex/config.toml"
+  },
+  "codex_cli": {
+    "available": true,
+    "binary_ref": "/home/sev/.npm-global/bin/codex",
+    "commands": {
+      "help": {
+        "args": [
+          "--help"
+        ],
+        "returncode": 0,
+        "stderr_preview": "",
+        "stdout_preview": "Codex CLI\n\nIf no subcommand is specified, options will be forwarded to the interactive CLI.\n\nUsage: codex [OPTIONS] [PROMPT]\n       codex [OPTIONS] <COMMAND> [ARGS]\n\nCommands:\n  exec            Run Codex non-interactively [aliases: e]\n  review          Run a code review non-interactively\n  login           Manage login\n  logout          Remove stored authentication credentials\n  mcp             Manage external MCP servers for Codex\n  plugin          Manage Codex plugins\n  mcp-server      Start Codex as an MCP server (stdio)\n  app-server      [experimental] Run the app server or related tooling\n  remote-control  [experimental] Start a headless app-server with remote control enabled\n  completion      Generate shell completion scripts\n  update          Update Codex to the latest version\n  sandbox         Run commands within a Codex-provided sandbox\n  debug           Debugging tools\n  apply           Apply the latest diff produced by Codex agent as a `git apply` to your local\n                  working tree [aliases: a]\n  resume          Resume a previous interactive session (picker by default; use --last to continue\n                  the most recent)\n  fork            Fork a previous interactive session (picker by default; use --last to fork the\n                  most recent)\n  cloud           [EXPERIMENTAL] Browse tasks from Codex Cloud and apply changes locally\n  exec-server     [EXPERIMENTAL] Run the standalone exec-server service\n  features        Inspect feature flags\n  help            Print this message or the help of the given subcommand(s)\n\nArguments:\n  [PROMPT]\n          Optional user prompt to start the session\n\nOptions:\n  -c, --config <key=value>\n          Override a configuration value that would otherwise be loaded from `~/.codex/config.toml`.\n          Use a dotted path (`foo.bar.baz`) to override nested values. The `value` portion is parsed\n          as TOML. If it fails to parse as TOML, the raw string is used as a literal.\n          \n          Examples: - `-c model=\"o3\"` - `-c 'sandbox_permissions=[\"di[REDACTED_SECRET_VALUE]\"]'` - `-c\n          shell_environment_policy.inherit=all`\n\n      --enable <FEATURE>\n          Enable a feature (repeatable). Equivalent to `-c features.<name>=true`\n\n      --disable <FEATURE>\n          Disable a feature (repeatable). Equivalent to `-c features.<name>=false`\n\n      --remote <ADDR>\n          Connect the TUI to \n...[truncated]",
+        "timed_out": false
+      },
+      "mcp_help": {
+        "args": [
+          "mcp",
+          "--help"
+        ],
+        "returncode": 0,
+        "stderr_preview": "",
+        "stdout_preview": "Manage external MCP servers for Codex\n\nUsage: codex mcp [OPTIONS] <COMMAND>\n\nCommands:\n  list    \n  get     \n  add     \n  remove  \n  login   \n  logout  \n  help    Print this message or the help of the given subcommand(s)\n\nOptions:\n  -c, --config <key=value>\n          Override a configuration value that would otherwise be loaded from `~/.codex/config.toml`.\n          Use a dotted path (`foo.bar.baz`) to override nested values. The `value` portion is parsed\n          as TOML. If it fails to parse as TOML, the raw string is used as a literal.\n          \n          Examples: - `-c model=\"o3\"` - `-c 'sandbox_permissions=[\"di[REDACTED_SECRET_VALUE]\"]'` - `-c\n          shell_environment_policy.inherit=all`\n\n      --enable <FEATURE>\n          Enable a feature (repeatable). Equivalent to `-c features.<name>=true`\n\n      --disable <FEATURE>\n          Disable a feature (repeatable). Equivalent to `-c features.<name>=false`\n\n  -h, --help\n          Print help (see a summary with '-h')\n",
+        "timed_out": false
+      },
+      "remote_control_help": {
+        "args": [
+          "remote-control",
+          "--help"
+        ],
+        "returncode": 0,
+        "stderr_preview": "",
+        "stdout_preview": "[experimental] Start a headless app-server with remote control enabled\n\nUsage: codex remote-control [OPTIONS]\n\nOptions:\n  -c, --config <key=value>\n          Override a configuration value that would otherwise be loaded from `~/.codex/config.toml`.\n          Use a dotted path (`foo.bar.baz`) to override nested values. The `value` portion is parsed\n          as TOML. If it fails to parse as TOML, the raw string is used as a literal.\n          \n          Examples: - `-c model=\"o3\"` - `-c 'sandbox_permissions=[\"di[REDACTED_SECRET_VALUE]\"]'` - `-c\n          shell_environment_policy.inherit=all`\n\n      --enable <FEATURE>\n          Enable a feature (repeatable). Equivalent to `-c features.<name>=true`\n\n      --disable <FEATURE>\n          Disable a feature (repeatable). Equivalent to `-c features.<name>=false`\n\n  -h, --help\n          Print help (see a summary with '-h')\n",
+        "timed_out": false
+      },
+      "resume_help": {
+        "args": [
+          "resume",
+          "--help"
+        ],
+        "returncode": 0,
+        "stderr_preview": "",
+        "stdout_preview": "Resume a previous interactive session (picker by default; use --last to continue the most recent)\n\nUsage: codex resume [OPTIONS] [SESSION_ID] [PROMPT]\n\nArguments:\n  [SESSION_ID]\n          Conversation/session id (UUID) or thread name. UUIDs take precedence if it parses. If\n          omitted, use --last to pick the most recent recorded session\n\n  [PROMPT]\n          Optional user prompt to start the session\n\nOptions:\n  -c, --config <key=value>\n          Override a configuration value that would otherwise be loaded from `~/.codex/config.toml`.\n          Use a dotted path (`foo.bar.baz`) to override nested values. The `value` portion is parsed\n          as TOML. If it fails to parse as TOML, the raw string is used as a literal.\n          \n          Examples: - `-c model=\"o3\"` - `-c 'sandbox_permissions=[\"di[REDACTED_SECRET_VALUE]\"]'` - `-c\n          shell_environment_policy.inherit=all`\n\n      --last\n          Continue the most recent session without showing the picker\n\n      --all\n          Show all sessions (disables cwd filtering and shows CWD column)\n\n      --enable <FEATURE>\n          Enable a feature (repeatable). Equivalent to `-c features.<name>=true`\n\n      --disable <FEATURE>\n          Disable a feature (repeatable). Equivalent to `-c features.<name>=false`\n\n      --include-non-interactive\n          Include non-interactive sessions in the resume picker and --last selection\n\n      --remote <ADDR>\n          Connect the TUI to a remote app server websocket endpoint.\n          \n          Accepted forms: `ws://host:port` or `wss://host:port`.\n\n      --remote-auth-token-env <ENV_VAR>\n          Name of the environment variable containing the [REDACTED_SECRET_VALUE] to send to a remote app\n          server websocket\n\n  -i, --image <FILE>...\n          Optional image(s) to attach to the initial prompt\n\n  -m, --model <MODEL>\n          Model the agent should use\n\n      --oss\n          Use open-source provider\n\n      --local-provider <OSS_PROVIDER>\n          Specify which local provider to use (lmstudio or ollama). If not specified with --oss,\n          will use config default or show selection\n\n  -p, --profile <CONFIG_PROFILE>\n          Configuration profile from config.toml to specify default options\n\n  -s, --sandbox <SANDBOX_MODE>\n          Select the sandbox policy to use when executing model-generated shell commands\n          \n          [possible values: read-\n...[truncated]",
+        "timed_out": false
+      },
+      "version": {
+        "args": [
+          "--version"
+        ],
+        "returncode": 0,
+        "stderr_preview": "",
+        "stdout_preview": "codex-cli 0.130.0\n",
+        "timed_out": false
+      }
+    }
+  },
+  "codex_home": {
+    "agents_md": {
+      "bytes": 970,
+      "content_exported": false,
+      "exists": true,
+      "path_ref": "/home/sev/.codex/AGENTS.md",
+      "sha256": "f78131072c317b60aad4306651b1edfbe6fc1fae659e539e6a26fc45b27fc224"
+    },
+    "agents_override_md": {
+      "bytes": null,
+      "content_exported": false,
+      "exists": false,
+      "path_ref": "/home/sev/.codex/AGENTS.override.md",
+      "sha256": null
+    },
+    "config": {
+      "bytes": 729,
+      "exists": true,
+      "mcp_server_names": [],
+      "model": "gpt-5.5",
+      "parse_ok": true,
+      "path_ref": "/home/sev/.codex/config.toml",
+      "profile_names": [],
+      "redacted_shape": {
+        "approvals_reviewer": "user",
+        "features": {
+          "apps": false,
+          "multi_agent": true,
+          "plugins": false
+        },
+        "hooks": {
+          "state": {
+            "/home/sev/ION - Production/.codex/config.toml:session_start:0:0": "[REDACTED_SECRET_KEY]"
+          }
+        },
+        "model": "gpt-5.5",
+        "model_reasoning_effort": "xhigh",
+        "notice": {
+          "fast_default_opt_out": true,
+          "hide_full_access_warning": true,
+          "hide_rate_limit_model_nudge": true
+        },
+        "personality": "pragmatic",
+        "plan_mode_reasoning_effort": "xhigh",
+        "projects": {
+          "/home/sev": {
+            "trust_level": "trusted"
+          },
+          "/home/sev/ION - Production": {
+            "trust_level": "trusted"
+          },
+          "/home/sev/ION - Production/ION_CODEX FULL": {
+            "trust_level": "trusted"
+          }
+        },
+        "tui": {
+          "model_availability_nux": {
+            "gpt-5.5": 4
+          }
+        }
+      },
+      "secret_like_key_count": 2,
+      "secret_like_value_pattern_detected": false,
+      "sha256": "8650c2991304da596d57a7ea59f2d4616b2f9f5391613f19099bba88180b6741",
+      "top_level_keys": [
+        "approvals_reviewer",
+        "features",
+        "hooks",
+        "model",
+        "model_reasoning_effort",
+        "notice",
+        "personality",
+        "plan_mode_reasoning_effort",
+        "projects",
+        "tui"
+      ]
+    },
+    "directories": {
+      "agents": {
+        "entry_count": 0,
+        "exists": false,
+        "is_dir": false,
+        "path_ref": "/home/sev/.codex/agents",
+        "sample_fingerprints": []
+      },
+      "commands": {
+        "entry_count": 0,
+        "exists": false,
+        "is_dir": false,
+        "path_ref": "/home/sev/.codex/commands",
+        "sample_fingerprints": []
+      },
+      "histories": {
+        "entry_count": 0,
+        "exists": false,
+        "is_dir": false,
+        "path_ref": "/home/sev/.codex/histories",
+        "sample_fingerprints": []
+      },
+      "history": {
+        "entry_count": 0,
+        "exists": false,
+        "is_dir": false,
+        "path_ref": "/home/sev/.codex/history",
+        "sample_fingerprints": []
+      },
+      "hooks": {
+        "entry_count": 0,
+        "exists": false,
+        "is_dir": false,
+        "path_ref": "/home/sev/.codex/hooks",
+        "sample_fingerprints": []
+      },
+      "memories": {
+        "entry_count": 3,
+        "exists": true,
+        "is_dir": true,
+        "path_ref": "/home/sev/.codex/memories",
+        "sample_fingerprints": [
+          {
+            "bytes": null,
+            "kind": "directory",
+            "modified_at": "2026-05-04T16:52:45+00:00",
+            "name_sha256_12": "2b6873defee3",
+            "suffix": null
+          },
+          {
+            "bytes": null,
+            "kind": "directory",
+            "modified_at": "2026-05-04T16:52:45+00:00",
+            "name_sha256_12": "a1d1128ffe5a",
+            "suffix": null
+          },
+          {
+            "bytes": 1590,
+            "kind": "file",
+            "modified_at": "2026-05-09T17:39:00+00:00",
+            "name_sha256_12": "863e7ea5aa7a",
+            "suffix": ".md"
+          }
+        ]
+      },
+      "memory": {
+        "entry_count": 0,
+        "exists": false,
+        "is_dir": false,
+        "path_ref": "/home/sev/.codex/memory",
+        "sample_fingerprints": []
+      },
+      "plugins": {
+        "entry_count": 0,
+        "exists": false,
+        "is_dir": false,
+        "path_ref": "/home/sev/.codex/plugins",
+        "sample_fingerprints": []
+      },
+      "session": {
+        "entry_count": 0,
+        "exists": false,
+        "is_dir": false,
+        "path_ref": "/home/sev/.codex/session",
+        "sample_fingerprints": []
+      },
+      "sessions": {
+        "entry_count": 1,
+        "exists": true,
+        "is_dir": true,
+        "path_ref": "/home/sev/.codex/sessions",
+        "sample_fingerprints": [
+          {
+            "bytes": null,
+            "kind": "directory",
+            "modified_at": "2026-05-02T22:01:48+00:00",
+            "name_sha256_12": "158a323a7ba4",
+            "suffix": null
+          }
+        ]
+      },
+      "skills": {
+        "entry_count": 2,
+        "exists": true,
+        "is_dir": true,
+        "path_ref": "/home/sev/.codex/skills",
+        "sample_fingerprints": [
+          {
+            "bytes": null,
+            "kind": "directory",
+            "modified_at": "2026-05-12T19:32:09+00:00",
+            "name_sha256_12": "99721693d30d",
+            "suffix": null
+          },
+          {
+            "bytes": null,
+            "kind": "directory",
+            "modified_at": "2026-05-11T00:52:45+00:00",
+            "name_sha256_12": "0fe092c2ce7b",
+            "suffix": null
+          }
+        ]
+      },
+      "slash_commands": {
+        "entry_count": 0,
+        "exists": false,
+        "is_dir": false,
+        "path_ref": "/home/sev/.codex/slash_commands",
+        "sample_fingerprints": []
+      },
+      "subagents": {
+        "entry_count": 0,
+        "exists": false,
+        "is_dir": false,
+        "path_ref": "/home/sev/.codex/subagents",
+        "sample_fingerprints": []
+      }
+    },
+    "exists": true,
+    "is_dir": true,
+    "path_ref": "/home/sev/.codex",
+    "raw_file_names_exported": false,
+    "raw_memory_or_session_content_exported": false
+  },
+  "content_root": "/home/sev/ION - Production/ION_CODEX FULL/ION",
+  "findings": [],
+  "generated_at": "2026-05-12T20:02:38+00:00",
+  "live_execution_authority": false,
+  "memory_policy": {
+    "codex_memory_role": "working_recall_only_not_accepted_state",
+    "raw_config_values_exported": false,
+    "raw_file_names_exported": false,
+    "raw_memory_or_session_content_exported": false,
+    "secret_like_values_redacted": true
+  },
+  "next_required_action": "Run Codex carrier domain init/register-session after local audit is READY.",
+  "ok": true,
+  "production_authority": false,
+  "project_codex_config": {
+    "approval_policy": "on-request",
+    "bytes": 2061,
+    "exists": true,
+    "mcp_server_names": [
+      "ion_local"
+    ],
+    "parent_session_start_hook": {
+      "bytes": 3040,
+      "content_exported": false,
+      "exists": true,
+      "path_ref": "/home/sev/ION - Production/.codex/hooks/ion_parent_session_start_context.py",
+      "sha256": "6edb9170f94c1630507c16f80db15eed1ece964ab2170260b50d91f43ab39953"
+    },
+    "parse_ok": true,
+    "path_ref": "/home/sev/ION - Production/ION_CODEX FULL/.codex/config.toml",
+    "profile_names": [],
+    "redacted_shape": {
+      "approval_policy": "on-request",
+      "developer_instructions": "ION project-scoped Codex carrier guidance:\n- This config applies only to /home/sev/ION - Production/ION_CODEX FULL.\n- Before substantive ION work, confirm the shell root contains pyproject.toml and ION/REPO_AUTHORITY.md.\n- Treat ION/REPO_AU\n...[truncated]",
+      "features": {
+        "hooks": true
+      },
+      "hooks": {
+        "SessionStart": "[REDACTED_SECRET_KEY]"
+      },
+      "mcp_servers": {
+        "ion_local": {
+          "args": [
+            "-S",
+            "-m",
+            "kernel.ion_mcp_local_bridge",
+            "--ion-root",
+            ".",
+            "--stdio"
+          ],
+          "command": "python3",
+          "cwd": ".",
+          "enabled": true,
+          "enabled_tools": [
+            "ion.status",
+            "ion.boot_packet",
+            "ion.horizon.current",
+            "ion.receipts.list",
+            "ion.tools.list"
+          ],
+          "env": {
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "PYTHONPATH": "ION/04_packages"
+          },
+          "required": false,
+          "startup_timeout_sec": 10,
+          "tool_timeout_sec": 60
+        }
+      },
+      "sandbox_mode": "workspace-write",
+      "sandbox_workspace_write": {
+        "network_access": false,
+        "writable_roots": [
+          ".",
+          "ION/05_context/current/codex_cli",
+          "ION/05_context/current/codex_solo",
+          "ION/05_context/current/action_gateway"
+        ]
+      }
+    },
+    "sandbox_mode": "workspace-write",
+    "secret_like_key_count": 1,
+    "secret_like_value_pattern_detected": false,
+    "session_start_hook": {
+      "bytes": 2551,
+      "content_exported": false,
+      "exists": true,
+      "path_ref": "/home/sev/ION - Production/ION_CODEX FULL/.codex/hooks/ion_session_start_context.py",
+      "sha256": "d9c7b5396f7a7d00fd189f6158b6eaeb88d2fe4654008d48b71d6b3fbac5b9e9"
+    },
+    "sha256": "b3e374253a2b86787790e22e61c6c6c4d56a70d1b99ddde31f75ca85ab0462c2",
+    "top_level_keys": [
+      "approval_policy",
+      "developer_instructions",
+      "features",
+      "hooks",
+      "mcp_servers",
+      "sandbox_mode",
+      "sandbox_workspace_write"
+    ]
+  },
+  "schema_id": "ion.codex_local_pc_audit.v1",
+  "secrets_authority": false,
+  "shell_root": "/home/sev/ION - Production/ION_CODEX FULL",
+  "verdict": "ION_CODEX_LOCAL_PC_AUDIT_READY"
+}

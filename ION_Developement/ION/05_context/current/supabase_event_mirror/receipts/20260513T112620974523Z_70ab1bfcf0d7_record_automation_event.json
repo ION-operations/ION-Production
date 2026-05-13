@@ -1,0 +1,68 @@
+{
+  "accepted_state_claim": false,
+  "created_at": "2026-05-13T11:26:20.974568+00:00",
+  "direct_table_write": false,
+  "dry_run": false,
+  "error": null,
+  "live_execution_authority": false,
+  "mirror_request": {
+    "args": {
+      "p_agent_tag": "GPT-001",
+      "p_branch_id": "branch_gpt_001_action_supabase_smoke",
+      "p_carrier_id": "ion_actions_helixion_net",
+      "p_carrier_type": "custom_gpt_action_gateway",
+      "p_context_instance_id": "ctx_20260513_gpt_001_action_smoke",
+      "p_event_type": "gpt_001_action_smoke",
+      "p_packet_id": "PCKT-ION-GPT001-ACTION-SUPABASE-COCKPIT-SETUP-001",
+      "p_payload": {
+        "host": "ion-actions.helixion.net",
+        "route": "/supabase/events/record"
+      },
+      "p_settlement_required": true,
+      "p_severity": "notice",
+      "p_source_posture": {
+        "posture": "operational_mirror_candidate",
+        "source_type": "custom_gpt_action_gateway"
+      },
+      "p_source_system": "gpt_001_action_gateway_public_smoke",
+      "p_summary": "Public ion-actions.helixion.net smoke after restoring 8777 Action Gateway and tunnel.",
+      "p_title": "GPT-001 Action Gateway Supabase smoke"
+    },
+    "kind": "automation_event",
+    "rpc": "record_automation_event"
+  },
+  "production_authority": false,
+  "remote_result": {
+    "accepted_state_claim": false,
+    "agent_tag": "GPT-001",
+    "branch_id": "branch_gpt_001_action_supabase_smoke",
+    "carrier_id": "ion_actions_helixion_net",
+    "carrier_type": "custom_gpt_action_gateway",
+    "context_instance_id": "ctx_20260513_gpt_001_action_smoke",
+    "correlation_id": null,
+    "created_at": "2026-05-13T11:26:20.874719+00:00",
+    "event_id": "27bbd821-f9d8-4c6e-a24d-46f19db5ac91",
+    "event_type": "gpt_001_action_smoke",
+    "evidence_refs": [],
+    "idempotency_key": null,
+    "observed_at": "2026-05-13T11:26:20.874719+00:00",
+    "occurred_at": "2026-05-13T11:26:20.874719+00:00",
+    "packet_id": "PCKT-ION-GPT001-ACTION-SUPABASE-COCKPIT-SETUP-001",
+    "payload": {
+      "host": "ion-actions.helixion.net",
+      "route": "/supabase/events/record"
+    },
+    "settlement_required": true,
+    "severity": "notice",
+    "source_posture": {
+      "posture": "operational_mirror_candidate",
+      "source_type": "custom_gpt_action_gateway"
+    },
+    "source_system": "gpt_001_action_gateway_public_smoke",
+    "summary": "Public ion-actions.helixion.net smoke after restoring 8777 Action Gateway and tunnel.",
+    "title": "GPT-001 Action Gateway Supabase smoke",
+    "updated_at": "2026-05-13T11:26:20.874719+00:00"
+  },
+  "schema_id": "ion.supabase_event_mirror.receipt.v1",
+  "status": "MIRROR_RECORDED"
+}

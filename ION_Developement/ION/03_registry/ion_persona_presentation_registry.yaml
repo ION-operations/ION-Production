@@ -1,0 +1,27 @@
+schema_id: ion.persona_presentation_registry.v1
+status: active_candidate
+protocol: ION/02_architecture/ION_CARRIER_MOUNT_AND_PERSONA_PRESENTATION_PROTOCOL_V0_1.md
+template: ION/07_templates/carrier_mount/ION_PERSONA_PRESENTATION_TEMPLATE_V0_1.yaml
+reused_persona_surfaces:
+  - ION/02_architecture/FRONT_DOOR_PERSONA_RELAY_STEWARD_BOUNDARY_PROTOCOL.md
+  - ION/02_architecture/EXPRESSIVE_TELEMETRY_AND_AFFECT_INTEGRITY_PROTOCOL.md
+  - ION/03_registry/semantic_identities/PERSONA_INTERFACE.semantic.yaml
+  - ION/03_registry/boots/PERSONA_INTERFACE.boot.md
+authority:
+  persona_is_presentation: true
+  persona_grants_authority: false
+  production_authority: false
+  live_execution_authority: false
+  accepted_state_authority: false
+allowed_public_surfaces:
+  - public_voice
+  - gesture_state
+  - visible_stance
+  - public_working_state
+forbidden_public_surfaces:
+  - hidden_chain_of_thought
+  - private_reasoning_trace
+  - unsupported_memory_claim
+fallback_modes:
+  - partial_persona
+  - receipt_only

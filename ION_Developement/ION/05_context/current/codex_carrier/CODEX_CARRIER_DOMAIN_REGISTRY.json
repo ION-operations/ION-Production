@@ -1,0 +1,578 @@
+{
+  "active_packets": [
+    "PCKT-ION-CODEX-CARRIER-DOMAIN-REGISTRY-002",
+    "PCKT-ION-CODEX-SESSION-REGISTRY-003",
+    "PCKT-ION-CODEX-CARRIER-COCKPIT-DATA-MODEL-010",
+    "PCKT-ION-CODEX-RAW-CONTEXT-SYNC-LANE-001",
+    "PCKT-ION-CODEX-CARRIER-EVENT-BUS-001",
+    "PCKT-ION-CODEX-CARRIER-OS-SOURCE-MAP-001"
+  ],
+  "agents": [
+    {
+      "agent_tag": "codex_001",
+      "branch_capsule_required": true,
+      "code_name": "CODEX-001",
+      "default_write_scope": [
+        "ION/02_architecture/",
+        "ION/03_registry/",
+        "ION/04_packages/kernel/",
+        "ION/05_context/current/codex_carrier/",
+        "ION/05_context/current/codex_local_pc/",
+        "ION/05_context/current/agent_context_branches/",
+        "ION/tests/",
+        "diffs/",
+        "workpackets/"
+      ],
+      "domain": "local_codex_cli_carrier_mount_and_binding",
+      "role_hint": "operator-designated Codex CLI local-PC carrier for live mount audit and carrier-OS binding",
+      "settlement_required": true
+    },
+    {
+      "agent_tag": "codex_local_ion_mason",
+      "branch_capsule_required": true,
+      "default_write_scope": [
+        "ION/04_packages/kernel/",
+        "ION/tests/",
+        "ION/02_architecture/",
+        "ION/03_registry/",
+        "ION/05_context/current/codex_carrier/",
+        "diffs/",
+        "workpackets/"
+      ],
+      "domain": "local_filesystem_build_test",
+      "role_hint": "bounded implementation worker for repo-local code/docs/tests",
+      "settlement_required": true
+    },
+    {
+      "agent_tag": "codex_runtime_cartographer",
+      "branch_capsule_required": true,
+      "default_write_scope": [
+        "ION/05_context/current/codex_carrier/",
+        "diffs/",
+        "workpackets/"
+      ],
+      "domain": "runtime_and_service_inventory",
+      "role_hint": "read-first runtime/service/port/state cartography",
+      "settlement_required": true
+    },
+    {
+      "agent_tag": "codex_git_orchestration_steward",
+      "branch_capsule_required": true,
+      "default_write_scope": [
+        "ION/05_context/current/git_orchestration/",
+        "diffs/",
+        "workpackets/"
+      ],
+      "domain": "git_stage_commit_settlement_planning",
+      "role_hint": "git state classification and commit-proposal evidence, not autonomous push authority",
+      "settlement_required": true
+    },
+    {
+      "agent_tag": "codex_branch_capsule_architect",
+      "branch_capsule_required": true,
+      "default_write_scope": [
+        "ION/05_context/current/agent_context_branches/",
+        "ION/05_context/current/context_settlement/"
+      ],
+      "domain": "branch_context_capsule_design",
+      "role_hint": "branch capsule schemas, identity cards, and settlement inbox mechanics",
+      "settlement_required": true
+    },
+    {
+      "agent_tag": "codex_ui_joc_opus_canonist",
+      "branch_capsule_required": true,
+      "default_write_scope": [
+        "ION/08_ui/",
+        "ION/04_packages/kernel/ion_codex_chat_*",
+        "diffs/",
+        "workpackets/"
+      ],
+      "domain": "joc_opus_ui_canon_and_visual_proof",
+      "role_hint": "UI/cockpit implementation under JOC/OPUS canon with visual proof gates",
+      "settlement_required": true
+    },
+    {
+      "agent_tag": "codex_daimon_bridge_specialist",
+      "branch_capsule_required": true,
+      "default_write_scope": [
+        "ION/05_context/current/codex_carrier/",
+        "workpackets/",
+        "diffs/"
+      ],
+      "domain": "daimon_bridge_and_sibling_repo_integration",
+      "role_hint": "dAimon bridge planning and bounded integration evidence",
+      "settlement_required": true
+    },
+    {
+      "agent_tag": "codex_proof_nemesis",
+      "branch_capsule_required": true,
+      "default_write_scope": [
+        "ION/tests/",
+        "ION/05_context/current/codex_carrier/",
+        "diffs/"
+      ],
+      "domain": "proof_gate_adversarial_audit",
+      "role_hint": "adversarial validation, drift detection, and failure-mode attack",
+      "settlement_required": true
+    },
+    {
+      "agent_tag": "codex_extension_cockpit_specialist",
+      "branch_capsule_required": true,
+      "default_write_scope": [
+        "ION/09_integrations/browser_extension/",
+        "ION/08_ui/",
+        "ION/tests/",
+        "diffs/",
+        "workpackets/"
+      ],
+      "domain": "browser_extension_and_local_cockpit",
+      "role_hint": "extension/cockpit interface specialist with visual and approval-bound proof gates",
+      "settlement_required": true
+    },
+    {
+      "agent_tag": "codex_mcp_action_gateway_specialist",
+      "branch_capsule_required": true,
+      "default_write_scope": [
+        "ION/04_packages/kernel/ion_mcp*",
+        "ION/05_context/current/action_gateway/",
+        "ION/tests/",
+        "diffs/"
+      ],
+      "domain": "mcp_action_gateway_and_tool_boundary",
+      "role_hint": "MCP/Action Gateway routing, confirmation, and tool-boundary maintainer",
+      "settlement_required": true
+    },
+    {
+      "agent_tag": "codex_context_settler_assistant",
+      "branch_capsule_required": true,
+      "default_write_scope": [
+        "ION/05_context/current/context_settlement/",
+        "ION/05_context/current/codex_carrier/",
+        "workpackets/"
+      ],
+      "domain": "context_settlement_preparation",
+      "role_hint": "settlement request preparer that never accepts state by itself",
+      "settlement_required": true
+    }
+  ],
+  "branch_capsule_layout": [
+    "CAPSULE.md",
+    "MINI.md",
+    "STATUS.json",
+    "ROLLING_CONTEXT.md",
+    "CODEX_SESSION.json",
+    "RAW_CONTEXT_MANIFEST.json",
+    "RECEIPTS/",
+    "TASK_RETURNS/",
+    "PATCHES/",
+    "RAW_CONTEXT_SUMMARIES/",
+    "RAW_CONTEXT_EXCERPTS/",
+    "BLOCKERS.md"
+  ],
+  "carrier_domain_id": "CODEX_CARRIER_DOMAIN",
+  "cockpit_panels": [
+    "project_and_carrier_overview",
+    "agent_graph",
+    "codex_session_manager",
+    "context_truth_panel",
+    "automation_timeline",
+    "drift_and_consistency_dashboard",
+    "git_and_settlement_board",
+    "work_packet_board",
+    "proof_console",
+    "raw_codex_context_guarded_lane",
+    "codex_carrier_os_source_map",
+    "runtime_event_bus",
+    "slash_command_registry",
+    "context_mirror_policy",
+    "service_and_port_map"
+  ],
+  "content_root": "/home/sev/ION - Production/ION_CODEX FULL/ION",
+  "findings": [],
+  "forbidden_claims": [
+    "ION identity",
+    "STEWARD authority",
+    "RELAY authority",
+    "PERSONA authority",
+    "accepted-state authority",
+    "production authority",
+    "live execution authority",
+    "secrets authority",
+    "direct shared Capsule/Mini/HOT_CONTEXT mutation"
+  ],
+  "generated_at": "2026-05-12T20:02:23+00:00",
+  "generated_surfaces": {
+    "agent_registry": {
+      "bytes": 5515,
+      "exists": true,
+      "is_dir": false,
+      "is_file": true,
+      "path": "ION/05_context/current/codex_carrier/CODEX_AGENT_REGISTRY.json"
+    },
+    "branch_capsule_base": {
+      "bytes": null,
+      "exists": false,
+      "is_dir": false,
+      "is_file": false,
+      "path": "ION/05_context/current/agent_context_branches/codex_carrier"
+    },
+    "cockpit_snapshot": {
+      "bytes": 24087,
+      "exists": true,
+      "is_dir": false,
+      "is_file": true,
+      "path": "ION/05_context/current/codex_carrier/CODEX_CARRIER_COCKPIT_SNAPSHOT.json"
+    },
+    "domain_registry": {
+      "bytes": 17583,
+      "exists": true,
+      "is_dir": false,
+      "is_file": true,
+      "path": "ION/05_context/current/codex_carrier/CODEX_CARRIER_DOMAIN_REGISTRY.json"
+    },
+    "event_ledger": {
+      "bytes": 1903,
+      "exists": true,
+      "is_dir": false,
+      "is_file": true,
+      "path": "ION/05_context/current/codex_carrier/CODEX_CARRIER_EVENT_LEDGER.json"
+    },
+    "events_dir": {
+      "bytes": null,
+      "exists": true,
+      "is_dir": true,
+      "is_file": false,
+      "path": "ION/05_context/current/codex_carrier/events"
+    },
+    "memory_policy": {
+      "bytes": 1578,
+      "exists": true,
+      "is_dir": false,
+      "is_file": true,
+      "path": "ION/05_context/current/codex_carrier/CODEX_MEMORY_POLICY.md"
+    },
+    "raw_context_manifests_dir": {
+      "bytes": null,
+      "exists": true,
+      "is_dir": true,
+      "is_file": false,
+      "path": "ION/05_context/current/codex_carrier/raw_context_manifests"
+    },
+    "raw_context_policy": {
+      "bytes": 1053,
+      "exists": true,
+      "is_dir": false,
+      "is_file": true,
+      "path": "ION/05_context/current/codex_carrier/CODEX_RAW_CONTEXT_SYNC_LANE_POLICY.md"
+    },
+    "readme": {
+      "bytes": 1398,
+      "exists": true,
+      "is_dir": false,
+      "is_file": true,
+      "path": "ION/05_context/current/codex_carrier/README.md"
+    },
+    "rolling_context_template": {
+      "bytes": 661,
+      "exists": true,
+      "is_dir": false,
+      "is_file": true,
+      "path": "ION/05_context/current/codex_carrier/ROLLING_CONTEXT.template.md"
+    },
+    "session_registry": {
+      "bytes": 909,
+      "exists": true,
+      "is_dir": false,
+      "is_file": true,
+      "path": "ION/05_context/current/codex_carrier/CODEX_SESSION_REGISTRY.json"
+    },
+    "sessions_dir": {
+      "bytes": null,
+      "exists": true,
+      "is_dir": true,
+      "is_file": false,
+      "path": "ION/05_context/current/codex_carrier/sessions"
+    }
+  },
+  "live_execution_authority": false,
+  "local_codex_audit": {
+    "exists": false,
+    "path": "ION/05_context/current/codex_carrier/LOCAL_CODEX_PC_AUDIT.json",
+    "raw_file_names_exported": false,
+    "raw_memory_or_session_content_exported": false,
+    "status": "not_written"
+  },
+  "local_codex_audit_policy": {
+    "module": "ION/04_packages/kernel/ion_codex_local_pc_audit.py",
+    "path": "ION/05_context/current/codex_carrier/LOCAL_CODEX_PC_AUDIT.json",
+    "raw_config_values_exported": false,
+    "raw_file_names_exported": false,
+    "raw_memory_or_session_content_exported": false,
+    "write_confirmation": "ION_CODEX_LOCAL_PC_AUDIT_WRITE_CONFIRMED"
+  },
+  "mcp_read_only_tools": [
+    "ion.codex.carrier.status",
+    "ion.codex.carrier.cockpit",
+    "ion.codex.carrier.events",
+    "ion.codex.carrier.os",
+    "ion.codex.raw_context.status"
+  ],
+  "memory_policy": {
+    "branch_capsule_governs_current_work": true,
+    "codex_memory_role": "bounded_diagnostic_continuity",
+    "memory_may_accept_state": false,
+    "memory_may_orient": true,
+    "raw_context_content_committable_by_default": false,
+    "raw_context_drive_mirror_allowed_by_default": false,
+    "raw_context_manifest_committable": true,
+    "raw_context_may_accept_state": false,
+    "raw_context_may_diagnose": true,
+    "raw_context_private_storage": ".ion_private/codex_raw_context/<agent_tag>/<session_id>/",
+    "raw_context_sync_lane": "manifest_only_by_default",
+    "raw_memory_export": "forbidden_without_explicit_review",
+    "receipt_or_settlement_required_for_durable_claims": true,
+    "schema_id": "ion.codex_carrier_memory_policy.v2",
+    "secrets_redaction_required": true
+  },
+  "ok": true,
+  "production_authority": false,
+  "raw_context_sync_lane": {
+    "accepted_state_authority": false,
+    "authority": {
+      "accepted_state_authority": false,
+      "browser_control_authority": false,
+      "live_execution_authority": false,
+      "production_authority": false,
+      "secrets_authority": false
+    },
+    "browser_control_authority": false,
+    "findings": [],
+    "generated_at": "2026-05-12T20:02:23+00:00",
+    "gitignore_guard": {
+      "exists": true,
+      "missing_patterns": [],
+      "ok": true,
+      "path": ".gitignore",
+      "present_patterns": [
+        ".ion_private/",
+        ".ion_private/codex_raw_context/"
+      ],
+      "required_patterns": [
+        ".ion_private/",
+        ".ion_private/codex_raw_context/"
+      ]
+    },
+    "live_execution_authority": false,
+    "manifest_count": 0,
+    "manifest_registry_ref": "ION/05_context/current/codex_carrier/raw_context_manifests",
+    "manifests": [],
+    "ok": true,
+    "policy_ref": "ION/05_context/current/codex_carrier/CODEX_RAW_CONTEXT_SYNC_LANE_POLICY.md",
+    "private_storage_ref": ".ion_private/codex_raw_context",
+    "production_authority": false,
+    "promotion_path": [
+      "native_codex_session_or_memory",
+      "local_private_raw_snapshot",
+      "public_safe_manifest",
+      "redacted_diagnostic_excerpt_or_summary",
+      "proof_gate",
+      "receipt_or_settlement",
+      "inheritable_ion_state"
+    ],
+    "protocol_ref": "ION/02_architecture/CODEX_RAW_CONTEXT_SYNC_LANE_PROTOCOL.md",
+    "raw_content_committed_by_policy": false,
+    "raw_content_exported": false,
+    "raw_content_mirrored_externally_by_policy": false,
+    "schema_id": "ion.codex_raw_context_sync_lane.v1",
+    "secrets_authority": false,
+    "shell_root": "/home/sev/ION - Production/ION_CODEX FULL",
+    "surfaces": {
+      "manifests_dir": {
+        "bytes": null,
+        "exists": true,
+        "is_dir": true,
+        "is_file": false,
+        "path": "ION/05_context/current/codex_carrier/raw_context_manifests"
+      },
+      "manifests_readme": {
+        "bytes": 345,
+        "exists": true,
+        "is_dir": false,
+        "is_file": true,
+        "path": "ION/05_context/current/codex_carrier/raw_context_manifests/README.md"
+      },
+      "policy": {
+        "bytes": 1053,
+        "exists": true,
+        "is_dir": false,
+        "is_file": true,
+        "path": "ION/05_context/current/codex_carrier/CODEX_RAW_CONTEXT_SYNC_LANE_POLICY.md"
+      },
+      "private_raw_context_dir": {
+        "content_exported": false,
+        "entry_count_untrusted": null,
+        "exists": false,
+        "gitignored_required": true,
+        "is_dir": false,
+        "path": ".ion_private/codex_raw_context"
+      },
+      "protocol": {
+        "bytes": 4434,
+        "exists": true,
+        "is_dir": false,
+        "is_file": true,
+        "path": "ION/02_architecture/CODEX_RAW_CONTEXT_SYNC_LANE_PROTOCOL.md"
+      }
+    },
+    "verdict": "ION_CODEX_RAW_CONTEXT_SYNC_LANE_READY"
+  },
+  "registry_schema_id": "ion.codex_carrier_domain_registry.v1",
+  "required_surfaces": {
+    "branch_capsule_registry": {
+      "bytes": 4032,
+      "exists": true,
+      "is_dir": false,
+      "is_file": true,
+      "path": "ION/05_context/current/agent_context_branches/BRANCH_CAPSULE_REGISTRY_V0_1.json"
+    },
+    "codex_carrier_domain_module": {
+      "bytes": 70243,
+      "exists": true,
+      "is_dir": false,
+      "is_file": true,
+      "path": "ION/04_packages/kernel/ion_codex_carrier_domain.py"
+    },
+    "codex_carrier_domain_protocol": {
+      "bytes": 8230,
+      "exists": true,
+      "is_dir": false,
+      "is_file": true,
+      "path": "ION/02_architecture/CODEX_CARRIER_DOMAIN_PROTOCOL.md"
+    },
+    "codex_carrier_event_bus_protocol": {
+      "bytes": 2696,
+      "exists": true,
+      "is_dir": false,
+      "is_file": true,
+      "path": "ION/02_architecture/CODEX_CARRIER_EVENT_BUS_PROTOCOL.md"
+    },
+    "codex_carrier_runtime_event_schema": {
+      "bytes": 1618,
+      "exists": true,
+      "is_dir": false,
+      "is_file": true,
+      "path": "ION/03_registry/ion_codex_carrier_runtime_event.schema.json"
+    },
+    "codex_cli_audit_module": {
+      "bytes": 7897,
+      "exists": true,
+      "is_dir": false,
+      "is_file": true,
+      "path": "ION/04_packages/kernel/ion_codex_cli_carrier_audit.py"
+    },
+    "codex_cli_profile": {
+      "bytes": 1603,
+      "exists": true,
+      "is_dir": false,
+      "is_file": true,
+      "path": "ION/03_registry/codex_cli_carrier_profile.yaml"
+    },
+    "codex_cli_protocol": {
+      "bytes": 3824,
+      "exists": true,
+      "is_dir": false,
+      "is_file": true,
+      "path": "ION/02_architecture/CODEX_CLI_CARRIER_PROTOCOL.md"
+    },
+    "codex_cli_template": {
+      "bytes": 1699,
+      "exists": true,
+      "is_dir": false,
+      "is_file": true,
+      "path": "ION/07_templates/carriers/CODEX_CLI_EXECUTION_PACKET.md"
+    },
+    "codex_raw_context_manifest_schema": {
+      "bytes": 1467,
+      "exists": true,
+      "is_dir": false,
+      "is_file": true,
+      "path": "ION/03_registry/ion_codex_raw_context_manifest.schema.json"
+    },
+    "codex_raw_context_sync_protocol": {
+      "bytes": 4434,
+      "exists": true,
+      "is_dir": false,
+      "is_file": true,
+      "path": "ION/02_architecture/CODEX_RAW_CONTEXT_SYNC_LANE_PROTOCOL.md"
+    },
+    "codex_solo_context_module": {
+      "bytes": 49358,
+      "exists": true,
+      "is_dir": false,
+      "is_file": true,
+      "path": "ION/04_packages/kernel/ion_codex_solo_context.py"
+    },
+    "codex_solo_hot_context": {
+      "bytes": 111214,
+      "exists": true,
+      "is_dir": false,
+      "is_file": true,
+      "path": "ION/05_context/current/codex_solo/HOT_CONTEXT.md"
+    },
+    "mcp_local_bridge_module": {
+      "bytes": 51807,
+      "exists": true,
+      "is_dir": false,
+      "is_file": true,
+      "path": "ION/04_packages/kernel/ion_mcp_local_bridge.py"
+    },
+    "mount_contract": {
+      "bytes": 4003,
+      "exists": true,
+      "is_dir": false,
+      "is_file": true,
+      "path": "ION/02_architecture/ION_MOUNT_CONTRACT.md"
+    },
+    "project_codex_config": {
+      "bytes": 2061,
+      "exists": true,
+      "is_dir": false,
+      "is_file": true,
+      "path": ".codex/config.toml"
+    },
+    "repo_authority": {
+      "bytes": 9259,
+      "exists": true,
+      "is_dir": false,
+      "is_file": true,
+      "path": "ION/REPO_AUTHORITY.md"
+    },
+    "session_start_hook": {
+      "bytes": 2551,
+      "exists": true,
+      "is_dir": false,
+      "is_file": true,
+      "path": ".codex/hooks/ion_session_start_context.py"
+    }
+  },
+  "schema_id": "ion.codex_carrier_domain.v1",
+  "secrets_authority": false,
+  "session_record_schema": {
+    "registry_path": "ION/05_context/current/codex_carrier/CODEX_SESSION_REGISTRY.json",
+    "required_fields": [
+      "session_id",
+      "agent_tag",
+      "branch_id",
+      "ion_branch_capsule",
+      "current_packet",
+      "write_scope",
+      "settlement_required",
+      "accepted_state_authority"
+    ],
+    "schema_id": "ion.codex_carrier_session.v1",
+    "session_path_pattern": "ION/05_context/current/codex_carrier/sessions/<session_id>.json"
+  },
+  "shell_root": "/home/sev/ION - Production/ION_CODEX FULL",
+  "source_package": "ION_CODEX_CARRIER_OS_CONTEXT_PACKAGE_001",
+  "verdict": "ION_CODEX_CARRIER_DOMAIN_READY"
+}

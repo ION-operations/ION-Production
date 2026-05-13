@@ -1,0 +1,39 @@
+{
+  "accepted_state_claim": false,
+  "created_at": "2026-05-13T04:57:43.559719+00:00",
+  "direct_table_write": false,
+  "dry_run": false,
+  "error": null,
+  "live_execution_authority": false,
+  "mirror_request": {
+    "args": {
+      "p_agent_tag": "codex_local_ion_mason",
+      "p_branch_id": "branch_codex_local_ion_mason_supabase_event_mirror",
+      "p_carrier_id": "codex_local_cli",
+      "p_carrier_type": "codex_cli",
+      "p_context_instance_id": "ctx_20260513_codex_supabase_event_mirror_smoke",
+      "p_event_type": "supabase_event_mirror_live_smoke",
+      "p_packet_id": "PCKT-ION-SUPABASE-EVENT-MIRROR-LIVE-SMOKE-001",
+      "p_payload": {
+        "adapter": "ion_supabase_event_mirror",
+        "purpose": "live_smoke",
+        "rpc": "ion_ops.record_automation_event"
+      },
+      "p_settlement_required": true,
+      "p_severity": "notice",
+      "p_source_posture": {
+        "posture": "operational_mirror_candidate",
+        "source_type": "local_codex_adapter"
+      },
+      "p_source_system": "ion_local_codex",
+      "p_summary": "First live event mirror adapter smoke after RPC authority layer was applied.",
+      "p_title": "ION Supabase event mirror live smoke"
+    },
+    "kind": "automation_event",
+    "rpc": "record_automation_event"
+  },
+  "production_authority": false,
+  "remote_result": null,
+  "schema_id": "ion.supabase_event_mirror.receipt.v1",
+  "status": "MIRROR_ATTEMPT_RECORDED"
+}

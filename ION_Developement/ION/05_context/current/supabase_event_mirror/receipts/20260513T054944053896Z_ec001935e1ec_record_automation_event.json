@@ -1,0 +1,38 @@
+{
+  "accepted_state_claim": false,
+  "created_at": "2026-05-13T05:49:44.053947+00:00",
+  "direct_table_write": false,
+  "dry_run": false,
+  "error": null,
+  "live_execution_authority": false,
+  "mirror_request": {
+    "args": {
+      "p_agent_tag": "codex_local_ion_mason",
+      "p_branch_id": "branch_codex_local_ion_mason_action_gateway_supabase",
+      "p_carrier_id": "ion_action_gateway_8777",
+      "p_carrier_type": "custom_gpt_action_gateway",
+      "p_context_instance_id": "ctx_20260513_action_gateway_supabase_smoke",
+      "p_event_type": "action_gateway_supabase_event_record_smoke",
+      "p_packet_id": "PCKT-ION-GPT001-ACTION-SUPABASE-COCKPIT-SETUP-001",
+      "p_payload": {
+        "purpose": "action_gateway_smoke",
+        "route": "/supabase/events/record"
+      },
+      "p_settlement_required": true,
+      "p_severity": "notice",
+      "p_source_posture": {
+        "posture": "operational_mirror_candidate",
+        "source_type": "ion_action_gateway"
+      },
+      "p_source_system": "ion_action_gateway",
+      "p_summary": "Smoke event recorded through ION Action Gateway Supabase endpoint.",
+      "p_title": "Action Gateway Supabase event record smoke"
+    },
+    "kind": "automation_event",
+    "rpc": "record_automation_event"
+  },
+  "production_authority": false,
+  "remote_result": null,
+  "schema_id": "ion.supabase_event_mirror.receipt.v1",
+  "status": "MIRROR_ATTEMPT_RECORDED"
+}

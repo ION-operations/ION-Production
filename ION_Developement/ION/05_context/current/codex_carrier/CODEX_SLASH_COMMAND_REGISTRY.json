@@ -1,0 +1,88 @@
+{
+  "accepted_state_authority": false,
+  "browser_control_authority": false,
+  "command_count": 12,
+  "commands": [
+    {
+      "command": "/ion-mount",
+      "maps_to": "kernel.ion_carrier_onboard / carrier-domain status",
+      "mode": "read_only",
+      "mutates": false
+    },
+    {
+      "command": "/ion-identity",
+      "maps_to": "current carrier/session/branch identity card",
+      "mode": "read_only",
+      "mutates": false
+    },
+    {
+      "command": "/ion-packet",
+      "maps_to": "current packet + write scope + blockers",
+      "mode": "read_only",
+      "mutates": false
+    },
+    {
+      "command": "/ion-branch",
+      "maps_to": "branch capsule status and raw-context manifest ref",
+      "mode": "read_only",
+      "mutates": false
+    },
+    {
+      "command": "/ion-sync",
+      "maps_to": "rolling context + event append with confirmation",
+      "mode": "candidate_write",
+      "mutates": true
+    },
+    {
+      "command": "/ion-proof",
+      "maps_to": "proof ledger/status; candidate evidence refs only",
+      "mode": "read_only_or_candidate_write",
+      "mutates": "confirmation_required"
+    },
+    {
+      "command": "/ion-git-plan",
+      "maps_to": "git status/stage manifest proposal; no commit/push",
+      "mode": "read_only",
+      "mutates": false
+    },
+    {
+      "command": "/ion-commit-boundary",
+      "maps_to": "kernel.ion_codex_commit_boundary_audit path classification + candidate stage manifest",
+      "mode": "read_only",
+      "mutates": false
+    },
+    {
+      "command": "/ion-source-bundle",
+      "maps_to": "kernel.ion_codex_source_bundle_stage_review source/protocol/schema/test stage proposal",
+      "mode": "read_only",
+      "mutates": false
+    },
+    {
+      "command": "/ion-receipt",
+      "maps_to": "receipt proposal; acceptance remains Steward/operator gated",
+      "mode": "candidate_write",
+      "mutates": "confirmation_required"
+    },
+    {
+      "command": "/ion-settlement",
+      "maps_to": "settlement request package",
+      "mode": "candidate_write",
+      "mutates": "confirmation_required"
+    },
+    {
+      "command": "/ion-handoff",
+      "maps_to": "branch capsule handoff + event ledger",
+      "mode": "candidate_write",
+      "mutates": "confirmation_required"
+    }
+  ],
+  "drive_runtime_authority": false,
+  "generated_at": "2026-05-12T23:53:55+00:00",
+  "github_push_authority": false,
+  "live_execution_authority": false,
+  "path": "ION/05_context/current/codex_carrier/CODEX_SLASH_COMMAND_REGISTRY.json",
+  "production_authority": false,
+  "rule": "Slash commands are deterministic wrappers; they do not confer authority or accepted state.",
+  "schema_id": "ion.codex_slash_command_registry.v1",
+  "secrets_authority": false
+}

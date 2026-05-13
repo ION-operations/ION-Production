@@ -1,0 +1,161 @@
+{
+  "accepted_state_authority": false,
+  "agent_count": 11,
+  "agents": [
+    {
+      "agent_tag": "codex_001",
+      "branch_capsule_required": true,
+      "code_name": "CODEX-001",
+      "default_write_scope": [
+        "ION/02_architecture/",
+        "ION/03_registry/",
+        "ION/04_packages/kernel/",
+        "ION/05_context/current/codex_carrier/",
+        "ION/05_context/current/codex_local_pc/",
+        "ION/05_context/current/agent_context_branches/",
+        "ION/tests/",
+        "diffs/",
+        "workpackets/"
+      ],
+      "domain": "local_codex_cli_carrier_mount_and_binding",
+      "role_hint": "operator-designated Codex CLI local-PC carrier for live mount audit and carrier-OS binding",
+      "settlement_required": true
+    },
+    {
+      "agent_tag": "codex_local_ion_mason",
+      "branch_capsule_required": true,
+      "default_write_scope": [
+        "ION/04_packages/kernel/",
+        "ION/tests/",
+        "ION/02_architecture/",
+        "ION/03_registry/",
+        "ION/05_context/current/codex_carrier/",
+        "diffs/",
+        "workpackets/"
+      ],
+      "domain": "local_filesystem_build_test",
+      "role_hint": "bounded implementation worker for repo-local code/docs/tests",
+      "settlement_required": true
+    },
+    {
+      "agent_tag": "codex_runtime_cartographer",
+      "branch_capsule_required": true,
+      "default_write_scope": [
+        "ION/05_context/current/codex_carrier/",
+        "diffs/",
+        "workpackets/"
+      ],
+      "domain": "runtime_and_service_inventory",
+      "role_hint": "read-first runtime/service/port/state cartography",
+      "settlement_required": true
+    },
+    {
+      "agent_tag": "codex_git_orchestration_steward",
+      "branch_capsule_required": true,
+      "default_write_scope": [
+        "ION/05_context/current/git_orchestration/",
+        "diffs/",
+        "workpackets/"
+      ],
+      "domain": "git_stage_commit_settlement_planning",
+      "role_hint": "git state classification and commit-proposal evidence, not autonomous push authority",
+      "settlement_required": true
+    },
+    {
+      "agent_tag": "codex_branch_capsule_architect",
+      "branch_capsule_required": true,
+      "default_write_scope": [
+        "ION/05_context/current/agent_context_branches/",
+        "ION/05_context/current/context_settlement/"
+      ],
+      "domain": "branch_context_capsule_design",
+      "role_hint": "branch capsule schemas, identity cards, and settlement inbox mechanics",
+      "settlement_required": true
+    },
+    {
+      "agent_tag": "codex_ui_joc_opus_canonist",
+      "branch_capsule_required": true,
+      "default_write_scope": [
+        "ION/08_ui/",
+        "ION/04_packages/kernel/ion_codex_chat_*",
+        "diffs/",
+        "workpackets/"
+      ],
+      "domain": "joc_opus_ui_canon_and_visual_proof",
+      "role_hint": "UI/cockpit implementation under JOC/OPUS canon with visual proof gates",
+      "settlement_required": true
+    },
+    {
+      "agent_tag": "codex_daimon_bridge_specialist",
+      "branch_capsule_required": true,
+      "default_write_scope": [
+        "ION/05_context/current/codex_carrier/",
+        "workpackets/",
+        "diffs/"
+      ],
+      "domain": "daimon_bridge_and_sibling_repo_integration",
+      "role_hint": "dAimon bridge planning and bounded integration evidence",
+      "settlement_required": true
+    },
+    {
+      "agent_tag": "codex_proof_nemesis",
+      "branch_capsule_required": true,
+      "default_write_scope": [
+        "ION/tests/",
+        "ION/05_context/current/codex_carrier/",
+        "diffs/"
+      ],
+      "domain": "proof_gate_adversarial_audit",
+      "role_hint": "adversarial validation, drift detection, and failure-mode attack",
+      "settlement_required": true
+    },
+    {
+      "agent_tag": "codex_extension_cockpit_specialist",
+      "branch_capsule_required": true,
+      "default_write_scope": [
+        "ION/09_integrations/browser_extension/",
+        "ION/08_ui/",
+        "ION/tests/",
+        "diffs/",
+        "workpackets/"
+      ],
+      "domain": "browser_extension_and_local_cockpit",
+      "role_hint": "extension/cockpit interface specialist with visual and approval-bound proof gates",
+      "settlement_required": true
+    },
+    {
+      "agent_tag": "codex_mcp_action_gateway_specialist",
+      "branch_capsule_required": true,
+      "default_write_scope": [
+        "ION/04_packages/kernel/ion_mcp*",
+        "ION/05_context/current/action_gateway/",
+        "ION/tests/",
+        "diffs/"
+      ],
+      "domain": "mcp_action_gateway_and_tool_boundary",
+      "role_hint": "MCP/Action Gateway routing, confirmation, and tool-boundary maintainer",
+      "settlement_required": true
+    },
+    {
+      "agent_tag": "codex_context_settler_assistant",
+      "branch_capsule_required": true,
+      "default_write_scope": [
+        "ION/05_context/current/context_settlement/",
+        "ION/05_context/current/codex_carrier/",
+        "workpackets/"
+      ],
+      "domain": "context_settlement_preparation",
+      "role_hint": "settlement request preparer that never accepts state by itself",
+      "settlement_required": true
+    }
+  ],
+  "branch_capsule_required": true,
+  "generated_at": "2026-05-12T20:02:23+00:00",
+  "live_execution_authority": false,
+  "path": "ION/05_context/current/codex_carrier/CODEX_AGENT_REGISTRY.json",
+  "production_authority": false,
+  "raw_context_manifest_required": true,
+  "schema_id": "ion.codex_agent_registry.v1",
+  "secrets_authority": false,
+  "settlement_required": true
+}
