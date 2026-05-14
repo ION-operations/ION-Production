@@ -1,0 +1,41 @@
+schema_id: ion.needs_routed.local_apply_receipt.v1
+created_at_utc: 20260514T171514Z
+posture: sandbox-candidate
+accepted_state_claim: false
+production_authority: false
+live_execution_authority: false
+carrier: CODEX-001
+source_package: Needs_Routed/ION_AI_GIT_BRANCH_CONTAINMENT_PROTOCOL_V0_1_PACKAGE_20260514T170232Z.zip
+source_package_sha256: 18a0022192eeac167b07d93fbfb67a7ecd0ba0fe03f281ec91612a83a0b53da9
+source_packet: ION_AI_GIT_BRANCH_CONTAINMENT_PROTOCOL_V0_1_PACKET_20260514T170232Z.yaml
+objective: ai_git_branch_containment_protocol_for_all_ion_agents
+application_strategy: >
+  Applied only source/protocol/schema/template/test members from the package into
+  the active ION_Developement root. Cache members from the package were ignored.
+  The test import was adjusted from top-level module import to kernel package
+  import to match this repo's pyproject pythonpath convention.
+files_applied:
+  - ION_Developement/ION/02_architecture/AI_GIT_BRANCH_CONTAINMENT_PROTOCOL.md
+  - ION_Developement/ION/03_registry/ion_ai_git_branch_receipt.schema.json
+  - ION_Developement/ION/03_registry/ion_ai_git_branch_containment_policy.yaml
+  - ION_Developement/ION/04_packages/kernel/ion_ai_git_branch_containment.py
+  - ION_Developement/ION/07_templates/git/AI_GIT_BRANCH_START_RECEIPT.template.yaml
+  - ION_Developement/ION/07_templates/git/AI_GIT_BRANCH_CHECKPOINT_RECEIPT.template.yaml
+  - ION_Developement/ION/07_templates/git/AI_GIT_BRANCH_RECOVERY_RECEIPT.template.yaml
+  - ION_Developement/ION/07_templates/git/AGENTS_GIT_CONTAINMENT_SNIPPET.md
+  - ION_Developement/ION/tests/test_kernel_ion_ai_git_branch_containment.py
+validation:
+  - command: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=ION/04_packages PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -q ION/tests/test_kernel_ion_ai_git_branch_containment.py
+    result: 5 passed in 0.02s
+  - command: PYTHONDONTWRITEBYTECODE=1 python3 -m py_compile ION/04_packages/kernel/ion_ai_git_branch_containment.py
+    result: passed
+  - command: JSON/YAML parse for containment schema, policy, and receipt templates
+    result: passed
+non_claims:
+  - no accepted state claimed
+  - no production authority claimed
+  - no live execution authority claimed
+  - no git branch created
+  - no worktree created
+  - no protected branch write performed
+  - no git push

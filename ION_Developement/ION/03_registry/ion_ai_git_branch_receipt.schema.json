@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ion.ai_git_branch_receipt.v0_1",
+  "title": "ION AI Git Branch Containment Receipt",
+  "type": "object",
+  "required": [
+    "schema_id",
+    "receipt_id",
+    "receipt_type",
+    "objective",
+    "branch",
+    "authority",
+    "verdict"
+  ],
+  "properties": {
+    "schema_id": {
+      "const": "ion.ai_git_branch_receipt.v0_1"
+    },
+    "receipt_id": {
+      "type": "string",
+      "minLength": 3
+    },
+    "receipt_type": {
+      "enum": [
+        "start",
+        "checkpoint",
+        "quarantine",
+        "recovery",
+        "review_ready",
+        "merge_proposal"
+      ]
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "agent": {
+      "type": "string"
+    },
+    "objective": {
+      "type": "string"
+    },
+    "branch": {
+      "type": "object",
+      "required": [
+        "name"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "base_ref": {
+          "type": "string"
+        },
+        "base_commit": {
+          "type": "string"
+        },
+        "worktree_path": {
+          "type": "string"
+        },
+        "current_commit": {
+          "type": "string"
+        },
+        "branch_node_path": {
+          "type": "string"
+        },
+        "protected_branch": {
+          "type": "boolean"
+        },
+        "isolated_worktree": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": true
+    },
+    "context_surfaces": {
+      "type": "object",
+      "properties": {
+        "readme": {
+          "type": "string"
+        },
+        "agents_md": {
+          "type": "string"
+        },
+        "ion_context_capsule": {
+          "type": "string"
+        },
+        "receipts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "recovery_source": {
+      "type": "object"
+    },
+    "authority": {
+      "type": "object",
+      "required": [
+        "production_authority",
+        "live_execution_authority"
+      ],
+      "properties": {
+        "production_authority": {
+          "type": "boolean"
+        },
+        "live_execution_authority": {
+          "type": "boolean"
+        },
+        "protected_branch_write": {
+          "type": "boolean"
+        },
+        "operator_approval": {
+          "type": "boolean"
+        }
+      },
+      "additionalProperties": true
+    },
+    "verdict": {
+      "enum": [
+        "allow_edit",
+        "read_only",
+        "patch_only",
+        "blocked",
+        "quarantined",
+        "review_ready"
+      ]
+    },
+    "missing_proof": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "additionalProperties": true
+}

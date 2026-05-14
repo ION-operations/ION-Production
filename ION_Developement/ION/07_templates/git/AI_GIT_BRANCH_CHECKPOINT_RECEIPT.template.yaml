@@ -1,0 +1,22 @@
+schema_id: ion.ai_git_branch_receipt.v0_1
+receipt_id: <checkpoint_receipt_id>
+receipt_type: checkpoint
+created_at: <iso8601_utc>
+agent: <agent_or_carrier>
+objective: <objective>
+branch:
+  name: <isolated_branch_name>
+  current_commit: <checkpoint_commit_sha>
+  worktree_path: <external_worktree_path>
+checkpoint:
+  kind: <checkpoint|test-pass|test-fail|recovery-note|review-ready>
+  message: <summary>
+  changed_paths: []
+checks: []
+authority:
+  production_authority: false
+  live_execution_authority: false
+  protected_branch_write: false
+  operator_approval: false
+verdict: <allow_edit|review_ready|blocked>
+missing_proof: []

@@ -1,0 +1,38 @@
+schema_id: ion.ai_git_branch_containment_policy.v0_1
+status: candidate
+protected_branches:
+  - main
+  - master
+  - trunk
+  - production
+  - release
+  - stable
+preferred_work_surface: external_git_worktree
+branch_name_template: ion/{agent}/{branch_node}/{objective_slug}/{stamp}
+worktree_root_template: ../ion-worktrees/{branch_id}
+required_receipts:
+  before_material_edit:
+    - branch_start_receipt
+  during_material_edit:
+    - checkpoint_receipt
+  before_review:
+    - review_ready_receipt
+  before_protected_branch_landing:
+    - merge_proposal_receipt
+    - approval_receipt
+hard_refusals:
+  - direct_ai_commit_to_protected_branch
+  - force_push_to_protected_branch
+  - unreceipted_main_tree_mutation
+  - hidden_recovery_from_damaged_branch
+  - treating_chat_yaml_as_accepted_git_state
+allowed_recovery_modes:
+  - create_repair_branch_from_last_known_good_checkpoint
+  - create_clean_branch_from_base_with_mistake_receipt_context
+  - cherry_pick_selected_reviewed_commits
+  - apply_reviewed_patch_file
+guard_verdicts:
+  allow_edit: isolated_non_protected_branch_with_receipt
+  read_only: protected_branch_or_unknown_branch_without_write_authority
+  patch_only: no_git_or_no_branch_proof_but_candidate_diff_allowed
+  blocked: unsafe_dirty_protected_checkout_or_missing_required_context
