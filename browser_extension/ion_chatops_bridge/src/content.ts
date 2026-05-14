@@ -5085,6 +5085,35 @@ function findChatGptSidebarToggleButton(): HTMLElement | null {
   return candidates.sort((a, b) => a.score - b.score || a.rect.left - b.rect.left || a.rect.top - b.rect.top)[0]?.button ?? null;
 }
 
+function activateNativeClickTarget(target: HTMLElement): void {
+  try {
+    target.focus({ preventScroll: true });
+  } catch (_error) {
+    // Focus is best-effort; ChatGPT still receives the synthetic click sequence.
+  }
+  const eventInit: MouseEventInit = {
+    bubbles: true,
+    cancelable: true,
+    composed: true,
+    view: window,
+  };
+  const pointerInit: PointerEventInit = {
+    ...eventInit,
+    pointerId: 1,
+    pointerType: "mouse",
+    isPrimary: true,
+  };
+  if (typeof PointerEvent === "function") {
+    target.dispatchEvent(new PointerEvent("pointerdown", pointerInit));
+  }
+  target.dispatchEvent(new MouseEvent("mousedown", eventInit));
+  if (typeof PointerEvent === "function") {
+    target.dispatchEvent(new PointerEvent("pointerup", pointerInit));
+  }
+  target.dispatchEvent(new MouseEvent("mouseup", eventInit));
+  target.dispatchEvent(new MouseEvent("click", eventInit));
+}
+
 function scheduleNativeLeftSync(): void {
   window.setTimeout(() => syncNativeLeftIntegration(), 120);
   window.setTimeout(() => syncNativeLeftIntegration(), 360);
@@ -5095,8 +5124,15 @@ function ensureChatGptLeftDrawerOpen(): void {
   if (findChatGptLeftDrawerHost()) return;
   const toggle = findChatGptSidebarToggleButton();
   if (!toggle) return;
-  toggle.click();
+  activateNativeClickTarget(toggle);
   scheduleNativeLeftSync();
+  window.setTimeout(() => {
+    if (findChatGptLeftDrawerHost()) return;
+    const retryToggle = findChatGptSidebarToggleButton();
+    if (!retryToggle || retryToggle.getAttribute("aria-expanded") === "true") return;
+    activateNativeClickTarget(retryToggle);
+    scheduleNativeLeftSync();
+  }, 260);
 }
 
 function findChatGptSidebarMinimizeButton(): HTMLElement | null {
@@ -5151,7 +5187,7 @@ function minimizeChatGptLeftDrawer(): void {
   const fallbackToggle = findChatGptSidebarToggleButton();
   const target = minimizeButton ?? fallbackToggle;
   if (!target) return;
-  target.click();
+  activateNativeClickTarget(target);
   scheduleNativeLeftSync();
 }
 
