@@ -28,21 +28,36 @@ def load_capsule(path: Path) -> Dict[str, Any]:
     return data
 
 
+def capsule_identifier(data: Dict[str, Any], path: Path) -> str:
+    """Support v4.7 folder capsules and newer branch-context capsules."""
+    return data.get("capsule_id") or data.get("branch_id") or path.parent.name
+
+
+def capsule_folder(data: Dict[str, Any], path: Path, root: Path) -> str:
+    folder = data.get("folder")
+    if folder:
+        return folder
+    explicit_path = data.get("path")
+    if explicit_path and explicit_path != ".":
+        return explicit_path
+    return rel(path.parent, root)
+
+
 def discover_capsules(root: Path) -> List[Dict[str, Any]]:
     root = root.resolve()
     results: List[Dict[str, Any]] = []
     for path in sorted(root.rglob("ION_CONTEXT_CAPSULE.yaml")):
         data = load_capsule(path)
-        folder = data.get("folder") or rel(path.parent, root)
+        folder = capsule_folder(data, path, root)
         results.append({
-            "capsule_id": data.get("capsule_id", path.parent.name),
+            "capsule_id": capsule_identifier(data, path),
             "folder": folder,
             "path": rel(path, root),
             "sha256": sha256_file(path),
             "status": data.get("status", "unknown"),
-            "domain_label": (data.get("identity") or {}).get("domain_label", path.parent.name),
+            "domain_label": (data.get("identity") or {}).get("domain_label") or data.get("branch_label") or path.parent.name,
             "authority": data.get("authority", {}),
-            "read_first": data.get("read_first", []),
+            "read_first": data.get("read_first") or data.get("read_order", []),
             "continuity_export": data.get("continuity_export", {}),
         })
     return results

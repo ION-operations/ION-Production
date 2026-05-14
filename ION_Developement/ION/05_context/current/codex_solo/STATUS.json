@@ -14,19 +14,12 @@
   },
   "capsule": {
     "context_line_limit": 80,
-    "entry_count": 110,
+    "entry_count": 111,
     "findings": [],
     "minimum_context": true,
     "ok": true,
     "path": "ION/05_context/current/codex_solo/CAPSULE.md",
     "recent_rows": [
-      {
-        "date": "2026-05-14",
-        "evidence": "ION/05_context/current/chatgpt_connector/task_returns/2026-05-14T034535Z0000_task_return.json, ION/05_context/current/worker_cockpit/settlement/worker_cockpit_joc_live_ui_upgrade_settlement_20260514.json, ION/05_context/current/worker_cockpit/settlement/worker_cockpit_settlement_capture_receipt_20260514T034227Z.json, ION/05_context/current/worker_cockpit/settlement/worker_cockpit_return_intake_note_20260514T131236Z.json",
-        "id": "C-106",
-        "status": "COMPLETE",
-        "summary": "Validated worker cockpit settlement artifacts and captured return-intake note for operator continuation"
-      },
       {
         "date": "2026-05-14",
         "evidence": "ION/05_context/current/worker_cockpit/settlement/worker_cockpit_post_approval_local_validation_handoff_20260514.md",
@@ -54,11 +47,17 @@
         "id": "C-110",
         "status": "IMPLEMENTED",
         "summary": "Added governed Needs_Routed intake classifier and synced browser extension native-left source rail; committed scoped source lanes while leaving runtime queues and candidate backlog uncommitted."
+      },
+      {
+        "date": "2026-05-14",
+        "evidence": "../ION_GPT/99_WORKER_DETAILS/gpt_upload_set_worker_details/UPLOAD_SET_MANIFEST.yaml, ../ION_GPT/99_WORKER_DETAILS/gpt_upload_set_worker_details/CURRENT_UPLOAD_FILES.md, ../Needs_Routed/ion_gpt_current_upload_set_refresh_20260514T161231Z.yaml, ../ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tools/ion_context_mesh_builder.py",
+        "id": "C-111",
+        "status": "CANDIDATE_PACKAGE_REFRESHED_TESTED",
+        "summary": "Refreshed current ION_GPT 10-file upload set to 20260514T161231Z and repaired v4.7 context mesh builder compatibility with branch-context capsules."
       }
     ],
     "role": "minimum_working_context",
     "tail": [
-      "| C-097 | 2026-05-13 | Implemented candidate bounded kernel fanout scheduler plan compiler with conflict/dependency/model-routing tests. | `ION/04_packages/kernel/ion_kernel_fanout_plan.py, ION/tests/test_kernel_ion_kernel_fanout_plan.py, ION/05_context/current/kernel_fanout_scheduler/README.md, ION/05_context/current/kernel_fanout_scheduler/MANIFEST.json` | CANDIDATE_IMPLEMENTED_TESTED |",
       "| C-098 | 2026-05-14 | Implemented bounded no-op kernel fanout parallel smoke harness with tests and smoke artifact. | `ION/04_packages/kernel/ion_kernel_fanout_smoke_noop.py, ION/tests/test_kernel_ion_kernel_fanout_smoke_noop.py, ION/05_context/current/kernel_fanout_scheduler/smoke_runs/fanout_noop_smoke_result_20260514.json` | CANDIDATE_IMPLEMENTED_TESTED |",
       "| C-099 | 2026-05-14 | Implemented bounded true-parallel kernel fanout smoke harness with runtime caps, local no-op process concurrency, lock/dependency gates, receipts, tests, and candidate artifact. | `ION/04_packages/kernel/ion_kernel_fanout_true_parallel_smoke.py, ION/tests/test_kernel_ion_kernel_fanout_true_parallel_smoke.py, ION/05_context/current/kernel_fanout_scheduler/README.md, ION/05_context/current/kernel_fanout_scheduler/MANIFEST.json, ION/05_context/current/kernel_fanout_scheduler/true_parallel_smoke_runs/fanout_true_parallel_smoke_result_20260514.json` | CANDIDATE_IMPLEMENTED_TESTED |",
       "| C-100 | 2026-05-14 | Implemented carrier-facing bounded fanout dry-run harness with success/timeout/conflict scenarios, no-queue-mutation proof, tests, and artifacts. | `ION/04_packages/kernel/ion_kernel_fanout_carrier_dryrun.py, ION/tests/test_kernel_ion_kernel_fanout_carrier_dryrun.py, ION/05_context/current/kernel_fanout_scheduler/carrier_dryrun/fanout_carrier_dryrun_result_20260514.json` | CANDIDATE_IMPLEMENTED_TESTED |",
@@ -71,7 +70,8 @@
       "| C-107 | 2026-05-14 | Validated post-approval local worker cockpit state and issued reload/retest handoff | `ION/05_context/current/worker_cockpit/settlement/worker_cockpit_post_approval_local_validation_handoff_20260514.md` | IMPLEMENTED |",
       "| C-108 | 2026-05-14 | Repaired parent Codex startup bridge to active ION_Developement root, committed native-left browser bridge source lane, and added generated-evidence ignore boundaries while preserving runtime/state evidence locally. | `.codex/config.toml, .codex/hooks/ion_parent_session_start_context.py, ION/tests/test_codex_project_config_and_hook.py, browser_extension/ion_chatops_bridge/src/content.ts, .gitignore` | IMPLEMENTED |",
       "| C-109 | 2026-05-14 | Created external-safe worker cockpit reload/retest handoff artifacts after in-lane restart failure; no service restart attempted in this packet. | `ION/05_context/current/worker_cockpit/retest/WORKER_COCKPIT_EXTERNAL_RELOAD_HANDOFF_AND_POST_RELOAD_RETEST_20260514.md, ION/05_context/current/worker_cockpit/retest/worker_cockpit_post_reload_retest_capture_draft.sh, ION/05_context/current/worker_cockpit/retest/worker_cockpit_external_reload_handoff_receipt_20260514T145001Z.json` | IMPLEMENTED |",
-      "| C-110 | 2026-05-14 | Added governed Needs_Routed intake classifier and synced browser extension native-left source rail; committed scoped source lanes while leaving runtime queues and candidate backlog uncommitted. | `ION/02_architecture/ION_NEEDS_ROUTED_INTAKE_PROTOCOL.md, ION/04_packages/kernel/ion_needs_routed_intake.py, ION/tests/test_kernel_ion_needs_routed_intake.py, ../Needs_Routed/README.md, ../browser_extension/ion_chatops_bridge/src/content.ts` | IMPLEMENTED |"
+      "| C-110 | 2026-05-14 | Added governed Needs_Routed intake classifier and synced browser extension native-left source rail; committed scoped source lanes while leaving runtime queues and candidate backlog uncommitted. | `ION/02_architecture/ION_NEEDS_ROUTED_INTAKE_PROTOCOL.md, ION/04_packages/kernel/ion_needs_routed_intake.py, ION/tests/test_kernel_ion_needs_routed_intake.py, ../Needs_Routed/README.md, ../browser_extension/ion_chatops_bridge/src/content.ts` | IMPLEMENTED |",
+      "| C-111 | 2026-05-14 | Refreshed current ION_GPT 10-file upload set to 20260514T161231Z and repaired v4.7 context mesh builder compatibility with branch-context capsules. | `../ION_GPT/99_WORKER_DETAILS/gpt_upload_set_worker_details/UPLOAD_SET_MANIFEST.yaml, ../ION_GPT/99_WORKER_DETAILS/gpt_upload_set_worker_details/CURRENT_UPLOAD_FILES.md, ../Needs_Routed/ion_gpt_current_upload_set_refresh_20260514T161231Z.yaml, ../ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tools/ion_context_mesh_builder.py` | CANDIDATE_PACKAGE_REFRESHED_TESTED |"
     ]
   },
   "context_packages": {
@@ -109,7 +109,7 @@
           "ION/05_context/current/codex_solo/LONG_HORIZON.json"
         ],
         "window": {
-          "epoch_count": 11,
+          "epoch_count": 12,
           "epoch_size_rows": 10,
           "hot_context_recent_epochs": 6,
           "kind": "epoch_summary"
@@ -229,85 +229,17 @@
       "route_depth_package"
     ]
   },
-  "generated_at": "2026-05-14T15:41:07+00:00",
+  "generated_at": "2026-05-14T16:14:36+00:00",
   "hot_context": {
-    "bytes": 118318,
+    "bytes": 116228,
     "ok": true,
     "path": "ION/05_context/current/codex_solo/HOT_CONTEXT.md"
   },
   "live_execution_authority": false,
   "long_horizon": {
-    "capsule_entry_count": 110,
-    "epoch_count": 11,
+    "capsule_entry_count": 111,
+    "epoch_count": 12,
     "latest_epochs": [
-      {
-        "date_end": "2026-05-09",
-        "date_start": "2026-05-08",
-        "epoch_id": "E-006",
-        "evidence_refs": [
-          "ION/02_architecture/ION_CANDIDATE_DOMAIN_OPERATION_PROTOCOL.md",
-          "ION/05_context/current/ai_assistant_work/candidate_lifecycle/CANDIDATE_DOMAIN_LIFECYCLE_REGISTRY_V0_1.yaml",
-          "ION/04_packages/kernel/ion_assistant_work_route_compiler.py",
-          "ION/tests/test_kernel_ion_assistant_work_route_compiler.py",
-          "ION/05_context/current/ai_assistant_work/receipts/AI_ASSISTANT_WORK_CANDIDATE_DOMAIN_LIFECYCLE_IMPLEMENTATION_RECEIPT_20260508T185104Z.json",
-          "workpackets/README.md",
-          "workpackets/WORKPACKET_INDEX_20260508T190626Z.json",
-          "diffs/README.md",
-          "diffs/DIFF_INDEX_20260508T190626Z.json",
-          "ION_sandbox/README.md",
-          "ION_sandbox/ION_SANDBOX_INDEX_20260508T190626Z.json",
-          "ION/05_context/current/source_lanes/ION_ROOT_SOURCE_LANE_POLICY_20260508T190626Z.md",
-          "ION/05_context/current/source_lanes/receipts/ION_ROOT_SOURCE_LANE_FORMALIZATION_RECEIPT_20260508T190626Z.json",
-          "ION/06_intelligence/research/sandbox_agent_package_evolution/2026-05-08_ion_sandbox_github_release_strategy.md",
-          "ION/05_context/current/source_lanes/receipts/ION_SANDBOX_GITHUB_RELEASE_STRATEGY_RECEIPT_20260508T191612Z.json",
-          "ion-sandbox-gpt/RELEASE_MANIFEST.json",
-          "ion-sandbox-gpt/RELEASE_READINESS.md",
-          "ion-sandbox-gpt/VALIDATION_REPORT.json",
-          "ion-sandbox-gpt/ION/05_context/current/ACTIVE_WORK_PACKET.json",
-          "ion-sandbox-gpt/ION/tests/test_kernel_ion_stale_surface_audit.py"
-        ],
-        "row_count": 10,
-        "row_end": "C-057",
-        "row_start": "C-048",
-        "status_counts": {
-          "IMPLEMENTED": 6,
-          "PLANNED": 1,
-          "PUBLISHED": 2,
-          "RECOVERED": 1
-        },
-        "summaries": [
-          {
-            "date": "2026-05-08",
-            "id": "C-053",
-            "status": "PUBLISHED",
-            "summary": "Published feature/codex-capsule-chat-active-root with active-root Codex Capsule Chat, Mini/Capsule context system, chat engine, response carrier, JOC-style shell modules, model mov"
-          },
-          {
-            "date": "2026-05-09",
-            "id": "C-054",
-            "status": "RECOVERED",
-            "summary": "Recovered lost Codex CLI terminal session and verified final pushed branch state"
-          },
-          {
-            "date": "2026-05-09",
-            "id": "C-055",
-            "status": "IMPLEMENTED",
-            "summary": "Exposed bounded codex-runner reconcile and capsule chat MCP bridge tools with focused tests."
-          },
-          {
-            "date": "2026-05-09",
-            "id": "C-056",
-            "status": "IMPLEMENTED",
-            "summary": "Implemented bounded Codex worker live telemetry surface with safe preview gating and tests."
-          },
-          {
-            "date": "2026-05-09",
-            "id": "C-057",
-            "status": "IMPLEMENTED",
-            "summary": "Built Custom GPT carrier package v2.6.7 candidate with Codex Capsule/queue relay docs, dAimon doctrine updates, and validated zip/test receipt."
-          }
-        ]
-      },
       {
         "date_end": "2026-05-10",
         "date_start": "2026-05-09",
@@ -648,6 +580,31 @@
             "summary": "Added governed Needs_Routed intake classifier and synced browser extension native-left source rail; committed scoped source lanes while leaving runtime queues and candidate backlog"
           }
         ]
+      },
+      {
+        "date_end": "2026-05-14",
+        "date_start": "2026-05-14",
+        "epoch_id": "E-012",
+        "evidence_refs": [
+          "../ION_GPT/99_WORKER_DETAILS/gpt_upload_set_worker_details/UPLOAD_SET_MANIFEST.yaml",
+          "../ION_GPT/99_WORKER_DETAILS/gpt_upload_set_worker_details/CURRENT_UPLOAD_FILES.md",
+          "../Needs_Routed/ion_gpt_current_upload_set_refresh_20260514T161231Z.yaml",
+          "../ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tools/ion_context_mesh_builder.py"
+        ],
+        "row_count": 1,
+        "row_end": "C-111",
+        "row_start": "C-111",
+        "status_counts": {
+          "CANDIDATE_PACKAGE_REFRESHED_TESTED": 1
+        },
+        "summaries": [
+          {
+            "date": "2026-05-14",
+            "id": "C-111",
+            "status": "CANDIDATE_PACKAGE_REFRESHED_TESTED",
+            "summary": "Refreshed current ION_GPT 10-file upload set to 20260514T161231Z and repaired v4.7 context mesh builder compatibility with branch-context capsules."
+          }
+        ]
       }
     ],
     "path": "ION/05_context/current/codex_solo/LONG_HORIZON.json"
@@ -658,7 +615,7 @@
     "max_lines": 30,
     "ok": true,
     "role": "lookup_receipt_index_for_capsule_history",
-    "text": "CODEX SOLO MINI INDEX | 2026-05-14T15:41:07+00:00\n\nROLE: lookup/receipt index; Capsule is the minimum working context.\nACTIVE_CAPSULE: ION/05_context/current/codex_solo/CAPSULE.md\nHOT_CONTEXT: ION/05_context/current/codex_solo/HOT_CONTEXT.md\nLONG_HORIZON: ION/05_context/current/codex_solo/LONG_HORIZON.json\nPACKAGES: ION/05_context/current/codex_solo/CONTEXT_PACKAGES.json\nHISTORY: ION/05_context/current/codex_solo/history\n\nMISSION: dirty_tree_cleanup_and_needs_routed_intake\nPHASE: codex_solo_work\nLAST_RECEIPT: Added governed Needs_Routed intake classifier and synced browser extension native-left source rail; committed scoped source lanes while leaving runtime queues and candidate backlog\nBLOCKER: Runtime/current queue state and untracked Needs_Routed candidate artifacts remain intentionally dirty.\nNEXT: Use Needs_Routed intake routing to review backlog in scoped packets; keep runtime queue/state files separate unless settlement explicitly requires them.\n\nACTIVE_TEMPLATE: CODEX_SOLO_WORK_UNIT\n\nCAPSULE_LOOKUP:\n- C-106 2026-05-14 COMPLETE: Validated worker cockpit settlement artifacts and captured return-intake note for operator continuation\n- C-107 2026-05-14 IMPLEMENTED: Validated post-approval local worker cockpit state and issued reload/retest handoff\n- C-108 2026-05-14 IMPLEMENTED: Repaired parent Codex startup bridge to active ION_Developement root, committed native-left browser bridge sou\n- C-109 2026-05-14 IMPLEMENTED: Created external-safe worker cockpit reload/retest handoff artifacts after in-lane restart failure; no service\n- C-110 2026-05-14 IMPLEMENTED: Added governed Needs_Routed intake classifier and synced browser extension native-left source rail; committed \n\nROUTE_INDEX: ION/05_context/current/codex_solo/ROUTE.json validates active refs.\nPOLICY: Capsule is the minimum working context. Mini is a lookup/receipt index for capsule history. Neither overrides current repo authority, tests, receipts, or explicit operator instructions.\n"
+    "text": "CODEX SOLO MINI INDEX | 2026-05-14T16:14:36+00:00\n\nROLE: lookup/receipt index; Capsule is the minimum working context.\nACTIVE_CAPSULE: ION/05_context/current/codex_solo/CAPSULE.md\nHOT_CONTEXT: ION/05_context/current/codex_solo/HOT_CONTEXT.md\nLONG_HORIZON: ION/05_context/current/codex_solo/LONG_HORIZON.json\nPACKAGES: ION/05_context/current/codex_solo/CONTEXT_PACKAGES.json\nHISTORY: ION/05_context/current/codex_solo/history\n\nMISSION: dirty_tree_cleanup_and_needs_routed_intake\nPHASE: ion_gpt_upload_set_refresh\nLAST_RECEIPT: Refreshed current ION_GPT 10-file upload set to 20260514T161231Z and repaired v4.7 context mesh builder compatibility with branch-context capsules.\nBLOCKER: Workspace still contains runtime/current state files, untracked Needs_Routed backlog, root generated zip exports, and separate browser extension source edits.\nNEXT: Commit scoped ION_GPT package manifest and mesh compatibility fix if accepted; keep runtime/current queues and unrelated browser extension dirt separate.\n\nACTIVE_TEMPLATE: CODEX_SOLO_WORK_UNIT\n\nCAPSULE_LOOKUP:\n- C-107 2026-05-14 IMPLEMENTED: Validated post-approval local worker cockpit state and issued reload/retest handoff\n- C-108 2026-05-14 IMPLEMENTED: Repaired parent Codex startup bridge to active ION_Developement root, committed native-left browser bridge sou\n- C-109 2026-05-14 IMPLEMENTED: Created external-safe worker cockpit reload/retest handoff artifacts after in-lane restart failure; no service\n- C-110 2026-05-14 IMPLEMENTED: Added governed Needs_Routed intake classifier and synced browser extension native-left source rail; committed \n- C-111 2026-05-14 CANDIDATE_PACKAGE_REFRESHED_TEST: Refreshed current ION_GPT 10-file upload set to 20260514T161231Z and repaired v4.7 context mesh builder compat\n\nROUTE_INDEX: ION/05_context/current/codex_solo/ROUTE.json validates active refs.\nPOLICY: Capsule is the minimum working context. Mini is a lookup/receipt index for capsule history. Neither overrides current repo authority, tests, receipts, or explicit operator instructions.\n"
   },
   "ok": true,
   "paths": {
@@ -682,36 +639,36 @@
   "route": {
     "entries": [
       {
-        "bytes": 62879,
+        "bytes": 63441,
         "classification": "codex_solo_minimum_working_context",
         "exists": true,
         "is_file": true,
         "path": "ION/05_context/current/codex_solo/CAPSULE.md",
         "repo_relative": true,
         "required": true,
-        "sha256": "7e1b55196b9676abfbd381f1a160f05142c568a33a43d695af771660d6935d9a",
+        "sha256": "c65f3953e59451b453e836f54bfcd45d2985034bbe4ad564a083cff5d67fdc7c",
         "why": "Minimum context the standalone Codex lane must always carry."
       },
       {
-        "bytes": 1977,
+        "bytes": 2043,
         "classification": "codex_solo_lookup_receipt_index",
         "exists": true,
         "is_file": true,
         "path": "ION/05_context/current/codex_solo/MINI.md",
         "repo_relative": true,
         "required": true,
-        "sha256": "cf05ab5ce1b8cf2c311efbadc129a3d7244fd3d1be0eec67a9e7716329ac7dc8",
+        "sha256": "b3e3649ef289ec80a70a78fabba7692b25f768f4247776588b3b57a06e65e6a4",
         "why": "Lookup index and receipt summary for capsule history."
       },
       {
-        "bytes": 59986,
+        "bytes": 58879,
         "classification": "codex_solo_long_horizon_index",
         "exists": true,
         "is_file": true,
         "path": "ION/05_context/current/codex_solo/LONG_HORIZON.json",
         "repo_relative": true,
         "required": true,
-        "sha256": "9aad572993b8e16ad195841dc6a294f87cfd95b5c08a9c7f425578ef48c662ac",
+        "sha256": "6feee6cc0ed25da85141bc3610f62032b8cef9183995fb8aec47d14012e05116",
         "why": "Compressed long-horizon capsule index for older continuity lookup."
       },
       {

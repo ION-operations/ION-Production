@@ -1,0 +1,132 @@
+schema_id: ion.gpt.current_upload_set_refresh.v1
+created_at_utc: 20260514T161231Z
+posture: sandbox-candidate
+accepted_state_claim: false
+production_authority: false
+live_execution_authority: false
+git_push: false
+gpt_builder_updated: false
+objective: refresh current ION_GPT upload package zips and worker manifests from current local worktree
+source_summary: ION_EXPORTS_LOCAL/custom_gpt_upload_set/UPLOAD_SET_SUMMARY_20260514T161231Z.json
+upload_folder: ION_GPT/02_PACKAGES_TO_UPLOAD/UPLOAD_THESE_ZIPS
+previous_upload_set_archived_to: ION_GPT/90_HISTORICAL_ZIPS/previous_upload_set_20260514T160823Z
+intermediate_receipt_archived_to: Needs_Routed/history/ion_gpt_current_upload_set_refresh_20260514T160823Z.yaml
+current_upload_set_timestamp: 20260514T161231Z
+current_upload_file_count: 10
+current_worktree_note: packages were built from the current local worktree, including tracked and untracked readable files that pass package excludes
+compatibility_note: v4.7 context mesh builder now accepts newer branch-context ION_CONTEXT_CAPSULE.yaml branch_id fields
+excludes: .git, .env*, node_modules, caches, build/dist outputs, ION_EXPORTS_LOCAL, ION_VAULT_LOCAL, zip files, key/cert/db/log/temp patterns
+packages:
+- package: ion_custom_gpt_sandbox_carrier_package
+  file: ION_CUSTOM_GPT_SANDBOX_CARRIER_PACKAGE_20260514T161231Z.zip
+  mb: 0.18
+  sha256: 0772ac40cc60196a55c08b33a513d858e7a584b82fefb9c68b8aa05100ec0289
+  within_gpt_512mb_limit: true
+- package: full_workspace_snapshot
+  file: ION_PRODUCTION_WORKSPACE_SNAPSHOT_20260514T161231Z.zip
+  mb: 133.66
+  sha256: 69aa14f190efa9536b1e911699ee5d698f91b194dc43396930d7d398f77a8ea5
+  within_gpt_512mb_limit: true
+- package: ion_development_core_source
+  file: ION_DEVELOPMENT_CORE_SOURCE_20260514T161231Z.zip
+  mb: 29.04
+  sha256: c90b8f7bd360ba2de23de0599f3c0999c199e57b90f0c737948599ded68d0b03
+  within_gpt_512mb_limit: true
+- package: ion_gpt_action_release_and_builder_inputs
+  file: ION_GPT_ACTION_RELEASE_AND_BUILDER_INPUTS_20260514T161231Z.zip
+  mb: 0.2
+  sha256: 3e85676678f274076943847d1fa09d072599c290dcd12d8265a0bb4c72f56980
+  within_gpt_512mb_limit: true
+- package: daimon_workspace_context
+  file: DAIMON_WORKSPACE_CONTEXT_20260514T161231Z.zip
+  mb: 0.23
+  sha256: a5959ffabe3aefcfafdf207c87c3e5c1f879b067519d7f147a5af26e21ce47f1
+  within_gpt_512mb_limit: true
+- package: browser_extension_context
+  file: BROWSER_EXTENSION_CONTEXT_20260514T161231Z.zip
+  mb: 0.16
+  sha256: 2859605647c5b598d3ce3a7d0e82f92625e8226aa44ed2dde3256d84932fa80c
+  within_gpt_512mb_limit: true
+- package: ui_canon_and_joc_context
+  file: UI_CANON_AND_JOC_CONTEXT_20260514T161231Z.zip
+  mb: 0.46
+  sha256: 42b81a6fd919be4d8ca6f9076bb081572c849dff5f2e496ad916834454d65ae9
+  within_gpt_512mb_limit: true
+- package: aimos_atlas_wisdomnet_context
+  file: AIMOS_ATLAS_WISDOMNET_CONTEXT_20260514T161231Z.zip
+  mb: 100.06
+  sha256: d89add4b4a6e5d796fe32e3a5e49b47ebbc6c34df0a0afe2ca69155f3b890dd2
+  within_gpt_512mb_limit: true
+- package: ion_research_and_doctrine_context
+  file: ION_RESEARCH_AND_DOCTRINE_CONTEXT_20260514T161231Z.zip
+  mb: 10.63
+  sha256: ef265f0a8cb798e3f1604e7c63ff38c677791f7e5c79ac76621240b51e84362d
+  within_gpt_512mb_limit: true
+- package: ion_latest_status_and_receipts
+  file: ION_LATEST_STATUS_AND_RECEIPTS_20260514T161231Z.zip
+  mb: 1.02
+  sha256: 6df26c0b30599209266ad1411a3396ab0714239369520530445b63a027513ccb
+  within_gpt_512mb_limit: true
+dirty_workspace_summary:
+  - " M ION_Developement/ION/05_context/current/ACTIVE_CHATGPT_CONNECTOR_CODEX_WORK_QUEUE.json"
+  - " M ION_Developement/ION/05_context/current/ACTIVE_CODEX_CAPSULE_CHAT_MODEL.json"
+  - " M ION_Developement/ION/05_context/current/ACTIVE_OPERATOR_MESSAGE_QUEUE.json"
+  - " M ION_Developement/ION/05_context/current/chatgpt_connector/runtime/bounded_patch_apply_idempotency_ledger.json"
+  - " M ION_Developement/ION/05_context/current/chatgpt_connector/runtime/codex_queue_runner_state.json"
+  - " M ION_Developement/ION/05_context/current/codex_capsule_chat/state.json"
+  - " M ION_GPT/99_WORKER_DETAILS/gpt_upload_set_worker_details/CURRENT_UPLOAD_FILES.json"
+  - " M ION_GPT/99_WORKER_DETAILS/gpt_upload_set_worker_details/CURRENT_UPLOAD_FILES.md"
+  - " M ION_GPT/99_WORKER_DETAILS/gpt_upload_set_worker_details/UPLOAD_SET_MANIFEST.yaml"
+  - " M ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tests/test_v4_7_context_mesh_builder_candidate.py"
+  - " M ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tools/ion_context_mesh_builder.py"
+  - " M browser_extension/ion_chatops_bridge/src/approval_ui.ts"
+  - " M browser_extension/ion_chatops_bridge/src/content.ts"
+  - "?? ION_Developement.zip"
+  - "?? Needs_Routed.zip"
+  - "?? Needs_Routed/ION_BROWSER_EXTENSION_TAG_CONTRACT_20260514T032414Z.yaml"
+  - "?? Needs_Routed/ION_CHATOPS_BRIDGE_TAG_RECEIPT_PATCH_20260514T033837Z.zip"
+  - "?? Needs_Routed/ION_CHAT_CONTEXT_PACKAGE_20260514.zip"
+  - "?? Needs_Routed/ION_CODEX_QUEUE_START_NO_RECEIPT_CANDIDATE_PATCH_20260513T204056Z.diff"
+  - "?? Needs_Routed/ION_CODEX_SOLO_START_NO_RECEIPT_VALIDATION_REPORT_20260513T204125Z.json"
+  - "?? Needs_Routed/ION_CODEX_SOLO_START_NO_RECEIPT_VALIDATION_REPORT_20260513T204125Z.md"
+  - "?? Needs_Routed/ION_CUSTOM_GPT_CUMULATIVE_SINGLE_DIFF_RELEASE_CANDIDATE_20260513T193224Z.zip"
+  - "?? Needs_Routed/ION_CUSTOM_GPT_FRONT_DOOR_CARRIER_PRODUCT_CONTRACT_REPAIR_CANDIDATE_20260513T175345Z.zip"
+  - "?? Needs_Routed/ION_CUSTOM_GPT_V4_6_SANDBOX_EVOLUTION_CANDIDATE_20260513T214500Z.zip"
+  - "?? Needs_Routed/ION_CUSTOM_GPT_V4_7_DOGFOOD_CONTEXT_PACKAGE_BUILD_20260513T221500Z.zip"
+  - "?? Needs_Routed/ION_EXTENSION_TAG_RECEIPT_PATCH_20260514T033837Z.diff"
+  - "?? Needs_Routed/ION_PERSONA_BOOT_OUTPUT_REDESIGN_PACKET_20260514T031055Z.yaml"
+  - "?? Needs_Routed/ION_README_BRANCH_CONTEXT_PROTOCOL_V0_2_PACKAGE_20260514T141840Z.zip"
+  - "?? \"Needs_Routed/ION_RETURN_CONTRACT_QUEUE_HYGIENE_CONTEXT_BUNDLE_20260513 (1).zip\""
+  - "?? Needs_Routed/ION_RETURN_CONTRACT_QUEUE_HYGIENE_CONTEXT_BUNDLE_20260513.zip"
+  - "?? Needs_Routed/current_branch_before_v4_7_reconcile_20260514T004206Z.txt"
+  - "?? Needs_Routed/current_diff_stat_before_v4_7_reconcile_20260514T004206Z.txt"
+  - "?? Needs_Routed/current_dirty_branch_before_v4_7_reconcile_20260514T004206Z.patch"
+  - "?? Needs_Routed/current_staged_before_v4_7_reconcile_20260514T004206Z.patch"
+  - "?? Needs_Routed/current_status_before_v4_7_reconcile_20260514T004206Z.txt"
+  - "?? Needs_Routed/current_untracked_before_v4_7_reconcile_20260514T004206Z.txt"
+  - "?? Needs_Routed/current_untracked_status_before_v4_7_reconcile_20260514T004206Z.txt"
+  - "?? Needs_Routed/custom_gpt_mount/"
+  - "?? Needs_Routed/history/ion_gpt_current_upload_set_refresh_20260514T160823Z.yaml"
+  - "?? Needs_Routed/ion_custom_gpt_v4_6_sandbox_evolution_20260513T214500Z.patch"
+  - "?? Needs_Routed/ion_custom_gpt_v4_7_dogfood_context_packages_20260513T221500Z.patch"
+  - "?? Needs_Routed/ion_front_door_carrier_persona_return_package_20260513T175345Z.yaml"
+  - "?? Needs_Routed/ion_front_door_carrier_product_contract_diff_20260513T175345Z.md"
+  - "?? Needs_Routed/ion_front_door_carrier_product_contract_packet_20260513T175345Z.yaml"
+  - "?? Needs_Routed/ion_wide_architecture_signal_baton_commit_proposal_20260514T024231Z.files.txt"
+  - "?? Needs_Routed/ion_wide_architecture_signal_baton_commit_proposal_20260514T024231Z.patch"
+  - "?? Needs_Routed/scoped_v4_7_reconciliation_commit_proposal_20260514T005438Z.files.txt"
+  - "?? Needs_Routed/scoped_v4_7_reconciliation_commit_proposal_20260514T005438Z.patch"
+  - "?? browser_extension.zip"
+validation:
+  custom_gpt_carrier_tests: 55 passed before package rebuild after mesh compatibility fix
+  py_compile: ion_context_mesh_builder.py and ion_custom_gpt_upload_set_builder.py passed
+  post_rebuild_manifest_parse: pass
+  post_rebuild_zip_integrity: pass
+  scoped_diff_check: pass
+non_claims:
+  - no accepted state claimed
+  - no GPT Builder update performed
+  - no git push
+  - no deployment
+  - no service restart
+  - no live connector mutation

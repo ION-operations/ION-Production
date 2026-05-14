@@ -21,7 +21,8 @@ def test_context_mesh_discovers_root_and_carrier_capsules():
     tool = load_tool("ion_context_mesh_builder")
     mesh = tool.build_context_mesh(ROOT)
     ids = {c["capsule_id"] for c in mesh["capsules"]}
-    assert "ion.folder.root.ion_gpt_candidate_workspace" in ids
+    assert ids & {"ion_production_workspace_root", "ion.folder.root.ion_gpt_candidate_workspace"}
+    assert "ION - Production" not in ids
     assert "ion.folder.ion_gpt" in ids
     assert "ion.folder.ion_gpt.custom_gpt_sandbox_carrier" in ids
     assert mesh["authority"]["accepted_state_claim"] is False
