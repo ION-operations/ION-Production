@@ -43,6 +43,10 @@ const CHATGPT_LEFT_ICON_DOCK_ID = "ion-chatgpt-left-icon-dock";
 const CHATGPT_LEFT_ICON_DOCK_STYLE_ID = "ion-chatgpt-left-icon-dock-style";
 const CHATGPT_LEFT_ICON_DOCK_CLASS = "ion-chatgpt-left-icon-dock-bottom-half";
 const CHATGPT_LEFT_ICON_DOCK_STORAGE_KEY = "ION_CHATOPS_LEFT_DOCK_PROJECT_PANEL_EXPANDED";
+const CHATGPT_NATIVE_LEFT_STYLE_ID = "ion-chatgpt-native-left-style";
+const CHATGPT_NATIVE_LEFT_RAIL_ID = "ion-chatgpt-native-left-rail";
+const CHATGPT_NATIVE_LEFT_DRAWER_ID = "ion-chatgpt-native-left-drawer";
+const CHATGPT_NATIVE_LEFT_CLASS = "ion-chatgpt-native-left-control";
 const MESSAGE_QUEUE_BUTTON_ID = "ion-chatops-message-queue-button";
 const MESSAGE_QUEUE_SEND_NEXT_BUTTON_ID = "ion-chatops-message-queue-send-next-button";
 const MESSAGE_QUEUE_PANEL_ID = "ion-chatops-message-queue-float";
@@ -209,6 +213,7 @@ type ScanMode = "auto" | "manual";
 
 type InspectorSaveTarget = "tabs_anchor" | "drop_zone" | "attach_target";
 type AnchorPoint = "top" | "left" | "center" | "right" | "bottom";
+type NativeLeftMode = "queue" | "projects" | "agent" | "context";
 type TargetMetaInfo = {
   selector: string;
   anchor: AnchorPoint;
@@ -306,6 +311,8 @@ let inspectorSelectedIndex = 0;
 let settingsInspectorTarget: InspectorSaveTarget = "tabs_anchor";
 let settingsAnchorPoint: AnchorPoint = "bottom";
 let contextWorkflowAutoSyncTimer: number | null = null;
+let bridgeLayoutRefreshTimer: number | null = null;
+let nativeLeftMode: NativeLeftMode = "queue";
 const defaultDocsState: DocsBrowseState = {
   roots: DOCS_FAVORITE_ROOTS.map((entry) => entry.path),
   currentRoot: "",
@@ -1541,6 +1548,9 @@ function shouldIgnoreScanNode(node: Element): boolean {
       node.closest(`#${MESSAGE_QUEUE_FILE_INPUT_ID}`) ??
       node.closest(`#${CHATGPT_LEFT_ICON_DOCK_ID}`) ??
       node.closest(`.${CHATGPT_LEFT_ICON_DOCK_CLASS}`) ??
+      node.closest(`#${CHATGPT_NATIVE_LEFT_RAIL_ID}`) ??
+      node.closest(`#${CHATGPT_NATIVE_LEFT_DRAWER_ID}`) ??
+      node.closest(`.${CHATGPT_NATIVE_LEFT_CLASS}`) ??
         node.closest(`.${ASSET_CAPTURE_BUTTON_CLASS}`) ??
         node.closest(`#${CAPTURE_FRAME_ID}`) ??
       node.closest("[data-message-author-role='user']") ??
@@ -2594,6 +2604,9 @@ function isBridgeElement(element: Element): boolean {
       element.closest(`.${ASSET_CAPTURE_BUTTON_CLASS}`) ??
       element.closest(`#${CHATGPT_LEFT_ICON_DOCK_ID}`) ??
       element.closest(`.${CHATGPT_LEFT_ICON_DOCK_CLASS}`) ??
+      element.closest(`#${CHATGPT_NATIVE_LEFT_RAIL_ID}`) ??
+      element.closest(`#${CHATGPT_NATIVE_LEFT_DRAWER_ID}`) ??
+      element.closest(`.${CHATGPT_NATIVE_LEFT_CLASS}`) ??
       element.closest(`#${CAPTURE_FRAME_ID}`) ??
       element.closest(`#${DOM_REGISTRY_STYLE_ID}`) ??
       element.closest(`#${DOM_REGISTRY_POPOVER_ID}`) ??
@@ -4607,6 +4620,556 @@ function ensureMessageQueueChromeStyle(): void {
   document.documentElement.appendChild(style);
 }
 
+function ensureNativeLeftStyle(): void {
+  if (document.getElementById(CHATGPT_NATIVE_LEFT_STYLE_ID)) return;
+  const style = document.createElement("style");
+  style.id = CHATGPT_NATIVE_LEFT_STYLE_ID;
+  style.textContent = `
+    #${CHATGPT_NATIVE_LEFT_RAIL_ID} {
+      box-sizing: border-box;
+      display: grid;
+      gap: 6px;
+      width: 38px;
+      max-width: 100%;
+      margin: 8px auto;
+      padding: 4px 0;
+      pointer-events: auto;
+    }
+    #${CHATGPT_NATIVE_LEFT_RAIL_ID}[data-visible="false"],
+    #${CHATGPT_NATIVE_LEFT_DRAWER_ID}[data-visible="false"] {
+      display: none;
+    }
+    #${CHATGPT_NATIVE_LEFT_RAIL_ID} .ion-native-left-button,
+    #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-button {
+      box-sizing: border-box;
+      min-width: 0;
+      border: 1px solid rgba(255,255,255,0.14);
+      background: rgba(255,255,255,0.06);
+      color: rgba(255,255,255,0.82);
+      cursor: pointer;
+      text-align: center;
+      white-space: nowrap;
+      pointer-events: auto;
+    }
+    #${CHATGPT_NATIVE_LEFT_RAIL_ID} .ion-native-left-button {
+      width: 34px;
+      height: 34px;
+      padding: 0;
+      border-radius: 10px;
+      font: 900 10px/32px ui-sans-serif, system-ui, sans-serif;
+    }
+    #${CHATGPT_NATIVE_LEFT_RAIL_ID} .ion-native-left-button[data-active="true"],
+    #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-button[data-active="true"],
+    #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-button[data-primary="true"] {
+      border-color: rgba(255,112,28,0.62);
+      background: rgba(255,112,28,0.15);
+      color: rgba(255,229,208,0.98);
+      box-shadow: 0 0 0 1px rgba(255,112,28,0.10), 0 8px 20px rgba(0,0,0,0.18);
+    }
+    #${CHATGPT_NATIVE_LEFT_RAIL_ID} .ion-native-left-button[data-disabled="true"],
+    #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-button[data-disabled="true"] {
+      opacity: 0.42;
+      cursor: default;
+      box-shadow: none;
+    }
+    #${CHATGPT_NATIVE_LEFT_DRAWER_ID} {
+      box-sizing: border-box;
+      flex: 0 0 auto;
+      display: grid;
+      gap: 8px;
+      max-height: min(46vh, 380px);
+      overflow: auto;
+      margin: 8px;
+      padding: 10px;
+      border: 1px solid rgba(255,112,28,0.28);
+      border-radius: 10px;
+      background: linear-gradient(180deg, rgba(1,12,20,0.96), rgba(0,0,0,0.92));
+      color: rgba(255,255,255,0.84);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 10px 24px rgba(0,0,0,0.22);
+      font: 11px/1.35 ui-sans-serif, system-ui, sans-serif;
+      scrollbar-width: thin;
+    }
+    #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-head {
+      display: grid;
+      grid-template-columns: 9px minmax(0, 1fr);
+      align-items: center;
+      gap: 7px;
+    }
+    #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: #facc15;
+      box-shadow: 0 0 0 2px rgba(255,255,255,0.10), 0 0 9px rgba(250,204,21,0.35);
+    }
+    #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-dot[data-tone="green"] {
+      background: #34d399;
+      box-shadow: 0 0 0 2px rgba(255,255,255,0.10), 0 0 9px rgba(52,211,153,0.42);
+    }
+    #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-dot[data-tone="red"] {
+      background: #fb7185;
+      box-shadow: 0 0 0 2px rgba(255,255,255,0.10), 0 0 9px rgba(251,113,133,0.42);
+    }
+    #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-title {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: rgba(209,250,229,0.96);
+      font: 900 10px/1.2 ui-sans-serif, system-ui, sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.01em;
+    }
+    #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-status {
+      color: rgba(255,229,208,0.86);
+      font-size: 10px;
+      line-height: 1.25;
+      overflow-wrap: anywhere;
+    }
+    #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-actions {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 5px;
+    }
+    #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-button {
+      height: 28px;
+      padding: 0 5px;
+      border-radius: 8px;
+      font: 900 10px/26px ui-sans-serif, system-ui, sans-serif;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-list {
+      display: grid;
+      gap: 5px;
+      min-width: 0;
+    }
+    #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-row {
+      display: grid;
+      grid-template-columns: 54px minmax(0, 1fr);
+      gap: 6px;
+      min-width: 0;
+      padding: 6px;
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 8px;
+      background: rgba(255,255,255,0.04);
+    }
+    #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-row[data-selected="true"] {
+      border-color: rgba(255,112,28,0.46);
+      background: rgba(255,112,28,0.10);
+    }
+    #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-row-main {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: rgba(255,255,255,0.86);
+      font-weight: 800;
+    }
+    #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-row-sub {
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: rgba(255,255,255,0.58);
+      font-size: 9px;
+    }
+    #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-empty {
+      padding: 7px;
+      border: 1px dashed rgba(209,250,229,0.28);
+      border-radius: 8px;
+      color: rgba(209,250,229,0.82);
+      text-align: center;
+      font-size: 10px;
+      line-height: 1.25;
+    }
+  `;
+  document.documentElement.appendChild(style);
+}
+
+function nativeLeftTone(): "green" | "yellow" | "red" {
+  if (messageQueueItems.some((item) => item.status === "failed") || messageQueuePaused || /blocked|failed|error/i.test(browserQueueGatewayStatus)) return "red";
+  if (messageQueueItems.some((item) => item.status !== "sent") || projectPackages.length) return "green";
+  return "yellow";
+}
+
+function nativeHostRect(element: Element): DOMRect | null {
+  if (!(element instanceof HTMLElement)) return null;
+  if (isBridgeElement(element)) return null;
+  const style = window.getComputedStyle(element);
+  if (style.display === "none" || style.visibility === "hidden" || Number(style.opacity) === 0) return null;
+  const rect = element.getBoundingClientRect();
+  if (rect.width < 20 || rect.height < 80 || rect.bottom <= 0 || rect.right <= 0) return null;
+  if (rect.top >= window.innerHeight || rect.left >= window.innerWidth) return null;
+  return rect;
+}
+
+function leftSurfaceCandidates(): Array<{ element: HTMLElement; rect: DOMRect }> {
+  const selectors = [
+    "nav",
+    "aside",
+    "[role='navigation']",
+    "[aria-label*='sidebar' i]",
+    "[aria-label*='side bar' i]",
+    "[data-testid*='sidebar' i]",
+    "[data-testid*='left' i]",
+    "[class*='sidebar' i]",
+    "[class*='side-bar' i]",
+  ];
+  const seenHosts = new Set<HTMLElement>();
+  const candidates: Array<{ element: HTMLElement; rect: DOMRect }> = [];
+  document.querySelectorAll<HTMLElement>(selectors.join(",")).forEach((element) => {
+    if (seenHosts.has(element)) return;
+    seenHosts.add(element);
+    const rect = nativeHostRect(element);
+    if (!rect) return;
+    if (rect.left > 32 || rect.top > 110 || rect.width > window.innerWidth * 0.74) return;
+    candidates.push({ element, rect });
+  });
+  return candidates;
+}
+
+function findChatGptLeftRailHost(): HTMLElement | null {
+  const candidates = leftSurfaceCandidates()
+    .filter(({ rect }) => rect.width >= 36 && rect.width <= 132 && rect.height >= 220 && rect.bottom > window.innerHeight * 0.45)
+    .sort((a, b) => a.rect.width - b.rect.width || a.rect.left - b.rect.left);
+  if (candidates[0]?.element) return candidates[0].element;
+  const toggle = findChatGptSidebarToggleButton();
+  return toggle?.closest<HTMLElement>("nav, aside, [role='navigation']") ?? null;
+}
+
+function findChatGptLeftDrawerHost(): HTMLElement | null {
+  const candidates = leftSurfaceCandidates()
+    .filter(({ rect }) => rect.width >= 168 && rect.height >= 260 && rect.right <= window.innerWidth * 0.78)
+    .sort((a, b) => b.rect.width - a.rect.width || a.rect.left - b.rect.left);
+  return candidates[0]?.element ?? null;
+}
+
+function findChatGptSidebarToggleButton(): HTMLElement | null {
+  const selectors = [
+    "button[aria-label*='sidebar' i]",
+    "button[aria-label*='side bar' i]",
+    "button[aria-label*='menu' i]",
+    "[role='button'][aria-label*='sidebar' i]",
+    "[role='button'][aria-label*='side bar' i]",
+  ];
+  const buttons = Array.from(document.querySelectorAll<HTMLElement>(selectors.join(",")));
+  return buttons.find((button) => {
+    if (isBridgeElement(button)) return false;
+    const rect = nativeHostRect(button);
+    return Boolean(rect && rect.left <= 130 && rect.top <= 96 && rect.width <= 64 && rect.height <= 64);
+  }) ?? null;
+}
+
+function scheduleNativeLeftSync(): void {
+  window.setTimeout(() => syncNativeLeftIntegration(), 120);
+  window.setTimeout(() => syncNativeLeftIntegration(), 360);
+  scheduleBridgeLayoutRefresh(180);
+}
+
+function ensureChatGptLeftDrawerOpen(): void {
+  if (findChatGptLeftDrawerHost()) return;
+  const toggle = findChatGptSidebarToggleButton();
+  if (!toggle) return;
+  toggle.click();
+  scheduleNativeLeftSync();
+}
+
+function nativeLeftButton(action: string, label: string, title: string, primary = false, disabled = false): HTMLButtonElement {
+  const button = document.createElement("button");
+  button.type = "button";
+  button.className = "ion-native-left-button";
+  button.dataset.nativeLeftAction = action;
+  button.dataset.primary = String(primary);
+  button.dataset.disabled = String(disabled);
+  button.disabled = disabled;
+  button.setAttribute("aria-disabled", String(disabled));
+  button.setAttribute("aria-label", title);
+  button.title = title;
+  button.textContent = label;
+  return button;
+}
+
+function handleNativeLeftAction(action: string, projectPath = ""): void {
+  if (!action) return;
+  if (action === "open-queue") {
+    nativeLeftMode = "queue";
+    ensureChatGptLeftDrawerOpen();
+  } else if (action === "open-projects") {
+    nativeLeftMode = "projects";
+    ensureChatGptLeftDrawerOpen();
+    if (!projectPackages.length) void requestProjectsRefresh();
+  } else if (action === "open-agent") {
+    nativeLeftMode = "agent";
+    ensureChatGptLeftDrawerOpen();
+    window.dispatchEvent(new CustomEvent("ion-chatops-bounded-agent-status"));
+  } else if (action === "open-context") {
+    nativeLeftMode = "context";
+    ensureChatGptLeftDrawerOpen();
+  } else if (action === "queue-send") {
+    if (!nextQueuedMessage()) publishMessageQueueState("Queue is empty.");
+    else void processMessageQueue("native-left", true);
+  } else if (action === "queue-pause") {
+    messageQueuePaused = !messageQueuePaused;
+    publishMessageQueueState(messageQueuePaused ? "Queue paused from ChatGPT drawer." : "Queue resumed from ChatGPT drawer.");
+  } else if (action === "queue-clear") {
+    messageQueueItems = [];
+    messageQueueFilePayloads.clear();
+    publishMessageQueueState("Queue cleared from ChatGPT drawer.");
+  } else if (action === "project-refresh") {
+    void requestProjectsRefresh();
+  } else if (action === "project-sync") {
+    const paths = projectPathsOrDefault(contextWorkflowSelectedPaths());
+    if (!paths.length) setBridgeProjectsState({ contextSyncStatus: "No project package selected for context sync." });
+    else requestProjectContextSync(paths);
+  } else if (action === "project-select") {
+    if (!projectPath) return;
+    const next = new Set(selectedProjectPackagePaths);
+    if (next.has(projectPath)) next.delete(projectPath);
+    else next.add(projectPath);
+    const selected = Array.from(next);
+    applyContextWorkflowSelectedPaths(selected.length ? selected : [projectPath]);
+  } else if (action === "context-pack") {
+    requestContextPack();
+  } else if (action === "context-sync") {
+    requestProjectContextSync(projectPathsOrDefault(contextWorkflowSelectedPaths()));
+  } else if (action === "import-pack") {
+    document.getElementById(CONTEXT_WORKFLOW_IMPORT_INPUT_ID)?.click();
+  } else if (action === "agent-status") {
+    window.dispatchEvent(new CustomEvent("ion-chatops-agent-status"));
+  } else if (action === "agent-preview") {
+    window.dispatchEvent(new CustomEvent("ion-chatops-agent-preview"));
+  } else if (action === "agent-receipts") {
+    window.dispatchEvent(new CustomEvent("ion-chatops-agent-receipts"));
+  } else if (action === "rescan-page") {
+    seen.clear();
+    scan("manual");
+  }
+  syncComposerQueueChrome();
+  syncContextWorkflowRail();
+  syncNativeLeftIntegration();
+}
+
+function renderNativeRailGroup(group: HTMLElement): void {
+  const queueCount = messageQueueItems.filter((item) => item.status === "queued" || item.status === "waiting" || item.status === "sending" || item.status === "failed").length;
+  group.dataset.visible = "true";
+  group.innerHTML = "";
+  const buttons = [
+    nativeLeftButton("open-queue", "Q", `ION queue${queueCount ? `: ${queueCount} waiting` : ""}`, true),
+    nativeLeftButton("open-projects", "P", "ION projects and context packages"),
+    nativeLeftButton("open-agent", "A", "ION bounded agent lane"),
+    nativeLeftButton("open-context", "C", "ION context sync and imports"),
+  ];
+  buttons.forEach((button) => {
+    const action = button.dataset.nativeLeftAction ?? "";
+    button.dataset.active = String(
+      (action === "open-queue" && nativeLeftMode === "queue") ||
+      (action === "open-projects" && nativeLeftMode === "projects") ||
+      (action === "open-agent" && nativeLeftMode === "agent") ||
+      (action === "open-context" && nativeLeftMode === "context"),
+    );
+    group.appendChild(button);
+  });
+}
+
+function ensureNativeRailGroup(): HTMLElement | null {
+  ensureNativeLeftStyle();
+  const host = findChatGptLeftRailHost();
+  const existing = document.getElementById(CHATGPT_NATIVE_LEFT_RAIL_ID) as HTMLElement | null;
+  if (!host) {
+    if (existing) existing.dataset.visible = "false";
+    return null;
+  }
+  let group = existing;
+  if (!group) {
+    group = document.createElement("div");
+    group.id = CHATGPT_NATIVE_LEFT_RAIL_ID;
+    group.className = CHATGPT_NATIVE_LEFT_CLASS;
+    group.addEventListener("click", (event) => {
+      const source = event.target instanceof Element ? event.target.closest<HTMLElement>("[data-native-left-action]") : null;
+      const action = source?.dataset.nativeLeftAction ?? "";
+      if (!action || source?.dataset.disabled === "true") return;
+      event.preventDefault();
+      event.stopPropagation();
+      handleNativeLeftAction(action);
+    });
+  }
+  if (group.parentElement !== host) host.appendChild(group);
+  renderNativeRailGroup(group);
+  return group;
+}
+
+function nativeDrawerTitle(): string {
+  if (nativeLeftMode === "projects") return "ION Projects";
+  if (nativeLeftMode === "agent") return "ION Agent Lane";
+  if (nativeLeftMode === "context") return "ION Context";
+  return "ION Queue";
+}
+
+function nativeDrawerRow(label: string, value: string, selected = false): HTMLElement {
+  const row = document.createElement("div");
+  row.className = "ion-native-left-row";
+  row.dataset.selected = String(selected);
+  const key = document.createElement("div");
+  key.className = "ion-native-left-row-sub";
+  key.textContent = label;
+  const main = document.createElement("div");
+  const valueNode = document.createElement("div");
+  valueNode.className = "ion-native-left-row-main";
+  valueNode.textContent = value;
+  main.appendChild(valueNode);
+  row.append(key, main);
+  return row;
+}
+
+function renderNativeQueueDrawer(panel: HTMLElement): void {
+  const list = document.createElement("div");
+  list.className = "ion-native-left-list";
+  const visible = visibleQueueItems().slice(0, 7);
+  if (!visible.length) {
+    const empty = document.createElement("div");
+    empty.className = "ion-native-left-empty";
+    empty.textContent = "Queue is empty. Use Q+ near the composer or import a workflow pack.";
+    list.appendChild(empty);
+  } else {
+    visible.forEach((item) => {
+      list.appendChild(nativeDrawerRow(item.status, item.text.replace(/\s+/g, " ").slice(0, 90), item.status === "sending"));
+    });
+  }
+  const actions = document.createElement("div");
+  actions.className = "ion-native-left-actions";
+  actions.append(
+    nativeLeftButton("queue-send", "Send", "Send next queued item", true, !nextQueuedMessage()),
+    nativeLeftButton("queue-pause", messageQueuePaused ? "Resume" : "Pause", messageQueuePaused ? "Resume queue" : "Pause queue"),
+    nativeLeftButton("queue-clear", "Clear", "Clear queued items"),
+    nativeLeftButton("rescan-page", "Scan", "Rescan page for ION actions"),
+  );
+  panel.append(actions, list);
+}
+
+function renderNativeProjectsDrawer(panel: HTMLElement): void {
+  const actions = document.createElement("div");
+  actions.className = "ion-native-left-actions";
+  actions.append(
+    nativeLeftButton("project-refresh", "Refresh", "Refresh ION project package list", true),
+    nativeLeftButton("project-sync", "Sync", "Build context sync ZIP for selected projects"),
+    nativeLeftButton("context-pack", "Pack", "Insert current ION context pack"),
+    nativeLeftButton("open-context", "Context", "Switch to context controls"),
+  );
+  const list = document.createElement("div");
+  list.className = "ion-native-left-list";
+  const selectedPaths = contextWorkflowSelectedPaths();
+  if (!projectPackages.length) {
+    const empty = document.createElement("div");
+    empty.className = "ion-native-left-empty";
+    empty.textContent = "No project packages loaded yet. Refresh to scan governed context roots.";
+    list.appendChild(empty);
+  } else {
+    projectPackages.slice(0, 10).forEach((pkg) => {
+      const row = nativeDrawerRow(pkg.project, `${pkg.version || "context package"} / ${pkg.kind}`, selectedPaths.includes(pkg.path));
+      row.dataset.nativeLeftAction = "project-select";
+      row.dataset.nativeLeftProjectPath = pkg.path;
+      row.title = pkg.path;
+      list.appendChild(row);
+    });
+  }
+  panel.append(actions, list);
+}
+
+function renderNativeAgentDrawer(panel: HTMLElement): void {
+  const actions = document.createElement("div");
+  actions.className = "ion-native-left-actions";
+  actions.append(
+    nativeLeftButton("agent-status", "Status", "Read Codex agent status", true),
+    nativeLeftButton("agent-preview", "Preview", "Preview next Codex request"),
+    nativeLeftButton("agent-receipts", "Receipts", "Read recent bounded agent receipts"),
+    nativeLeftButton("open-queue", "Queue", "Switch to queue controls"),
+  );
+  const list = document.createElement("div");
+  list.className = "ion-native-left-list";
+  list.append(
+    nativeDrawerRow("Gateway", browserQueueGatewayStatus.replace(/\s+/g, " ")),
+    nativeDrawerRow("Queue", queueStatus().replace(/\s+/g, " ")),
+    nativeDrawerRow("Boundary", "No silent Send, no production authority, approval remains required."),
+  );
+  panel.append(actions, list);
+}
+
+function renderNativeContextDrawer(panel: HTMLElement): void {
+  const actions = document.createElement("div");
+  actions.className = "ion-native-left-actions";
+  actions.append(
+    nativeLeftButton("context-pack", "Pack", "Insert current ION context pack", true),
+    nativeLeftButton("context-sync", "Sync ZIP", "Build selected project context sync ZIP"),
+    nativeLeftButton("import-pack", "Import", "Import ION queue workflow JSON or ZIP"),
+    nativeLeftButton("open-projects", "Projects", "Switch to project controls"),
+  );
+  const list = document.createElement("div");
+  list.className = "ion-native-left-list";
+  list.append(
+    nativeDrawerRow("Projects", projectPackages.length ? `${projectPackages.length} package(s) loaded` : "not scanned"),
+    nativeDrawerRow("Selected", `${contextWorkflowSelectedPaths().length} package(s)`),
+    nativeDrawerRow("Workflow", contextWorkflowLastImportedPack),
+  );
+  panel.append(actions, list);
+}
+
+function renderNativeDrawerPanel(panel: HTMLElement): void {
+  const queueCount = messageQueueItems.filter((item) => item.status === "queued" || item.status === "waiting" || item.status === "sending" || item.status === "failed").length;
+  panel.dataset.visible = "true";
+  panel.dataset.mode = nativeLeftMode;
+  panel.innerHTML = "";
+  const head = document.createElement("div");
+  head.className = "ion-native-left-head";
+  const dot = document.createElement("span");
+  dot.className = "ion-native-left-dot";
+  dot.dataset.tone = nativeLeftTone();
+  const title = document.createElement("div");
+  title.className = "ion-native-left-title";
+  title.textContent = nativeDrawerTitle();
+  head.append(dot, title);
+  const status = document.createElement("div");
+  status.className = "ion-native-left-status";
+  status.textContent = `${queueCount} queue / ${projectPackages.length} project${projectPackages.length === 1 ? "" : "s"} / ${contextWorkflowSelectedPaths().length} selected`;
+  panel.append(head, status);
+  if (nativeLeftMode === "projects") renderNativeProjectsDrawer(panel);
+  else if (nativeLeftMode === "agent") renderNativeAgentDrawer(panel);
+  else if (nativeLeftMode === "context") renderNativeContextDrawer(panel);
+  else renderNativeQueueDrawer(panel);
+}
+
+function ensureNativeDrawerPanel(): HTMLElement | null {
+  ensureNativeLeftStyle();
+  const host = findChatGptLeftDrawerHost();
+  const existing = document.getElementById(CHATGPT_NATIVE_LEFT_DRAWER_ID) as HTMLElement | null;
+  if (!host) {
+    if (existing) existing.dataset.visible = "false";
+    return null;
+  }
+  let panel = existing;
+  if (!panel) {
+    panel = document.createElement("div");
+    panel.id = CHATGPT_NATIVE_LEFT_DRAWER_ID;
+    panel.className = CHATGPT_NATIVE_LEFT_CLASS;
+    panel.addEventListener("click", (event) => {
+      const source = event.target instanceof Element ? event.target.closest<HTMLElement>("[data-native-left-action]") : null;
+      const action = source?.dataset.nativeLeftAction ?? "";
+      if (!action || source?.dataset.disabled === "true") return;
+      event.preventDefault();
+      event.stopPropagation();
+      handleNativeLeftAction(action, source?.dataset.nativeLeftProjectPath ?? "");
+    });
+  }
+  if (panel.parentElement !== host) host.prepend(panel);
+  renderNativeDrawerPanel(panel);
+  return panel;
+}
+
+function syncNativeLeftIntegration(): void {
+  ensureNativeRailGroup();
+  ensureNativeDrawerPanel();
+}
+
 function ensureLeftDockChromeStyle(): void {
   if (document.getElementById(CHATGPT_LEFT_ICON_DOCK_STYLE_ID)) return;
   const style = document.createElement("style");
@@ -4994,27 +5557,9 @@ function renderLeftDockChrome(): void {
 }
 
 function syncLeftDockChrome(): void {
-  const dock = ensureLeftDockChrome();
-  if (!dock) return;
-  const input = findComposerInput();
-  if (!input) {
-    dock.dataset.visible = "false";
-    return;
-  }
-  renderLeftDockChrome();
-  const topPosition = Math.max(8, Math.round(window.innerHeight * 0.48));
-  const width = leftDockProjectPanelExpanded
-    ? Math.max(LEFT_DOCK_PANEL_WIDTH_MINI_PX + 1, Math.min(LEFT_DOCK_PANEL_WIDTH_EXPANDED_PX, Math.floor(window.innerWidth * 0.24)))
-    : LEFT_DOCK_PANEL_WIDTH_MINI_PX;
-  const containerRect = findComposerContainer(input).getBoundingClientRect();
-  const anchorRect = lastQueueChromeRect ?? containerRect;
-  const panelBottom = composerSidePanelBottom(anchorRect);
-  const boundedTopPosition = Math.max(8, Math.min(topPosition, window.innerHeight - panelBottom - 150));
-  dock.style.left = "8px";
-  dock.style.top = `${boundedTopPosition}px`;
-  dock.style.bottom = `${panelBottom}px`;
-  dock.style.width = `${width}px`;
-  dock.style.maxHeight = `${Math.max(138, window.innerHeight - boundedTopPosition - panelBottom)}px`;
+  const legacyDock = document.getElementById(CHATGPT_LEFT_ICON_DOCK_ID) as HTMLElement | null;
+  if (legacyDock) legacyDock.dataset.visible = "false";
+  syncNativeLeftIntegration();
 }
 
 function cutComposerTextToQueue(): void {
@@ -6375,6 +6920,9 @@ function mutationTouchesIonUi(mutation: MutationRecord): boolean {
         element.closest(`#${MESSAGE_QUEUE_PANEL_ID}`) ||
         element.closest(`#${MESSAGE_QUEUE_FILE_INPUT_ID}`) ||
         element.closest(`#${CHATGPT_LEFT_ICON_DOCK_ID}`) ||
+        element.closest(`#${CHATGPT_NATIVE_LEFT_RAIL_ID}`) ||
+        element.closest(`#${CHATGPT_NATIVE_LEFT_DRAWER_ID}`) ||
+        element.closest(`.${CHATGPT_NATIVE_LEFT_CLASS}`) ||
         element.closest(`#${CONTEXT_WORKFLOW_PANEL_ID}`) ||
         element.closest(`#${CONTEXT_WORKFLOW_IMPORT_INPUT_ID}`) ||
         element.id === PANEL_ID ||
@@ -6389,6 +6937,9 @@ function mutationTouchesIonUi(mutation: MutationRecord): boolean {
         element.id === MESSAGE_QUEUE_CHROME_STYLE_ID ||
         element.id === CHATGPT_LEFT_ICON_DOCK_ID ||
         element.id === CHATGPT_LEFT_ICON_DOCK_STYLE_ID ||
+        element.id === CHATGPT_NATIVE_LEFT_RAIL_ID ||
+        element.id === CHATGPT_NATIVE_LEFT_DRAWER_ID ||
+        element.id === CHATGPT_NATIVE_LEFT_STYLE_ID ||
         element.id === MESSAGE_QUEUE_FILE_INPUT_ID ||
         element.id === CONTEXT_WORKFLOW_PANEL_ID ||
         element.id === CONTEXT_WORKFLOW_STYLE_ID ||
@@ -6408,6 +6959,15 @@ function scheduleScan(mode: ScanMode = "auto"): void {
   }, SCAN_DEBOUNCE_MS);
 }
 
+function scheduleBridgeLayoutRefresh(delayMs = 80): void {
+  if (bridgeLayoutRefreshTimer !== null) return;
+  bridgeLayoutRefreshTimer = window.setTimeout(() => {
+    bridgeLayoutRefreshTimer = null;
+    refreshBridgePosition();
+    syncLeftDockChrome();
+  }, delayMs);
+}
+
 function initializeBridge(): void {
   settingsInspectorTarget = "tabs_anchor";
   settingsAnchorPoint = anchorForTarget("tabs_anchor");
@@ -6417,29 +6977,37 @@ function initializeBridge(): void {
   const observer = new MutationObserver((mutations) => {
     if (mutations.length && mutations.every(mutationTouchesIonUi)) return;
     scheduleScan("auto");
+    scheduleBridgeLayoutRefresh(80);
     tryAutoAcceptNativeAction();
   });
   observer.observe(observerRoot, { childList: true, subtree: true });
-  window.addEventListener("resize", () => refreshBridgePosition());
-  window.addEventListener("scroll", () => scheduleScan("auto"), { capture: true, passive: true });
+  window.addEventListener("resize", () => scheduleBridgeLayoutRefresh(0));
+  window.visualViewport?.addEventListener("resize", () => scheduleBridgeLayoutRefresh(0));
+  window.addEventListener("scroll", () => {
+    scheduleScan("auto");
+    scheduleBridgeLayoutRefresh(120);
+  }, { capture: true, passive: true });
   if (typeof document.addEventListener === "function") {
     document.addEventListener("transitionend", (event) => {
       const target = event.target;
       if (target instanceof Element && shouldIgnoreScanNode(target)) return;
-      refreshBridgePosition();
+      scheduleBridgeLayoutRefresh(0);
     }, true);
     document.addEventListener(
       "click",
       (event) => {
         const target = event.target;
         if (target instanceof Element && shouldIgnoreScanNode(target)) return;
-        window.setTimeout(() => refreshBridgePosition(), 60);
-        window.setTimeout(() => refreshBridgePosition(), 260);
+        window.setTimeout(() => scheduleBridgeLayoutRefresh(0), 60);
+        window.setTimeout(() => scheduleBridgeLayoutRefresh(0), 260);
       },
       true,
     );
   }
   setBridgeStatus("Monitoring ChatGPT", "Waiting for ion_action YAML blocks.", "idle");
+  [0, 180, 520, 1100, 1800].forEach((delay) => {
+    window.setTimeout(() => scheduleBridgeLayoutRefresh(0), delay);
+  });
   scheduleScan("auto");
 }
 
