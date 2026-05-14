@@ -80,10 +80,16 @@ Every write-mode intake produces:
 
 - timestamped receipt under `Needs_Routed/receipts/`
 - current index under `Needs_Routed/indexes/`
+- current proposal-only route plan under `Needs_Routed/routed/`
 - per-item source path, digest, size, route class, confidence, status, reasons
 - explicit false authority flags
 - queue proposal metadata when applicable
 - moved target path only when a drop-zone artifact was archived
+
+The route plan groups indexed artifacts by route class so a later specialist
+worker can select exactly one lane, compile a packet, and avoid broad staging or
+mixed-lane commits. The route plan is not an invocation receipt and does not
+mutate active queues.
 
 ## Non-Claims
 

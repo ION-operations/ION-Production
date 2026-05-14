@@ -78,11 +78,20 @@ def test_needs_routed_write_archives_drop_items_and_writes_receipt(tmp_path):
     assert moved["Needs_Routed/drop/private_key.pem"]["status"] == "blocked_moved_for_review"
     receipt = root.parent / result["receipt_path"]
     index = root.parent / result["index_path"]
+    route_plan = root.parent / result["route_plan_path"]
     assert receipt.exists()
     assert index.exists()
+    assert route_plan.exists()
     payload = json.loads(receipt.read_text(encoding="utf-8"))
+    plan = json.loads(route_plan.read_text(encoding="utf-8"))
     assert payload["accepted_state_claim"] is False
     assert payload["production_authority"] is False
+    assert plan["accepted_state_claim"] is False
+    assert plan["queue_mutation_performed"] is False
+    assert {group["route_class"] for group in plan["route_groups"]} >= {
+        "apply_candidate_patch",
+        "secret_or_private_blocked",
+    }
 
 
 def test_needs_routed_write_does_not_move_top_level_backlog_by_default(tmp_path):
@@ -100,5 +109,6 @@ def test_needs_routed_write_does_not_move_top_level_backlog_by_default(tmp_path)
     assert result["ok"] is True
     assert backlog.exists()
     assert result["file_moves_performed"] is False
+    assert (root / "routed" / "NEEDS_ROUTED_ROUTE_PLAN.json").exists()
     assert result["items"][0]["status"] == "review_only_not_moved"
     assert "legacy_or_source_lane_backlog_not_moved_by_default" in result["items"][0]["reasons"]

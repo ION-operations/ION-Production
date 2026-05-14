@@ -54,6 +54,17 @@ The write command writes `receipts/` and `indexes/`, and only moves artifacts
 from `drop/` into `history/` or `blocked/`. It does not mutate active queues,
 stage Git paths, commit, push, deploy, or settle ION state.
 
+Write mode also refreshes:
+
+```text
+routed/NEEDS_ROUTED_ROUTE_PLAN.json
+```
+
+The route plan groups the indexed artifacts by specialist lane. It is a
+proposal surface only; a later worker must select one route group and create an
+explicit packet before applying, moving, staging, committing, queueing, or
+settling any source artifact.
+
 ## Specialist Routes
 
 Current intake recognizes these specialist review lanes:

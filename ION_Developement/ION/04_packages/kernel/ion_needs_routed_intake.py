@@ -20,6 +20,7 @@ from typing import Any, Mapping
 from .ion_carrier_onboard import resolve_shell_root_from_ion_root
 
 SCHEMA_ID = "ion.needs_routed_intake.v1"
+ROUTE_PLAN_SCHEMA_ID = "ion.needs_routed_route_plan.v1"
 READY_VERDICT = "ION_NEEDS_ROUTED_INTAKE_READY"
 WRITTEN_VERDICT = "ION_NEEDS_ROUTED_INTAKE_WRITTEN"
 BLOCKED_VERDICT = "ION_NEEDS_ROUTED_INTAKE_BLOCKED"
@@ -330,6 +331,7 @@ def build_needs_routed_intake(
         "queue_mutation_performed": False,
         "receipt_path": None,
         "index_path": None,
+        "route_plan_path": None,
         "items": items,
         "summary": summary,
         "blocked_findings": blocked_findings,
@@ -357,6 +359,50 @@ def _summary(items: list[Mapping[str, Any]]) -> dict[str, Any]:
         "artifact_kind_counts": by_kind,
         "status_counts": by_status,
         "queue_proposal_count": queue_proposal_count,
+    }
+
+
+def _route_plan(result: Mapping[str, Any]) -> dict[str, Any]:
+    grouped: dict[str, list[dict[str, Any]]] = {}
+    for item in result.get("items", []):
+        route = str(item.get("route_class") or "owner_review_required")
+        grouped.setdefault(route, []).append(
+            {
+                "item_id": item.get("item_id"),
+                "original_path": item.get("original_path"),
+                "artifact_kind": item.get("artifact_kind"),
+                "confidence": item.get("confidence"),
+                "status": item.get("status"),
+                "queue_proposal": item.get("queue_proposal"),
+            }
+        )
+    route_groups = [
+        {
+            "route_class": route,
+            "item_count": len(items),
+            "items": items,
+        }
+        for route, items in sorted(grouped.items())
+    ]
+    return {
+        "schema_id": ROUTE_PLAN_SCHEMA_ID,
+        "generated_at": result.get("generated_at"),
+        "posture": "sandbox-candidate",
+        "accepted_state_claim": False,
+        "production_authority": False,
+        "live_execution_authority": False,
+        "queue_mutation_performed": False,
+        "file_moves_performed": bool(result.get("file_moves_performed")),
+        "source_receipt_path": result.get("receipt_path"),
+        "source_index_path": result.get("index_path"),
+        "needs_routed_root": result.get("needs_routed_root"),
+        "scan_scope": result.get("scan_scope"),
+        "summary": result.get("summary"),
+        "route_groups": route_groups,
+        "next_action": (
+            "Select one route_group and create an explicit packet before applying, "
+            "moving, staging, committing, queueing, or settling any source artifact."
+        ),
     }
 
 
@@ -447,10 +493,14 @@ def write_needs_routed_intake(
 
     receipt_path = root / "receipts" / f"needs_routed_intake_{stamp}.json"
     index_path = root / "indexes" / "NEEDS_ROUTED_INDEX.json"
+    route_plan_path = root / "routed" / "NEEDS_ROUTED_ROUTE_PLAN.json"
     result["receipt_path"] = _repo_or_abs(receipt_path, root.parent)
     result["index_path"] = _repo_or_abs(index_path, root.parent)
+    result["route_plan_path"] = _repo_or_abs(route_plan_path, root.parent)
+    route_plan = _route_plan(result)
     _write_json(receipt_path, result)
     _write_json(index_path, result)
+    _write_json(route_plan_path, route_plan)
     return result
 
 
