@@ -3,6 +3,7 @@ import os
 from pathlib import Path
 
 from kernel.ion_codex_queue_runner import (
+    DEFAULT_CONTEXT_READS,
     build_codex_queue_runner_status,
     prepare_codex_queue_run,
     process_codex_queue_once,
@@ -14,6 +15,10 @@ def _seed_root(root: Path) -> None:
     (root / "pyproject.toml").write_text("[project]\nname = \"ion-test\"\n", encoding="utf-8")
     (root / "ION/REPO_AUTHORITY.md").parent.mkdir(parents=True)
     (root / "ION/REPO_AUTHORITY.md").write_text("# authority\n", encoding="utf-8")
+    for rel in DEFAULT_CONTEXT_READS:
+        target = root / rel
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(f"seeded test context for {rel}\n", encoding="utf-8")
 
 
 def _seed_request(root: Path) -> str:
@@ -275,6 +280,31 @@ def test_prepare_codex_queue_run_writes_prompt_and_receipt_without_claiming(tmp_
     assert request["status"] == "QUEUED_FOR_CODEX_CARRIER"
 
 
+def test_prepare_codex_queue_run_writes_machine_generated_worker_context_awareness_receipt(tmp_path):
+    _seed_root(tmp_path)
+    request_rel = _seed_request(tmp_path)
+
+    prepared = prepare_codex_queue_run(tmp_path, request_path=request_rel)
+
+    run = prepared["run"]
+    receipt_path = tmp_path / run["worker_context_awareness_receipt_path"]
+    assert receipt_path.exists()
+    receipt = json.loads(receipt_path.read_text(encoding="utf-8"))
+    assert receipt["schema_id"] == "ion.worker_context_awareness_receipt.v1"
+    assert receipt["generated_by"] == "runner_or_control_plane"
+    assert receipt["worker_authored"] is False
+    assert receipt["status"] == "WORKER_CONTEXT_ACKNOWLEDGED"
+    assert receipt["prompt_path"] == run["prompt_path"]
+    assert receipt["run_packet_path"] == run["run_packet_path"]
+    assert receipt["context_receipt_path"] == run["context_receipt_path"]
+    assert isinstance(receipt["prompt_sha256"], str) and len(receipt["prompt_sha256"]) == 64
+    assert isinstance(receipt["run_packet_sha256"], str) and len(receipt["run_packet_sha256"]) == 64
+    assert isinstance(receipt["context_receipt_sha256"], str) and len(receipt["context_receipt_sha256"]) == 64
+    assert isinstance(receipt["machine_attestation_sha256"], str) and len(receipt["machine_attestation_sha256"]) == 64
+    assert receipt["required_context_reads"]
+    assert all(row["status"] == "READY" for row in receipt["required_context_reads"])
+
+
 def test_prepare_codex_queue_run_includes_workload_diff_for_agent_cartography_contract(tmp_path):
     _seed_root(tmp_path)
     _seed_request(tmp_path)
@@ -319,6 +349,34 @@ def test_process_once_inline_records_proof_gated_task_return(tmp_path):
     assert request["latest_context_proof_accepted"] is True
     assert request["latest_template_action_proof_accepted"] is True
     assert (tmp_path / request["latest_return_packet_path"]).exists()
+
+
+def test_process_once_blocks_worker_when_required_context_read_missing(tmp_path):
+    _seed_root(tmp_path)
+    request_rel = _seed_request(tmp_path)
+    missing_rel = "ION/04_packages/kernel/ion_carrier_continue.py"
+    (tmp_path / missing_rel).unlink()
+
+    result = process_codex_queue_once(
+        tmp_path,
+        request_path=request_rel,
+        start=True,
+        background=False,
+    )
+
+    assert result["ok"] is False
+    assert result["result"] == "WORKER_CONTEXT_MOUNT_INVALID"
+    assert result["run"]["status"] == "WORKER_CONTEXT_MOUNT_INVALID"
+    assert result["run"]["failure_classification"] == "CARRIER_ADAPTER_FAILURE"
+    assert result["run"]["worker_lifecycle_events"][-1]["event"] == "worker_sign_in_context_awareness"
+    request = json.loads((tmp_path / request_rel).read_text(encoding="utf-8"))
+    assert request["status"] == "CODEX_QUEUE_RUNNER_FAILED"
+    assert request["failure_classification"] == "CARRIER_ADAPTER_FAILURE"
+    live = build_codex_queue_runner_status(tmp_path, reconcile=False)["live_worker_telemetry"]
+    assert live["worker_sign_in_status"] == "WORKER_CONTEXT_BLOCKED"
+    assert live["worker_context_awareness_receipt_path"]
+    assert isinstance(live["worker_context_awareness_receipt_sha256"], str)
+    assert live["proof_gate_preflight"]["checks"]["worker_context_awareness_receipt_exists"] is True
 
 
 def test_process_once_inline_reports_proof_blocked_return_as_backend_failure(tmp_path):

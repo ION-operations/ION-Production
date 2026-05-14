@@ -8,6 +8,7 @@ for an already queued ``QUEUED_FOR_CODEX_CARRIER`` packet.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 import re
@@ -34,11 +35,17 @@ MAX_CODEX_TIMEOUT_SECONDS = 7200
 MAX_LIVE_PREVIEW_BYTES = 2048
 DEFAULT_LIVE_PREVIEW_BYTES = 512
 MAX_WORKER_LIFECYCLE_EVENTS = 40
+WORKER_CONTEXT_AWARENESS_RECEIPT_FILENAME = "worker_context_awareness_receipt.json"
+WORKER_CONTEXT_ACKNOWLEDGED = "WORKER_CONTEXT_ACKNOWLEDGED"
+WORKER_CONTEXT_BLOCKED = "WORKER_CONTEXT_BLOCKED"
 BASE_RETURN_CONTRACT_SECTIONS = (
     "### CONTEXT PROOF",
     "### TEMPLATE ACTION PROOF",
     "### VALIDATION",
     "### RESULT",
+    "### WORKLOAD DIFF",
+    "### BLOCKERS",
+    "### RECOMMENDED NEXT PACKET",
 )
 WORKLOAD_DIFF_SECTION = "### WORKLOAD DIFF"
 WORKLOAD_DIFF_REQUEST_HINTS = (
@@ -85,12 +92,14 @@ TERMINAL_RUN_STATUSES = {
     "RETURN_TEMPLATE_INVALID",
     "CODEX_CLI_EXIT_NONZERO",
     "CODEX_CLI_TIMEOUT",
+    "WORKER_CONTEXT_MOUNT_INVALID",
     "DAEMON_WORKER_EXITED_WITHOUT_FINALIZATION",
 }
 
 TERMINAL_FAILED_STATUSES = {
     "CODEX_CLI_EXIT_NONZERO",
     "CODEX_CLI_TIMEOUT",
+    "WORKER_CONTEXT_MOUNT_INVALID",
     "DAEMON_WORKER_EXITED_WITHOUT_FINALIZATION",
 }
 
@@ -132,6 +141,19 @@ def _write_json(path: Path, value: Mapping[str, Any]) -> None:
     path.write_text(json.dumps(value, indent=2, sort_keys=True) + "\n", encoding="utf-8")
 
 
+def _sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _sha256_json_payload(payload: Mapping[str, Any]) -> str:
+    material = json.dumps(payload, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(material.encode("utf-8", errors="replace")).hexdigest()
+
+
 def _append_worker_lifecycle_event(run: dict[str, Any], event: str, **fields: Any) -> None:
     events = list(run.get("worker_lifecycle_events") or [])
     payload = {
@@ -170,6 +192,48 @@ def _safe_rel_path(root: Path, value: str) -> Path:
 
 def _connector_rel(path: Path, root: Path) -> str:
     return path.relative_to(root).as_posix()
+
+
+def _excerpt_for_context(path: Path, *, max_chars: int = 220) -> str:
+    text = path.read_text(encoding="utf-8", errors="replace")
+    for line in text.splitlines():
+        compact = line.strip()
+        if compact:
+            return compact[:max_chars]
+    return text[:max_chars]
+
+
+def _observe_context_path(root: Path, path_value: str, *, required: bool = True) -> dict[str, Any]:
+    row: dict[str, Any] = {
+        "kind": "file",
+        "path": path_value,
+        "required": bool(required),
+        "status": "MISSING_REQUIRED" if required else "MISSING_OPTIONAL",
+        "exists": False,
+        "sha256": None,
+        "excerpt": None,
+        "bytes": None,
+        "error": None,
+    }
+    try:
+        target = _safe_rel_path(root, path_value)
+    except ValueError:
+        row["status"] = "INVALID_PATH"
+        row["error"] = "path_not_repo_relative"
+        return row
+    if not target.exists() or not target.is_file():
+        return row
+    try:
+        stat = target.stat()
+        row["exists"] = True
+        row["bytes"] = int(stat.st_size)
+        row["sha256"] = _sha256_file(target)
+        row["excerpt"] = _excerpt_for_context(target)
+        row["status"] = "READY"
+    except Exception as exc:  # pragma: no cover - defensive only
+        row["status"] = "READ_ERROR"
+        row["error"] = str(exc)
+    return row
 
 
 def _load_request(path: Path) -> dict[str, Any]:
@@ -361,9 +425,17 @@ def _build_live_worker_telemetry(
         "stdout": _file_meta(root, str(run.get("stdout_path") or "") or None),
         "stderr": _file_meta(root, str(run.get("stderr_path") or "") or None),
         "latest_return": _file_meta(root, str(run.get("last_message_path") or "") or None),
+        "worker_context_awareness_receipt": _file_meta(root, str(run.get("worker_context_awareness_receipt_path") or "") or None),
         "worker_stdout": _file_meta(root, worker_stdout_path),
         "worker_stderr": _file_meta(root, worker_stderr_path),
     }
+    awareness_receipt_rel = str(run.get("worker_context_awareness_receipt_path") or "")
+    awareness_receipt = _read_json(root / awareness_receipt_rel) if awareness_receipt_rel else None
+    awareness_status = None
+    awareness_machine_attestation_sha256 = None
+    if isinstance(awareness_receipt, Mapping):
+        awareness_status = str(awareness_receipt.get("status") or "") or None
+        awareness_machine_attestation_sha256 = str(awareness_receipt.get("machine_attestation_sha256") or "") or None
 
     phase_status = "idle"
     if stale_active_run_detected:
@@ -401,6 +473,7 @@ def _build_live_worker_telemetry(
 
     proof_checks = {
         "context_receipt_exists": _file_meta(root, str(run.get("context_receipt_path") or "") or None).get("exists"),
+        "worker_context_awareness_receipt_exists": artifacts["worker_context_awareness_receipt"].get("exists"),
         "request_path_exists": _file_meta(root, str(run.get("request_path") or "") or None).get("exists"),
         "latest_return_exists": artifacts["latest_return"].get("exists"),
         "submit_result_present": bool(submit),
@@ -435,6 +508,10 @@ def _build_live_worker_telemetry(
         "elapsed_seconds": elapsed,
         "active_process_running": active_running,
         "stale_active_reference_detected": stale_active_run_detected,
+        "worker_sign_in_status": awareness_status,
+        "worker_context_awareness_receipt_path": awareness_receipt_rel or None,
+        "worker_context_awareness_receipt_sha256": _sha256_for_rel_path(root, awareness_receipt_rel or None),
+        "worker_context_awareness_machine_attestation_sha256": awareness_machine_attestation_sha256,
         "proof_gate_preflight": {
             "determinable": bool(run),
             "checks": proof_checks,
@@ -526,7 +603,7 @@ def build_codex_queue_runner_status(
     }
 
 
-def _context_receipt_for_request(request_rel: str, request: Mapping[str, Any] | None = None) -> dict[str, Any]:
+def _context_receipt_for_request(root: Path, request_rel: str, request: Mapping[str, Any] | None = None) -> dict[str, Any]:
     request_context_reads: list[str] = []
     if request:
         for item in request.get("required_context_reads") or []:
@@ -543,12 +620,30 @@ def _context_receipt_for_request(request_rel: str, request: Mapping[str, Any] | 
         if path not in seen:
             ordered.append(path)
             seen.add(path)
+    observed_rows = [_observe_context_path(root, path, required=True) for path in ordered]
+    required_missing = [row["path"] for row in observed_rows if row.get("required") and row.get("status") != "READY"]
+    attestation_fields = {
+        "request_path": request_rel,
+        "required_context_reads": [
+            {
+                "path": row.get("path"),
+                "required": bool(row.get("required")),
+                "status": row.get("status"),
+                "sha256": row.get("sha256"),
+            }
+            for row in observed_rows
+        ],
+    }
     return {
         "schema_id": "ion.context_load_receipt.v1",
-        "required_context_reads": [
-            {"kind": "file", "path": path, "required": True}
-            for path in ordered
-        ],
+        "generated_by": "runner_or_control_plane",
+        "worker_authored": False,
+        "request_path": request_rel,
+        "generated_at": _now(),
+        "required_context_reads": observed_rows,
+        "all_required_context_present": not required_missing,
+        "missing_required_context_paths": required_missing,
+        "machine_attestation_sha256": _sha256_json_payload(attestation_fields),
     }
 
 
@@ -588,8 +683,9 @@ def _return_contract_sections_for_request(request: Mapping[str, Any]) -> list[st
                 sections.append(section)
     if not sections:
         sections = list(BASE_RETURN_CONTRACT_SECTIONS)
-    if _request_requires_workload_diff(request) and WORKLOAD_DIFF_SECTION not in sections:
-        sections.append(WORKLOAD_DIFF_SECTION)
+    for required_section in MANDATORY_RETURN_SECTIONS:
+        if required_section not in sections:
+            sections.append(required_section)
     return sections
 
 
@@ -637,6 +733,138 @@ def _worker_spawn_contract_for_request(request: Mapping[str, Any], *, timeout_se
         "return_contract_sections": list(MANDATORY_RETURN_SECTIONS),
         "settlement_posture": "candidate_only_blocked_returns_preserved",
     }
+
+
+def _sha256_for_rel_path(root: Path, rel_path: str | None) -> str | None:
+    if not rel_path:
+        return None
+    try:
+        target = _safe_rel_path(root, rel_path)
+    except ValueError:
+        return None
+    if not target.exists() or not target.is_file():
+        return None
+    return _sha256_file(target)
+
+
+def _worker_context_awareness_receipt_path_for_run(root: Path, run: Mapping[str, Any]) -> str:
+    configured = str(run.get("worker_context_awareness_receipt_path") or "").strip()
+    if configured:
+        return configured
+    run_dir = str(run.get("run_dir") or "").strip()
+    if not run_dir:
+        return WORKER_CONTEXT_AWARENESS_RECEIPT_FILENAME
+    return _connector_rel((root / run_dir / WORKER_CONTEXT_AWARENESS_RECEIPT_FILENAME), root)
+
+
+def _build_worker_context_awareness_receipt(
+    root: Path,
+    run_packet_rel: str,
+    run: Mapping[str, Any],
+    *,
+    worker_pid_or_process_ref: int | str | None = None,
+    started_at: str | None = None,
+) -> dict[str, Any]:
+    prompt_path = str(run.get("prompt_path") or "")
+    context_receipt_path = str(run.get("context_receipt_path") or "")
+    run_packet_path = run_packet_rel
+    prompt_sha = _sha256_for_rel_path(root, prompt_path)
+    run_packet_sha = _sha256_for_rel_path(root, run_packet_path)
+    context_receipt_sha = _sha256_for_rel_path(root, context_receipt_path)
+    context_receipt = _read_json(root / context_receipt_path) if context_receipt_path else None
+    context_rows: list[dict[str, Any]] = []
+    if isinstance(context_receipt, Mapping):
+        raw_rows = context_receipt.get("required_context_reads")
+        if isinstance(raw_rows, list):
+            for item in raw_rows:
+                if isinstance(item, Mapping):
+                    path = str(item.get("path") or "").strip()
+                    if not path:
+                        continue
+                    required = bool(item.get("required", True))
+                    status = str(item.get("status") or "").strip()
+                    sha = str(item.get("sha256") or "").strip() or None
+                    excerpt = str(item.get("excerpt") or "").strip() or None
+                    if not status or not sha:
+                        observed = _observe_context_path(root, path, required=required)
+                        status = str(observed.get("status") or status)
+                        sha = str(observed.get("sha256") or "").strip() or None
+                        excerpt = str(observed.get("excerpt") or "").strip() or excerpt
+                    context_rows.append({
+                        "path": path,
+                        "required": required,
+                        "status": status,
+                        "sha256": sha,
+                        "excerpt": excerpt,
+                    })
+    findings: list[str] = []
+    if not prompt_sha:
+        findings.append("prompt_hash_missing")
+    if not run_packet_sha:
+        findings.append("run_packet_hash_missing")
+    if not context_receipt_sha:
+        findings.append("context_receipt_hash_missing")
+    missing_required_context = [
+        row["path"]
+        for row in context_rows
+        if row.get("required") and (row.get("status") != "READY" or not row.get("sha256"))
+    ]
+    if missing_required_context:
+        findings.append("required_context_missing_or_unhashed")
+    spawn_contract = run.get("worker_spawn_contract") if isinstance(run.get("worker_spawn_contract"), Mapping) else {}
+    model_move = run.get("codex_model_move") if isinstance(run.get("codex_model_move"), Mapping) else {}
+    status = WORKER_CONTEXT_ACKNOWLEDGED if not findings else WORKER_CONTEXT_BLOCKED
+    observed: dict[str, Any] = {
+        "schema_id": "ion.worker_context_awareness_receipt.v1",
+        "generated_by": "runner_or_control_plane",
+        "worker_authored": False,
+        "status": status,
+        "run_id": run.get("run_id"),
+        "request_id": run.get("request_id"),
+        "worker_pid_or_process_ref": worker_pid_or_process_ref,
+        "selected_model": model_move.get("selected_model"),
+        "selected_reasoning_effort": model_move.get("selected_reasoning_effort"),
+        "prompt_path": prompt_path,
+        "prompt_sha256": prompt_sha,
+        "run_packet_path": run_packet_path,
+        "run_packet_sha256": run_packet_sha,
+        "context_receipt_path": context_receipt_path,
+        "context_receipt_sha256": context_receipt_sha,
+        "required_context_reads": context_rows,
+        "template_id": spawn_contract.get("template_id"),
+        "action_id": spawn_contract.get("action_id"),
+        "authority_boundaries": spawn_contract.get("authority_boundaries") if isinstance(spawn_contract.get("authority_boundaries"), Mapping) else {
+            "production_authority": False,
+            "live_execution_authority": False,
+            "ion_identity_claim": False,
+        },
+        "started_at": started_at or str(run.get("started_at") or _now()),
+        "findings": findings,
+        "missing_required_context_paths": missing_required_context,
+    }
+    observed["machine_attestation_sha256"] = _sha256_json_payload(observed)
+    return observed
+
+
+def _write_worker_context_awareness_receipt(
+    root: Path,
+    run_packet_rel: str,
+    run: Mapping[str, Any],
+    *,
+    worker_pid_or_process_ref: int | str | None = None,
+    started_at: str | None = None,
+) -> tuple[str, str | None, dict[str, Any]]:
+    receipt_rel = _worker_context_awareness_receipt_path_for_run(root, run)
+    receipt_path = root / receipt_rel
+    receipt = _build_worker_context_awareness_receipt(
+        root,
+        run_packet_rel,
+        run,
+        worker_pid_or_process_ref=worker_pid_or_process_ref,
+        started_at=started_at,
+    )
+    _write_json(receipt_path, receipt)
+    return receipt_rel, _sha256_file(receipt_path), receipt
 
 
 def _codex_command(codex_binary: str, model_move: Mapping[str, Any], last_message_rel: str) -> list[str]:
@@ -737,8 +965,8 @@ def _build_prompt(
         f"  action_id_hint: \"{spawn_contract.get('action_id')}\"",
         "  template_action_proof_exact_shape: |",
         "    ### TEMPLATE ACTION PROOF",
-        "    template_id: ion.template.autonomous_loop.local_worker.v1",
-        "    action_id: codex_queue_runner_process_once",
+        f"    template_id: {spawn_contract.get('template_id')}",
+        f"    action_id: {spawn_contract.get('action_id')}",
         "    result: <one-line result>",
         "    touched_paths:",
         "      - <repo-relative evidence or changed path>",
@@ -829,13 +1057,14 @@ def prepare_codex_queue_run(
         run_dir = shell_root / CODEX_QUEUE_RUNS_DIR / run_id
         counter += 1
     run_dir.mkdir(parents=True, exist_ok=False)
-    context_receipt = _context_receipt_for_request(request_rel, request)
+    context_receipt = _context_receipt_for_request(shell_root, request_rel, request)
     context_receipt_path = run_dir / "context_receipt.json"
     prompt_path = run_dir / "prompt.md"
     stdout_path = run_dir / "stdout.log"
     stderr_path = run_dir / "stderr.log"
     last_message_path = run_dir / "latest_return.md"
     run_packet_path = run_dir / "run.json"
+    worker_context_awareness_receipt_path = run_dir / WORKER_CONTEXT_AWARENESS_RECEIPT_FILENAME
     _write_json(context_receipt_path, context_receipt)
     model_move = _model_move_for_request(shell_root, request)
     timeout = min(max(int(timeout_seconds), 30), MAX_CODEX_TIMEOUT_SECONDS)
@@ -843,6 +1072,7 @@ def prepare_codex_queue_run(
     prompt = _build_prompt(request, request_rel, _connector_rel(context_receipt_path, shell_root), model_move, spawn_contract)
     prompt_path.write_text(prompt, encoding="utf-8")
     last_message_rel = _connector_rel(last_message_path, shell_root)
+    run_packet_rel = _connector_rel(run_packet_path, shell_root)
     run = {
         "schema_id": "ion.codex_queue_runner_run.v1",
         "run_id": run_id,
@@ -857,7 +1087,8 @@ def prepare_codex_queue_run(
         "stdout_path": _connector_rel(stdout_path, shell_root),
         "stderr_path": _connector_rel(stderr_path, shell_root),
         "last_message_path": last_message_rel,
-        "run_packet_path": _connector_rel(run_packet_path, shell_root),
+        "run_packet_path": run_packet_rel,
+        "worker_context_awareness_receipt_path": _connector_rel(worker_context_awareness_receipt_path, shell_root),
         "codex_model_move": model_move,
         "codex_model_move_summary": summarize_model_move(model_move),
         "codex_command": _codex_command(codex_binary, model_move, last_message_rel),
@@ -868,6 +1099,11 @@ def prepare_codex_queue_run(
         "live_execution_authority": False,
     }
     _write_run_packet(run_packet_path, run)
+    _, awareness_sha, awareness_receipt = _write_worker_context_awareness_receipt(
+        shell_root,
+        run_packet_rel,
+        run,
+    )
     if claim:
         request["status"] = "CLAIMED_BY_CODEX_QUEUE_RUNNER"
         request["updated_at"] = now
@@ -881,6 +1117,8 @@ def prepare_codex_queue_run(
         "ok": True,
         "run": run,
         "context_receipt": context_receipt,
+        "worker_context_awareness_receipt": awareness_receipt,
+        "worker_context_awareness_receipt_sha256": awareness_sha,
         "prepared_only": not claim,
         "production_authority": False,
         "live_execution_authority": False,
@@ -928,6 +1166,48 @@ def process_codex_queue_once(
         return prepared
     run = dict(prepared["run"])
     run_packet = shell_root / str(run["run_packet_path"])
+    awareness_receipt_rel, awareness_receipt_sha, awareness_receipt = _write_worker_context_awareness_receipt(
+        shell_root,
+        str(run["run_packet_path"]),
+        run,
+    )
+    sign_in_status = str(awareness_receipt.get("status") or WORKER_CONTEXT_BLOCKED)
+    _append_worker_lifecycle_event(
+        run,
+        "worker_sign_in_context_awareness",
+        worker_sign_in_status=sign_in_status,
+        worker_context_awareness_receipt_path=awareness_receipt_rel,
+        worker_context_awareness_receipt_sha256=awareness_receipt_sha,
+    )
+    if sign_in_status != WORKER_CONTEXT_ACKNOWLEDGED:
+        run["status"] = "WORKER_CONTEXT_MOUNT_INVALID"
+        run["failure_classification"] = "CARRIER_ADAPTER_FAILURE"
+        run["completed_at"] = _now()
+        _write_run_packet(run_packet, run)
+        _update_request_status(
+            shell_root,
+            str(run["request_path"]),
+            status="CODEX_QUEUE_RUNNER_FAILED",
+            failure_classification="CARRIER_ADAPTER_FAILURE",
+        )
+        _update_runner_state(shell_root, {
+            "active_run": None,
+            "latest_run": run["run_packet_path"],
+            "latest_worker_lifecycle_event": run["worker_lifecycle_events"][-1],
+            "manual_proceed_relay_required": False,
+        })
+        return {
+            "schema_id": SCHEMA_ID,
+            "ok": False,
+            "result": "WORKER_CONTEXT_MOUNT_INVALID",
+            "finding": "worker_context_awareness_receipt_blocked",
+            "run": run,
+            "worker_context_awareness_receipt_path": awareness_receipt_rel,
+            "worker_context_awareness_receipt_sha256": awareness_receipt_sha,
+            "worker_context_awareness_receipt": awareness_receipt,
+            "production_authority": False,
+            "live_execution_authority": False,
+        }
     if background:
         env = os.environ.copy()
         packages = str(shell_root / "ION/04_packages")
@@ -947,10 +1227,23 @@ def process_codex_queue_once(
         stdout = (run_packet.parent / "worker_stdout.log").open("wb")
         stderr = (run_packet.parent / "worker_stderr.log").open("wb")
         proc = subprocess.Popen(cmd, cwd=shell_root, stdout=stdout, stderr=stderr, env=env, start_new_session=True)
+        _, awareness_receipt_sha, awareness_receipt = _write_worker_context_awareness_receipt(
+            shell_root,
+            str(run["run_packet_path"]),
+            run,
+            worker_pid_or_process_ref=proc.pid,
+            started_at=_now(),
+        )
         run["status"] = "CODEX_QUEUE_RUNNER_WORKER_STARTED"
         run["pid"] = proc.pid
         run["worker_command"] = cmd
-        _append_worker_lifecycle_event(run, "worker_process_spawned", worker_pid=proc.pid)
+        _append_worker_lifecycle_event(
+            run,
+            "worker_process_spawned",
+            worker_pid=proc.pid,
+            worker_context_awareness_receipt_sha256=awareness_receipt_sha,
+            worker_sign_in_status=str(awareness_receipt.get("status") or None),
+        )
         _write_run_packet(run_packet, run)
         _update_runner_state(shell_root, {
             "active_run": {
@@ -1229,10 +1522,60 @@ def run_codex_queue_worker(
     run = _read_json(run_path)
     if not isinstance(run, dict):
         raise ValueError(f"invalid run packet: {run_packet_path}")
+    awareness_receipt_rel, awareness_receipt_sha, awareness_receipt = _write_worker_context_awareness_receipt(
+        shell_root,
+        str(run.get("run_packet_path") or _connector_rel(run_path, shell_root)),
+        run,
+        worker_pid_or_process_ref=os.getpid(),
+        started_at=_now(),
+    )
+    sign_in_status = str(awareness_receipt.get("status") or WORKER_CONTEXT_BLOCKED)
+    if sign_in_status != WORKER_CONTEXT_ACKNOWLEDGED:
+        run["status"] = "WORKER_CONTEXT_MOUNT_INVALID"
+        run["pid"] = os.getpid()
+        run["completed_at"] = _now()
+        run["failure_classification"] = "CARRIER_ADAPTER_FAILURE"
+        _append_worker_lifecycle_event(
+            run,
+            "worker_terminal",
+            terminal_state="context_mount_invalid",
+            worker_sign_in_status=sign_in_status,
+            worker_context_awareness_receipt_path=awareness_receipt_rel,
+            worker_context_awareness_receipt_sha256=awareness_receipt_sha,
+            failure_classification="CARRIER_ADAPTER_FAILURE",
+        )
+        _write_run_packet(run_path, run)
+        _update_request_status(
+            shell_root,
+            str(run["request_path"]),
+            status="CODEX_QUEUE_RUNNER_FAILED",
+            failure_classification="CARRIER_ADAPTER_FAILURE",
+        )
+        _update_runner_state(shell_root, {
+            "active_run": None,
+            "latest_run": run["run_packet_path"],
+            "latest_worker_lifecycle_event": run["worker_lifecycle_events"][-1],
+            "manual_proceed_relay_required": False,
+        })
+        return {
+            "schema_id": SCHEMA_ID,
+            "ok": False,
+            "result": "WORKER_CONTEXT_MOUNT_INVALID",
+            "run": run,
+            "production_authority": False,
+            "live_execution_authority": False,
+        }
     run["status"] = "CODEX_CLI_RUNNING"
     run["pid"] = os.getpid()
     run["started_at"] = _now()
-    _append_worker_lifecycle_event(run, "worker_boot", worker_pid=os.getpid())
+    _append_worker_lifecycle_event(
+        run,
+        "worker_boot",
+        worker_pid=os.getpid(),
+        worker_sign_in_status=sign_in_status,
+        worker_context_awareness_receipt_path=awareness_receipt_rel,
+        worker_context_awareness_receipt_sha256=awareness_receipt_sha,
+    )
     _write_run_packet(run_path, run)
     _update_runner_state(shell_root, {
         "active_run": {
