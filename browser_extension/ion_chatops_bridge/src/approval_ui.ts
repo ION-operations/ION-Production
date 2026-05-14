@@ -371,6 +371,69 @@ function markOnboardSynced(): OnboardSyncInfo {
   return next;
 }
 
+
+const ION_TAG_MAX = 24;
+
+function normalizeIonTag(raw: unknown): string {
+  const compact = String(raw ?? "")
+    .trim()
+    .toLowerCase()
+    .replace(/[_\s]+/g, "-")
+    .replace(/[^a-z0-9:-]/g, "")
+    .replace(/-{2,}/g, "-")
+    .replace(/:{2,}/g, ":")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 64);
+  if (!compact) return "";
+  const parts = compact.split(":");
+  if (parts.length === 1) return parts[0];
+  const namespace = parts.shift()?.replace(/^-+|-+$/g, "") ?? "";
+  const value = parts.join("-").replace(/^-+|-+$/g, "");
+  if (!namespace || !value) return namespace || value;
+  return `${namespace}:${value}`;
+}
+
+function normalizeIonTags(raw: unknown): string[] {
+  const source = Array.isArray(raw)
+    ? raw
+    : String(raw ?? "")
+        .split(/[,;\n]/)
+        .map((tag) => tag.trim());
+  const seenTags = new Set<string>();
+  const tags: string[] = [];
+  for (const value of source) {
+    const tag = normalizeIonTag(value);
+    if (!tag || seenTags.has(tag)) continue;
+    seenTags.add(tag);
+    tags.push(tag);
+    if (tags.length >= ION_TAG_MAX) break;
+  }
+  return tags;
+}
+
+function normalizePromptLibraryItem(item: PromptLibraryItem): PromptLibraryItem {
+  return {
+    ...item,
+    tags: normalizeIonTags(item.tags),
+  };
+}
+
+function renderIonTagChips(tags: string[], fallback = "untagged"): HTMLElement {
+  const row = document.createElement("div");
+  row.className = "ion-tag-row";
+  const normalized = normalizeIonTags(tags);
+  const visible = normalized.length ? normalized : [normalizeIonTag(fallback)].filter(Boolean);
+  for (const tag of visible) {
+    const chip = document.createElement("span");
+    chip.className = "ion-tag-chip";
+    const namespace = tag.includes(":") ? tag.split(":")[0] : "legacy";
+    chip.dataset.namespace = namespace;
+    chip.textContent = tag;
+    row.appendChild(chip);
+  }
+  return row;
+}
+
 function defaultPromptLibraryItems(): PromptLibraryItem[] {
   const now = "built-in";
   return [
@@ -378,7 +441,7 @@ function defaultPromptLibraryItems(): PromptLibraryItem[] {
       id: "ion-context-router",
       title: "ION context router",
       category: "ION Context",
-      tags: ["context", "router", "capsule"],
+      tags: ["route:context-sync", "phase:relay", "artifact:context-pack"],
       pinned: true,
       updatedAt: now,
       usageCount: 0,
@@ -389,7 +452,7 @@ function defaultPromptLibraryItems(): PromptLibraryItem[] {
       id: "ion-codex-work-packet",
       title: "Codex work packet",
       category: "Codex",
-      tags: ["codex", "implementation", "bounded"],
+      tags: ["route:queue-pack", "phase:mason", "authority:bounded-write"],
       pinned: true,
       updatedAt: now,
       usageCount: 0,
@@ -400,7 +463,7 @@ function defaultPromptLibraryItems(): PromptLibraryItem[] {
       id: "ion-diagnostics",
       title: "Diagnostics report",
       category: "Diagnostics",
-      tags: ["debug", "status", "browser"],
+      tags: ["phase:diagnostics", "state:candidate", "ui:top-rail"],
       pinned: false,
       updatedAt: now,
       usageCount: 0,
@@ -411,7 +474,7 @@ function defaultPromptLibraryItems(): PromptLibraryItem[] {
       id: "ion-package-request",
       title: "Package request",
       category: "Packages",
-      tags: ["docs", "zip", "context-package"],
+      tags: ["artifact:context-pack", "artifact:queue-pack", "authority:read-only"],
       pinned: false,
       updatedAt: now,
       usageCount: 0,
@@ -422,7 +485,7 @@ function defaultPromptLibraryItems(): PromptLibraryItem[] {
       id: "ion-review",
       title: "Engineering review",
       category: "Review",
-      tags: ["review", "risks", "tests"],
+      tags: ["phase:nemesis", "proof:test-pass", "state:candidate"],
       pinned: false,
       updatedAt: now,
       usageCount: 0,
@@ -435,7 +498,9 @@ function defaultPromptLibraryItems(): PromptLibraryItem[] {
 function readPromptLibraryItems(): PromptLibraryItem[] {
   try {
     const stored = JSON.parse(window.localStorage?.getItem(PROMPT_LIBRARY_KEY) ?? "[]") as PromptLibraryItem[];
-    if (Array.isArray(stored) && stored.length) return stored.filter((item) => item && item.id && item.text);
+    if (Array.isArray(stored) && stored.length) {
+      return stored.filter((item) => item && item.id && item.text).map(normalizePromptLibraryItem);
+    }
   } catch {
     // Use built-ins if local storage is unavailable.
   }
@@ -444,7 +509,7 @@ function readPromptLibraryItems(): PromptLibraryItem[] {
 
 function writePromptLibraryItems(items: PromptLibraryItem[]): void {
   try {
-    window.localStorage?.setItem(PROMPT_LIBRARY_KEY, JSON.stringify(items));
+    window.localStorage?.setItem(PROMPT_LIBRARY_KEY, JSON.stringify(items.map(normalizePromptLibraryItem)));
   } catch {
     // Non-fatal. The in-page library still works for this session.
   }
@@ -1498,6 +1563,37 @@ function ensureStyle(): void {
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+    }
+    #${PANEL_ID} .ion-tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      min-width: 0;
+    }
+    #${PANEL_ID} .ion-tag-chip {
+      max-width: 100%;
+      border: 1px solid rgba(125,211,252,0.22);
+      border-radius: 999px;
+      padding: 1px 6px;
+      background: rgba(8,47,73,0.28);
+      color: rgba(224,242,254,0.84);
+      font-size: 9px;
+      line-height: 15px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    #${PANEL_ID} .ion-tag-chip[data-namespace="authority"] {
+      border-color: rgba(251,191,36,0.34);
+      color: #fde68a;
+    }
+    #${PANEL_ID} .ion-tag-chip[data-namespace="proof"] {
+      border-color: rgba(52,211,153,0.30);
+      color: #bbf7d0;
+    }
+    #${PANEL_ID} .ion-tag-chip[data-namespace="state"] {
+      border-color: rgba(167,139,250,0.34);
+      color: #ddd6fe;
     }
     #${PANEL_ID} .ion-prompt-input,
     #${PANEL_ID} .ion-prompt-select,
@@ -4198,7 +4294,7 @@ function promptDraftItem(existing?: PromptLibraryItem): PromptLibraryItem {
     id: existing?.id || `prompt-${Date.now()}-${Math.random().toString(16).slice(2)}`,
     title,
     category: state.draftCategory.trim() || "General",
-    tags: state.draftTags.split(",").map((tag) => tag.trim()).filter(Boolean),
+    tags: normalizeIonTags(state.draftTags),
     text: state.draftText.trim(),
     pinned: existing?.pinned ?? false,
     updatedAt: new Date().toISOString(),
@@ -4311,7 +4407,7 @@ function queuePackStepHeader(pack: QueuePackManifest, entry: { workflow?: QueueP
     entry.chain?.title || entry.chain?.id ? `chain: ${queuePackLine(entry.chain.title || entry.chain.id)}` : "",
     `step: ${index + 1}/${total}`,
     entry.step.title || entry.step.id ? `title: ${queuePackLine(entry.step.title || entry.step.id)}` : "",
-    entry.step.tags?.length ? `tags: ${entry.step.tags.map(queuePackLine).filter(Boolean).join(", ")}` : "",
+    entry.step.tags?.length ? `tags: ${normalizeIonTags(entry.step.tags).map(queuePackLine).filter(Boolean).join(", ")}` : "",
   ].filter(Boolean);
   return `${lines.join("\n")}\n`;
 }
@@ -4521,9 +4617,7 @@ function renderPromptLibraryPanel(panel = ensurePanel()): void {
     const meta = document.createElement("div");
     meta.className = "ion-prompt-meta";
     meta.textContent = `${item.category} · used ${item.usageCount}`;
-    const tags = document.createElement("div");
-    tags.className = "ion-prompt-meta";
-    tags.textContent = item.tags.join(", ") || item.origin;
+    const tags = renderIonTagChips(item.tags, item.origin);
     card.append(title, meta, tags);
     listNode.appendChild(card);
   }
@@ -4883,10 +4977,12 @@ export function setBridgeMessageQueueState(nextState: Partial<MessageQueueState>
 }
 
 export function setBridgePromptLibraryState(nextState: Partial<PromptLibraryState>): void {
+  const current = bridgeState.promptLibrary as PromptLibraryState;
+  const nextItems = (nextState.items ?? current.items).map(normalizePromptLibraryItem);
   bridgeState.promptLibrary = {
-    ...(bridgeState.promptLibrary as PromptLibraryState),
+    ...current,
     ...nextState,
-    items: nextState.items ?? (bridgeState.promptLibrary as PromptLibraryState).items,
+    items: nextItems,
   };
   renderPanel();
 }

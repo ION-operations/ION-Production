@@ -20,7 +20,14 @@ import {
   setBridgeSettingsDetail,
   setBridgeStatus,
 } from "./approval_ui";
-import { extractIonActionYaml, localValidate, parseIonActionYamlWithDiagnostics, parseStrictIonActionYaml } from "./schema";
+import {
+  extractIonActionYaml,
+  extractIonReceiptYaml,
+  localValidate,
+  parseIonActionYamlWithDiagnostics,
+  parseIonReceiptYamlWithDiagnostics,
+  parseStrictIonActionYaml,
+} from "./schema";
 
 const seen = new Set<string>();
 const inFlightActionIds = new Set<string>();
@@ -83,6 +90,7 @@ const CAPTURE_FRAME_SELECTOR_KEY = "ION_CHATOPS_CAPTURE_FRAME_SELECTOR";
 const CAPTURE_FRAME_TIMEOUT_MS = 30000;
 const SCAN_DEBOUNCE_MS = 450;
 const ION_ACTION_LINE = /(^|\n)\s*ion_action:\s*(\n|$)/;
+const ION_RECEIPT_LINE = /(^|\n)\s*ion_receipt:\s*(\n|$)/;
 const AUTO_SCAN_SELECTORS = [
   "pre code",
   "pre",
@@ -186,6 +194,7 @@ type DomRegistryStats = {
   messages: number;
   codeBlocks: number;
   yamlBlocks: number;
+  receiptBlocks: number;
   validActions: number;
   invalidActions: number;
   duplicateActions: number;
@@ -399,6 +408,9 @@ function ensureDomRegistryStyle(): void {
     }
     .ion-dom-badge[data-ion-badge-role="code"] {
       background: #60a5fa;
+    }
+    .ion-dom-badge[data-ion-badge-role^="receipt_"] {
+      background: #22d3ee;
     }
     .ion-dom-badge[data-ion-badge-kind="control"] {
       background: #fb923c;
@@ -663,6 +675,7 @@ function registryBadgeCanAttach(host: HTMLElement): boolean {
 
 function registryBadgeCategory(kind: string, role: string): string {
   if (kind === "message") return "read_chunk";
+  if (role.startsWith("receipt_")) return "receipt_yaml";
   if (role.startsWith("yaml_")) return "action_yaml";
   if (kind === "code") return "code_chunk";
   if (role === "send_button" || role === "attach_button" || role === "voice_button" || role === "composer_control") return "click_zone";
@@ -674,6 +687,9 @@ function registryBadgeCategory(kind: string, role: string): string {
 function registryBadgeMeaning(kind: string, role: string, tone: string): string {
   if (kind === "message") return "Readable conversation chunk currently visible in the page DOM.";
   if (role === "code") return "Readable code/text block; scanned but not treated as an action packet.";
+  if (role === "receipt_candidate") return "ION receipt YAML fragment detected; candidate proof material only, never an Action submission.";
+  if (role === "receipt_missing-proof") return "ION receipt YAML fragment declares missing proof; inspect before inheriting.";
+  if (role === "receipt_blocked") return "ION receipt-like YAML failed local parsing or is malformed.";
   if (role === "yaml_valid") return "Concrete ION action YAML candidate; validation passed locally and still requires operator approval.";
   if (role === "yaml_blocked") return "Concrete ION action-like YAML failed local parsing or validation.";
   if (role === "yaml_duplicate") return "Concrete ION action YAML repeats an action_id already seen in this scan.";
@@ -932,10 +948,13 @@ function annotateCodeBlocks(stats: DomRegistryStats, mode: ScanMode): void {
     const label = `ION CODE #${index + 1}`;
     host.dataset.ionCodeIndex = String(index + 1);
     host.dataset.ionYamlStatus = "none";
+    host.dataset.ionReceiptStatus = "none";
+    host.dataset.ionTags = "artifact:code";
     let tone = "idle";
     let badge = label;
     const text = registryText(host, mode);
     const actionLike = isIonActionPacketCandidateText(text);
+    const receiptLike = !actionLike && isIonReceiptBlockText(text);
     if (actionLike) {
       stats.yamlBlocks += 1;
       const parsed = parseIonActionYamlWithDiagnostics(text);
@@ -947,32 +966,70 @@ function annotateCodeBlocks(stats: DomRegistryStats, mode: ScanMode): void {
         badge = `ION YAML #${index + 1} · blocked`;
         host.dataset.ionYamlStatus = "blocked";
         host.dataset.ionYamlFinding = parsed.finding ?? "parse_failed";
+        host.dataset.ionTags = joinIonTags(["artifact:action-yaml", "state:blocked", "proof:missing"]);
       } else if (actionId && actionIds.has(actionId)) {
         stats.duplicateActions += 1;
         tone = "duplicate";
         badge = `ION YAML #${index + 1} · duplicate`;
         host.dataset.ionYamlStatus = "duplicate";
         host.dataset.ionActionId = actionId;
+        host.dataset.ionTags = joinIonTags(["artifact:action-yaml", "state:duplicate", `intent:${packet.ion_action.intent}`]);
       } else {
         if (actionId) actionIds.add(actionId);
         const local = localValidate(packet);
         host.dataset.ionActionId = actionId ?? "";
+        const approvalTag = packet.ion_action.authority?.requires_approval ? "authority:approval-required" : "authority:read-only";
+        const productionTag = packet.ion_action.authority?.production_authority ? "authority:production-requested" : "authority:no-production";
+        const liveTag = packet.ion_action.authority?.live_execution_authority ? "authority:live-requested" : "authority:no-live";
         if (local.accepted) {
           stats.validActions += 1;
           tone = "valid";
           badge = `ION YAML #${index + 1} · valid`;
           host.dataset.ionYamlStatus = "valid";
+          host.dataset.ionTags = joinIonTags(["artifact:action-yaml", "state:validated", `intent:${packet.ion_action.intent}`, approvalTag, productionTag, liveTag]);
         } else {
           stats.invalidActions += 1;
           tone = "blocked";
           badge = `ION YAML #${index + 1} · blocked`;
           host.dataset.ionYamlStatus = "blocked";
           host.dataset.ionYamlFinding = local.findings.join("|");
+          host.dataset.ionTags = joinIonTags(["artifact:action-yaml", "state:blocked", `intent:${packet.ion_action.intent}`, approvalTag, productionTag, liveTag]);
         }
       }
+    } else if (receiptLike) {
+      stats.yamlBlocks += 1;
+      stats.receiptBlocks += 1;
+      const parsedReceipt = parseIonReceiptYamlWithDiagnostics(text);
+      if (!parsedReceipt.receipt) {
+        tone = "blocked";
+        badge = `ION RECEIPT #${index + 1} · blocked`;
+        host.dataset.ionReceiptStatus = "blocked";
+        host.dataset.ionReceiptFinding = parsedReceipt.finding ?? "parse_failed";
+        host.dataset.ionTags = joinIonTags(["artifact:receipt", "output:yaml-receipt", "state:blocked", "proof:missing"]);
+      } else {
+        const status = normalizeIonTag(parsedReceipt.status ?? "candidate") || "candidate";
+        const missingProof = parsedReceipt.missing_proof ?? [];
+        const roleStatus = missingProof.length ? "missing-proof" : status;
+        tone = missingProof.length || /blocked|missing|failed|rejected/i.test(status) ? "blocked" : /accepted|validated/i.test(status) ? "valid" : "idle";
+        badge = `ION RECEIPT #${index + 1} · ${roleStatus}`;
+        host.dataset.ionReceiptStatus = roleStatus;
+        host.dataset.ionReceiptSchema = String(parsedReceipt.receipt.ion_receipt.schema_id ?? "");
+        host.dataset.ionReceiptMissingProof = missingProof.join("|");
+        host.dataset.ionTags = joinIonTags([
+          "artifact:receipt",
+          "output:yaml-receipt",
+          `state:${roleStatus}`,
+          missingProof.length ? "proof:missing" : "proof:source-inspected",
+        ]);
+      }
     }
-    if (!actionLike) badge = `ION CODE #${index + 1}`;
-    ensureRegistryBadge(host, "code", badge, tone, host.dataset.ionYamlStatus === "none" ? "code" : `yaml_${host.dataset.ionYamlStatus}`);
+    if (!actionLike && !receiptLike) badge = `ION CODE #${index + 1}`;
+    const role = actionLike
+      ? `yaml_${host.dataset.ionYamlStatus}`
+      : receiptLike
+        ? `receipt_${host.dataset.ionReceiptStatus}`
+        : "code";
+    ensureRegistryBadge(host, "code", badge, tone, role);
   });
   stats.codeBlocks = hosts.length;
 }
@@ -1035,6 +1092,7 @@ function updateDomActionRegistry(mode: ScanMode = "manual"): DomRegistryStats {
     messages: 0,
     codeBlocks: 0,
     yamlBlocks: 0,
+    receiptBlocks: 0,
     validActions: 0,
     invalidActions: 0,
     duplicateActions: 0,
@@ -1063,6 +1121,7 @@ function updateDomActionRegistry(mode: ScanMode = "manual"): DomRegistryStats {
       `messages: ${stats.messages}`,
       `code_blocks: ${stats.codeBlocks}`,
       `ion_yaml_blocks: ${stats.yamlBlocks}`,
+      `ion_receipt_blocks: ${stats.receiptBlocks}`,
       `valid_actions: ${stats.validActions}`,
       `invalid_actions: ${stats.invalidActions}`,
       `duplicate_actions: ${stats.duplicateActions}`,
@@ -1075,7 +1134,7 @@ function updateDomActionRegistry(mode: ScanMode = "manual"): DomRegistryStats {
       "",
       "Marker legend:",
       "grey = readable message chunk",
-      "blue = code/source or drop surface",
+      "blue = code/source, receipt, or drop surface",
       "green = attach/asset or locally valid candidate",
       "amber = send/high-signal approval or locally blocked candidate",
       "violet = duplicate action candidate",
@@ -1514,6 +1573,34 @@ function isIonActionPacketCandidateText(text: string): boolean {
         concreteIonFieldValue(yaml, "live_execution_authority"),
     );
   return hasActor && hasAuthority;
+}
+
+function normalizeIonTag(raw: unknown): string {
+  return String(raw ?? "")
+    .trim()
+    .toLowerCase()
+    .replace(/[_\s]+/g, "-")
+    .replace(/[^a-z0-9:-]/g, "")
+    .replace(/-{2,}/g, "-")
+    .replace(/:{2,}/g, ":")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 64);
+}
+
+function joinIonTags(tags: string[]): string {
+  const seenTags = new Set<string>();
+  const normalized: string[] = [];
+  for (const raw of tags) {
+    const tag = normalizeIonTag(raw);
+    if (!tag || seenTags.has(tag)) continue;
+    seenTags.add(tag);
+    normalized.push(tag);
+  }
+  return normalized.join(" ");
+}
+
+function isIonReceiptBlockText(text: string): boolean {
+  return extractIonReceiptYaml(text) !== null;
 }
 
 function candidateBlocks(mode: ScanMode = "manual"): string[] {
@@ -6374,10 +6461,13 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 
 (window as unknown as { __ION_CHATOPS_BRIDGE_DEBUG__?: unknown }).__ION_CHATOPS_BRIDGE_DEBUG__ = {
   extractIonActionYaml,
+  extractIonReceiptYaml,
   parseIonActionYamlWithDiagnostics,
+  parseIonReceiptYamlWithDiagnostics,
   parseStrictIonActionYaml,
   localValidate,
   isIonActionPacketCandidateText,
+  isIonReceiptBlockText,
   candidateBlocks,
   updateDomActionRegistry,
   submitActionText,

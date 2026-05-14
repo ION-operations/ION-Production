@@ -27,6 +27,18 @@ export interface IonActionPacket {
   };
 }
 
+export interface IonReceiptPacket {
+  ion_receipt: Record<string, JsonValue>;
+}
+
+export interface ReceiptParseResult {
+  receipt: IonReceiptPacket | null;
+  finding: string | null;
+  extracted_yaml?: string;
+  status?: string;
+  missing_proof?: string[];
+}
+
 export interface ValidationResult {
   accepted: boolean;
   findings: string[];
@@ -80,59 +92,27 @@ function appendPath(root: Record<string, JsonValue>, path: string[], value: Json
   (cursor[key] as JsonValue[]).push(value);
 }
 
-function canonicalizeIonAction(root: Record<string, JsonValue>): IonActionPacket | null {
-  const raw = root.ion_action;
-  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return null;
-  const action = raw as Record<string, JsonValue>;
-  if (!action.actor || typeof action.actor !== "object" || Array.isArray(action.actor)) {
-    const callsign = action.callsign;
-    const carrier = action.carrier;
-    if (callsign || carrier) {
-      action.actor = { callsign, carrier } as Record<string, JsonValue>;
-    }
-  }
-  if (!action.authority || typeof action.authority !== "object" || Array.isArray(action.authority)) {
-    const authority: Record<string, JsonValue> = {};
-    for (const key of ["human_sovereign", "requires_approval", "production_authority", "live_execution_authority"]) {
-      if (key in action) authority[key] = action[key];
-    }
-    if (Object.keys(authority).length) action.authority = authority;
-  }
-  if (!action.receipts || typeof action.receipts !== "object" || Array.isArray(action.receipts)) {
-    const intent = String(action.intent ?? "");
-    const defaults: Record<string, JsonValue[]> = {
-      write_file_draft: ["file_write_receipt", "sha256_receipt"],
-      create_codex_work_packet: ["codex_work_packet_receipt", "action_receipt"],
-      create_github_issue_draft: ["github_issue_draft_receipt", "action_receipt"],
-      register_artifact: ["artifact_registration_receipt", "action_receipt"],
-    };
-    action.receipts = { requested: defaults[intent] ?? ["action_receipt"] } as Record<string, JsonValue>;
-  }
-  root.ion_action = action;
-  return root as unknown as IonActionPacket;
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
-export function extractIonActionYaml(text: string): string | null {
+function extractTopLevelYaml(text: string, topLevelKey: string): string | null {
   const normalized = text
     .replace(/\r\n/g, "\n")
     .replace(/\u00a0/g, " ")
     .replace(/[\u200b-\u200d\ufeff]/g, "");
+  const fencePattern = /^```/;
   const lines = normalized
     .split("\n")
-    .filter((line) => !line.trim().match(/^```/))
+    .filter((line) => !line.trim().match(fencePattern))
     .filter((line) => line.trim().toLowerCase() !== "yaml");
-  const start = lines.findIndex((line) => /^\s*ion_action\s*:\s*(#.*)?$/.test(line));
+  const keyPattern = new RegExp(`^\\s*${escapeRegExp(topLevelKey)}\\s*:\\s*(#.*)?$`);
+  const start = lines.findIndex((line) => keyPattern.test(line));
   if (start < 0) return null;
   return lines.slice(start).join("\n");
 }
 
-export function parseStrictIonActionYaml(text: string): IonActionPacket | null {
-  return parseIonActionYamlWithDiagnostics(text).packet;
-}
-
-export function parseIonActionYamlWithDiagnostics(text: string): ParseResult {
-  const yaml = extractIonActionYaml(text);
-  if (!yaml) return { packet: null, finding: "missing_top_level_ion_action", extracted_yaml: undefined };
+function parseSimpleYamlRoot(yaml: string): Record<string, JsonValue> {
   const lines = yaml.split("\n");
   const root: Record<string, JsonValue> = {};
   const stack: Array<{ indent: number; path: string[] }> = [];
@@ -193,12 +173,92 @@ export function parseIonActionYamlWithDiagnostics(text: string): ParseResult {
     setPath(root, path, scalar(rest));
   }
   flushLiteral();
+  return root;
+}
 
+function stringList(value: JsonValue | undefined): string[] {
+  if (!Array.isArray(value)) return [];
+  return value.map((item) => String(item ?? "").trim()).filter(Boolean);
+}
+
+function canonicalizeIonAction(root: Record<string, JsonValue>): IonActionPacket | null {
+  const raw = root.ion_action;
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return null;
+  const action = raw as Record<string, JsonValue>;
+  if (!action.actor || typeof action.actor !== "object" || Array.isArray(action.actor)) {
+    const callsign = action.callsign;
+    const carrier = action.carrier;
+    if (callsign || carrier) {
+      action.actor = { callsign, carrier } as Record<string, JsonValue>;
+    }
+  }
+  if (!action.authority || typeof action.authority !== "object" || Array.isArray(action.authority)) {
+    const authority: Record<string, JsonValue> = {};
+    for (const key of ["human_sovereign", "requires_approval", "production_authority", "live_execution_authority"]) {
+      if (key in action) authority[key] = action[key];
+    }
+    if (Object.keys(authority).length) action.authority = authority;
+  }
+  if (!action.receipts || typeof action.receipts !== "object" || Array.isArray(action.receipts)) {
+    const intent = String(action.intent ?? "");
+    const defaults: Record<string, JsonValue[]> = {
+      write_file_draft: ["file_write_receipt", "sha256_receipt"],
+      create_codex_work_packet: ["codex_work_packet_receipt", "action_receipt"],
+      create_github_issue_draft: ["github_issue_draft_receipt", "action_receipt"],
+      register_artifact: ["artifact_registration_receipt", "action_receipt"],
+    };
+    action.receipts = { requested: defaults[intent] ?? ["action_receipt"] } as Record<string, JsonValue>;
+  }
+  root.ion_action = action;
+  return root as unknown as IonActionPacket;
+}
+
+function canonicalizeIonReceipt(root: Record<string, JsonValue>): IonReceiptPacket | null {
+  const raw = root.ion_receipt;
+  if (!raw || typeof raw !== "object" || Array.isArray(raw)) return null;
+  return { ion_receipt: raw as Record<string, JsonValue> };
+}
+
+export function extractIonActionYaml(text: string): string | null {
+  return extractTopLevelYaml(text, "ion_action");
+}
+
+export function extractIonReceiptYaml(text: string): string | null {
+  return extractTopLevelYaml(text, "ion_receipt");
+}
+
+export function parseStrictIonActionYaml(text: string): IonActionPacket | null {
+  return parseIonActionYamlWithDiagnostics(text).packet;
+}
+
+export function parseIonActionYamlWithDiagnostics(text: string): ParseResult {
+  const yaml = extractIonActionYaml(text);
+  if (!yaml) return { packet: null, finding: "missing_top_level_ion_action", extracted_yaml: undefined };
+  const root = parseSimpleYamlRoot(yaml);
   const packet = canonicalizeIonAction(root);
   if (!packet) {
     return { packet: null, finding: "ion_action_not_object", extracted_yaml: yaml.slice(0, 1200) };
   }
   return { packet, finding: null, extracted_yaml: yaml.slice(0, 1200) };
+}
+
+export function parseIonReceiptYamlWithDiagnostics(text: string): ReceiptParseResult {
+  const yaml = extractIonReceiptYaml(text);
+  if (!yaml) return { receipt: null, finding: "missing_top_level_ion_receipt", extracted_yaml: undefined };
+  const root = parseSimpleYamlRoot(yaml);
+  const receipt = canonicalizeIonReceipt(root);
+  if (!receipt) {
+    return { receipt: null, finding: "ion_receipt_not_object", extracted_yaml: yaml.slice(0, 1200) };
+  }
+  const status = String(receipt.ion_receipt.status ?? "candidate").trim() || "candidate";
+  const missingProof = stringList(receipt.ion_receipt.missing_proof);
+  return {
+    receipt,
+    finding: null,
+    extracted_yaml: yaml.slice(0, 1200),
+    status,
+    missing_proof: missingProof,
+  };
 }
 
 export function localValidate(packet: IonActionPacket): ValidationResult {

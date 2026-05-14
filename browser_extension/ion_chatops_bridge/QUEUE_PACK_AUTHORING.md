@@ -60,7 +60,7 @@ referenced from the manifest with `prompt_ref`.
             {
               "id": "scope",
               "title": "Scope and boundaries",
-              "tags": ["read-only", "planning"],
+              "tags": ["route:queue-pack", "phase:ingress", "authority:read-only"],
               "prompt_ref": "prompts/01_discovery/01_scope.md"
             }
           ]
@@ -145,3 +145,63 @@ expected at:
 ```text
 ION/06_artifacts/packages/custom_gpt/ION_ADVANCED_ORCHESTRATION_QUEUE_PACK_SEED_20260511.zip
 ```
+
+
+## ION Tag Contract
+
+Tags are operator-visible routing and proof hints. They do not grant authority,
+prove acceptance, or replace receipts.
+
+Preferred format is `namespace:value`. Legacy kebab-case tags are still accepted
+for older packs, but new serious ION packs should use namespaced tags.
+
+Reserved starter namespaces:
+
+```text
+route:boot-sequence
+route:persona-return
+route:queue-pack
+route:context-sync
+phase:ingress
+phase:relay
+phase:steward
+phase:mason
+phase:nemesis
+phase:scribe
+phase:persona
+state:candidate
+state:validated
+state:blocked
+state:duplicate
+state:missing-proof
+authority:read-only
+authority:approval-required
+authority:no-production
+authority:no-live
+authority:bounded-write
+proof:source-inspected
+proof:tool-call
+proof:artifact-created
+proof:test-pass
+proof:missing
+artifact:action-yaml
+artifact:receipt
+artifact:queue-pack
+artifact:context-pack
+output:yaml-receipt
+ui:chip
+ui:badge
+ui:top-rail
+```
+
+Authoring rules:
+
+- Keep tags lowercase and short.
+- Prefer 3 to 6 tags per step.
+- Use `authority:*` tags to warn the operator, not to grant permission.
+- Use `proof:*` tags only to describe what the step is expected to produce or
+  review. Do not claim `proof:test-pass` unless the prompt or receipt includes
+  actual test evidence.
+- Use `artifact:receipt` for prompts that are meant to emit `ion_receipt:` YAML.
+- `ion_receipt:` blocks are proof material. They must never be submitted through
+  the Action validate/submit flow.

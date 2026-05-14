@@ -3,17 +3,17 @@ const path = require("path");
 const { performance } = require("perf_hooks");
 const vm = require("vm");
 
-function findRepoRoot(start) {
+function findWorkspaceRoot(start) {
   let current = path.resolve(start);
   while (true) {
-    if (fs.existsSync(path.join(current, "ION", "REPO_AUTHORITY.md"))) return current;
+    if (fs.existsSync(path.join(current, "browser_extension", "ion_chatops_bridge", "dist", "content.js"))) return current;
     const parent = path.dirname(current);
     if (parent === current) return process.cwd();
     current = parent;
   }
 }
 
-const REPO_ROOT = findRepoRoot(__dirname);
+const WORKSPACE_ROOT = findWorkspaceRoot(__dirname);
 
 const liveSmokeYaml = `YAML
 \`\`\`yaml
@@ -59,6 +59,24 @@ const renderedCodeBlockYaml = `ion_action:
   live_execution_authority: false
   requires_approval: true
   objective: "Verify rendered ChatGPT YAML code block detection without literal fences."`;
+
+const receiptFirstYaml = `ion_receipt:
+  schema_id: ion.chat.receipt_fragment.v0_1
+  status: candidate
+  objective: verify_receipt_yaml_is_badged_not_submitted
+  workflow_object:
+    kind: runtime_test
+    path_or_id: tests/live_smoke_parser_simulation.js
+    accepted_state_claim: false
+  evidence:
+    tool_calls:
+      - node_live_smoke_parser_simulation
+  missing_proof:
+    - operator_acceptance
+    - landed_receipt_path
+  authority:
+    production_authority: false
+    live_execution_authority: false`;
 
 const flatCodexYaml = `ion_action:
   schema: ion.chatops.action.v1
@@ -241,7 +259,7 @@ context.window.performance = performance;
 
 vm.createContext(context);
 vm.runInContext(
-  fs.readFileSync(path.join(REPO_ROOT, "ION/09_integrations/browser_extension/ion_chatops_bridge/dist/content.js"), "utf8"),
+  fs.readFileSync(path.join(WORKSPACE_ROOT, "browser_extension/ion_chatops_bridge/dist/content.js"), "utf8"),
   context,
 );
 
@@ -316,6 +334,16 @@ const rendered = context.window.__ION_CHATOPS_BRIDGE_DEBUG__.parseIonActionYamlW
 if (!rendered.packet) throw new Error(`rendered code block shape rejected: ${rendered.finding}`);
 if (rendered.packet.ion_action.action_id !== "sev-20260505-rendered-code-block") {
   throw new Error("rendered code block action_id did not parse");
+}
+
+const receipt = context.window.__ION_CHATOPS_BRIDGE_DEBUG__.parseIonReceiptYamlWithDiagnostics(receiptFirstYaml);
+if (!receipt.receipt) throw new Error(`receipt shape rejected: ${receipt.finding}`);
+if (receipt.status !== "candidate") throw new Error("receipt status did not parse");
+if (!Array.isArray(receipt.missing_proof) || receipt.missing_proof.length !== 2) {
+  throw new Error("receipt missing_proof list did not parse");
+}
+if (context.window.__ION_CHATOPS_BRIDGE_DEBUG__.candidateBlocks("manual").some((block) => block.includes("ion_receipt:"))) {
+  throw new Error("ion_receipt block must not be treated as an action candidate");
 }
 
 const assistantNode = new Element("div");
@@ -415,6 +443,20 @@ if (registryStats.composerControls < 2) throw new Error("DOM registry did not ma
 if (registryCode.dataset.ionYamlStatus !== "valid") throw new Error("DOM registry did not set valid YAML status");
 if (registryButton.dataset.ionControlRole !== "send_button") throw new Error("DOM registry did not classify send control");
 if (composer.dataset.ionControlRole !== "composer_input") throw new Error("DOM registry did not classify composer input");
+
+const receiptCode = new Element("pre");
+receiptCode.textContent = receiptFirstYaml;
+receiptCode.innerText = receiptFirstYaml;
+receiptCode.rect = { top: 380, left: 210, right: 790, bottom: 520, width: 580, height: 140 };
+context.document.querySelectorAll = (selector) => {
+  if (selector === "pre, pre code, code, [class*='font-mono'], [class*='whitespace-pre'], [class*='overflow-x-auto']") return [receiptCode];
+  return [];
+};
+const receiptRegistryStats = context.window.__ION_CHATOPS_BRIDGE_DEBUG__.updateDomActionRegistry();
+if (receiptRegistryStats.receiptBlocks !== 1) throw new Error("DOM registry did not count receipt blocks");
+if (receiptRegistryStats.validActions !== 0) throw new Error("receipt block must not count as a valid action");
+if (receiptCode.dataset.ionReceiptStatus !== "missing-proof") throw new Error("receipt block did not mark missing proof");
+if (!String(receiptCode.dataset.ionTags || "").includes("artifact:receipt")) throw new Error("receipt block tags missing artifact:receipt");
 
 const profileButton = new Element("button");
 profileButton.setAttribute("aria-label", "BB profile menu");
@@ -523,7 +565,7 @@ disabledContext.window.window = disabledContext.window;
 disabledContext.window.document = disabledContext.document;
 vm.createContext(disabledContext);
 vm.runInContext(
-  fs.readFileSync(path.join(REPO_ROOT, "ION/09_integrations/browser_extension/ion_chatops_bridge/dist/content.js"), "utf8"),
+  fs.readFileSync(path.join(WORKSPACE_ROOT, "browser_extension/ion_chatops_bridge/dist/content.js"), "utf8"),
   disabledContext,
 );
 if (byId.has("ion-chatops-bridge-panel")) throw new Error("safe mode rendered the status panel");
@@ -537,6 +579,8 @@ console.log(JSON.stringify({
   receipts: action.receipts.requested,
   flat_action_id: flat.packet.ion_action.action_id,
   rendered_action_id: rendered.packet.ion_action.action_id,
+  receipt_status: receipt.status,
+  receipt_registry: receiptRegistryStats,
   assistant_container_detected: assistantBlocks.length,
   rendered_dom_detected: renderedBlocks.length,
   page_fallback_blocks: pageFallbackBlocks.length,

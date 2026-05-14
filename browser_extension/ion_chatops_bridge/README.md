@@ -19,7 +19,7 @@ MVP behavior:
 - show subtle visual capture borders for composer input, attach/send/voice
   controls, selected source chips such as GitHub, and uploaded thumbnails;
 - annotate rendered code/YAML blocks with compact workflow badges such as
-  `ION CODE #N` and `ION YAML #N · valid`;
+  `ION CODE #N`, `ION YAML #N · valid`, and `ION RECEIPT #N · candidate`;
 - show Codex queue runner status/queue and approval-gated prepare/start controls
   backed by `kernel.ion_codex_queue_runner`;
 - request pasteable context packs and approval-gated package ZIPs backed by the
@@ -352,3 +352,12 @@ The intended ION path is:
 
 No file should be uploaded without explicit user approval, a manifest, and a
 receipt when ION state is touched. This MVP does not click Send.
+
+
+## Receipt-first YAML blocks
+
+The bridge treats top-level `ion_receipt:` YAML as proof material, not as an
+Action candidate. Receipt blocks receive registry badges and derived tags such as
+`artifact:receipt`, `output:yaml-receipt`, `state:candidate`, and
+`proof:missing`, but the extension does not submit them to the Action Gateway and
+does not mark them as accepted state.

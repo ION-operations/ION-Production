@@ -20,13 +20,23 @@
             {
               "id": "scope",
               "title": "Scope the work",
-              "tags": ["read-only", "planning"],
+              "tags": [
+                "route:queue-pack",
+                "phase:ingress",
+                "authority:read-only",
+                "proof:source-inspected"
+              ],
               "prompt": "Act as a cautious ION browser carrier. Summarize the requested work, list confirmed facts, list assumptions, identify missing context, and stop with the smallest safe next action."
             },
             {
               "id": "review",
               "title": "Review the result",
-              "tags": ["review", "receipt"],
+              "tags": [
+                "phase:nemesis",
+                "artifact:receipt",
+                "proof:missing",
+                "state:candidate"
+              ],
               "prompt": "Review the previous answer for unsupported claims, authority drift, missing validation, and unclear next steps. Return findings first, then a concise corrected action plan."
             }
           ]
