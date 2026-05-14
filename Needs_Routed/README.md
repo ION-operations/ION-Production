@@ -53,3 +53,18 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=ION/04_packages python3 -S -m kernel.ion_ne
 The write command writes `receipts/` and `indexes/`, and only moves artifacts
 from `drop/` into `history/` or `blocked/`. It does not mutate active queues,
 stage Git paths, commit, push, deploy, or settle ION state.
+
+## Specialist Routes
+
+Current intake recognizes these specialist review lanes:
+
+```text
+branch_context_package_review     branch delegation, README/AGENTS/capsule, git containment
+browser_extension_package_review  browser extension / ChatOps Bridge packets
+queue_hygiene_patch_review        Codex queue runner and no-receipt hygiene patches
+custom_gpt_package_review         Custom GPT/front-door/carrier packages
+context_package_ingest            capsules, continuity exports, transfer packages
+```
+
+If another worker owns a lane, leave its source files alone and use the intake
+index/receipt as the coordination surface.

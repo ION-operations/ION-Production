@@ -20,10 +20,14 @@ def test_needs_routed_scan_classifies_drop_items_without_mutation(tmp_path):
     patch = root / "drop" / "ION_CODEX_QUEUE_START_NO_RECEIPT_CANDIDATE.patch"
     custom_zip = root / "drop" / "ION_CUSTOM_GPT_V4_7_DOGFOOD_CONTEXT_PACKAGE.zip"
     workpacket = root / "drop" / "PCKT-ION-TEST-WORKPACKET.md"
+    browser_packet = root / "drop" / "ION_BROWSER_EXTENSION_TAG_CONTRACT.yaml"
+    branch_packet = root / "drop" / "ION_BRANCH_DELEGATION_ROUTER_PROTOCOL.zip"
     secret = root / "drop" / "service_role_token.env"
     patch.write_text("diff --git a/a b/a\n", encoding="utf-8")
-    custom_zip.write_bytes(b"not a real zip, classification uses name only")
+    custom_zip.write_bytes(b"not a real custom gpt zip, classification uses name only")
     workpacket.write_text("# Workpacket\n\nPCKT-ION-TEST", encoding="utf-8")
+    browser_packet.write_text("schema_id: ion.browser_extension.tag_contract_packet.v0_1\n", encoding="utf-8")
+    branch_packet.write_bytes(b"not a real branch router zip, classification uses name only")
     secret.write_text("not-read-as-secret-content", encoding="utf-8")
 
     result = build_needs_routed_intake(needs_root=root)
@@ -31,9 +35,11 @@ def test_needs_routed_scan_classifies_drop_items_without_mutation(tmp_path):
     routes = {item["original_path"]: item["route_class"] for item in result["items"]}
     assert result["ok"] is True
     assert result["write_performed"] is False
-    assert routes["Needs_Routed/drop/ION_CODEX_QUEUE_START_NO_RECEIPT_CANDIDATE.patch"] == "apply_candidate_patch"
+    assert routes["Needs_Routed/drop/ION_CODEX_QUEUE_START_NO_RECEIPT_CANDIDATE.patch"] == "queue_hygiene_patch_review"
     assert routes["Needs_Routed/drop/ION_CUSTOM_GPT_V4_7_DOGFOOD_CONTEXT_PACKAGE.zip"] == "custom_gpt_package_review"
     assert routes["Needs_Routed/drop/PCKT-ION-TEST-WORKPACKET.md"] == "queue_codex_workpacket"
+    assert routes["Needs_Routed/drop/ION_BROWSER_EXTENSION_TAG_CONTRACT.yaml"] == "browser_extension_package_review"
+    assert routes["Needs_Routed/drop/ION_BRANCH_DELEGATION_ROUTER_PROTOCOL.zip"] == "branch_context_package_review"
     assert routes["Needs_Routed/drop/service_role_token.env"] == "secret_or_private_blocked"
     assert patch.exists()
     assert secret.exists()

@@ -29,7 +29,7 @@ DEFAULT_NEEDS_ROUTED_NAME = "Needs_Routed"
 SYSTEM_DIRS = {"drop", "intake", "routed", "history", "blocked", "receipts", "indexes"}
 SOURCE_LANE_DIRS = {"diffs", "workpackets"}
 MARKER_FILES = {".gitkeep"}
-ROOT_CONTROL_FILES = {"README.md"}
+ROOT_CONTROL_FILES = {"README.md", ".gitignore"}
 TEXT_SUFFIXES = {".diff", ".patch", ".md", ".txt", ".yaml", ".yml", ".json", ".toml"}
 PATCH_SUFFIXES = {".diff", ".patch"}
 ZIP_SUFFIXES = {".zip"}
@@ -163,6 +163,21 @@ def _route_for(path: Path, *, kind: str, text_hint: str, duplicate: bool) -> tup
         return "secret_or_private_blocked", 1.0, [*reasons, "secret_or_private_path_marker"]
     if duplicate:
         return "duplicate_or_superseded", 0.95, [*reasons, "duplicate_sha256_in_scan"]
+    if any(token in haystack for token in ("BROWSER_EXTENSION", "CHATOPS_BRIDGE", "ION_CHATOPS", "CHROME_EXTENSION")):
+        return "browser_extension_package_review", 0.88, [*reasons, "name_or_text_matches_browser_extension_lane"]
+    if any(token in haystack for token in ("START_NO_RECEIPT", "QUEUE_START_NO_RECEIPT", "CODEX_QUEUE_START_NO_RECEIPT")):
+        return "queue_hygiene_patch_review", 0.88, [*reasons, "name_or_text_matches_queue_hygiene_lane"]
+    if any(
+        token in haystack
+        for token in (
+            "BRANCH_DELEGATION_ROUTER",
+            "AI_GIT_BRANCH_CONTAINMENT",
+            "GIT_BRANCH_CONTAINMENT",
+            "README_BRANCH_CONTEXT",
+            "AGENTS_GIT_CONTAINMENT",
+        )
+    ):
+        return "branch_context_package_review", 0.88, [*reasons, "name_or_text_matches_branch_context_lane"]
     if kind == "patch":
         if any(token in haystack for token in ("CUSTOM_GPT", "FRONT_DOOR", "PERSONA", "GPT_BUILDER")):
             return "custom_gpt_package_review", 0.9, [*reasons, "patch_mentions_custom_gpt_lane"]
@@ -185,7 +200,10 @@ def _route_for(path: Path, *, kind: str, text_hint: str, duplicate: bool) -> tup
 def _queue_proposal(route_class: str, item_id: str, original_path: str) -> dict[str, Any] | None:
     if route_class not in {
         "apply_candidate_patch",
+        "branch_context_package_review",
+        "browser_extension_package_review",
         "queue_codex_workpacket",
+        "queue_hygiene_patch_review",
         "custom_gpt_package_review",
         "context_package_ingest",
     }:

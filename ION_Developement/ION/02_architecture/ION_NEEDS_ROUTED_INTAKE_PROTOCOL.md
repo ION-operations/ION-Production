@@ -47,7 +47,10 @@ authorizes legacy backlog migration.
 | Route class | Meaning | Default action |
 | --- | --- | --- |
 | `apply_candidate_patch` | Patch/diff artifact that may be replayed in a scoped branch | propose review packet |
+| `branch_context_package_review` | Branch delegation, README/AGENTS/capsule, or AI git containment package | propose branch-context review |
+| `browser_extension_package_review` | Browser extension / ChatOps Bridge packet, tag contract, or UI/action lane artifact | propose extension review packet |
 | `queue_codex_workpacket` | Workpacket or packet suitable for Codex carrier planning | propose queue packet only |
+| `queue_hygiene_patch_review` | Codex queue/runner hygiene patch or validation packet | propose queue hygiene review |
 | `custom_gpt_package_review` | Custom GPT/front-door/carrier bundle or patch | propose Custom GPT review |
 | `context_package_ingest` | Capsule, continuity, transfer, or context package | propose context ingest |
 | `source_lane_archive` | Report, receipt, or branch evidence worth preserving | preserve/index |
