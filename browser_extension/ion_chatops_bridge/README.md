@@ -39,6 +39,9 @@ MVP behavior:
   that shows every element under the cursor pixel, captures the full layer
   stack, and lets Braden save a chosen layer as the tabs anchor, drop zone, or
   attach target;
+- save a redacted ChatGPT native rail/drawer DOM snapshot from Diagnostics to
+  the local ChatOps runtime diagnostics lane, with clipboard and browser
+  download fallback;
 - tune composer tab lift and drawer height from the Settings tab without a code
   patch;
 - attempt a visible ChatGPT drag/drop for an approved artifact without clicking
@@ -166,6 +169,20 @@ extension sees the composer input, send/attach/voice controls, selected source
 planes such as GitHub, uploaded thumbnails, and YAML/code block status. These
 markers are visual perception aids only; they do not click, send, upload, or
 mutate ION state.
+
+`Save DOM Snapshot` captures the live ChatGPT native left rail, drawer,
+sidebar-toggle/minimize, Share button candidates, and ION drawer state into a
+redacted JSON artifact. When the local ChatOps daemon has the matching endpoint,
+the click writes:
+
+```text
+ION/05_context/current/chatops_bridge/runtime/native_dom_snapshots/latest_native_dom_snapshot.json
+ION/05_context/current/chatops_bridge/runtime/native_dom_snapshots/INDEX.json
+```
+
+The Diagnostics panel also shows the timestamped snapshot path, sha256, and
+receipt path. If the daemon is stale or unavailable, the extension still copies
+the packet when allowed and falls back to a browser-downloaded JSON file.
 
 The Packages tab is for moving context into ChatGPT or another carrier sandbox.
 `Context Pack` pastes a compact current-state packet into the composer.

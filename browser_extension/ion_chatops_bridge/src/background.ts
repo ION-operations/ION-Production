@@ -301,6 +301,16 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return true;
   }
 
+  if (message.type === "ion_chatops_native_dom_snapshot") {
+    (async () => {
+      const result = await postJson("/diagnostics/native-dom-snapshot", message.payload ?? {});
+      sendResponse({ ok: Boolean(result?.ok), stage: "native_dom_snapshot", result });
+    })().catch((error: Error) => {
+      sendResponse({ ok: false, stage: "native_dom_snapshot_exception", error: error.message });
+    });
+    return true;
+  }
+
   if (message.type === "ion_chatops_context_pack") {
     (async () => {
       const result = await getJson("/exports/context-pack");

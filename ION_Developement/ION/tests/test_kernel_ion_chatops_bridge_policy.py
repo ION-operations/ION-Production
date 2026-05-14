@@ -19,6 +19,7 @@ from kernel.ion_chatops_bridge import (
     create_chatops_project_context_sync_zip,
     prepare_chatops_artifact_upload,
     prepare_chatops_agent_next,
+    record_chatops_native_dom_snapshot,
     resolve_chatops_artifact_download,
     submit_chatops_action,
     validate_chatops_action,
@@ -120,6 +121,8 @@ def test_chatops_policy_owner_surfaces_ready(tmp_path):
     assert result["sandbox_return_surface"]["owner"] == "ION/04_packages/kernel/ion_chatgpt_sandbox_return_intake.py"
     assert result["sandbox_return_surface"]["direct_apply_authority"] is False
     assert result["export_surface"]["project_context_sync_zip"] == "POST /exports/project-context-sync-zip"
+    assert result["diagnostics_surface"]["native_dom_snapshot"] == "POST /diagnostics/native-dom-snapshot"
+    assert result["diagnostics_surface"]["latest_snapshot"] == "ION/05_context/current/chatops_bridge/runtime/native_dom_snapshots/latest_native_dom_snapshot.json"
     assert result["main_policy"]["main_auto_push_allowed"] is False
     assert all(owner["exists"] for owner in result["owner_paths"].values())
 
@@ -395,8 +398,42 @@ def test_chatops_context_pack_includes_agent_and_package_controls(tmp_path):
     assert result["pack"]["bridge_tools"]["prepare_artifact_upload"] == "POST /artifacts/prepare-upload with Braden approval"
     assert result["pack"]["bridge_tools"]["local_operator_attach_artifact"] == "POST /operator/attach-artifact with Braden approval"
     assert result["pack"]["bridge_tools"]["sandbox_returns"] == "GET /sandbox/returns"
+    assert result["pack"]["bridge_tools"]["native_dom_snapshot"] == "POST /diagnostics/native-dom-snapshot"
     assert result["pack"]["sandbox_returns"]["inbox_root"] == "ION/05_context/inbox/chatgpt_sandbox_returns"
     assert "ION local context pack" in result["prompt"]
+
+
+def test_chatops_records_native_dom_snapshot_artifact_and_latest_pointer(tmp_path):
+    _seed_root(tmp_path)
+    snapshot = {
+        "schema": "ion.chatops.native_dom_diagnostics.v0_1",
+        "captured_at": "2026-05-14T18:00:00Z",
+        "url": "https://chatgpt.com/c/test",
+        "detected": {
+            "rail_host": {"found": True, "selector": "nav"},
+            "drawer_host": {"found": True, "selector": "aside"},
+        },
+        "ion_state": {
+            "native_left_mode": "native",
+            "native_drawer_is_open": True,
+            "native_drawer_open_panels": ["queue"],
+        },
+    }
+
+    result = record_chatops_native_dom_snapshot(tmp_path, {"snapshot": snapshot})
+
+    assert result["ok"] is True
+    assert result["finding"] == "native_dom_snapshot_recorded"
+    assert result["snapshot_path"].startswith("ION/05_context/current/chatops_bridge/runtime/native_dom_snapshots/ion_native_dom_snapshot_")
+    assert result["latest_path"] == "ION/05_context/current/chatops_bridge/runtime/native_dom_snapshots/latest_native_dom_snapshot.json"
+    assert (tmp_path / result["snapshot_path"]).exists()
+    assert (tmp_path / result["latest_path"]).exists()
+    assert (tmp_path / result["index_path"]).exists()
+    artifact = json.loads((tmp_path / result["latest_path"]).read_text(encoding="utf-8"))
+    assert artifact["schema_id"] == "ion.chatops.native_dom_snapshot_artifact.v1"
+    assert artifact["snapshot"]["detected"]["rail_host"]["selector"] == "nav"
+    assert result["summary"]["native_drawer_is_open"] is True
+    assert (tmp_path / result["receipt_path"]).exists()
 
 
 def test_chatops_project_context_sync_zip_requires_approval_and_builds_manifest(tmp_path):

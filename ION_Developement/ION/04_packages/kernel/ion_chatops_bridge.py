@@ -71,6 +71,7 @@ ARTIFACTS_DIR = BASE_DIR / "artifacts"
 EXPORTS_DIR = BASE_DIR / "exports"
 ARTIFACT_TICKETS_DIR = RUNTIME_DIR / "artifact_upload_tickets"
 CAPTURED_ASSETS_DIR = ARTIFACTS_DIR / "chatgpt_captures"
+NATIVE_DOM_SNAPSHOTS_DIR = RUNTIME_DIR / "native_dom_snapshots"
 MAX_BROWSER_UPLOAD_BYTES = 25 * 1024 * 1024
 
 POLICY_PATHS = {
@@ -1296,6 +1297,141 @@ def capture_chatops_page_asset(root: str | Path | None, packet: Mapping[str, Any
     return result
 
 
+def _safe_native_dom_snapshot_filename(value: Any, captured_at: str) -> str:
+    raw = Path(str(value or "")).name.strip()
+    raw = re.sub(r"[^A-Za-z0-9._ -]+", "_", raw).strip(" ._-")
+    if not raw:
+        token = re.sub(r"[^0-9A-Za-z]+", "", captured_at)[:16]
+        raw = f"ion_native_dom_snapshot_{token or datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}.json"
+    if not raw.endswith(".json"):
+        raw = f"{raw}.json"
+    return raw[:180]
+
+
+def _native_dom_snapshot_summary(snapshot: Mapping[str, Any]) -> dict[str, Any]:
+    detected = snapshot.get("detected") if isinstance(snapshot.get("detected"), Mapping) else {}
+    ion_state = snapshot.get("ion_state") if isinstance(snapshot.get("ion_state"), Mapping) else {}
+    return {
+        "snapshot_schema": snapshot.get("schema") or snapshot.get("schema_id"),
+        "captured_at": snapshot.get("captured_at"),
+        "url": snapshot.get("url"),
+        "detected_keys": sorted(str(key) for key in detected.keys()),
+        "native_left_mode": ion_state.get("native_left_mode"),
+        "native_drawer_is_open": ion_state.get("native_drawer_is_open"),
+        "native_drawer_open_panels": ion_state.get("native_drawer_open_panels"),
+    }
+
+
+def record_chatops_native_dom_snapshot(root: str | Path | None, packet: Mapping[str, Any]) -> dict[str, Any]:
+    shell_root = _resolve_root(root)
+    snapshot = packet.get("snapshot")
+    if not isinstance(snapshot, Mapping):
+        result = {
+            "schema_id": "ion.chatops.native_dom_snapshot_record_result.v1",
+            "ok": False,
+            "finding": "snapshot_object_required",
+            "production_authority": False,
+            "live_execution_authority": False,
+        }
+        receipt_path = _write_operation_receipt(
+            shell_root,
+            operation="native_dom_snapshot",
+            status="rejected",
+            packet={"schema_id": "ion.chatops.native_dom_snapshot_request.v1"},
+            result=result,
+            failure_classification="CHATOPS_SCHEMA_FAILURE",
+        )
+        return {**result, "receipt_path": receipt_path}
+
+    captured_at = str(snapshot.get("captured_at") or _now())
+    filename = _safe_native_dom_snapshot_filename(packet.get("filename"), captured_at)
+    snapshot_dir = shell_root / NATIVE_DOM_SNAPSHOTS_DIR
+    snapshot_path = snapshot_dir / filename
+    latest_path = snapshot_dir / "latest_native_dom_snapshot.json"
+    index_path = snapshot_dir / "INDEX.json"
+    artifact = {
+        "schema_id": "ion.chatops.native_dom_snapshot_artifact.v1",
+        "artifact_kind": "chatgpt_native_dom_snapshot",
+        "recorded_at": _now(),
+        "captured_at": captured_at,
+        "source": {
+            "extension": "ion_chatops_bridge",
+            "page_url": snapshot.get("url"),
+            "snapshot_schema": snapshot.get("schema") or snapshot.get("schema_id"),
+            "redaction_policy": "extension_button_text_only_for_button_like_controls",
+        },
+        "snapshot": dict(snapshot),
+        "authority": {
+            "production_authority": False,
+            "live_execution_authority": False,
+            "browser_send_authority": False,
+            "secrets_authority": False,
+        },
+    }
+    _write_json(snapshot_path, artifact)
+    _write_json(latest_path, artifact)
+    recent_paths = sorted(
+        (path for path in snapshot_dir.glob("ion_native_dom_snapshot_*.json") if path.is_file()),
+        key=lambda path: path.stat().st_mtime,
+        reverse=True,
+    )[:12]
+    index = {
+        "schema_id": "ion.chatops.native_dom_snapshot_index.v1",
+        "updated_at": _now(),
+        "latest_path": _repo_rel(latest_path, shell_root),
+        "latest_snapshot_path": _repo_rel(snapshot_path, shell_root),
+        "latest_sha256": _sha256_file(snapshot_path),
+        "recent": [
+            {
+                "path": _repo_rel(path, shell_root),
+                "sha256": _sha256_file(path),
+                "size_bytes": path.stat().st_size,
+                "mtime": datetime.fromtimestamp(path.stat().st_mtime, timezone.utc).replace(microsecond=0).isoformat(),
+            }
+            for path in recent_paths
+        ],
+        "production_authority": False,
+        "live_execution_authority": False,
+    }
+    _write_json(index_path, index)
+    files_touched = [
+        _repo_rel(snapshot_path, shell_root),
+        _repo_rel(latest_path, shell_root),
+        _repo_rel(index_path, shell_root),
+    ]
+    result = {
+        "schema_id": "ion.chatops.native_dom_snapshot_record_result.v1",
+        "ok": True,
+        "finding": "native_dom_snapshot_recorded",
+        "snapshot_path": files_touched[0],
+        "latest_path": files_touched[1],
+        "index_path": files_touched[2],
+        "sha256": _sha256_file(snapshot_path),
+        "summary": _native_dom_snapshot_summary(snapshot),
+        "production_authority": False,
+        "live_execution_authority": False,
+    }
+    receipt_path = _write_operation_receipt(
+        shell_root,
+        operation="native_dom_snapshot",
+        status="completed",
+        packet={
+            "schema_id": "ion.chatops.native_dom_snapshot_request.v1",
+            "filename": filename,
+            "summary": result["summary"],
+        },
+        result=result,
+        files_touched=files_touched,
+        target_refs=[
+            {"provider": "local_ion", "path": files_touched[0], "role": "native_dom_snapshot"},
+            {"provider": "local_ion", "path": files_touched[1], "role": "latest_native_dom_snapshot"},
+            {"provider": "local_ion", "path": files_touched[2], "role": "native_dom_snapshot_index"},
+        ],
+    )
+    result["receipt_path"] = receipt_path
+    return result
+
+
 def build_chatops_attachable_artifacts(root: str | Path | None = None, *, limit: int = 30) -> dict[str, Any]:
     shell_root = _resolve_root(root)
     candidates: list[dict[str, Any]] = []
@@ -2027,6 +2163,7 @@ def build_chatops_context_pack(root: str | Path | None = None) -> dict[str, Any]
             "sandbox_returns": "GET /sandbox/returns",
             "sandbox_diff_preview": "POST /sandbox/returns/diff-preview with Braden approval",
             "sandbox_queue_review": "POST /sandbox/returns/queue-review with Braden approval",
+            "native_dom_snapshot": "POST /diagnostics/native-dom-snapshot",
         },
         "authority": {
             "production_authority": False,
@@ -2496,6 +2633,13 @@ def build_chatops_policy(root: str | Path | None = None) -> dict[str, Any]:
                 "ION/04_packages/kernel/ion_safe_full_project_packager.py",
             ],
         },
+        "diagnostics_surface": {
+            "native_dom_snapshot": "POST /diagnostics/native-dom-snapshot",
+            "snapshot_runtime_dir": NATIVE_DOM_SNAPSHOTS_DIR.as_posix(),
+            "latest_snapshot": (NATIVE_DOM_SNAPSHOTS_DIR / "latest_native_dom_snapshot.json").as_posix(),
+            "redacted_by_extension": True,
+            "direct_browser_dom_authority": False,
+        },
         "artifact_upload_surface": {
             "list": "GET /artifacts/attachables",
             "prepare_upload": "POST /artifacts/prepare-upload",
@@ -2848,6 +2992,10 @@ def make_handler(root: Path) -> type[BaseHTTPRequestHandler]:
                 return
             if path == "/assets/capture":
                 result = capture_chatops_page_asset(root, packet)
+                _http_response(self, 200 if result.get("ok") else 409, result)
+                return
+            if path == "/diagnostics/native-dom-snapshot":
+                result = record_chatops_native_dom_snapshot(root, packet)
                 _http_response(self, 200 if result.get("ok") else 409, result)
                 return
             if path == "/agent/prepare-next":

@@ -5302,15 +5302,107 @@ function nativeDomDiagnosticsText(): string {
   return JSON.stringify(nativeDomDiagnosticsPacket(), null, 2);
 }
 
-function captureNativeDomDiagnostics(): void {
-  const detail = nativeDomDiagnosticsText();
-  setBridgeDiagnosticsDetail(`Native DOM diagnostics packet\n\n${detail}`);
-  setBridgeStatus("DOM diagnostics captured", "ChatGPT rail/drawer/share/toggle candidates captured in Diagnostics.", "success");
+function nativeDomDiagnosticsFilename(packet: Record<string, unknown>): string {
+  const capturedAt = String(packet.captured_at ?? new Date().toISOString()).replace(/[^0-9A-Za-z]+/g, "").slice(0, 16);
+  return `ion_native_dom_snapshot_${capturedAt || Date.now()}.json`;
+}
+
+function downloadNativeDomDiagnosticsFallback(filename: string, detail: string): void {
+  const blob = new Blob([detail, "\n"], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  anchor.style.display = "none";
+  document.documentElement.appendChild(anchor);
+  try {
+    anchor.click();
+  } catch (_error) {
+    // The diagnostics packet remains visible in the panel if browser download is blocked.
+  } finally {
+    window.setTimeout(() => {
+      anchor.remove();
+      URL.revokeObjectURL(url);
+    }, 0);
+  }
+}
+
+function captureNativeDomDiagnostics(): Promise<Record<string, unknown> | null> {
+  const packet = nativeDomDiagnosticsPacket();
+  const detail = JSON.stringify(packet, null, 2);
+  const filename = nativeDomDiagnosticsFilename(packet);
+  setBridgeDiagnosticsDetail(`Native DOM diagnostics packet\n\nCreating local artifact: ${filename}\n\n${detail}`);
+  setBridgeStatus("Saving DOM diagnostics", "Writing ChatGPT rail/drawer/share/toggle snapshot through the local daemon.", "working");
   try {
     void navigator.clipboard?.writeText(detail);
   } catch (_error) {
-    // Clipboard is optional; diagnostics remain visible in the panel.
+    // Clipboard is optional; diagnostics remain visible and are written to an artifact.
   }
+  return new Promise((resolve) => {
+    if (typeof chrome === "undefined" || !chrome.runtime?.sendMessage) {
+      downloadNativeDomDiagnosticsFallback(filename, detail);
+      setBridgeDiagnosticsDetail([
+        "Native DOM diagnostics packet",
+        "",
+        `download_fallback: ${filename}`,
+        "daemon_artifact: unavailable",
+        "",
+        detail,
+      ].join("\n"));
+      setBridgeStatus("DOM diagnostics downloaded", filename, "success");
+      resolve(null);
+      return;
+    }
+    const handleFallback = (reason: string): void => {
+      downloadNativeDomDiagnosticsFallback(filename, detail);
+      setBridgeDiagnosticsDetail([
+        "Native DOM diagnostics packet",
+        "",
+        `download_fallback: ${filename}`,
+        `daemon_artifact_blocked: ${reason}`,
+        "",
+        detail,
+      ].join("\n"));
+      setBridgeStatus("DOM diagnostics downloaded", "Daemon artifact write unavailable; browser download fallback used.", "success");
+      resolve(null);
+    };
+    const handleResponse = async (response: any): Promise<void> => {
+      const result = response?.result ?? {};
+      if (response?.ok && result?.ok) {
+        const artifactDetail = [
+          "Native DOM diagnostics artifact written",
+          "",
+          `snapshot_path: ${result.snapshot_path ?? ""}`,
+          `latest_path: ${result.latest_path ?? ""}`,
+          `index_path: ${result.index_path ?? ""}`,
+          `sha256: ${result.sha256 ?? ""}`,
+          `receipt_path: ${result.receipt_path ?? ""}`,
+          "",
+          detail,
+        ].join("\n");
+        setBridgeDiagnosticsDetail(artifactDetail);
+        setBridgeStatus("DOM diagnostics saved", String(result.latest_path ?? result.snapshot_path ?? filename), "success");
+        await copyBridgeResult("ION DOM snapshot artifact", artifactDetail);
+        resolve(result as Record<string, unknown>);
+        return;
+      }
+      handleFallback(blockedDetail(response));
+    };
+    try {
+      chrome.runtime.sendMessage({
+        type: "ion_chatops_native_dom_snapshot",
+        payload: {
+          schema_id: "ion.chatops.native_dom_snapshot_request.v1",
+          filename,
+          snapshot: packet,
+        },
+      }, (response) => {
+        void handleResponse(response);
+      });
+    } catch (error) {
+      handleFallback(error instanceof Error ? error.message : String(error));
+    }
+  });
 }
 
 function nativeLeftButton(action: string, label: string, title: string, primary = false, disabled = false): HTMLButtonElement {
@@ -7707,7 +7799,7 @@ window.addEventListener("ion-chatops-rescan", () => {
   }
 });
 window.addEventListener("ion-chatops-native-dom-diagnostics", () => {
-  captureNativeDomDiagnostics();
+  void captureNativeDomDiagnostics();
 });
 window.addEventListener("ion-chatops-insert-reentry", () => {
   insertSevContextBrief();

@@ -773,7 +773,7 @@ const bridgeState = {
   inspectorLayers: [] as InspectorLayerOption[],
   inspectorSelectedIndex: 0,
   diagnostics:
-    "Normal carrier flow: Sev emits an ion_action YAML block in ChatGPT, the extension detects it, Braden approves it, the local daemon records/executes it, and ION writes a receipt.\n\nThe buttons below are local diagnostics only. They fabricate known-good test actions so the extension/daemon path can be checked without waiting on ChatGPT to emit YAML.",
+    "Normal carrier flow: Sev emits an ion_action YAML block in ChatGPT, the extension detects it, Braden approves it, the local daemon records/executes it, and ION writes a receipt.\n\nSave DOM Snapshot writes the current redacted ChatGPT rail/drawer DOM packet to the local ChatOps runtime diagnostics lane when the daemon is current, with clipboard and browser-download fallback. The other buttons are local diagnostics only. They fabricate known-good test actions so the extension/daemon path can be checked without waiting on ChatGPT to emit YAML.",
   tools: "Daemon: http://127.0.0.1:8767\nUse Rescan after ChatGPT finishes rendering a YAML block.",
   logs: [] as string[],
   anchor: {
@@ -3147,7 +3147,7 @@ function ensurePanel(): HTMLElement {
         <div class="ion-tab-panel" data-panel="diagnostics">
           <div class="ion-detail" data-field="diagnostics"></div>
           <div class="ion-toolbar-actions">
-            <button type="button" class="ion-tool" data-tool="native-dom-diagnostics">DOM Snapshot</button>
+            <button type="button" class="ion-tool" data-tool="native-dom-diagnostics">Save DOM Snapshot</button>
             <button type="button" class="ion-tool" data-tool="insert-smoke">Submit Smoke Test</button>
             <button type="button" class="ion-tool" data-tool="insert-codex">Queue Codex Test Work</button>
           </div>
