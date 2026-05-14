@@ -3,7 +3,7 @@
 
 This hook is read-only. It exists for chats launched from
 `/home/sev/ION - Production`, while the active ION root remains
-`/home/sev/ION - Production/ION_CODEX FULL`.
+`/home/sev/ION - Production/ION_Developement`.
 """
 from __future__ import annotations
 
@@ -13,7 +13,7 @@ from pathlib import Path
 from typing import Any
 
 PARENT_ROOT = Path("/home/sev/ION - Production").resolve()
-ACTIVE_ROOT = PARENT_ROOT / "ION_CODEX FULL"
+ACTIVE_ROOT = PARENT_ROOT / "ION_Developement"
 PACKAGE_ROOT = ACTIVE_ROOT / "ION" / "04_packages"
 
 

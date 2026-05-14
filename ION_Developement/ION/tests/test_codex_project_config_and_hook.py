@@ -23,7 +23,7 @@ def test_project_codex_config_is_project_scoped_and_hook_enabled():
     assert not (root / "AGENTS.md").exists()
     assert config["sandbox_mode"] == "workspace-write"
     assert config["approval_policy"] == "on-request"
-    assert config["features"]["codex_hooks"] is True
+    assert config["features"]["hooks"] is True
     assert config["sandbox_workspace_write"]["network_access"] is False
     assert "ION/05_context/current/codex_solo" in config["sandbox_workspace_write"]["writable_roots"]
     assert config["mcp_servers"]["ion_local"]["enabled"] is True
@@ -50,7 +50,8 @@ def test_session_start_hook_outputs_additional_context(monkeypatch, capsys):
     context = payload["hookSpecificOutput"]["additionalContext"]
     assert payload["continue"] is True
     assert "ION Codex Solo Boot Context" in context
-    assert "Capsule is minimum working context" in context
+    assert "ION_CODEX_SOLO_CONTEXT_READY" in context
+    assert str(root) in context
 
 
 def test_session_start_hook_fails_soft_outside_active_root(monkeypatch, capsys):
@@ -77,7 +78,7 @@ def test_parent_codex_config_bridges_to_active_root():
     config = tomllib.loads(config_path.read_text(encoding="utf-8"))
 
     assert (parent / "AGENTS.md").is_file()
-    assert config["features"]["codex_hooks"] is True
+    assert config["features"]["hooks"] is True
     assert str(root) in config["developer_instructions"]
     assert "ION/05_context/current/codex_solo/HOT_CONTEXT.md" in config["developer_instructions"]
     hook_command = config["hooks"]["SessionStart"][0]["hooks"][0]["command"]
