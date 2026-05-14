@@ -1,0 +1,53 @@
+schema_id: ion.dirty_tree_triage_receipt.v1
+created_at_utc: 20260514T172301Z
+posture: sandbox-candidate
+accepted_state_claim: false
+production_authority: false
+live_execution_authority: false
+carrier: CODEX-001
+objective: classify_remaining_runtime_state_and_root_generated_zip_dirty_tree_lanes
+runtime_state_lane:
+  decision: do_not_commit_or_reset_in_this_packet
+  reason: >
+    The modified JSON files are large live-state/runtime projections and queues.
+    They may contain current operator/worker context, queue state, or local runtime
+    evidence. They require a dedicated runtime-state receipt/archive policy before
+    any restore, migration, or commit action.
+  modified_files:
+    - path: ION_Developement/ION/05_context/current/ACTIVE_CHATGPT_CONNECTOR_CODEX_WORK_QUEUE.json
+      summary: dict; 100 request entries; approximately 688422 bytes
+    - path: ION_Developement/ION/05_context/current/ACTIVE_CODEX_CAPSULE_CHAT_MODEL.json
+      summary: dict; active capsule chat model projection; approximately 2160245 bytes
+    - path: ION_Developement/ION/05_context/current/ACTIVE_OPERATOR_MESSAGE_QUEUE.json
+      summary: dict; 50 queue items; approximately 70605 bytes
+    - path: ION_Developement/ION/05_context/current/chatgpt_connector/runtime/bounded_patch_apply_idempotency_ledger.json
+      summary: dict; 13 idempotency entries; approximately 8142 bytes
+    - path: ION_Developement/ION/05_context/current/chatgpt_connector/runtime/codex_queue_runner_state.json
+      summary: dict; queue runner state projection; approximately 1218 bytes
+    - path: ION_Developement/ION/05_context/current/codex_capsule_chat/state.json
+      summary: dict; capsule chat state projection; approximately 493174 bytes
+root_zip_lane:
+  decision: ignored_as_local_generated_exports
+  files:
+    - ION_Developement.zip
+    - Needs_Routed.zip
+    - browser_extension.zip
+  gitignore_update:
+    - /ION_Developement.zip
+    - /Needs_Routed.zip
+    - /browser_extension.zip
+needs_routed_backlog_lane:
+  decision: leave_visible_for_governed_intake
+  reason: Needs_Routed package zips and patch candidates are work inputs, not generic generated root exports.
+validation:
+  - command: JSON top-level shape/count inspection without raw content export
+    result: passed
+  - command: git check-ignore root generated zips after .gitignore update
+    result: pending_post_patch_check
+non_claims:
+  - no runtime JSON committed
+  - no runtime JSON reset
+  - no runtime queue mutation performed
+  - no root zip deleted
+  - no Needs_Routed backlog zip hidden
+  - no accepted state claimed
