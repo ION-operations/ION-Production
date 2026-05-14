@@ -1,0 +1,22 @@
+schema_id: ion.branch_delegate_return.v0_1
+branch: "ION/<target_branch>"
+status: answered
+context_refs:
+  - "ION/<target_branch>/README.md"
+  - "ION/<target_branch>/AGENTS.md"
+  - "ION/<target_branch>/ION_CONTEXT_CAPSULE.yaml"
+summary: "<branch-scoped answer>"
+recommendations:
+  - "<bounded recommendation>"
+blockers: []
+authority_boundary:
+  production_authority: false
+  live_execution_authority: false
+receipt_fragment:
+  tool_calls:
+    - tool: "<actual tool or subagent surface>"
+      purpose: "branch delegate context query"
+      outcome: "<pass|blocked|failed>"
+      proof: "<invocation id, transcript path, or receipt path>"
+  did_not_do: []
+  missing_proof: []

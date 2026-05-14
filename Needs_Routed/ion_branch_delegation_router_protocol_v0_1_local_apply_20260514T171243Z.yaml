@@ -1,0 +1,42 @@
+schema_id: ion.needs_routed.local_apply_receipt.v1
+created_at_utc: 20260514T171243Z
+posture: sandbox-candidate
+accepted_state_claim: false
+production_authority: false
+live_execution_authority: false
+carrier: CODEX-001
+source_package: Needs_Routed/ION_BRANCH_DELEGATION_ROUTER_PROTOCOL_V0_1_PACKAGE_20260514T164330Z.zip
+source_package_sha256: 1328112a3d302b5c7a13e50b30cc703357c62bfcae0b40bfacd924385098d918
+source_packet: ION_BRANCH_DELEGATION_ROUTER_PROTOCOL_V0_1_PACKET_20260514T164330Z.yaml
+objective: branch_delegation_router_for_codex_cli_and_ion_automations
+application_strategy: >
+  The package patch text had collapsed file header newlines, so CODEX-001 applied
+  only the package's changed_files payload into the active ION_Developement root.
+  No cache files, zips, runtime evidence, or unrelated dirty-tree files were staged.
+files_applied:
+  - ION_Developement/ION/02_architecture/BRANCH_DELEGATION_ROUTER_PROTOCOL.md
+  - ION_Developement/ION/03_registry/ion_branch_delegation_router_policy.yaml
+  - ION_Developement/ION/04_packages/kernel/ion_branch_delegate_router.py
+  - ION_Developement/ION/07_templates/codex/BRANCH_DELEGATION_REQUEST.template.yaml
+  - ION_Developement/ION/07_templates/codex/BRANCH_DELEGATE_RETURN.template.yaml
+  - ION_Developement/ION/07_templates/codex/AGENTS.branch-delegation-addon.template.md
+  - ION_Developement/ION/07_templates/codex/.agents/skills/ion-branch-delegate/SKILL.md
+  - ION_Developement/ION/tests/test_kernel_ion_branch_delegate_router_protocol.py
+validation:
+  - command: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=ION/04_packages PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -q ION/tests/test_kernel_ion_branch_delegate_router_protocol.py
+    result: 5 passed in 0.03s
+  - command: PYTHONDONTWRITEBYTECODE=1 python3 -m py_compile ION/04_packages/kernel/ion_branch_delegate_router.py
+    result: passed
+  - command: YAML parse for branch delegation policy and templates
+    result: passed
+  - command: git diff --check scoped branch delegation paths
+    result: passed
+non_claims:
+  - no accepted state claimed
+  - no production authority claimed
+  - no live execution authority claimed
+  - no Codex subagent invocation performed
+  - no MCP tool call performed
+  - no ION agent enqueue performed
+  - no GPT Builder update
+  - no git push

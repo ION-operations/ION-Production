@@ -1,0 +1,43 @@
+schema_id: ion.branch_delegation_request.v0_1
+status: candidate
+objective: "<operator objective>"
+current_branch: "<cwd-relative branch path>"
+requested_delegate_mode: ask_for_context
+targets:
+  - ref: "ION/<target_branch_or_file>"
+    kind: directory
+    resolved_path: "ION/<target_branch_or_file>"
+    nearest_branch_node: "ION/<target_branch>"
+    context_files:
+      - "ION/<target_branch>/README.md"
+      - "ION/<target_branch>/AGENTS.md"
+      - "ION/<target_branch>/ION_CONTEXT_CAPSULE.yaml"
+    status: candidate
+    blockers: []
+allowed_surfaces:
+  - local_context_compile
+  - codex_subagent
+authority:
+  production_authority: false
+  live_execution_authority: false
+  write_authority: none
+tags:
+  - route:branch-delegation
+  - carrier:codex-cli
+  - phase:delegate-request
+  - state:candidate
+  - proof:missing
+  - authority:read-only
+  - authority:no-production
+  - authority:no-live
+proof_required:
+  - context_files_read
+  - delegate_return_or_blocker
+  - ion_receipt_fragment
+did_not_do:
+  - did_not_invoke_subagent
+  - did_not_call_mcp
+  - did_not_enqueue_ion_agent
+missing_proof:
+  - no_delegate_invocation_receipt
+  - no_branch_delegate_return
