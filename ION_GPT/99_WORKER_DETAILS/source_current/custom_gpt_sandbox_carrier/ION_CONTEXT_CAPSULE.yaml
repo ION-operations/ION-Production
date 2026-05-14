@@ -1,0 +1,105 @@
+schema_id: ion.domain_context_capsule.v1
+capsule_id: ion.folder.ion_gpt.custom_gpt_sandbox_carrier
+folder: ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier
+status: active_candidate
+generated_at_utc: 20260513T221500Z
+identity:
+  domain_label: Custom GPT Sandbox Carrier
+  purpose: Front-door carrier contract, boot/persona workflow, continuity export,
+    ordered fanout, and GPT Builder package support.
+  parent_domain: ION_GPT
+authority:
+  accepted_state_claim: false
+  production_authority: false
+  live_execution_authority: false
+  requires_receipt_for_state_claim: true
+read_first:
+- README.md
+- ION_CONTEXT_CAPSULE.yaml
+- instructions/ION_CUSTOM_GPT_FRONT_DOOR_CARRIER_PRODUCT_CONTRACT.md
+- instructions/ION_CUSTOM_GPT_PERSONA_VISIBLE_ENVELOPE.md
+- indexes/ION_CUSTOM_GPT_ROUTE_INDEX.yaml
+active_objectives:
+- id: v4_front_door_carrier
+  summary: Boot/proceed/persona return gate
+- id: v4_2_persona_visible_envelope
+  summary: Persona envelope, boot receipt, profile selector
+- id: v4_3_continuity_export
+  summary: Remountable continuity transfer package
+- id: v4_4_ordered_context_fanout
+  summary: Context batons and source-ordered fan-in
+- id: v4_5_domain_capsule_mesh
+  summary: README as domain context capsule
+- id: v4_6_transfer_ignore_profiles
+  summary: Clean transfer/export profiles
+- id: v4_7_dogfood_context_packages
+  summary: Dogfood folder capsules into concrete context packages and transfer artifacts.
+local_agents:
+- role: STEWARD
+  use: orchestration and boundary check
+- role: RELAY
+  use: semantic packet and return package
+- role: PERSONA_INTERFACE
+  use: ingress and final visible rendering
+- role: MASON
+  use: patch/design implementation
+- role: NEMESIS
+  use: risk and contradiction review
+- role: SCRIBE
+  use: receipt and continuity compression
+domains:
+- custom_gpt_front_door_carrier
+- persona_visible_envelope
+- continuity_transfer
+- ordered_context_fanout
+- domain_context_capsule_mesh
+- transfer_ignore_profiles
+automations:
+  safe_tests:
+  - python -m pytest -q tests/test_boot_process_repair_candidate.py tests/test_persona_return_gate_candidate.py
+    tests/test_front_door_carrier_product_contract_candidate.py
+  - python -m pytest -q tests/test_persona_visible_envelope_candidate.py tests/test_continuity_transfer_package_candidate.py
+    tests/test_ordered_context_fanout_candidate.py
+  safe_commands:
+  - YAML/JSON parse over this folder
+  unsafe_without_approval:
+  - GPT Builder update
+  - live Action install
+  - production connector mutation
+  - git push
+canonical_surfaces:
+  instructions: instructions/
+  routes: routes/
+  schemas: schemas/
+  templates: templates/
+  tools: tools/
+  tests: tests/
+  registries: registries/
+  receipts: receipts/
+history:
+  latest_capsule: history/latest.md
+  historical_capsules: []
+receipts:
+- receipts/ion_custom_gpt_v4_6_sandbox_evolution_receipt_20260513T214500Z.yaml
+continuity_export:
+  include_in_transfer_package: true
+  required_files:
+  - README.md
+  - ION_CONTEXT_CAPSULE.yaml
+  - instructions/
+  - routes/
+  - schemas/
+  - templates/
+  - registries/
+  - receipts/
+  - context_packages/ION_CONTEXT_PACKAGE_INDEX.yaml
+  - context_mesh/ION_CONTEXT_MESH_MANIFEST.yaml
+  - export_profiles/ION_EXPORT_PROFILE_CARRIER_V4_7.yaml
+freshness:
+  source_hashes: {}
+  status: candidate_current
+boundaries:
+  do_not:
+  - claim accepted state from this folder alone
+  - install Action schemas from worker evidence path
+  - push/deploy/update GPT Builder without approval

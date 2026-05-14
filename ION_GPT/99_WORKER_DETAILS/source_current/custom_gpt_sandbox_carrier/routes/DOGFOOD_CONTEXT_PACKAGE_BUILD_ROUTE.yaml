@@ -1,0 +1,33 @@
+route_id: DOGFOOD_CONTEXT_PACKAGE_BUILD_ROUTE
+version: v4.7-candidate
+posture: sandbox-candidate
+purpose: Build the Custom GPT carrier's own remountable context package from local
+  capsules and transfer profiles.
+authority:
+  accepted_state_claim: false
+  production_authority: false
+  live_execution_authority: false
+sequence:
+- PERSONA_INTERFACE_INGRESS
+- RELAY_ARCHITECTURE_SIGNAL_INTAKE
+- STEWARD_AUTHORITY_CHECK
+- MOUNT_LOCAL_CAPSULES
+- BUILD_CONTEXT_MESH
+- BUILD_CONTEXT_PACKAGE
+- EXPORT_TRANSFER_PACKAGE
+- REMOUNT_SIMULATION
+- VALIDATE
+- SCRIBE_RECEIPT
+- PERSONA_RETURN_GATE
+- PERSONA_INTERFACE_RESPONSE
+required_outputs:
+- ion_context_mesh_manifest
+- ion_context_package
+- ION_TRANSFER_MANIFEST
+- NEXT_CHAT_PROMPT
+- ion_dogfood_build_report
+- receipt
+completion_rule: Route completes only when remount simulation can recover active route,
+  authority boundaries, context mesh capsules, and next-chat prompt from package files.
+failure_rule: If export fails, emit continuation YAML and package files inline or
+  as candidate artifacts.

@@ -1,0 +1,55 @@
+schema_id: ion.context_package.v1
+package_id: ion.context_package.custom_gpt_carrier.v4_7
+created_at_utc: 20260513T221500Z
+created_by: custom_gpt_sandbox_carrier
+posture: sandbox-candidate
+authority:
+  accepted_state_claim: false
+  production_authority: false
+  live_execution_authority: false
+context_mesh:
+  required_capsules:
+  - .
+  - ION_GPT
+  - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier
+  mesh_manifest: context_mesh/ION_CONTEXT_MESH_MANIFEST.yaml
+workflow_state:
+  active_objective: custom_gpt_v4_7_dogfood_context_packages
+  active_route: DOGFOOD_CONTEXT_PACKAGE_BUILD_ROUTE
+  current_phase: candidate_context_package_build
+  completed_phases:
+  - MOUNT_LOCAL_CAPSULES
+  - BUILD_CONTEXT_MESH
+  - BUILD_CONTEXT_PACKAGE
+  pending_phases:
+  - EXPORT_TRANSFER_PACKAGE
+  - REMOUNT_SIMULATION
+  - VALIDATE
+  - RECEIPT
+  authority:
+    accepted_state_claim: false
+    production_authority: false
+    live_execution_authority: false
+persona_state:
+  selected_profile: audit_repair
+  visible_name: ION Persona Interface
+  requires_visible_envelope: true
+  hidden_chain_of_thought_exposed: false
+domain_agent_state:
+  candidate_domains:
+  - domain.context_mesh
+  - domain.transfer_profile
+  - domain.context_package_build
+  candidate_agents:
+  - agent.context_mesh_steward
+  - agent.transfer_scribe
+  - agent.package_mason
+  registry_boundary:
+    mutates_accepted_registry: false
+    requires_human_acceptance_to_land: true
+continuity_export:
+  profile: working_handoff
+  include_context_mesh: true
+  include_architecture_signals: true
+  next_chat_prompt: NEXT_CHAT_PROMPT.txt
+hashes: {}

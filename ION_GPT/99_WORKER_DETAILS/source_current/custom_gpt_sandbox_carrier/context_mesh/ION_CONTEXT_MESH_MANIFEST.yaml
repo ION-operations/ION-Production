@@ -1,0 +1,102 @@
+schema_id: ion.context_mesh_manifest.v1
+mesh_id: ion.context_mesh.custom_gpt_carrier.v4_7
+root: .
+capsules:
+- capsule_id: ion.folder.root.ion_gpt_candidate_workspace
+  folder: .
+  path: ION_CONTEXT_CAPSULE.yaml
+  sha256: e7050d276a947a2a602db5fcd9f07e877ae06f135abf27d462b2ee5c05b9787e
+  status: active_candidate
+  domain_label: ION GPT Candidate Workspace Root
+  authority:
+    accepted_state_claim: false
+    production_authority: false
+    live_execution_authority: false
+    requires_receipt_for_state_claim: true
+  read_first:
+  - AGENTS.md
+  - README.md
+  - ION_CONTEXT_CAPSULE.yaml
+  - ION_GPT/ION_CONTEXT_CAPSULE.yaml
+  continuity_export:
+    include_in_transfer_package: true
+    required_files:
+    - README.md
+    - ION_CONTEXT_CAPSULE.yaml
+    - AGENTS.md
+    - ION_GPT/ION_CONTEXT_CAPSULE.yaml
+    next_chat_behavior: mount_before_substantive_answer
+- capsule_id: ion.folder.ion_gpt.custom_gpt_sandbox_carrier
+  folder: ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier
+  path: ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/ION_CONTEXT_CAPSULE.yaml
+  sha256: 8ce054ea1317c94ed25bf34dd19782bfd406dd2b903e1c98b0c247b90c64db89
+  status: active_candidate
+  domain_label: Custom GPT Sandbox Carrier
+  authority:
+    accepted_state_claim: false
+    production_authority: false
+    live_execution_authority: false
+    requires_receipt_for_state_claim: true
+  read_first:
+  - README.md
+  - ION_CONTEXT_CAPSULE.yaml
+  - instructions/ION_CUSTOM_GPT_FRONT_DOOR_CARRIER_PRODUCT_CONTRACT.md
+  - instructions/ION_CUSTOM_GPT_PERSONA_VISIBLE_ENVELOPE.md
+  - indexes/ION_CUSTOM_GPT_ROUTE_INDEX.yaml
+  continuity_export:
+    include_in_transfer_package: true
+    required_files:
+    - README.md
+    - ION_CONTEXT_CAPSULE.yaml
+    - instructions/
+    - routes/
+    - schemas/
+    - templates/
+    - registries/
+    - receipts/
+    - context_packages/ION_CONTEXT_PACKAGE_INDEX.yaml
+    - context_mesh/ION_CONTEXT_MESH_MANIFEST.yaml
+    - export_profiles/ION_EXPORT_PROFILE_CARRIER_V4_7.yaml
+- capsule_id: ion.folder.ion_gpt
+  folder: ION_GPT
+  path: ION_GPT/ION_CONTEXT_CAPSULE.yaml
+  sha256: bf95c7c7d281cddfe8f273a4fc3b1ed8f700d5e5c7767d8fa5fed4301ed4fb11
+  status: active_candidate
+  domain_label: ION GPT Builder Surface
+  authority:
+    accepted_state_claim: false
+    production_authority: false
+    live_execution_authority: false
+    requires_receipt_for_state_claim: true
+  read_first:
+  - README.md
+  - ION_CONTEXT_CAPSULE.yaml
+  - 01_GPT_BUILDER_INPUTS/CURRENT_INSTRUCTIONS_TO_PASTE.md
+  - 03_ACTIONS/README.md
+  continuity_export:
+    include_in_transfer_package: true
+    required_files:
+    - README.md
+    - ION_CONTEXT_CAPSULE.yaml
+    - 01_GPT_BUILDER_INPUTS/CURRENT_INSTRUCTIONS_TO_PASTE.md
+    - 03_ACTIONS/
+    - 04_CURRENT_SANDBOX_CARRIER/
+    - 99_WORKER_DETAILS/
+relevant_capsule_paths:
+- ION_CONTEXT_CAPSULE.yaml
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/ION_CONTEXT_CAPSULE.yaml
+- ION_GPT/ION_CONTEXT_CAPSULE.yaml
+inheritance_edges:
+- from_parent: ion.folder.ion_gpt
+  to_child: ion.folder.ion_gpt.custom_gpt_sandbox_carrier
+  parent_folder: ION_GPT
+  child_folder: ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier
+- from_parent: ion.folder.root.ion_gpt_candidate_workspace
+  to_child: ion.folder.ion_gpt
+  parent_folder: .
+  child_folder: ION_GPT
+authority:
+  accepted_state_claim: false
+  production_authority: false
+  live_execution_authority: false
+  capsules_grant_authority: false

@@ -36,8 +36,26 @@ root_nodes:
 - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/instructions/ION_CUSTOM_GPT_BOOT_RECEIPT_CONTRACT.md
 - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/schemas/ION_CUSTOM_GPT_BOOT_SEQUENCE_RESULT.schema.json
 - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/schemas/ION_CUSTOM_GPT_PERSONA_VISIBLE_ENVELOPE.schema.json
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/instructions/ION_CUSTOM_GPT_ARCHITECTURE_SIGNAL_CAPTURE.md
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/schemas/ION_CUSTOM_GPT_ARCHITECTURE_SIGNAL.schema.json
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/templates/ION_CUSTOM_GPT_ARCHITECTURE_SIGNAL_CAPTURE.template.yaml
 - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/registries/ION_CUSTOM_GPT_PERSONA_PROFILE_REGISTRY.yaml
 - ION_GPT/05_CONTINUITY_TRANSFER/README.md
+- ION_CONTEXT_CAPSULE.yaml
+- ION_GPT/ION_CONTEXT_CAPSULE.yaml
+- ION_GPT/ION_EXPORT_PROFILE.yaml
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/ION_CONTEXT_CAPSULE.yaml
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/context_mesh/ION_CONTEXT_MESH_MANIFEST.yaml
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/context_packages/ION_CONTEXT_PACKAGE_INDEX.yaml
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/context_packages/ION_CONTEXT_PACKAGE_CUSTOM_GPT_CARRIER_V4_7.yaml
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/export_profiles/ION_EXPORT_PROFILE_CARRIER_V4_7.yaml
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/routes/DOGFOOD_CONTEXT_PACKAGE_BUILD_ROUTE.yaml
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/instructions/ION_CUSTOM_GPT_CONTEXT_MESH_ORCHESTRATION.md
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/instructions/ION_CUSTOM_GPT_CONTEXT_PACKAGE_BUILD_SYSTEM.md
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/instructions/ION_CUSTOM_GPT_V4_7_PROJECT_CONTEXT_PACKAGE_DOGFOOD.md
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tools/ion_context_mesh_builder.py
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tools/ion_context_package_builder.py
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tools/ion_dogfood_evolution_builder.py
 included_nodes:
 - instructions
 - indexes
@@ -48,6 +66,11 @@ included_nodes:
 - schemas
 - tools
 - registries
+- context_mesh
+- context_packages
+- export_profiles
+- receipts
+- validation
 excluded_nodes:
 - secrets
 - vaults
@@ -89,6 +112,9 @@ project_source_refs:
 - ION/02_architecture/FRONT_DOOR_CHAT_ORCHESTRATION_ADAPTER_PROTOCOL.md
 - ION/02_architecture/PERSONA_CONTEXT_BUDGET_AND_HORIZON_PROTOCOL.md
 - ION/02_architecture/ION_FRONT_DOOR_AUTONOMOUS_TEAM_WORKFLOW_PROTOCOL.md
+- ION/02_architecture/BOUNDED_PARALLELISM_AND_SETTLEMENT_PROTOCOL.md
+- ION/02_architecture/FAN_IN_MERGE_REVIEW_SETTLEMENT_PROTOCOL.md
+- ION/02_architecture/ARCHITECTURE_SIGNAL_CAPTURE_AND_ORDERED_CONTEXT_FANOUT_PROTOCOL.md
 settlement_template: candidate_until_receipted_or_operator_accepted
 carrier_product_contract:
   version: v0_4
@@ -127,3 +153,20 @@ action_boot_check:
   read_only_probe_first: true
   stop_on_auth_invalid: true
   write_smoke_requires_explicit_operator_approval: true
+architecture_signal_capture:
+  law: ARCHITECTURE_SIGNAL_CAPTURE_LAW
+  product_version_target: v4.4a_v4.4b
+  route_id: ARCHITECTURE_SIGNAL_CAPTURE_TO_ORDERED_CONTEXT_FANOUT
+  target_protocol: ION_CUSTOM_GPT_ORDERED_CONTEXT_FANOUT_V4_4
+  continuity_export_required: true
+  tests_required: true
+  accepted_state_claim: false
+v4_7_context_package_dogfood:
+  law: V4_7_CONTEXT_PACKAGE_DOGFOOD_LAW
+  route_id: DOGFOOD_CONTEXT_PACKAGE_BUILD_ROUTE
+  context_mesh_manifest: context_mesh/ION_CONTEXT_MESH_MANIFEST.yaml
+  context_package_index: context_packages/ION_CONTEXT_PACKAGE_INDEX.yaml
+  export_profile: export_profiles/ION_EXPORT_PROFILE_CARRIER_V4_7.yaml
+  dogfood_builder: tools/ion_dogfood_evolution_builder.py
+  remount_required: true
+  accepted_state_claim: false

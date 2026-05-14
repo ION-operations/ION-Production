@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ion.custom_gpt.context_mesh_manifest.schema.v1",
+  "title": "ION Context Mesh Manifest",
+  "type": "object",
+  "required": [
+    "schema_id",
+    "mesh_id",
+    "root",
+    "capsules",
+    "inheritance_edges",
+    "authority"
+  ],
+  "properties": {
+    "schema_id": {
+      "const": "ion.context_mesh_manifest.v1"
+    },
+    "mesh_id": {
+      "type": "string"
+    },
+    "root": {
+      "type": "string"
+    },
+    "capsules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "capsule_id",
+          "folder",
+          "path",
+          "sha256",
+          "status"
+        ],
+        "properties": {
+          "capsule_id": {
+            "type": "string"
+          },
+          "folder": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string"
+          },
+          "sha256": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "inheritance_edges": {
+      "type": "array"
+    },
+    "authority": {
+      "type": "object"
+    }
+  }
+}

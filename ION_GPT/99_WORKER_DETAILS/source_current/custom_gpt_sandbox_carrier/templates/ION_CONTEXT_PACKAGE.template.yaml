@@ -1,0 +1,37 @@
+schema_id: ion.context_package.v1
+package_id: ion.context_package.<domain>.<timestamp>
+created_at_utc: <timestamp>
+created_by: custom_gpt_sandbox_carrier
+posture: sandbox-candidate
+authority:
+  accepted_state_claim: false
+  production_authority: false
+  live_execution_authority: false
+context_mesh:
+  mesh_id: <mesh>
+  capsule_count: <count>
+  relevant_capsule_paths: []
+workflow_state:
+  active_objective: <objective>
+  active_route: <route>
+  current_phase: <phase>
+  completed_phases: []
+  pending_phases: []
+persona_state:
+  schema: ion.persona_response_envelope.v0_1
+  selected_profile: <profile>
+  hidden_chain_of_thought_exposed: false
+domain_agent_state:
+  candidate_domains: []
+  candidate_agents: []
+  registry_boundary:
+    mutates_accepted_registry: false
+    requires_human_acceptance_to_land: true
+architecture_signals: []
+fanout_state:
+  batons: []
+  unresolved_alerts: []
+continuity_export:
+  profile: working_handoff
+  next_chat_prompt: NEXT_CHAT_PROMPT.txt
+hashes: {}

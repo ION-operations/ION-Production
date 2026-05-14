@@ -1,0 +1,19 @@
+schema_id: ion.context_package_index.v1
+created_at_utc: 20260513T221500Z
+posture: sandbox-candidate
+authority:
+  accepted_state_claim: false
+  production_authority: false
+  live_execution_authority: false
+packages:
+- package_id: ion.context_package.custom_gpt_carrier.v4_7
+  path: ION_CONTEXT_PACKAGE_CUSTOM_GPT_CARRIER_V4_7.yaml
+  purpose: Remount Custom GPT carrier product state and v4.2-v4.7 architecture obligations.
+- package_id: ion.context_package.project_mesh.v4_7
+  path: ION_CONTEXT_PACKAGE_PROJECT_MESH_V4_7.yaml
+  purpose: Preserve folder/domain capsule mesh and parent-child inheritance.
+- package_id: ion.context_package.operator_architecture_signals.v4_7
+  path: ION_CONTEXT_PACKAGE_OPERATOR_ARCHITECTURE_SIGNALS_V4_7.yaml
+  purpose: Preserve major operator architecture signals as candidate obligations.
+next: Use ion_dogfood_evolution_builder.py to generate an actual transfer package
+  from these package objects.

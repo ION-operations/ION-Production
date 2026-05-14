@@ -1,0 +1,26 @@
+schema_id: ion.context_package.v1
+package_id: ion.context_package.project_mesh.v4_7
+created_at_utc: 20260513T221500Z
+posture: sandbox-candidate
+authority:
+  accepted_state_claim: false
+  production_authority: false
+  live_execution_authority: false
+context_mesh:
+  capsule_policy: nearest_folder_capsule_plus_parent_capsules
+  required_fields:
+  - identity
+  - authority
+  - read_first
+  - automations
+  - continuity_export
+  - freshness
+  conflict_rule: root_authority_and_receipts_override_stale_local_capsules
+workflow_state:
+  active_route: CONTEXT_MESH_EXPORT_ROUTE
+  current_phase: candidate_design
+continuity_export:
+  include_folder_capsules: true
+  include_parent_chain: true
+  include_omitted_manifest: true
+hashes: {}

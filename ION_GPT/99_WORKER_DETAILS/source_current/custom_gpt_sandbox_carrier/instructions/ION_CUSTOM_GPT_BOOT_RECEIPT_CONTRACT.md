@@ -1,10 +1,12 @@
-# ION Custom GPT Boot Receipt Contract v0.4.2
+# ION Custom GPT Boot / Work Receipt Contract v4.2
 
-Status: sandbox-candidate product contract.
+## Purpose
 
-For `boot-sequence`, compact telemetry is not enough. The carrier must emit a candidate boot receipt block before the Persona visible envelope.
+`BOOT :: mounted` is not enough. A boot or state-bearing continuation must
+emit a candidate receipt object proving which phases completed and what
+authority was used.
 
-Required block:
+## Boot receipt
 
 ```yaml
 ion_boot_sequence_result:
@@ -15,7 +17,7 @@ ion_boot_sequence_result:
     count: <n>
     posture: candidate_context
   objective: <objective>
-  active_workflow_object: <route/context/receipt/etc>
+  active_workflow_object: <route/context/receipt/patch/etc>
   phases_completed:
     - PERSONA_INTERFACE_INGRESS
     - RELAY
@@ -28,11 +30,20 @@ ion_boot_sequence_result:
     - RELAY_RETURN_PACKAGE
     - PERSONA_RETURN_GATE
     - PERSONA_INTERFACE_RESPONSE
-  persona_return_gate: pass | blocked
+  persona_return_gate: pass
   accepted_state_claim: false
   production_authority: false
   live_execution_authority: false
   receipt_status: candidate_boot_receipt
 ```
 
-If blocked, name the precise blocker and emit a continuation envelope through `ION ::`.
+## Work receipt
+
+When the active route is not boot but produced state, use the same posture:
+candidate-only, proof references, files/artifacts changed, tests run, blockers,
+and exact next sequence.
+
+## Failure mode
+
+If boot cannot complete, emit the same object with `persona_return_gate: blocked`
+and a precise blocker. Do not silently fall back to casual chat.

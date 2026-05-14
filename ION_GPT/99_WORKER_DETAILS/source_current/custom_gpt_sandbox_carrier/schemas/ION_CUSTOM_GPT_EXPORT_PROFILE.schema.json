@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "non_exportable": {
+      "type": "array"
+    },
+    "omission_manifest_required": {
+      "const": true
+    },
+    "profiles": {
+      "required": [
+        "minimal_continuity",
+        "working_handoff",
+        "full_reproducible",
+        "public_safe"
+      ],
+      "type": "object"
+    },
+    "schema_id": {
+      "const": "ion.export_profile.v1"
+    }
+  },
+  "required": [
+    "schema_id",
+    "profiles",
+    "non_exportable",
+    "omission_manifest_required"
+  ],
+  "title": "ION Export Profile",
+  "type": "object"
+}

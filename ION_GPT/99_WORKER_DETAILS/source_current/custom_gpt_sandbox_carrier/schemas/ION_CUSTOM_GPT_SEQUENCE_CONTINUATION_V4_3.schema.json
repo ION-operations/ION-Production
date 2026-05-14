@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "ion_sequence_continuation": {
+      "required": [
+        "schema_id",
+        "active_objective",
+        "active_route",
+        "current_phase",
+        "completed_phases",
+        "pending_phases",
+        "mounted_context_packages",
+        "candidate_domains",
+        "candidate_agents",
+        "persona_profile",
+        "authority",
+        "blockers",
+        "exact_next_sequence"
+      ],
+      "type": "object"
+    }
+  },
+  "required": [
+    "ion_sequence_continuation"
+  ],
+  "title": "ION Sequence Continuation v4.3",
+  "type": "object"
+}

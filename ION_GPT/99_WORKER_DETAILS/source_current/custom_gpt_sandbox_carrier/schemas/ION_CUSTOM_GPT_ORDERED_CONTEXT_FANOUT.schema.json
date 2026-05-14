@@ -1,0 +1,69 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "ion_ordered_context_fanout": {
+      "properties": {
+        "baton_contract": {
+          "required": [
+            "baton_is_dense_not_full_context",
+            "baton_must_include_source_anchors",
+            "baton_must_include_alerts",
+            "baton_must_include_confidence",
+            "baton_must_not_claim_settlement"
+          ],
+          "type": "object"
+        },
+        "branches": {
+          "type": "array"
+        },
+        "fan_in": {
+          "required": [
+            "merge_order",
+            "completion_order_can_not_override_source_order",
+            "settlement_required",
+            "unresolved_alerts_escalate_review"
+          ],
+          "type": "object"
+        },
+        "parent_scope": {
+          "required": [
+            "objective",
+            "source_ref",
+            "source_sequence_type",
+            "settlement_mode"
+          ],
+          "type": "object"
+        },
+        "partition_plan": {
+          "required": [
+            "partition_strategy",
+            "sequence_preserved",
+            "overlap_policy"
+          ],
+          "type": "object"
+        },
+        "schema_id": {
+          "const": "ion.ordered_context_fanout.v1"
+        },
+        "status": {
+          "const": "candidate_not_accepted_canon"
+        }
+      },
+      "required": [
+        "schema_id",
+        "status",
+        "parent_scope",
+        "partition_plan",
+        "branches",
+        "baton_contract",
+        "fan_in"
+      ],
+      "type": "object"
+    }
+  },
+  "required": [
+    "ion_ordered_context_fanout"
+  ],
+  "title": "ION Ordered Context Fanout",
+  "type": "object"
+}

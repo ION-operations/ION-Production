@@ -3,33 +3,65 @@ domains:
   custom_gpt_action_release:
     risk_class: high_trust_operator_surface
     owns:
-      - canonical Action Gateway OpenAPI schema
-      - GPT Builder install sheet
-      - rollback sheet
-      - auth handoff checklist
-      - AUTH_INVALID stop rule
+    - canonical Action Gateway OpenAPI schema
+    - GPT Builder install sheet
+    - rollback sheet
+    - auth handoff checklist
+    - AUTH_INVALID stop rule
   custom_gpt_sandbox_carrier:
     risk_class: context_and_boot_surface
     owns:
-      - Custom GPT main instructions
-      - boot sequence instructions
-      - source-order indexes
-      - machine boot block standards
-      - sandbox package zip export
+    - Custom GPT main instructions
+    - boot sequence instructions
+    - source-order indexes
+    - machine boot block standards
+    - sandbox package zip export
   supabase_operating_runtime:
     risk_class: operational_mirror
     owns:
-      - ion_ops schema
-      - RPC write posture
-      - cockpit readmodels
-      - event mirror adapter
+    - ion_ops schema
+    - RPC write posture
+    - cockpit readmodels
+    - event mirror adapter
   browser_extension_carrier:
     risk_class: browser_runtime
     owns:
-      - extension tabs and overlays
-      - queue UI
-      - docs/projects/prompt panels
-      - DOM/drop target calibration
+    - extension tabs and overlays
+    - queue UI
+    - docs/projects/prompt panels
+    - DOM/drop target calibration
+  persona_visible_envelope:
+    risk_class: presentation_and_receipt_surface
+    owns:
+    - Persona envelope schema
+    - profile registry
+    - boot/work receipt visible block
+  continuity_transfer:
+    risk_class: state_transfer_candidate
+    owns:
+    - continuity manifest
+    - NEXT_CHAT_PROMPT
+    - project profile
+    - proof manifest
+  ordered_context_fanout:
+    risk_class: multi_agent_context_integrity
+    owns:
+    - context baton
+    - downstream alerts
+    - source ordered fan-in
+  domain_context_capsule_mesh:
+    risk_class: local_context_operating_memory
+    owns:
+    - README capsule projection
+    - ION_CONTEXT_CAPSULE.yaml
+    - capsule lint/export
+  transfer_ignore_profiles:
+    risk_class: export_safety
+    owns:
+    - .ionignore
+    - ION_EXPORT_PROFILE.yaml
+    - omitted-files manifest
+    - non-exportable boundaries
 agents:
   STEWARD: final state/authority/settlement reviewer
   VIZIER: plan and orchestration architect

@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ion.custom_gpt.context_package.schema.v1",
+  "title": "ION Custom GPT Context Package",
+  "type": "object",
+  "required": [
+    "schema_id",
+    "package_id",
+    "posture",
+    "authority",
+    "context_mesh",
+    "workflow_state",
+    "continuity_export",
+    "hashes"
+  ],
+  "properties": {
+    "schema_id": {
+      "const": "ion.context_package.v1"
+    },
+    "package_id": {
+      "type": "string"
+    },
+    "created_at_utc": {
+      "type": "string"
+    },
+    "posture": {
+      "enum": [
+        "sandbox-candidate",
+        "candidate",
+        "accepted"
+      ]
+    },
+    "authority": {
+      "type": "object",
+      "required": [
+        "accepted_state_claim",
+        "production_authority",
+        "live_execution_authority"
+      ],
+      "properties": {
+        "accepted_state_claim": {
+          "type": "boolean"
+        },
+        "production_authority": {
+          "type": "boolean"
+        },
+        "live_execution_authority": {
+          "type": "boolean"
+        }
+      }
+    },
+    "context_mesh": {
+      "type": "object"
+    },
+    "workflow_state": {
+      "type": "object"
+    },
+    "persona_state": {
+      "type": "object"
+    },
+    "domain_agent_state": {
+      "type": "object"
+    },
+    "architecture_signals": {
+      "type": "array"
+    },
+    "fanout_state": {
+      "type": "object"
+    },
+    "continuity_export": {
+      "type": "object"
+    },
+    "hashes": {
+      "type": "object"
+    }
+  }
+}

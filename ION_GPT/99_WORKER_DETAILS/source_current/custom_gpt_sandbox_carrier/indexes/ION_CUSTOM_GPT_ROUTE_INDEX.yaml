@@ -15,6 +15,12 @@ route_families:
   relay:
     roles: [STEWARD, RELAY, VIZIER]
     use_when: carrier-to-carrier transfer, Action/Gateway bridge, queue handoff
+  architecture_signal_capture:
+    roles: [STEWARD, RELAY, VIZIER, SCRIBE, NEMESIS]
+    use_when: operator identifies an important system pattern, no-loss requirement, sequential baton, ordered context fan-out
+    target_protocol: ION_CUSTOM_GPT_ORDERED_CONTEXT_FANOUT_V4_4
+    continuity_export_required: true
+    accepted_state_claim: false
   single_carrier_front_door:
     roles:
       - PERSONA_INTERFACE_INGRESS
@@ -27,3 +33,21 @@ route_families:
       - STEWARD_FINAL
       - PERSONA_INTERFACE_RESPONSE
     use_when: one ChatGPT session must simulate a full bounded route visibly
+  continuity_export:
+    roles: [STEWARD, MASON, SCRIBE, PERSONA_INTERFACE]
+    use_when: state-bearing work needs remountable package or new-chat handoff
+    routes:
+      - EXPORT_REMOUNTABLE_CONTINUITY_PACKAGE
+  ordered_context_fanout:
+    roles: [STEWARD, VIZIER, RELAY, SCRIBE]
+    use_when: large sequential source must be partitioned without losing upstream meaning
+    routes:
+      - ORDERED_CONTEXT_FANOUT_WITH_BATONS
+  domain_capsule_mesh:
+    roles: [STEWARD, SCRIBE, MASON]
+    use_when: folder-local README/ION_CONTEXT_CAPSULE context must be compiled, linted, or exported
+  context_package_dogfood:
+    roles: [STEWARD, MASON, NEMESIS, SCRIBE]
+    use_when: build, validate, and remount a candidate context package from the active capsule mesh
+    routes:
+      - DOGFOOD_CONTEXT_PACKAGE_BUILD_ROUTE

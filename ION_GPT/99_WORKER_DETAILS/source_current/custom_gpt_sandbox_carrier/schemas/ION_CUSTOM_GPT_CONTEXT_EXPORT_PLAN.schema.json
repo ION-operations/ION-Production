@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ion.custom_gpt.context_export_plan.schema.v1",
+  "title": "ION Context Export Plan",
+  "type": "object",
+  "required": [
+    "schema_id",
+    "profile",
+    "include",
+    "omit",
+    "non_exportable_boundary"
+  ],
+  "properties": {
+    "schema_id": {
+      "const": "ion.context_export_plan.v1"
+    },
+    "profile": {
+      "enum": [
+        "minimal_continuity",
+        "working_handoff",
+        "full_reproducible",
+        "public_safe"
+      ]
+    },
+    "include": {
+      "type": "array"
+    },
+    "omit": {
+      "type": "array"
+    },
+    "non_exportable_boundary": {
+      "type": "array"
+    }
+  }
+}

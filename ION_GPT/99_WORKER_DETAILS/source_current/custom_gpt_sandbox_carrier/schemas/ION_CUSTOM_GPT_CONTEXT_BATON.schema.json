@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "ion_context_baton": {
+      "properties": {
+        "schema_id": {
+          "const": "ion.context_baton.v1"
+        }
+      },
+      "required": [
+        "schema_id",
+        "branch_id",
+        "source_range",
+        "summary_dense",
+        "source_anchors",
+        "tags",
+        "definitions",
+        "entities",
+        "claims",
+        "dependency_edges",
+        "downstream_alerts",
+        "unresolved_questions",
+        "upstream_reopen_alerts",
+        "confidence"
+      ],
+      "type": "object"
+    }
+  },
+  "required": [
+    "ion_context_baton"
+  ],
+  "title": "ION Context Baton",
+  "type": "object"
+}

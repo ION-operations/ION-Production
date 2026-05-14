@@ -1,0 +1,57 @@
+schema_id: ion.custom_gpt_route.v0_6_candidate
+route_id: EXPORT_REMOUNTABLE_CONTINUITY_PACKAGE
+trigger_phrases:
+- export continuity
+- make transfer package
+- new chat package
+- carry this forward
+input_context:
+  required:
+  - active_workflow_object
+  - persona_envelope_or_profile
+  - authority_posture
+  optional:
+  - patches
+  - receipts
+  - domain_agent_expansions
+  - context_batons
+internal_cycle:
+- phase: PERSONA_INTERFACE_INGRESS
+  public_output: false
+- phase: RELAY
+  public_output: false
+- phase: STEWARD
+  public_output: false
+- phase: VIZIER
+  public_output: false
+- phase: MASON
+  public_output: false
+- phase: NEMESIS_OR_VICE_REVIEW
+  public_output: false
+- phase: SCRIBE
+  public_output: false
+- phase: STEWARD_FINAL
+  public_output: false
+- phase: RELAY_RETURN_PACKAGE
+  public_output: false
+- phase: PERSONA_RETURN_GATE
+  public_output: false
+- phase: PERSONA_INTERFACE_RESPONSE
+  public_output: true
+export_contract:
+  required_package_files:
+  - README_START_HERE.md
+  - ion_continuity_transfer_manifest.yaml
+  - ion_sequence_continuation.yaml
+  - ion_dynamic_domain_agent_expansion.yaml
+  - ion_project_profile.yaml
+  - ion_persona_response_envelope.yaml
+  - NEXT_CHAT_PROMPT.txt
+  hash_manifest_required: true
+  include_context_batons_when_present: true
+  include_architecture_signals_when_present: true
+  exclude_non_exportable_boundaries: true
+authority:
+  accepted_state_claim: false
+  production_authority: false
+  live_execution_authority: false

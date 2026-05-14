@@ -1,0 +1,114 @@
+schema_id: ion.custom_gpt.v4_7.reconciliation_receipt.v1
+receipt_id: ion_custom_gpt_v4_7_reconciliation_receipt_20260514T005059Z
+posture: sandbox-candidate
+accepted_state_claim: false
+production_authority: false
+live_execution_authority: false
+git_stage_performed: false
+git_commit_performed: false
+git_push_performed: false
+gpt_builder_update_performed: false
+base_branch: codex/ion-custom-gpt-front-door-carrier-v4
+source_bundle: Needs_Routed/ION_CUSTOM_GPT_V4_7_DOGFOOD_CONTEXT_PACKAGE_BUILD_20260513T221500Z.zip
+source_tree: /tmp/ion-v47-bundle-20260513T221500Z/final_candidate_tree
+reason_raw_patch_not_applied: active branch diverged from the v4.6 final_candidate_tree base used by the v4.7 patch
+reconciliation_strategy: scoped manual merge from final_candidate_tree, preserving newer active branch contracts
+pre_reconciliation_snapshots:
+  branch: Needs_Routed/current_branch_before_v4_7_reconcile_20260514T004206Z.txt
+  status: Needs_Routed/current_status_before_v4_7_reconcile_20260514T004206Z.txt
+  diff_stat: Needs_Routed/current_diff_stat_before_v4_7_reconcile_20260514T004206Z.txt
+  dirty_patch: Needs_Routed/current_dirty_branch_before_v4_7_reconcile_20260514T004206Z.patch
+  staged_patch: Needs_Routed/current_staged_before_v4_7_reconcile_20260514T004206Z.patch
+  untracked_status: Needs_Routed/current_untracked_status_before_v4_7_reconcile_20260514T004206Z.txt
+files_changed:
+  primary_builder_instruction:
+    - ION_GPT/01_GPT_BUILDER_INPUTS/CURRENT_INSTRUCTIONS_TO_PASTE.md
+    - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/instructions/ION_CUSTOM_GPT_MAIN_INSTRUCTIONS_8000.md
+  folder_capsules_and_profiles:
+    - ION_CONTEXT_CAPSULE.yaml
+    - ION_GPT/.ionignore
+    - ION_GPT/ION_CONTEXT_CAPSULE.yaml
+    - ION_GPT/ION_EXPORT_PROFILE.yaml
+    - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/ION_CONTEXT_CAPSULE.yaml
+  context_package_layer:
+    - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/context_mesh/
+    - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/context_packages/
+    - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/export_profiles/
+    - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/receipts/
+    - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/validation/
+  carrier_contract_surfaces:
+    - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/README.md
+    - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/context/ION_CUSTOM_GPT_SANDBOX_CARRIER_CONTEXT_PACKAGE.yaml
+    - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/indexes/ION_CUSTOM_GPT_AGENT_DOMAIN_INDEX.yaml
+    - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/indexes/ION_CUSTOM_GPT_KNOWLEDGE_INDEX.yaml
+    - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/indexes/ION_CUSTOM_GPT_ROUTE_INDEX.yaml
+    - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/routes/BOOT_TO_PERSONA_ROUTE.yaml
+    - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/routes/DOGFOOD_CONTEXT_PACKAGE_BUILD_ROUTE.yaml
+    - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/routes/EXPORT_REMOUNTABLE_CONTINUITY_PACKAGE.yaml
+    - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/routes/ORDERED_CONTEXT_FANOUT_ROUTE.yaml
+  new_v4_7_tools_tests_schemas_templates:
+    - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tools/
+    - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tests/
+    - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/schemas/
+    - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/templates/
+    - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/instructions/
+  needs_routed:
+    - Needs_Routed/ion_custom_gpt_front_door_carrier_v4_7_dogfood_context_packages_20260513T221500Z.yaml
+    - Needs_Routed/ion_custom_gpt_v4_7_reconciliation_receipt_20260514T005059Z.yaml
+preserved_local_work:
+  - ION-wide architecture signal and ordered context fan-out protocol remained canonical for the broader ION requirement.
+  - Custom GPT architecture signal instruction, schema, template, and test from the active v4.4 work were preserved over the shorter v4.7 bundle versions.
+  - Custom GPT Action posture kept the current two GPT Builder Action schema targets under ION_GPT/03_ACTIONS and did not restore the stale worker openapi.yaml install target.
+  - Project continuity hash and read-only Action boot policy were restored into the reconciled main instructions and BOOT_TO_PERSONA_ROUTE.
+  - Cosmos/project workbench, runtime ledgers, archives, deployment config, secrets, and unrelated dirty paths were excluded.
+duplicate_audit:
+  raw_patch_application: skipped
+  contradictory_law_duplicates_created: false
+  current_ion_wide_baton_law_preserved: true
+  custom_gpt_architecture_signal_projection_preserved: true
+  v4_7_context_package_law_added: true
+  action_schema_target_downgrade_avoided: true
+return_contract_hardening:
+  posture_declared: true
+  authority_declared: true
+  source_evidence_declared: true
+  candidate_accepted_state_boundary_declared: true
+  receipt_path_declared: true
+  validation_required_declared: true
+  final_return_format_declared: true
+  continuation_remount_behavior_declared: true
+tests_run:
+  - command: PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tests -q
+    exit_code: 0
+    result: 55 passed in 22.85s
+  - command: YAML/JSON parse over ION_GPT, touched Needs_Routed v4.7 receipt, and ION_CONTEXT_CAPSULE.yaml
+    exit_code: 0
+    result: parsed=66
+  - command: PYTHONDONTWRITEBYTECODE=1 python3 -m py_compile selected v4.7 carrier tools
+    exit_code: 0
+    result: passed
+  - command: git diff --check scoped to v4.7 reconciliation paths
+    exit_code: 0
+    result: passed
+  - command: user-specified rg law/static searches over ION_GPT and capsule files
+    exit_code: 0
+    result: passed
+  - command: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=ION_Developement/ION/04_packages PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest ION_Developement/ION/tests/test_kernel_ion_architecture_signal_capture.py -q
+    exit_code: 0
+    result: 4 passed in 0.03s
+contracts:
+  boot_persona_route: pass
+  persona_visible_envelope: pass
+  continuity_export: pass
+  ordered_context_fanout: pass
+  architecture_signal_capture: pass
+  domain_context_capsules: pass
+  transfer_ignore_export_profiles: pass
+  dogfood_context_package_remount: pass
+blockers:
+  - Broader workspace dirty tree remains mixed and unresolved; this receipt does not authorize staging or commit.
+  - v4.7 is reconciled as candidate source only; GPT Builder was not updated.
+next:
+  - Review the scoped v4.7 candidate diff before staging.
+  - Keep runtime/evidence/Cosmos/project-workbench lanes separate from this Custom GPT context-package consolidation.
+  - If approved, prepare a narrow source commit proposal for only the reconciled Custom GPT/context-package paths.

@@ -21,6 +21,7 @@ It is not the GPT Builder Action schema release lane. Action schema releases are
 - Knowledge index: `indexes/ION_CUSTOM_GPT_KNOWLEDGE_INDEX.yaml`
 - Route index: `indexes/ION_CUSTOM_GPT_ROUTE_INDEX.yaml`
 - Agent/domain index: `indexes/ION_CUSTOM_GPT_AGENT_DOMAIN_INDEX.yaml`
+- Architecture signal capture: `instructions/ION_CUSTOM_GPT_ARCHITECTURE_SIGNAL_CAPTURE.md`
 - Builder: `ION_Developement/ION/04_packages/kernel/ion_custom_gpt_sandbox_package.py`
 
 ## Build
@@ -41,5 +42,18 @@ The carrier is not driven by instructions alone. It mounts:
 - `routes/BOOT_TO_PERSONA_ROUTE.yaml`
 - `workflows/ION_CUSTOM_GPT_INTERNAL_WORKFLOW.md`
 - `templates/ION_CUSTOM_GPT_BOOT_PERSONA_RESPONSE.template.md`
+- `instructions/ION_CUSTOM_GPT_ARCHITECTURE_SIGNAL_CAPTURE.md`
 
 These files make boot route into persona response naturally without dumping internal role machinery into chat.
+
+## v4.7 context package layer
+
+This folder now also carries the v4.7 dogfood context-package layer as sandbox-candidate source:
+
+- `ION_CONTEXT_CAPSULE.yaml` defines the folder-level machine context capsule.
+- `context_mesh/` discovers root, `ION_GPT`, and carrier capsules.
+- `context_packages/` defines remountable package candidates.
+- `export_profiles/` defines transfer/export profiles and omission rules.
+- `tools/ion_context_mesh_builder.py`, `tools/ion_context_package_builder.py`, and `tools/ion_dogfood_evolution_builder.py` build and verify the package flow.
+
+This does not grant accepted state, production authority, live execution authority, or GPT Builder release authority.

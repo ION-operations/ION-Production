@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "accepted_state_claim": {
+      "const": false
+    },
+    "continuity_files": {
+      "type": "object"
+    },
+    "live_execution_authority": {
+      "const": false
+    },
+    "posture": {
+      "const": "sandbox-candidate"
+    },
+    "production_authority": {
+      "const": false
+    },
+    "remount_rule": {
+      "const": "mount_before_substantive_answer"
+    },
+    "schema_id": {
+      "const": "ion.continuity_transfer_package.v1"
+    }
+  },
+  "required": [
+    "schema_id",
+    "package_id",
+    "created_at_utc",
+    "created_by",
+    "posture",
+    "accepted_state_claim",
+    "production_authority",
+    "live_execution_authority",
+    "active_objective",
+    "active_route",
+    "continuity_files",
+    "next_chat_prompt",
+    "remount_rule",
+    "hashes"
+  ],
+  "title": "ION Continuity Transfer Package",
+  "type": "object"
+}

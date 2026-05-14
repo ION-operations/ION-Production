@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "authority": {
+      "required": [
+        "accepted_state_claim",
+        "production_authority",
+        "live_execution_authority"
+      ],
+      "type": "object"
+    },
+    "privacy_boundary": {
+      "required": [
+        "do_not_assume_unmounted_prior_chats",
+        "do_not_export_secrets"
+      ],
+      "type": "object"
+    },
+    "schema_id": {
+      "const": "ion.project_profile.v1"
+    },
+    "status": {
+      "const": "candidate_project_context"
+    }
+  },
+  "required": [
+    "schema_id",
+    "status",
+    "project_label",
+    "user_scope",
+    "conversation_scope",
+    "known_objectives",
+    "active_objective",
+    "active_persona_profile",
+    "candidate_domains",
+    "candidate_agents",
+    "source_packages",
+    "privacy_boundary",
+    "authority"
+  ],
+  "title": "ION Project Profile",
+  "type": "object"
+}

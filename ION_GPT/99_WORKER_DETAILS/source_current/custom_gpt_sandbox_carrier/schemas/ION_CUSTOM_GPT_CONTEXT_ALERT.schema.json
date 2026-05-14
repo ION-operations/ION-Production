@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "ion_context_alert": {
+      "properties": {
+        "schema_id": {
+          "const": "ion.context_alert.v1"
+        }
+      },
+      "required": [
+        "schema_id",
+        "alert_id",
+        "source_branch",
+        "target_branch",
+        "severity",
+        "prompt",
+        "source_anchor",
+        "status"
+      ],
+      "type": "object"
+    }
+  },
+  "required": [
+    "ion_context_alert"
+  ],
+  "title": "ION Context Alert",
+  "type": "object"
+}

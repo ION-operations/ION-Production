@@ -1,0 +1,39 @@
+schema_id: ion.context_package.v1
+package_id: ion.context_package.operator_architecture_signals.v4_7
+created_at_utc: 20260513T221500Z
+posture: sandbox-candidate
+authority:
+  accepted_state_claim: false
+  production_authority: false
+  live_execution_authority: false
+architecture_signals:
+- signal_id: ordered_context_fanout_baton_relay
+  normalized_requirement: Sequential source fan-out must pass dense upstream batons
+    and alerts to downstream branches before they finalize.
+  product_version_target: v4.4
+  status: candidate_implemented_in_v4_6_then_dogfooded_in_v4_7
+  continuity_export_required: true
+- signal_id: domain_context_capsule_readme_click
+  normalized_requirement: Every significant folder should expose a README projection
+    and machine-readable ION_CONTEXT_CAPSULE.yaml local operating contract.
+  product_version_target: v4.5
+  status: candidate_implemented_and_dogfooded_in_v4_7
+  continuity_export_required: true
+- signal_id: ion_transfer_ignore_export_profiles
+  normalized_requirement: Context capsules need .ionignore/export profiles so transfer
+    packages stay clean, safe, small, and purpose-specific.
+  product_version_target: v4.6
+  status: candidate_implemented_and_dogfooded_in_v4_7
+  continuity_export_required: true
+- signal_id: context_package_dogfood_self_orchestration
+  normalized_requirement: The carrier should build real context packages from its
+    own package/capsule mesh and verify remount continuity.
+  product_version_target: v4.7
+  status: candidate_implemented
+  continuity_export_required: true
+workflow_state:
+  active_route: ARCHITECTURE_SIGNAL_CAPTURE_ROUTE
+  current_phase: candidate_carried_forward
+continuity_export:
+  include_in_transfer_package: true
+hashes: {}

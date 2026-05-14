@@ -1,0 +1,67 @@
+schema_id: ion.domain_context_capsule.v1
+capsule_id: ion.folder.ion_gpt
+folder: ION_GPT
+status: active_candidate
+generated_at_utc: 20260513T221500Z
+identity:
+  domain_label: ION GPT Builder Surface
+  purpose: Custom GPT Builder instructions, Action schemas, packages, and worker details.
+  parent_domain: root
+authority:
+  accepted_state_claim: false
+  production_authority: false
+  live_execution_authority: false
+  requires_receipt_for_state_claim: true
+read_first:
+- README.md
+- ION_CONTEXT_CAPSULE.yaml
+- 01_GPT_BUILDER_INPUTS/CURRENT_INSTRUCTIONS_TO_PASTE.md
+- 03_ACTIONS/README.md
+active_objectives:
+- id: custom_gpt_front_door_carrier
+  summary: Maintain GPT carrier package and Builder release evidence
+- id: context_mesh_package_export
+  summary: Export current GPT package with folder capsules, context packages, and
+    remount prompts.
+local_agents:
+- role: STEWARD
+  use: release boundary and proof check
+- role: SCRIBE
+  use: package/receipt summarization
+domains:
+- custom_gpt_builder_inputs
+- action_schemas
+- sandbox_carrier_worker_details
+automations:
+  safe_tests: []
+  safe_commands:
+  - parse YAML/JSON
+  unsafe_without_approval:
+  - GPT Builder update
+  - Action schema install
+  - git push
+canonical_surfaces:
+  builder_inputs: 01_GPT_BUILDER_INPUTS/
+  actions: 03_ACTIONS/
+  current_carrier: 04_CURRENT_SANDBOX_CARRIER/
+  worker_details: 99_WORKER_DETAILS/
+history:
+  latest_capsule: history/latest.md
+  historical_capsules: []
+receipts: []
+continuity_export:
+  include_in_transfer_package: true
+  required_files:
+  - README.md
+  - ION_CONTEXT_CAPSULE.yaml
+  - 01_GPT_BUILDER_INPUTS/CURRENT_INSTRUCTIONS_TO_PASTE.md
+  - 03_ACTIONS/
+  - 04_CURRENT_SANDBOX_CARRIER/
+  - 99_WORKER_DETAILS/
+freshness:
+  source_hashes: {}
+  status: candidate_current
+boundaries:
+  do_not:
+  - treat worker evidence OpenAPI as Builder install path
+  - update Builder without validated release bundle

@@ -1,0 +1,66 @@
+schema_id: ion.export_profile.v1
+created_at_utc: 20260513T221500Z
+posture: sandbox-candidate
+authority:
+  accepted_state_claim: false
+  production_authority: false
+  live_execution_authority: false
+profiles:
+  minimal_continuity:
+    purpose: Start a new chat and continue the active ION route.
+    include_patterns:
+    - README.md
+    - ION_CONTEXT_CAPSULE.yaml
+    - ION_GPT/**/ION_CONTEXT_CAPSULE.yaml
+    - ION_GPT/**/context_packages/*.yaml
+    - Needs_Routed/*.yaml
+    exclude_patterns:
+    - '*.zip'
+    - __pycache__/**
+    - .pytest_cache/**
+    - 90_HISTORICAL_ZIPS/**
+    - historical/**
+  working_handoff:
+    purpose: Give Codex/agent enough local files to continue implementation.
+    include_patterns:
+    - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/**
+    - ION_GPT/01_GPT_BUILDER_INPUTS/**
+    - Needs_Routed/*.yaml
+    exclude_patterns:
+    - __pycache__/**
+    - .pytest_cache/**
+    - '*.zip'
+    - 90_HISTORICAL_ZIPS/**
+  full_reproducible:
+    purpose: Reproduce candidate package state without secrets.
+    include_patterns:
+    - '**'
+    exclude_patterns:
+    - ION_VAULT_LOCAL/**
+    - .env
+    - __pycache__/**
+    - .pytest_cache/**
+  public_safe:
+    purpose: Share non-secret sanitized project state.
+    include_patterns:
+    - README.md
+    - ION_CONTEXT_CAPSULE.yaml
+    - ION_GPT/README.md
+    - ION_GPT/ION_CONTEXT_CAPSULE.yaml
+    exclude_patterns:
+    - Needs_Routed/**
+    - receipts/**
+    - '*.zip'
+    - '*secret*'
+    - '*token*'
+    - '*credential*'
+non_exportable_boundary: &id001
+- ION_VAULT_LOCAL
+- .env
+- secret
+- token
+- credential
+- browser_session
+- hidden_chain_of_thought
+- local_cache
+non_exportable: *id001

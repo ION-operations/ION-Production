@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "properties": {
+    "ion_dynamic_domain_agent_expansion": {
+      "properties": {
+        "active_route": {
+          "required": [
+            "route_id",
+            "objective"
+          ],
+          "type": "object"
+        },
+        "candidate_agents": {
+          "type": "array"
+        },
+        "candidate_domains": {
+          "type": "array"
+        },
+        "detected_pressure": {
+          "required": [
+            "signals",
+            "novelty_level",
+            "recurrence_evidence"
+          ],
+          "type": "object"
+        },
+        "registry_boundary": {
+          "properties": {
+            "mutates_accepted_registry": {
+              "const": false
+            }
+          },
+          "required": [
+            "mutates_accepted_registry",
+            "mutates_project_candidate_index",
+            "requires_human_acceptance_to_land"
+          ],
+          "type": "object"
+        },
+        "schema_id": {
+          "const": "ion.dynamic_domain_agent_expansion.v1"
+        },
+        "status": {
+          "enum": [
+            "candidate_not_accepted_canon",
+            "candidate_draft",
+            "operational_candidate"
+          ]
+        }
+      },
+      "required": [
+        "schema_id",
+        "status",
+        "active_route",
+        "detected_pressure",
+        "candidate_domains",
+        "candidate_agents",
+        "registry_boundary"
+      ],
+      "type": "object"
+    }
+  },
+  "required": [
+    "ion_dynamic_domain_agent_expansion"
+  ],
+  "title": "ION Dynamic Domain Agent Expansion",
+  "type": "object"
+}

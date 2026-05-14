@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ion.custom_gpt.dogfood_build_report.schema.v1",
+  "title": "ION Custom GPT Dogfood Build Report",
+  "type": "object",
+  "required": [
+    "schema_id",
+    "build_id",
+    "posture",
+    "results",
+    "authority"
+  ],
+  "properties": {
+    "schema_id": {
+      "const": "ion.custom_gpt.dogfood_build_report.v1"
+    },
+    "build_id": {
+      "type": "string"
+    },
+    "posture": {
+      "type": "string"
+    },
+    "results": {
+      "type": "object"
+    },
+    "authority": {
+      "type": "object"
+    }
+  }
+}

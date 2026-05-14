@@ -1,0 +1,30 @@
+schema_id: ion.custom_gpt_route.v0_6_candidate
+route_id: ORDERED_CONTEXT_FANOUT_WITH_BATONS
+trigger_phrases:
+- fan out this file
+- split large context
+- multi agent section review
+- ordered context fanout
+partition_rule: contiguous_ranges_with_soft_overlap_plus_upstream_batons
+soft_overlap_alone_sufficient: false
+branch_requirements:
+  agent_a:
+    upstream_batons_required: []
+    return_required:
+    - ion_context_baton
+  agent_b:
+    upstream_batons_required:
+    - agent_a
+    must_reconcile:
+    - agent_a.downstream_alerts
+  agent_c:
+    upstream_batons_required:
+    - agent_a
+    - agent_b
+    must_reconcile:
+    - active_alerts
+    - unresolved_questions
+fan_in:
+  merge_order: source_order
+  completion_order_can_not_override_source_order: true
+  settlement_required: true

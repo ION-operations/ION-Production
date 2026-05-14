@@ -1,0 +1,37 @@
+schema_id: ion.domain_context_capsule.v1
+capsule_id: <stable id>
+folder: <folder path>
+status: active_candidate
+generated_at_utc: <timestamp>
+identity:
+  domain_label: <label>
+  purpose: <purpose>
+  parent_domain: <parent>
+authority:
+  accepted_state_claim: false
+  production_authority: false
+  live_execution_authority: false
+  requires_receipt_for_state_claim: true
+read_first: []
+active_objectives: []
+local_agents: []
+domains: []
+automations:
+  safe_tests: []
+  safe_commands: []
+  unsafe_without_approval: []
+canonical_surfaces: {}
+history:
+  latest_capsule: history/latest.md
+  historical_capsules: []
+receipts: []
+continuity_export:
+  include_in_transfer_package: true
+  required_files:
+    - README.md
+    - ION_CONTEXT_CAPSULE.yaml
+freshness:
+  source_hashes: {}
+  status: candidate_current
+boundaries:
+  do_not: []

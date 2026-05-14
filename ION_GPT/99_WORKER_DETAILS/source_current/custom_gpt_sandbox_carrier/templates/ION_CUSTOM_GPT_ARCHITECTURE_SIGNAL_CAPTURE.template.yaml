@@ -1,0 +1,63 @@
+schema_id: ion.custom_gpt.architecture_signal.v0_1
+signal_id: ARCHSIG-ORDERED-CONTEXT-FANOUT-SEQUENTIAL-BATON-V4-4
+captured_at_utc: "20260513T000000Z"
+source: operator_chat
+raw_summary: "Agent B needs Agent A's findings before reading section B."
+normalized_requirement: >-
+  Downstream analysis agents must inherit dense upstream context batons before
+  analyzing their assigned section. Agent B inherits Agent A before section B;
+  Agent C inherits Agent A plus Agent B before section C.
+aliases:
+  - relay packet
+  - context baton
+  - handoff capsule
+  - forward alert
+  - downstream alert
+  - upstream reopen alert
+  - branch return metadata
+  - fan-in settlement input
+related_existing_protocols:
+  - ION/02_architecture/BOUNDED_PARALLELISM_AND_SETTLEMENT_PROTOCOL.md
+  - ION/02_architecture/BOUNDED_MULTI_AGENT_ALLOCATOR_PROTOCOL.md
+  - ION/02_architecture/FAN_IN_MERGE_REVIEW_SETTLEMENT_PROTOCOL.md
+  - ION/02_architecture/CONTEXT_GRAPH_SUBSTRATE_PROTOCOL.md
+  - ION/02_architecture/AGENT_GRAPH_CUSTODIAN_AND_SUBSPECIALIST_FANOUT_PROTOCOL.md
+  - ION/02_architecture/ACTIVATION_SUMMARY_HANDOFF_CAPSULE_MATERIALIZATION_PROTOCOL.md
+  - ION/02_architecture/HANDOFF_CAPSULE_EXECUTOR_ENTRY_REHEARSAL_PROTOCOL.md
+product_version_target: v4.4a_v4.4b
+status: candidate_unimplemented
+continuity_export_required: true
+tests_required: true
+accepted_state_claim: false
+route:
+  route_id: ARCHITECTURE_SIGNAL_CAPTURE_TO_ORDERED_CONTEXT_FANOUT
+  target_protocol: ION_CUSTOM_GPT_ORDERED_CONTEXT_FANOUT_V4_4
+  route_reason: >-
+    The operator identified a sequential baton requirement that must be
+    preserved as candidate architecture and recovered by future chats.
+  ordered_baton_required: true
+continuity_export_refs:
+  - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/instructions/ION_CUSTOM_GPT_ARCHITECTURE_SIGNAL_CAPTURE.md
+  - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/schemas/ION_CUSTOM_GPT_ARCHITECTURE_SIGNAL.schema.json
+  - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/templates/ION_CUSTOM_GPT_ARCHITECTURE_SIGNAL_CAPTURE.template.yaml
+  - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tests/test_architecture_signal_capture_candidate.py
+ordered_context_fanout:
+  protocol_id: ION_CUSTOM_GPT_ORDERED_CONTEXT_FANOUT_V4_4
+  section_order:
+    - agent: Agent A
+      section: section A
+      input_batons: []
+      output_baton: Agent A dense baton
+    - agent: Agent B
+      section: section B
+      input_batons:
+        - Agent A dense baton
+      output_baton: Agent A plus Agent B dense baton
+    - agent: Agent C
+      section: section C
+      input_batons:
+        - Agent A dense baton
+        - Agent B dense baton
+      output_baton: Agent A plus Agent B plus Agent C dense baton
+  upstream_reopen_alert_required: true
+  fan_in_settlement_input_required: true

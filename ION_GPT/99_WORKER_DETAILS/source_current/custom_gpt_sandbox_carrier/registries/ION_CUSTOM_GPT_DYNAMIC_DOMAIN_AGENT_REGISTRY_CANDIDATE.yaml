@@ -1,0 +1,57 @@
+schema_id: ion.custom_gpt.dynamic_domain_agent_registry_candidate.v1
+status: candidate_project_index_not_accepted_registry
+registry_boundary:
+  mutates_accepted_registry: false
+  requires_human_acceptance_to_land: true
+candidate_domains:
+- domain_id: custom_gpt_front_door_carrier
+  title: Custom GPT Front-Door Carrier
+  status: operational_candidate
+- domain_id: persona_visible_envelope
+  title: Persona Visible Envelope
+  status: operational_candidate
+- domain_id: continuity_transfer
+  title: Remountable Continuity Transfer
+  status: operational_candidate
+- domain_id: ordered_context_fanout
+  title: Ordered Context Fan-Out
+  status: candidate_draft
+- domain_id: domain_context_capsules
+  title: Domain Context Capsule Mesh
+  status: candidate_draft
+- domain_id: transfer_ignore_profiles
+  title: ION Transfer Ignore Profiles
+  status: candidate_draft
+candidate_agents:
+- agent_id: persona_profile_selector
+  display_name: Persona Profile Selector
+  domain_ref: persona_visible_envelope
+  authority:
+    can_route: true
+    can_execute: false
+    can_claim_state: false
+    requires_steward_settlement: true
+- agent_id: continuity_exporter
+  display_name: Continuity Exporter
+  domain_ref: continuity_transfer
+  authority:
+    can_route: true
+    can_execute: false
+    can_claim_state: false
+    requires_steward_settlement: true
+- agent_id: ordered_fanout_steward
+  display_name: Ordered Fan-Out Steward
+  domain_ref: ordered_context_fanout
+  authority:
+    can_route: true
+    can_execute: false
+    can_claim_state: false
+    requires_steward_settlement: true
+- agent_id: capsule_mesh_linter
+  display_name: Capsule Mesh Linter
+  domain_ref: domain_context_capsules
+  authority:
+    can_route: true
+    can_execute: false
+    can_claim_state: false
+    requires_steward_settlement: true

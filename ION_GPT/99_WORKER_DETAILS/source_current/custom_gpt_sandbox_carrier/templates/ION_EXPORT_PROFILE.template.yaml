@@ -1,0 +1,21 @@
+schema_id: ion.export_profile.v1
+profiles:
+  minimal_continuity:
+    include: [capsules, active_receipts, active_route, persona_envelope, next_chat_prompt]
+    exclude: [old_zips, cache, bulky_generated_artifacts]
+  working_handoff:
+    include: [touched_source, relevant_capsules, tests, receipts, reports, active_patches]
+  full_reproducible:
+    include: [source, tests, receipts, selected_artifacts, selected_historical_witnesses]
+  public_safe:
+    include: [sanitized_capsules, public_docs, non_secret_proof_summaries]
+non_exportable:
+  - ION_VAULT_LOCAL/
+  - .env
+  - secrets
+  - tokens
+  - credentials
+  - browser_session_data
+  - local_cache
+  - hidden_chain_of_thought
+omission_manifest_required: true

@@ -1,4 +1,4 @@
-schema_id: ion.custom_gpt_route.v0_4_2
+schema_id: ion.custom_gpt_route.v0_6_candidate
 route_id: BOOT_TO_PERSONA_INTERFACE_RESPONSE
 trigger_phrases:
 - boot-sequence
@@ -15,8 +15,6 @@ input_context:
   - action_gateway_probe
   - mcp_probe
   - full_repo_snapshot
-  - continuity_transfer_package
-  - ion_project_hash
 internal_cycle:
 - phase: PERSONA_INTERFACE_INGRESS
   purpose: receive operator language, preserve intent, and render it into ION-admissible
@@ -74,12 +72,23 @@ public_output_contract:
   - repeated_negative_identity_claims
   - long_non_claims
   - yaml_dump
+  state_bearing_yaml_blocks:
+  - ion_boot_sequence_result
+  - ion_persona
+  - ion_sequence_continuation
+  - ion_dynamic_domain_agent_expansion
+  - ion_ordered_context_fanout
+  - ion_architecture_signal
+  required_order_for_serious_ion_work:
+  - compact_machine_telemetry
+  - candidate_receipt_or_continuation_when_state_bearing
+  - ion_persona_visible_envelope
+  - 'ION :: persona_response'
 fallbacks:
   no_live_connector: continue_with_sandbox_read_only_persona_response
   no_full_repo: continue_with_uploaded_package_context
   no_action_auth: stop_protected_actions_and_report_auth_repair
   no_context_package: answer_conservatively_and_request_package_mount
-  no_project_hash: create_or_request_candidate_continuity_package_before_state_bearing_work
 completion_requirement:
   boot_route_must_complete_in_same_answer: true
   must_emit_persona_response: true
@@ -96,11 +105,9 @@ completion_requirement:
   final_answer_gate_required: true
   workflow_object_required_for_substantive_response: true
   operator_turns_during_active_route_do_not_reset: true
-  candidate_boot_receipt_required: true
-  persona_visible_envelope_required: true
-  must_emit_before_ion_response:
-  - ion_boot_sequence_result
-  - ion_persona
+  must_emit_boot_receipt_when_booting: true
+  must_emit_persona_visible_envelope_for_serious_work: true
+  must_export_continuity_or_inline_yaml_when_state_bearing: true
 proceed_handling:
   operator_message: proceed
   meaning: continue the already mounted route/objective
@@ -207,13 +214,9 @@ final_answer_gate:
   requires_terminal_persona_or_continuation_envelope: true
   forbids_telemetry_only_substantive_answer: true
   visible_natural_language_owner: PERSONA_INTERFACE_RESPONSE
-  requires_boot_or_work_receipt_when_state_bearing: true
-  requires_persona_visible_envelope: true
-  requires_profile_selection_boundary: true
 persona_visible_envelope:
   required_for_serious_ion_work: true
   schema_ref: schemas/ION_CUSTOM_GPT_PERSONA_VISIBLE_ENVELOPE.schema.json
-  instruction_ref: instructions/ION_CUSTOM_GPT_PERSONA_VISIBLE_ENVELOPE.md
   must_include:
   - selected_profile
   - candidate_domains
@@ -222,36 +225,40 @@ persona_visible_envelope:
   - gesture
   - operator_visible_inner_monologue
   - boundaries
-  inner_monologue_type: operator_visible_persona_signal_not_hidden_reasoning
+  inner_monologue_boundary: operator_visible_persona_signal_not_hidden_reasoning
   hidden_chain_of_thought_exposed: false
-boot_receipt:
+boot_receipt_contract:
   required_for_boot_sequence: true
   schema_ref: schemas/ION_CUSTOM_GPT_BOOT_SEQUENCE_RESULT.schema.json
-  instruction_ref: instructions/ION_CUSTOM_GPT_BOOT_RECEIPT_CONTRACT.md
-  receipt_status: candidate_boot_receipt
-  must_precede: ion_persona
+  accepted_state_claim: false
+  production_authority: false
+  live_execution_authority: false
 project_continuity_hash:
   carried_by: ion_project_hash
   new_chat_without_package: report_pending_and_create_or_request_candidate_continuity_package
-  package_mounted: reuse_package_hash
+  mounted_package: reuse_package_hash
   mismatch_behavior: block_and_report_hash_conflict
   action_gateway_enforcement: later_packet_only
 action_boot_check:
   normal_boot_requires_live_actions: false
   when_requested_use_read_only_probes:
   - ionGatewayHealth
-  - ionGatewayPolicy
   - ionMcpHealth
-  - ionMcpAppStatus
-  - ionMcpJsonRpc_tools_list
   stop_immediately_on:
   - AUTH_INVALID
   - gateway_token_invalid
-  - AUTH_MISSING
-  - Cloudflare_502_403_1010
-profile_selector:
-  registry_ref: registries/ION_CUSTOM_GPT_PERSONA_PROFILE_REGISTRY.yaml
-  default_profile: ion_default
-  presentation_only: true
-  profiles_do_not_grant_authority: true
-  recovered_profiles_are_candidate_or_historical: true
+  - unexpected_AUTH_MISSING
+continuity_export_contract:
+  required_when_state_bearing: true
+  manifest_schema_ref: schemas/ION_CUSTOM_GPT_CONTINUITY_TRANSFER_PACKAGE.schema.json
+  next_chat_prompt_required: true
+  fallback_if_file_export_unavailable: inline_full_continuation_and_domain_agent_yaml_in_chat
+ordered_context_fanout_contract:
+  required_for_sequential_parallel_fanout: true
+  soft_overlap_alone_sufficient: false
+  baton_schema_ref: schemas/ION_CUSTOM_GPT_CONTEXT_BATON.schema.json
+  fan_in_merge_order: source_order
+architecture_signal_capture:
+  operator_important_system_remarks_become_durable_signals: true
+  schema_ref: schemas/ION_CUSTOM_GPT_ARCHITECTURE_SIGNAL.schema.json
+  continuity_export_required: true

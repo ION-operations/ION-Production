@@ -1,0 +1,69 @@
+schema_id: ion.custom_gpt.front_door_carrier_v4_7.dogfood_context_packages_receipt.v1
+created_at_utc: 20260513T221500Z
+posture: sandbox-candidate
+accepted_state_claim: false
+production_authority: false
+live_execution_authority: false
+objective: Build concrete context packages, context mesh, transfer profile engine,
+  and remountable dogfood package for the Custom GPT carrier.
+source_base: ION_CUSTOM_GPT_V4_6_SANDBOX_EVOLUTION_CANDIDATE_20260513T214500Z
+files_changed_summary:
+  added_major_surfaces:
+  - root README.md and ION_CONTEXT_CAPSULE.yaml
+  - v4.7 instructions, schemas, route, templates
+  - context package builder, context mesh builder, dogfood builder, expanded transfer
+    exporter
+  - context_packages/, context_mesh/, export_profiles/
+  - v4.7 tests
+  modified_major_surfaces:
+  - ION_GPT/01_GPT_BUILDER_INPUTS/CURRENT_INSTRUCTIONS_TO_PASTE.md
+  - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/instructions/ION_CUSTOM_GPT_MAIN_INSTRUCTIONS_8000.md
+  - ION_GPT/ION_CONTEXT_CAPSULE.yaml
+  - carrier ION_CONTEXT_CAPSULE.yaml
+dogfood_result:
+  context_mesh_capsules: 3
+  relevant_capsules: 3
+  transfer_manifest_includes: 184
+  transfer_manifest_omits: 29
+  remount_simulation: pass
+  dogfood_zip: ION_V4_7_DOGFOOD_CONTEXT_PACKAGE_20260513T221500Z.zip
+  dogfood_zip_sha256: 365ed4a668ee2a1658af9f95e1805ef03ed729f460e0a7e8e2b8f65a27f4ce16
+contracts:
+  context_mesh_builder: candidate_pass
+  context_package_builder: candidate_pass
+  transfer_profile_engine: candidate_pass
+  dogfood_remount_simulation: pass
+  persona_visible_envelope_contract: inherited_from_v4_6_tests
+  continuity_export_contract: expanded_in_v4_7_tests
+blockers:
+- Not applied to the real repo.
+- Not committed.
+- No GPT Builder update.
+- No live MCP/Action queue write from this tab.
+next:
+- Have Codex apply v4.7 patch on a fresh branch.
+- Run full v4.2-v4.7 carrier tests and YAML/JSON parse.
+- Split into reviewable commits if needed.
+- Only then create a validated release bundle for GPT Builder review.
+validation:
+  carrier_pytest_final:
+    command: python -m pytest -q ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tests
+    exit_code: 0
+    result: 51 passed
+    note: artifact_tool spreadsheet warmup warning printed to stderr; pytest exit
+      code 0
+  yaml_json_parse:
+    result: pass
+    errors: 0
+  patch_apply:
+    command: patch -p1 -i ion_custom_gpt_v4_7_dogfood_context_packages_20260513T221500Z.patch
+    exit_code: 0
+    result: pass
+  patch_apply_tree_compare:
+    result: pass
+    missing: 0
+    extra: 0
+    hash_mismatches: 0
+  carrier_pytest_after_patch_apply:
+    exit_code: 0
+    result: 51 passed
