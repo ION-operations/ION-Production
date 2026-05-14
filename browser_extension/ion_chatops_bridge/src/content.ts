@@ -315,6 +315,10 @@ let settingsAnchorPoint: AnchorPoint = "bottom";
 let contextWorkflowAutoSyncTimer: number | null = null;
 let bridgeLayoutRefreshTimer: number | null = null;
 let nativeLeftMode: NativeLeftMode = "queue";
+let nativeDrawerOpenPanels: NativeLeftMode[] = ["queue", "context"];
+const NATIVE_DRAWER_MODES: NativeLeftMode[] = ["queue", "projects", "agent", "context"];
+const NATIVE_DRAWER_TOP_MODES: NativeLeftMode[] = ["queue", "projects"];
+const NATIVE_DRAWER_BOTTOM_MODES: NativeLeftMode[] = ["agent", "context"];
 const defaultDocsState: DocsBrowseState = {
   roots: DOCS_FAVORITE_ROOTS.map((entry) => entry.path),
   currentRoot: "",
@@ -4750,7 +4754,7 @@ function ensureNativeLeftStyle(): void {
       flex: 0 0 auto;
       display: grid;
       gap: 8px;
-      max-height: min(46vh, 380px);
+      max-height: min(56vh, 520px);
       overflow: auto;
       margin: 8px;
       padding: 10px;
@@ -4821,6 +4825,78 @@ function ensureNativeLeftStyle(): void {
       height: 26px;
       border-radius: 8px;
       font: 900 9px/24px ui-sans-serif, system-ui, sans-serif;
+    }
+    #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-toggle-bar {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 5px;
+      position: sticky;
+      z-index: 2;
+      padding-bottom: 2px;
+      background: linear-gradient(180deg, rgba(1,12,20,0.98), rgba(1,12,20,0.78));
+    }
+    #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-toggle-bar[data-zone="top"] {
+      top: -10px;
+    }
+    #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-toggle-bar[data-zone="bottom"] {
+      bottom: -10px;
+      padding-top: 2px;
+      padding-bottom: 0;
+      background: linear-gradient(0deg, rgba(1,12,20,0.98), rgba(1,12,20,0.78));
+    }
+    #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-toggle-bar .ion-native-left-button {
+      display: grid;
+      place-items: center;
+      height: 28px;
+      padding: 0;
+      border-radius: 8px;
+    }
+    #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-toggle-bar .ion-native-left-icon {
+      width: 17px;
+      height: 17px;
+      display: block;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.95;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-panel-deck {
+      display: grid;
+      gap: 7px;
+      min-width: 0;
+      min-height: 0;
+    }
+    #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-panel-deck[data-count="1"] {
+      min-height: 150px;
+    }
+    #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-panel-deck[data-count="1"] .ion-native-left-panel-card {
+      min-height: 140px;
+    }
+    #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-panel-card {
+      display: grid;
+      gap: 6px;
+      min-width: 0;
+      padding: 7px;
+      border: 1px solid rgba(255,255,255,0.09);
+      border-radius: 8px;
+      background: rgba(255,255,255,0.04);
+    }
+    #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-panel-card-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+      color: rgba(209,250,229,0.92);
+      font: 900 9px/1.2 ui-sans-serif, system-ui, sans-serif;
+      text-transform: uppercase;
+      letter-spacing: 0.01em;
+    }
+    #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-panel-card-count {
+      color: rgba(255,229,208,0.84);
+      font: 800 9px/1 ui-sans-serif, system-ui, sans-serif;
+      text-transform: none;
     }
     #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-actions {
       display: grid;
@@ -4951,6 +5027,10 @@ function findChatGptLeftDrawerHost(): HTMLElement | null {
     .filter(({ rect }) => rect.width >= 168 && rect.height >= 260 && rect.right <= window.innerWidth * 0.78)
     .sort((a, b) => b.rect.width - a.rect.width || a.rect.left - b.rect.left);
   return candidates[0]?.element ?? null;
+}
+
+function nativeLeftDrawerIsOpen(): boolean {
+  return Boolean(findChatGptLeftDrawerHost());
 }
 
 function findChatGptSidebarToggleButton(): HTMLElement | null {
@@ -5140,23 +5220,28 @@ function nativeLeftRailButton(action: string, icon: NativeLeftRailIcon, title: s
 
 function handleNativeLeftAction(action: string, projectPath = ""): void {
   if (!action) return;
-  if (action === "minimize-drawer") {
+  if (action.startsWith("toggle-drawer-")) {
+    const mode = action.slice("toggle-drawer-".length);
+    if (!isNativeLeftMode(mode)) return;
+    toggleNativeDrawerPanel(mode);
+    ensureChatGptLeftDrawerOpen();
+  } else if (action === "minimize-drawer") {
     minimizeChatGptLeftDrawer();
   } else if (action === "open-ion") {
     ensureChatGptLeftDrawerOpen();
   } else if (action === "open-queue" || action === "tab-queue") {
-    nativeLeftMode = "queue";
+    ensureNativeDrawerPanelOpen("queue");
     ensureChatGptLeftDrawerOpen();
   } else if (action === "open-projects" || action === "tab-projects") {
-    nativeLeftMode = "projects";
+    ensureNativeDrawerPanelOpen("projects");
     ensureChatGptLeftDrawerOpen();
     if (!projectPackages.length) void requestProjectsRefresh();
   } else if (action === "open-agent" || action === "tab-agent") {
-    nativeLeftMode = "agent";
+    ensureNativeDrawerPanelOpen("agent");
     ensureChatGptLeftDrawerOpen();
     window.dispatchEvent(new CustomEvent("ion-chatops-bounded-agent-status"));
   } else if (action === "open-context" || action === "tab-context") {
-    nativeLeftMode = "context";
+    ensureNativeDrawerPanelOpen("context");
     ensureChatGptLeftDrawerOpen();
   } else if (action === "queue-send") {
     if (!nextQueuedMessage()) publishMessageQueueState("Queue is empty.");
@@ -5218,10 +5303,10 @@ function renderNativeRailGroup(group: HTMLElement): void {
     const action = button.dataset.nativeLeftAction ?? "";
     button.dataset.active = String(
       (action === "open-ion" && Boolean(findChatGptLeftDrawerHost())) ||
-      (action === "open-queue" && nativeLeftMode === "queue") ||
-      (action === "open-projects" && nativeLeftMode === "projects") ||
-      (action === "open-agent" && nativeLeftMode === "agent") ||
-      (action === "open-context" && nativeLeftMode === "context"),
+      (action === "open-queue" && nativeDrawerOpenPanels.includes("queue")) ||
+      (action === "open-projects" && nativeDrawerOpenPanels.includes("projects")) ||
+      (action === "open-agent" && nativeDrawerOpenPanels.includes("agent")) ||
+      (action === "open-context" && nativeDrawerOpenPanels.includes("context")),
     );
     group.appendChild(button);
   });
@@ -5263,10 +5348,44 @@ function ensureNativeRailGroup(): HTMLElement | null {
 }
 
 function nativeDrawerTitle(): string {
+  if (nativeDrawerOpenPanels.length !== 1) return "ION Drawer";
   if (nativeLeftMode === "projects") return "ION Projects";
   if (nativeLeftMode === "agent") return "ION Agent Lane";
   if (nativeLeftMode === "context") return "ION Context";
   return "ION Queue";
+}
+
+function isNativeLeftMode(value: string): value is NativeLeftMode {
+  return NATIVE_DRAWER_MODES.includes(value as NativeLeftMode);
+}
+
+function nativeModeLabel(mode: NativeLeftMode): string {
+  if (mode === "projects") return "Projects";
+  if (mode === "agent") return "Agent";
+  if (mode === "context") return "Context";
+  return "Queue";
+}
+
+function nativeModeMetric(mode: NativeLeftMode): string {
+  if (mode === "projects") return `${projectPackages.length}`;
+  if (mode === "agent") return browserQueueGatewayStatus.replace(/\s+/g, " ").slice(0, 18);
+  if (mode === "context") return `${contextWorkflowSelectedPaths().length}`;
+  return `${messageQueueItems.filter((item) => item.status === "queued" || item.status === "waiting" || item.status === "sending" || item.status === "failed").length}`;
+}
+
+function ensureNativeDrawerPanelOpen(mode: NativeLeftMode): void {
+  nativeLeftMode = mode;
+  if (!nativeDrawerOpenPanels.includes(mode)) nativeDrawerOpenPanels = [...nativeDrawerOpenPanels, mode].slice(-4);
+}
+
+function toggleNativeDrawerPanel(mode: NativeLeftMode): void {
+  nativeLeftMode = mode;
+  if (nativeDrawerOpenPanels.includes(mode)) {
+    nativeDrawerOpenPanels = nativeDrawerOpenPanels.filter((entry) => entry !== mode);
+    nativeLeftMode = nativeDrawerOpenPanels[0] ?? mode;
+  } else {
+    nativeDrawerOpenPanels = [...nativeDrawerOpenPanels, mode].filter((entry, index, list) => list.indexOf(entry) === index).slice(-4);
+  }
 }
 
 function nativeDrawerRow(label: string, value: string, selected = false): HTMLElement {
@@ -5377,27 +5496,62 @@ function renderNativeContextDrawer(panel: HTMLElement): void {
   panel.append(actions, list);
 }
 
-function renderNativeDrawerTabs(): HTMLElement {
-  const tabs = document.createElement("div");
-  tabs.className = "ion-native-left-tabs";
-  const buttons: Array<[NativeLeftMode, string, string]> = [
-    ["queue", "Queue", "Show ION queue controls"],
-    ["projects", "Projects", "Show ION project/package controls"],
-    ["agent", "Agent", "Show bounded agent lane controls"],
-    ["context", "Context", "Show context sync and import controls"],
-  ];
-  buttons.forEach(([mode, label, title]) => {
-    const button = nativeLeftButton(`tab-${mode}`, label, title, mode === nativeLeftMode);
-    button.dataset.active = String(mode === nativeLeftMode);
-    tabs.appendChild(button);
+function renderNativeDrawerToggleBar(zone: "top" | "bottom"): HTMLElement {
+  const bar = document.createElement("div");
+  bar.className = "ion-native-left-toggle-bar";
+  bar.dataset.zone = zone;
+  const modes = zone === "top" ? NATIVE_DRAWER_TOP_MODES : NATIVE_DRAWER_BOTTOM_MODES;
+  modes.forEach((mode) => {
+    const active = nativeDrawerOpenPanels.includes(mode);
+    const button = nativeLeftButton(`toggle-drawer-${mode}`, "", `${active ? "Close" : "Open"} ${nativeModeLabel(mode)} drawer panel`, active);
+    button.dataset.active = String(active);
+    button.dataset.nativeDrawerMode = mode;
+    button.appendChild(nativeLeftIconSvg(mode));
+    bar.appendChild(button);
   });
-  return tabs;
+  return bar;
+}
+
+function renderNativeDrawerPanelCard(mode: NativeLeftMode): HTMLElement {
+  const card = document.createElement("div");
+  card.className = "ion-native-left-panel-card";
+  card.dataset.mode = mode;
+  const head = document.createElement("div");
+  head.className = "ion-native-left-panel-card-head";
+  const label = document.createElement("div");
+  label.textContent = nativeModeLabel(mode);
+  const metric = document.createElement("div");
+  metric.className = "ion-native-left-panel-card-count";
+  metric.textContent = nativeModeMetric(mode);
+  head.append(label, metric);
+  card.appendChild(head);
+  if (mode === "projects") renderNativeProjectsDrawer(card);
+  else if (mode === "agent") renderNativeAgentDrawer(card);
+  else if (mode === "context") renderNativeContextDrawer(card);
+  else renderNativeQueueDrawer(card);
+  return card;
+}
+
+function renderNativeDrawerPanelDeck(): HTMLElement {
+  const deck = document.createElement("div");
+  deck.className = "ion-native-left-panel-deck";
+  deck.dataset.count = String(nativeDrawerOpenPanels.length);
+  if (!nativeDrawerOpenPanels.length) {
+    const empty = document.createElement("div");
+    empty.className = "ion-native-left-empty";
+    empty.textContent = "No ION drawer panels selected.";
+    deck.appendChild(empty);
+    return deck;
+  }
+  nativeDrawerOpenPanels.forEach((mode) => deck.appendChild(renderNativeDrawerPanelCard(mode)));
+  return deck;
 }
 
 function renderNativeDrawerPanel(panel: HTMLElement): void {
   const queueCount = messageQueueItems.filter((item) => item.status === "queued" || item.status === "waiting" || item.status === "sending" || item.status === "failed").length;
   panel.dataset.visible = "true";
   panel.dataset.mode = nativeLeftMode;
+  panel.dataset.openPanels = nativeDrawerOpenPanels.join(",");
   panel.innerHTML = "";
   const head = document.createElement("div");
   head.className = "ion-native-left-head";
@@ -5412,12 +5566,8 @@ function renderNativeDrawerPanel(panel: HTMLElement): void {
   head.append(minimize, dot, title);
   const status = document.createElement("div");
   status.className = "ion-native-left-status";
-  status.textContent = `${queueCount} queue / ${projectPackages.length} project${projectPackages.length === 1 ? "" : "s"} / ${contextWorkflowSelectedPaths().length} selected`;
-  panel.append(head, status, renderNativeDrawerTabs());
-  if (nativeLeftMode === "projects") renderNativeProjectsDrawer(panel);
-  else if (nativeLeftMode === "agent") renderNativeAgentDrawer(panel);
-  else if (nativeLeftMode === "context") renderNativeContextDrawer(panel);
-  else renderNativeQueueDrawer(panel);
+  status.textContent = `${nativeDrawerOpenPanels.length} open / ${queueCount} queue / ${projectPackages.length} project${projectPackages.length === 1 ? "" : "s"} / ${contextWorkflowSelectedPaths().length} selected`;
+  panel.append(head, status, renderNativeDrawerToggleBar("top"), renderNativeDrawerPanelDeck(), renderNativeDrawerToggleBar("bottom"));
 }
 
 function ensureNativeDrawerPanel(): HTMLElement | null {
@@ -6639,6 +6789,10 @@ function composerSidePanelBottom(anchorRect: DOMRect): number {
 function syncContextWorkflowRail(anchorRect?: DOMRect): void {
   const input = findComposerInput();
   const panel = ensureContextWorkflowRail();
+  if (nativeLeftDrawerIsOpen()) {
+    panel.dataset.visible = "false";
+    return;
+  }
   if (!input || !visibleElement(input)) {
     panel.dataset.visible = "false";
     return;
@@ -6692,6 +6846,14 @@ function syncComposerQueueChrome(): void {
   chrome.button.dataset.count = String(pendingCount);
   chrome.button.textContent = pendingCount > 10 ? "Q+10+" : "Q+";
   chrome.sendNextButton.dataset.disabled = String(!pendingCount);
+  if (nativeLeftDrawerIsOpen()) {
+    chrome.button.style.display = "none";
+    chrome.sendNextButton.style.display = "none";
+    chrome.panel.dataset.visible = "false";
+    syncContextWorkflowRail();
+    syncLeftDockChrome();
+    return;
+  }
   if (!input || !visibleElement(input)) {
     chrome.button.style.display = "none";
     chrome.sendNextButton.style.display = "none";
