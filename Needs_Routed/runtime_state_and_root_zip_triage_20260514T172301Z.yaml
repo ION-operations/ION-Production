@@ -43,7 +43,8 @@ validation:
   - command: JSON top-level shape/count inspection without raw content export
     result: passed
   - command: git check-ignore root generated zips after .gitignore update
-    result: pending_post_patch_check
+    result: passed
+    evidence: .gitignore excludes /ION_Developement.zip, /Needs_Routed.zip, and /browser_extension.zip
 non_claims:
   - no runtime JSON committed
   - no runtime JSON reset
