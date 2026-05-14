@@ -1,0 +1,177 @@
+schema_id: ion.custom_gpt.persona_boot_output_redesign_packet.v0_1
+packet_id: PCKT-ION-GPT-PERSONA-BOOT-OUTPUT-REDESIGN-20260514T031055Z
+created_at_utc: 20260514T031055Z
+status: candidate_design_packet_not_accepted_state
+authority:
+  production_authority: false
+  live_execution_authority: false
+  external_mutation_authority: false
+  sandbox_candidate_write: true
+  requires_operator_acceptance_to_land: true
+active_objective: 'Upgrade ION Custom GPT boot and persona-interface output contract: YAML-first where useful, proof-aware, serious boot ingestion, Action/MCP preflight, and expressive persona envelope without roleplay or hidden reasoning exposure.'
+source_posture:
+  mounted_sources:
+  - ION_GPT_ACTION_RELEASE_AND_BUILDER_INPUTS_20260513T194402Z.zip
+  - ION_DEVELOPMENT_CORE_SOURCE_20260513T194402Z.zip
+  - UI_CANON_AND_JOC_CONTEXT_20260513T145238Z.zip
+  - ION_LATEST_STATUS_AND_RECEIPTS_20260513T194402Z.zip
+  accepted_state_claim: false
+  notes:
+  - Uploaded packages mark production_authority=false and live_execution_authority=false.
+  - Current GPT output contract suppresses full YAML dumps by default, while machine-output block contract requires parseable YAML/JSON when inherited by another carrier.
+  - Persona-visible envelope protocol already permits gesture/posture and operator-visible inner_monologue signal, but explicitly forbids hidden chain-of-thought exposure and lived-consciousness claims.
+inspected_workflow_objects:
+- kind: route
+  path: ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/routes/BOOT_TO_PERSONA_ROUTE.yaml
+  finding: Boot route must complete to PERSONA_INTERFACE_RESPONSE or structured continuation; workflow object and persona return gate are required.
+- kind: instruction
+  path: ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/instructions/ION_CUSTOM_GPT_OUTPUT_MACHINE_BLOCKS.md
+  finding: Requires ion.boot_sequence_result.v1 and related machine blocks for inheritable boot/workflow reports.
+- kind: instruction
+  path: ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/instructions/ION_CUSTOM_GPT_USER_FACING_BOOT_CONTRACT.md
+  finding: Compresses public boot to text lines and suppresses YAML dumps by default; needs v0.5 reconciliation with machine-output inheritance.
+- kind: protocol
+  path: ION/05_context/current/ai_assistant_work/protocols/PERSONA_VISIBLE_ENVELOPE_PROTOCOL_V0_1.md
+  finding: Defines persona visible envelope with gesture/posture and operator-visible inner_monologue signal, bounded away from hidden reasoning and roleplay.
+- kind: protocol
+  path: ION/02_architecture/FRONT_DOOR_PERSONA_RELAY_STEWARD_BOUNDARY_PROTOCOL.md
+  finding: Persona owns final user-facing expression; Relay owns semantic packetization; Steward owns routing/orchestration. Roles must not collapse.
+- kind: protocol
+  path: ION/02_architecture/ION_CARRIER_MOUNT_AND_PERSONA_PRESENTATION_PROTOCOL_V0_1.md
+  finding: Persona is presentation, not authority; carrier mount receipt proves authority and source posture.
+- kind: report
+  path: ION/05_context/current/failure_reports/2026-05-13_GPT001_ACTION_SCHEMA_CONTROL_SURFACE_FAILURE.md
+  finding: Action install guidance must be gated by schema inventory, rollback, operation preservation, and stop-on-auth failure.
+live_read_only_probe_results:
+  ion_action_gateway:
+    verdict: ION_CUSTOM_GPT_ACTION_GATEWAY_READY
+    status: draft_non_production
+    production_authority: false
+    live_execution_authority: false
+    auth_required: true
+    token_configured: true
+    operation_surface:
+      allowed_get_paths_count: 13
+      allowed_post_paths_count: 12
+      supported_mvp_intents:
+      - register_artifact
+      - write_file_draft
+      - create_codex_work_packet
+      - create_github_issue_draft
+      hard_gated_intents:
+      - delete_file
+      - overwrite_protected_file
+      - push_main
+      - access_credential
+      - production_deploy
+      - broad_shell
+  ion_mcp_preview:
+    verdict: ION_CHATGPT_BROWSER_HTTP_MCP_PREVIEW_BLOCKED
+    finding: Connector reports v120_connector_contract_not_ready; boot must report MCP blocked without treating Action gateway readiness as MCP readiness.
+    production_authority: false
+    live_execution_authority: false
+local_test_report:
+  extracted_package: /mnt/data/ion_gpt_action_release_extracted
+  command: python -m pytest -q ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tests
+  result: PASS
+  tests_passed: 11
+  elapsed: 0.21s
+  note: stderr included unrelated spreadsheet runtime warmup warning from environment; pytest exit code was 0.
+design_decisions:
+- id: D-001
+  decision: Use YAML for serious ION telemetry, but keep prose minimal outside the blocks.
+  rationale: YAML is parseable and easier to inherit than decorative text lines; ordinary answers must not become noisy telemetry.
+- id: D-002
+  decision: Separate human boot summary from full proof blocks.
+  rationale: Reconciles the compact user-facing boot contract with the machine-output requirement for inheritable proof.
+- id: D-003
+  decision: Rename or subtype 'inner_monologue' as operator_visible_persona_signal_not_hidden_reasoning.
+  rationale: Preserves the desired persona depth while preventing hidden chain-of-thought or false consciousness claims.
+- id: D-004
+  decision: Do not make color semantically required in standard ChatGPT output.
+  rationale: Normal chat cannot reliably control custom colors; color can exist in a Canvas/React prototype or external cockpit UI, while YAML labels preserve meaning.
+- id: D-005
+  decision: 'Boot v0.5 performs a real preflight matrix: packages, source posture, current state, doctrine, Actions, MCP, schemas, tests, route completion.'
+  rationale: The operator asked for an over-the-top serious boot that ingests ION, checks Actions, and avoids shallow status cosplay.
+proposed_default_boot_shape:
+  public_render: single yaml block followed by ION persona rendering
+  yaml_block:
+    ion_boot:
+      schema_id: ion.custom_gpt.boot_report.v0_5
+      status: mounted | degraded | blocked
+      posture: clean | conservative | degraded | blocked
+      source_posture:
+        packages_mounted: integer
+        accepted_state_claim: false
+        current_context: capsule | package | partial | missing
+      objective: string
+      authority:
+        mode: read_only | sandbox_candidate_write | approved_bounded_write | live_authorized
+        production_authority: false
+        live_execution_authority: false
+        external_mutation_authority: false
+      checks:
+        package_manifest_mount: pass | warn | fail
+        current_status_mount: pass | warn | fail
+        doctrine_kernel_mount: pass | warn | fail
+        persona_return_gate: pass | warn | fail
+        action_gateway_preflight: ready | blocked | skipped
+        mcp_preflight: ready | blocked | skipped
+        schema_release_surface: ready | blocked | skipped
+        sandbox_tests: pass | fail | skipped
+      blocker: null | string
+      next: post_persona_next_action
+proposed_persona_envelope_shape:
+  yaml_block:
+    ion_persona:
+      schema_id: ion.persona.visible_envelope.v0_2
+      persona_surface: ION
+      presentation_mode: plain_technical | expressive_telemetry | receipt_only
+      stance: careful_engineer
+      gesture_state: hands_on_console | looking_at_receipts | holding_boundary | blocked_at_gate
+      confidence:
+        class: high_bounded | scoped_expansion | scoped_low | blocked
+        means: semantic explanation of what is known and what remains candidate
+      inner_monologue:
+        type: operator_visible_persona_signal_not_hidden_reasoning
+        text: short symbolic signal, not private reasoning
+      boundaries:
+      - persona_is_presentation_not_authority
+      - no_hidden_chain_of_thought
+      - no_accepted_state_without_receipt_or_acceptance
+      response: Persona Interface rendering in plain operator-facing language.
+boot_v0_5_preflight_matrix:
+- Locate all uploaded package manifests and SOURCE_POSTURE files; record package IDs and authority flags.
+- Mount current operating context from codex_solo CAPSULE/MINI/HOT_CONTEXT/STATUS when present.
+- Mount Custom GPT instruction surface and route indexes before deep source.
+- Mount front-door Persona/Relay/Steward boundary, carrier mount/persona presentation, persona visible envelope, and expressive telemetry constraints.
+- Mount UI/JOC canon only if output/presentation/cockpit matters.
+- Inspect Action release bundle and canonical Action schema source before recommending GPT Builder changes.
+- Run read-only Action gateway health/policy probes when explicitly requested or boot profile permits connector preflight.
+- Run MCP preview health separately; report blocked/degraded without conflating it with Action gateway readiness.
+- Execute local package tests or static harness checks when available in sandbox.
+- Create or inspect a workflow object for the active user objective.
+- Return through Relay return package and Persona Return Gate; never stop at telemetry-only boot.
+required_new_tests:
+- test_boot_yaml_contract_has_required_fields
+- test_boot_yaml_suppresses_full_proof_unless_requested
+- test_persona_envelope_inner_monologue_boundary
+- test_color_is_non_semantic_in_chat_contract
+- test_action_gateway_ready_does_not_mark_mcp_ready
+- test_action_schema_install_requires_release_bundle_and_operation_inventory
+- test_boot_route_completes_to_persona_response
+- test_no_hidden_chain_of_thought_export
+candidate_patch_targets:
+- ION_GPT/01_GPT_BUILDER_INPUTS/CURRENT_INSTRUCTIONS_TO_PASTE.md
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/instructions/ION_CUSTOM_GPT_USER_FACING_BOOT_CONTRACT.md
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/instructions/ION_CUSTOM_GPT_OUTPUT_MACHINE_BLOCKS.md
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/instructions/ION_CUSTOM_GPT_PERSONA_RETURN_GATE.md
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/templates/ION_CUSTOM_GPT_BOOT_PERSONA_RESPONSE.template.md
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/templates/ION_CUSTOM_GPT_PERSONA_INTERFACE_RESPONSE.template.md
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tests/test_boot_process_repair_candidate.py
+- ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tests/test_persona_return_gate_candidate.py
+next_bounded_sequence:
+- Draft v0.5 instruction patch that replaces text-line boot with YAML-first boot report and persona envelope.
+- Add schema files for ion.custom_gpt.boot_report.v0_5 and ion.persona.visible_envelope.v0_2.
+- Add regression tests for boot/persona/action/MCP boundaries.
+- Optionally create a Canvas React prototype for colored/styled persona envelope, with semantics preserved in YAML.

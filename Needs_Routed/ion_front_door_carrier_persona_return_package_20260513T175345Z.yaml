@@ -1,0 +1,57 @@
+schema_id: ion.custom_gpt.persona_return_package.v0_4
+package_id: ION_CUSTOM_GPT_FRONT_DOOR_CARRIER_PRODUCT_RETURN_20260513T175345Z
+created_at_utc: 20260513T175345Z
+posture: sandbox-candidate
+active_objective: Continue Custom GPT branch as lead developer; harden boot/persona carrier behavior.
+workflow_object:
+  kind: candidate_patch
+  path_or_inline_ref: ION_CUSTOM_GPT_FRONT_DOOR_CARRIER_PRODUCT_CONTRACT_REPAIR_CANDIDATE_20260513T175345Z.zip
+  status: created
+source_posture:
+  mounted_sources:
+  - ION_CUSTOM_GPT_PERSONA_RETURN_GATE_REPAIR_CANDIDATE_20260513T173011Z.zip
+  - ION_DEVELOPMENT_CORE_SOURCE_20260513T145238Z.zip::ION_Developement/ION/02_architecture/FRONT_DOOR_PERSONA_RELAY_STEWARD_BOUNDARY_PROTOCOL.md
+  - ION_DEVELOPMENT_CORE_SOURCE_20260513T145238Z.zip::ION_Developement/ION/02_architecture/FRONT_DOOR_RUNTIME_ENTRY_PROTOCOL.md
+  - ION_DEVELOPMENT_CORE_SOURCE_20260513T145238Z.zip::ION_Developement/ION/02_architecture/FRONT_DOOR_CHAT_ORCHESTRATION_ADAPTER_PROTOCOL.md
+  - ION_DEVELOPMENT_CORE_SOURCE_20260513T145238Z.zip::ION_Developement/ION/02_architecture/PERSONA_CONTEXT_BUDGET_AND_HORIZON_PROTOCOL.md
+  - ION_DEVELOPMENT_CORE_SOURCE_20260513T145238Z.zip::ION_Developement/ION/02_architecture/ION_FRONT_DOOR_AUTONOMOUS_TEAM_WORKFLOW_PROTOCOL.md
+  - ION_DEVELOPMENT_CORE_SOURCE_20260513T145238Z.zip::ION_Developement/.cursor/rules/ion-persona-user-facing.mdc
+  accepted_state_claim: false
+authority:
+  production_authority: false
+  live_execution_authority: false
+  write_scope: sandbox-candidate-write
+relay_return:
+  meaning_preserved: true
+  persona_ready_summary: The branch evolved from prompt-level fixes into a compact, testable front-door
+    carrier product contract with paste-ready instructions, schemas, a state harness, route gate, and
+    regression tests.
+steward_summary: Sandbox candidate created; no GPT Builder, live connector, Git, or production mutation
+  performed.
+persona_rendering_constraints:
+  plain_technical_speech: true
+  no_roleplay: true
+  preserve_authority_limits: true
+proof:
+  artifacts:
+  - REPAIR_REPORT_V4_FRONT_DOOR_CARRIER_PRODUCT_CONTRACT.md
+  - PATCH_DIFF_V4_FRONT_DOOR_CARRIER_PRODUCT_CONTRACT.md
+  - FRONT_DOOR_CARRIER_PRODUCT_CONTRACT_REPAIR_PACKET.yaml
+  tests:
+  - command: /opt/pyvenv/bin/python test_boot_process_repair_candidate.py
+    exit_code: 0
+    stdout_clean: 'boot process repair candidate regression: PASS
+
+      active sequence continuation regression: PASS'
+  - command: /opt/pyvenv/bin/python test_front_door_carrier_product_contract_candidate.py
+    exit_code: 0
+    stdout_clean: 'front door carrier product contract candidate regression: PASS'
+  - command: /opt/pyvenv/bin/python -m pytest -q test_persona_return_gate_candidate.py test_front_door_carrier_product_contract_candidate.py
+    exit_code: 0
+    stdout_clean: '...........                                                              [100%]
+
+      11 passed in 0.22s'
+final_answer_gate:
+  workflow_object_present: true
+  terminal_or_continuation: true
+  persona_return_gate_passed: true

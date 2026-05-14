@@ -1,0 +1,80 @@
+{
+  "active_objective": "codex_solo_work: run connector/queue regression sweep and validate start_no_receipt status transitions under simulated connector timeout",
+  "authority": {
+    "live_execution_authority": false,
+    "production_authority": false,
+    "state_claim": "candidate_sandbox_only"
+  },
+  "baseline_findings": [
+    {
+      "check": "focused regression sweep on production snapshot before candidate patch",
+      "command": "python -m pytest ION/tests/test_kernel_ion_chatgpt_browser_mcp_connector_contract.py ION/tests/test_kernel_ion_agent_invocation_broker.py ION/tests/test_kernel_ion_codex_queue_runner.py -q",
+      "result": "57 passed"
+    },
+    {
+      "check": "unpatched synthetic no-receipt simulation",
+      "evidence": {
+        "active_run": null,
+        "phase_with_reconcile": "idle",
+        "queued_request_count": 0,
+        "request_status_after_claim": "CLAIMED_BY_CODEX_QUEUE_RUNNER",
+        "run_status_after_claim": "CLAIMED_BY_CODEX_QUEUE_RUNNER"
+      },
+      "finding": "A connector timeout after claim/run creation but before worker receipt can hide the packet as idle with no queued work.",
+      "result": "defect_confirmed"
+    }
+  ],
+  "blockers": [
+    "Candidate patch is not applied to accepted repo state.",
+    "No production/live connector action was invoked or verified."
+  ],
+  "candidate_patch": {
+    "diff_path": "/mnt/data/ION_CODEX_QUEUE_START_NO_RECEIPT_CANDIDATE_PATCH_20260513T204056Z.diff",
+    "diff_sha256": "d5ef84b98123b34ebfa4d389de4fd8fe368f865d8675e131af35297e087b7059",
+    "summary": [
+      "Adds start request/no-receipt constants and terminal failure classification.",
+      "Lets live telemetry locate the latest run packet even when runner_state.latest_run was never written.",
+      "Reports immediate claimed/no-worker state as phase_status=start_requested.",
+      "Marks aged claimed/no-worker start as CODEX_QUEUE_START_NO_RECEIPT with failure_classification=CARRIER_ADAPTER_FAILURE.",
+      "Adds regression coverage for immediate start_requested and simulated timeout start_no_receipt transitions."
+    ],
+    "touched_paths": [
+      "ION/04_packages/kernel/ion_codex_queue_runner.py",
+      "ION/tests/test_kernel_ion_codex_queue_runner.py"
+    ]
+  },
+  "candidate_validation": [
+    {
+      "check": "focused regression sweep after candidate patch",
+      "command": "python -m pytest ION/tests/test_kernel_ion_chatgpt_browser_mcp_connector_contract.py ION/tests/test_kernel_ion_agent_invocation_broker.py ION/tests/test_kernel_ion_codex_queue_runner.py -q",
+      "note": "The container prints an artifact_tool spreadsheet warmup warning during Python startup; pytest return code was 0.",
+      "result": "59 passed"
+    },
+    {
+      "check": "patched synthetic no-receipt simulation",
+      "evidence": {
+        "active_run": null,
+        "diagnostic_reason": "start_requested_but_no_worker_receipt_or_active_process_after_grace",
+        "failure_classification": "CARRIER_ADAPTER_FAILURE",
+        "immediate_phase": "start_requested",
+        "immediate_run_status": "CLAIMED_BY_CODEX_QUEUE_RUNNER",
+        "queued_request_count": 0,
+        "timed_out_phase": "start_no_receipt",
+        "timed_out_reconciliation_action": "mark_start_no_receipt",
+        "timed_out_request_status": "CODEX_QUEUE_START_NO_RECEIPT",
+        "timed_out_run_status": "CODEX_QUEUE_START_NO_RECEIPT"
+      },
+      "result": "validated"
+    }
+  ],
+  "generated_at": "2026-05-13T20:41:25+00:00",
+  "next": "Submit/apply the candidate patch into the real ION development repository, then rerun the same focused sweep and record a receipt.",
+  "report_id": "ION_CODEX_SOLO_START_NO_RECEIPT_VALIDATION_20260513T204125Z",
+  "schema_id": "ion.codex_solo.validation_report.v1",
+  "source_mount": {
+    "note": "Development-core-only extraction lacks sibling ../mcp/chatgpt_connector and blocks connector contract audit; production snapshot includes that integration surface.",
+    "primary_source_package": "/mnt/data/ION_PRODUCTION_WORKSPACE_SNAPSHOT_20260513T194402Z.zip",
+    "primary_status_package": "/mnt/data/ION_LATEST_STATUS_AND_RECEIPTS_20260513T194402Z.zip",
+    "working_extract": "/mnt/data/ion_prod_snapshot/ION_Developement"
+  }
+}
