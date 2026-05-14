@@ -1,4 +1,4 @@
-CODEX SOLO MINI INDEX | 2026-05-11T20:36:01+00:00
+CODEX SOLO MINI INDEX | 2026-05-14T14:31:25+00:00
 
 ROLE: lookup/receipt index; Capsule is the minimum working context.
 ACTIVE_CAPSULE: ION/05_context/current/codex_solo/CAPSULE.md
@@ -7,20 +7,20 @@ LONG_HORIZON: ION/05_context/current/codex_solo/LONG_HORIZON.json
 PACKAGES: ION/05_context/current/codex_solo/CONTEXT_PACKAGES.json
 HISTORY: ION/05_context/current/codex_solo/history
 
-MISSION: codex_solo_work
+MISSION: dirty_tree_cleanup_and_startup_continuity
 PHASE: codex_solo_work
-LAST_RECEIPT: Implemented worker spawn-contract enforcement, deterministic workload-class template routing, return-template pre-submit linting, and template-invalid salvage metadata/status propa
-BLOCKER: none
-NEXT: Run full connector/queue regression sweep and validate start_no_receipt status transitions under simulated connector timeout.
+LAST_RECEIPT: Repaired parent Codex startup bridge to active ION_Developement root, committed native-left browser bridge source lane, and added generated-evidence ignore boundaries while preserv
+BLOCKER: Tracked active queue/current runtime state remains dirty by design; Needs_Routed candidate packages still require owner routing.
+NEXT: Promote only the Codex Solo continuity snapshot if desired; keep active queue/runtime state and Needs_Routed packages out of broad source commits.
 
-ACTIVE_TEMPLATE: CODEX_SOLO_WORK_UNIT
+ACTIVE_TEMPLATE: ion.template.patch_proposal.v1
 
 CAPSULE_LOOKUP:
-- C-084 2026-05-11 CORRECTIVE_GATE_CREATED: Added the UI Frontend Excellence workflow gate for Helixion/JOC rebuild work, including a joc_work_surface_ui_
-- C-085 2026-05-11 CANDIDATE_IMPLEMENTED_BUILD_PASS: Implemented candidate Helixion/JOC shell-zone refactor under the UI Frontend Excellence workflow gate: active 
-- C-088 2026-05-11 CANDIDATE_IMPLEMENTED_TESTED: Implemented bounded queue timeout policy at connector/broker boundaries for agent/cartography/proof/design wor
-- C-090 2026-05-11 CANDIDATE_IMPLEMENTED: Created candidate extension queue protocol context package v0.1 with protocols, schemas, templates, UI contrac
-- C-091 2026-05-11 CANDIDATE_IMPLEMENTED_TESTED: Implemented worker spawn-contract enforcement, deterministic workload-class template routing, return-template 
+- C-104 2026-05-14 COMPLETE: Proof-repair re-intake run for worker cockpit JOC UI: required context paths re-read with sha/excerpt evidence
+- C-105 2026-05-14 CANDIDATE_LOCAL_SETTLEMENT_COMPL: Completed local settlement validation and authenticated /cockpit/worker UI proof capture for PCKT-ION-WORKER-C
+- C-106 2026-05-14 COMPLETE: Validated worker cockpit settlement artifacts and captured return-intake note for operator continuation
+- C-107 2026-05-14 IMPLEMENTED: Validated post-approval local worker cockpit state and issued reload/retest handoff
+- C-108 2026-05-14 IMPLEMENTED: Repaired parent Codex startup bridge to active ION_Developement root, committed native-left browser bridge sou
 
 ROUTE_INDEX: ION/05_context/current/codex_solo/ROUTE.json validates active refs.
 POLICY: Capsule is the minimum working context. Mini is a lookup/receipt index for capsule history. Neither overrides current repo authority, tests, receipts, or explicit operator instructions.

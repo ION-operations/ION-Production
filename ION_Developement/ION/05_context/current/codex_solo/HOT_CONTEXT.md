@@ -1,6 +1,6 @@
 # Codex Solo HOT_CONTEXT
 
-generated_at: 2026-05-11T20:36:01+00:00
+generated_at: 2026-05-14T14:31:25+00:00
 witness_policy: Capsule is the minimum working context. Mini is a lookup/receipt index for capsule history. Neither overrides current repo authority, tests, receipts, or explicit operator instructions.
 production_authority: false
 live_execution_authority: false
@@ -8,23 +8,6 @@ live_execution_authority: false
 ## MINIMUM WORKING CAPSULE
 
 (Capsule exceeded 80 lines; recent active tail shown.)
-| C-026 | 2026-05-08 | Installed Playwright package and added opt-in live cockpit browser smoke proving chat submit clears immediately, shows pending Codex response state, blocks duplicate submit, and captures the real response carrier output. | `ION/tests/test_kernel_ion_cockpit_playwright_smoke.py, ION/05_context/current/codex_cli/playwright_cockpit_pending_smoke_latest.json, ION/04_packages/kernel/ion_codex_chat_app_ui.py, ION/04_packages/kernel/ion_chatgpt_browser_mcp_http_preview.py, ION/05_context/current/codex_cli/CODEX_CHAT_PENDING_STATE_UX_FIX_20260508.md` | IMPLEMENTED |
-| C-027 | 2026-05-08 | Planned the next Codex Capsule Chat rewrite around JOC shell regions, Victus Contextual Matryoshka, Echo Forge evented chat traces, protocol manifest routing, and smart context visualization. | `ION/05_context/current/codex_cli/CODEX_CHAT_JOC_CONTEXT_VISUALIZATION_ORCHESTRATION_20260508.md, /home/sev/ION - Production/AIM-ION/packages/joc/plans/01-architecture-and-layout.md, /home/sev/ION - Production/AIM-ION/packages/joc/plans/09-context-node-graph-visualization.md, /home/sev/AIMOS - Builds/AIM-OS-FRESH/echo-forge-loop/src/components/chat/XRayMessage.tsx, /home/sev/AIMOS - Builds/AIM-OS-FRESH/echo-forge-loop/src/components/chat/stream.ts, /home/sev/ION - Production/operation-victus/victus/context_assembler.py, /home/sev/ION - Production/operation-victus/victus/memory_bus.py` | PLANNED |
-| C-028 | 2026-05-08 | Implemented Codex Chat Phase 0 memory visualization projection: memory strata, context route edges, protocol manifest summary, carrier phase events, token budget summary, redaction, model/UI drawer exposure, and tests. | `ION/04_packages/kernel/ion_codex_chat_memory_visualization.py, ION/04_packages/kernel/ion_dual_codex_chat.py, ION/tests/test_kernel_ion_dual_codex_chat.py, ION/05_context/current/ACTIVE_CODEX_CAPSULE_CHAT_MODEL.json, ION/05_context/current/codex_cli/CODEX_CHAT_JOC_CONTEXT_VISUALIZATION_ORCHESTRATION_20260508.md` | IMPLEMENTED |
-| C-029 | 2026-05-08 | Implemented Codex Chat Phase 1 shell component split: app facade, shell, main chat, right inspector, timeline, memory visualization drawer, shared helpers, and CSS/JS assets split into focused modules while preserving co | `ION/04_packages/kernel/ion_codex_chat_app_ui.py, ION/04_packages/kernel/ion_codex_chat_shell_ui.py, ION/04_packages/kernel/ion_codex_chat_main_ui.py, ION/04_packages/kernel/ion_codex_chat_right_inspector_ui.py, ION/04_packages/kernel/ion_codex_chat_timeline_ui.py, ION/04_packages/kernel/ion_codex_chat_memory_visualization_ui.py, ION/04_packages/kernel/ion_codex_chat_assets_ui.py, ION/04_packages/kernel/ion_codex_chat_ui_common.py, ION/tests/test_kernel_ion_dual_codex_chat.py, ION/05_context/current/ACTIVE_CODEX_CAPSULE_CHAT_MODEL.json` | IMPLEMENTED |
-| C-030 | 2026-05-08 | Implemented Codex Chat Phase 2 JOC shell behavior: top page tabs, page-local left drawer, main work-surface pages, right icon rail, inspector tab panels, bottom timeline filters, client-side shell toggles, and preserved  | `ION/04_packages/kernel/ion_dual_codex_chat.py, ION/04_packages/kernel/ion_codex_chat_shell_ui.py, ION/04_packages/kernel/ion_codex_chat_left_drawer_ui.py, ION/04_packages/kernel/ion_codex_chat_right_inspector_ui.py, ION/04_packages/kernel/ion_codex_chat_assets_ui.py, ION/tests/test_kernel_ion_dual_codex_chat.py, ION/tests/test_kernel_ion_cockpit_playwright_smoke.py, ION/05_context/current/ACTIVE_CODEX_CAPSULE_CHAT_MODEL.json, ION/05_context/current/codex_cli/playwright_cockpit_pending_smoke_latest.json` | IMPLEMENTED |
-| C-031 | 2026-05-08 | Implemented Codex Chat Phase 3 smart context visualization: selected-turn context, memory strata, Contextual Matryoshka layers, route graph, compaction timeline, protocol manifest, and UI-safe budget surface. | `ION/04_packages/kernel/ion_codex_chat_memory_visualization.py, ION/04_packages/kernel/ion_codex_chat_memory_visualization_ui.py, ION/04_packages/kernel/ion_codex_chat_assets_ui.py, ION/tests/test_kernel_ion_dual_codex_chat.py, ION/05_context/current/ACTIVE_CODEX_CAPSULE_CHAT_MODEL.json` | IMPLEMENTED |
-| C-032 | 2026-05-08 | Verified Codex Chat Phase 3 smart context visualization through restarted local cockpit service and live Playwright cockpit smoke. | `ION/tests/test_kernel_ion_cockpit_playwright_smoke.py, ION/05_context/current/codex_cli/playwright_cockpit_pending_smoke_latest.json, ION/05_context/current/codex_solo/history/codex_solo_post_20260508T155446+0000.json` | VERIFIED |
-| C-033 | 2026-05-08 | Added and passed live Playwright JOC shell smoke for Codex Chat: shell regions, top page switch, left drawer, right inspector, context memory page, timeline filter, and composer restoration. | `ION/tests/test_kernel_ion_cockpit_playwright_smoke.py, ION/05_context/current/codex_cli/playwright_cockpit_shell_smoke_latest.json, ION/05_context/current/codex_cli/playwright_cockpit_pending_smoke_latest.json` | VERIFIED |
-| C-034 | 2026-05-08 | Implemented selected-message and route graph interaction for Codex Chat: chat turns, memory segments, and route edges are selectable; selected-node panel updates; connected context is highlighted; live Playwright shell s | `ION/04_packages/kernel/ion_codex_chat_memory_visualization_ui.py, ION/04_packages/kernel/ion_codex_chat_main_ui.py, ION/04_packages/kernel/ion_codex_chat_assets_ui.py, ION/tests/test_kernel_ion_dual_codex_chat.py, ION/tests/test_kernel_ion_cockpit_playwright_smoke.py, ION/05_context/current/codex_cli/playwright_cockpit_shell_smoke_latest.json` | VERIFIED |
-| C-035 | 2026-05-08 | Improved Codex Chat route graph usability: edge-type filters, route row metadata, selected node turn/source fields, and live browser coverage for compressed route filtering. | `ION/04_packages/kernel/ion_codex_chat_memory_visualization_ui.py, ION/04_packages/kernel/ion_codex_chat_assets_ui.py, ION/tests/test_kernel_ion_dual_codex_chat.py, ION/tests/test_kernel_ion_cockpit_playwright_smoke.py, ION/05_context/current/codex_cli/playwright_cockpit_shell_smoke_latest.json` | VERIFIED |
-| C-036 | 2026-05-08 | Implemented source-ref drilldown and compact selected-turn trace linking in Codex Chat: source refs and carrier phase events are selectable, update the selected-node panel, and highlight related visible context; live Pla | `ION/04_packages/kernel/ion_codex_chat_memory_visualization_ui.py, ION/04_packages/kernel/ion_codex_chat_assets_ui.py, ION/tests/test_kernel_ion_dual_codex_chat.py, ION/tests/test_kernel_ion_cockpit_playwright_smoke.py, ION/05_context/current/codex_cli/playwright_cockpit_shell_smoke_latest.json` | VERIFIED |
-| C-037 | 2026-05-08 | Persisted Codex Chat context inspector selection across reloads: memory, route, source, and trace selections now store in browser state/hash and restore before default selection; live cockpit smoke verifies trace restora | `ION/04_packages/kernel/ion_codex_chat_assets_ui.py, ION/tests/test_kernel_ion_dual_codex_chat.py, ION/tests/test_kernel_ion_cockpit_playwright_smoke.py, ION/05_context/current/codex_cli/playwright_cockpit_shell_smoke_latest.json` | VERIFIED |
-| C-038 | 2026-05-08 | Added grouped source-reference drilldown and route edge summaries to Codex Chat: source refs now expose grouped filters and lanes, route graph shows type counts before detailed edges, and live cockpit smoke covers the fi | `ION/04_packages/kernel/ion_codex_chat_memory_visualization_ui.py, ION/04_packages/kernel/ion_codex_chat_assets_ui.py, ION/tests/test_kernel_ion_dual_codex_chat.py, ION/tests/test_kernel_ion_cockpit_playwright_smoke.py, ION/05_context/current/codex_cli/playwright_cockpit_shell_smoke_latest.json` | VERIFIED |
-| C-039 | 2026-05-08 | Improved Codex Chat response-carrier prompt quality: mounted Hot Context and context package selector, removed hard-coded root assumption, strengthened direct-answer continuity rules, and verified with live cockpit chat  | `ION/04_packages/kernel/ion_codex_chat_response_carrier.py, ION/tests/test_kernel_ion_codex_chat_response_carrier.py, ION/tests/test_kernel_ion_codex_chat_engine.py, ION/tests/test_kernel_ion_dual_codex_chat.py, ION/05_context/current/codex_cli/playwright_cockpit_pending_smoke_latest.json` | VERIFIED |
-| C-040 | 2026-05-08 | Added response-run observability to Codex Chat: recent response carrier run packets are projected into the active model and Evidence/Runs inspector with prompt, return, event, stdout, stderr, model, and status refs; live | `ION/04_packages/kernel/ion_dual_codex_chat.py, ION/04_packages/kernel/ion_codex_chat_right_inspector_ui.py, ION/tests/test_kernel_ion_dual_codex_chat.py, ION/05_context/current/codex_cli/playwright_cockpit_shell_smoke_latest.json` | VERIFIED |
-| C-041 | 2026-05-08 | Preserved first ION custom-GPT user-handling case study: added v0.2 governed-continuity draft, evidence index with local v2.4 pack SHA/file count, benchmark rubric, and user-handling trial index. | `ION/06_intelligence/research/user_handling_trials/2026-05-08_ion_first_custom_gpt_user_handling_case_study_v0_2.md, ION/06_intelligence/evidence/user_handling_trials/2026-05-08_ion_first_custom_gpt_user_handling_evidence_index.json, ION/06_intelligence/research/user_handling_trials/2026-05-08_ion_prompt_burden_continuity_benchmark_v0_1.md, ION/06_intelligence/research/user_handling_trials/README.md` | VERIFIED |
-| C-042 | 2026-05-08 | Imported sandbox package v1.4 AI Assistant Work candidate lane into active root, documented package diff, preserved evidence index, patched validator -S path bootstrap, and locally validated candidate suite. | `ION/06_intelligence/research/sandbox_agent_package_evolution/2026-05-08_sandbox_agent_package_v1_4_ai_assistant_work_diff.md, ION/06_intelligence/evidence/sandbox_agent_package_evolution/2026-05-08_sandbox_agent_package_v1_4_ai_assistant_work_evidence_index.json, ION/05_context/current/ai_assistant_work/receipts/AI_ASSISTANT_WORK_ACTIVE_ROOT_CANDIDATE_IMPORT_RECEIPT_20260508T174843Z.json, ION/05_context/current/ai_assistant_work/AI_ASSISTANT_WORK_STATE_INDEX_V0_5.json, ION/tests/test_kernel_ai_assistant_work_template_instances.py` | VERIFIED |
 | C-043 | 2026-05-08 | Reviewed AI Assistant Work route compiler next packet and mapped candidate routes to active Codex chat skills, native lenses, Custom GPT/MCP/product lanes, and next compiler implementation target. | `ION/05_context/current/ai_assistant_work/route_compiler/AI_ASSISTANT_WORK_ROUTE_COMPILER_REVIEW_20260508T175230Z.md, ION/05_context/current/ai_assistant_work/route_compiler/AI_ASSISTANT_WORK_ROUTE_COMPILER_CANDIDATE_MAP_20260508T175230Z.json, ION/05_context/current/ai_assistant_work/receipts/AI_ASSISTANT_WORK_ROUTE_COMPILER_REVIEW_RECEIPT_20260508T175340Z.json, ION/06_intelligence/research/sandbox_agent_package_evolution/2026-05-08_sandbox_agent_package_v1_4_ai_assistant_work_diff.md` | VERIFIED |
 | C-044 | 2026-05-08 | Implemented candidate-only Assistant Work route compiler and wired route metadata into Codex chat engine, queued objectives, turn traces, UI model drawers, and right inspector. | `ION/04_packages/kernel/ion_assistant_work_route_compiler.py, ION/tests/test_kernel_ion_assistant_work_route_compiler.py, ION/05_context/current/ai_assistant_work/receipts/AI_ASSISTANT_WORK_ROUTE_COMPILER_IMPLEMENTATION_RECEIPT_20260508T181926Z.json, ION/06_intelligence/research/sandbox_agent_package_evolution/2026-05-08_sandbox_agent_package_v1_4_ai_assistant_work_diff.md` | done |
 | C-045 | 2026-05-08 | Documented Phase 4 product reconciliation matrix across Codex Capsule Chat, Action Gateway, MCP Action, data-zip Custom GPT product, local cockpit, and full ION pipeline. | `ION/06_intelligence/research/sandbox_agent_package_evolution/2026-05-08_phase4_product_reconciliation_matrix.md, ION/05_context/current/ai_assistant_work/receipts/AI_ASSISTANT_WORK_PHASE4_PRODUCT_RECONCILIATION_RECEIPT_20260508T182228Z.json, ION/06_intelligence/evidence/sandbox_agent_package_evolution/2026-05-08_sandbox_agent_package_v1_4_ai_assistant_work_evidence_index.json` | VERIFIED |
@@ -88,10 +71,27 @@ Added explicit bounded agent settlement recording through broker/gateway/OpenAPI
 | C-088 | 2026-05-11 | Implemented bounded queue timeout policy at connector/broker boundaries for agent/cartography/proof/design workloads; enforced workload-diff return contract when required; added targeted tests. | `ION/04_packages/kernel/ion_chatgpt_browser_mcp_connector_contract.py, ION/04_packages/kernel/ion_agent_invocation_broker.py, ION/04_packages/kernel/ion_codex_queue_runner.py, ION/tests/test_kernel_ion_chatgpt_browser_mcp_connector_contract.py, ION/tests/test_kernel_ion_agent_invocation_broker.py, ION/tests/test_kernel_ion_codex_queue_runner.py` | CANDIDATE_IMPLEMENTED_TESTED |
 | C-090 | 2026-05-11 | Created candidate extension queue protocol context package v0.1 with protocols, schemas, templates, UI contracts, and packet drafts for selected-request start and queue classification. | `ION/05_context/current/extension_queue_protocol_context_package/ION_EXTENSION_QUEUE_PROTOCOL_CONTEXT_PACKAGE_v0_1/MANIFEST.json, ION/05_context/current/extension_queue_protocol_context_package/ION_EXTENSION_QUEUE_PROTOCOL_CONTEXT_PACKAGE_v0_1/README.md, ION/05_context/current/extension_queue_protocol_context_package/ION_EXTENSION_QUEUE_PROTOCOL_CONTEXT_PACKAGE_v0_1/protocols/SELECTED_REQUEST_START_PROTOCOL.md, ION/05_context/current/extension_queue_protocol_context_package/ION_EXTENSION_QUEUE_PROTOCOL_CONTEXT_PACKAGE_v0_1/schemas/selected_request_start.schema.json` | CANDIDATE_IMPLEMENTED |
 | C-091 | 2026-05-11 | Implemented worker spawn-contract enforcement, deterministic workload-class template routing, return-template pre-submit linting, and template-invalid salvage metadata/status propagation for ChatGPT connector Codex queue | `ION/04_packages/kernel/ion_codex_queue_runner.py, ION/04_packages/kernel/ion_chatgpt_browser_mcp_connector_contract.py, ION/tests/test_kernel_ion_codex_queue_runner.py, ION/tests/test_kernel_ion_chatgpt_browser_mcp_connector_contract.py` | CANDIDATE_IMPLEMENTED_TESTED |
+| C-092 | 2026-05-13 | Validated compact default for duplicate audit and added focused compact/full opt-in regression test. | `ION/04_packages/kernel/ion_chatgpt_browser_mcp_connector_contract.py, ION/tests/test_kernel_ion_chatgpt_browser_mcp_connector_contract.py, ION/05_context/current/chatgpt_connector/patch_receipts/2026-05-13T200529Z0000_bounded_patch_apply.json, ION/05_context/current/supabase_event_mirror/receipts/20260513T200542704928Z_cdd5846704fa_record_automation_event.json` | COMPLETE |
+| C-093 | 2026-05-13 | Validated duplicate-audit summary-only compact output; added focused regression tests and ran duplicate slices. | `ION/04_packages/kernel/ion_chatgpt_browser_mcp_connector_contract.py, ION/tests/test_kernel_ion_chatgpt_browser_mcp_connector_contract.py` | COMPLETE |
+| C-094 | 2026-05-13 | Validated duplicate-audit sampled/full limit behavior on disk and aligned focused regression tests. | `ION/04_packages/kernel/ion_chatgpt_browser_mcp_connector_contract.py, ION/tests/test_kernel_ion_chatgpt_browser_mcp_connector_contract.py, ION/05_context/current/chatgpt_connector/patch_receipts/2026-05-13T210548Z0000_bounded_patch_apply.json` | COMPLETE |
+| C-095 | 2026-05-13 | Implemented candidate project workbench timeline read tool, policy wiring, and live-preview/rollback architecture slice for Cosmos. | `ION/04_packages/kernel/ion_project_workbench.py, ION/04_packages/kernel/ion_chatgpt_browser_mcp_connector_contract.py, ION/04_packages/kernel/ion_chatgpt_browser_mcp_http_preview.py, ION/03_registry/ion_chatgpt_browser_mcp_tool_policy.yaml, ION/tests/test_kernel_ion_project_workbench.py, ION/tests/test_kernel_ion_chatgpt_browser_mcp_http_preview.py, ION/tests/test_kernel_ion_chatgpt_browser_mcp_connector_contract.py, ION/05_context/current/project_workbench/live_preview_rollback_architecture_slice_20260513/README.md, ION/05_context/current/project_workbench/live_preview_rollback_architecture_slice_20260513/MANIFEST.json` | COMPLETE |
+| C-096 | 2026-05-13 | Implemented machine-generated worker context-awareness receipt in codex queue runner with spawn gating and live-status exposure. | `ION/04_packages/kernel/ion_codex_queue_runner.py, ION/tests/test_kernel_ion_codex_queue_runner.py` | CANDIDATE_IMPLEMENTED_TESTED |
+| C-097 | 2026-05-13 | Implemented candidate bounded kernel fanout scheduler plan compiler with conflict/dependency/model-routing tests. | `ION/04_packages/kernel/ion_kernel_fanout_plan.py, ION/tests/test_kernel_ion_kernel_fanout_plan.py, ION/05_context/current/kernel_fanout_scheduler/README.md, ION/05_context/current/kernel_fanout_scheduler/MANIFEST.json` | CANDIDATE_IMPLEMENTED_TESTED |
+| C-098 | 2026-05-14 | Implemented bounded no-op kernel fanout parallel smoke harness with tests and smoke artifact. | `ION/04_packages/kernel/ion_kernel_fanout_smoke_noop.py, ION/tests/test_kernel_ion_kernel_fanout_smoke_noop.py, ION/05_context/current/kernel_fanout_scheduler/smoke_runs/fanout_noop_smoke_result_20260514.json` | CANDIDATE_IMPLEMENTED_TESTED |
+| C-099 | 2026-05-14 | Implemented bounded true-parallel kernel fanout smoke harness with runtime caps, local no-op process concurrency, lock/dependency gates, receipts, tests, and candidate artifact. | `ION/04_packages/kernel/ion_kernel_fanout_true_parallel_smoke.py, ION/tests/test_kernel_ion_kernel_fanout_true_parallel_smoke.py, ION/05_context/current/kernel_fanout_scheduler/README.md, ION/05_context/current/kernel_fanout_scheduler/MANIFEST.json, ION/05_context/current/kernel_fanout_scheduler/true_parallel_smoke_runs/fanout_true_parallel_smoke_result_20260514.json` | CANDIDATE_IMPLEMENTED_TESTED |
+| C-100 | 2026-05-14 | Implemented carrier-facing bounded fanout dry-run harness with success/timeout/conflict scenarios, no-queue-mutation proof, tests, and artifacts. | `ION/04_packages/kernel/ion_kernel_fanout_carrier_dryrun.py, ION/tests/test_kernel_ion_kernel_fanout_carrier_dryrun.py, ION/05_context/current/kernel_fanout_scheduler/carrier_dryrun/fanout_carrier_dryrun_result_20260514.json` | CANDIDATE_IMPLEMENTED_TESTED |
+| C-101 | 2026-05-14 | Added read-only MCP fanout dryrun status tool surface with compact status payload and tests. | `ION/04_packages/kernel/ion_kernel_fanout_carrier_dryrun.py, ION/04_packages/kernel/ion_chatgpt_browser_mcp_connector_contract.py, ION/03_registry/ion_chatgpt_browser_mcp_tool_policy.yaml, ION/tests/test_kernel_ion_kernel_fanout_carrier_dryrun.py, ION/tests/test_kernel_ion_chatgpt_browser_mcp_connector_contract.py, ION/tests/test_kernel_ion_chatgpt_browser_mcp_http_preview.py` | CANDIDATE_IMPLEMENTED_TESTED |
+| C-102 | 2026-05-14 | Fanout dryrun read-only MCP exposure settlement validated; deferred due socket-bind PermissionError in sandbox preview proxy test. | `ION/05_context/current/kernel_fanout_scheduler/settlement/fanout_dryrun_readonly_mcp_exposure_settlement_20260514.json, ION/tests/test_kernel_ion_chatgpt_browser_mcp_http_preview.py` | DEFERRED |
+| C-103 | 2026-05-14 | Upgraded /cockpit/worker into a JOC-style read-only worker command center with worker cockpit view-model, fanout/receipt/proof/log panels, filters, and tests. | `ION/04_packages/kernel/ion_cockpit_view_model.py, ION/04_packages/kernel/ion_chatgpt_browser_mcp_http_preview.py, ION/tests/test_kernel_ion_cockpit_view_model.py, ION/tests/test_kernel_ion_chatgpt_browser_mcp_http_preview.py` | COMPLETE |
+| C-104 | 2026-05-14 | Proof-repair re-intake run for worker cockpit JOC UI: required context paths re-read with sha/excerpt evidence; focused validation rerun passed; no source edits required. | `ION/05_context/current/chatgpt_connector/codex_work_requests/2026-05-14T032356Z0000_pckt_ion_worker_cockpit_joc_live_ui_upgrade_proof_repair_20260514_goal_repair_re.json, ION/05_context/current/chatgpt_connector/codex_queue_runs/codex_run_2026-05-14T032400Z0000_codex_req_2026_05_14t032356954778z_pckt_ion_worker_cockpit_joc_live_ui_upgrade_p/context_, ION/05_context/current/chatgpt_connector/task_returns/2026-05-14T032127Z0000_task_return.json, ION/04_packages/kernel/ion_cockpit_view_model.py, ION/04_packages/kernel/ion_chatgpt_browser_mcp_http_preview.py, ION/tests/test_kernel_ion_cockpit_view_model.py, ION/tests/test_kernel_ion_chatgpt_browser_mcp_http_preview.py, ION/tests/test_kernel_ion_chatgpt_browser_mcp_connector_contract.py` | COMPLETE |
+| C-105 | 2026-05-14 | Completed local settlement validation and authenticated /cockpit/worker UI proof capture for PCKT-ION-WORKER-COCKPIT-JOC-LIVE-UI-UPGRADE-SETTLEMENT-20260514. | `ION/05_context/current/worker_cockpit/settlement/worker_cockpit_joc_live_ui_upgrade_settlement_20260514.json, ION/05_context/current/worker_cockpit/settlement/worker_cockpit_snapshot_20260514T034227Z.html, ION/05_context/current/worker_cockpit/settlement/worker_cockpit_model_20260514T034227Z.json, ION/05_context/current/worker_cockpit/settlement/worker_cockpit_settlement_capture_receipt_20260514T034227Z.json` | CANDIDATE_LOCAL_SETTLEMENT_COMPLETE |
+| C-106 | 2026-05-14 | Validated worker cockpit settlement artifacts and captured return-intake note for operator continuation | `ION/05_context/current/chatgpt_connector/task_returns/2026-05-14T034535Z0000_task_return.json, ION/05_context/current/worker_cockpit/settlement/worker_cockpit_joc_live_ui_upgrade_settlement_20260514.json, ION/05_context/current/worker_cockpit/settlement/worker_cockpit_settlement_capture_receipt_20260514T034227Z.json, ION/05_context/current/worker_cockpit/settlement/worker_cockpit_return_intake_note_20260514T131236Z.json` | COMPLETE |
+| C-107 | 2026-05-14 | Validated post-approval local worker cockpit state and issued reload/retest handoff | `ION/05_context/current/worker_cockpit/settlement/worker_cockpit_post_approval_local_validation_handoff_20260514.md` | IMPLEMENTED |
+| C-108 | 2026-05-14 | Repaired parent Codex startup bridge to active ION_Developement root, committed native-left browser bridge source lane, and added generated-evidence ignore boundaries while preserving runtime/state evidence locally. | `.codex/config.toml, .codex/hooks/ion_parent_session_start_context.py, ION/tests/test_codex_project_config_and_hook.py, browser_extension/ion_chatops_bridge/src/content.ts, .gitignore` | IMPLEMENTED |
 
 ## MINI LOOKUP INDEX
 
-CODEX SOLO MINI INDEX | 2026-05-11T20:36:01+00:00
+CODEX SOLO MINI INDEX | 2026-05-14T14:31:25+00:00
 
 ROLE: lookup/receipt index; Capsule is the minimum working context.
 ACTIVE_CAPSULE: ION/05_context/current/codex_solo/CAPSULE.md
@@ -100,20 +100,20 @@ LONG_HORIZON: ION/05_context/current/codex_solo/LONG_HORIZON.json
 PACKAGES: ION/05_context/current/codex_solo/CONTEXT_PACKAGES.json
 HISTORY: ION/05_context/current/codex_solo/history
 
-MISSION: codex_solo_work
+MISSION: dirty_tree_cleanup_and_startup_continuity
 PHASE: codex_solo_work
-LAST_RECEIPT: Implemented worker spawn-contract enforcement, deterministic workload-class template routing, return-template pre-submit linting, and template-invalid salvage metadata/status propa
-BLOCKER: none
-NEXT: Run full connector/queue regression sweep and validate start_no_receipt status transitions under simulated connector timeout.
+LAST_RECEIPT: Repaired parent Codex startup bridge to active ION_Developement root, committed native-left browser bridge source lane, and added generated-evidence ignore boundaries while preserv
+BLOCKER: Tracked active queue/current runtime state remains dirty by design; Needs_Routed candidate packages still require owner routing.
+NEXT: Promote only the Codex Solo continuity snapshot if desired; keep active queue/runtime state and Needs_Routed packages out of broad source commits.
 
-ACTIVE_TEMPLATE: CODEX_SOLO_WORK_UNIT
+ACTIVE_TEMPLATE: ion.template.patch_proposal.v1
 
 CAPSULE_LOOKUP:
-- C-084 2026-05-11 CORRECTIVE_GATE_CREATED: Added the UI Frontend Excellence workflow gate for Helixion/JOC rebuild work, including a joc_work_surface_ui_
-- C-085 2026-05-11 CANDIDATE_IMPLEMENTED_BUILD_PASS: Implemented candidate Helixion/JOC shell-zone refactor under the UI Frontend Excellence workflow gate: active 
-- C-088 2026-05-11 CANDIDATE_IMPLEMENTED_TESTED: Implemented bounded queue timeout policy at connector/broker boundaries for agent/cartography/proof/design wor
-- C-090 2026-05-11 CANDIDATE_IMPLEMENTED: Created candidate extension queue protocol context package v0.1 with protocols, schemas, templates, UI contrac
-- C-091 2026-05-11 CANDIDATE_IMPLEMENTED_TESTED: Implemented worker spawn-contract enforcement, deterministic workload-class template routing, return-template 
+- C-104 2026-05-14 COMPLETE: Proof-repair re-intake run for worker cockpit JOC UI: required context paths re-read with sha/excerpt evidence
+- C-105 2026-05-14 CANDIDATE_LOCAL_SETTLEMENT_COMPL: Completed local settlement validation and authenticated /cockpit/worker UI proof capture for PCKT-ION-WORKER-C
+- C-106 2026-05-14 COMPLETE: Validated worker cockpit settlement artifacts and captured return-intake note for operator continuation
+- C-107 2026-05-14 IMPLEMENTED: Validated post-approval local worker cockpit state and issued reload/retest handoff
+- C-108 2026-05-14 IMPLEMENTED: Repaired parent Codex startup bridge to active ION_Developement root, committed native-left browser bridge sou
 
 ROUTE_INDEX: ION/05_context/current/codex_solo/ROUTE.json validates active refs.
 POLICY: Capsule is the minimum working context. Mini is a lookup/receipt index for capsule history. Neither overrides current repo authority, tests, receipts, or explicit operator instructions.
@@ -122,76 +122,9 @@ POLICY: Capsule is the minimum working context. Mini is a lookup/receipt index f
 ## LONG HORIZON CAPSULE INDEX
 
 {
-  "capsule_entry_count": 91,
-  "epoch_count": 10,
+  "capsule_entry_count": 108,
+  "epoch_count": 11,
   "latest_epochs": [
-    {
-      "date_end": "2026-05-08",
-      "date_start": "2026-05-08",
-      "epoch_id": "E-005",
-      "evidence_refs": [
-        "ION/04_packages/kernel/ion_codex_chat_memory_visualization_ui.py",
-        "ION/04_packages/kernel/ion_codex_chat_assets_ui.py",
-        "ION/tests/test_kernel_ion_dual_codex_chat.py",
-        "ION/tests/test_kernel_ion_cockpit_playwright_smoke.py",
-        "ION/05_context/current/codex_cli/playwright_cockpit_shell_smoke_latest.json",
-        "ION/04_packages/kernel/ion_codex_chat_response_carrier.py",
-        "ION/tests/test_kernel_ion_codex_chat_response_carrier.py",
-        "ION/tests/test_kernel_ion_codex_chat_engine.py",
-        "ION/05_context/current/codex_cli/playwright_cockpit_pending_smoke_latest.json",
-        "ION/04_packages/kernel/ion_dual_codex_chat.py",
-        "ION/04_packages/kernel/ion_codex_chat_right_inspector_ui.py",
-        "ION/06_intelligence/research/user_handling_trials/2026-05-08_ion_first_custom_gpt_user_handling_case_study_v0_2.md",
-        "ION/06_intelligence/evidence/user_handling_trials/2026-05-08_ion_first_custom_gpt_user_handling_evidence_index.json",
-        "ION/06_intelligence/research/user_handling_trials/2026-05-08_ion_prompt_burden_continuity_benchmark_v0_1.md",
-        "ION/06_intelligence/research/user_handling_trials/README.md",
-        "ION/06_intelligence/research/sandbox_agent_package_evolution/2026-05-08_sandbox_agent_package_v1_4_ai_assistant_work_diff.md",
-        "ION/06_intelligence/evidence/sandbox_agent_package_evolution/2026-05-08_sandbox_agent_package_v1_4_ai_assistant_work_evidence_index.json",
-        "ION/05_context/current/ai_assistant_work/receipts/AI_ASSISTANT_WORK_ACTIVE_ROOT_CANDIDATE_IMPORT_RECEIPT_20260508T174843Z.json",
-        "ION/05_context/current/ai_assistant_work/AI_ASSISTANT_WORK_STATE_INDEX_V0_5.json",
-        "ION/tests/test_kernel_ai_assistant_work_template_instances.py"
-      ],
-      "row_count": 10,
-      "row_end": "C-047",
-      "row_start": "C-038",
-      "status_counts": {
-        "PLANNED": 1,
-        "VERIFIED": 8,
-        "done": 1
-      },
-      "summaries": [
-        {
-          "date": "2026-05-08",
-          "id": "C-043",
-          "status": "VERIFIED",
-          "summary": "Reviewed AI Assistant Work route compiler next packet and mapped candidate routes to active Codex chat skills, native lenses, Custom GPT/MCP/product lanes, and next compiler implem"
-        },
-        {
-          "date": "2026-05-08",
-          "id": "C-044",
-          "status": "done",
-          "summary": "Implemented candidate-only Assistant Work route compiler and wired route metadata into Codex chat engine, queued objectives, turn traces, UI model drawers, and right inspector."
-        },
-        {
-          "date": "2026-05-08",
-          "id": "C-045",
-          "status": "VERIFIED",
-          "summary": "Documented Phase 4 product reconciliation matrix across Codex Capsule Chat, Action Gateway, MCP Action, data-zip Custom GPT product, local cockpit, and full ION pipeline."
-        },
-        {
-          "date": "2026-05-08",
-          "id": "C-046",
-          "status": "VERIFIED",
-          "summary": "Added candidate Assistant Work route metadata to Action Gateway validate-only responses; held MCP route tool for explicit tool-policy/schema gate."
-        },
-        {
-          "date": "2026-05-08",
-          "id": "C-047",
-          "status": "PLANNED",
-          "summary": "Planned candidate-domain operation ladder for assistant-work surfaces: candidate domains/agents/templates/routes may operate under containment for classification, proof shaping, ro"
-        }
-      ]
-    },
     {
       "date_end": "2026-05-09",
       "date_start": "2026-05-08",
@@ -467,27 +400,137 @@ POLICY: Capsule is the minimum working context. Mini is a lookup/receipt index f
       ]
     },
     {
-      "date_end": "2026-05-11",
+      "date_end": "2026-05-14",
       "date_start": "2026-05-11",
       "epoch_id": "E-010",
       "evidence_refs": [
         "ION/04_packages/kernel/ion_codex_queue_runner.py",
         "ION/04_packages/kernel/ion_chatgpt_browser_mcp_connector_contract.py",
         "ION/tests/test_kernel_ion_codex_queue_runner.py",
-        "ION/tests/test_kernel_ion_chatgpt_browser_mcp_connector_contract.py"
+        "ION/tests/test_kernel_ion_chatgpt_browser_mcp_connector_contract.py",
+        "ION/05_context/current/chatgpt_connector/patch_receipts/2026-05-13T200529Z0000_bounded_patch_apply.json",
+        "ION/05_context/current/supabase_event_mirror/receipts/20260513T200542704928Z_cdd5846704fa_record_automation_event.json",
+        "ION/05_context/current/chatgpt_connector/patch_receipts/2026-05-13T210548Z0000_bounded_patch_apply.json",
+        "ION/04_packages/kernel/ion_project_workbench.py",
+        "ION/04_packages/kernel/ion_chatgpt_browser_mcp_http_preview.py",
+        "ION/03_registry/ion_chatgpt_browser_mcp_tool_policy.yaml",
+        "ION/tests/test_kernel_ion_project_workbench.py",
+        "ION/tests/test_kernel_ion_chatgpt_browser_mcp_http_preview.py",
+        "ION/05_context/current/project_workbench/live_preview_rollback_architecture_slice_20260513/README.md",
+        "ION/05_context/current/project_workbench/live_preview_rollback_architecture_slice_20260513/MANIFEST.json",
+        "ION/04_packages/kernel/ion_kernel_fanout_plan.py",
+        "ION/tests/test_kernel_ion_kernel_fanout_plan.py",
+        "ION/05_context/current/kernel_fanout_scheduler/README.md",
+        "ION/05_context/current/kernel_fanout_scheduler/MANIFEST.json",
+        "ION/04_packages/kernel/ion_kernel_fanout_smoke_noop.py",
+        "ION/tests/test_kernel_ion_kernel_fanout_smoke_noop.py"
       ],
-      "row_count": 1,
-      "row_end": "C-091",
+      "row_count": 10,
+      "row_end": "C-100",
       "row_start": "C-091",
       "status_counts": {
-        "CANDIDATE_IMPLEMENTED_TESTED": 1
+        "CANDIDATE_IMPLEMENTED_TESTED": 6,
+        "COMPLETE": 4
       },
       "summaries": [
         {
-          "date": "2026-05-11",
-          "id": "C-091",
+          "date": "2026-05-13",
+          "id": "C-096",
           "status": "CANDIDATE_IMPLEMENTED_TESTED",
-          "summary": "Implemented worker spawn-contract enforcement, deterministic workload-class template routing, return-template pre-submit linting, and template-invalid salvage metadata/status propa"
+          "summary": "Implemented machine-generated worker context-awareness receipt in codex queue runner with spawn gating and live-status exposure."
+        },
+        {
+          "date": "2026-05-13",
+          "id": "C-097",
+          "status": "CANDIDATE_IMPLEMENTED_TESTED",
+          "summary": "Implemented candidate bounded kernel fanout scheduler plan compiler with conflict/dependency/model-routing tests."
+        },
+        {
+          "date": "2026-05-14",
+          "id": "C-098",
+          "status": "CANDIDATE_IMPLEMENTED_TESTED",
+          "summary": "Implemented bounded no-op kernel fanout parallel smoke harness with tests and smoke artifact."
+        },
+        {
+          "date": "2026-05-14",
+          "id": "C-099",
+          "status": "CANDIDATE_IMPLEMENTED_TESTED",
+          "summary": "Implemented bounded true-parallel kernel fanout smoke harness with runtime caps, local no-op process concurrency, lock/dependency gates, receipts, tests, and candidate artifact."
+        },
+        {
+          "date": "2026-05-14",
+          "id": "C-100",
+          "status": "CANDIDATE_IMPLEMENTED_TESTED",
+          "summary": "Implemented carrier-facing bounded fanout dry-run harness with success/timeout/conflict scenarios, no-queue-mutation proof, tests, and artifacts."
+        }
+      ]
+    },
+    {
+      "date_end": "2026-05-14",
+      "date_start": "2026-05-14",
+      "epoch_id": "E-011",
+      "evidence_refs": [
+        "ION/04_packages/kernel/ion_kernel_fanout_carrier_dryrun.py",
+        "ION/04_packages/kernel/ion_chatgpt_browser_mcp_connector_contract.py",
+        "ION/03_registry/ion_chatgpt_browser_mcp_tool_policy.yaml",
+        "ION/tests/test_kernel_ion_kernel_fanout_carrier_dryrun.py",
+        "ION/tests/test_kernel_ion_chatgpt_browser_mcp_connector_contract.py",
+        "ION/tests/test_kernel_ion_chatgpt_browser_mcp_http_preview.py",
+        "ION/05_context/current/kernel_fanout_scheduler/settlement/fanout_dryrun_readonly_mcp_exposure_settlement_20260514.json",
+        "ION/04_packages/kernel/ion_cockpit_view_model.py",
+        "ION/04_packages/kernel/ion_chatgpt_browser_mcp_http_preview.py",
+        "ION/tests/test_kernel_ion_cockpit_view_model.py",
+        "ION/05_context/current/chatgpt_connector/codex_work_requests/2026-05-14T032356Z0000_pckt_ion_worker_cockpit_joc_live_ui_upgrade_proof_repair_20260514_goal_repair_re.json",
+        "ION/05_context/current/chatgpt_connector/codex_queue_runs/codex_run_2026-05-14T032400Z0000_codex_req_2026_05_14t032356954778z_pckt_ion_worker_cockpit_joc_live_ui_upgrade_p/context_",
+        "ION/05_context/current/chatgpt_connector/task_returns/2026-05-14T032127Z0000_task_return.json",
+        "ION/05_context/current/worker_cockpit/settlement/worker_cockpit_joc_live_ui_upgrade_settlement_20260514.json",
+        "ION/05_context/current/worker_cockpit/settlement/worker_cockpit_snapshot_20260514T034227Z.html",
+        "ION/05_context/current/worker_cockpit/settlement/worker_cockpit_model_20260514T034227Z.json",
+        "ION/05_context/current/worker_cockpit/settlement/worker_cockpit_settlement_capture_receipt_20260514T034227Z.json",
+        "ION/05_context/current/chatgpt_connector/task_returns/2026-05-14T034535Z0000_task_return.json",
+        "ION/05_context/current/worker_cockpit/settlement/worker_cockpit_return_intake_note_20260514T131236Z.json",
+        "ION/05_context/current/worker_cockpit/settlement/worker_cockpit_post_approval_local_validation_handoff_20260514.md"
+      ],
+      "row_count": 8,
+      "row_end": "C-108",
+      "row_start": "C-101",
+      "status_counts": {
+        "CANDIDATE_IMPLEMENTED_TESTED": 1,
+        "CANDIDATE_LOCAL_SETTLEMENT_COMPLETE": 1,
+        "COMPLETE": 3,
+        "DEFERRED": 1,
+        "IMPLEMENTED": 2
+      },
+      "summaries": [
+        {
+          "date": "2026-05-14",
+          "id": "C-104",
+          "status": "COMPLETE",
+          "summary": "Proof-repair re-intake run for worker cockpit JOC UI: required context paths re-read with sha/excerpt evidence; focused validation rerun passed; no source edits required."
+        },
+        {
+          "date": "2026-05-14",
+          "id": "C-105",
+          "status": "CANDIDATE_LOCAL_SETTLEMENT_COMPLETE",
+          "summary": "Completed local settlement validation and authenticated /cockpit/worker UI proof capture for PCKT-ION-WORKER-COCKPIT-JOC-LIVE-UI-UPGRADE-SETTLEMENT-20260514."
+        },
+        {
+          "date": "2026-05-14",
+          "id": "C-106",
+          "status": "COMPLETE",
+          "summary": "Validated worker cockpit settlement artifacts and captured return-intake note for operator continuation"
+        },
+        {
+          "date": "2026-05-14",
+          "id": "C-107",
+          "status": "IMPLEMENTED",
+          "summary": "Validated post-approval local worker cockpit state and issued reload/retest handoff"
+        },
+        {
+          "date": "2026-05-14",
+          "id": "C-108",
+          "status": "IMPLEMENTED",
+          "summary": "Repaired parent Codex startup bridge to active ION_Developement root, committed native-left browser bridge source lane, and added generated-evidence ignore boundaries while preserv"
         }
       ]
     }
@@ -531,7 +574,7 @@ POLICY: Capsule is the minimum working context. Mini is a lookup/receipt index f
         "ION/05_context/current/codex_solo/LONG_HORIZON.json"
       ],
       "window": {
-        "epoch_count": 10,
+        "epoch_count": 11,
         "epoch_size_rows": 10,
         "hot_context_recent_epochs": 6,
         "kind": "epoch_summary"
@@ -579,6 +622,9 @@ POLICY: Capsule is the minimum working context. Mini is a lookup/receipt index f
         "ION/02_architecture/CODEX_CAPSULE_OPERATING_PROTOCOL.md",
         "ION/02_architecture/ION_SKILL_ACTIVATION_PROTOCOL.md",
         "ION/03_registry/ion_skill_registry.yaml",
+        "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_PROTOCOL_V0_1.md",
+        "ION/02_architecture/ION_CARRIER_MOUNT_AND_PERSONA_PRESENTATION_PROTOCOL_V0_1.md",
+        "ION/04_packages/kernel/ion_carrier_mount_receipt.py",
         "ION/02_architecture/ION_CODEX_CHAT_ENGINE_PROTOCOL.md",
         "ION/03_registry/ion_native_lens_registry.yaml",
         "ION/02_architecture/CODEX_CARRIER_LIMITS_CONTEXT_PROTOCOL.md",
@@ -654,36 +700,36 @@ POLICY: Capsule is the minimum working context. Mini is a lookup/receipt index f
 {
   "entries": [
     {
-      "bytes": 53678,
+      "bytes": 61883,
       "classification": "codex_solo_minimum_working_context",
       "exists": true,
       "is_file": true,
       "path": "ION/05_context/current/codex_solo/CAPSULE.md",
       "repo_relative": true,
       "required": true,
-      "sha256": "4868d0c96cc6b27cc3447280d702907cabb4607332172d801810f59c67539b2a",
+      "sha256": "60d041c556de010b99efa1ed5d943efdef9d3dce48f4c3e5a23f6c40ebd05ca2",
       "why": "Minimum context the standalone Codex lane must always carry."
     },
     {
-      "bytes": 1939,
+      "bytes": 2024,
       "classification": "codex_solo_lookup_receipt_index",
       "exists": true,
       "is_file": true,
       "path": "ION/05_context/current/codex_solo/MINI.md",
       "repo_relative": true,
       "required": true,
-      "sha256": "6a2a10e7e9b81b6fd7f010cacb83ba429c2b3192cf9b38a4d625c2f1c0736476",
+      "sha256": "848198766c7cab10b084edd7c4d521450b57fcdd13b2d742c3ef6ef3c86f14a7",
       "why": "Lookup index and receipt summary for capsule history."
     },
     {
-      "bytes": 51071,
+      "bytes": 60032,
       "classification": "codex_solo_long_horizon_index",
       "exists": true,
       "is_file": true,
       "path": "ION/05_context/current/codex_solo/LONG_HORIZON.json",
       "repo_relative": true,
       "required": true,
-      "sha256": "98d9946fbd96fd779b20f91e0887deca97af65bf5e09d7c9b9bd57b2fb215b90",
+      "sha256": "7d850b7eb04e9c9f0e3d8d957b2ed60002a260933cb4ddf2a60ce288fc86cf3a",
       "why": "Compressed long-horizon capsule index for older continuity lookup."
     },
     {
@@ -753,15 +799,48 @@ POLICY: Capsule is the minimum working context. Mini is a lookup/receipt index f
       "why": "Defines skills as activation control while templates remain proof law."
     },
     {
-      "bytes": 13788,
+      "bytes": 15252,
       "classification": "codex_skill_activation_registry",
       "exists": true,
       "is_file": true,
       "path": "ION/03_registry/ion_skill_registry.yaml",
       "repo_relative": true,
       "required": true,
-      "sha256": "721e5784a88328561204ef949f45d41d6387d85fa85000f43ebe5730b0d0f5f4",
+      "sha256": "fab233d219eb7a772d860ed63eacecf7f418984d094c4cdbb1ffe4169e06e18d",
       "why": "Active skill registry for Codex chat, ION handoff, recovery, template curation, and receipts."
+    },
+    {
+      "bytes": 6212,
+      "classification": "agent_branch_capsule_protocol",
+      "exists": true,
+      "is_file": true,
+      "path": "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_PROTOCOL_V0_1.md",
+      "repo_relative": true,
+      "required": false,
+      "sha256": "f2c694b929b6f286b181327329709e83349517d3a6f5647b16d645c320ba60d5",
+      "why": "Optional route reminder for per-agent/per-conversation branch identity law."
+    },
+    {
+      "bytes": 3412,
+      "classification": "carrier_mount_and_persona_presentation_protocol",
+      "exists": true,
+      "is_file": true,
+      "path": "ION/02_architecture/ION_CARRIER_MOUNT_AND_PERSONA_PRESENTATION_PROTOCOL_V0_1.md",
+      "repo_relative": true,
+      "required": false,
+      "sha256": "146fe95251e6f3ebfaad8f049ef9db1be14569b5634c68651166be6d88111aa3",
+      "why": "Optional route reminder that mount receipt is authority and persona is presentation."
+    },
+    {
+      "bytes": 20409,
+      "classification": "carrier_mount_receipt_runtime_helper",
+      "exists": true,
+      "is_file": true,
+      "path": "ION/04_packages/kernel/ion_carrier_mount_receipt.py",
+      "repo_relative": true,
+      "required": false,
+      "sha256": "6e2696c74d25a160dd0241d49fd5871986f7acb57bdd1c68f8e0ae9d78366d8d",
+      "why": "Optional helper for carrier mount receipt rendering, persona presentation validation, and receipt-only fallback."
     },
     {
       "bytes": 3401,
@@ -841,14 +920,14 @@ POLICY: Capsule is the minimum working context. Mini is a lookup/receipt index f
       "why": "Chat-first app UI orchestration using JOC/ION drawers and Capsule context."
     },
     {
-      "bytes": 23254,
+      "bytes": 23160,
       "classification": "helixion_joc_master_evolution_plan",
       "exists": true,
       "is_file": true,
       "path": "ION/02_architecture/HELIXION_JOC_DAIMON_WISDOMNET_MASTER_EVOLUTION_PLAN.md",
       "repo_relative": true,
       "required": true,
-      "sha256": "f93d49387388cd15f6efab92534750f58eac06f81699f9931866dfec0a399610",
+      "sha256": "a547393f8c2e4cfe9e326fe0f98182359b06e42a07bfe757379ea06bce7ecf05",
       "why": "Master evolution plan for Helixion, JOC, ION, dAimon, WisdomNET, extension, queue, and Codex surfaces."
     },
     {
@@ -909,7 +988,7 @@ POLICY: Capsule is the minimum working context. Mini is a lookup/receipt index f
 
 ### ION/05_context/current/codex_solo/MINI.md
 
-CODEX SOLO MINI INDEX | 2026-05-11T20:36:01+00:00
+CODEX SOLO MINI INDEX | 2026-05-14T14:31:25+00:00
 
 ROLE: lookup/receipt index; Capsule is the minimum working context.
 ACTIVE_CAPSULE: ION/05_context/current/codex_solo/CAPSULE.md
@@ -918,26 +997,25 @@ LONG_HORIZON: ION/05_context/current/codex_solo/LONG_HORIZON.json
 PACKAGES: ION/05_context/current/codex_solo/CONTEXT_PACKAGES.json
 HISTORY: ION/05_context/current/codex_solo/history
 
-MISSION: codex_solo_work
+MISSION: dirty_tree_cleanup_and_startup_continuity
 PHASE: codex_solo_work
-LAST_RECEIPT: Implemented worker spawn-contract enforcement, deterministic workload-class template routing, return-template pre-submit linting, and template-invalid salvage metadata/status propa
-BLOCKER: none
-NEXT: Run full connector/queue regression sweep and validate start_no_receipt status transitions under simulated connector timeout.
+LAST_RECEIPT: Repaired parent Codex startup bridge to active ION_Developement root, committed native-left browser bridge source lane, and added generated-evidence ignore boundaries while preserv
+BLOCKER: Tracked active queue/current runtime state remains dirty by design; Needs_Routed candidate packages still require owner routing.
+NEXT: Promote only the Codex Solo continuity snapshot if desired; keep active queue/runtime state and Needs_Routed packages out of broad source commits.
 
-ACTIVE_TEMPLATE: CODEX_SOLO_WORK_UNIT
+ACTIVE_TEMPLATE: ion.template.patch_proposal.v1
 
 CAPSULE_LOOKUP:
-- C-084 2026-05-11 CORRECTIVE_GATE_CREATED: Added the UI Frontend Excellence workflow gate for Helixion/JOC rebuild work, including a joc_work_surface_ui_
-- C-085 2026-05-11 CANDIDATE_IMPLEMENTED_BUILD_PASS: Implemented candidate Helixion/JOC shell-zone refactor under the UI Frontend Excellence workflow gate: active 
-- C-088 2026-05-11 CANDIDATE_IMPLEMENTED_TESTED: Implemented bounded queue timeout policy at connector/broker boundaries for agent/cartography/proof/design wor
-- C-090 2026-05-11 CANDIDATE_IMPLEMENTED: Created candidate extension queue protocol context package v0.1 with protocols, schemas, templates, UI contrac
-- C-091 2026-05-11 CANDIDATE_IMPLEMENTED_TESTED: Implemented worker spawn-contract enforcement, d
+- C-104 2026-05-14 COMPLETE: Proof-repair re-intake run for worker cockpit JOC UI: required context paths re-read with sha/excerpt evidence
+- C-105 2026-05-14 CANDIDATE_LOCAL_SETTLEMENT_COMPL: Completed local settlement validation and authenticated /cockpit/worker UI proof capture for PCKT-ION-WORKER-C
+- C-106 2026-05-14 COMPLETE: Validated worker cockpit settlement artifacts and captured return-intake note for operator continuation
+- C-107 2026-05-14 IMPLEMENTED: Validated post-approval local worker cockpit state and issued reload/retest han
 
 ### ION/05_context/current/codex_solo/LONG_HORIZON.json
 
 {
-  "capsule_entry_count": 91,
-  "epoch_count": 10,
+  "capsule_entry_count": 108,
+  "epoch_count": 11,
   "epoch_size_rows": 10,
   "epochs": [
     {
@@ -964,7 +1042,7 @@ CAPSULE_LOOKUP:
         ".codex/config.toml",
         ".codex/hooks/ion_session_start_context.py",
         "ION/tests/test_codex_project_config_and_hook.py",
-        "ION/04_packages/kernel/io
+        "ION/04_packages/kernel/i
 
 ### ION/REPO_AUTHORITY.md
 
@@ -1299,6 +1377,172 @@ skills:
       read_context: true
       queue_work: false
       write_f
+
+### ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_PROTOCOL_V0_1.md
+
+# ION Agent Branch Capsule Protocol v0.1
+
+Status: active provisional protocol
+Created: 2026-05-11
+Authority: context isolation and settlement workflow only
+Production authority: false
+Live execution authority: false
+
+## Purpose
+
+This protocol prevents wrong-context work by giving every active conversation and agent its own uniquely named context capsule branch.
+
+The shared Codex solo Capsule remains settled base context. It is not a multi-agent scratchpad.
+
+## Core law
+
+Every active agent/conversation must operate from a unique branch capsule.
+
+```text
+shared context = settled base memory
+branch capsule = local working memory for one conversation/agent/task
+settlement = only path back to shared context
+```
+
+Agents must not write directly into shared context:
+
+```text
+ION/05_context/current/codex_solo/CAPSULE.md
+ION/05_context/current/codex_solo/MINI.md
+ION/05_context/current/codex_solo/HOT_CONTEXT.md
+ION/05_context/current/codex_solo/STATUS.json
+ION/05_context/current/codex_solo/ROUTE.json
+```
+
+## Relationship to settlement protocol
+
+This protocol extends:
+
+```text
+ION/02_architecture/ION_MULTI_AGENT_CONTEXT_AND_WORKPACKET_SETTLEMENT_PROTOCOL_V0_1.md
+```
+
+Branch capsules produce candidate receipts and settlement packets. The context settler serializes accepted updates into shared context.
+
+## Branch hierarchy
+
+Use this lineage model:
+
+```text
+GLOBAL ION CONTEXT
+  -> project/session capsule
+    -> conversation capsule
+      -> agent branch capsule
+        -> task/workpacket capsule
+```
+
+Each branch names its parent explicitly. Branches may inherit from parents, but they cann
+
+### ION/02_architecture/ION_CARRIER_MOUNT_AND_PERSONA_PRESENTATION_PROTOCOL_V0_1.md
+
+# ION Carrier Mount and Persona Presentation Protocol v0.1
+
+Status: candidate operational protocol
+Packet: PCKT-ION-CARRIER-MOUNT-AND-PERSONA-PRESENTATION-001
+
+## Core law
+
+An agent is not its name. An agent is a mounted context instance with proven
+sources, authority, write scope, current packet, and return target.
+
+Persona is not authority. Persona is presentation. Mount receipt is authority.
+If persona or context cannot mount, the carrier must degrade to
+receipt-only/source-posture mode.
+
+## Existing surfaces reused
+
+- `ION/02_architecture/ION_MOUNT_CONTRACT.md`
+- `ION/02_architecture/RUNTIME_IDENTITY_ENVELOPE_PROTOCOL.md`
+- `ION/02_architecture/MOUNTED_AGENT_IDENTITY_SCHEMA_PROTOCOL.md`
+- `ION/02_architecture/FRONT_DOOR_PERSONA_RELAY_STEWARD_BOUNDARY_PROTOCOL.md`
+- `ION/02_architecture/EXPRESSIVE_TELEMETRY_AND_AFFECT_INTEGRITY_PROTOCOL.md`
+- `ION/07_templates/carriers/CARRIER_MOUNT_PROOF.md`
+- `ION/07_templates/carriers/FULL_CARRIER_MOUNT_PROOF.md`
+- `ION/05_context/current/agent_context_branches/`
+
+This protocol does not replace those surfaces. It creates a portable receipt
+shape every carrier can display, validate, and attach to branch returns.
+
+## Required carrier mount model
+
+```yaml
+carrier_mount:
+  agent_tag:
+  carrier:
+  carrier_instance_id:
+  conversation_tag:
+  context_instance_id:
+  branch_id:
+  parent_context_id:
+  current_packet:
+  model_lane:
+  loaded_refs:
+    - path:
+      sha256:
+      source_type: package | repo | mcp | memory | user | inferred
+  authority:
+    production_authority: false
+    live_execution_authority: false
+    accepted_state_authority:
+
+### ION/04_packages/kernel/ion_carrier_mount_receipt.py
+
+"""Carrier mount receipt and persona presentation helpers for ION.
+
+The receipt is the authority surface. Persona is presentation only. This module
+does not expose hidden reasoning, start workers, grant production authority, or
+merge accepted state.
+"""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any, Mapping, Sequence
+
+
+SCHEMA_ID = "ion.carrier_mount_receipt.v1"
+PERSONA_SCHEMA_ID = "ion.persona_presentation.v1"
+READY_VERDICT = "ION_CARRIER_MOUNT_READY"
+BLOCKED_VERDICT = "ION_CARRIER_MOUNT_BLOCKED"
+DEFAULT_PARENT_CONTEXT_ID = "ION_MAIN_CURRENT_CONTEXT"
+DEFAULT_SETTLEMENT_INBOX = "ION/05_context/current/context_settlement/inbox"
+DEFAULT_MOUNT_RECEIPT_DIR = "ION/05_context/current/carrier_mount_receipts"
+ALLOWED_SOURCE_TYPES = {"package", "repo", "mcp", "memory", "user", "inferred"}
+PRESENTATION_MODES = {"full_persona", "partial_persona", "receipt_only"}
+DEFAULT_FALLBACK_BEHAVIOR = (
+    "show_mount_receipt",
+    "show_source_posture",
+    "show_authority",
+    "show_blockers",
+    "operate_receipt_only",
+)
+
+
+def _now() -> str:
+    return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def _stable_id(prefix: str, *parts: str) -> str:
+    digest = hashlib.sha256()
+    for part in parts:
+        digest.update(part.encode("utf-8"))
+        digest.update(b"\0")
+    return f"{prefix}-{digest.hexdigest()[:16]}"
+
+
+def _sha256_file(path: Path) -> str | None:
+    if not path.is_file():
+        return None
+    h = hashlib.sha256(
 
 ### ION/02_architecture/ION_CODEX_CHAT_ENGINE_PROTOCOL.md
 

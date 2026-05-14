@@ -1,36 +1,36 @@
 {
   "entries": [
     {
-      "bytes": 53678,
+      "bytes": 61883,
       "classification": "codex_solo_minimum_working_context",
       "exists": true,
       "is_file": true,
       "path": "ION/05_context/current/codex_solo/CAPSULE.md",
       "repo_relative": true,
       "required": true,
-      "sha256": "4868d0c96cc6b27cc3447280d702907cabb4607332172d801810f59c67539b2a",
+      "sha256": "60d041c556de010b99efa1ed5d943efdef9d3dce48f4c3e5a23f6c40ebd05ca2",
       "why": "Minimum context the standalone Codex lane must always carry."
     },
     {
-      "bytes": 1939,
+      "bytes": 2024,
       "classification": "codex_solo_lookup_receipt_index",
       "exists": true,
       "is_file": true,
       "path": "ION/05_context/current/codex_solo/MINI.md",
       "repo_relative": true,
       "required": true,
-      "sha256": "6a2a10e7e9b81b6fd7f010cacb83ba429c2b3192cf9b38a4d625c2f1c0736476",
+      "sha256": "848198766c7cab10b084edd7c4d521450b57fcdd13b2d742c3ef6ef3c86f14a7",
       "why": "Lookup index and receipt summary for capsule history."
     },
     {
-      "bytes": 51071,
+      "bytes": 60032,
       "classification": "codex_solo_long_horizon_index",
       "exists": true,
       "is_file": true,
       "path": "ION/05_context/current/codex_solo/LONG_HORIZON.json",
       "repo_relative": true,
       "required": true,
-      "sha256": "98d9946fbd96fd779b20f91e0887deca97af65bf5e09d7c9b9bd57b2fb215b90",
+      "sha256": "7d850b7eb04e9c9f0e3d8d957b2ed60002a260933cb4ddf2a60ce288fc86cf3a",
       "why": "Compressed long-horizon capsule index for older continuity lookup."
     },
     {
@@ -100,15 +100,48 @@
       "why": "Defines skills as activation control while templates remain proof law."
     },
     {
-      "bytes": 13788,
+      "bytes": 15252,
       "classification": "codex_skill_activation_registry",
       "exists": true,
       "is_file": true,
       "path": "ION/03_registry/ion_skill_registry.yaml",
       "repo_relative": true,
       "required": true,
-      "sha256": "721e5784a88328561204ef949f45d41d6387d85fa85000f43ebe5730b0d0f5f4",
+      "sha256": "fab233d219eb7a772d860ed63eacecf7f418984d094c4cdbb1ffe4169e06e18d",
       "why": "Active skill registry for Codex chat, ION handoff, recovery, template curation, and receipts."
+    },
+    {
+      "bytes": 6212,
+      "classification": "agent_branch_capsule_protocol",
+      "exists": true,
+      "is_file": true,
+      "path": "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_PROTOCOL_V0_1.md",
+      "repo_relative": true,
+      "required": false,
+      "sha256": "f2c694b929b6f286b181327329709e83349517d3a6f5647b16d645c320ba60d5",
+      "why": "Optional route reminder for per-agent/per-conversation branch identity law."
+    },
+    {
+      "bytes": 3412,
+      "classification": "carrier_mount_and_persona_presentation_protocol",
+      "exists": true,
+      "is_file": true,
+      "path": "ION/02_architecture/ION_CARRIER_MOUNT_AND_PERSONA_PRESENTATION_PROTOCOL_V0_1.md",
+      "repo_relative": true,
+      "required": false,
+      "sha256": "146fe95251e6f3ebfaad8f049ef9db1be14569b5634c68651166be6d88111aa3",
+      "why": "Optional route reminder that mount receipt is authority and persona is presentation."
+    },
+    {
+      "bytes": 20409,
+      "classification": "carrier_mount_receipt_runtime_helper",
+      "exists": true,
+      "is_file": true,
+      "path": "ION/04_packages/kernel/ion_carrier_mount_receipt.py",
+      "repo_relative": true,
+      "required": false,
+      "sha256": "6e2696c74d25a160dd0241d49fd5871986f7acb57bdd1c68f8e0ae9d78366d8d",
+      "why": "Optional helper for carrier mount receipt rendering, persona presentation validation, and receipt-only fallback."
     },
     {
       "bytes": 3401,
@@ -188,14 +221,14 @@
       "why": "Chat-first app UI orchestration using JOC/ION drawers and Capsule context."
     },
     {
-      "bytes": 23254,
+      "bytes": 23160,
       "classification": "helixion_joc_master_evolution_plan",
       "exists": true,
       "is_file": true,
       "path": "ION/02_architecture/HELIXION_JOC_DAIMON_WISDOMNET_MASTER_EVOLUTION_PLAN.md",
       "repo_relative": true,
       "required": true,
-      "sha256": "f93d49387388cd15f6efab92534750f58eac06f81699f9931866dfec0a399610",
+      "sha256": "a547393f8c2e4cfe9e326fe0f98182359b06e42a07bfe757379ea06bce7ecf05",
       "why": "Master evolution plan for Helixion, JOC, ION, dAimon, WisdomNET, extension, queue, and Codex surfaces."
     },
     {
@@ -235,40 +268,40 @@
   "live_execution_authority": false,
   "production_authority": false,
   "schema_id": "ion.codex_solo_route.v1",
-  "updated_at": "2026-05-11T20:36:01+00:00",
+  "updated_at": "2026-05-14T14:31:25+00:00",
   "validation": {
     "entries": [
       {
-        "bytes": 53678,
+        "bytes": 61883,
         "classification": "codex_solo_minimum_working_context",
         "exists": true,
         "is_file": true,
         "path": "ION/05_context/current/codex_solo/CAPSULE.md",
         "repo_relative": true,
         "required": true,
-        "sha256": "4868d0c96cc6b27cc3447280d702907cabb4607332172d801810f59c67539b2a",
+        "sha256": "60d041c556de010b99efa1ed5d943efdef9d3dce48f4c3e5a23f6c40ebd05ca2",
         "why": "Minimum context the standalone Codex lane must always carry."
       },
       {
-        "bytes": 1939,
+        "bytes": 2024,
         "classification": "codex_solo_lookup_receipt_index",
         "exists": true,
         "is_file": true,
         "path": "ION/05_context/current/codex_solo/MINI.md",
         "repo_relative": true,
         "required": true,
-        "sha256": "6a2a10e7e9b81b6fd7f010cacb83ba429c2b3192cf9b38a4d625c2f1c0736476",
+        "sha256": "848198766c7cab10b084edd7c4d521450b57fcdd13b2d742c3ef6ef3c86f14a7",
         "why": "Lookup index and receipt summary for capsule history."
       },
       {
-        "bytes": 51071,
+        "bytes": 60032,
         "classification": "codex_solo_long_horizon_index",
         "exists": true,
         "is_file": true,
         "path": "ION/05_context/current/codex_solo/LONG_HORIZON.json",
         "repo_relative": true,
         "required": true,
-        "sha256": "98d9946fbd96fd779b20f91e0887deca97af65bf5e09d7c9b9bd57b2fb215b90",
+        "sha256": "7d850b7eb04e9c9f0e3d8d957b2ed60002a260933cb4ddf2a60ce288fc86cf3a",
         "why": "Compressed long-horizon capsule index for older continuity lookup."
       },
       {
@@ -338,15 +371,48 @@
         "why": "Defines skills as activation control while templates remain proof law."
       },
       {
-        "bytes": 13788,
+        "bytes": 15252,
         "classification": "codex_skill_activation_registry",
         "exists": true,
         "is_file": true,
         "path": "ION/03_registry/ion_skill_registry.yaml",
         "repo_relative": true,
         "required": true,
-        "sha256": "721e5784a88328561204ef949f45d41d6387d85fa85000f43ebe5730b0d0f5f4",
+        "sha256": "fab233d219eb7a772d860ed63eacecf7f418984d094c4cdbb1ffe4169e06e18d",
         "why": "Active skill registry for Codex chat, ION handoff, recovery, template curation, and receipts."
+      },
+      {
+        "bytes": 6212,
+        "classification": "agent_branch_capsule_protocol",
+        "exists": true,
+        "is_file": true,
+        "path": "ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_PROTOCOL_V0_1.md",
+        "repo_relative": true,
+        "required": false,
+        "sha256": "f2c694b929b6f286b181327329709e83349517d3a6f5647b16d645c320ba60d5",
+        "why": "Optional route reminder for per-agent/per-conversation branch identity law."
+      },
+      {
+        "bytes": 3412,
+        "classification": "carrier_mount_and_persona_presentation_protocol",
+        "exists": true,
+        "is_file": true,
+        "path": "ION/02_architecture/ION_CARRIER_MOUNT_AND_PERSONA_PRESENTATION_PROTOCOL_V0_1.md",
+        "repo_relative": true,
+        "required": false,
+        "sha256": "146fe95251e6f3ebfaad8f049ef9db1be14569b5634c68651166be6d88111aa3",
+        "why": "Optional route reminder that mount receipt is authority and persona is presentation."
+      },
+      {
+        "bytes": 20409,
+        "classification": "carrier_mount_receipt_runtime_helper",
+        "exists": true,
+        "is_file": true,
+        "path": "ION/04_packages/kernel/ion_carrier_mount_receipt.py",
+        "repo_relative": true,
+        "required": false,
+        "sha256": "6e2696c74d25a160dd0241d49fd5871986f7acb57bdd1c68f8e0ae9d78366d8d",
+        "why": "Optional helper for carrier mount receipt rendering, persona presentation validation, and receipt-only fallback."
       },
       {
         "bytes": 3401,
@@ -426,14 +492,14 @@
         "why": "Chat-first app UI orchestration using JOC/ION drawers and Capsule context."
       },
       {
-        "bytes": 23254,
+        "bytes": 23160,
         "classification": "helixion_joc_master_evolution_plan",
         "exists": true,
         "is_file": true,
         "path": "ION/02_architecture/HELIXION_JOC_DAIMON_WISDOMNET_MASTER_EVOLUTION_PLAN.md",
         "repo_relative": true,
         "required": true,
-        "sha256": "f93d49387388cd15f6efab92534750f58eac06f81699f9931866dfec0a399610",
+        "sha256": "a547393f8c2e4cfe9e326fe0f98182359b06e42a07bfe757379ea06bce7ecf05",
         "why": "Master evolution plan for Helixion, JOC, ION, dAimon, WisdomNET, extension, queue, and Codex surfaces."
       },
       {
