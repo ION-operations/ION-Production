@@ -1,5 +1,5 @@
 {
-  "capsule_entry_count": 108,
+  "capsule_entry_count": 110,
   "epoch_count": 11,
   "epoch_size_rows": 10,
   "epochs": [
@@ -695,29 +695,17 @@
         "ION/05_context/current/worker_cockpit/settlement/worker_cockpit_return_intake_note_20260514T131236Z.json",
         "ION/05_context/current/worker_cockpit/settlement/worker_cockpit_post_approval_local_validation_handoff_20260514.md"
       ],
-      "row_count": 8,
-      "row_end": "C-108",
+      "row_count": 10,
+      "row_end": "C-110",
       "row_start": "C-101",
       "status_counts": {
         "CANDIDATE_IMPLEMENTED_TESTED": 1,
         "CANDIDATE_LOCAL_SETTLEMENT_COMPLETE": 1,
         "COMPLETE": 3,
         "DEFERRED": 1,
-        "IMPLEMENTED": 2
+        "IMPLEMENTED": 4
       },
       "summaries": [
-        {
-          "date": "2026-05-14",
-          "id": "C-104",
-          "status": "COMPLETE",
-          "summary": "Proof-repair re-intake run for worker cockpit JOC UI: required context paths re-read with sha/excerpt evidence; focused validation rerun passed; no source edits required."
-        },
-        {
-          "date": "2026-05-14",
-          "id": "C-105",
-          "status": "CANDIDATE_LOCAL_SETTLEMENT_COMPLETE",
-          "summary": "Completed local settlement validation and authenticated /cockpit/worker UI proof capture for PCKT-ION-WORKER-COCKPIT-JOC-LIVE-UI-UPGRADE-SETTLEMENT-20260514."
-        },
         {
           "date": "2026-05-14",
           "id": "C-106",
@@ -735,11 +723,23 @@
           "id": "C-108",
           "status": "IMPLEMENTED",
           "summary": "Repaired parent Codex startup bridge to active ION_Developement root, committed native-left browser bridge source lane, and added generated-evidence ignore boundaries while preserv"
+        },
+        {
+          "date": "2026-05-14",
+          "id": "C-109",
+          "status": "IMPLEMENTED",
+          "summary": "Created external-safe worker cockpit reload/retest handoff artifacts after in-lane restart failure; no service restart attempted in this packet."
+        },
+        {
+          "date": "2026-05-14",
+          "id": "C-110",
+          "status": "IMPLEMENTED",
+          "summary": "Added governed Needs_Routed intake classifier and synced browser extension native-left source rail; committed scoped source lanes while leaving runtime queues and candidate backlog"
         }
       ]
     }
   ],
-  "generated_at": "2026-05-14T14:31:25+00:00",
+  "generated_at": "2026-05-14T15:41:07+00:00",
   "latest_epochs": [
     {
       "date_end": "2026-05-09",
@@ -1107,29 +1107,17 @@
         "ION/05_context/current/worker_cockpit/settlement/worker_cockpit_return_intake_note_20260514T131236Z.json",
         "ION/05_context/current/worker_cockpit/settlement/worker_cockpit_post_approval_local_validation_handoff_20260514.md"
       ],
-      "row_count": 8,
-      "row_end": "C-108",
+      "row_count": 10,
+      "row_end": "C-110",
       "row_start": "C-101",
       "status_counts": {
         "CANDIDATE_IMPLEMENTED_TESTED": 1,
         "CANDIDATE_LOCAL_SETTLEMENT_COMPLETE": 1,
         "COMPLETE": 3,
         "DEFERRED": 1,
-        "IMPLEMENTED": 2
+        "IMPLEMENTED": 4
       },
       "summaries": [
-        {
-          "date": "2026-05-14",
-          "id": "C-104",
-          "status": "COMPLETE",
-          "summary": "Proof-repair re-intake run for worker cockpit JOC UI: required context paths re-read with sha/excerpt evidence; focused validation rerun passed; no source edits required."
-        },
-        {
-          "date": "2026-05-14",
-          "id": "C-105",
-          "status": "CANDIDATE_LOCAL_SETTLEMENT_COMPLETE",
-          "summary": "Completed local settlement validation and authenticated /cockpit/worker UI proof capture for PCKT-ION-WORKER-COCKPIT-JOC-LIVE-UI-UPGRADE-SETTLEMENT-20260514."
-        },
         {
           "date": "2026-05-14",
           "id": "C-106",
@@ -1147,6 +1135,18 @@
           "id": "C-108",
           "status": "IMPLEMENTED",
           "summary": "Repaired parent Codex startup bridge to active ION_Developement root, committed native-left browser bridge source lane, and added generated-evidence ignore boundaries while preserv"
+        },
+        {
+          "date": "2026-05-14",
+          "id": "C-109",
+          "status": "IMPLEMENTED",
+          "summary": "Created external-safe worker cockpit reload/retest handoff artifacts after in-lane restart failure; no service restart attempted in this packet."
+        },
+        {
+          "date": "2026-05-14",
+          "id": "C-110",
+          "status": "IMPLEMENTED",
+          "summary": "Added governed Needs_Routed intake classifier and synced browser extension native-left source rail; committed scoped source lanes while leaving runtime queues and candidate backlog"
         }
       ]
     }

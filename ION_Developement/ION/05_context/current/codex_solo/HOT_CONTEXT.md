@@ -1,6 +1,6 @@
 # Codex Solo HOT_CONTEXT
 
-generated_at: 2026-05-14T14:31:25+00:00
+generated_at: 2026-05-14T15:41:07+00:00
 witness_policy: Capsule is the minimum working context. Mini is a lookup/receipt index for capsule history. Neither overrides current repo authority, tests, receipts, or explicit operator instructions.
 production_authority: false
 live_execution_authority: false
@@ -8,8 +8,6 @@ live_execution_authority: false
 ## MINIMUM WORKING CAPSULE
 
 (Capsule exceeded 80 lines; recent active tail shown.)
-| C-043 | 2026-05-08 | Reviewed AI Assistant Work route compiler next packet and mapped candidate routes to active Codex chat skills, native lenses, Custom GPT/MCP/product lanes, and next compiler implementation target. | `ION/05_context/current/ai_assistant_work/route_compiler/AI_ASSISTANT_WORK_ROUTE_COMPILER_REVIEW_20260508T175230Z.md, ION/05_context/current/ai_assistant_work/route_compiler/AI_ASSISTANT_WORK_ROUTE_COMPILER_CANDIDATE_MAP_20260508T175230Z.json, ION/05_context/current/ai_assistant_work/receipts/AI_ASSISTANT_WORK_ROUTE_COMPILER_REVIEW_RECEIPT_20260508T175340Z.json, ION/06_intelligence/research/sandbox_agent_package_evolution/2026-05-08_sandbox_agent_package_v1_4_ai_assistant_work_diff.md` | VERIFIED |
-| C-044 | 2026-05-08 | Implemented candidate-only Assistant Work route compiler and wired route metadata into Codex chat engine, queued objectives, turn traces, UI model drawers, and right inspector. | `ION/04_packages/kernel/ion_assistant_work_route_compiler.py, ION/tests/test_kernel_ion_assistant_work_route_compiler.py, ION/05_context/current/ai_assistant_work/receipts/AI_ASSISTANT_WORK_ROUTE_COMPILER_IMPLEMENTATION_RECEIPT_20260508T181926Z.json, ION/06_intelligence/research/sandbox_agent_package_evolution/2026-05-08_sandbox_agent_package_v1_4_ai_assistant_work_diff.md` | done |
 | C-045 | 2026-05-08 | Documented Phase 4 product reconciliation matrix across Codex Capsule Chat, Action Gateway, MCP Action, data-zip Custom GPT product, local cockpit, and full ION pipeline. | `ION/06_intelligence/research/sandbox_agent_package_evolution/2026-05-08_phase4_product_reconciliation_matrix.md, ION/05_context/current/ai_assistant_work/receipts/AI_ASSISTANT_WORK_PHASE4_PRODUCT_RECONCILIATION_RECEIPT_20260508T182228Z.json, ION/06_intelligence/evidence/sandbox_agent_package_evolution/2026-05-08_sandbox_agent_package_v1_4_ai_assistant_work_evidence_index.json` | VERIFIED |
 | C-046 | 2026-05-08 | Added candidate Assistant Work route metadata to Action Gateway validate-only responses; held MCP route tool for explicit tool-policy/schema gate. | `ION/04_packages/kernel/ion_custom_gpt_action_gateway.py, ION/tests/test_kernel_ion_custom_gpt_action_gateway.py, ION/05_context/current/ai_assistant_work/receipts/AI_ASSISTANT_WORK_GATEWAY_ROUTE_METADATA_RECEIPT_20260508T182713Z.json, ION/06_intelligence/research/sandbox_agent_package_evolution/2026-05-08_phase4_product_reconciliation_matrix.md` | VERIFIED |
 | C-047 | 2026-05-08 | Planned candidate-domain operation ladder for assistant-work surfaces: candidate domains/agents/templates/routes may operate under containment for classification, proof shaping, route preview, trace display, and diagnost | `ION/06_intelligence/research/sandbox_agent_package_evolution/2026-05-08_candidate_domain_operation_protocol_plan.md, ION/05_context/current/ai_assistant_work/next/AI_ASSISTANT_WORK_NEXT_PACKET_CANDIDATE_DOMAIN_OPERATION_PROTOCOL_20260508T183906Z.json, ION/05_context/current/ai_assistant_work/receipts/AI_ASSISTANT_WORK_CANDIDATE_DOMAIN_OPERATION_PLAN_RECEIPT_20260508T184123Z.json` | PLANNED |
@@ -88,10 +86,12 @@ Added explicit bounded agent settlement recording through broker/gateway/OpenAPI
 | C-106 | 2026-05-14 | Validated worker cockpit settlement artifacts and captured return-intake note for operator continuation | `ION/05_context/current/chatgpt_connector/task_returns/2026-05-14T034535Z0000_task_return.json, ION/05_context/current/worker_cockpit/settlement/worker_cockpit_joc_live_ui_upgrade_settlement_20260514.json, ION/05_context/current/worker_cockpit/settlement/worker_cockpit_settlement_capture_receipt_20260514T034227Z.json, ION/05_context/current/worker_cockpit/settlement/worker_cockpit_return_intake_note_20260514T131236Z.json` | COMPLETE |
 | C-107 | 2026-05-14 | Validated post-approval local worker cockpit state and issued reload/retest handoff | `ION/05_context/current/worker_cockpit/settlement/worker_cockpit_post_approval_local_validation_handoff_20260514.md` | IMPLEMENTED |
 | C-108 | 2026-05-14 | Repaired parent Codex startup bridge to active ION_Developement root, committed native-left browser bridge source lane, and added generated-evidence ignore boundaries while preserving runtime/state evidence locally. | `.codex/config.toml, .codex/hooks/ion_parent_session_start_context.py, ION/tests/test_codex_project_config_and_hook.py, browser_extension/ion_chatops_bridge/src/content.ts, .gitignore` | IMPLEMENTED |
+| C-109 | 2026-05-14 | Created external-safe worker cockpit reload/retest handoff artifacts after in-lane restart failure; no service restart attempted in this packet. | `ION/05_context/current/worker_cockpit/retest/WORKER_COCKPIT_EXTERNAL_RELOAD_HANDOFF_AND_POST_RELOAD_RETEST_20260514.md, ION/05_context/current/worker_cockpit/retest/worker_cockpit_post_reload_retest_capture_draft.sh, ION/05_context/current/worker_cockpit/retest/worker_cockpit_external_reload_handoff_receipt_20260514T145001Z.json` | IMPLEMENTED |
+| C-110 | 2026-05-14 | Added governed Needs_Routed intake classifier and synced browser extension native-left source rail; committed scoped source lanes while leaving runtime queues and candidate backlog uncommitted. | `ION/02_architecture/ION_NEEDS_ROUTED_INTAKE_PROTOCOL.md, ION/04_packages/kernel/ion_needs_routed_intake.py, ION/tests/test_kernel_ion_needs_routed_intake.py, ../Needs_Routed/README.md, ../browser_extension/ion_chatops_bridge/src/content.ts` | IMPLEMENTED |
 
 ## MINI LOOKUP INDEX
 
-CODEX SOLO MINI INDEX | 2026-05-14T14:31:25+00:00
+CODEX SOLO MINI INDEX | 2026-05-14T15:41:07+00:00
 
 ROLE: lookup/receipt index; Capsule is the minimum working context.
 ACTIVE_CAPSULE: ION/05_context/current/codex_solo/CAPSULE.md
@@ -100,20 +100,20 @@ LONG_HORIZON: ION/05_context/current/codex_solo/LONG_HORIZON.json
 PACKAGES: ION/05_context/current/codex_solo/CONTEXT_PACKAGES.json
 HISTORY: ION/05_context/current/codex_solo/history
 
-MISSION: dirty_tree_cleanup_and_startup_continuity
+MISSION: dirty_tree_cleanup_and_needs_routed_intake
 PHASE: codex_solo_work
-LAST_RECEIPT: Repaired parent Codex startup bridge to active ION_Developement root, committed native-left browser bridge source lane, and added generated-evidence ignore boundaries while preserv
-BLOCKER: Tracked active queue/current runtime state remains dirty by design; Needs_Routed candidate packages still require owner routing.
-NEXT: Promote only the Codex Solo continuity snapshot if desired; keep active queue/runtime state and Needs_Routed packages out of broad source commits.
+LAST_RECEIPT: Added governed Needs_Routed intake classifier and synced browser extension native-left source rail; committed scoped source lanes while leaving runtime queues and candidate backlog
+BLOCKER: Runtime/current queue state and untracked Needs_Routed candidate artifacts remain intentionally dirty.
+NEXT: Use Needs_Routed intake routing to review backlog in scoped packets; keep runtime queue/state files separate unless settlement explicitly requires them.
 
-ACTIVE_TEMPLATE: ion.template.patch_proposal.v1
+ACTIVE_TEMPLATE: CODEX_SOLO_WORK_UNIT
 
 CAPSULE_LOOKUP:
-- C-104 2026-05-14 COMPLETE: Proof-repair re-intake run for worker cockpit JOC UI: required context paths re-read with sha/excerpt evidence
-- C-105 2026-05-14 CANDIDATE_LOCAL_SETTLEMENT_COMPL: Completed local settlement validation and authenticated /cockpit/worker UI proof capture for PCKT-ION-WORKER-C
 - C-106 2026-05-14 COMPLETE: Validated worker cockpit settlement artifacts and captured return-intake note for operator continuation
 - C-107 2026-05-14 IMPLEMENTED: Validated post-approval local worker cockpit state and issued reload/retest handoff
 - C-108 2026-05-14 IMPLEMENTED: Repaired parent Codex startup bridge to active ION_Developement root, committed native-left browser bridge sou
+- C-109 2026-05-14 IMPLEMENTED: Created external-safe worker cockpit reload/retest handoff artifacts after in-lane restart failure; no service
+- C-110 2026-05-14 IMPLEMENTED: Added governed Needs_Routed intake classifier and synced browser extension native-left source rail; committed
 
 ROUTE_INDEX: ION/05_context/current/codex_solo/ROUTE.json validates active refs.
 POLICY: Capsule is the minimum working context. Mini is a lookup/receipt index for capsule history. Neither overrides current repo authority, tests, receipts, or explicit operator instructions.
@@ -122,7 +122,7 @@ POLICY: Capsule is the minimum working context. Mini is a lookup/receipt index f
 ## LONG HORIZON CAPSULE INDEX
 
 {
-  "capsule_entry_count": 108,
+  "capsule_entry_count": 110,
   "epoch_count": 11,
   "latest_epochs": [
     {
@@ -491,29 +491,17 @@ POLICY: Capsule is the minimum working context. Mini is a lookup/receipt index f
         "ION/05_context/current/worker_cockpit/settlement/worker_cockpit_return_intake_note_20260514T131236Z.json",
         "ION/05_context/current/worker_cockpit/settlement/worker_cockpit_post_approval_local_validation_handoff_20260514.md"
       ],
-      "row_count": 8,
-      "row_end": "C-108",
+      "row_count": 10,
+      "row_end": "C-110",
       "row_start": "C-101",
       "status_counts": {
         "CANDIDATE_IMPLEMENTED_TESTED": 1,
         "CANDIDATE_LOCAL_SETTLEMENT_COMPLETE": 1,
         "COMPLETE": 3,
         "DEFERRED": 1,
-        "IMPLEMENTED": 2
+        "IMPLEMENTED": 4
       },
       "summaries": [
-        {
-          "date": "2026-05-14",
-          "id": "C-104",
-          "status": "COMPLETE",
-          "summary": "Proof-repair re-intake run for worker cockpit JOC UI: required context paths re-read with sha/excerpt evidence; focused validation rerun passed; no source edits required."
-        },
-        {
-          "date": "2026-05-14",
-          "id": "C-105",
-          "status": "CANDIDATE_LOCAL_SETTLEMENT_COMPLETE",
-          "summary": "Completed local settlement validation and authenticated /cockpit/worker UI proof capture for PCKT-ION-WORKER-COCKPIT-JOC-LIVE-UI-UPGRADE-SETTLEMENT-20260514."
-        },
         {
           "date": "2026-05-14",
           "id": "C-106",
@@ -531,6 +519,18 @@ POLICY: Capsule is the minimum working context. Mini is a lookup/receipt index f
           "id": "C-108",
           "status": "IMPLEMENTED",
           "summary": "Repaired parent Codex startup bridge to active ION_Developement root, committed native-left browser bridge source lane, and added generated-evidence ignore boundaries while preserv"
+        },
+        {
+          "date": "2026-05-14",
+          "id": "C-109",
+          "status": "IMPLEMENTED",
+          "summary": "Created external-safe worker cockpit reload/retest handoff artifacts after in-lane restart failure; no service restart attempted in this packet."
+        },
+        {
+          "date": "2026-05-14",
+          "id": "C-110",
+          "status": "IMPLEMENTED",
+          "summary": "Added governed Needs_Routed intake classifier and synced browser extension native-left source rail; committed scoped source lanes while leaving runtime queues and candidate backlog"
         }
       ]
     }
@@ -700,36 +700,36 @@ POLICY: Capsule is the minimum working context. Mini is a lookup/receipt index f
 {
   "entries": [
     {
-      "bytes": 61883,
+      "bytes": 62879,
       "classification": "codex_solo_minimum_working_context",
       "exists": true,
       "is_file": true,
       "path": "ION/05_context/current/codex_solo/CAPSULE.md",
       "repo_relative": true,
       "required": true,
-      "sha256": "60d041c556de010b99efa1ed5d943efdef9d3dce48f4c3e5a23f6c40ebd05ca2",
+      "sha256": "7e1b55196b9676abfbd381f1a160f05142c568a33a43d695af771660d6935d9a",
       "why": "Minimum context the standalone Codex lane must always carry."
     },
     {
-      "bytes": 2024,
+      "bytes": 1977,
       "classification": "codex_solo_lookup_receipt_index",
       "exists": true,
       "is_file": true,
       "path": "ION/05_context/current/codex_solo/MINI.md",
       "repo_relative": true,
       "required": true,
-      "sha256": "848198766c7cab10b084edd7c4d521450b57fcdd13b2d742c3ef6ef3c86f14a7",
+      "sha256": "cf05ab5ce1b8cf2c311efbadc129a3d7244fd3d1be0eec67a9e7716329ac7dc8",
       "why": "Lookup index and receipt summary for capsule history."
     },
     {
-      "bytes": 60032,
+      "bytes": 59986,
       "classification": "codex_solo_long_horizon_index",
       "exists": true,
       "is_file": true,
       "path": "ION/05_context/current/codex_solo/LONG_HORIZON.json",
       "repo_relative": true,
       "required": true,
-      "sha256": "7d850b7eb04e9c9f0e3d8d957b2ed60002a260933cb4ddf2a60ce288fc86cf3a",
+      "sha256": "9aad572993b8e16ad195841dc6a294f87cfd95b5c08a9c7f425578ef48c662ac",
       "why": "Compressed long-horizon capsule index for older continuity lookup."
     },
     {
@@ -988,7 +988,7 @@ POLICY: Capsule is the minimum working context. Mini is a lookup/receipt index f
 
 ### ION/05_context/current/codex_solo/MINI.md
 
-CODEX SOLO MINI INDEX | 2026-05-14T14:31:25+00:00
+CODEX SOLO MINI INDEX | 2026-05-14T15:41:07+00:00
 
 ROLE: lookup/receipt index; Capsule is the minimum working context.
 ACTIVE_CAPSULE: ION/05_context/current/codex_solo/CAPSULE.md
@@ -997,24 +997,25 @@ LONG_HORIZON: ION/05_context/current/codex_solo/LONG_HORIZON.json
 PACKAGES: ION/05_context/current/codex_solo/CONTEXT_PACKAGES.json
 HISTORY: ION/05_context/current/codex_solo/history
 
-MISSION: dirty_tree_cleanup_and_startup_continuity
+MISSION: dirty_tree_cleanup_and_needs_routed_intake
 PHASE: codex_solo_work
-LAST_RECEIPT: Repaired parent Codex startup bridge to active ION_Developement root, committed native-left browser bridge source lane, and added generated-evidence ignore boundaries while preserv
-BLOCKER: Tracked active queue/current runtime state remains dirty by design; Needs_Routed candidate packages still require owner routing.
-NEXT: Promote only the Codex Solo continuity snapshot if desired; keep active queue/runtime state and Needs_Routed packages out of broad source commits.
+LAST_RECEIPT: Added governed Needs_Routed intake classifier and synced browser extension native-left source rail; committed scoped source lanes while leaving runtime queues and candidate backlog
+BLOCKER: Runtime/current queue state and untracked Needs_Routed candidate artifacts remain intentionally dirty.
+NEXT: Use Needs_Routed intake routing to review backlog in scoped packets; keep runtime queue/state files separate unless settlement explicitly requires them.
 
-ACTIVE_TEMPLATE: ion.template.patch_proposal.v1
+ACTIVE_TEMPLATE: CODEX_SOLO_WORK_UNIT
 
 CAPSULE_LOOKUP:
-- C-104 2026-05-14 COMPLETE: Proof-repair re-intake run for worker cockpit JOC UI: required context paths re-read with sha/excerpt evidence
-- C-105 2026-05-14 CANDIDATE_LOCAL_SETTLEMENT_COMPL: Completed local settlement validation and authenticated /cockpit/worker UI proof capture for PCKT-ION-WORKER-C
 - C-106 2026-05-14 COMPLETE: Validated worker cockpit settlement artifacts and captured return-intake note for operator continuation
-- C-107 2026-05-14 IMPLEMENTED: Validated post-approval local worker cockpit state and issued reload/retest han
+- C-107 2026-05-14 IMPLEMENTED: Validated post-approval local worker cockpit state and issued reload/retest handoff
+- C-108 2026-05-14 IMPLEMENTED: Repaired parent Codex startup bridge to active ION_Developement root, committed native-left browser bridge sou
+- C-109 2026-05-14 IMPLEMENTED: Created external-safe worker cockpit reload/retest handoff artifacts after in-lane restart failure; no service
+- C-110 2026-05-14 IMPLEMENTED: Added gove
 
 ### ION/05_context/current/codex_solo/LONG_HORIZON.json
 
 {
-  "capsule_entry_count": 108,
+  "capsule_entry_count": 110,
   "epoch_count": 11,
   "epoch_size_rows": 10,
   "epochs": [
