@@ -1,0 +1,21 @@
+# Needs_Routed raw artifact hygiene
+#
+# Track receipts, indexes, README, and deliberately curated packet surfaces.
+# Keep raw drops, mounted bundles, and opaque package files local unless a later
+# packet explicitly promotes one as review evidence.
+
+/drop/*
+!/drop/.gitkeep
+
+/history/*
+!/history/.gitkeep
+
+/custom_gpt_mount/
+
+/*.zip
+/*.patch
+/*.diff
+/*.files.txt
+
+/current_*_before_*.txt
+/current_*_before_*.patch
