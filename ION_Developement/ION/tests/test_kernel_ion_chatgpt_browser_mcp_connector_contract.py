@@ -277,6 +277,106 @@ def test_codex_queue_duplicate_audit_and_supersede_preserves_packets(tmp_path):
     assert statuses[third["data"]["request_id"]] == "SUPERSEDED_DUPLICATE"
 
 
+def test_codex_queue_duplicate_audit_defaults_compact_and_full_is_opt_in(tmp_path):
+    _seed_root(tmp_path)
+    objective = "compact audit should suppress this objective text by default"
+    args = {"objective": objective}
+    first = call_chatgpt_connector_tool(tmp_path, "ion_request_codex_work_packet", args)
+    second = call_chatgpt_connector_tool(tmp_path, "ion_request_codex_work_packet", {**args, "force_new": True})
+
+    compact = call_chatgpt_connector_tool(tmp_path, "ion_codex_queue_duplicate_audit", {"limit": 10})
+    assert first["ok"] is True
+    assert second["ok"] is True
+    assert compact["ok"] is True
+    assert compact["data"]["response_mode"] == "compact"
+    assert compact["data"]["include_duplicates"] is False
+    compact_group = compact["data"]["groups"][0]
+    assert compact_group["duplicate_count"] == 1
+    assert compact_group["group_count"] == 2
+    assert compact_group["canonical_request_id"] == first["data"]["request_id"]
+    assert compact_group["duplicates_returned_count"] == 0
+    assert compact_group["duplicates"] == []
+    assert compact_group["duplicates_truncated"] is True
+    assert "requests" not in compact_group
+    canonical = compact_group["canonical_request"]
+    assert isinstance(canonical["objective_sha256"], str)
+    assert len(canonical["objective_sha256"]) == 64
+    assert "objective" not in canonical
+    assert "payload" not in canonical
+
+
+def test_codex_queue_duplicate_audit_include_duplicates_respects_sample_bound(tmp_path):
+    _seed_root(tmp_path)
+    args = {"objective": "compact audit duplicate sample bound"}
+    first = call_chatgpt_connector_tool(tmp_path, "ion_request_codex_work_packet", args)
+    second = call_chatgpt_connector_tool(tmp_path, "ion_request_codex_work_packet", {**args, "force_new": True})
+    third = call_chatgpt_connector_tool(tmp_path, "ion_request_codex_work_packet", {**args, "force_new": True})
+    fourth = call_chatgpt_connector_tool(tmp_path, "ion_request_codex_work_packet", {**args, "force_new": True})
+    assert all(result["ok"] is True for result in (first, second, third, fourth))
+
+    compact_with_duplicates = call_chatgpt_connector_tool(
+        tmp_path,
+        "ion_codex_queue_duplicate_audit",
+        {"limit": 10, "include_duplicates": True, "max_duplicates_per_group": 2},
+    )
+
+    assert compact_with_duplicates["ok"] is True
+    assert compact_with_duplicates["data"]["response_mode"] == "compact"
+    assert compact_with_duplicates["data"]["include_duplicates"] is True
+    assert compact_with_duplicates["data"]["max_duplicates_per_group"] == 2
+    group = compact_with_duplicates["data"]["groups"][0]
+    assert group["group_count"] == 4
+    assert group["duplicate_count"] == 3
+    assert group["duplicates_returned_count"] == 2
+    assert len(group["duplicates"]) == 2
+    assert group["duplicates_truncated"] is True
+    assert "requests" not in group
+    for row in group["duplicates"]:
+        assert row["duplicate_of_request_id"] == first["data"]["request_id"]
+        assert row["request_id"] != first["data"]["request_id"]
+        assert "objective" not in row
+        assert "payload" not in row
+
+
+def test_codex_queue_duplicate_audit_full_modes_respect_limit_and_only_return_canonical_request(tmp_path):
+    _seed_root(tmp_path)
+    args = {"objective": "full audit duplicate sample bound"}
+    first = call_chatgpt_connector_tool(tmp_path, "ion_request_codex_work_packet", args)
+    second = call_chatgpt_connector_tool(tmp_path, "ion_request_codex_work_packet", {**args, "force_new": True})
+    third = call_chatgpt_connector_tool(tmp_path, "ion_request_codex_work_packet", {**args, "force_new": True})
+    fourth = call_chatgpt_connector_tool(tmp_path, "ion_request_codex_work_packet", {**args, "force_new": True})
+    assert all(result["ok"] is True for result in (first, second, third, fourth))
+
+    full_args_variants = (
+        {"limit": 10, "include_full": True, "max_duplicates_per_group": 2},
+        {"limit": 10, "full": True, "max_duplicates_per_group": 2},
+        {"limit": 10, "include_packets": True, "max_duplicates_per_group": 2},
+    )
+    for full_args in full_args_variants:
+        full_response = call_chatgpt_connector_tool(
+            tmp_path,
+            "ion_codex_queue_duplicate_audit",
+            full_args,
+        )
+        assert full_response["ok"] is True
+        assert full_response["data"]["response_mode"] == "full"
+        group = full_response["data"]["groups"][0]
+        assert group["group_count"] == 4
+        assert group["duplicate_count"] == 3
+        assert group["duplicates_returned_count"] == 2
+        assert len(group["duplicates"]) == 2
+        assert group["duplicates_truncated"] is True
+        assert len(group["requests"]) == 1
+        assert group["requests"][0]["request_id"] == first["data"]["request_id"]
+        assert group["requests"][0]["objective"] == args["objective"]
+        assert all("payload" not in row for row in group["requests"])
+        for row in group["duplicates"]:
+            assert row["duplicate_of_request_id"] == first["data"]["request_id"]
+            assert row["request_id"] != first["data"]["request_id"]
+            assert row["objective"] == args["objective"]
+            assert "payload" not in row
+
+
 def test_codex_queue_supersede_duplicates_requires_confirmation_and_idempotency(tmp_path):
     _seed_root(tmp_path)
     no_confirmation = call_chatgpt_connector_tool(

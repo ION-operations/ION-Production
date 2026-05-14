@@ -78,6 +78,9 @@ BASE_RETURN_CONTRACT_SECTIONS = (
     "### TEMPLATE ACTION PROOF",
     "### VALIDATION",
     "### RESULT",
+    "### WORKLOAD DIFF",
+    "### BLOCKERS",
+    "### RECOMMENDED NEXT PACKET",
 )
 WORKLOAD_DIFF_SECTION = "### WORKLOAD DIFF"
 RETURN_TEMPLATE_REQUIRED_SECTIONS = (
@@ -1937,19 +1940,80 @@ def _codex_queue_duplicate_audit(root: Path, args: Mapping[str, Any] | None = No
     except (TypeError, ValueError):
         limit = 25
     limit = max(1, min(limit, 100))
+    try:
+        max_duplicates_per_group = int(arguments.get("max_duplicates_per_group") or 5)
+    except (TypeError, ValueError):
+        max_duplicates_per_group = 5
+    max_duplicates_per_group = max(0, min(max_duplicates_per_group, 50))
+    include_packets = bool(arguments.get("include_packets") or arguments.get("include_full") or arguments.get("full"))
+    include_duplicates = bool(arguments.get("include_duplicates"))
     groups = _codex_work_request_duplicate_groups(root)
     visible_groups = groups[:limit]
     duplicate_request_count = sum(int(group.get("duplicate_count") or 0) for group in groups)
+
+    def _compact_request(row: Mapping[str, Any]) -> dict[str, Any]:
+        return {
+            "request_id": row.get("request_id"),
+            "path": row.get("path"),
+            "status": row.get("status"),
+            "created_at": row.get("created_at"),
+            "updated_at": row.get("updated_at"),
+            "objective_sha256": row.get("objective_sha256"),
+            "dedupe_key": row.get("dedupe_key"),
+            "duplicate_index": row.get("duplicate_index"),
+            "duplicate_of_request_id": row.get("duplicate_of_request_id"),
+            "accepted_return_count": row.get("accepted_return_count"),
+            "linked_return_count": row.get("linked_return_count"),
+        }
+
+    returned_groups = []
+    for group in visible_groups:
+        requests = list(group.get("requests") or [])
+        duplicates = list(group.get("duplicates") or [])
+        returned_duplicate_rows = duplicates[:max_duplicates_per_group] if (include_packets or include_duplicates) else []
+        if include_packets:
+            returned_groups.append(
+                {
+                    "group_key": group.get("group_key"),
+                    "group_count": group.get("group_count"),
+                    "canonical_request_id": group.get("canonical_request_id"),
+                    "canonical_packet_path": group.get("canonical_packet_path"),
+                    "requests": requests[:1],
+                    "duplicate_count": group.get("duplicate_count"),
+                    "duplicates_returned_count": len(returned_duplicate_rows),
+                    "duplicates_truncated": len(duplicates) > len(returned_duplicate_rows),
+                    "duplicates": returned_duplicate_rows,
+                }
+            )
+        else:
+            returned_groups.append(
+                {
+                    "group_key": group.get("group_key"),
+                    "group_count": group.get("group_count"),
+                    "canonical_request_id": group.get("canonical_request_id"),
+                    "canonical_packet_path": group.get("canonical_packet_path"),
+                    "canonical_request": _compact_request(requests[0]) if requests else None,
+                    "duplicate_count": group.get("duplicate_count"),
+                    "duplicates_returned_count": len(returned_duplicate_rows),
+                    "duplicates_truncated": len(duplicates) > len(returned_duplicate_rows),
+                    "duplicates": [_compact_request(row) for row in returned_duplicate_rows],
+                }
+            )
+    response_mode = "full" if include_packets else "compact"
+
     return {
         "schema_id": "ion.chatgpt_browser_connector_codex_queue_duplicate_audit.v1",
         "status": "READ_ONLY_DUPLICATE_AUDIT",
+        "response_mode": response_mode,
         "queue_path": CODEX_WORK_QUEUE_RELATIVE_PATH.as_posix(),
         "request_state_dir": (CONNECTOR_STATE_DIR / "codex_work_requests").as_posix(),
         "duplicate_group_count": len(groups),
         "duplicate_request_count": duplicate_request_count,
-        "returned_group_count": len(visible_groups),
+        "returned_group_count": len(returned_groups),
         "truncated": len(groups) > limit,
-        "groups": visible_groups,
+        "include_duplicates": include_duplicates,
+        "max_duplicates_per_group": max_duplicates_per_group,
+        "groups": returned_groups,
         "production_authority": False,
         "live_execution_authority": False,
     }
@@ -2248,8 +2312,9 @@ def _return_contract_sections_for_work_request(payload: Mapping[str, Any]) -> li
                 sections.append(section)
     if not sections:
         sections = list(BASE_RETURN_CONTRACT_SECTIONS)
-    if _work_request_requires_workload_diff(payload) and WORKLOAD_DIFF_SECTION not in sections:
-        sections.append(WORKLOAD_DIFF_SECTION)
+    for required_section in RETURN_TEMPLATE_REQUIRED_SECTIONS:
+        if required_section not in sections:
+            sections.append(required_section)
     return sections
 
 
