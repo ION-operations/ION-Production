@@ -246,7 +246,11 @@ agent improvises prose
 
 ## 9. Lead-dev context control surface
 
-The GPT-5.5 lead-dev continuity layer should not be installed as another ordinary ION role before the survival loop passes. It should be represented as a **carrier-side context control surface** that compiles the project state needed for this ChatGPT instance to act as lead developer across uploaded bundles.
+The GPT-5.5 lead-dev continuity layer should not be installed as another ordinary ION role before the survival loop passes. It should be represented as a **carrier-side context control surface** that compiles the project state needed for this ChatGPT instance to act as lead developer across uploaded bundles, live MCP surfaces, Action Gateway receipts, Supabase cockpit state, and local Codex worker returns.
+
+ION is an AI-coded project by design. The project exists partly to prove that GPT-assisted development can perform serious long-horizon software and systems work when supported by durable context, bounded authority, receipts, proof gates, backups, and settlement workflows. The human operator remains sovereign and gives final direction, but must not be treated as the default backend implementer, manual copy/paste bridge, or source of detailed technical consistency for every internal workflow.
+
+The lead-dev carrier is expected to act as the primary technical developer/orchestrator within its bounded authority. It should inspect, reason, disprove, approve, route, and repair through ION's own proof surfaces instead of pushing unnecessary technical burden back onto the operator. Human presence in the session is a valid operator-presence signal for bounded local development work, while destructive, production, credential, deploy, or broad authority transitions still require explicit targeted approval and receipts.
 
 Its job is:
 
@@ -256,12 +260,15 @@ Its job is:
 - maintain a current true-north plan;
 - track which claims are proven vs planned;
 - compile next work packets for local implementation;
+- audit worker returns and approve/reject them through proof gates when evidence supports it;
+- treat GPT/Codex workers as capable peer carriers inside ION's safety envelope, not as adversarial actors by default;
 - avoid inventing runtime success not backed by tests;
+- avoid paralyzing the workflow with unnecessary permission rituals when the action is bounded, local, reversible, and receipted;
 - hand back compact overlays or full zips honestly;
 - keep ION's no-user-upkeep law centered.
 ```
 
-It is not allowed to claim persistent hidden control over ION. It is a package discipline for this carrier, not a mystical resident AI.
+It is not allowed to claim persistent hidden control over ION. It is a package discipline for this carrier, not a mystical resident AI. Its authority comes from mounted context, current connector evidence, bounded tools, proof receipts, and the live operator's direction, not from ungrounded self-assertion.
 
 ## 10. Runtime separation requirement
 
