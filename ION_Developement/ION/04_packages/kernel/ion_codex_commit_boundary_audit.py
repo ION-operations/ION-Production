@@ -66,8 +66,12 @@ GENERATED_PREFIXES: tuple[str, ...] = (
 RUNTIME_EXCLUDE_PREFIXES: tuple[str, ...] = (
     ".git/",
     ".ion_private/",
+    "ION/05_context/current/ACTIVE_CHATGPT_CONNECTOR_CODEX_WORK_QUEUE.json",
+    "ION/05_context/current/ACTIVE_CODEX_CAPSULE_CHAT_MODEL.json",
+    "ION/05_context/current/ACTIVE_OPERATOR_MESSAGE_QUEUE.json",
     "ION/05_context/current/action_gateway/runtime/",
     "ION/05_context/current/chatgpt_connector/runtime/",
+    "ION/05_context/current/codex_capsule_chat/",
     "ION/05_context/current/codex_capsule_chat/response_runs/",
     "ION/05_context/runtime_state/",
 )
@@ -190,6 +194,14 @@ def _run_git(shell_root: Path, args: Sequence[str], *, timeout: int = 8, max_out
     }
 
 
+def _resolve_git_root(shell_root: Path) -> Path | None:
+    result = _run_git(shell_root, ["rev-parse", "--show-toplevel"], timeout=5, max_output_chars=2000)
+    if result.get("returncode") != 0:
+        return None
+    value = str(result.get("stdout") or "").strip()
+    return Path(value).resolve() if value else None
+
+
 def _path_after_status(raw_path: str) -> str:
     raw_path = raw_path.strip()
     if " -> " in raw_path:
@@ -223,6 +235,26 @@ def _parse_porcelain(stdout: str) -> list[dict[str, Any]]:
     return entries
 
 
+def _shell_relative_path(path: str, *, shell_root: Path, git_root: Path) -> str:
+    try:
+        shell_prefix = shell_root.relative_to(git_root).as_posix()
+    except ValueError:
+        return path
+    if not shell_prefix:
+        return path
+    prefix = shell_prefix.rstrip("/") + "/"
+    return path[len(prefix) :] if path.startswith(prefix) else path
+
+
+def _enrich_entries_for_shell_root(entries: Sequence[Mapping[str, Any]], *, shell_root: Path, git_root: Path) -> list[dict[str, Any]]:
+    enriched: list[dict[str, Any]] = []
+    for entry in entries:
+        item = dict(entry)
+        item["shell_relative_path"] = _shell_relative_path(str(item.get("path") or ""), shell_root=shell_root, git_root=git_root)
+        enriched.append(item)
+    return enriched
+
+
 def _starts_with_any(path: str, prefixes: Iterable[str]) -> bool:
     return any(path.startswith(prefix) for prefix in prefixes)
 
@@ -233,7 +265,7 @@ def _is_secretish(path: str) -> bool:
 
 
 def _classify_path(entry: Mapping[str, Any]) -> str:
-    path = str(entry.get("path") or "")
+    path = str(entry.get("shell_relative_path") or entry.get("path") or "")
     if _is_secretish(path):
         return "private_or_secret_risk_exclude"
     if _starts_with_any(path, RUNTIME_EXCLUDE_PREFIXES):
@@ -311,15 +343,20 @@ def _branch_from_status(status_stdout: str) -> str | None:
 
 def build_codex_commit_boundary_audit(root: str | Path | None = None) -> dict[str, Any]:
     shell_root = _resolve_shell_root(root)
-    git_dir = shell_root / ".git"
+    git_root = _resolve_git_root(shell_root)
+    git_cwd = git_root or shell_root
 
-    status = _run_git(shell_root, ["status", "--porcelain=v1", "--branch", "-uall"], timeout=8, max_output_chars=100000)
-    head = _run_git(shell_root, ["rev-parse", "--short", "HEAD"], timeout=5, max_output_chars=1000)
-    diff_check = _run_git(shell_root, ["diff", "--check"], timeout=10, max_output_chars=16000)
-    cached_diff_check = _run_git(shell_root, ["diff", "--cached", "--check"], timeout=10, max_output_chars=16000)
+    status = _run_git(git_cwd, ["status", "--porcelain=v1", "--branch", "-uall"], timeout=8, max_output_chars=100000)
+    head = _run_git(git_cwd, ["rev-parse", "--short", "HEAD"], timeout=5, max_output_chars=1000)
+    diff_check = _run_git(git_cwd, ["diff", "--check"], timeout=10, max_output_chars=16000)
+    cached_diff_check = _run_git(git_cwd, ["diff", "--cached", "--check"], timeout=10, max_output_chars=16000)
 
-    git_available = bool(status.get("available") and status.get("returncode") == 0 and git_dir.exists())
-    entries = _parse_porcelain(status.get("stdout", "")) if git_available else []
+    git_available = bool(git_root and status.get("available") and status.get("returncode") == 0)
+    entries = (
+        _enrich_entries_for_shell_root(_parse_porcelain(status.get("stdout", "")), shell_root=shell_root, git_root=git_root)
+        if git_available and git_root
+        else []
+    )
     bundles = _bundle_entries(entries)
     manifest = _stage_manifest_from_bundles(bundles)
 
@@ -361,6 +398,7 @@ def build_codex_commit_boundary_audit(root: str | Path | None = None) -> dict[st
         "ok": git_available and not blocking_findings,
         "ready_for_source_commit_bundle": ready_for_source_commit,
         "shell_root": str(shell_root),
+        "git_root": str(git_root) if git_root else None,
         "protocol_ref": PROTOCOL_PATH.as_posix(),
         "schema_ref": SCHEMA_PATH.as_posix(),
         "output_ref": AUDIT_OUTPUT_PATH.as_posix(),
@@ -368,7 +406,7 @@ def build_codex_commit_boundary_audit(root: str | Path | None = None) -> dict[st
         "packet_ref": "PCKT-ION-CODEX-COMMIT-BOUNDARY-AUDIT-001",
         "git": {
             "available": git_available,
-            "git_dir_present": git_dir.exists(),
+            "git_dir_present": bool(git_root),
             "branch": _branch_from_status(status.get("stdout", "")),
             "head_short": head.get("stdout", "").strip() if head.get("returncode") == 0 else None,
             "dirty": bool(entries),

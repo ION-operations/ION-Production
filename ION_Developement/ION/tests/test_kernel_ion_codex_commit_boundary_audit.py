@@ -35,6 +35,20 @@ def _seed_repo(tmp_path: Path) -> Path:
     return root
 
 
+def _seed_nested_repo(tmp_path: Path) -> tuple[Path, Path]:
+    workspace = tmp_path / "workspace"
+    root = workspace / "ION_Developement"
+    (root / "ION").mkdir(parents=True)
+    (root / "pyproject.toml").write_text("[project]\nname = \"ion-test\"\n", encoding="utf-8")
+    (root / "ION/REPO_AUTHORITY.md").write_text("# authority\n", encoding="utf-8")
+    _run(["git", "init"], workspace)
+    _run(["git", "config", "user.email", "ion@example.invalid"], workspace)
+    _run(["git", "config", "user.name", "ION Test"], workspace)
+    _run(["git", "add", "ION_Developement/pyproject.toml", "ION_Developement/ION/REPO_AUTHORITY.md"], workspace)
+    _run(["git", "commit", "-m", "seed"], workspace)
+    return workspace, root
+
+
 def test_commit_boundary_audit_classifies_dirty_tree_without_git_mutation(tmp_path: Path) -> None:
     root = _seed_repo(tmp_path)
     (root / "ION/04_packages/kernel/new_kernel.py").write_text("print('candidate')\n", encoding="utf-8")
@@ -60,6 +74,23 @@ def test_commit_boundary_audit_classifies_dirty_tree_without_git_mutation(tmp_pa
 
     status_after = subprocess.run(["git", "status", "--porcelain=v1", "-uall"], cwd=root, check=True, capture_output=True, text=True)
     assert "ION/04_packages/kernel/new_kernel.py" in status_after.stdout
+
+
+def test_commit_boundary_audit_supports_nested_active_root_in_parent_git(tmp_path: Path) -> None:
+    workspace, root = _seed_nested_repo(tmp_path)
+    runtime_path = root / "ION/05_context/current/ACTIVE_OPERATOR_MESSAGE_QUEUE.json"
+    runtime_path.parent.mkdir(parents=True, exist_ok=True)
+    runtime_path.write_text("{}\n", encoding="utf-8")
+
+    result = build_codex_commit_boundary_audit(root)
+
+    assert result["ok"] is True
+    assert result["shell_root"] == str(root)
+    assert result["git_root"] == str(workspace)
+    assert result["path_counts"]["runtime_residue_exclude"] == 1
+    runtime_bundle = next(bundle for bundle in result["bundles"] if bundle["bundle_id"] == "runtime_residue_exclude")
+    assert "ION_Developement/ION/05_context/current/ACTIVE_OPERATOR_MESSAGE_QUEUE.json" in runtime_bundle["paths"]
+    assert runtime_bundle["entries"][0]["shell_relative_path"] == "ION/05_context/current/ACTIVE_OPERATOR_MESSAGE_QUEUE.json"
 
 
 def test_commit_boundary_audit_blocks_secretish_paths(tmp_path: Path) -> None:
