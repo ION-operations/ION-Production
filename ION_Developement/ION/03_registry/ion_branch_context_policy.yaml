@@ -1,0 +1,63 @@
+schema_id: ion.branch_context_policy.v0_1
+status: CANDIDATE
+authority:
+  accepted_state_claim: false
+  production_authority: false
+  live_execution_authority: false
+purpose: Govern README branch context nodes while the protocol is piloted.
+
+maturity_rules:
+  B0_inert_folder:
+    requires: []
+    may_claim: ordinary_file_evidence_only
+  B1_readme_entry:
+    requires:
+      - README.md
+      - branch_entry_section
+    may_claim: generic_ai_orientation
+  B2_capsule_node:
+    requires:
+      - README.md
+      - ION_CONTEXT_CAPSULE.yaml
+      - capsule_schema_id_ion_branch_context_node_v0_1
+    may_claim: folder_native_context_package_candidate
+  B3_routed_branch:
+    requires:
+      - local_surfaces.routes_or_templates_or_schemas_or_tests
+    may_claim: bounded_local_workflow_selection
+  B4_agentic_branch:
+    requires:
+      - local_surfaces.agents
+      - authority_boundaries
+    may_claim: domain_agent_hinting_not_external_spawn_proof
+  B5_evented_graph_branch:
+    requires:
+      - evented_template_contract
+      - validation_receipts
+    may_claim: template_instantiated_graph_event_candidate
+  B6_automation_ready_branch:
+    requires:
+      - tests
+      - receipts
+      - authority_gate
+      - runtime_hook_proof
+    may_claim: governed_automation_within_explicit_authority
+
+reserved_tag_namespaces:
+  - branch
+  - node
+  - route
+  - phase
+  - state
+  - authority
+  - proof
+  - artifact
+  - ui
+
+hard_limits:
+  - tags_never_grant_authority
+  - README_never_overrides_capsule_or_parent_chain
+  - capsule_never_overrides_current_operator_instruction
+  - no_accepted_state_without_receipt
+  - no_production_or_live_authority_from_folder_metadata
+  - no_hidden_memory_claims

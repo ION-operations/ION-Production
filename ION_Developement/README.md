@@ -25,6 +25,29 @@ inside.
 
 ---
 
+
+## Natural AI Entry: README as Branch Context
+
+ION is evolving toward folder-native context. A significant folder should be able
+to orient a human, generic AI, carrier, or worker through normal navigation:
+
+```text
+open README.md
+read ION_CONTEXT_CAPSULE.yaml
+follow parent/child branch edges
+inspect receipts
+select only declared routes/templates/agents
+emit candidate work or blocker with proof
+```
+
+The governing candidate protocol is
+`ION/02_architecture/README_BRANCH_CONTEXT_PROTOCOL.md`. It treats the README as
+the human/generic-AI projection and the local `ION_CONTEXT_CAPSULE.yaml` as the
+machine-readable branch operating contract. README text can orient; it cannot
+grant accepted state, production authority, live execution authority, or receipt
+status by itself.
+
+
 ## The Problem
 
 Most AI agent systems are prompt-first.

@@ -5,6 +5,21 @@ This directory is the canonical ION content root for this repository.
 Use the repository root for commands that depend on `pyproject.toml`. Use this
 directory for code and document navigation.
 
+## ION Branch Context Entry
+
+This directory is now a candidate ION branch context node. Before substantive
+work inside `ION/`, read:
+
+1. `README.md`
+2. `ION_CONTEXT_CAPSULE.yaml`
+3. `REPO_AUTHORITY.md`
+4. the relevant child branch README/capsule
+
+The capsule is the local machine-readable operating contract. The README is the
+human/generic-AI projection. Neither grants production authority, live execution
+authority, or accepted state by itself.
+
+
 ## Authority
 
 Read `ION/REPO_AUTHORITY.md` first. It defines the current root, shell-root

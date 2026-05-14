@@ -1,0 +1,230 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ion.branch_context_node.schema.v0_1",
+  "title": "ION Branch Context Node Capsule",
+  "type": "object",
+  "additionalProperties": true,
+  "required": [
+    "schema_id",
+    "branch_id",
+    "branch_label",
+    "path",
+    "maturity_level",
+    "purpose",
+    "authority",
+    "read_order",
+    "local_surfaces",
+    "receipts",
+    "continuity_export",
+    "tags"
+  ],
+  "properties": {
+    "schema_id": {
+      "const": "ion.branch_context_node.v0_1"
+    },
+    "branch_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_\\-\\.]{2,128}$"
+    },
+    "branch_label": {
+      "type": "string",
+      "minLength": 1
+    },
+    "path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "maturity_level": {
+      "type": "string",
+      "enum": [
+        "B0_inert_folder",
+        "B1_readme_entry",
+        "B2_capsule_node",
+        "B3_routed_branch",
+        "B4_agentic_branch",
+        "B5_evented_graph_branch",
+        "B6_automation_ready_branch"
+      ]
+    },
+    "purpose": {
+      "type": "string",
+      "minLength": 1
+    },
+    "authority": {
+      "type": "object",
+      "required": [
+        "accepted_state_claim",
+        "production_authority",
+        "live_execution_authority"
+      ],
+      "properties": {
+        "accepted_state_claim": {
+          "type": "boolean"
+        },
+        "production_authority": {
+          "type": "boolean"
+        },
+        "live_execution_authority": {
+          "type": "boolean"
+        },
+        "default_work_authority": {
+          "type": "string"
+        },
+        "requires_operator_approval_for": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "parent_domain": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "parent_chain": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "child_domains": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "read_order": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "local_surfaces": {
+      "type": "object",
+      "properties": {
+        "protocols": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "routes": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "templates": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "schemas": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "agents": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "registries": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "tests": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "receipts": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "status": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "child_index": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": true
+    },
+    "receipts": {
+      "type": "object",
+      "required": [
+        "latest",
+        "required_before_state_claim"
+      ],
+      "properties": {
+        "latest": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "required_before_state_claim": {
+          "type": "boolean"
+        },
+        "missing_receipt_response": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": true
+    },
+    "continuity_export": {
+      "type": "object",
+      "required": [
+        "include"
+      ],
+      "properties": {
+        "include": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "exclude": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "export_profile": {
+          "type": [
+            "string",
+            "null"
+          ]
+        }
+      },
+      "additionalProperties": true
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z0-9][a-z0-9_-]*(:[a-z0-9][a-z0-9_-]*)?$"
+      }
+    }
+  }
+}

@@ -1,0 +1,79 @@
+schema_id: ion.branch_context_node.v0_1
+branch_id: ion_repo_root
+branch_label: ION Repository Root
+path: .
+maturity_level: B2_capsule_node
+purpose: Natural entry branch for the whole ION repository; orients humans, generic AI, carriers, and workers before they descend into ION domains.
+
+authority:
+  accepted_state_claim: false
+  production_authority: false
+  live_execution_authority: false
+  default_work_authority: read_only_or_sandbox_candidate
+  requires_operator_approval_for:
+    - production_write
+    - live_execution
+    - connector_mutation
+    - accepted_state_landing
+    - secrets_access
+
+parent_domain: null
+parent_chain: []
+child_domains:
+  - ion_core
+
+read_order:
+  - README.md
+  - ION_CONTEXT_CAPSULE.yaml
+  - ION/README.md
+  - ION/REPO_AUTHORITY.md
+  - ION/02_architecture/README_BRANCH_CONTEXT_PROTOCOL.md
+
+local_surfaces:
+  protocols:
+    - ION/02_architecture/README_BRANCH_CONTEXT_PROTOCOL.md
+    - ION/02_architecture/CONTEXT_GRAPH_SUBSTRATE_PROTOCOL.md
+    - ION/02_architecture/CONTEXT_NODE_AND_PACKAGE_PROTOCOL.md
+  routes: []
+  templates:
+    - ION/07_templates/context/README_BRANCH_NODE.template.md
+    - ION/07_templates/context/ION_CONTEXT_CAPSULE.branch.template.yaml
+  schemas:
+    - ION/03_registry/ion_branch_context_node.schema.json
+  agents: []
+  registries:
+    - ION/03_registry/ion_branch_context_policy.yaml
+  tests:
+    - ION/tests/test_kernel_ion_readme_branch_context_protocol.py
+  receipts: []
+  status: []
+  child_index:
+    - ION/ION_CONTEXT_CAPSULE.yaml
+
+receipts:
+  latest: []
+  required_before_state_claim: true
+  missing_receipt_response: emit_blocker_or_candidate_receipt_fragment
+
+continuity_export:
+  include:
+    - README.md
+    - ION_CONTEXT_CAPSULE.yaml
+    - ION/README.md
+    - ION/REPO_AUTHORITY.md
+    - ION/02_architecture/README_BRANCH_CONTEXT_PROTOCOL.md
+    - ION/03_registry/ion_branch_context_node.schema.json
+    - ION/03_registry/ion_branch_context_policy.yaml
+  exclude:
+    - secrets
+    - credentials
+    - .git
+    - unrelated_runtime_cache
+  export_profile: null
+
+tags:
+  - branch:root
+  - node:capsule
+  - state:candidate
+  - authority:no-production
+  - authority:no-live

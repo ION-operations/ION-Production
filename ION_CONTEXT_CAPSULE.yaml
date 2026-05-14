@@ -1,71 +1,125 @@
-schema_id: ion.domain_context_capsule.v1
-capsule_id: ion.folder.root.ion_gpt_candidate_workspace
-folder: .
+schema_id: ion.branch_context_node.v0_1
+branch_id: ion_production_workspace_root
+branch_label: ION Production Workspace Root
+path: .
+maturity_level: B2_capsule_node
 status: active_candidate
-generated_at_utc: 20260513T221500Z
-identity:
-  domain_label: ION GPT Candidate Workspace Root
-  purpose: Sandbox root for Custom GPT carrier evolution packages, context mesh, and
-    transfer artifacts.
-  parent_domain: null
+purpose: Natural entry branch for the ION Production monorepo; orients humans, generic AI, carriers, and workers before they descend into ION domains, Custom GPT packages, browser extension surfaces, dAimon, WisdomNET, ATLAS, AIM-OS lineage, and local infrastructure.
+
 authority:
   accepted_state_claim: false
   production_authority: false
   live_execution_authority: false
+  default_work_authority: read_only_or_sandbox_candidate
   requires_receipt_for_state_claim: true
-read_first:
-- AGENTS.md
-- README.md
-- ION_CONTEXT_CAPSULE.yaml
-- ION_GPT/ION_CONTEXT_CAPSULE.yaml
-active_objectives:
-- id: v4_7_dogfood_context_packages
-  summary: Build and test remountable context packages from the package's own capsule
-    mesh.
-local_agents:
-- role: STEWARD
-  use: root authority and release boundary
-- role: SCRIBE
-  use: receipt and transfer manifest summarization
-- role: NEMESIS
-  use: secret/export boundary review
-domains:
-- custom_gpt_evolution
-- context_mesh
-- continuity_transfer
-automations:
-  safe_tests:
-  - python -m pytest -q ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tests
-  safe_commands:
-  - YAML/JSON parse
-  - context mesh build
-  - continuity export build
-  unsafe_without_approval:
-  - git push
-  - GPT Builder update
-  - Action schema install
-  - production deployment
-canonical_surfaces:
-  gpt: ION_GPT/
-  receipts: Needs_Routed/
-  worker_details: ION_GPT/99_WORKER_DETAILS/
-history:
-  latest_capsule: history/latest.md
-  historical_capsules: []
-receipts: []
-continuity_export:
-  include_in_transfer_package: true
-  required_files:
+  requires_operator_approval_for:
+    - production_write
+    - live_execution
+    - connector_mutation
+    - accepted_state_landing
+    - secrets_access
+
+parent_domain: null
+parent_chain: []
+child_domains:
+  - ion_core
+  - custom_gpt_evolution
+  - browser_extension
+  - context_mesh
+  - continuity_transfer
+
+read_order:
+  - AGENTS.md
   - README.md
   - ION_CONTEXT_CAPSULE.yaml
-  - AGENTS.md
+  - START_HERE_FOR_ANY_AGENT.md
+  - ION_Developement/README.md
+  - ION_Developement/ION/REPO_AUTHORITY.md
+  - ION_Developement/ION/02_architecture/README_BRANCH_CONTEXT_PROTOCOL.md
   - ION_GPT/ION_CONTEXT_CAPSULE.yaml
+
+local_surfaces:
+  protocols:
+    - ION_Developement/ION/02_architecture/README_BRANCH_CONTEXT_PROTOCOL.md
+    - ION_Developement/ION/02_architecture/CONTEXT_GRAPH_SUBSTRATE_PROTOCOL.md
+    - ION_Developement/ION/02_architecture/CONTEXT_NODE_AND_PACKAGE_PROTOCOL.md
+  routes: []
+  templates:
+    - ION_Developement/ION/07_templates/context/README_BRANCH_NODE.template.md
+    - ION_Developement/ION/07_templates/context/ION_CONTEXT_CAPSULE.branch.template.yaml
+  schemas:
+    - ION_Developement/ION/03_registry/ion_branch_context_node.schema.json
+  agents: []
+  registries:
+    - ION_Developement/ION/03_registry/ion_branch_context_policy.yaml
+  tests:
+    - ION_Developement/ION/tests/test_kernel_ion_readme_branch_context_protocol.py
+    - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tests
+  receipts:
+    - Needs_Routed/
+  status:
+    - ION_Developement/ION/05_context/current/codex_solo/STATUS.json
+  child_index:
+    - ION_Developement/ION/ION_CONTEXT_CAPSULE.yaml
+    - ION_GPT/ION_CONTEXT_CAPSULE.yaml
+    - browser_extension/ion_chatops_bridge/README.md
+
+active_objectives:
+  - id: readme_branch_context_protocol_v0_2
+    summary: Make README.md and ION_CONTEXT_CAPSULE.yaml act as branch-local context entry points with authority boundaries and receipts.
+  - id: v4_7_dogfood_context_packages
+    summary: Build and test remountable Custom GPT context packages from the package's own capsule mesh.
+
+local_agents:
+  - role: STEWARD
+    use: root authority, branch routing, and release boundary
+  - role: SCRIBE
+    use: receipt, continuity, and transfer manifest summarization
+  - role: NEMESIS
+    use: secret/export/authority boundary review
+
+receipts:
+  latest: []
+  required_before_state_claim: true
+  missing_receipt_response: emit_blocker_or_candidate_receipt_fragment
+
+continuity_export:
+  include_in_transfer_package: true
+  include:
+    - README.md
+    - ION_CONTEXT_CAPSULE.yaml
+    - AGENTS.md
+    - START_HERE_FOR_ANY_AGENT.md
+    - ION_Developement/ION/README.md
+    - ION_Developement/ION/ION_CONTEXT_CAPSULE.yaml
+    - ION_Developement/ION/REPO_AUTHORITY.md
+    - ION_Developement/ION/02_architecture/README_BRANCH_CONTEXT_PROTOCOL.md
+    - ION_Developement/ION/03_registry/ion_branch_context_node.schema.json
+    - ION_Developement/ION/03_registry/ion_branch_context_policy.yaml
+    - ION_GPT/ION_CONTEXT_CAPSULE.yaml
+  exclude:
+    - secrets
+    - credentials
+    - .git
+    - unrelated_runtime_cache
+    - raw_private_context_unless_explicit
+  export_profile: null
   next_chat_behavior: mount_before_substantive_answer
+
 freshness:
-  source_hashes: {}
-  status: candidate_generated
+  generated_at_utc: 20260514T141840Z
+  status: candidate_reconciled_from_routed_package
+
 boundaries:
   do_not:
-  - export secrets
-  - claim accepted state
-  - override root authority with stale capsules
+    - export secrets
+    - claim accepted state
+    - override root authority with stale capsules
+    - treat README text as a receipt
+
+tags:
+  - branch:root
+  - node:capsule
+  - state:candidate
+  - authority:no-production
+  - authority:no-live

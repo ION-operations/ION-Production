@@ -5,6 +5,7 @@ and architecture decision surfaces.
 
 ## Read First
 
+- `README_BRANCH_CONTEXT_PROTOCOL.md`
 - `ION_MOUNT_CONTRACT.md`
 - `ION_GITHUB_DATA_PLANE_PROTOCOL.md`
 - `ION_GITHUB_WORK_DAEMON_PROTOCOL.md`
@@ -28,3 +29,11 @@ Public architecture work may discuss design, tool surfaces, packet flow, and
 tests. It must not publish secrets, private infrastructure, or production
 credentials.
 
+
+## Branch Context Note
+
+`README_BRANCH_CONTEXT_PROTOCOL.md` is the candidate ION-wide law for making README files and `ION_CONTEXT_CAPSULE.yaml` files the natural branch-native context entrypoints for humans, generic AI, carriers, and agents.
+
+## Receipts / History
+
+Architecture claims remain candidate unless backed by the relevant protocol status, test output, settlement note, or receipt. Missing proof must degrade to blocker or candidate receipt fragment.

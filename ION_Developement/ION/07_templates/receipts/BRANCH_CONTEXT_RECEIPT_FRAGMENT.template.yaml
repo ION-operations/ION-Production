@@ -1,0 +1,24 @@
+ion_receipt:
+  schema_id: ion.chat.receipt_fragment.v0_1
+  status: candidate
+  objective: <branch_context_operation>
+  workflow_object:
+    kind: branch_context_node
+    path_or_id: <branch_path>
+    accepted_state_claim: false
+  evidence:
+    inspected_sources:
+      - README.md
+      - ION_CONTEXT_CAPSULE.yaml
+    tool_calls: []
+    artifacts_created: []
+    checks_run: []
+  did_not_do:
+    - no_production_write
+    - no_live_execution
+    - no_accepted_state_landing
+  missing_proof: []
+  authority:
+    production_authority: false
+    live_execution_authority: false
+    mutation_authority: read_only_or_sandbox_candidate
