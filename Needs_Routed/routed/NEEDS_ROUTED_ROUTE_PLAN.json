@@ -1,7 +1,7 @@
 {
   "accepted_state_claim": false,
   "file_moves_performed": false,
-  "generated_at": "2026-05-14T17:54:19+00:00",
+  "generated_at": "2026-05-14T19:32:18+00:00",
   "live_execution_authority": false,
   "needs_routed_root": "/home/sev/ION - Production/Needs_Routed",
   "next_action": "Select one route_group and create an explicit packet before applying, moving, staging, committing, queueing, or settling any source artifact.",
@@ -297,11 +297,11 @@
         {
           "artifact_kind": "yaml_packet",
           "confidence": 0.88,
-          "item_id": "needs_e183f287733f_runtime_state_and_root_zip_triage_20260514t17230",
+          "item_id": "needs_177fbd9e00e8_runtime_state_and_root_zip_triage_20260514t17230",
           "original_path": "Needs_Routed/runtime_state_and_root_zip_triage_20260514T172301Z.yaml",
           "queue_proposal": {
             "objective": "Review and route this Needs_Routed artifact under ION candidate-state boundaries. Do not apply, stage, commit, push, or mutate active queues without a later explicit packet.",
-            "packet_id": "PCKT-ION-NEEDS-ROUTED-NEEDS_E183F287733F_RUNTIME_STATE_AND_ROOT_ZIP_TRIAGE_20260514T17230",
+            "packet_id": "PCKT-ION-NEEDS-ROUTED-NEEDS_177FBD9E00E8_RUNTIME_STATE_AND_ROOT_ZIP_TRIAGE_20260514T17230",
             "proposal_only": true,
             "queue_mutation_performed": false,
             "source_artifact_path": "Needs_Routed/runtime_state_and_root_zip_triage_20260514T172301Z.yaml",
@@ -349,7 +349,7 @@
       "route_class": "context_package_ingest"
     },
     {
-      "item_count": 24,
+      "item_count": 25,
       "items": [
         {
           "artifact_kind": "bundle_zip",
@@ -407,6 +407,21 @@
             "proposal_only": true,
             "queue_mutation_performed": false,
             "source_artifact_path": "Needs_Routed/ION_CUSTOM_GPT_V4_7_DOGFOOD_CONTEXT_PACKAGE_BUILD_20260513T221500Z.zip",
+            "work_class": "custom_gpt_package_review"
+          },
+          "status": "review_only_not_moved"
+        },
+        {
+          "artifact_kind": "bundle_zip",
+          "confidence": 0.88,
+          "item_id": "needs_115f1425afb2_ion_custom_gpt_v4_8_ui_preview_action_git_candid",
+          "original_path": "Needs_Routed/ION_CUSTOM_GPT_V4_8_UI_PREVIEW_ACTION_GIT_CANDIDATE_20260514T010500Z.zip",
+          "queue_proposal": {
+            "objective": "Review and route this Needs_Routed artifact under ION candidate-state boundaries. Do not apply, stage, commit, push, or mutate active queues without a later explicit packet.",
+            "packet_id": "PCKT-ION-NEEDS-ROUTED-NEEDS_115F1425AFB2_ION_CUSTOM_GPT_V4_8_UI_PREVIEW_ACTION_GIT_CANDID",
+            "proposal_only": true,
+            "queue_mutation_performed": false,
+            "source_artifact_path": "Needs_Routed/ION_CUSTOM_GPT_V4_8_UI_PREVIEW_ACTION_GIT_CANDIDATE_20260514T010500Z.zip",
             "work_class": "custom_gpt_package_review"
           },
           "status": "review_only_not_moved"
@@ -729,7 +744,7 @@
       "route_class": "duplicate_or_superseded"
     },
     {
-      "item_count": 10,
+      "item_count": 11,
       "items": [
         {
           "artifact_kind": "bundle_zip",
@@ -800,6 +815,14 @@
           "confidence": 0.55,
           "item_id": "needs_ed2b651e5602_ion_aimos_wisdomnet_living_encyclopedia_integrat",
           "original_path": "Needs_Routed/ion_aimos_wisdomnet_living_encyclopedia_integration_001_bundle.zip",
+          "queue_proposal": null,
+          "status": "review_only_not_moved"
+        },
+        {
+          "artifact_kind": "json_receipt_or_manifest",
+          "confidence": 0.5,
+          "item_id": "needs_2db6c6a682dc_ion_native_dom_snapshot_20260514t1857344",
+          "original_path": "Needs_Routed/ion_native_dom_snapshot_20260514T1857344.json",
           "queue_proposal": null,
           "status": "review_only_not_moved"
         },
@@ -963,34 +986,34 @@
   "scan_scope": "root",
   "schema_id": "ion.needs_routed_route_plan.v1",
   "source_index_path": "Needs_Routed/indexes/NEEDS_ROUTED_INDEX.json",
-  "source_receipt_path": "Needs_Routed/receipts/needs_routed_intake_20260514T175419Z.json",
+  "source_receipt_path": "Needs_Routed/receipts/needs_routed_intake_20260514T193218Z.json",
   "summary": {
     "artifact_kind_counts": {
-      "bundle_zip": 22,
+      "bundle_zip": 23,
       "directory_bundle": 1,
-      "json_receipt_or_manifest": 1,
+      "json_receipt_or_manifest": 2,
       "markdown_workpacket": 6,
       "patch": 13,
       "unknown_artifact": 7,
       "yaml_packet": 15
     },
-    "item_count": 65,
-    "queue_proposal_count": 52,
+    "item_count": 67,
+    "queue_proposal_count": 53,
     "route_class_counts": {
       "apply_candidate_patch": 8,
       "branch_context_package_review": 5,
       "browser_extension_package_review": 6,
       "context_package_ingest": 2,
-      "custom_gpt_package_review": 24,
+      "custom_gpt_package_review": 25,
       "duplicate_or_superseded": 1,
-      "owner_review_required": 10,
+      "owner_review_required": 11,
       "queue_codex_workpacket": 4,
       "queue_hygiene_patch_review": 3,
       "runtime_evidence_archive": 1,
       "source_lane_archive": 1
     },
     "status_counts": {
-      "review_only_not_moved": 65
+      "review_only_not_moved": 67
     }
   }
 }

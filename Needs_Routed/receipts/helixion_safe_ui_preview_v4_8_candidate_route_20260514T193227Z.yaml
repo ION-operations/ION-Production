@@ -1,0 +1,66 @@
+schema_id: ion.needs_routed.specialist_route_receipt.v1
+created_at_utc: 20260514T193227Z
+posture: sandbox-candidate
+accepted_state_claim: false
+production_authority: false
+live_execution_authority: false
+secrets_authority: false
+carrier: CODEX-001
+objective: route_v4_8_ui_preview_action_git_candidate_without_applying
+source_bundle:
+  path: Needs_Routed/ION_CUSTOM_GPT_V4_8_UI_PREVIEW_ACTION_GIT_CANDIDATE_20260514T010500Z.zip
+  sha256: 115f1425afb23d14456515c33e7402def8778dcca8d0272682579c13227d514e
+  posture: sandbox-candidate
+  manifest_claims:
+    tests: "61 passed"
+    patch_apply: pass_against_intended_v4_7_base
+    production_authority: false
+    live_execution_authority: false
+    accepted_state_claim: false
+route:
+  route_class: custom_gpt_package_review
+  workpacket: Needs_Routed/workpackets/PCKT-ION-HELIXION-SAFE-UI-PREVIEW-GIT-AGENT-V48-CANDIDATE-RECONCILE-20260514.md
+  queue_mutation_performed: false
+  patch_applied: false
+  git_stage_performed: false
+  git_commit_performed: false
+preview_lane_split:
+  static_chatgpt_mock_preview:
+    purpose: small_static_html_css_js_mockups_only
+    dependency_install_allowed: false
+    real_project_build_claim_allowed: false
+  helixion_ephemeral_app_preview:
+    purpose: real_app_preview_after_reconciliation_and_approval
+    requires:
+      - isolated_project_checkout_or_worktree
+      - bounded_dependency_install_policy
+      - build_test_lint_receipts
+      - bounded_preview_server
+      - playwright_or_browser_capture_receipts
+      - rollback_snapshot_manifest
+      - git_agent_branch_containment
+      - explicit_operator_approval_before_promotion
+hard_exclusions:
+  - browser_extension_lane_left_to_other_worker
+  - runtime_current_json_not_committed_or_reset
+  - no_service_restart
+  - no_live_mcp_queue_write
+  - no_gpt_builder_update
+validation:
+  - command: sha256sum Needs_Routed/ION_CUSTOM_GPT_V4_8_UI_PREVIEW_ACTION_GIT_CANDIDATE_20260514T010500Z.zip
+    result: matched_expected_hash
+  - command: unzip -l bundle
+    result: manifest_and_final_candidate_tree_present
+  - command: Needs_Routed intake write
+    result: v4_8_bundle_indexed_as_custom_gpt_package_review
+non_claims:
+  - no accepted ION state claimed
+  - no production authority claimed
+  - no live execution authority claimed
+  - no patch applied
+  - no git push
+  - no deploy
+  - no raw secret or private context promoted
+next:
+  - reconcile_v4_8_from_final_candidate_tree_under_workpacket_scope
+  - after_v4_8_reconciliation_create_separate_real_helixion_ephemeral_preview_adapter_packet
