@@ -104,3 +104,19 @@ ION_GPT/90_HISTORICAL_ZIPS/previous_upload_set_*/
 # Generated Custom GPT worker-detail mirrors; canonical sources live in
 # ION_GPT/01_GPT_BUILDER_INPUTS, ION_GPT/03_ACTIONS, and source_current.
 ION_GPT/99_WORKER_DETAILS/gpt_builder_inputs_source/
+
+# Generated local runtime/evidence lanes. Preserve locally, but do not stage by
+# default; force-add individual receipts only through an explicit proof packet.
+ION_Developement/ION/05_context/current/chatgpt_connector/artifact_receipts/
+ION_Developement/ION/05_context/current/chatgpt_connector/artifact_uploads/
+ION_Developement/ION/05_context/current/chatgpt_connector/artifacts/
+ION_Developement/ION/05_context/current/chatgpt_connector/patch_receipts/
+ION_Developement/ION/05_context/current/chatgpt_connector/runtime/*idempotency_ledger.json
+ION_Developement/ION/05_context/current/codex_solo/history/
+ION_Developement/ION/05_context/current/helixion_joc_rebuild/*RECEIPT*.json
+ION_Developement/ION/05_context/current/kernel_fanout_scheduler/
+ION_Developement/ION/05_context/current/project_workbench/browser_captures/
+ION_Developement/ION/05_context/current/project_workbench/*architecture_slice*/
+ION_Developement/ION/05_context/current/supabase_event_mirror/receipts/
+ION_Developement/ION/05_context/current/worker_cockpit/retest/
+ION_Developement/ION/05_context/current/worker_cockpit/settlement/
