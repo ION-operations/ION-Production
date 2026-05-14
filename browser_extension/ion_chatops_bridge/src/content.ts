@@ -4764,9 +4764,17 @@ function ensureNativeLeftStyle(): void {
     }
     #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-head {
       display: grid;
-      grid-template-columns: 9px minmax(0, 1fr);
+      grid-template-columns: 26px 9px minmax(0, 1fr);
       align-items: center;
       gap: 7px;
+    }
+    #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-minimize {
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      border-radius: 8px;
+      font: 900 15px/22px ui-sans-serif, system-ui, sans-serif;
+      justify-self: start;
     }
     #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-dot {
       width: 9px;
@@ -4996,6 +5004,62 @@ function ensureChatGptLeftDrawerOpen(): void {
   scheduleNativeLeftSync();
 }
 
+function findChatGptSidebarMinimizeButton(): HTMLElement | null {
+  const drawer = findChatGptLeftDrawerHost();
+  const drawerRect = drawer?.getBoundingClientRect() ?? null;
+  if (!drawerRect) return null;
+  const selectors = [
+    "button[aria-label*='close' i]",
+    "button[aria-label*='collapse' i]",
+    "button[aria-label*='hide' i]",
+    "button[aria-label*='minimize' i]",
+    "button[aria-label*='sidebar' i]",
+    "button[aria-label*='side bar' i]",
+    "[role='button'][aria-label*='close' i]",
+    "[role='button'][aria-label*='collapse' i]",
+    "[role='button'][aria-label*='hide' i]",
+    "[role='button'][aria-label*='minimize' i]",
+    "[role='button'][aria-label*='sidebar' i]",
+    "[role='button'][aria-label*='side bar' i]",
+  ];
+  const candidates: Array<{ button: HTMLElement; rect: DOMRect; score: number }> = [];
+  document.querySelectorAll<HTMLElement>(selectors.join(",")).forEach((button) => {
+    if (isBridgeElement(button)) return;
+    const style = window.getComputedStyle(button);
+    if (style.display === "none" || style.visibility === "hidden" || Number(style.opacity) === 0) return;
+    const rect = button.getBoundingClientRect();
+    if (rect.width < 20 || rect.height < 20 || rect.width > 84 || rect.height > 84) return;
+    if (rect.bottom <= drawerRect.top || rect.top >= drawerRect.top + 120) return;
+    if (rect.right < drawerRect.left || rect.left > drawerRect.left + 140) return;
+    const label = [
+      button.getAttribute("aria-label") ?? "",
+      button.getAttribute("title") ?? "",
+      button.textContent ?? "",
+    ].join(" ").toLowerCase();
+    const sidebarLabel = /sidebar|side\s*bar|drawer/.test(label);
+    const minimizeLabel = /close|collapse|hide|minimi[sz]e/.test(label);
+    if (!sidebarLabel && !minimizeLabel) return;
+    if (/new chat|search|library|account|profile|settings|help/.test(label)) return;
+    let score = rect.left + rect.top / 1000;
+    if (sidebarLabel && minimizeLabel) score -= 160;
+    else if (minimizeLabel) score -= 80;
+    else if (sidebarLabel) score -= 32;
+    if (button.getAttribute("aria-expanded") === "true") score -= 16;
+    candidates.push({ button, rect, score });
+  });
+  return candidates.sort((a, b) => a.score - b.score || a.rect.left - b.rect.left || a.rect.top - b.rect.top)[0]?.button ?? null;
+}
+
+function minimizeChatGptLeftDrawer(): void {
+  if (!findChatGptLeftDrawerHost()) return;
+  const minimizeButton = findChatGptSidebarMinimizeButton();
+  const fallbackToggle = findChatGptSidebarToggleButton();
+  const target = minimizeButton ?? fallbackToggle;
+  if (!target) return;
+  target.click();
+  scheduleNativeLeftSync();
+}
+
 function nativeLeftButton(action: string, label: string, title: string, primary = false, disabled = false): HTMLButtonElement {
   const button = document.createElement("button");
   button.type = "button";
@@ -5076,7 +5140,9 @@ function nativeLeftRailButton(action: string, icon: NativeLeftRailIcon, title: s
 
 function handleNativeLeftAction(action: string, projectPath = ""): void {
   if (!action) return;
-  if (action === "open-ion") {
+  if (action === "minimize-drawer") {
+    minimizeChatGptLeftDrawer();
+  } else if (action === "open-ion") {
     ensureChatGptLeftDrawerOpen();
   } else if (action === "open-queue" || action === "tab-queue") {
     nativeLeftMode = "queue";
@@ -5335,13 +5401,15 @@ function renderNativeDrawerPanel(panel: HTMLElement): void {
   panel.innerHTML = "";
   const head = document.createElement("div");
   head.className = "ion-native-left-head";
+  const minimize = nativeLeftButton("minimize-drawer", "‹", "Minimize ChatGPT drawer");
+  minimize.classList.add("ion-native-left-minimize");
   const dot = document.createElement("span");
   dot.className = "ion-native-left-dot";
   dot.dataset.tone = nativeLeftTone();
   const title = document.createElement("div");
   title.className = "ion-native-left-title";
   title.textContent = nativeDrawerTitle();
-  head.append(dot, title);
+  head.append(minimize, dot, title);
   const status = document.createElement("div");
   status.className = "ion-native-left-status";
   status.textContent = `${queueCount} queue / ${projectPackages.length} project${projectPackages.length === 1 ? "" : "s"} / ${contextWorkflowSelectedPaths().length} selected`;
