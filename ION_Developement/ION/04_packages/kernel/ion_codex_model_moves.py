@@ -183,9 +183,12 @@ def _selected_model(work_class: str, stage_id: str | None, risk_level: str, cont
         reasons.append("high_risk_code_review_escalates_to_frontier")
         return "gpt-5.5", reasons
     if work_class in {"code_patch", "code_review", "conversation_repair", "long_context_digest"}:
+        if posture == DEFAULT_ROUTING_POSTURE and risk_level == "low" and context_need not in {"large", "huge", "long_horizon"}:
+            reasons.append("low_risk_routine_codex_work_uses_separate_spark_pool")
+            return "gpt-5.3-codex-spark", reasons
         reasons.append("primary_codex_engineering_lane_is_sufficient")
         return "gpt-5.3-codex", reasons
-    if posture == DEFAULT_ROUTING_POSTURE and work_class in {"cheap_classification", "front_stage_claim_classification"}:
+    if posture == DEFAULT_ROUTING_POSTURE and work_class in {"cheap_classification", "front_stage_claim_classification", "design_report", "routine_documentation", "status_summary"}:
         reasons.append("low_risk_fast_work_conserves_frontier_usage")
         return "gpt-5.3-codex-spark", reasons
     if stage_id == "relay_ingress":

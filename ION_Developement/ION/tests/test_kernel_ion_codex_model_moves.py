@@ -44,12 +44,13 @@ def test_model_move_escalates_authority_and_architecture_to_gpt55():
     assert architecture["selected_model"] == "gpt-5.5"
 
 
-def test_normal_codex_implementation_uses_primary_codex_lane():
+def test_low_risk_codex_implementation_uses_spark_pool():
     move = build_codex_model_move_plan(
         lane_id="codex_general",
         objective="Implement a focused parser fix.",
     )
 
     assert infer_codex_work_class(lane_id="codex_general", objective="Implement a focused parser fix.") == "code_patch"
-    assert move["selected_model"] == "gpt-5.3-codex"
+    assert move["selected_model"] == "gpt-5.3-codex-spark"
     assert move["selected_reasoning_effort"] == "medium"
+    assert "low_risk_routine_codex_work_uses_separate_spark_pool" in move["selection_reason"]
