@@ -1,7 +1,11 @@
 import json
 from pathlib import Path
 
-from kernel.ion_cockpit_view_model import build_cockpit_view_model, write_cockpit_view_model
+from kernel.ion_cockpit_view_model import (
+    build_cockpit_view_model,
+    build_worker_cockpit_view_model,
+    write_cockpit_view_model,
+)
 
 
 def write_json(root: Path, rel: str, payload: dict):
@@ -49,6 +53,139 @@ def seed_runtime(root: Path):
     })
 
 
+def seed_worker_cockpit_runtime(root: Path) -> None:
+    current = "ION/05_context/current"
+    run_rel = "ION/05_context/current/chatgpt_connector/codex_queue_runs/run_worker_ui/run.json"
+    run_dir = root / "ION/05_context/current/chatgpt_connector/codex_queue_runs/run_worker_ui"
+    run_dir.mkdir(parents=True, exist_ok=True)
+    write_json(
+        root,
+        run_rel,
+        {
+            "schema_id": "ion.codex_queue_runner_run.v1",
+            "run_id": "run_worker_ui",
+            "request_id": "req_worker_ui",
+            "request_path": "ION/05_context/current/chatgpt_connector/codex_work_requests/req_worker_ui.json",
+            "run_packet_path": run_rel,
+            "run_dir": "ION/05_context/current/chatgpt_connector/codex_queue_runs/run_worker_ui",
+            "prompt_path": "ION/05_context/current/chatgpt_connector/codex_queue_runs/run_worker_ui/prompt.md",
+            "context_receipt_path": "ION/05_context/current/chatgpt_connector/codex_queue_runs/run_worker_ui/context_receipt.json",
+            "worker_context_awareness_receipt_path": "ION/05_context/current/chatgpt_connector/codex_queue_runs/run_worker_ui/worker_context_awareness_receipt.json",
+            "stdout_path": "ION/05_context/current/chatgpt_connector/codex_queue_runs/run_worker_ui/stdout.log",
+            "stderr_path": "ION/05_context/current/chatgpt_connector/codex_queue_runs/run_worker_ui/stderr.log",
+            "last_message_path": "ION/05_context/current/chatgpt_connector/codex_queue_runs/run_worker_ui/latest_return.md",
+            "created_at": "2026-05-14T03:00:00+00:00",
+            "started_at": "2026-05-14T03:00:01+00:00",
+            "completed_at": "2026-05-14T03:00:25+00:00",
+            "status": "RETURN_TEMPLATE_INVALID",
+            "submit_result": {
+                "context_proof_accepted": True,
+                "template_action_proof_accepted": True,
+                "return_template_valid": False,
+                "workload_diff_required": True,
+                "workload_diff_present": False,
+                "workload_diff_accepted": False,
+                "packet_path": "ION/05_context/current/chatgpt_connector/task_returns/return_worker_ui.json",
+            },
+            "codex_model_move_summary": "gpt-5.3-codex / high for code_patch (conserve_main_bank)",
+            "codex_model_move": {
+                "selected_model": "gpt-5.3-codex",
+                "selected_reasoning_effort": "high",
+                "usage_pool_id": "codex_primary_observed",
+                "model_move_id": "move_worker_ui",
+                "selection_reason": ["routing_posture:conserve_main_bank"],
+            },
+            "worker_lifecycle_events": [
+                {"event": "worker_boot", "at": "2026-05-14T03:00:01+00:00"},
+                {"event": "worker_terminal", "at": "2026-05-14T03:00:25+00:00", "terminal_state": "template_invalid"},
+            ],
+        },
+    )
+    (run_dir / "prompt.md").write_text("# prompt\n", encoding="utf-8")
+    (run_dir / "context_receipt.json").write_text("{\"schema_id\":\"ion.context_load_receipt.v1\"}\n", encoding="utf-8")
+    (run_dir / "stdout.log").write_text("stdout tail\n", encoding="utf-8")
+    (run_dir / "stderr.log").write_text("stderr tail\n", encoding="utf-8")
+    (run_dir / "worker_stdout.log").write_text("worker stdout tail\n", encoding="utf-8")
+    (run_dir / "worker_stderr.log").write_text("worker stderr tail\n", encoding="utf-8")
+    (run_dir / "latest_return.md").write_text("### RESULT\nworker return\n", encoding="utf-8")
+    write_json(
+        root,
+        "ION/05_context/current/chatgpt_connector/codex_queue_runs/run_worker_ui/worker_context_awareness_receipt.json",
+        {
+            "schema_id": "ion.worker_context_awareness_receipt.v1",
+            "status": "WORKER_CONTEXT_ACKNOWLEDGED",
+            "worker_authored": False,
+            "required_context_reads": [
+                {"path": "ION/04_packages/kernel/ion_cockpit_view_model.py", "required": True, "status": "READY"},
+                {"path": "ION/04_packages/kernel/ion_chatgpt_browser_mcp_http_preview.py", "required": True, "status": "MISSING"},
+            ],
+            "missing_required_context_paths": ["ION/04_packages/kernel/ion_chatgpt_browser_mcp_http_preview.py"],
+        },
+    )
+    write_json(
+        root,
+        f"{current}/chatgpt_connector/runtime/codex_queue_runner_state.json",
+        {
+            "schema_id": "ion.codex_queue_runner_state.v1",
+            "active_run": None,
+            "latest_run": run_rel,
+            "updated_at": "2026-05-14T03:00:25+00:00",
+        },
+    )
+    write_json(
+        root,
+        "ION/05_context/current/kernel_fanout_scheduler/carrier_dryrun/fanout_carrier_dryrun_result_20260514.json",
+        {
+            "schema_id": "ion.kernel_fanout_carrier_dryrun_result.v1",
+            "queue_integrity": {"queue_mutation_detected": False},
+            "scenarios": [
+                {
+                    "scenario": "forced_timeout",
+                    "result_path": "ION/05_context/current/kernel_fanout_scheduler/carrier_dryrun/forced_timeout/result.json",
+                    "parent_receipt_path": "ION/05_context/current/kernel_fanout_scheduler/carrier_dryrun/forced_timeout/parent_receipt.json",
+                    "compact_summary": {
+                        "scenario": "forced_timeout",
+                        "settlement_verdict": "SMOKE_BLOCKED",
+                        "blocked_children": ["timeout_child_1"],
+                        "timeout_evidence": [{"code": "child_timeout", "severity": "blocked"}],
+                    },
+                },
+            ],
+        },
+    )
+    write_json(
+        root,
+        "ION/05_context/current/kernel_fanout_scheduler/carrier_dryrun/forced_timeout/parent_receipt.json",
+        {
+            "schema_id": "ion.kernel_fanout_carrier_dryrun_parent_receipt.v1",
+            "child_receipt_paths": [
+                {
+                    "child_id": "timeout_child_1",
+                    "lease_receipt_path": "child_receipts/timeout_child_1_lease.json",
+                    "heartbeat_receipt_path": "child_receipts/timeout_child_1_heartbeat.json",
+                    "worker_context_awareness_receipt_path": "child_receipts/timeout_child_1_signin.json",
+                }
+            ],
+        },
+    )
+    write_json(
+        root,
+        "ION/05_context/current/kernel_fanout_scheduler/settlement/fanout_dryrun_readonly_mcp_exposure_settlement_20260514.json",
+        {"status": "DEFERRED_ENVIRONMENT_BLOCKED"},
+    )
+    write_json(
+        root,
+        "ION/05_context/current/supabase_event_mirror/receipts/20260514_event.json",
+        {
+            "remote_result": {
+                "event_id": "evt_worker_ui",
+                "event_type": "worker_cockpit_joc_ui_upgrade_requirement_added",
+                "packet_id": "PCKT-ION-WORKER-COCKPIT-JOC-LIVE-UI-UPGRADE-20260514",
+            }
+        },
+    )
+
+
 def test_build_cockpit_view_model_summarizes_v88_runtime(tmp_path):
     seed_runtime(tmp_path)
     model = build_cockpit_view_model(tmp_path)
@@ -62,7 +199,7 @@ def test_build_cockpit_view_model_summarizes_v88_runtime(tmp_path):
     assert model["top_bar"]["return_counts"]["accepted"] == 1
     assert model["top_bar"]["operator_queue_pending"] == 1
     assert model["top_bar"]["sandbox_return_count"] == 0
-    assert model["top_bar"]["local_service_count"] == 6
+    assert model["top_bar"]["local_service_count"] == 7
     assert model["local_services"]["schema_id"] == "ion.local_service_status.v1"
     assert model["local_services"]["install_authority"] is False
     assert model["service_console"]["schema_id"] == "ion.cockpit_service_console.v1"
@@ -191,3 +328,28 @@ def test_cockpit_projects_chatgpt_sandbox_returns(tmp_path):
     assert model["top_bar"]["sandbox_return_count"] == 1
     assert model["chatgpt_sandbox_returns"]["return_count"] == 1
     assert model["chatgpt_sandbox_returns"]["direct_apply_authority"] is False
+
+
+def test_worker_cockpit_view_model_projects_active_latest_proof_and_settlement(tmp_path):
+    seed_runtime(tmp_path)
+    seed_worker_cockpit_runtime(tmp_path)
+
+    model = build_worker_cockpit_view_model(tmp_path)
+
+    assert model["schema_id"] == "ion.worker_cockpit_view_model.v1"
+    assert model["read_only"]["mutation_controls_enabled"] is False
+    assert model["active_worker"]["status"] == "template-invalid"
+    assert model["latest_worker_runs"][0]["status"] == "RETURN_TEMPLATE_INVALID"
+    assert model["latest_worker_runs"][0]["selected_model"] == "gpt-5.3-codex"
+    assert model["machine_sign_in"]["worker_authored"] is False
+    assert model["machine_sign_in"]["required_context_reads_total"] == 2
+    assert model["machine_sign_in"]["required_context_reads_missing"] == 1
+    assert model["proof_gate"]["return_template_valid"] is False
+    assert model["proof_gate"]["workload_diff_required"] is True
+    assert model["proof_gate"]["workload_diff_accepted"] is False
+    assert any(row["name"] == "stdout" and row["included"] is True for row in model["logs"])
+    assert model["fanout"]["status"]["schema_id"] == "ion.kernel_fanout_carrier_dryrun_status.v1"
+    assert model["fanout"]["status"]["timeout_fail_closed_summary"]["fail_closed"] is True
+    assert model["fanout"]["parent_child_rows"][0]["child_id"] == "timeout_child_1"
+    assert model["settlement"]["blockers"][0]["status"] == "DEFERRED_ENVIRONMENT_BLOCKED"
+    assert model["event_links"]["supabase_receipts"][0]["event_type"] == "worker_cockpit_joc_ui_upgrade_requirement_added"

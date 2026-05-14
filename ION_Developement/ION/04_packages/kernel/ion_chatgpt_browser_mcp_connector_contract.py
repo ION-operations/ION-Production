@@ -39,6 +39,16 @@ from .ion_codex_queue_runner import (
 from .ion_kernel_fanout_carrier_dryrun import build_kernel_fanout_carrier_dryrun_status
 from .ion_cockpit_view_model import build_cockpit_view_model
 from .ion_context_proof_gate import evaluate_context_proof_return
+from .ion_project_workbench import (
+    build_project_workbench_timeline,
+    build_project_workspace_status,
+    project_action_run,
+    project_browser_capture,
+    project_file_read,
+    project_patch_apply,
+    project_patch_preview,
+    project_patch_revert,
+)
 from .ion_receipt_hydration_mapper import build_receipt_hydration_view_model
 from .ion_status import build_ion_status
 from .ion_template_action_gate import evaluate_template_action_proof
@@ -190,6 +200,12 @@ STATUS_READ_TOOLS = {
     "ion_codex_capsule_chat_status",
     "ion_codex_capsule_message_poll",
     "ion_bounded_patch_preview",
+    "ion_project_workspace_status",
+    "ion_project_preview_status",
+    "ion_project_git_status",
+    "ion_project_workbench_timeline",
+    "ion_project_file_read",
+    "ion_project_patch_preview",
     "ion_kernel_fanout_carrier_dryrun_status",
 }
 
@@ -214,6 +230,10 @@ BOUNDED_QUEUE_RECEIPT_TOOLS = {
     "ion_codex_capsule_message_send",
     "ion_codex_capsule_sync_to_queue",
     "ion_bounded_patch_apply",
+    "ion_project_patch_apply",
+    "ion_project_patch_revert",
+    "ion_project_action_run",
+    "ion_project_browser_capture",
 }
 
 FORBIDDEN_CAPABILITIES = {
@@ -2612,6 +2632,29 @@ def call_chatgpt_connector_tool(
         return _bounded_patch_preview(shell_root, args)
     if tool_name == "ion_bounded_patch_apply":
         return _bounded_patch_apply(shell_root, args)
+    if tool_name in {"ion_project_workspace_status", "ion_project_preview_status", "ion_project_git_status"}:
+        return _ok(
+            tool_name,
+            build_project_workspace_status(
+                shell_root,
+                project_id=str(args.get("project_id") or "cosmos"),
+                probe_preview=tool_name == "ion_project_preview_status" or bool(args.get("probe_preview")),
+            ),
+        )
+    if tool_name == "ion_project_workbench_timeline":
+        return _ok(
+            tool_name,
+            build_project_workbench_timeline(
+                shell_root,
+                project_id=str(args.get("project_id") or "cosmos"),
+                probe_preview=bool(args.get("probe_preview")),
+                max_items=int(args.get("max_items") or 6),
+            ),
+        )
+    if tool_name == "ion_project_file_read":
+        return project_file_read(shell_root, args)
+    if tool_name == "ion_project_patch_preview":
+        return project_patch_preview(shell_root, args)
     if tool_name == "ion_kernel_fanout_carrier_dryrun_status":
         result_path = args.get("result_path")
         accepted_return_path = args.get("accepted_return_path")
@@ -2624,6 +2667,14 @@ def call_chatgpt_connector_tool(
             tool_name,
             build_kernel_fanout_carrier_dryrun_status(shell_root, **status_kwargs),
         )
+    if tool_name == "ion_project_patch_apply":
+        return project_patch_apply(shell_root, args)
+    if tool_name == "ion_project_patch_revert":
+        return project_patch_revert(shell_root, args)
+    if tool_name == "ion_project_action_run":
+        return project_action_run(shell_root, args)
+    if tool_name == "ion_project_browser_capture":
+        return project_browser_capture(shell_root, args)
     if tool_name == "ion_artifact_upload_init":
         return _artifact_upload_init(shell_root, args)
     if tool_name == "ion_artifact_upload_chunk":

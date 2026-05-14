@@ -9,8 +9,8 @@ chat memory.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
-from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable
@@ -19,6 +19,7 @@ from .ion_agent_invocation_broker import build_agent_broker_status
 from .ion_chatgpt_sandbox_return_intake import build_sandbox_return_queue_projection
 from .ion_codex_queue_runner import build_codex_queue_runner_status
 from .ion_cockpit_service_manager import build_service_console_model
+from .ion_kernel_fanout_carrier_dryrun import build_kernel_fanout_carrier_dryrun_status
 from .ion_local_service_status import build_local_service_status
 from .ion_workspace_paths import resolve_ion_path
 
@@ -58,6 +59,8 @@ CODEX_CONTEXT_PACKAGES = CURRENT / "codex_solo/CONTEXT_PACKAGES.json"
 CUSTOM_GPT_CAPSULE_SYSTEM_DIR = CURRENT / "custom_gpt_capsule_system"
 CUSTOM_GPT_FACTORY_DIR = CURRENT / "custom_gpt_factory"
 ARTIFACT_PACKAGES_DIR = Path("ION/06_artifacts/packages")
+WORKER_SETTLEMENT_DIR = CURRENT / "kernel_fanout_scheduler/settlement"
+SUPABASE_EVENT_RECEIPTS_DIR = CURRENT / "supabase_event_mirror/receipts"
 
 OUTPUT = CURRENT / "ACTIVE_COCKPIT_VIEW_MODEL.json"
 
@@ -342,6 +345,307 @@ def _latest_paths(root: Path, rel: str, *, limit: int = 8, suffixes: set[str] | 
         }
         for path in files[:limit]
     ]
+
+
+def _sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _file_fact(root: Path, rel_path: str | None) -> dict[str, Any]:
+    row = {
+        "path": rel_path,
+        "exists": False,
+        "bytes": None,
+        "modified_at": None,
+        "sha256": None,
+    }
+    if not rel_path:
+        return row
+    candidate = root / rel_path
+    if not candidate.exists() or not candidate.is_file():
+        return row
+    stat = candidate.stat()
+    row["exists"] = True
+    row["bytes"] = int(stat.st_size)
+    row["modified_at"] = datetime.fromtimestamp(stat.st_mtime, timezone.utc).replace(microsecond=0).isoformat()
+    row["sha256"] = _sha256_file(candidate)
+    return row
+
+
+def _tail_preview(root: Path, rel_path: str | None, *, max_bytes: int = 640) -> dict[str, Any]:
+    base = {
+        "path": rel_path,
+        "included": False,
+        "shown_bytes": 0,
+        "total_bytes": 0,
+        "truncated": False,
+        "text": "",
+    }
+    if not rel_path:
+        return {**base, "finding": "path_missing"}
+    target = root / rel_path
+    if not target.exists() or not target.is_file():
+        return {**base, "finding": "file_missing"}
+    raw = target.read_bytes()
+    bounded = max(64, min(max_bytes, 4096))
+    tail = raw[-bounded:]
+    return {
+        "path": rel_path,
+        "included": True,
+        "shown_bytes": len(tail),
+        "total_bytes": len(raw),
+        "truncated": len(raw) > len(tail),
+        "text": tail.decode("utf-8", errors="replace"),
+    }
+
+
+def _status_badge(status: str) -> str:
+    normalized = status.lower()
+    if "accepted" in normalized or normalized in {"active", "ready", "smoke_ready"}:
+        return "ok"
+    if "invalid" in normalized or "blocked" in normalized or "failed" in normalized or "deferred" in normalized:
+        return "bad"
+    if "running" in normalized or "started" in normalized or "prepared" in normalized:
+        return "active"
+    return "neutral"
+
+
+def _worker_run_summary(root: Path, row: Mapping[str, Any]) -> dict[str, Any]:
+    run_path = str(row.get("path") or "").strip()
+    payload = read_json(root / run_path) if run_path else {}
+    submit = payload.get("submit_result") if isinstance(payload.get("submit_result"), dict) else {}
+    model_move = payload.get("codex_model_move") if isinstance(payload.get("codex_model_move"), dict) else {}
+    lifecycle = listify(payload.get("worker_lifecycle_events"))
+    latest_event = lifecycle[-1] if lifecycle and isinstance(lifecycle[-1], dict) else {}
+    terminal_state = compact(latest_event.get("terminal_state"), "not-terminal")
+    return {
+        "run_id": payload.get("run_id") or row.get("run_id"),
+        "request_id": payload.get("request_id") or row.get("request_id"),
+        "request_path": payload.get("request_path"),
+        "run_packet_path": run_path or payload.get("run_packet_path"),
+        "status": payload.get("status") or row.get("status"),
+        "status_badge": _status_badge(compact(payload.get("status") or row.get("status"), "unknown")),
+        "terminal_state": terminal_state,
+        "created_at": payload.get("created_at"),
+        "started_at": payload.get("started_at"),
+        "completed_at": payload.get("completed_at"),
+        "mtime": row.get("mtime"),
+        "selected_model": model_move.get("selected_model"),
+        "selected_reasoning_effort": model_move.get("selected_reasoning_effort"),
+        "usage_pool_id": model_move.get("usage_pool_id"),
+        "model_move_id": model_move.get("model_move_id"),
+        "routing_reasons": listify(model_move.get("selection_reason")),
+        "context_proof_accepted": submit.get("context_proof_accepted"),
+        "template_action_proof_accepted": submit.get("template_action_proof_accepted"),
+        "return_template_valid": submit.get("return_template_valid"),
+        "workload_diff_required": submit.get("workload_diff_required"),
+        "workload_diff_present": submit.get("workload_diff_present"),
+        "workload_diff_accepted": submit.get("workload_diff_accepted"),
+        "task_return_packet_path": submit.get("packet_path"),
+    }
+
+
+def _fanout_parent_child_rows(root: Path, result: Mapping[str, Any]) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for scenario in [item for item in listify(result.get("scenarios")) if isinstance(item, dict)]:
+        parent_path = str(scenario.get("parent_receipt_path") or "").strip()
+        if not parent_path:
+            continue
+        parent = read_json(root / parent_path)
+        for child in [item for item in listify(parent.get("child_receipt_paths")) if isinstance(item, dict)]:
+            rows.append(
+                {
+                    "scenario": scenario.get("scenario"),
+                    "child_id": child.get("child_id"),
+                    "lease_receipt_path": child.get("lease_receipt_path"),
+                    "heartbeat_receipt_path": child.get("heartbeat_receipt_path"),
+                    "worker_context_awareness_receipt_path": child.get("worker_context_awareness_receipt_path"),
+                    "parent_receipt_path": parent_path,
+                }
+            )
+    return rows[:24]
+
+
+def build_worker_cockpit_view_model(ion_root: str | Path = ".") -> dict[str, Any]:
+    root = Path(ion_root).resolve()
+    runner = build_codex_queue_runner_status(root, reconcile=False)
+    telemetry = runner.get("live_worker_telemetry") if isinstance(runner.get("live_worker_telemetry"), dict) else {}
+    active_run_packet = str(telemetry.get("run_packet_path") or "").strip()
+    active_run = read_json(root / active_run_packet) if active_run_packet else {}
+    submit = active_run.get("submit_result") if isinstance(active_run.get("submit_result"), dict) else {}
+    model_move = active_run.get("codex_model_move") if isinstance(active_run.get("codex_model_move"), dict) else {}
+    awareness_path = str(telemetry.get("worker_context_awareness_receipt_path") or "").strip()
+    awareness = read_json(root / awareness_path) if awareness_path else {}
+    required_reads = [item for item in listify(awareness.get("required_context_reads")) if isinstance(item, dict)]
+    ready_reads = [item for item in required_reads if str(item.get("status") or "") == "READY"]
+    missing_reads = [item for item in required_reads if str(item.get("status") or "") != "READY"]
+    active_status = compact(telemetry.get("phase_status") or telemetry.get("run_status"), "idle")
+    pid = telemetry.get("active_worker_pid") or active_run.get("pid")
+    active_running = bool(telemetry.get("active_process_running"))
+    stale = bool(telemetry.get("stale_active_reference_detected"))
+    non_terminal = active_status not in {"terminal-accepted", "terminal-blocked", "terminal-failed", "template-invalid"}
+    zombie = bool(pid and not active_running and non_terminal)
+
+    receipt_chain = [
+        {"name": "prompt_md", **_file_fact(root, str(active_run.get("prompt_path") or "") or None)},
+        {"name": "run_json", **_file_fact(root, active_run_packet or None)},
+        {"name": "context_receipt_json", **_file_fact(root, str(active_run.get("context_receipt_path") or "") or None)},
+        {"name": "worker_context_awareness_receipt_json", **_file_fact(root, awareness_path or None)},
+        {"name": "stdout_log", **_file_fact(root, str(active_run.get("stdout_path") or "") or None)},
+        {"name": "stderr_log", **_file_fact(root, str(active_run.get("stderr_path") or "") or None)},
+        {
+            "name": "worker_stdout_log",
+            **_file_fact(root, (f"{active_run.get('run_dir')}/worker_stdout.log" if active_run.get("run_dir") else None)),
+        },
+        {
+            "name": "worker_stderr_log",
+            **_file_fact(root, (f"{active_run.get('run_dir')}/worker_stderr.log" if active_run.get("run_dir") else None)),
+        },
+        {"name": "latest_return_md", **_file_fact(root, str(active_run.get("last_message_path") or "") or None)},
+        {"name": "task_return_packet_json", **_file_fact(root, str(submit.get("packet_path") or "") or None)},
+    ]
+
+    logs = [
+        {
+            "name": "stdout",
+            **_tail_preview(root, str(active_run.get("stdout_path") or "") or None),
+        },
+        {
+            "name": "stderr",
+            **_tail_preview(root, str(active_run.get("stderr_path") or "") or None),
+        },
+        {
+            "name": "worker_stdout",
+            **_tail_preview(root, f"{active_run.get('run_dir')}/worker_stdout.log" if active_run.get("run_dir") else None),
+        },
+        {
+            "name": "worker_stderr",
+            **_tail_preview(root, f"{active_run.get('run_dir')}/worker_stderr.log" if active_run.get("run_dir") else None),
+        },
+    ]
+
+    latest_runs = [
+        _worker_run_summary(root, row)
+        for row in [item for item in listify(runner.get("latest_runs")) if isinstance(item, dict)]
+    ]
+
+    fanout_status = build_kernel_fanout_carrier_dryrun_status(root)
+    fanout_result_path = str(fanout_status.get("latest_dryrun_result_path") or "").strip()
+    fanout_result = read_json(root / fanout_result_path) if fanout_result_path else {}
+    settlement_rows: list[dict[str, Any]] = []
+    for file_row in _latest_paths(root, WORKER_SETTLEMENT_DIR.as_posix(), limit=6, suffixes={".json"}):
+        payload = read_json(root / str(file_row.get("path")))
+        settlement_rows.append(
+            {
+                "path": file_row.get("path"),
+                "mtime": file_row.get("mtime"),
+                "status": payload.get("status") or payload.get("verdict"),
+                "required_unrestricted_validation": payload.get("required_unrestricted_validation"),
+                "test_validation": payload.get("test_validation"),
+            }
+        )
+    settlement_blockers = [
+        row
+        for row in settlement_rows
+        if any(token in str(row.get("status") or "").upper() for token in ("BLOCKED", "DEFERRED", "INVALID"))
+    ]
+
+    supabase_events: list[dict[str, Any]] = []
+    for file_row in _latest_paths(root, SUPABASE_EVENT_RECEIPTS_DIR.as_posix(), limit=8, suffixes={".json"}):
+        payload = read_json(root / str(file_row.get("path")))
+        remote = payload.get("remote_result") if isinstance(payload.get("remote_result"), dict) else {}
+        supabase_events.append(
+            {
+                "path": file_row.get("path"),
+                "mtime": file_row.get("mtime"),
+                "event_type": remote.get("event_type"),
+                "packet_id": remote.get("packet_id"),
+                "event_id": remote.get("event_id"),
+            }
+        )
+
+    return {
+        "schema_id": "ion.worker_cockpit_view_model.v1",
+        "generated_at": utc_now(),
+        "read_only": {
+            "view_only_default": True,
+            "mutation_controls_enabled": False,
+            "production_authority": False,
+            "live_execution_authority": False,
+        },
+        "filters": {
+            "search_fields": ["status", "run_id", "request_id", "model", "time"],
+            "status_options": ["running", "accepted", "blocked", "template-invalid", "failed", "deferred"],
+            "sort_options": ["time_desc", "time_asc", "status", "model", "run_id"],
+        },
+        "active_worker": {
+            "status": active_status,
+            "status_badge": _status_badge(active_status),
+            "pid": pid,
+            "run_id": telemetry.get("active_run_id"),
+            "request_id": telemetry.get("request_id"),
+            "age_seconds": telemetry.get("elapsed_seconds"),
+            "heartbeat_at": telemetry.get("last_heartbeat_or_event_at"),
+            "active_process_running": active_running,
+            "stale_active_reference_detected": stale,
+            "zombie_state_detected": zombie,
+        },
+        "latest_worker_runs": latest_runs[:12],
+        "machine_sign_in": {
+            "status": telemetry.get("worker_sign_in_status") or awareness.get("status"),
+            "worker_authored": awareness.get("worker_authored"),
+            "worker_context_awareness_receipt_path": awareness_path or None,
+            "worker_context_awareness_receipt_sha256": telemetry.get("worker_context_awareness_receipt_sha256"),
+            "machine_attestation_sha256": awareness.get("machine_attestation_sha256"),
+            "required_context_reads_total": len(required_reads),
+            "required_context_reads_ready": len(ready_reads),
+            "required_context_reads_missing": len(missing_reads),
+            "missing_required_context_paths": awareness.get("missing_required_context_paths") or [],
+            "context_receipt_path": awareness.get("context_receipt_path"),
+            "context_receipt_sha256": awareness.get("context_receipt_sha256"),
+        },
+        "receipt_chain": receipt_chain,
+        "model_move_summary": {
+            "selected_model": model_move.get("selected_model"),
+            "selected_reasoning_effort": model_move.get("selected_reasoning_effort"),
+            "usage_pool_id": model_move.get("usage_pool_id"),
+            "usage_pool_authority": model_move.get("usage_pool_authority"),
+            "model_move_id": model_move.get("model_move_id"),
+            "routing_reasons": listify(model_move.get("selection_reason")),
+            "summary": active_run.get("codex_model_move_summary"),
+        },
+        "proof_gate": {
+            "context_proof_accepted": submit.get("context_proof_accepted"),
+            "template_action_proof_accepted": submit.get("template_action_proof_accepted"),
+            "return_template_valid": submit.get("return_template_valid"),
+            "workload_diff_required": submit.get("workload_diff_required"),
+            "workload_diff_present": submit.get("workload_diff_present"),
+            "workload_diff_accepted": submit.get("workload_diff_accepted"),
+            "terminal_intake_state": telemetry.get("terminal_intake_result", {}).get("state")
+            if isinstance(telemetry.get("terminal_intake_result"), dict)
+            else None,
+        },
+        "logs": logs,
+        "fanout": {
+            "status": fanout_status,
+            "scenario_rows": [item for item in listify(fanout_result.get("scenarios")) if isinstance(item, dict)][:8],
+            "parent_child_rows": _fanout_parent_child_rows(root, fanout_result),
+            "timeout_fail_closed_summary": fanout_status.get("timeout_fail_closed_summary"),
+            "conflict_lock_summary": fanout_status.get("conflict_lock_summary"),
+        },
+        "event_links": {
+            "supabase_receipts": supabase_events,
+        },
+        "settlement": {
+            "rows": settlement_rows,
+            "blockers": settlement_blockers,
+        },
+        "raw_worker_status": runner,
+    }
 
 
 def _read_text(path: Path) -> str:
@@ -721,6 +1025,7 @@ def _docs_projects_packages_summary(root: Path) -> dict[str, Any]:
     custom_gpt_factory = _latest_paths(root, CUSTOM_GPT_FACTORY_DIR.as_posix(), suffixes={".md", ".json", ".yaml", ".yml"}, recursive=True, limit=8)
     workspace_root = root.parent
     daimon_root = workspace_root / "dAimon"
+    cosmos_root = Path.home() / "Cosmos/earth-forge"
     project_favorites = [
         {
             "project_id": "ion_codex_full",
@@ -737,6 +1042,14 @@ def _docs_projects_packages_summary(root: Path) -> dict[str, Any]:
             "exists": daimon_root.exists(),
             "kind": "companion_project",
             "context_authority": "receipt_backed_external_project",
+        },
+        {
+            "project_id": "cosmos",
+            "label": "Cosmos Water World",
+            "path": cosmos_root.as_posix(),
+            "exists": cosmos_root.exists(),
+            "kind": "helixion_project_workbench",
+            "context_authority": "registered_project_preview_and_bounded_diff_lane",
         },
         {
             "project_id": "helixion_joc_rebuild",

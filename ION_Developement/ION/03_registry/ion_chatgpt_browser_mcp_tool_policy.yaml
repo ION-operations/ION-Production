@@ -39,6 +39,12 @@ allowed_status_read_tools:
   - ion_codex_capsule_chat_status
   - ion_codex_capsule_message_poll
   - ion_bounded_patch_preview
+  - ion_project_workspace_status
+  - ion_project_preview_status
+  - ion_project_git_status
+  - ion_project_workbench_timeline
+  - ion_project_file_read
+  - ion_project_patch_preview
   - ion_kernel_fanout_carrier_dryrun_status
 allowed_bounded_queue_receipt_tools:
   - ion_queue_operator_message
@@ -61,6 +67,10 @@ allowed_bounded_queue_receipt_tools:
   - ion_codex_queue_supersede_duplicates
   - ion_codex_capsule_message_send
   - ion_codex_capsule_sync_to_queue
+  - ion_project_patch_apply
+  - ion_project_patch_revert
+  - ion_project_action_run
+  - ion_project_browser_capture
 forbidden_tools:
   - arbitrary_shell
   - arbitrary_file_write
@@ -101,6 +111,26 @@ bounded_patch_roots:
   - ION/07_templates/
   - ION/09_integrations/
   - ION/tests/
+project_workbench:
+  default_project_id: cosmos
+  public_preview_allowed: true
+  mutation_requires_cockpit_auth: true
+  write_confirmation_required: true
+  allowed_project_tools:
+    - ion_project_workspace_status
+    - ion_project_preview_status
+    - ion_project_git_status
+    - ion_project_workbench_timeline
+    - ion_project_file_read
+    - ion_project_patch_preview
+    - ion_project_patch_apply
+    - ion_project_patch_revert
+    - ion_project_action_run
+    - ion_project_browser_capture
+  first_project:
+    project_id: cosmos
+    preview_base_path: /projects/cosmos/preview/
+    preview_local_url: http://127.0.0.1:5173/
 first_full_carrier_tool_surfaces:
   - ion_file_put_text
   - ion_bounded_patch_preview

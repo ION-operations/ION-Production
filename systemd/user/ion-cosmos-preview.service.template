@@ -1,0 +1,16 @@
+[Unit]
+Description=ION Cosmos Project Preview
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=__COSMOS_ROOT__
+Environment=ION_ROOT=__ION_ROOT__
+Environment=COSMOS_PREVIEW_BASE=/projects/cosmos/preview/
+Environment=GITHUB_PAGES=false
+ExecStart=/usr/bin/npm run dev -- --host 127.0.0.1 --port 5173
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=default.target

@@ -120,6 +120,8 @@ def test_status_and_current_packet_tools_read_without_shell_access():
     packet = call_chatgpt_connector_tool(root, "ion_current_operating_packet", {})
     onboarding = call_chatgpt_connector_tool(root, "ion_carrier_onboarding_packet", {"carrier": "chatgpt_browser"})
     forbidden = call_chatgpt_connector_tool(root, "arbitrary_shell", {})
+    browser_capture = call_chatgpt_connector_tool(root, "ion_project_browser_capture", {"project_id": "cosmos", "bookmark": "orbit"})
+    timeline = call_chatgpt_connector_tool(root, "ion_project_workbench_timeline", {"project_id": "cosmos", "max_items": 3})
 
     assert status["ok"] is True
     assert status["data"]["schema_id"] == "ion.status.v1"
@@ -146,6 +148,10 @@ def test_status_and_current_packet_tools_read_without_shell_access():
     assert live_status["data"]["schema_id"] == "ion.codex_queue_runner.v1"
     assert live_status["data"]["live_worker_telemetry"]["schema_id"] == "ion.codex_worker_live_status.v1"
     assert agent_status["ok"] is True
+    assert browser_capture["ok"] is False
+    assert browser_capture["finding"] == "confirmation_required"
+    assert timeline["ok"] is True
+    assert timeline["data"]["schema_id"] == "ion.project_workbench_timeline.v1"
     assert agent_status["data"]["schema_id"] == "ion.agent_invocation_broker.v1"
     assert forbidden["ok"] is False
     assert forbidden["finding"] == "forbidden_capability"

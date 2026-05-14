@@ -9,12 +9,16 @@ from __future__ import annotations
 import argparse
 import html
 import json
+import mimetypes
 import os
+import re
 import sys
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any, Mapping
 from urllib.parse import parse_qs, urlencode, urlparse
+import urllib.error
+import urllib.request
 
 from .ion_chatgpt_browser_mcp_connector_contract import (
     BOUNDED_QUEUE_RECEIPT_TOOLS,
@@ -23,7 +27,10 @@ from .ion_chatgpt_browser_mcp_connector_contract import (
     audit_chatgpt_browser_mcp_connector_contract,
     call_chatgpt_connector_tool,
 )
-from .ion_cockpit_view_model import build_cockpit_view_model
+from .ion_cockpit_view_model import (
+    build_cockpit_view_model,
+    build_worker_cockpit_view_model,
+)
 from .ion_cockpit_service_manager import restart_service
 from .ion_dual_codex_chat import (
     WRITE_CONFIRMATION_TOKEN,
@@ -34,6 +41,16 @@ from .ion_dual_codex_chat import (
     render_dual_codex_chat_html,
 )
 from .ion_local_cockpit_app import build_cockpit_html
+from .ion_project_workbench import (
+    WRITE_CONFIRMATION_TOKEN as PROJECT_WRITE_CONFIRMATION_TOKEN,
+    build_project_workspace_status,
+    project_action_run,
+    project_browser_capture,
+    project_patch_apply,
+    project_patch_preview,
+    project_patch_revert,
+    resolve_project,
+)
 from .ion_public_cockpit_auth import (
     ALLOWED_EMAILS_ENV,
     GOOGLE_CLIENT_ID_ENV,
@@ -67,9 +84,10 @@ WRITE_CONFIRMATION_TOKEN = "ION_BOUNDED_WRITE_CONFIRMED"
 DEFAULT_BIND_HOST = "127.0.0.1"
 DEFAULT_PORT = 8765
 OUTPUT_RELATIVE_PATH = Path("ION/05_context/current/CHATGPT_BROWSER_HTTP_MCP_PREVIEW_V121.json")
-APP_PATHS = {"/", "/app", "/ion"}
+APP_PATHS = {"/", "/app", "/ion", "/projects"}
 HELIXION_SITE_NAV_ITEMS = (
     {"id": "home", "label": "Home", "href": "/", "icon": "home"},
+    {"id": "projects", "label": "Projects", "href": "/projects", "icon": "grid"},
     {"id": "cockpit", "label": "Cockpit", "href": "/cockpit", "icon": "grid"},
     {"id": "chat", "label": "Codex Chat", "href": "/cockpit/chat", "icon": "chat"},
     {"id": "worker", "label": "Worker", "href": "/cockpit/worker", "icon": "pulse"},
@@ -505,6 +523,126 @@ def _tool_schema(name: str) -> dict[str, Any]:
             "additionalProperties": False,
         }
 
+    if name in {"ion_project_workspace_status", "ion_project_preview_status", "ion_project_git_status"}:
+        return {
+            "type": "object",
+            "properties": {
+                "project_id": {"type": "string"},
+                "probe_preview": {"type": "boolean"},
+            },
+            "additionalProperties": False,
+        }
+    if name == "ion_project_workbench_timeline":
+        return {
+            "type": "object",
+            "properties": {
+                "project_id": {"type": "string"},
+                "probe_preview": {"type": "boolean"},
+                "max_items": {"type": "integer", "minimum": 1, "maximum": 20},
+            },
+            "additionalProperties": False,
+        }
+    if name == "ion_project_file_read":
+        return {
+            "type": "object",
+            "properties": {
+                "project_id": {"type": "string"},
+                "path": {"type": "string"},
+                "max_bytes": {"type": "integer", "minimum": 1, "maximum": 262144},
+            },
+            "required": ["project_id", "path"],
+            "additionalProperties": False,
+        }
+    if name in {"ion_project_patch_preview", "ion_project_patch_apply"}:
+        operation_schema = {
+            "type": "object",
+            "properties": {
+                "path": {"type": "string"},
+                "target_path": {"type": "string"},
+                "old_text": {"type": "string"},
+                "new_text": {"type": "string"},
+                "expected_sha256": {"type": "string"},
+            },
+            "additionalProperties": False,
+        }
+        properties = {
+            "project_id": {"type": "string"},
+            "operations": {"type": "array", "items": operation_schema, "maxItems": 25},
+            "path": {"type": "string"},
+            "target_path": {"type": "string"},
+            "old_text": {"type": "string"},
+            "new_text": {"type": "string"},
+            "expected_sha256": {"type": "string"},
+        }
+        required = ["project_id"]
+        if name == "ion_project_patch_apply":
+            properties.update({
+                "confirmation": {"type": "string"},
+                "idempotency_key": {"type": "string"},
+                "client_request_id": {"type": "string"},
+                "force_new": {"type": "boolean"},
+            })
+            required = ["project_id", "confirmation"]
+        return {
+            "type": "object",
+            "properties": properties,
+            "required": required,
+            "additionalProperties": False,
+        }
+    if name == "ion_project_patch_revert":
+        return {
+            "type": "object",
+            "properties": {
+                "project_id": {"type": "string"},
+                "receipt_path": {"type": "string"},
+                "confirmation": {"type": "string"},
+            },
+            "required": ["project_id", "receipt_path", "confirmation"],
+            "additionalProperties": False,
+        }
+    if name == "ion_project_action_run":
+        return {
+            "type": "object",
+            "properties": {
+                "project_id": {"type": "string"},
+                "action_id": {"type": "string", "enum": ["build", "test", "lint", "screenshots", "gibs_snapshot"]},
+                "timeout_seconds": {"type": "integer", "minimum": 30, "maximum": 7200},
+                "confirmation": {"type": "string"},
+            },
+            "required": ["project_id", "action_id", "confirmation"],
+            "additionalProperties": False,
+        }
+    if name == "ion_project_browser_capture":
+        return {
+            "type": "object",
+            "properties": {
+                "project_id": {"type": "string"},
+                "bookmark": {
+                    "type": "string",
+                    "enum": [
+                        "home",
+                        "lab",
+                        "orbit",
+                        "cloud-terminator",
+                        "high-altitude",
+                        "storm-zone",
+                        "sun-glitter",
+                        "sea-level",
+                        "underwater",
+                    ],
+                },
+                "interaction": {"type": "string", "enum": ["none", "reload"]},
+                "base_url": {"type": "string"},
+                "width": {"type": "integer", "minimum": 320, "maximum": 3840},
+                "height": {"type": "integer", "minimum": 320, "maximum": 2400},
+                "wait_ms": {"type": "integer", "minimum": 0, "maximum": 15000},
+                "timeout_ms": {"type": "integer", "minimum": 5000, "maximum": 180000},
+                "confirmation": {"type": "string"},
+            },
+            "required": ["project_id", "bookmark", "confirmation"],
+            "additionalProperties": False,
+        }
+
     if name == "ion_file_put_text":
         return {
             "type": "object",
@@ -844,7 +982,12 @@ def audit_http_mcp_preview(root: str | Path | None = None) -> dict[str, Any]:
     }
 
 
-def render_ion_connector_landing(root: str | Path, *, public_base_url: str | None = None) -> str:
+def render_ion_connector_landing(
+    root: str | Path,
+    *,
+    public_base_url: str | None = None,
+    active_nav: str = "home",
+) -> str:
     """Render a safe human-facing landing page for the tunnel root.
 
     The page intentionally exposes only connector posture and tool names. It does
@@ -860,6 +1003,7 @@ def render_ion_connector_landing(root: str | Path, *, public_base_url: str | Non
     chat_hint = f"{base}/cockpit/chat" if base else "/cockpit/chat"
     login_hint = f"{base}/cockpit/login" if base else "/cockpit/login"
     status_hint = f"{base}/app/status.json" if base else "/app/status.json"
+    projects_hint = f"{base}/projects" if base else "/projects"
     status_class = "ready" if audit.get("accepted") else "blocked"
     allowed_tools = audit.get("allowed_tools") if isinstance(audit.get("allowed_tools"), list) else []
     forbidden_tools = audit.get("forbidden_tools") if isinstance(audit.get("forbidden_tools"), list) else []
@@ -882,11 +1026,118 @@ def render_ion_connector_landing(root: str | Path, *, public_base_url: str | Non
         )
         for label, kind, href, summary in [
             ("Operator Cockpit", "HTML", cockpit_hint, "Runtime, queues, services, receipts, and authority state."),
+            ("Projects Hub", "HTML", projects_hint, "Public and local ION Operations project directory."),
             ("Codex Chat", "HTML", chat_hint, "Capsule-backed operator chat and bounded queue controls."),
             ("Worker Telemetry", "HTML", worker_hint, "Live Codex runner status, phase, proof gate, and public artifacts."),
             ("Cockpit Login", "AUTH", login_hint, "Permission-token or Google account entry for protected pages."),
             ("Status JSON", "JSON", status_hint, "Connector audit posture for automated checks."),
             ("Health JSON", "JSON", health_hint, "Readiness endpoint for local preview and tunnel checks."),
+        ]
+    )
+    project_cards = "\n".join(
+        (
+            '<a class="project-card" href="{href}" target="{target}" rel="{rel}">'
+            '<span>{kind}</span>'
+            '<b>{label}</b>'
+            '<p>{summary}</p>'
+            '<code>{surface}</code>'
+            '</a>'
+        ).format(
+            href=_html_text(href),
+            target="_blank" if external else "_self",
+            rel="noreferrer" if external else "",
+            kind=_html_text(kind),
+            label=_html_text(label),
+            summary=_html_text(summary),
+            surface=_html_text(surface),
+        )
+        for label, kind, href, surface, summary, external in [
+            (
+                "Cosmos Water World",
+                "LIVE WORKBENCH",
+                f"{base}/projects/cosmos" if base else "/projects/cosmos",
+                "Helixion live preview",
+                "Local Cosmos renderer embedded through Helixion with gated diffs, actions, receipts, and rollback.",
+                False,
+            ),
+            (
+                "Cosmos Review",
+                "LIVE REVIEW",
+                f"{base}/projects/cosmos/preview/cosmos-review?bookmark=orbit&panel=1" if base else "/projects/cosmos/preview/cosmos-review?bookmark=orbit&panel=1",
+                "proxied local review bookmarks",
+                "Direct Helixion preview entry for lead-eyes critique of the current Cosmos image stack.",
+                False,
+            ),
+            (
+                "Helixion Operator Cockpit",
+                "PROTECTED",
+                cockpit_hint,
+                "/cockpit",
+                "Public protected cockpit route for runtime, queues, services, receipts, and authority state.",
+                False,
+            ),
+            (
+                "Codex Capsule Chat",
+                "PROTECTED",
+                chat_hint,
+                "/cockpit/chat",
+                "Capsule-backed operator chat surface with bounded queue controls and receipts.",
+                False,
+            ),
+            (
+                "Local JOC Cockpit",
+                "LOCAL NUMBER",
+                "http://127.0.0.1:8788/",
+                "127.0.0.1:8788",
+                "The local machine cockpit address. This only opens on the computer running ION.",
+                True,
+            ),
+            (
+                "ION MCP Preview",
+                "LOCAL + TUNNEL",
+                connector_hint,
+                "127.0.0.1:8765 -> ion.helixion.net",
+                "Human landing page here; MCP tool calls remain on the /mcp endpoint.",
+                False,
+            ),
+            (
+                "Action Gateway",
+                "PUBLIC HEALTH",
+                "https://ion-actions.helixion.net/health",
+                "127.0.0.1:8777 -> ion-actions.helixion.net",
+                "Custom GPT Actions health endpoint for bounded gateway checks.",
+                True,
+            ),
+            (
+                "dAimon / WisdomNET Line",
+                "CANDIDATE",
+                cockpit_hint,
+                "JOC project lane",
+                "Companion, browser extension, project/package, and federation work surfaces inside ION.",
+                False,
+            ),
+        ]
+    )
+    local_port_cards = "\n".join(
+        (
+            '<article class="port-card">'
+            '<span>{port}</span>'
+            '<b>{label}</b>'
+            '<p>{summary}</p>'
+            '<code>{route}</code>'
+            '</article>'
+        ).format(
+            port=_html_text(port),
+            label=_html_text(label),
+            summary=_html_text(summary),
+            route=_html_text(route),
+        )
+        for port, label, route, summary in [
+            ("8765", "ION site and MCP preview", "127.0.0.1:8765 / ion.helixion.net", "Root page, /app, /projects, /health, and /mcp."),
+            ("8788", "Local JOC cockpit", "127.0.0.1:8788", "Local-only React cockpit for ION/JOC service visibility."),
+            ("8777", "Action Gateway", "127.0.0.1:8777 / ion-actions.helixion.net", "Custom GPT Actions gateway and health route."),
+            ("8767", "ChatOps daemon", "127.0.0.1:8767", "Local bridge health and routing visibility."),
+            ("8795", "dAimon bridge", "127.0.0.1:8795", "Reserved local websocket bridge for the dAimon companion line."),
         ]
     )
     return f"""<!doctype html>
@@ -1041,22 +1292,117 @@ def render_ion_connector_landing(root: str | Path, *, public_base_url: str | Non
       color: var(--muted);
       font-size: 13px;
     }}
+    .project-header {{
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      margin: 28px 0 12px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+    }}
+    .project-header h2 {{
+      margin: 0;
+      color: var(--text);
+      font-size: 22px;
+      text-transform: uppercase;
+    }}
+    .project-header p {{
+      margin: 6px 0 0;
+      max-width: 660px;
+    }}
+    .project-grid {{
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 22px;
+    }}
+    .project-card,
+    .port-card {{
+      display: grid;
+      gap: 8px;
+      min-height: 170px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 2px;
+      background:
+        linear-gradient(180deg, rgba(255, 122, 26, 0.08), rgba(13, 17, 19, 0) 52%),
+        #0d1113;
+      color: var(--text);
+      text-decoration: none;
+    }}
+    .project-card:hover,
+    .project-card:focus-visible {{
+      border-color: var(--accent);
+      outline: none;
+    }}
+    .project-card span,
+    .port-card span {{
+      color: #f2c7a7;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      font-size: 10px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }}
+    .project-card b,
+    .port-card b {{
+      font-size: 15px;
+      text-transform: uppercase;
+    }}
+    .project-card p,
+    .port-card p {{
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }}
+    .port-grid {{
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 10px;
+      margin: 0 0 24px;
+    }}
+    .port-card {{
+      min-height: 142px;
+      background: #111517;
+    }}
     @media (max-width: 760px) {{
       .grid {{ grid-template-columns: 1fr; }}
       .route-grid {{ grid-template-columns: 1fr; }}
+      .project-header {{ display: block; }}
+      .project-grid,
+      .port-grid {{ grid-template-columns: 1fr; }}
       .tools {{ columns: 1; }}
       main {{ padding-top: 28px; }}
+    }}
+    @media (min-width: 761px) and (max-width: 1100px) {{
+      .project-grid {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
+      .port-grid {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
     }}
   </style>
 </head>
 <body>
-  {render_helixion_site_bar("home", public_base_url=base)}
+  {render_helixion_site_bar(active_nav, public_base_url=base)}
   <main>
     <header>
       <div class="status {status_class}"><span class="dot"></span><span>{_html_text(audit.get("verdict"))}</span></div>
       <h1>ION Connector</h1>
       <p>A bounded browser-carrier surface for ION. This page is a status/UI landing surface; MCP tools remain on <code>{_html_text(connector_hint)}</code>.</p>
     </header>
+    <section aria-label="ION Operations project directory">
+      <div class="project-header">
+        <div>
+          <h2>Projects Hub</h2>
+          <p>Public apps, protected ION cockpit routes, and the local number-address surfaces are gathered here so the main HelixION page is the front door.</p>
+        </div>
+        <code>{_html_text(projects_hint)}</code>
+      </div>
+      <div class="project-grid">
+        {project_cards}
+      </div>
+      <div class="port-grid" aria-label="Local port map">
+        {local_port_cards}
+      </div>
+    </section>
     <nav class="route-grid" aria-label="HelixION route directory">
       {route_cards}
     </nav>
@@ -1093,6 +1439,230 @@ def render_ion_connector_landing(root: str | Path, *, public_base_url: str | Non
 """
 
 
+def render_project_workbench_html(
+    root: str | Path,
+    *,
+    public_base_url: str | None = None,
+    auth_token: str | None = None,
+    authenticated: bool = False,
+    project_id: str = "cosmos",
+    action_result: Mapping[str, Any] | None = None,
+) -> str:
+    """Render the Helixion-hosted project workbench.
+
+    The preview is intentionally public. Mutation controls are rendered only
+    when the existing cockpit auth/session is present.
+    """
+
+    base = (public_base_url or "").rstrip("/")
+    status = build_project_workspace_status(root, project_id=project_id, probe_preview=True)
+    project = status.get("project") if isinstance(status.get("project"), Mapping) else {}
+    preview = status.get("preview") if isinstance(status.get("preview"), Mapping) else {}
+    git_status = status.get("git_status") if isinstance(status.get("git_status"), Mapping) else {}
+    receipts = status.get("latest_patch_receipts") if isinstance(status.get("latest_patch_receipts"), list) else []
+    browser_captures = status.get("latest_browser_captures") if isinstance(status.get("latest_browser_captures"), list) else []
+    preview_src = "/projects/cosmos/preview/"
+    login_href = "/cockpit/login?" + urlencode({"next": "/projects/cosmos"})
+    token_input = f'<input type="hidden" name="public_token" value="{_html_text(auth_token)}">' if auth_token else ""
+    action_cards = []
+    for action_id, label in [
+        ("screenshots", "Capture screenshots"),
+        ("build", "Build"),
+        ("test", "Test"),
+        ("lint", "Lint"),
+        ("gibs_snapshot", "GIBS snapshot"),
+    ]:
+        action_cards.append(
+            (
+                '<form method="post" action="/projects/cosmos/actions/run" class="workbench-action">'
+                f'{token_input}'
+                f'<input type="hidden" name="confirmation" value="{_html_text(PROJECT_WRITE_CONFIRMATION_TOKEN)}">'
+                f'<input type="hidden" name="project_id" value="{_html_text(project_id)}">'
+                f'<input type="hidden" name="action_id" value="{_html_text(action_id)}">'
+                f'<button type="submit">{_html_text(label)}</button>'
+                "</form>"
+            )
+        )
+    action_cards.append(
+        (
+            '<form method="post" action="/projects/cosmos/browser/capture" class="workbench-action">'
+            f'{token_input}'
+            f'<input type="hidden" name="confirmation" value="{_html_text(PROJECT_WRITE_CONFIRMATION_TOKEN)}">'
+            f'<input type="hidden" name="project_id" value="{_html_text(project_id)}">'
+            '<input type="hidden" name="bookmark" value="orbit">'
+            '<input type="hidden" name="interaction" value="none">'
+            '<button type="submit">Browser capture orbit</button>'
+            "</form>"
+        )
+    )
+    protected_controls = (
+        '<div class="protected-grid">' + "".join(action_cards) + "</div>"
+        if authenticated
+        else f'<a class="login-card" href="{_html_text(login_href)}">Login to run builds, capture screenshots, apply diffs, and rollback patches.</a>'
+    )
+    action_result_card = ""
+    if action_result:
+        result_data = action_result.get("data") if isinstance(action_result.get("data"), Mapping) else {}
+        artifact_path = result_data.get("log_path") or result_data.get("screenshot_path") or result_data.get("receipt_path") or ""
+        action_result_card = (
+            '<article class="result-card">'
+            f'<span>ACTION RESULT</span><b>{_html_text(result_data.get("action_id") or result_data.get("bookmark") or action_result.get("tool") or "project action")}</b>'
+            f'<p>ok: <code>{_html_text(action_result.get("ok"))}</code> return: <code>{_html_text(result_data.get("returncode"))}</code></p>'
+            f'<p>artifact: <code>{_html_text(artifact_path)}</code></p>'
+            "</article>"
+        )
+    route_links = "\n".join(
+        f'<a href="{_html_text(href)}" target="cosmos-preview">{_html_text(label)}</a>'
+        for label, href in [
+            ("Home", "/projects/cosmos/preview/"),
+            ("Lab", "/projects/cosmos/preview/lab"),
+            ("Orbit", "/projects/cosmos/preview/cosmos-review?bookmark=orbit&panel=1"),
+            ("Cloud terminator", "/projects/cosmos/preview/cosmos-review?bookmark=cloud-terminator&panel=1"),
+            ("High altitude", "/projects/cosmos/preview/cosmos-review?bookmark=high-altitude&panel=1"),
+            ("Storm", "/projects/cosmos/preview/cosmos-review?bookmark=storm-zone&panel=1"),
+            ("Sun glitter", "/projects/cosmos/preview/cosmos-review?bookmark=sun-glitter&panel=1"),
+            ("Sea level", "/projects/cosmos/preview/cosmos-review?bookmark=sea-level&panel=1"),
+            ("Underwater", "/projects/cosmos/preview/cosmos-review?bookmark=underwater&panel=1"),
+        ]
+    )
+    receipt_cards = "\n".join(
+        (
+            '<article class="mini-card">'
+            f'<span>{_html_text(item.get("action") or "patch")}</span>'
+            f'<b>{_html_text(item.get("status") or "receipt")}</b>'
+            f'<code>{_html_text(item.get("path") or "")}</code>'
+            "</article>"
+        )
+        for item in receipts[:6]
+        if isinstance(item, Mapping)
+    ) or '<div class="empty">No project patch receipts yet.</div>'
+    browser_capture_cards = "\n".join(
+        (
+            '<article class="mini-card">'
+            f'<span>{_html_text(item.get("bookmark") or "browser")}</span>'
+            f'<b>{_html_text(item.get("status") or "capture")}</b>'
+            f'<code>{_html_text(item.get("screenshot_path") or item.get("path") or "")}</code>'
+            "</article>"
+        )
+        for item in browser_captures[:6]
+        if isinstance(item, Mapping)
+    ) or '<div class="empty">No browser captures yet.</div>'
+    git_lines = "\n".join(f"<li><code>{_html_text(line)}</code></li>" for line in list(git_status.get("lines") or [])[:28])
+    if not git_lines:
+        git_lines = "<li><code>no git status lines projected</code></li>"
+    return f"""<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Helixion Projects - Cosmos Workbench</title>
+  <style>
+    {HELIXION_SITE_CSS}
+    :root {{
+      color-scheme: dark;
+      --bg: #090b0c;
+      --panel: #121619;
+      --panel-2: #171d20;
+      --line: #2c3439;
+      --text: #f3f0ea;
+      --muted: #9da8ad;
+      --accent: #f28b33;
+      --ok: #29d391;
+      --warn: #e4b247;
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }}
+    * {{ box-sizing: border-box; }}
+    body {{ margin: 0; background: var(--bg); color: var(--text); }}
+    main {{ min-height: calc(100vh - 43px); display: grid; grid-template-rows: auto 1fr; }}
+    header {{ display: flex; align-items: end; justify-content: space-between; gap: 18px; padding: 18px; border-bottom: 1px solid var(--line); background: #0d1113; }}
+    h1 {{ margin: 0; font-size: clamp(24px, 4vw, 42px); line-height: 1; text-transform: uppercase; }}
+    p {{ color: var(--muted); }}
+    code {{ overflow-wrap: anywhere; color: #ffd3b1; }}
+    .status-pill {{ border: 1px solid var(--line); padding: 7px 10px; color: var(--muted); text-transform: uppercase; font-size: 12px; }}
+    .layout {{ min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) 360px; }}
+    .preview-zone {{ min-width: 0; min-height: 0; display: grid; grid-template-rows: auto 1fr; }}
+    .route-bar {{ display: flex; gap: 8px; overflow-x: auto; padding: 10px; border-bottom: 1px solid var(--line); background: #101518; }}
+    .route-bar a, .route-bar button, .login-card, .workbench-action button {{ border: 1px solid var(--line); background: #0d1113; color: var(--text); text-decoration: none; padding: 8px 10px; font-weight: 800; text-transform: uppercase; font-size: 11px; cursor: pointer; }}
+    .route-bar a:hover, .route-bar button:hover, .login-card:hover, .workbench-action button:hover {{ border-color: var(--accent); }}
+    iframe {{ width: 100%; height: 100%; min-height: 680px; border: 0; background: #000; }}
+    aside {{ border-left: 1px solid var(--line); background: #0f1315; overflow: auto; padding: 12px; }}
+    .panel {{ border: 1px solid var(--line); background: var(--panel); padding: 12px; margin-bottom: 12px; }}
+    .panel h2 {{ margin: 0 0 8px; font-size: 13px; color: var(--muted); text-transform: uppercase; }}
+    .kv {{ display: grid; gap: 6px; font-size: 13px; }}
+    .kv div {{ display: grid; gap: 2px; }}
+    .kv span, .mini-card span, .result-card span {{ color: var(--accent); font-size: 10px; font-weight: 900; text-transform: uppercase; }}
+    .protected-grid {{ display: grid; gap: 8px; }}
+    .workbench-action {{ margin: 0; }}
+    .workbench-action button, .login-card {{ display: block; width: 100%; min-height: 40px; text-align: left; }}
+    .mini-card, .result-card {{ display: grid; gap: 6px; border: 1px solid var(--line); background: var(--panel-2); padding: 10px; margin-top: 8px; }}
+    .mini-card b, .result-card b {{ font-size: 12px; text-transform: uppercase; }}
+    .empty {{ color: var(--muted); border: 1px dashed var(--line); padding: 10px; }}
+    ul {{ margin: 0; padding-left: 18px; color: var(--muted); }}
+    @media (max-width: 980px) {{
+      header {{ display: block; }}
+      .layout {{ grid-template-columns: 1fr; }}
+      aside {{ border-left: 0; border-top: 1px solid var(--line); }}
+      iframe {{ min-height: 560px; }}
+    }}
+  </style>
+</head>
+<body>
+  {render_helixion_site_bar("projects", auth_token=auth_token, public_base_url=base)}
+  <main>
+    <header>
+      <div>
+        <h1>Cosmos Workbench</h1>
+        <p>Live Helixion-hosted preview for the local Cosmos project, with approval-gated project actions and patch receipts.</p>
+      </div>
+      <div class="status-pill">preview: {_html_text(preview.get("status") or "unknown")}</div>
+    </header>
+    <section class="layout">
+      <div class="preview-zone">
+        <nav class="route-bar" aria-label="Cosmos preview routes">
+          {route_links}
+          <button type="button" onclick="document.querySelector('iframe').contentWindow.location.reload()">Reload preview</button>
+        </nav>
+        <iframe title="Cosmos live preview" name="cosmos-preview" src="{_html_text(preview_src)}"></iframe>
+      </div>
+      <aside aria-label="Cosmos workbench inspector">
+        <section class="panel">
+          <h2>Project</h2>
+          <div class="kv">
+            <div><span>root</span><code>{_html_text(project.get("root") or "")}</code></div>
+            <div><span>preview</span><code>{_html_text(preview.get("local_url") or "")}</code></div>
+            <div><span>public route</span><code>{_html_text(project.get("preview_public_path") or "/projects/cosmos")}</code></div>
+          </div>
+        </section>
+        <section class="panel">
+          <h2>Protected Actions</h2>
+          {protected_controls}
+          {action_result_card}
+        </section>
+        <section class="panel">
+          <h2>Git Status</h2>
+          <ul>{git_lines}</ul>
+        </section>
+        <section class="panel">
+          <h2>Patch Receipts</h2>
+          {receipt_cards}
+        </section>
+        <section class="panel">
+          <h2>Browser Captures</h2>
+          {browser_capture_cards}
+        </section>
+        <section class="panel">
+          <h2>Boundary</h2>
+          <p>Public preview is enabled. Source edits, patch apply, rollback, screenshots, browser capture, build, test, and lint require cockpit auth plus explicit write confirmation.</p>
+        </section>
+      </aside>
+    </section>
+  </main>
+</body>
+</html>
+"""
+
+
 def _format_bool(value: Any) -> str:
     return "true" if bool(value) else "false"
 
@@ -1108,55 +1678,156 @@ def _format_seconds(value: Any) -> str:
     return f"{rem}s"
 
 
-def _worker_artifact_rows(telemetry: Mapping[str, Any]) -> str:
-    artifacts = telemetry.get("artifacts") if isinstance(telemetry.get("artifacts"), Mapping) else {}
-    if not artifacts:
-        return "<tr><td colspan=\"4\">No artifacts reported.</td></tr>"
-    rows: list[str] = []
-    for name in ("run_packet", "worker_stdout", "worker_stderr", "stdout", "stderr", "latest_return"):
-        artifact = artifacts.get(name) if isinstance(artifacts.get(name), Mapping) else {}
-        rows.append(
-            "<tr>"
-            f"<td><code>{_html_text(name)}</code></td>"
-            f"<td>{_html_text(_format_bool(artifact.get('exists')))}</td>"
-            f"<td>{_html_text(artifact.get('bytes') if artifact.get('bytes') is not None else 'unknown')}</td>"
-            f"<td>{_html_text(artifact.get('modified_at') or 'none')}</td>"
-            "</tr>"
-        )
-    return "\n".join(rows)
+def _worker_badge(value: Any) -> str:
+    status = str(value or "unknown").strip() or "unknown"
+    lowered = status.lower()
+    kind = "neutral"
+    if any(token in lowered for token in ("accept", "ready", "running", "active", "true")):
+        kind = "ok"
+    if any(token in lowered for token in ("block", "invalid", "fail", "defer", "false")):
+        kind = "bad"
+    if "template" in lowered or "timeout" in lowered:
+        kind = "warn"
+    return f'<span class="badge badge-{kind}">{_html_text(status)}</span>'
 
 
-def _worker_summary_items(telemetry: Mapping[str, Any]) -> str:
-    proof = telemetry.get("proof_gate_preflight") if isinstance(telemetry.get("proof_gate_preflight"), Mapping) else {}
-    terminal = telemetry.get("terminal_intake_result") if isinstance(telemetry.get("terminal_intake_result"), Mapping) else {}
-    items = {
-        "phase": telemetry.get("phase_status") or telemetry.get("run_status") or "unknown",
-        "active": _format_bool(telemetry.get("active_process_running")),
-        "elapsed": _format_seconds(telemetry.get("elapsed_seconds")),
-        "pid": telemetry.get("active_worker_pid") or "none",
-        "run": telemetry.get("active_run_id") or "none",
-        "heartbeat": telemetry.get("last_heartbeat_or_event_at") or "none",
-        "proof_context": proof.get("context_proof_accepted") if proof else "unknown",
-        "proof_template": proof.get("template_action_proof_accepted") if proof else "unknown",
-        "terminal": terminal.get("state") if terminal else "not-terminal",
-    }
-    return "\n".join(
-        f"<li><span>{_html_text(label)}</span><strong>{_html_text(value)}</strong></li>"
-        for label, value in items.items()
+def _worker_active_rows(active: Mapping[str, Any]) -> str:
+    rows = [
+        ("status", _worker_badge(active.get("status"))),
+        ("pid", _html_text(active.get("pid") or "none")),
+        ("run_id", _html_text(active.get("run_id") or "none")),
+        ("request_id", _html_text(active.get("request_id") or "none")),
+        ("age", _html_text(_format_seconds(active.get("age_seconds")))),
+        ("heartbeat", _html_text(active.get("heartbeat_at") or "none")),
+        ("stale", _worker_badge(active.get("stale_active_reference_detected"))),
+        ("zombie", _worker_badge(active.get("zombie_state_detected"))),
+    ]
+    return "".join(
+        f"<tr><th>{_html_text(label)}</th><td>{value}</td></tr>"
+        for label, value in rows
     )
 
 
-def render_codex_worker_live_status_html(root: str | Path, *, auth_token: str | None = None) -> str:
-    """Render a bounded live status panel over public Codex worker telemetry."""
+def _worker_latest_run_rows(rows: list[dict[str, Any]]) -> str:
+    if not rows:
+        return "<tr><td colspan=\"9\">No recent worker runs.</td></tr>"
+    rendered: list[str] = []
+    for row in rows:
+        rendered.append(
+            "<tr>"
+            f"<td>{_worker_badge(row.get('status') or row.get('terminal_state') or 'unknown')}</td>"
+            f"<td><code>{_html_text(row.get('run_id') or 'none')}</code></td>"
+            f"<td><code>{_html_text(row.get('request_id') or 'none')}</code></td>"
+            f"<td>{_html_text(row.get('selected_model') or 'none')}</td>"
+            f"<td>{_html_text(row.get('selected_reasoning_effort') or 'none')}</td>"
+            f"<td>{_html_text(row.get('started_at') or row.get('created_at') or row.get('mtime') or 'none')}</td>"
+            f"<td>{_html_text(row.get('completed_at') or 'none')}</td>"
+            f"<td>{_worker_badge(row.get('terminal_state') or 'not-terminal')}</td>"
+            f"<td><code>{_html_text(row.get('run_packet_path') or 'none')}</code></td>"
+            "</tr>"
+        )
+    return "".join(rendered)
 
-    result = call_chatgpt_connector_tool(root, "ion_codex_worker_live_status", {})
-    data = result.get("data") if isinstance(result.get("data"), Mapping) else {}
-    telemetry = data.get("live_worker_telemetry") if isinstance(data.get("live_worker_telemetry"), Mapping) else {}
+
+def _worker_receipt_chain_rows(chain_rows: list[dict[str, Any]]) -> str:
+    if not chain_rows:
+        return "<tr><td colspan=\"6\">No receipt chain rows.</td></tr>"
+    rendered: list[str] = []
+    for item in chain_rows:
+        rendered.append(
+            "<tr>"
+            f"<td><code>{_html_text(item.get('name') or '')}</code></td>"
+            f"<td>{_worker_badge(item.get('exists'))}</td>"
+            f"<td>{_html_text(item.get('bytes') if item.get('bytes') is not None else 'unknown')}</td>"
+            f"<td><code>{_html_text(item.get('sha256') or 'none')}</code></td>"
+            f"<td>{_html_text(item.get('modified_at') or 'none')}</td>"
+            f"<td><code>{_html_text(item.get('path') or 'none')}</code></td>"
+            "</tr>"
+        )
+    return "\n".join(rendered)
+
+
+def _worker_log_cards(rows: list[dict[str, Any]]) -> str:
+    if not rows:
+        return "<article class=\"card\"><h3>Logs</h3><p>No logs available.</p></article>"
+    cards: list[str] = []
+    for row in rows:
+        text = str(row.get("text") or "").strip()
+        preview = _html_text(text if len(text) <= 900 else text[-900:])
+        cards.append(
+            "<article class=\"card\">"
+            f"<h3>{_html_text(row.get('name') or 'log')}</h3>"
+            f"<p>{_worker_badge('included' if row.get('included') else (row.get('finding') or 'missing'))} "
+            f"<code>{_html_text(row.get('path') or 'none')}</code></p>"
+            f"<p class=\"meta\">shown: {_html_text(row.get('shown_bytes') or 0)} bytes | total: {_html_text(row.get('total_bytes') or 0)} | truncated: {_html_text(_format_bool(row.get('truncated')))}</p>"
+            f"<pre>{preview or 'empty'}</pre>"
+            "</article>"
+        )
+    return "".join(cards)
+
+
+def render_codex_worker_live_status_html(root: str | Path, *, auth_token: str | None = None) -> str:
+    """Render a bounded JOC-style worker cockpit over machine-observed telemetry."""
+
+    model = build_worker_cockpit_view_model(root)
+    active = model.get("active_worker") if isinstance(model.get("active_worker"), Mapping) else {}
+    latest_runs = [row for row in model.get("latest_worker_runs", []) if isinstance(row, dict)]
+    machine_signin = model.get("machine_sign_in") if isinstance(model.get("machine_sign_in"), Mapping) else {}
+    receipt_chain = [row for row in model.get("receipt_chain", []) if isinstance(row, dict)]
+    model_move = model.get("model_move_summary") if isinstance(model.get("model_move_summary"), Mapping) else {}
+    proof_gate = model.get("proof_gate") if isinstance(model.get("proof_gate"), Mapping) else {}
+    logs = [row for row in model.get("logs", []) if isinstance(row, dict)]
+    fanout = model.get("fanout") if isinstance(model.get("fanout"), Mapping) else {}
+    fanout_status = fanout.get("status") if isinstance(fanout.get("status"), Mapping) else {}
+    fanout_parent_rows = [row for row in fanout.get("parent_child_rows", []) if isinstance(row, dict)]
+    settlement = model.get("settlement") if isinstance(model.get("settlement"), Mapping) else {}
+    settlement_rows = [row for row in settlement.get("rows", []) if isinstance(row, dict)]
+    event_links = model.get("event_links") if isinstance(model.get("event_links"), Mapping) else {}
+    supabase_rows = [row for row in event_links.get("supabase_receipts", []) if isinstance(row, dict)]
+    readonly = model.get("read_only") if isinstance(model.get("read_only"), Mapping) else {}
     query = f"?{urlencode({'token': auth_token})}" if auth_token else ""
     model_endpoint = f"/cockpit/worker/model.json{query}"
-    status_class = "active" if telemetry.get("active_process_running") else "idle"
-    if str(telemetry.get("phase_status") or "").startswith("terminal"):
-        status_class = "terminal"
+    status_class = str(active.get("status_badge") or "neutral")
+    status_label = active.get("status") or "unknown"
+    latest_rows_html = _worker_latest_run_rows(latest_runs)
+    chain_rows_html = _worker_receipt_chain_rows(receipt_chain)
+    log_cards_html = _worker_log_cards(logs)
+    parent_rows_html = "".join(
+        "<tr>"
+        f"<td>{_html_text(row.get('scenario') or 'unknown')}</td>"
+        f"<td><code>{_html_text(row.get('child_id') or 'none')}</code></td>"
+        f"<td><code>{_html_text(row.get('lease_receipt_path') or 'none')}</code></td>"
+        f"<td><code>{_html_text(row.get('heartbeat_receipt_path') or 'none')}</code></td>"
+        f"<td><code>{_html_text(row.get('worker_context_awareness_receipt_path') or 'none')}</code></td>"
+        "</tr>"
+        for row in fanout_parent_rows[:18]
+    ) or "<tr><td colspan=\"5\">No parent/child receipts present.</td></tr>"
+    supabase_html = "".join(
+        "<tr>"
+        f"<td>{_html_text(row.get('mtime') or 'none')}</td>"
+        f"<td>{_html_text(row.get('event_type') or 'unknown')}</td>"
+        f"<td><code>{_html_text(row.get('packet_id') or 'none')}</code></td>"
+        f"<td><code>{_html_text(row.get('path') or 'none')}</code></td>"
+        "</tr>"
+        for row in supabase_rows[:10]
+    ) or "<tr><td colspan=\"4\">No Supabase receipt links available.</td></tr>"
+    settlement_html = "".join(
+        "<tr>"
+        f"<td>{_worker_badge(row.get('status') or 'unknown')}</td>"
+        f"<td>{_html_text(row.get('mtime') or 'none')}</td>"
+        f"<td><code>{_html_text(row.get('path') or 'none')}</code></td>"
+        "</tr>"
+        for row in settlement_rows[:10]
+    ) or "<tr><td colspan=\"3\">No settlement rows found.</td></tr>"
+    filters = model.get("filters") if isinstance(model.get("filters"), Mapping) else {}
+    filter_status = "".join(
+        f"<option value=\"{_html_text(opt)}\">{_html_text(opt)}</option>"
+        for opt in [item for item in filters.get("status_options", []) if isinstance(item, str)]
+    )
+    filter_sort = "".join(
+        f"<option value=\"{_html_text(opt)}\">{_html_text(opt)}</option>"
+        for opt in [item for item in filters.get("sort_options", []) if isinstance(item, str)]
+    )
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -1168,15 +1839,15 @@ def render_codex_worker_live_status_html(root: str | Path, *, auth_token: str | 
     {HELIXION_SITE_CSS}
     :root {{
       color-scheme: dark;
-      --bg: #101112;
-      --panel: #181a1b;
-      --line: #303336;
-      --text: #f4f4f2;
-      --muted: #a8a8a1;
-      --ok: #20d88f;
-      --warn: #ffb020;
-      --bad: #ff6565;
-      --accent: #ff7a1a;
+      --bg: #0d1013;
+      --panel: #161d22;
+      --line: #31404a;
+      --text: #e8eef3;
+      --muted: #9eb1be;
+      --ok: #46d7a4;
+      --warn: #f7b955;
+      --bad: #ef6b77;
+      --accent: #53a5ff;
     }}
     * {{ box-sizing: border-box; }}
     body {{
@@ -1184,33 +1855,67 @@ def render_codex_worker_live_status_html(root: str | Path, *, auth_token: str | 
       min-height: 100vh;
       background: var(--bg);
       color: var(--text);
-      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      line-height: 1.45;
+      font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+      line-height: 1.4;
     }}
-    main {{ max-width: 1120px; margin: 0 auto; padding: 34px 20px 48px; }}
-    header {{ display: flex; gap: 18px; align-items: flex-start; justify-content: space-between; border-bottom: 1px solid var(--line); padding-bottom: 18px; margin-bottom: 18px; }}
-    h1 {{ margin: 0 0 6px; font-size: clamp(30px, 6vw, 56px); line-height: 1; letter-spacing: 0; }}
-    h2 {{ margin: 0 0 12px; font-size: 17px; letter-spacing: 0; }}
-    p {{ color: var(--muted); max-width: 760px; }}
-    code {{ background: #0b0c0d; border: 1px solid #26292b; border-radius: 2px; color: #f5d0b4; padding: 2px 5px; overflow-wrap: anywhere; }}
-    .status {{ display: inline-flex; align-items: center; gap: 8px; padding: 7px 10px; border: 1px solid var(--line); border-radius: 2px; color: var(--muted); font-size: 13px; white-space: nowrap; text-transform: uppercase; }}
-    .dot {{ width: 9px; height: 9px; border-radius: 999px; background: var(--warn); box-shadow: 0 0 14px rgba(255, 176, 32, 0.42); }}
-    .status.idle .dot, .status.terminal .dot {{ background: var(--ok); box-shadow: 0 0 14px rgba(32, 216, 143, 0.42); }}
-    .grid {{ display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 0.8fr); gap: 14px; }}
-    .card {{ background: var(--panel); border: 1px solid var(--line); border-radius: 2px; padding: 16px; }}
-    .summary {{ display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }}
-    .summary li {{ display: grid; grid-template-columns: 130px minmax(0, 1fr); gap: 8px; align-items: start; border-bottom: 1px solid #25282a; padding: 7px 0; }}
-    .summary span {{ color: var(--muted); }}
-    .summary strong {{ overflow-wrap: anywhere; font-weight: 650; }}
-    table {{ width: 100%; border-collapse: collapse; font-size: 14px; }}
-    th, td {{ border-bottom: 1px solid #25282a; padding: 8px 6px; text-align: left; vertical-align: top; }}
-    th {{ color: var(--muted); font-weight: 600; }}
-    .note {{ border-left: 2px solid var(--accent); padding-left: 10px; }}
+    main {{ max-width: 1280px; margin: 0 auto; padding: 24px 18px 38px; }}
+    header {{ display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 16px; align-items: start; border-bottom: 1px solid var(--line); padding-bottom: 14px; margin-bottom: 12px; }}
+    h1 {{ margin: 0 0 5px; font-size: clamp(22px, 4.2vw, 42px); line-height: 1.05; font-family: "JetBrains Mono", "IBM Plex Sans", monospace; }}
+    h2 {{ margin: 0 0 10px; font-size: 16px; font-family: "JetBrains Mono", "IBM Plex Sans", monospace; }}
+    h3 {{ margin: 0 0 8px; font-size: 14px; font-family: "JetBrains Mono", "IBM Plex Sans", monospace; color: var(--muted); text-transform: uppercase; }}
+    p {{ color: var(--muted); margin: 0 0 8px; }}
+    code {{ background: #0a0e11; border: 1px solid #26323a; border-radius: 3px; color: #b9d7ff; padding: 1px 4px; overflow-wrap: anywhere; }}
+    .status-badge {{ display: inline-flex; gap: 8px; align-items: center; border: 1px solid var(--line); padding: 7px 10px; border-radius: 3px; font-size: 12px; text-transform: uppercase; }}
+    .status-dot {{ width: 9px; height: 9px; border-radius: 999px; }}
+    .status-ok .status-dot {{ background: var(--ok); box-shadow: 0 0 12px rgba(70, 215, 164, 0.4); }}
+    .status-active .status-dot {{ background: var(--accent); box-shadow: 0 0 12px rgba(83, 165, 255, 0.4); }}
+    .status-bad .status-dot {{ background: var(--bad); box-shadow: 0 0 12px rgba(239, 107, 119, 0.4); }}
+    .status-warn .status-dot {{ background: var(--warn); box-shadow: 0 0 12px rgba(247, 185, 85, 0.4); }}
+    .status-neutral .status-dot {{ background: #8da0ae; }}
+    .grid {{ display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 10px; }}
+    .card {{ background: linear-gradient(180deg, #182027 0%, #141b20 100%); border: 1px solid var(--line); border-radius: 4px; padding: 12px; min-height: 100%; }}
+    .span-12 {{ grid-column: span 12; }}
+    .span-8 {{ grid-column: span 8; }}
+    .span-6 {{ grid-column: span 6; }}
+    .span-4 {{ grid-column: span 4; }}
+    .span-3 {{ grid-column: span 3; }}
+    table {{ width: 100%; border-collapse: collapse; font-size: 12px; }}
+    th, td {{ border-bottom: 1px solid #2b3841; padding: 6px 5px; text-align: left; vertical-align: top; }}
+    th {{ color: var(--muted); font-weight: 700; text-transform: uppercase; font-size: 11px; }}
+    .badge {{ display: inline-flex; border: 1px solid var(--line); border-radius: 999px; padding: 1px 8px; font-size: 11px; white-space: nowrap; }}
+    .badge-ok {{ color: var(--ok); border-color: rgba(70, 215, 164, 0.5); }}
+    .badge-bad {{ color: var(--bad); border-color: rgba(239, 107, 119, 0.6); }}
+    .badge-warn {{ color: var(--warn); border-color: rgba(247, 185, 85, 0.6); }}
+    .badge-neutral {{ color: var(--muted); }}
+    .filters {{ display: grid; gap: 8px; grid-template-columns: 1.2fr 1fr 1fr; }}
+    .filters input, .filters select {{
+      width: 100%;
+      background: #10161b;
+      color: var(--text);
+      border: 1px solid #34424c;
+      border-radius: 3px;
+      padding: 7px 8px;
+      font: inherit;
+      font-size: 12px;
+    }}
+    pre {{ margin: 0; max-height: 200px; overflow: auto; background: #0b1116; border: 1px solid #29353f; border-radius: 3px; padding: 8px; color: #d5e5f2; font-size: 11px; }}
+    .meta {{ font-size: 11px; color: var(--muted); }}
+    .two-col {{ display: grid; gap: 10px; grid-template-columns: 1fr 1fr; }}
+    .safety button {{
+      margin-right: 8px;
+      border: 1px solid #485864;
+      background: #172027;
+      color: #7e94a5;
+      border-radius: 3px;
+      padding: 7px 10px;
+      cursor: not-allowed;
+    }}
     @media (max-width: 840px) {{
-      header {{ display: block; }}
-      .status {{ margin-top: 12px; }}
+      header {{ grid-template-columns: 1fr; }}
       .grid {{ grid-template-columns: 1fr; }}
-      .summary li {{ grid-template-columns: 110px minmax(0, 1fr); }}
+      .span-12, .span-8, .span-6, .span-4, .span-3 {{ grid-column: span 1; }}
+      .filters {{ grid-template-columns: 1fr; }}
+      .two-col {{ grid-template-columns: 1fr; }}
     }}
   </style>
 </head>
@@ -1219,86 +1924,222 @@ def render_codex_worker_live_status_html(root: str | Path, *, auth_token: str | 
   <main>
     <header>
       <div>
-        <h1>ION Codex Worker</h1>
-        <p>Bounded live telemetry for the current Codex queue runner. This panel shows public run state and artifact metadata only; it does not expose model private reasoning, credentials, or raw broad logs.</p>
+        <h1>Worker Command Center</h1>
+        <p>JOC-style read-only worker cockpit over machine-observed facts only. No mutation controls are active in this surface.</p>
+        <p class="meta">model: <code>{_html_text(model.get('schema_id') or 'unknown')}</code> | generated: <code id="generated-at">{_html_text(model.get("generated_at") or "none")}</code></p>
       </div>
-      <div class="status {status_class}" id="phase-badge"><span class="dot"></span><span>{_html_text(telemetry.get("phase_status") or "unknown")}</span></div>
+      <div class="status-badge status-{_html_text(status_class)}" id="phase-badge"><span class="status-dot"></span><span id="phase-label">{_html_text(status_label)}</span></div>
     </header>
-    <section class="grid" aria-label="worker telemetry">
-      <article class="card">
-        <h2>Run State</h2>
-        <ul class="summary" id="summary">{_worker_summary_items(telemetry)}</ul>
+
+    <section class="grid" aria-label="worker command center">
+      <article class="card span-12">
+        <h2>Filter and Sort</h2>
+        <div class="filters">
+          <input id="filter-search" type="search" placeholder="Search by run/request/model/status">
+          <select id="filter-status"><option value="">all statuses</option>{filter_status}</select>
+          <select id="filter-sort">{filter_sort}</select>
+        </div>
       </article>
-      <article class="card">
-        <h2>Proof Gate</h2>
-        <p class="note">Tool: <code>ion_codex_worker_live_status</code></p>
-        <p>Schema: <code>{_html_text(telemetry.get("schema_id") or "unknown")}</code></p>
-        <p>Run status: <code id="run-status">{_html_text(telemetry.get("run_status") or "unknown")}</code></p>
-        <p>Last updated: <code id="last-event">{_html_text(telemetry.get("last_heartbeat_or_event_at") or "none")}</code></p>
+
+      <article class="card span-4">
+        <h2>Active Worker</h2>
+        <table><tbody id="active-worker">{_worker_active_rows(active)}</tbody></table>
       </article>
-      <article class="card" style="grid-column: 1 / -1;">
-        <h2>Public Artifacts</h2>
+      <article class="card span-4">
+        <h2>Machine Sign-In</h2>
         <table>
-          <thead><tr><th>artifact</th><th>exists</th><th>bytes</th><th>modified</th></tr></thead>
-          <tbody id="artifacts">{_worker_artifact_rows(telemetry)}</tbody>
+          <tbody>
+            <tr><th>status</th><td>{_worker_badge(machine_signin.get("status") or "unknown")}</td></tr>
+            <tr><th>worker_authored</th><td>{_worker_badge(machine_signin.get("worker_authored"))}</td></tr>
+            <tr><th>required context</th><td>{_html_text(machine_signin.get("required_context_reads_ready") or 0)} / {_html_text(machine_signin.get("required_context_reads_total") or 0)}</td></tr>
+            <tr><th>missing paths</th><td>{_html_text(machine_signin.get("required_context_reads_missing") or 0)}</td></tr>
+            <tr><th>receipt path</th><td><code>{_html_text(machine_signin.get("worker_context_awareness_receipt_path") or "none")}</code></td></tr>
+            <tr><th>receipt sha256</th><td><code>{_html_text(machine_signin.get("worker_context_awareness_receipt_sha256") or "none")}</code></td></tr>
+          </tbody>
+        </table>
+      </article>
+      <article class="card span-4">
+        <h2>Proof Gate</h2>
+        <table>
+          <tbody>
+            <tr><th>context proof</th><td>{_worker_badge(proof_gate.get("context_proof_accepted"))}</td></tr>
+            <tr><th>template proof</th><td>{_worker_badge(proof_gate.get("template_action_proof_accepted"))}</td></tr>
+            <tr><th>return template</th><td>{_worker_badge(proof_gate.get("return_template_valid"))}</td></tr>
+            <tr><th>workload diff</th><td>{_worker_badge(proof_gate.get("workload_diff_accepted"))}</td></tr>
+            <tr><th>terminal intake</th><td>{_worker_badge(proof_gate.get("terminal_intake_state") or "not-terminal")}</td></tr>
+          </tbody>
+        </table>
+      </article>
+
+      <article class="card span-12">
+        <h2>Latest Worker Runs</h2>
+        <table>
+          <thead><tr><th>status</th><th>run_id</th><th>request_id</th><th>model</th><th>reasoning</th><th>started</th><th>completed</th><th>terminal</th><th>run packet</th></tr></thead>
+          <tbody id="latest-runs">{latest_rows_html}</tbody>
+        </table>
+      </article>
+
+      <article class="card span-12">
+        <h2>Receipt Chain Matrix</h2>
+        <table>
+          <thead><tr><th>artifact</th><th>exists</th><th>bytes</th><th>sha256</th><th>modified</th><th>path</th></tr></thead>
+          <tbody id="receipt-chain">{chain_rows_html}</tbody>
+        </table>
+      </article>
+
+      <article class="card span-6">
+        <h2>Model Move Summary</h2>
+        <table>
+          <tbody>
+            <tr><th>model</th><td>{_html_text(model_move.get("selected_model") or "none")}</td></tr>
+            <tr><th>reasoning</th><td>{_html_text(model_move.get("selected_reasoning_effort") or "none")}</td></tr>
+            <tr><th>usage_pool</th><td><code>{_html_text(model_move.get("usage_pool_id") or "none")}</code></td></tr>
+            <tr><th>model_move_id</th><td><code>{_html_text(model_move.get("model_move_id") or "none")}</code></td></tr>
+            <tr><th>routing reasons</th><td>{_html_text(", ".join(str(x) for x in model_move.get("routing_reasons", [])) or "none")}</td></tr>
+            <tr><th>summary</th><td>{_html_text(model_move.get("summary") or "none")}</td></tr>
+          </tbody>
+        </table>
+      </article>
+
+      <article class="card span-6 safety">
+        <h2>View-Only Safety</h2>
+        <p>Mutation controls disabled unless explicit bounded authority is present.</p>
+        <p>production_authority: {_worker_badge(readonly.get("production_authority"))} live_execution_authority: {_worker_badge(readonly.get("live_execution_authority"))}</p>
+        <button disabled>Queue Mutation (disabled)</button>
+        <button disabled>Worker Kill (disabled)</button>
+        <button disabled>Retry/Replay (disabled)</button>
+      </article>
+
+      <article class="card span-12">
+        <h2>Logs</h2>
+        <div class="two-col">{log_cards_html}</div>
+      </article>
+
+      <article class="card span-12">
+        <h2>Fan-Out Telemetry</h2>
+        <p>status: {_worker_badge(fanout_status.get("status") or "unknown")} | queue_mutation_detected: {_worker_badge(fanout_status.get("queue_mutation_detected"))}</p>
+        <p>timeout fail-closed: {_worker_badge(fanout_status.get("timeout_fail_closed_summary", {}).get("fail_closed") if isinstance(fanout_status.get("timeout_fail_closed_summary"), Mapping) else False)} | conflict deferrals: {_html_text(fanout_status.get("conflict_lock_summary", {}).get("conflict_deferral_events") if isinstance(fanout_status.get("conflict_lock_summary"), Mapping) else '0')}</p>
+        <table>
+          <thead><tr><th>scenario</th><th>child</th><th>lease receipt</th><th>heartbeat receipt</th><th>worker sign-in receipt</th></tr></thead>
+          <tbody>{parent_rows_html}</tbody>
+        </table>
+      </article>
+
+      <article class="card span-6">
+        <h2>Supabase Event Links</h2>
+        <table>
+          <thead><tr><th>time</th><th>event_type</th><th>packet_id</th><th>receipt path</th></tr></thead>
+          <tbody>{supabase_html}</tbody>
+        </table>
+      </article>
+
+      <article class="card span-6">
+        <h2>Settlement Blockers</h2>
+        <table>
+          <thead><tr><th>status</th><th>time</th><th>path</th></tr></thead>
+          <tbody>{settlement_html}</tbody>
         </table>
       </article>
     </section>
   </main>
   <script>
     const endpoint = document.body.dataset.endpoint;
-    const phaseBadge = document.getElementById('phase-badge');
-    const summary = document.getElementById('summary');
-    const artifacts = document.getElementById('artifacts');
-    const runStatus = document.getElementById('run-status');
-    const lastEvent = document.getElementById('last-event');
-    function text(value) {{ return value === undefined || value === null || value === '' ? 'none' : String(value); }}
-    function seconds(value) {{
-      const n = Number(value);
-      if (!Number.isFinite(n)) return 'unknown';
-      const whole = Math.max(0, Math.floor(n));
-      const m = Math.floor(whole / 60);
-      const s = whole % 60;
-      return m ? `${{m}}m ${{s}}s` : `${{s}}s`;
+    const phaseBadge = document.getElementById("phase-badge");
+    const phaseLabel = document.getElementById("phase-label");
+    const generatedAt = document.getElementById("generated-at");
+    const search = document.getElementById("filter-search");
+    const status = document.getElementById("filter-status");
+    const sort = document.getElementById("filter-sort");
+    const latestRunsBody = document.getElementById("latest-runs");
+
+    function text(value) {{
+      return value === undefined || value === null || value === "" ? "" : String(value);
     }}
+
     function esc(value) {{
-      return text(value).replace(/[&<>"']/g, ch => ({{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}}[ch]));
+      return text(value).replace(/[&<>"']/g, (ch) => ({{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}}[ch]));
     }}
-    function render(data) {{
-      const payload = data && data.data ? data.data : data;
-      const t = payload && payload.live_worker_telemetry ? payload.live_worker_telemetry : {{}};
-      const phase = text(t.phase_status || t.run_status || 'unknown');
-      phaseBadge.className = 'status ' + (t.active_process_running ? 'active' : (phase.startsWith('terminal') ? 'terminal' : 'idle'));
-      phaseBadge.querySelector('span:last-child').textContent = phase;
-      const proof = t.proof_gate_preflight || {{}};
-      const terminal = t.terminal_intake_result || {{}};
-      const rows = [
-        ['phase', phase],
-        ['active', Boolean(t.active_process_running)],
-        ['elapsed', seconds(t.elapsed_seconds)],
-        ['pid', t.active_worker_pid || 'none'],
-        ['run', t.active_run_id || 'none'],
-        ['heartbeat', t.last_heartbeat_or_event_at || 'none'],
-        ['proof_context', proof.context_proof_accepted ?? 'unknown'],
-        ['proof_template', proof.template_action_proof_accepted ?? 'unknown'],
-        ['terminal', terminal.state || 'not-terminal'],
-      ];
-      summary.innerHTML = rows.map(([k, v]) => `<li><span>${{esc(k)}}</span><strong>${{esc(v)}}</strong></li>`).join('');
-      const a = t.artifacts || {{}};
-      const names = ['run_packet', 'worker_stdout', 'worker_stderr', 'stdout', 'stderr', 'latest_return'];
-      artifacts.innerHTML = names.map(name => {{
-        const item = a[name] || {{}};
-        return `<tr><td><code>${{esc(name)}}</code></td><td>${{esc(Boolean(item.exists))}}</td><td>${{esc(item.bytes ?? 'unknown')}}</td><td>${{esc(item.modified_at || 'none')}}</td></tr>`;
-      }}).join('');
-      runStatus.textContent = text(t.run_status || 'unknown');
-      lastEvent.textContent = text(t.last_heartbeat_or_event_at || 'none');
+
+    function badge(value) {{
+      const raw = text(value) || "unknown";
+      const lower = raw.toLowerCase();
+      let kind = "neutral";
+      if (lower.includes("accept") || lower.includes("ready") || lower.includes("running") || lower === "true") kind = "ok";
+      if (lower.includes("block") || lower.includes("invalid") || lower.includes("fail") || lower.includes("defer") || lower === "false") kind = "bad";
+      if (lower.includes("template") || lower.includes("timeout")) kind = "warn";
+      return `<span class="badge badge-${{kind}}">${{esc(raw)}}</span>`;
     }}
+
+    function renderLatestRows(rows) {{
+      if (!Array.isArray(rows) || rows.length === 0) {{
+        latestRunsBody.innerHTML = '<tr><td colspan="9">No recent worker runs.</td></tr>';
+        return;
+      }}
+      const query = text(search.value).toLowerCase();
+      const statusFilter = text(status.value).toLowerCase();
+      const sortValue = text(sort.value);
+      let filtered = rows.filter((row) => {{
+        const statusText = text(row.status || row.terminal_state).toLowerCase();
+        if (statusFilter && !statusText.includes(statusFilter)) return false;
+        if (!query) return true;
+        const haystack = [
+          row.status, row.run_id, row.request_id, row.selected_model, row.selected_reasoning_effort, row.started_at, row.completed_at,
+        ].map((v) => text(v).toLowerCase()).join(" ");
+        return haystack.includes(query);
+      }});
+      if (sortValue === "time_asc") {{
+        filtered.sort((a, b) => text(a.started_at || a.created_at || a.mtime).localeCompare(text(b.started_at || b.created_at || b.mtime)));
+      }} else if (sortValue === "status") {{
+        filtered.sort((a, b) => text(a.status).localeCompare(text(b.status)));
+      }} else if (sortValue === "model") {{
+        filtered.sort((a, b) => text(a.selected_model).localeCompare(text(b.selected_model)));
+      }} else if (sortValue === "run_id") {{
+        filtered.sort((a, b) => text(a.run_id).localeCompare(text(b.run_id)));
+      }} else {{
+        filtered.sort((a, b) => text(b.started_at || b.created_at || b.mtime).localeCompare(text(a.started_at || a.created_at || a.mtime)));
+      }}
+      latestRunsBody.innerHTML = filtered.map((row) => `
+        <tr>
+          <td>${{badge(row.status || row.terminal_state || "unknown")}}</td>
+          <td><code>${{esc(row.run_id || "none")}}</code></td>
+          <td><code>${{esc(row.request_id || "none")}}</code></td>
+          <td>${{esc(row.selected_model || "none")}}</td>
+          <td>${{esc(row.selected_reasoning_effort || "none")}}</td>
+          <td>${{esc(row.started_at || row.created_at || row.mtime || "none")}}</td>
+          <td>${{esc(row.completed_at || "none")}}</td>
+          <td>${{badge(row.terminal_state || "not-terminal")}}</td>
+          <td><code>${{esc(row.run_packet_path || "none")}}</code></td>
+        </tr>
+      `).join("");
+    }}
+
+    let latestRows = {json.dumps(latest_runs)};
+    function render(model) {{
+      if (!model || typeof model !== "object") return;
+      const active = model.active_worker || {{}};
+      const statusClass = text(active.status_badge || "neutral");
+      phaseBadge.className = `status-badge status-${{statusClass}}`;
+      phaseLabel.textContent = text(active.status || "unknown");
+      if (generatedAt) generatedAt.textContent = text(model.generated_at || "none");
+      if (Array.isArray(model.latest_worker_runs)) {{
+        latestRows = model.latest_worker_runs;
+      }}
+      renderLatestRows(latestRows);
+    }}
+
     async function poll() {{
       try {{
-        const response = await fetch(endpoint, {{cache: 'no-store', headers: {{'accept': 'application/json'}}}});
-        if (response.ok) render(await response.json());
+        const response = await fetch(endpoint, {{cache: "no-store", headers: {{"accept": "application/json"}}}});
+        if (!response.ok) return;
+        render(await response.json());
       }} catch (_error) {{}}
     }}
+
+    search.addEventListener("input", () => renderLatestRows(latestRows));
+    status.addEventListener("change", () => renderLatestRows(latestRows));
+    sort.addEventListener("change", () => renderLatestRows(latestRows));
+
+    render({json.dumps(model)});
     setInterval(poll, 5000);
     poll();
   </script>
@@ -1439,7 +2280,7 @@ class IonChatGPTPreviewHandler(BaseHTTPRequestHandler):
         self.send_header("Content-Length", str(len(body)))
         self.send_header("Cache-Control", "no-store")
         self.send_header("X-Content-Type-Options", "nosniff")
-        self.send_header("Content-Security-Policy", "default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src 'self'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'")
+        self.send_header("Content-Security-Policy", "default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src 'self'; frame-src 'self'; img-src 'self' data:; form-action 'self'; base-uri 'none'; frame-ancestors 'none'")
         self.end_headers()
         self.wfile.write(body)
 
@@ -1554,8 +2395,160 @@ class IonChatGPTPreviewHandler(BaseHTTPRequestHandler):
         self.send_header("Cache-Control", "no-store")
         self.end_headers()
 
+    def _send_bytes(self, status: int, body: bytes, content_type: str) -> None:
+        self.send_response(status)
+        self.send_header("Content-Type", content_type)
+        self.send_header("Content-Length", str(len(body)))
+        self.send_header("Cache-Control", "no-store")
+        self.send_header("X-Content-Type-Options", "nosniff")
+        self.end_headers()
+        self.wfile.write(body)
+
+    def _optional_public_cockpit_access(self) -> tuple[bool, str | None]:
+        ok, _finding, token = self._check_public_cockpit_access()
+        return ok, token
+
+    def _send_project_preview_proxy(self, project_id: str, request_path: str) -> None:
+        spec, finding = resolve_project(self.server.ion_root, project_id)  # type: ignore[attr-defined]
+        if spec is None:
+            self._send_json(404, {"ok": False, "finding": finding or "project_not_registered"})
+            return
+        if request_path.endswith("/@vite/client"):
+            vite_client_stub = b"""
+window.__vite_plugin_react_preamble_installed__ = true;
+window.$RefreshReg$ = window.$RefreshReg$ || (() => {});
+window.$RefreshSig$ = window.$RefreshSig$ || (() => (type) => type);
+export function createHotContext() {
+  return {
+    data: {},
+    accept() {},
+    dispose() {},
+    prune() {},
+    decline() {},
+    invalidate() {},
+    on() {},
+    off() {},
+    send() {}
+  };
+}
+export function updateStyle(id, content) {
+  let el = document.querySelector('style[data-vite-dev-id="' + id + '"]');
+  if (!el) {
+    el = document.createElement("style");
+    el.setAttribute("data-vite-dev-id", id);
+    document.head.appendChild(el);
+  }
+  el.textContent = content;
+}
+export function removeStyle(id) {
+  const el = document.querySelector('style[data-vite-dev-id="' + id + '"]');
+  if (el) el.remove();
+}
+export function injectQuery(url) { return url; }
+export class ErrorOverlay extends HTMLElement {}
+try {
+  if (!customElements.get("vite-error-overlay")) {
+    customElements.define("vite-error-overlay", ErrorOverlay);
+  }
+} catch (_err) {}
+"""
+            self._send_bytes(
+                200,
+                vite_client_stub,
+                "text/javascript; charset=utf-8",
+            )
+            return
+        if request_path.endswith("/@react-refresh"):
+            self._send_bytes(
+                200,
+                b"window.__vite_plugin_react_preamble_installed__ = true; window.$RefreshReg$ = window.$RefreshReg$ || (() => {}); window.$RefreshSig$ = window.$RefreshSig$ || (() => (type) => type); export function injectIntoGlobalHook() {}; export default {};\n",
+                "text/javascript; charset=utf-8",
+            )
+            return
+        query = urlparse(self.path).query
+        target_path = request_path
+        if target_path == f"/projects/{project_id}/preview":
+            target_path += "/"
+        target = f"http://127.0.0.1:{spec.preview_port}{target_path}"
+        if query:
+            target = f"{target}?{query}"
+        try:
+            request = urllib.request.Request(
+                target,
+                headers={
+                    "Accept": self.headers.get("accept") or "*/*",
+                    "Accept-Encoding": "identity",
+                    "User-Agent": "HelixionProjectWorkbench/0.1",
+                },
+            )
+            with urllib.request.urlopen(request, timeout=45) as response:
+                body = response.read()
+                content_type = response.headers.get("content-type")
+                if not content_type:
+                    content_type = mimetypes.guess_type(urlparse(target).path)[0] or "application/octet-stream"
+                if "text/html" in content_type:
+                    text = body.decode("utf-8", errors="replace")
+                    text = re.sub(
+                        r'<script type="module">import \{ injectIntoGlobalHook \} from "[^"]*/@react-refresh";.*?</script>\s*',
+                        (
+                            '<script type="module">'
+                            'window.__vite_plugin_react_preamble_installed__ = true;'
+                            'window.$RefreshReg$ = () => {};'
+                            'window.$RefreshSig$ = () => (type) => type;'
+                            '</script>\n'
+                        ),
+                        text,
+                        flags=re.DOTALL,
+                    )
+                    text = re.sub(
+                        r'\s*<script type="module" src="[^"]*/@vite/client"></script>\s*',
+                        "\n",
+                        text,
+                    )
+                    body = text.encode("utf-8")
+                self._send_bytes(int(getattr(response, "status", 200) or 200), body, content_type)
+                return
+        except Exception as exc:
+            html_text = (
+                "<!doctype html><html><head><meta charset=\"utf-8\"><title>Cosmos Preview Offline</title>"
+                "<style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#050607;color:#f4f1eb;font-family:system-ui,sans-serif}"
+                "main{max-width:680px;padding:24px;border:1px solid #30383d;background:#111619}code{color:#ffd3b1}</style></head>"
+                "<body><main><h1>Cosmos preview is offline</h1>"
+                f"<p>Helixion tried to proxy <code>{_html_text(target)}</code>.</p>"
+                f"<p>Finding: <code>{_html_text(exc.__class__.__name__)}</code>.</p>"
+                "<p>Start or restart the Cosmos preview service, then reload this frame.</p>"
+                "</main></body></html>"
+            )
+            self._send_html(503, html_text)
+
     def do_GET(self) -> None:  # noqa: N802 - stdlib handler name
         path = self.path.split("?", 1)[0]
+        if path == "/projects/cosmos/preview" or path.startswith("/projects/cosmos/preview/"):
+            self._send_project_preview_proxy("cosmos", path)
+            return
+        if path in {"/projects", "/projects/", "/projects/cosmos", "/projects/cosmos/"}:
+            authenticated, token = self._optional_public_cockpit_access()
+            self._send_html(
+                200,
+                render_project_workbench_html(
+                    self.server.ion_root,  # type: ignore[attr-defined]
+                    public_base_url=self._public_base_url(),
+                    auth_token=token,
+                    authenticated=authenticated,
+                    project_id="cosmos",
+                ),
+            )
+            return
+        if path == "/projects/cosmos/model.json":
+            self._send_json(
+                200,
+                build_project_workspace_status(
+                    self.server.ion_root,  # type: ignore[attr-defined]
+                    project_id="cosmos",
+                    probe_preview=True,
+                ),
+            )
+            return
         query = parse_qs(urlparse(self.path).query)
         if path in {"/cockpit/login", "/cockpit/login/"}:
             self._send_login(
@@ -1662,12 +2655,16 @@ class IonChatGPTPreviewHandler(BaseHTTPRequestHandler):
             if not ok:
                 self._send_public_cockpit_blocked(str(finding), next_path="/cockpit/worker/model.json")
                 return
-            self._send_json(200, call_chatgpt_connector_tool(self.server.ion_root, "ion_codex_worker_live_status", {}))  # type: ignore[attr-defined]
+            self._send_json(200, build_worker_cockpit_view_model(self.server.ion_root))  # type: ignore[attr-defined]
             return
         if path in APP_PATHS:
             self._send_html(
                 200,
-                render_ion_connector_landing(self.server.ion_root, public_base_url=self._public_base_url()),  # type: ignore[attr-defined]
+                render_ion_connector_landing(
+                    self.server.ion_root,  # type: ignore[attr-defined]
+                    public_base_url=self._public_base_url(),
+                    active_nav="projects" if path == "/projects" else "home",
+                ),
             )
             return
         if path == "/app/status.json":
@@ -1680,6 +2677,44 @@ class IonChatGPTPreviewHandler(BaseHTTPRequestHandler):
 
     def do_POST(self) -> None:  # noqa: N802 - stdlib handler name
         path = self.path.split("?", 1)[0]
+        if path in {
+            "/projects/cosmos/actions/run",
+            "/projects/cosmos/browser/capture",
+            "/projects/cosmos/patch/preview",
+            "/projects/cosmos/patch/apply",
+            "/projects/cosmos/patch/revert",
+        }:
+            payload = self._read_payload()
+            ok, finding, token = self._check_public_cockpit_access(payload)
+            if not ok:
+                self._send_public_cockpit_blocked(str(finding), next_path="/projects/cosmos")
+                return
+            payload.setdefault("project_id", "cosmos")
+            if path == "/projects/cosmos/actions/run":
+                result = project_action_run(self.server.ion_root, payload)  # type: ignore[attr-defined]
+            elif path == "/projects/cosmos/browser/capture":
+                result = project_browser_capture(self.server.ion_root, payload)  # type: ignore[attr-defined]
+            elif path == "/projects/cosmos/patch/preview":
+                result = project_patch_preview(self.server.ion_root, payload)  # type: ignore[attr-defined]
+            elif path == "/projects/cosmos/patch/apply":
+                result = project_patch_apply(self.server.ion_root, payload)  # type: ignore[attr-defined]
+            else:
+                result = project_patch_revert(self.server.ion_root, payload)  # type: ignore[attr-defined]
+            if self._wants_json() or path not in {"/projects/cosmos/actions/run", "/projects/cosmos/browser/capture"}:
+                self._send_json(200 if result.get("ok") else 409, result)
+                return
+            self._send_html(
+                200 if result.get("ok") else 409,
+                render_project_workbench_html(
+                    self.server.ion_root,  # type: ignore[attr-defined]
+                    public_base_url=self._public_base_url(),
+                    auth_token=token,
+                    authenticated=True,
+                    project_id="cosmos",
+                    action_result=result,
+                ),
+            )
+            return
         if path == "/cockpit/auth/token":
             payload = self._read_payload()
             next_path = safe_next_path(str(payload.get("next") or "/cockpit/chat"))

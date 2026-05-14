@@ -36,6 +36,14 @@ SERVICE_SPECS = (
         "critical": True,
         "fix_label": "Restart Helixion",
     },
+    {
+        "id": "cosmos_preview",
+        "unit": "ion-cosmos-preview.service",
+        "label": "Cosmos preview",
+        "role": "Local Cosmos Vite preview proxied into the Helixion Projects workbench.",
+        "critical": False,
+        "fix_label": "Restart Cosmos preview",
+    },
 )
 
 

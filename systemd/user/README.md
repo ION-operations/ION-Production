@@ -46,7 +46,7 @@ drop the `.template` suffix, and copy the rendered files to
 For the current production checkout, the root path is:
 
 ```text
-/home/sev/ION - Production/ION_CODEX FULL
+/home/sev/ION - Production/ION_Developement
 ```
 
 If using an Action Gateway token currently stored as raw text, create a systemd
@@ -93,4 +93,25 @@ http://127.0.0.1:8788/
 http://127.0.0.1:8788/model.json
 https://ion.helixion.net/mcp
 https://ion-actions.helixion.net/health
+```
+
+
+## Cloudflare / GPT Builder blocker note
+
+If local endpoints work but GPT Builder Actions fail, test the public host with a
+non-browser client. Cloudflare may allow browser-looking requests while blocking
+OpenAI/GPT Builder style requests with `403` / `1010`. That is not a schema or
+bearer-token problem. It requires a Cloudflare security/WAF/bot rule exception
+for:
+
+```text
+ion-actions.helixion.net
+ion.helixion.net
+```
+
+The local services should still be verified first:
+
+```text
+http://127.0.0.1:8777/health
+http://127.0.0.1:8765/health
 ```

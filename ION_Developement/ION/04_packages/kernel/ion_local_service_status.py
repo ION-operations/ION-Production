@@ -107,6 +107,17 @@ LOCAL_SERVICE_SPECS = [
         template_name="ion-cockpit-app.service.template",
         command_summary="python3 -S -m kernel.ion_local_cockpit_app --ion-root . --host 127.0.0.1 --port 8788 --serve",
     ),
+    LocalServiceSpec(
+        service_id="cosmos_preview",
+        unit_name="ion-cosmos-preview.service",
+        role="Cosmos Vite dev preview for the Helixion Projects workbench.",
+        local_url="http://127.0.0.1:5173",
+        health_url="http://127.0.0.1:5173",
+        public_url="https://ion.helixion.net/projects/cosmos/preview/",
+        tunnel_name=None,
+        template_name="ion-cosmos-preview.service.template",
+        command_summary="npm run dev -- --host 127.0.0.1 --port 5173",
+    ),
 ]
 
 
