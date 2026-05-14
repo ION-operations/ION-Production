@@ -1,6 +1,6 @@
 # Codex Solo HOT_CONTEXT
 
-generated_at: 2026-05-14T16:14:36+00:00
+generated_at: 2026-05-14T17:16:25+00:00
 witness_policy: Capsule is the minimum working context. Mini is a lookup/receipt index for capsule history. Neither overrides current repo authority, tests, receipts, or explicit operator instructions.
 production_authority: false
 live_execution_authority: false
@@ -8,7 +8,6 @@ live_execution_authority: false
 ## MINIMUM WORKING CAPSULE
 
 (Capsule exceeded 80 lines; recent active tail shown.)
-| C-046 | 2026-05-08 | Added candidate Assistant Work route metadata to Action Gateway validate-only responses; held MCP route tool for explicit tool-policy/schema gate. | `ION/04_packages/kernel/ion_custom_gpt_action_gateway.py, ION/tests/test_kernel_ion_custom_gpt_action_gateway.py, ION/05_context/current/ai_assistant_work/receipts/AI_ASSISTANT_WORK_GATEWAY_ROUTE_METADATA_RECEIPT_20260508T182713Z.json, ION/06_intelligence/research/sandbox_agent_package_evolution/2026-05-08_phase4_product_reconciliation_matrix.md` | VERIFIED |
 | C-047 | 2026-05-08 | Planned candidate-domain operation ladder for assistant-work surfaces: candidate domains/agents/templates/routes may operate under containment for classification, proof shaping, route preview, trace display, and diagnost | `ION/06_intelligence/research/sandbox_agent_package_evolution/2026-05-08_candidate_domain_operation_protocol_plan.md, ION/05_context/current/ai_assistant_work/next/AI_ASSISTANT_WORK_NEXT_PACKET_CANDIDATE_DOMAIN_OPERATION_PROTOCOL_20260508T183906Z.json, ION/05_context/current/ai_assistant_work/receipts/AI_ASSISTANT_WORK_CANDIDATE_DOMAIN_OPERATION_PLAN_RECEIPT_20260508T184123Z.json` | PLANNED |
 | C-048 | 2026-05-08 | Implemented candidate-domain lifecycle gate: added provisional protocol, candidate lifecycle registry, scorecards, promotion proposal draft, and route compiler filtering for inactive/rejected/archived/draft routes. | `ION/02_architecture/ION_CANDIDATE_DOMAIN_OPERATION_PROTOCOL.md, ION/05_context/current/ai_assistant_work/candidate_lifecycle/CANDIDATE_DOMAIN_LIFECYCLE_REGISTRY_V0_1.yaml, ION/04_packages/kernel/ion_assistant_work_route_compiler.py, ION/tests/test_kernel_ion_assistant_work_route_compiler.py, ION/05_context/current/ai_assistant_work/receipts/AI_ASSISTANT_WORK_CANDIDATE_DOMAIN_LIFECYCLE_IMPLEMENTATION_RECEIPT_20260508T185104Z.json` | IMPLEMENTED |
 | C-049 | 2026-05-08 | Formalized root source lanes for workpackets, diffs, and ION_sandbox: added lane READMEs, machine-readable indexes, consolidated source-lane policy, receipt, and git hygiene for sandbox snapshots. | `workpackets/README.md, workpackets/WORKPACKET_INDEX_20260508T190626Z.json, diffs/README.md, diffs/DIFF_INDEX_20260508T190626Z.json, ION_sandbox/README.md, ION_sandbox/ION_SANDBOX_INDEX_20260508T190626Z.json, ION/05_context/current/source_lanes/ION_ROOT_SOURCE_LANE_POLICY_20260508T190626Z.md, ION/05_context/current/source_lanes/receipts/ION_ROOT_SOURCE_LANE_FORMALIZATION_RECEIPT_20260508T190626Z.json` | IMPLEMENTED |
@@ -88,10 +87,11 @@ Added explicit bounded agent settlement recording through broker/gateway/OpenAPI
 | C-109 | 2026-05-14 | Created external-safe worker cockpit reload/retest handoff artifacts after in-lane restart failure; no service restart attempted in this packet. | `ION/05_context/current/worker_cockpit/retest/WORKER_COCKPIT_EXTERNAL_RELOAD_HANDOFF_AND_POST_RELOAD_RETEST_20260514.md, ION/05_context/current/worker_cockpit/retest/worker_cockpit_post_reload_retest_capture_draft.sh, ION/05_context/current/worker_cockpit/retest/worker_cockpit_external_reload_handoff_receipt_20260514T145001Z.json` | IMPLEMENTED |
 | C-110 | 2026-05-14 | Added governed Needs_Routed intake classifier and synced browser extension native-left source rail; committed scoped source lanes while leaving runtime queues and candidate backlog uncommitted. | `ION/02_architecture/ION_NEEDS_ROUTED_INTAKE_PROTOCOL.md, ION/04_packages/kernel/ion_needs_routed_intake.py, ION/tests/test_kernel_ion_needs_routed_intake.py, ../Needs_Routed/README.md, ../browser_extension/ion_chatops_bridge/src/content.ts` | IMPLEMENTED |
 | C-111 | 2026-05-14 | Refreshed current ION_GPT 10-file upload set to 20260514T161231Z and repaired v4.7 context mesh builder compatibility with branch-context capsules. | `../ION_GPT/99_WORKER_DETAILS/gpt_upload_set_worker_details/UPLOAD_SET_MANIFEST.yaml, ../ION_GPT/99_WORKER_DETAILS/gpt_upload_set_worker_details/CURRENT_UPLOAD_FILES.md, ../Needs_Routed/ion_gpt_current_upload_set_refresh_20260514T161231Z.yaml, ../ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tools/ion_context_mesh_builder.py` | CANDIDATE_PACKAGE_REFRESHED_TESTED |
+| C-112 | 2026-05-14 | Applied and committed Branch Delegation Router v0.1 plus AI Git Branch Containment v0.1 from Needs_Routed packages as separate scoped architecture/source packets. | `../Needs_Routed/ion_branch_delegation_router_protocol_v0_1_local_apply_20260514T171243Z.yaml, ../Needs_Routed/ion_ai_git_branch_containment_protocol_v0_1_local_apply_20260514T171514Z.yaml, ION/02_architecture/BRANCH_DELEGATION_ROUTER_PROTOCOL.md, ION/02_architecture/AI_GIT_BRANCH_CONTAINMENT_PROTOCOL.md, ION/04_packages/kernel/ion_branch_delegate_router.py, ION/04_packages/kernel/ion_ai_git_branch_containment.py` | ROUTED_PACKAGES_COMMITTED_TESTED |
 
 ## MINI LOOKUP INDEX
 
-CODEX SOLO MINI INDEX | 2026-05-14T16:14:36+00:00
+CODEX SOLO MINI INDEX | 2026-05-14T17:16:25+00:00
 
 ROLE: lookup/receipt index; Capsule is the minimum working context.
 ACTIVE_CAPSULE: ION/05_context/current/codex_solo/CAPSULE.md
@@ -101,19 +101,19 @@ PACKAGES: ION/05_context/current/codex_solo/CONTEXT_PACKAGES.json
 HISTORY: ION/05_context/current/codex_solo/history
 
 MISSION: dirty_tree_cleanup_and_needs_routed_intake
-PHASE: ion_gpt_upload_set_refresh
-LAST_RECEIPT: Refreshed current ION_GPT 10-file upload set to 20260514T161231Z and repaired v4.7 context mesh builder compatibility with branch-context capsules.
-BLOCKER: Workspace still contains runtime/current state files, untracked Needs_Routed backlog, root generated zip exports, and separate browser extension source edits.
-NEXT: Commit scoped ION_GPT package manifest and mesh compatibility fix if accepted; keep runtime/current queues and unrelated browser extension dirt separate.
+PHASE: branch_context_package_evolution
+LAST_RECEIPT: Applied and committed Branch Delegation Router v0.1 plus AI Git Branch Containment v0.1 from Needs_Routed packages as separate scoped architecture/source packets.
+BLOCKER: Workspace still contains runtime/current state files, Needs_Routed package backlog, root generated zip exports, and separate browser_extension approval_ui.ts dirt.
+NEXT: Continue dirty-tree organization: keep runtime/current queue state separate; inspect browser_extension approval_ui source lane next; leave package zips and Needs_Routed backlog unc
 
 ACTIVE_TEMPLATE: CODEX_SOLO_WORK_UNIT
 
 CAPSULE_LOOKUP:
-- C-107 2026-05-14 IMPLEMENTED: Validated post-approval local worker cockpit state and issued reload/retest handoff
 - C-108 2026-05-14 IMPLEMENTED: Repaired parent Codex startup bridge to active ION_Developement root, committed native-left browser bridge sou
 - C-109 2026-05-14 IMPLEMENTED: Created external-safe worker cockpit reload/retest handoff artifacts after in-lane restart failure; no service
 - C-110 2026-05-14 IMPLEMENTED: Added governed Needs_Routed intake classifier and synced browser extension native-left source rail; committed
 - C-111 2026-05-14 CANDIDATE_PACKAGE_REFRESHED_TEST: Refreshed current ION_GPT 10-file upload set to 20260514T161231Z and repaired v4.7 context mesh builder compat
+- C-112 2026-05-14 ROUTED_PACKAGES_COMMITTED_TESTED: Applied and committed Branch Delegation Router v0.1 plus AI Git Branch Containment v0.1 from Needs_Routed pack
 
 ROUTE_INDEX: ION/05_context/current/codex_solo/ROUTE.json validates active refs.
 POLICY: Capsule is the minimum working context. Mini is a lookup/receipt index for capsule history. Neither overrides current repo authority, tests, receipts, or explicit operator instructions.
@@ -122,7 +122,7 @@ POLICY: Capsule is the minimum working context. Mini is a lookup/receipt index f
 ## LONG HORIZON CAPSULE INDEX
 
 {
-  "capsule_entry_count": 111,
+  "capsule_entry_count": 112,
   "epoch_count": 12,
   "latest_epochs": [
     {
@@ -474,13 +474,20 @@ POLICY: Capsule is the minimum working context. Mini is a lookup/receipt index f
         "../ION_GPT/99_WORKER_DETAILS/gpt_upload_set_worker_details/UPLOAD_SET_MANIFEST.yaml",
         "../ION_GPT/99_WORKER_DETAILS/gpt_upload_set_worker_details/CURRENT_UPLOAD_FILES.md",
         "../Needs_Routed/ion_gpt_current_upload_set_refresh_20260514T161231Z.yaml",
-        "../ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tools/ion_context_mesh_builder.py"
+        "../ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tools/ion_context_mesh_builder.py",
+        "../Needs_Routed/ion_branch_delegation_router_protocol_v0_1_local_apply_20260514T171243Z.yaml",
+        "../Needs_Routed/ion_ai_git_branch_containment_protocol_v0_1_local_apply_20260514T171514Z.yaml",
+        "ION/02_architecture/BRANCH_DELEGATION_ROUTER_PROTOCOL.md",
+        "ION/02_architecture/AI_GIT_BRANCH_CONTAINMENT_PROTOCOL.md",
+        "ION/04_packages/kernel/ion_branch_delegate_router.py",
+        "ION/04_packages/kernel/ion_ai_git_branch_containment.py"
       ],
-      "row_count": 1,
-      "row_end": "C-111",
+      "row_count": 2,
+      "row_end": "C-112",
       "row_start": "C-111",
       "status_counts": {
-        "CANDIDATE_PACKAGE_REFRESHED_TESTED": 1
+        "CANDIDATE_PACKAGE_REFRESHED_TESTED": 1,
+        "ROUTED_PACKAGES_COMMITTED_TESTED": 1
       },
       "summaries": [
         {
@@ -488,6 +495,12 @@ POLICY: Capsule is the minimum working context. Mini is a lookup/receipt index f
           "id": "C-111",
           "status": "CANDIDATE_PACKAGE_REFRESHED_TESTED",
           "summary": "Refreshed current ION_GPT 10-file upload set to 20260514T161231Z and repaired v4.7 context mesh builder compatibility with branch-context capsules."
+        },
+        {
+          "date": "2026-05-14",
+          "id": "C-112",
+          "status": "ROUTED_PACKAGES_COMMITTED_TESTED",
+          "summary": "Applied and committed Branch Delegation Router v0.1 plus AI Git Branch Containment v0.1 from Needs_Routed packages as separate scoped architecture/source packets."
         }
       ]
     }
@@ -657,36 +670,36 @@ POLICY: Capsule is the minimum working context. Mini is a lookup/receipt index f
 {
   "entries": [
     {
-      "bytes": 63441,
+      "bytes": 64084,
       "classification": "codex_solo_minimum_working_context",
       "exists": true,
       "is_file": true,
       "path": "ION/05_context/current/codex_solo/CAPSULE.md",
       "repo_relative": true,
       "required": true,
-      "sha256": "c65f3953e59451b453e836f54bfcd45d2985034bbe4ad564a083cff5d67fdc7c",
+      "sha256": "74a60e9fa7df16fbf649bbb922988410237eda1be450de0d989c70486d7ea021",
       "why": "Minimum context the standalone Codex lane must always carry."
     },
     {
-      "bytes": 2043,
+      "bytes": 2144,
       "classification": "codex_solo_lookup_receipt_index",
       "exists": true,
       "is_file": true,
       "path": "ION/05_context/current/codex_solo/MINI.md",
       "repo_relative": true,
       "required": true,
-      "sha256": "b3e3649ef289ec80a70a78fabba7692b25f768f4247776588b3b57a06e65e6a4",
+      "sha256": "a206dab1e213ffc32ec951c13ea5dbd39db83e4f88ede69477b5c651104bcab3",
       "why": "Lookup index and receipt summary for capsule history."
     },
     {
-      "bytes": 58879,
+      "bytes": 60567,
       "classification": "codex_solo_long_horizon_index",
       "exists": true,
       "is_file": true,
       "path": "ION/05_context/current/codex_solo/LONG_HORIZON.json",
       "repo_relative": true,
       "required": true,
-      "sha256": "6feee6cc0ed25da85141bc3610f62032b8cef9183995fb8aec47d14012e05116",
+      "sha256": "960534c1be37c5549b999e373a1e119293c3261447d3d2c489b7c2e41b37256c",
       "why": "Compressed long-horizon capsule index for older continuity lookup."
     },
     {
@@ -945,7 +958,7 @@ POLICY: Capsule is the minimum working context. Mini is a lookup/receipt index f
 
 ### ION/05_context/current/codex_solo/MINI.md
 
-CODEX SOLO MINI INDEX | 2026-05-14T16:14:36+00:00
+CODEX SOLO MINI INDEX | 2026-05-14T17:16:25+00:00
 
 ROLE: lookup/receipt index; Capsule is the minimum working context.
 ACTIVE_CAPSULE: ION/05_context/current/codex_solo/CAPSULE.md
@@ -955,23 +968,23 @@ PACKAGES: ION/05_context/current/codex_solo/CONTEXT_PACKAGES.json
 HISTORY: ION/05_context/current/codex_solo/history
 
 MISSION: dirty_tree_cleanup_and_needs_routed_intake
-PHASE: ion_gpt_upload_set_refresh
-LAST_RECEIPT: Refreshed current ION_GPT 10-file upload set to 20260514T161231Z and repaired v4.7 context mesh builder compatibility with branch-context capsules.
-BLOCKER: Workspace still contains runtime/current state files, untracked Needs_Routed backlog, root generated zip exports, and separate browser extension source edits.
-NEXT: Commit scoped ION_GPT package manifest and mesh compatibility fix if accepted; keep runtime/current queues and unrelated browser extension dirt separate.
+PHASE: branch_context_package_evolution
+LAST_RECEIPT: Applied and committed Branch Delegation Router v0.1 plus AI Git Branch Containment v0.1 from Needs_Routed packages as separate scoped architecture/source packets.
+BLOCKER: Workspace still contains runtime/current state files, Needs_Routed package backlog, root generated zip exports, and separate browser_extension approval_ui.ts dirt.
+NEXT: Continue dirty-tree organization: keep runtime/current queue state separate; inspect browser_extension approval_ui source lane next; leave package zips and Needs_Routed backlog unc
 
 ACTIVE_TEMPLATE: CODEX_SOLO_WORK_UNIT
 
 CAPSULE_LOOKUP:
-- C-107 2026-05-14 IMPLEMENTED: Validated post-approval local worker cockpit state and issued reload/retest handoff
 - C-108 2026-05-14 IMPLEMENTED: Repaired parent Codex startup bridge to active ION_Developement root, committed native-left browser bridge sou
 - C-109 2026-05-14 IMPLEMENTED: Created external-safe worker cockpit reload/retest handoff artifacts after in-lane restart failure; no service
-- C-110 2026-05-14 IMPLEMENTED: Added governed Needs_Routed intake classifier and synced browser extension native-left source rail; committe
+- C-110 2026-05-14 IMPLEMENTED: Added governed Needs_Routed intake classifier and synced browser extension native-left source rail; committed
+- C-111 2026-05-14 CANDIDATE_PACKAGE_REFRESHED_TEST: Refresh
 
 ### ION/05_context/current/codex_solo/LONG_HORIZON.json
 
 {
-  "capsule_entry_count": 111,
+  "capsule_entry_count": 112,
   "epoch_count": 12,
   "epoch_size_rows": 10,
   "epochs": [
