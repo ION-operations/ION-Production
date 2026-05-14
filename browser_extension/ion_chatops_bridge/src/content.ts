@@ -47,6 +47,7 @@ const CHATGPT_NATIVE_LEFT_STYLE_ID = "ion-chatgpt-native-left-style";
 const CHATGPT_NATIVE_LEFT_RAIL_ID = "ion-chatgpt-native-left-rail";
 const CHATGPT_NATIVE_LEFT_DRAWER_ID = "ion-chatgpt-native-left-drawer";
 const CHATGPT_NATIVE_LEFT_CLASS = "ion-chatgpt-native-left-control";
+const CHATGPT_NATIVE_LEFT_SPLIT_HOST_CLASS = "ion-chatgpt-native-left-split-host";
 const MESSAGE_QUEUE_BUTTON_ID = "ion-chatops-message-queue-button";
 const MESSAGE_QUEUE_SEND_NEXT_BUTTON_ID = "ion-chatops-message-queue-send-next-button";
 const MESSAGE_QUEUE_PANEL_ID = "ion-chatops-message-queue-float";
@@ -214,6 +215,7 @@ type ScanMode = "auto" | "manual";
 type InspectorSaveTarget = "tabs_anchor" | "drop_zone" | "attach_target";
 type AnchorPoint = "top" | "left" | "center" | "right" | "bottom";
 type NativeLeftMode = "queue" | "projects" | "agent" | "context";
+type NativeLeftRailIcon = "ion" | "queue" | "projects" | "agent" | "context";
 type TargetMetaInfo = {
   selector: string;
   anchor: AnchorPoint;
@@ -4625,21 +4627,101 @@ function ensureNativeLeftStyle(): void {
   const style = document.createElement("style");
   style.id = CHATGPT_NATIVE_LEFT_STYLE_ID;
   style.textContent = `
-    #${CHATGPT_NATIVE_LEFT_RAIL_ID} {
+    .${CHATGPT_NATIVE_LEFT_SPLIT_HOST_CLASS} {
+      box-sizing: border-box !important;
+      position: relative !important;
+      min-height: 100dvh !important;
+      height: 100dvh !important;
+      padding-top: max(220px, 50dvh) !important;
+      overflow: visible !important;
+    }
+    .${CHATGPT_NATIVE_LEFT_SPLIT_HOST_CLASS} > #${CHATGPT_NATIVE_LEFT_RAIL_ID} {
+      position: absolute;
+      z-index: 2;
+      left: 0;
+      top: 0;
       box-sizing: border-box;
       display: grid;
+      align-content: start;
+      justify-items: center;
       gap: 6px;
-      width: 38px;
-      max-width: 100%;
-      margin: 8px auto;
-      padding: 4px 0;
-      pointer-events: auto;
+      width: 100%;
+      height: max(220px, 50dvh);
+      padding: 10px 4px 8px;
+      pointer-events: none;
     }
-    #${CHATGPT_NATIVE_LEFT_RAIL_ID}[data-visible="false"],
+    #${CHATGPT_NATIVE_LEFT_RAIL_ID} .ion-native-left-button {
+      box-sizing: border-box;
+      display: grid;
+      place-items: center;
+      position: relative;
+      width: 36px;
+      height: 36px;
+      min-width: 0;
+      padding: 0;
+      border: 0;
+      border-radius: 10px;
+      background: transparent;
+      color: rgba(255,255,255,0.74);
+      cursor: pointer;
+      text-align: center;
+      white-space: nowrap;
+      pointer-events: auto;
+      box-shadow: none;
+      transition: background 120ms ease, color 120ms ease, transform 120ms ease;
+    }
+    #${CHATGPT_NATIVE_LEFT_RAIL_ID} .ion-native-left-button:hover {
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.96);
+    }
+    #${CHATGPT_NATIVE_LEFT_RAIL_ID} .ion-native-left-button[data-active="true"],
+    #${CHATGPT_NATIVE_LEFT_RAIL_ID} .ion-native-left-button[data-primary="true"] {
+      background: rgba(255,255,255,0.11);
+      color: rgba(255,255,255,0.98);
+    }
+    #${CHATGPT_NATIVE_LEFT_RAIL_ID} .ion-native-left-button:active {
+      transform: scale(0.96);
+    }
+    #${CHATGPT_NATIVE_LEFT_RAIL_ID} .ion-native-left-button[data-disabled="true"] {
+      opacity: 0.42;
+      cursor: default;
+      box-shadow: none;
+    }
+    #${CHATGPT_NATIVE_LEFT_RAIL_ID} .ion-native-left-icon {
+      width: 20px;
+      height: 20px;
+      display: block;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.9;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    #${CHATGPT_NATIVE_LEFT_RAIL_ID} .ion-native-left-button[data-native-left-action="open-ion"] .ion-native-left-icon {
+      color: rgba(255,229,208,0.96);
+      stroke-width: 1.8;
+    }
+    #${CHATGPT_NATIVE_LEFT_RAIL_ID} .ion-native-left-button[data-native-left-action="open-ion"][data-active="true"] {
+      background: rgba(255,112,28,0.14);
+    }
+    #${CHATGPT_NATIVE_LEFT_RAIL_ID} .ion-native-left-badge {
+      position: absolute;
+      right: 5px;
+      top: 5px;
+      min-width: 13px;
+      height: 13px;
+      box-sizing: border-box;
+      border: 1px solid rgba(0,0,0,0.42);
+      border-radius: 999px;
+      background: #ff701c;
+      color: #111827;
+      padding: 0 3px;
+      font: 900 8px/11px ui-sans-serif, system-ui, sans-serif;
+      text-align: center;
+    }
     #${CHATGPT_NATIVE_LEFT_DRAWER_ID}[data-visible="false"] {
       display: none;
     }
-    #${CHATGPT_NATIVE_LEFT_RAIL_ID} .ion-native-left-button,
     #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-button {
       box-sizing: border-box;
       min-width: 0;
@@ -4651,14 +4733,6 @@ function ensureNativeLeftStyle(): void {
       white-space: nowrap;
       pointer-events: auto;
     }
-    #${CHATGPT_NATIVE_LEFT_RAIL_ID} .ion-native-left-button {
-      width: 34px;
-      height: 34px;
-      padding: 0;
-      border-radius: 10px;
-      font: 900 10px/32px ui-sans-serif, system-ui, sans-serif;
-    }
-    #${CHATGPT_NATIVE_LEFT_RAIL_ID} .ion-native-left-button[data-active="true"],
     #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-button[data-active="true"],
     #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-button[data-primary="true"] {
       border-color: rgba(255,112,28,0.62);
@@ -4666,7 +4740,6 @@ function ensureNativeLeftStyle(): void {
       color: rgba(255,229,208,0.98);
       box-shadow: 0 0 0 1px rgba(255,112,28,0.10), 0 8px 20px rgba(0,0,0,0.18);
     }
-    #${CHATGPT_NATIVE_LEFT_RAIL_ID} .ion-native-left-button[data-disabled="true"],
     #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-button[data-disabled="true"] {
       opacity: 0.42;
       cursor: default;
@@ -4725,6 +4798,21 @@ function ensureNativeLeftStyle(): void {
       font-size: 10px;
       line-height: 1.25;
       overflow-wrap: anywhere;
+    }
+    #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-tabs {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 5px;
+      position: sticky;
+      top: -10px;
+      z-index: 1;
+      padding-bottom: 2px;
+      background: linear-gradient(180deg, rgba(1,12,20,0.98), rgba(1,12,20,0.78));
+    }
+    #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-tabs .ion-native-left-button {
+      height: 26px;
+      border-radius: 8px;
+      font: 900 9px/24px ui-sans-serif, system-ui, sans-serif;
     }
     #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-actions {
       display: grid;
@@ -4829,13 +4917,25 @@ function leftSurfaceCandidates(): Array<{ element: HTMLElement; rect: DOMRect }>
   return candidates;
 }
 
+function railHostFromToggleButton(toggle: HTMLElement | null): HTMLElement | null {
+  let current = toggle?.parentElement ?? null;
+  let depth = 0;
+  while (current && depth < 8) {
+    const rect = nativeHostRect(current);
+    if (rect && rect.left <= 32 && rect.width >= 36 && rect.width <= 148 && rect.height >= 160) return current;
+    current = current.parentElement;
+    depth += 1;
+  }
+  return null;
+}
+
 function findChatGptLeftRailHost(): HTMLElement | null {
   const candidates = leftSurfaceCandidates()
     .filter(({ rect }) => rect.width >= 36 && rect.width <= 132 && rect.height >= 220 && rect.bottom > window.innerHeight * 0.45)
     .sort((a, b) => a.rect.width - b.rect.width || a.rect.left - b.rect.left);
   if (candidates[0]?.element) return candidates[0].element;
   const toggle = findChatGptSidebarToggleButton();
-  return toggle?.closest<HTMLElement>("nav, aside, [role='navigation']") ?? null;
+  return toggle?.closest<HTMLElement>("nav, aside, [role='navigation']") ?? railHostFromToggleButton(toggle);
 }
 
 function findChatGptLeftDrawerHost(): HTMLElement | null {
@@ -4850,15 +4950,36 @@ function findChatGptSidebarToggleButton(): HTMLElement | null {
     "button[aria-label*='sidebar' i]",
     "button[aria-label*='side bar' i]",
     "button[aria-label*='menu' i]",
+    "button[aria-expanded][aria-controls]",
     "[role='button'][aria-label*='sidebar' i]",
     "[role='button'][aria-label*='side bar' i]",
+    "[role='button'][aria-expanded][aria-controls]",
   ];
   const buttons = Array.from(document.querySelectorAll<HTMLElement>(selectors.join(",")));
-  return buttons.find((button) => {
+  const candidates: Array<{ button: HTMLElement; rect: DOMRect; score: number }> = [];
+  buttons.forEach((button) => {
     if (isBridgeElement(button)) return false;
-    const rect = nativeHostRect(button);
-    return Boolean(rect && rect.left <= 130 && rect.top <= 96 && rect.width <= 64 && rect.height <= 64);
-  }) ?? null;
+    const style = window.getComputedStyle(button);
+    if (style.display === "none" || style.visibility === "hidden" || Number(style.opacity) === 0) return;
+    const rect = button.getBoundingClientRect();
+    if (rect.width < 20 || rect.height < 20 || rect.bottom <= 0 || rect.right <= 0) return;
+    if (rect.top >= window.innerHeight || rect.left >= window.innerWidth) return;
+    if (rect.left > 150 || rect.width > 80 || rect.height > 80) return;
+    const label = [
+      button.getAttribute("aria-label") ?? "",
+      button.getAttribute("title") ?? "",
+      button.textContent ?? "",
+    ].join(" ").toLowerCase();
+    if (/account|profile|user|settings|help|voice|apps/.test(label)) return;
+    let score = rect.left + rect.top / 1000;
+    if (/open[^a-z0-9]+(?:the[^a-z0-9]+)?side\s*bar|open[^a-z0-9]+(?:the[^a-z0-9]+)?sidebar|sidebar|side\s*bar/.test(label)) score -= 120;
+    else if (/menu/.test(label)) score -= 40;
+    else if (button.hasAttribute("aria-controls") && button.hasAttribute("aria-expanded")) score -= 12;
+    else return;
+    if (button.getAttribute("aria-expanded") === "false") score -= 24;
+    candidates.push({ button, rect, score });
+  });
+  return candidates.sort((a, b) => a.score - b.score || a.rect.left - b.rect.left || a.rect.top - b.rect.top)[0]?.button ?? null;
 }
 
 function scheduleNativeLeftSync(): void {
@@ -4890,20 +5011,85 @@ function nativeLeftButton(action: string, label: string, title: string, primary 
   return button;
 }
 
+function nativeLeftIconPath(d: string): SVGPathElement {
+  const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  path.setAttribute("d", d);
+  return path;
+}
+
+function nativeLeftIconSvg(icon: NativeLeftRailIcon): SVGSVGElement {
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.classList.add("ion-native-left-icon");
+  svg.setAttribute("viewBox", "0 0 24 24");
+  svg.setAttribute("aria-hidden", "true");
+  svg.setAttribute("focusable", "false");
+  const paths: Record<NativeLeftRailIcon, string[]> = {
+    ion: [
+      "M12 3.5 19 7.5v9L12 20.5 5 16.5v-9L12 3.5Z",
+      "M8.5 9.2h7",
+      "M8.5 14.8h7",
+      "M12 6.4v11.2",
+    ],
+    queue: [
+      "M8 6.5h11",
+      "M8 12h11",
+      "M8 17.5h11",
+      "M4.5 6.5h.01",
+      "M4.5 12h.01",
+      "M4.5 17.5h.01",
+    ],
+    projects: [
+      "M4 7.5h6l1.7 2H20",
+      "M4.5 7.5h15l-.9 10.2a2 2 0 0 1-2 1.8H7.4a2 2 0 0 1-2-1.8L4.5 7.5Z",
+      "M4 7.5V6.8a2 2 0 0 1 2-2h3.2l1.7 2H18",
+    ],
+    agent: [
+      "M5 6.5h14v11H5z",
+      "M8 10l2.5 2L8 14",
+      "M13 14h3",
+    ],
+    context: [
+      "M12 5.5v5",
+      "M8 14.5 12 10.5l4 4",
+      "M7 18.5a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z",
+      "M17 18.5a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z",
+      "M12 7.5a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z",
+    ],
+  };
+  paths[icon].forEach((d) => svg.appendChild(nativeLeftIconPath(d)));
+  return svg;
+}
+
+function nativeLeftRailButton(action: string, icon: NativeLeftRailIcon, title: string, primary = false, disabled = false, badge = ""): HTMLButtonElement {
+  const button = nativeLeftButton(action, "", title, primary, disabled);
+  button.classList.add("ion-native-left-rail-button");
+  button.dataset.nativeLeftIcon = icon;
+  button.appendChild(nativeLeftIconSvg(icon));
+  if (badge) {
+    const badgeNode = document.createElement("span");
+    badgeNode.className = "ion-native-left-badge";
+    badgeNode.textContent = badge;
+    button.appendChild(badgeNode);
+  }
+  return button;
+}
+
 function handleNativeLeftAction(action: string, projectPath = ""): void {
   if (!action) return;
-  if (action === "open-queue") {
+  if (action === "open-ion") {
+    ensureChatGptLeftDrawerOpen();
+  } else if (action === "open-queue" || action === "tab-queue") {
     nativeLeftMode = "queue";
     ensureChatGptLeftDrawerOpen();
-  } else if (action === "open-projects") {
+  } else if (action === "open-projects" || action === "tab-projects") {
     nativeLeftMode = "projects";
     ensureChatGptLeftDrawerOpen();
     if (!projectPackages.length) void requestProjectsRefresh();
-  } else if (action === "open-agent") {
+  } else if (action === "open-agent" || action === "tab-agent") {
     nativeLeftMode = "agent";
     ensureChatGptLeftDrawerOpen();
     window.dispatchEvent(new CustomEvent("ion-chatops-bounded-agent-status"));
-  } else if (action === "open-context") {
+  } else if (action === "open-context" || action === "tab-context") {
     nativeLeftMode = "context";
     ensureChatGptLeftDrawerOpen();
   } else if (action === "queue-send") {
@@ -4954,15 +5140,18 @@ function renderNativeRailGroup(group: HTMLElement): void {
   const queueCount = messageQueueItems.filter((item) => item.status === "queued" || item.status === "waiting" || item.status === "sending" || item.status === "failed").length;
   group.dataset.visible = "true";
   group.innerHTML = "";
+  const queueBadge = queueCount ? (queueCount > 9 ? "9+" : String(queueCount)) : "";
   const buttons = [
-    nativeLeftButton("open-queue", "Q", `ION queue${queueCount ? `: ${queueCount} waiting` : ""}`, true),
-    nativeLeftButton("open-projects", "P", "ION projects and context packages"),
-    nativeLeftButton("open-agent", "A", "ION bounded agent lane"),
-    nativeLeftButton("open-context", "C", "ION context sync and imports"),
+    nativeLeftRailButton("open-ion", "ion", "Open ION drawer"),
+    nativeLeftRailButton("open-queue", "queue", `ION queue${queueCount ? `: ${queueCount} waiting` : ""}`, false, false, queueBadge),
+    nativeLeftRailButton("open-projects", "projects", "ION projects and context packages"),
+    nativeLeftRailButton("open-agent", "agent", "ION bounded agent lane"),
+    nativeLeftRailButton("open-context", "context", "ION context sync and imports"),
   ];
   buttons.forEach((button) => {
     const action = button.dataset.nativeLeftAction ?? "";
     button.dataset.active = String(
+      (action === "open-ion" && Boolean(findChatGptLeftDrawerHost())) ||
       (action === "open-queue" && nativeLeftMode === "queue") ||
       (action === "open-projects" && nativeLeftMode === "projects") ||
       (action === "open-agent" && nativeLeftMode === "agent") ||
@@ -4972,12 +5161,19 @@ function renderNativeRailGroup(group: HTMLElement): void {
   });
 }
 
+function clearNativeRailSplitHosts(activeHost: HTMLElement | null = null): void {
+  document.querySelectorAll<HTMLElement>(`.${CHATGPT_NATIVE_LEFT_SPLIT_HOST_CLASS}`).forEach((element) => {
+    if (element !== activeHost) element.classList.remove(CHATGPT_NATIVE_LEFT_SPLIT_HOST_CLASS);
+  });
+}
+
 function ensureNativeRailGroup(): HTMLElement | null {
   ensureNativeLeftStyle();
   const host = findChatGptLeftRailHost();
   const existing = document.getElementById(CHATGPT_NATIVE_LEFT_RAIL_ID) as HTMLElement | null;
+  clearNativeRailSplitHosts(host);
   if (!host) {
-    if (existing) existing.dataset.visible = "false";
+    existing?.remove();
     return null;
   }
   let group = existing;
@@ -4994,7 +5190,8 @@ function ensureNativeRailGroup(): HTMLElement | null {
       handleNativeLeftAction(action);
     });
   }
-  if (group.parentElement !== host) host.appendChild(group);
+  if (group.parentElement !== host) host.prepend(group);
+  host.classList.add(CHATGPT_NATIVE_LEFT_SPLIT_HOST_CLASS);
   renderNativeRailGroup(group);
   return group;
 }
@@ -5114,6 +5311,23 @@ function renderNativeContextDrawer(panel: HTMLElement): void {
   panel.append(actions, list);
 }
 
+function renderNativeDrawerTabs(): HTMLElement {
+  const tabs = document.createElement("div");
+  tabs.className = "ion-native-left-tabs";
+  const buttons: Array<[NativeLeftMode, string, string]> = [
+    ["queue", "Queue", "Show ION queue controls"],
+    ["projects", "Projects", "Show ION project/package controls"],
+    ["agent", "Agent", "Show bounded agent lane controls"],
+    ["context", "Context", "Show context sync and import controls"],
+  ];
+  buttons.forEach(([mode, label, title]) => {
+    const button = nativeLeftButton(`tab-${mode}`, label, title, mode === nativeLeftMode);
+    button.dataset.active = String(mode === nativeLeftMode);
+    tabs.appendChild(button);
+  });
+  return tabs;
+}
+
 function renderNativeDrawerPanel(panel: HTMLElement): void {
   const queueCount = messageQueueItems.filter((item) => item.status === "queued" || item.status === "waiting" || item.status === "sending" || item.status === "failed").length;
   panel.dataset.visible = "true";
@@ -5131,7 +5345,7 @@ function renderNativeDrawerPanel(panel: HTMLElement): void {
   const status = document.createElement("div");
   status.className = "ion-native-left-status";
   status.textContent = `${queueCount} queue / ${projectPackages.length} project${projectPackages.length === 1 ? "" : "s"} / ${contextWorkflowSelectedPaths().length} selected`;
-  panel.append(head, status);
+  panel.append(head, status, renderNativeDrawerTabs());
   if (nativeLeftMode === "projects") renderNativeProjectsDrawer(panel);
   else if (nativeLeftMode === "agent") renderNativeAgentDrawer(panel);
   else if (nativeLeftMode === "context") renderNativeContextDrawer(panel);
