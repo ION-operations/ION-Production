@@ -993,8 +993,12 @@ function ensureStyle(): void {
     #${PANEL_ID} .ion-context-sync {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
-      max-width: 150px;
+      justify-content: center;
+      gap: 0;
+      width: 28px;
+      min-width: 28px;
+      max-width: 28px;
+      padding-inline: 0;
       border-color: rgba(168,85,247,0.26);
       background: rgba(46,16,101,0.24);
       color: rgba(237,233,254,0.96);
@@ -1104,9 +1108,7 @@ function ensureStyle(): void {
       line-height: 1;
     }
     #${PANEL_ID} .ion-context-sync-label {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      display: none;
     }
     #${PANEL_ID} .ion-context-sync-menu {
       position: absolute;
@@ -2340,6 +2342,36 @@ function detectRightBoundary(): number {
   return Math.max(boundary, 160);
 }
 
+function detectShareRightBoundary(): number | null {
+  const selectors = [
+    "button[aria-label='Share']",
+    "button[aria-label*='share' i]",
+    "a[role='button'][aria-label*='share' i]",
+    "[data-testid='share-button']",
+    "[data-testid*='share' i]",
+  ];
+  const candidates = new Set<Element>();
+  document.querySelectorAll<Element>(selectors.join(",")).forEach((element) => {
+    candidates.add(element.closest("button, a[role='button']") ?? element);
+  });
+  let boundary: number | null = null;
+  candidates.forEach((element) => {
+    const rect = visibleRect(element);
+    if (!rect) return;
+    const plausibleShareControl =
+      rect.top <= 82 &&
+      rect.bottom >= 16 &&
+      rect.left >= Math.max(320, window.innerWidth * 0.5) &&
+      rect.right <= window.innerWidth - 4 &&
+      rect.width >= 24 &&
+      rect.width <= 180 &&
+      rect.height >= 24 &&
+      rect.height <= 56;
+    if (plausibleShareControl) boundary = Math.min(boundary ?? rect.left, rect.left);
+  });
+  return boundary === null ? null : Math.max(boundary, 160);
+}
+
 function topRail(panel: HTMLElement): HTMLElement | null {
   return panel.querySelector<HTMLElement>(".ion-top-rail");
 }
@@ -2587,10 +2619,15 @@ function resetLayoutSettings(): void {
 
 function topBarGeometry() {
   const left = Math.ceil(detectLeftBoundary() + TOP_BAR_GAP);
-  const right = Math.floor(detectRightBoundary() - TOP_BAR_GAP);
+  const shareRight = detectShareRightBoundary();
+  const fallbackRight = detectRightBoundary();
+  const right = Math.floor((shareRight ?? fallbackRight) - TOP_BAR_GAP);
   const available = Math.max(PANEL_TINY_WIDTH, right - left);
   const preferred = Math.min(PANEL_PREFERRED_WIDTH, Math.floor(window.innerWidth * 0.58));
-  const width = Math.max(Math.min(preferred, available), Math.min(PANEL_MIN_WIDTH, available));
+  const shareWidthIsSane = shareRight !== null && available >= PANEL_MIN_WIDTH && available <= window.innerWidth - TOP_BAR_GAP * 2;
+  const width = shareWidthIsSane
+    ? available
+    : Math.max(Math.min(preferred, available), Math.min(PANEL_MIN_WIDTH, available));
   const layout = width < PANEL_MIN_WIDTH ? "tiny" : width < 430 ? "compact" : "normal";
   return { left, available, width, layout };
 }
