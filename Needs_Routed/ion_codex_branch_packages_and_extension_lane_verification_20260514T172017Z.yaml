@@ -1,0 +1,55 @@
+schema_id: ion.codex.local_verification_receipt.v1
+created_at_utc: 20260514T172017Z
+posture: sandbox-candidate
+accepted_state_claim: false
+production_authority: false
+live_execution_authority: false
+carrier: CODEX-001
+objective: verify_codex_branch_packages_settlement_and_browser_extension_dirty_lane
+verified_commits:
+  - hash: 8350743c
+    message: "ION: add branch delegation router protocol"
+    verification: git_show_stat_observed
+  - hash: 3f76a328
+    message: "ION: add AI git branch containment protocol"
+    verification: git_show_stat_observed
+  - hash: 060e09b4
+    message: "ION: update Codex Solo routed package snapshot"
+    verification: git_show_stat_observed
+  - hash: 71ed8274
+    message: "Clean up ION extension top bar"
+    verification: git_show_stat_observed
+    note: Commit was already present before CODEX-001 extension-lane validation in this pass.
+validation:
+  - command: PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=ION/04_packages PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -q ION/tests/test_kernel_ion_branch_delegate_router_protocol.py ION/tests/test_kernel_ion_ai_git_branch_containment.py
+    result: 10 passed in 0.04s
+  - command: node --check browser_extension/ion_chatops_bridge/dist/content.js
+    result: passed
+  - command: node --check browser_extension/ion_chatops_bridge/dist/background.js
+    result: passed
+  - command: node browser_extension/ion_chatops_bridge/tests/live_smoke_parser_simulation.js
+    result: passed
+browser_extension_lane:
+  dirty_after_validation: false
+  manifest_loaded_files:
+    - browser_extension/ion_chatops_bridge/dist/background.js
+    - browser_extension/ion_chatops_bridge/dist/content.js
+  source_commit_observed:
+    hash: 71ed8274
+    files:
+      - browser_extension/ion_chatops_bridge/src/approval_ui.ts
+  caveat: >
+    Browser extension manifest loads dist files. Current validation proves loaded
+    dist syntax and smoke parsing are clean; it does not prove a rebuilt dist from
+    the source-only approval_ui.ts commit.
+remaining_dirty_lanes:
+  - runtime_current_queue_state_json
+  - root_generated_zip_exports
+  - untracked_needs_routed_backlog_packages
+non_claims:
+  - no accepted state claimed
+  - no push
+  - no deploy
+  - no GPT Builder update
+  - no service restart
+  - no runtime queue mutation performed
