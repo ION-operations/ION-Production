@@ -4771,14 +4771,11 @@ function ensureNativeLeftStyle(): void {
       grid-template-columns: 26px 9px minmax(0, 1fr);
       align-items: center;
       gap: 7px;
-    }
-    #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-minimize {
-      width: 24px;
-      height: 24px;
-      padding: 0;
-      border-radius: 8px;
-      font: 900 15px/22px ui-sans-serif, system-ui, sans-serif;
-      justify-self: start;
+      position: sticky;
+      top: -10px;
+      z-index: 3;
+      padding-bottom: 2px;
+      background: linear-gradient(180deg, rgba(1,12,20,0.99), rgba(1,12,20,0.84));
     }
     #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-dot {
       width: 9px;
@@ -4910,6 +4907,24 @@ function ensureNativeLeftStyle(): void {
       font: 900 10px/26px ui-sans-serif, system-ui, sans-serif;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+    #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-button.ion-native-left-minimize {
+      display: grid;
+      place-items: center;
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      border-radius: 8px;
+      border-color: rgba(255,255,255,0.20);
+      background: rgba(255,255,255,0.09);
+      color: rgba(255,255,255,0.95);
+      font: 900 15px/22px ui-sans-serif, system-ui, sans-serif;
+      justify-self: start;
+      overflow: visible;
+    }
+    #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-button.ion-native-left-minimize:hover {
+      border-color: rgba(255,112,28,0.62);
+      background: rgba(255,112,28,0.18);
     }
     #${CHATGPT_NATIVE_LEFT_DRAWER_ID} .ion-native-left-list {
       display: grid;
@@ -5547,15 +5562,35 @@ function renderNativeDrawerPanelDeck(): HTMLElement {
   return deck;
 }
 
+function nativeDrawerRenderSignature(): string {
+  const queueSignature = visibleQueueItems()
+    .slice(0, 7)
+    .map((item) => `${item.id}:${item.status}:${item.text.length}`)
+    .join("|");
+  return [
+    nativeLeftMode,
+    nativeDrawerOpenPanels.join(","),
+    nativeLeftTone(),
+    queueSignature,
+    projectPackages.map((entry) => entry.path).join("|"),
+    contextWorkflowSelectedPaths().join("|"),
+    browserQueueGatewayStatus,
+    contextWorkflowLastImportedPack,
+  ].join("::");
+}
+
 function renderNativeDrawerPanel(panel: HTMLElement): void {
   const queueCount = messageQueueItems.filter((item) => item.status === "queued" || item.status === "waiting" || item.status === "sending" || item.status === "failed").length;
+  const signature = nativeDrawerRenderSignature();
   panel.dataset.visible = "true";
   panel.dataset.mode = nativeLeftMode;
   panel.dataset.openPanels = nativeDrawerOpenPanels.join(",");
+  if (panel.dataset.renderSignature === signature && panel.childElementCount) return;
+  panel.dataset.renderSignature = signature;
   panel.innerHTML = "";
   const head = document.createElement("div");
   head.className = "ion-native-left-head";
-  const minimize = nativeLeftButton("minimize-drawer", "‹", "Minimize ChatGPT drawer");
+  const minimize = nativeLeftButton("minimize-drawer", "<", "Minimize ChatGPT drawer", true);
   minimize.classList.add("ion-native-left-minimize");
   const dot = document.createElement("span");
   dot.className = "ion-native-left-dot";
