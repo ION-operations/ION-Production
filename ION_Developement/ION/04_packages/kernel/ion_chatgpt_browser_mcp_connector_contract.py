@@ -36,6 +36,7 @@ from .ion_codex_queue_runner import (
     process_codex_queue_once,
     reconcile_codex_queue_runner_state,
 )
+from .ion_kernel_fanout_carrier_dryrun import build_kernel_fanout_carrier_dryrun_status
 from .ion_cockpit_view_model import build_cockpit_view_model
 from .ion_context_proof_gate import evaluate_context_proof_return
 from .ion_receipt_hydration_mapper import build_receipt_hydration_view_model
@@ -189,6 +190,7 @@ STATUS_READ_TOOLS = {
     "ion_codex_capsule_chat_status",
     "ion_codex_capsule_message_poll",
     "ion_bounded_patch_preview",
+    "ion_kernel_fanout_carrier_dryrun_status",
 }
 
 BOUNDED_QUEUE_RECEIPT_TOOLS = {
@@ -2610,6 +2612,18 @@ def call_chatgpt_connector_tool(
         return _bounded_patch_preview(shell_root, args)
     if tool_name == "ion_bounded_patch_apply":
         return _bounded_patch_apply(shell_root, args)
+    if tool_name == "ion_kernel_fanout_carrier_dryrun_status":
+        result_path = args.get("result_path")
+        accepted_return_path = args.get("accepted_return_path")
+        status_kwargs: dict[str, str] = {}
+        if result_path is not None:
+            status_kwargs["result_path"] = str(result_path)
+        if accepted_return_path is not None:
+            status_kwargs["accepted_return_path"] = str(accepted_return_path)
+        return _ok(
+            tool_name,
+            build_kernel_fanout_carrier_dryrun_status(shell_root, **status_kwargs),
+        )
     if tool_name == "ion_artifact_upload_init":
         return _artifact_upload_init(shell_root, args)
     if tool_name == "ion_artifact_upload_chunk":

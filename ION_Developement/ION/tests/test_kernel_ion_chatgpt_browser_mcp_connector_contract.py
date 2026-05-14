@@ -20,6 +20,85 @@ def _seed_root(root: Path) -> None:
     (root / "ION/REPO_AUTHORITY.md").write_text("# authority\n", encoding="utf-8")
 
 
+def _seed_fanout_dryrun_status_artifacts(root: Path) -> None:
+    base = root / "ION/05_context/current/kernel_fanout_scheduler/carrier_dryrun"
+    (root / "ION/05_context/current/chatgpt_connector/task_returns").mkdir(parents=True, exist_ok=True)
+    (
+        root / "ION/05_context/current/chatgpt_connector/task_returns/2026-05-14T021628Z0000_task_return.json"
+    ).write_text("{\"accepted_for_carrier_intake\": true}\n", encoding="utf-8")
+    for scenario in (
+        "success",
+        "forced_timeout",
+        "forced_conflict",
+    ):
+        scenario_dir = base / scenario
+        scenario_dir.mkdir(parents=True, exist_ok=True)
+        (scenario_dir / "result.json").write_text(
+            json.dumps({"schema_id": "ion.kernel_fanout_true_parallel_smoke_result.v1", "scenario": scenario})
+            + "\n",
+            encoding="utf-8",
+        )
+        (scenario_dir / "parent_receipt.json").write_text(
+            json.dumps({"schema_id": "ion.kernel_fanout_carrier_dryrun_parent_receipt.v1", "scenario": scenario})
+            + "\n",
+            encoding="utf-8",
+        )
+    payload = {
+        "schema_id": "ion.kernel_fanout_carrier_dryrun_result.v1",
+        "queue_integrity": {"queue_mutation_detected": False},
+        "scenarios": [
+            {
+                "scenario": "success",
+                "result_path": "ION/05_context/current/kernel_fanout_scheduler/carrier_dryrun/success/result.json",
+                "parent_receipt_path": "ION/05_context/current/kernel_fanout_scheduler/carrier_dryrun/success/parent_receipt.json",
+                "compact_summary": {
+                    "scenario": "success",
+                    "plan_verdict": "ION_KERNEL_FANOUT_PLAN_READY",
+                    "settlement_verdict": "SMOKE_READY",
+                    "blocked_children": [],
+                    "conflict_deferral_events": 0,
+                    "conflict_deferred_children": [],
+                    "timeout_evidence": [],
+                },
+            },
+            {
+                "scenario": "forced_timeout",
+                "result_path": "ION/05_context/current/kernel_fanout_scheduler/carrier_dryrun/forced_timeout/result.json",
+                "parent_receipt_path": "ION/05_context/current/kernel_fanout_scheduler/carrier_dryrun/forced_timeout/parent_receipt.json",
+                "compact_summary": {
+                    "scenario": "forced_timeout",
+                    "plan_verdict": "ION_KERNEL_FANOUT_PLAN_READY",
+                    "settlement_verdict": "SMOKE_BLOCKED",
+                    "blocked_children": ["timeout_child_1"],
+                    "conflict_deferral_events": 0,
+                    "conflict_deferred_children": [],
+                    "timeout_evidence": [{"code": "child_timeout", "severity": "blocked"}],
+                },
+            },
+            {
+                "scenario": "forced_conflict",
+                "result_path": "ION/05_context/current/kernel_fanout_scheduler/carrier_dryrun/forced_conflict/result.json",
+                "parent_receipt_path": "ION/05_context/current/kernel_fanout_scheduler/carrier_dryrun/forced_conflict/parent_receipt.json",
+                "compact_summary": {
+                    "scenario": "forced_conflict",
+                    "plan_verdict": "ION_KERNEL_FANOUT_PLAN_READY",
+                    "settlement_verdict": "SMOKE_READY",
+                    "blocked_children": [],
+                    "conflict_deferral_events": 8,
+                    "conflict_deferred_children": ["conflict_child_2"],
+                    "max_parallel_observed": 1,
+                    "timeout_evidence": [],
+                },
+            },
+        ],
+    }
+    base.mkdir(parents=True, exist_ok=True)
+    (base / "fanout_carrier_dryrun_result_20260514.json").write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+
+
 def test_v120_contract_policy_blocks_unsafe_tools():
     root = Path.cwd()
     result = audit_chatgpt_browser_mcp_connector_contract(root)
@@ -70,6 +149,38 @@ def test_status_and_current_packet_tools_read_without_shell_access():
     assert agent_status["data"]["schema_id"] == "ion.agent_invocation_broker.v1"
     assert forbidden["ok"] is False
     assert forbidden["finding"] == "forbidden_capability"
+
+
+def test_fanout_dryrun_status_tool_is_read_only_and_compact(tmp_path):
+    _seed_root(tmp_path)
+    _seed_fanout_dryrun_status_artifacts(tmp_path)
+    queue_path = tmp_path / "ION/05_context/current/ACTIVE_CHATGPT_CONNECTOR_CODEX_WORK_QUEUE.json"
+    message_path = tmp_path / "ION/05_context/current/ACTIVE_CARRIER_MESSAGE_QUEUE.json"
+    queue_path.parent.mkdir(parents=True, exist_ok=True)
+    queue_path.write_text("{\"requests\":[]}\n", encoding="utf-8")
+    message_path.write_text("{\"messages\":[]}\n", encoding="utf-8")
+    queue_before = hashlib.sha256(queue_path.read_bytes()).hexdigest()
+    message_before = hashlib.sha256(message_path.read_bytes()).hexdigest()
+
+    tool = call_chatgpt_connector_tool(tmp_path, "ion_kernel_fanout_carrier_dryrun_status", {})
+
+    assert "ion_kernel_fanout_carrier_dryrun_status" in STATUS_READ_TOOLS
+    assert tool["ok"] is True
+    assert tool["mutates_active_state"] is False
+    status = tool["data"]
+    assert status["schema_id"] == "ion.kernel_fanout_carrier_dryrun_status.v1"
+    assert status["queue_mutation_detected"] is False
+    assert status["timeout_fail_closed_summary"]["fail_closed"] is True
+    assert status["conflict_lock_summary"]["conflict_deferral_events"] == 8
+    verdicts = {row["scenario"]: row["settlement_verdict"] for row in status["scenario_verdicts"]}
+    assert verdicts == {
+        "success": "SMOKE_READY",
+        "forced_timeout": "SMOKE_BLOCKED",
+        "forced_conflict": "SMOKE_READY",
+    }
+    assert any(row["kind"] == "latest_dryrun_result" and row["sha256"] for row in status["receipt_artifacts"])
+    assert hashlib.sha256(queue_path.read_bytes()).hexdigest() == queue_before
+    assert hashlib.sha256(message_path.read_bytes()).hexdigest() == message_before
 
 
 def test_live_status_preview_refuses_non_public_target(tmp_path):
