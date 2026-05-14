@@ -1,0 +1,69 @@
+schema_id: ion.needs_routed.mount_bridge.route_intake.v1
+created_at_utc: 20260514T195619Z
+posture: sandbox-candidate
+accepted_state_claim: false
+production_authority: false
+live_execution_authority: false
+secrets_authority: false
+carrier: CODEX-001
+objective: expose_v4_8_needs_routed_route_intake_proof_to_subroot_mounted_carrier
+reason: >
+  A downstream carrier reported Needs_Routed/ as path_missing after the branch was
+  pushed. GitHub and local Git prove the repo-root paths exist on the pushed
+  branch. This bridge is stored under ION_Developement/ION/05_context/current so
+  an ION_Developement-only mount can recover the route-intake proof and request a
+  repo-root remount.
+remote_ref:
+  repo: ION-operations/ION-Production
+  branch: codex/ion-custom-gpt-front-door-carrier-v4
+  commit: d111d96373280526c8e4b511fe07e46b92e889b2
+repo_root_paths:
+  route_workpacket:
+    path: Needs_Routed/workpackets/PCKT-ION-HELIXION-SAFE-UI-PREVIEW-GIT-AGENT-V48-CANDIDATE-RECONCILE-20260514.md
+    sha256: cfb02752e5331cac9f48341f8d5fac0e7142ac7d233df2293af377ee991cb183
+    git_blob_sha: 586996d799e5dc46544854a321217b6d6f66b0f0
+  route_receipt:
+    path: Needs_Routed/receipts/helixion_safe_ui_preview_v4_8_candidate_route_20260514T193227Z.yaml
+    sha256: 787ee7e37dd027a465a6ede287854555141a3f93771bc540dd4703fee3a645aa
+    git_blob_sha: 6cebb3aae0d9f6230a33d95e06e65c5da392c310
+  source_bundle:
+    path: Needs_Routed/ION_CUSTOM_GPT_V4_8_UI_PREVIEW_ACTION_GIT_CANDIDATE_20260514T010500Z.zip
+    sha256: 115f1425afb23d14456515c33e7402def8778dcca8d0272682579c13227d514e
+subroot_bridge_paths:
+  route_intake_packet: ION/05_context/current/needs_routed_mount_bridge/PCKT-ION-HELIXION-SAFE-UI-PREVIEW-GIT-AGENT-V48-ROUTE-INTAKE-20260514.md
+  bridge_receipt: ION/05_context/current/needs_routed_mount_bridge/helixion_safe_ui_preview_v4_8_route_intake_bridge_20260514T195619Z.yaml
+accepted_facts_only:
+  - v4_8_candidate_bundle_exists_on_pushed_branch
+  - v4_8_route_workpacket_exists_on_pushed_branch
+  - v4_8_route_receipt_exists_on_pushed_branch
+  - route_posture_is_candidate_only
+  - repo_root_mount_is_required_for_direct_Needs_Routed_reads
+hard_non_actions:
+  - no_v4_8_patch_application
+  - no_source_reconciliation
+  - no_live_queue_mutation
+  - no_service_restart
+  - no_deploy
+  - no_gpt_builder_update
+  - no_git_push_from_downstream_carrier
+preview_lane_split:
+  static_chatgpt_mock_preview:
+    dependency_install_allowed: false
+    real_project_build_claim_allowed: false
+  helixion_ephemeral_app_preview:
+    requires_source_discovery_before_implementation: true
+    requires_bounded_dependency_install_policy: true
+    requires_browser_capture_receipts: true
+    requires_rollback_snapshot: true
+    requires_git_agent_branch_containment: true
+validation:
+  - command: sha256sum route workpacket, route receipt, and source bundle
+    result: passed
+  - command: git ls-tree -r d111d963 for route workpacket and route receipt
+    result: passed
+  - command: gh api branch/content checks
+    result: passed_for_branch_and_paths
+next:
+  - mount_repo_root_at_codex_ion_custom_gpt_front_door_carrier_v4
+  - accept_route_intake_proof_only
+  - then_prepare_PCKT_ION_HELIXION_EPHEMERAL_PREVIEW_LANE_SOURCE_DISCOVERY_20260514
