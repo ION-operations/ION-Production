@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ion.needs_routed_intake.v1",
+  "title": "ION Needs Routed Intake",
+  "type": "object",
+  "required": [
+    "schema_id",
+    "generated_at",
+    "verdict",
+    "ok",
+    "posture",
+    "accepted_state_claim",
+    "production_authority",
+    "live_execution_authority",
+    "needs_routed_root",
+    "write_performed",
+    "queue_mutation_performed",
+    "items",
+    "summary"
+  ],
+  "properties": {
+    "schema_id": {"const": "ion.needs_routed_intake.v1"},
+    "generated_at": {"type": "string"},
+    "verdict": {
+      "type": "string",
+      "enum": [
+        "ION_NEEDS_ROUTED_INTAKE_READY",
+        "ION_NEEDS_ROUTED_INTAKE_WRITTEN",
+        "ION_NEEDS_ROUTED_INTAKE_BLOCKED"
+      ]
+    },
+    "ok": {"type": "boolean"},
+    "posture": {"const": "sandbox-candidate"},
+    "accepted_state_claim": {"const": false},
+    "production_authority": {"const": false},
+    "live_execution_authority": {"const": false},
+    "secrets_authority": {"const": false},
+    "needs_routed_root": {"type": "string"},
+    "scan_scope": {"type": "string"},
+    "write_performed": {"type": "boolean"},
+    "file_moves_performed": {"type": "boolean"},
+    "queue_mutation_performed": {"const": false},
+    "receipt_path": {"type": ["string", "null"]},
+    "index_path": {"type": ["string", "null"]},
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "item_id",
+          "original_path",
+          "artifact_kind",
+          "route_class",
+          "confidence",
+          "status",
+          "reasons"
+        ],
+        "properties": {
+          "item_id": {"type": "string"},
+          "original_path": {"type": "string"},
+          "sha256": {"type": ["string", "null"]},
+          "size_bytes": {"type": ["integer", "null"]},
+          "artifact_kind": {"type": "string"},
+          "route_class": {"type": "string"},
+          "confidence": {"type": "number"},
+          "status": {"type": "string"},
+          "reasons": {"type": "array", "items": {"type": "string"}},
+          "target_path": {"type": ["string", "null"]},
+          "moved_to": {"type": ["string", "null"]},
+          "queue_proposal": {"type": ["object", "null"]}
+        },
+        "additionalProperties": true
+      }
+    },
+    "summary": {"type": "object"},
+    "blocked_findings": {"type": "array", "items": {"type": "string"}},
+    "warning_findings": {"type": "array", "items": {"type": "string"}}
+  },
+  "additionalProperties": true
+}
