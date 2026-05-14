@@ -317,6 +317,45 @@ def test_prepare_codex_queue_run_includes_workload_diff_for_agent_cartography_co
     assert "### WORKLOAD DIFF" in prompt
 
 
+def test_live_status_reports_start_requested_claim_without_worker_receipt(tmp_path):
+    _seed_root(tmp_path)
+    request_rel = _seed_request(tmp_path)
+    prepared = prepare_codex_queue_run(tmp_path, request_path=request_rel, claim=True)
+
+    status = build_codex_queue_runner_status(tmp_path, reconcile=False)
+
+    live = status["live_worker_telemetry"]
+    assert prepared["ok"] is True
+    assert live["phase_status"] == "start_requested"
+    assert live["run_status"] == "CLAIMED_BY_CODEX_QUEUE_RUNNER"
+    assert live["request_path"] == request_rel
+    assert live["active_process_running"] is False
+    assert live["run_packet_path"] == prepared["run"]["run_packet_path"]
+
+
+def test_reconcile_marks_start_no_receipt_after_simulated_connector_timeout(tmp_path):
+    _seed_root(tmp_path)
+    request_rel = _seed_request(tmp_path)
+    prepared = prepare_codex_queue_run(tmp_path, request_path=request_rel, claim=True)
+    run = dict(prepared["run"])
+    run_path = tmp_path / run["run_packet_path"]
+    run["created_at"] = "2026-05-04T00:00:00+00:00"
+    run["updated_at"] = "2026-05-04T00:00:00+00:00"
+    run_path.write_text(json.dumps(run, indent=2), encoding="utf-8")
+
+    status = build_codex_queue_runner_status(tmp_path, reconcile=True)
+
+    live = status["live_worker_telemetry"]
+    assert status["reconciliation"]["action"] == "mark_start_no_receipt"
+    assert status["reconciliation"]["start_no_receipt_updated"] is True
+    assert live["phase_status"] == "start_no_receipt"
+    assert live["run_status"] == "CODEX_QUEUE_START_NO_RECEIPT"
+    updated_run = json.loads(run_path.read_text(encoding="utf-8"))
+    assert updated_run["status"] == "CODEX_QUEUE_START_NO_RECEIPT"
+    assert updated_run["failure_classification"] == "CARRIER_ADAPTER_FAILURE"
+    assert updated_run["start_no_receipt_diagnostic"]["reason"] == "start_requested_but_no_worker_receipt_or_active_process_after_grace"
+
+
 def test_process_once_inline_records_proof_gated_task_return(tmp_path):
     _seed_root(tmp_path)
     request_rel = _seed_request(tmp_path)

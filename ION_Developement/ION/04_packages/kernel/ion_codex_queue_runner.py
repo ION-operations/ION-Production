@@ -35,6 +35,12 @@ MAX_CODEX_TIMEOUT_SECONDS = 7200
 MAX_LIVE_PREVIEW_BYTES = 2048
 DEFAULT_LIVE_PREVIEW_BYTES = 512
 MAX_WORKER_LIFECYCLE_EVENTS = 40
+START_NO_RECEIPT_GRACE_SECONDS = 120
+START_REQUESTED_RUN_STATUSES = {
+    "CLAIMED_BY_CODEX_QUEUE_RUNNER",
+    "CODEX_QUEUE_RUNNER_WORKER_STARTED",
+}
+START_NO_RECEIPT_STATUS = "CODEX_QUEUE_START_NO_RECEIPT"
 WORKER_CONTEXT_AWARENESS_RECEIPT_FILENAME = "worker_context_awareness_receipt.json"
 WORKER_CONTEXT_ACKNOWLEDGED = "WORKER_CONTEXT_ACKNOWLEDGED"
 WORKER_CONTEXT_BLOCKED = "WORKER_CONTEXT_BLOCKED"
@@ -94,6 +100,7 @@ TERMINAL_RUN_STATUSES = {
     "CODEX_CLI_TIMEOUT",
     "WORKER_CONTEXT_MOUNT_INVALID",
     "DAEMON_WORKER_EXITED_WITHOUT_FINALIZATION",
+    START_NO_RECEIPT_STATUS,
 }
 
 TERMINAL_FAILED_STATUSES = {
@@ -101,6 +108,7 @@ TERMINAL_FAILED_STATUSES = {
     "CODEX_CLI_TIMEOUT",
     "WORKER_CONTEXT_MOUNT_INVALID",
     "DAEMON_WORKER_EXITED_WITHOUT_FINALIZATION",
+    START_NO_RECEIPT_STATUS,
 }
 
 LIVE_PREVIEW_TARGETS = {
@@ -292,6 +300,14 @@ def _latest_run_packets(root: Path, *, limit: int = 5) -> list[dict[str, Any]]:
     return runs
 
 
+def _latest_run_packet_rel(root: Path) -> str | None:
+    latest = _latest_run_packets(root, limit=1)
+    if not latest:
+        return None
+    rel = str(latest[0].get("path") or "").strip()
+    return rel or None
+
+
 def _pid_running(pid: int | None) -> bool:
     if not pid or pid <= 0:
         return False
@@ -327,6 +343,17 @@ def _elapsed_seconds(start: datetime | None, end: datetime | None) -> int | None
         return None
     delta = int((end - start).total_seconds())
     return delta if delta >= 0 else None
+
+
+def _run_start_request_age_seconds(run: Mapping[str, Any], now: datetime) -> int | None:
+    started = (
+        _parse_iso8601(run.get("started_at"))
+        or _parse_iso8601(run.get("updated_at"))
+        or _parse_iso8601(run.get("created_at"))
+    )
+    if started is None:
+        return None
+    return _elapsed_seconds(started, now)
 
 
 def _file_meta(root: Path, rel_path: str | None) -> dict[str, Any]:
@@ -409,6 +436,8 @@ def _build_live_worker_telemetry(
         run_rel = str(active.get("run_packet_path") or "")
     if not run_rel:
         run_rel = str(state.get("latest_run") or "")
+    if not run_rel:
+        run_rel = _latest_run_packet_rel(root) or ""
     run: dict[str, Any] = {}
     if run_rel:
         run_path = root / run_rel
@@ -437,12 +466,30 @@ def _build_live_worker_telemetry(
         awareness_status = str(awareness_receipt.get("status") or "") or None
         awareness_machine_attestation_sha256 = str(awareness_receipt.get("machine_attestation_sha256") or "") or None
 
+    run_pid = int(run.get("pid")) if run.get("pid") else None
+    run_process_running = _pid_running(run_pid)
+    worker_running = active_running or run_process_running
+    start_request_age_seconds = (
+        _run_start_request_age_seconds(run, now)
+        if run_status in START_REQUESTED_RUN_STATUSES
+        else None
+    )
+
     phase_status = "idle"
-    if stale_active_run_detected:
+    if run_status == START_NO_RECEIPT_STATUS:
+        phase_status = "start_no_receipt"
+    elif stale_active_run_detected:
         phase_status = "stale-active-reference"
-    elif active_running:
+    elif worker_running:
         phase_status = "active"
-    elif run_status in {"PREPARED_NOT_STARTED", "CLAIMED_BY_CODEX_QUEUE_RUNNER", "CODEX_QUEUE_RUNNER_WORKER_STARTED"}:
+    elif run_status == "CLAIMED_BY_CODEX_QUEUE_RUNNER":
+        if start_request_age_seconds is not None and start_request_age_seconds >= START_NO_RECEIPT_GRACE_SECONDS:
+            phase_status = "start_no_receipt"
+        else:
+            phase_status = "start_requested"
+    elif run_status == "CODEX_QUEUE_RUNNER_WORKER_STARTED":
+        phase_status = "start_no_receipt"
+    elif run_status == "PREPARED_NOT_STARTED":
         phase_status = "prepared-not-started"
     elif run_status == "RETURN_RECORDED_PROOF_ACCEPTED":
         phase_status = "terminal-accepted"
@@ -500,13 +547,15 @@ def _build_live_worker_telemetry(
         "run_status": run_status or None,
         "worker_lifecycle_events": list(run.get("worker_lifecycle_events") or [])[-MAX_WORKER_LIFECYCLE_EVENTS:],
         "latest_worker_lifecycle_event": (list(run.get("worker_lifecycle_events") or [])[-1] if run.get("worker_lifecycle_events") else None),
-        "active_worker_pid": active_pid if active_running else None,
+        "active_worker_pid": active_pid if active_running else (run_pid if run_process_running else None),
         "active_run_id": run.get("run_id") or (active or {}).get("run_id"),
         "request_id": run.get("request_id") or (active or {}).get("request_id"),
         "request_path": run.get("request_path") or (active or {}).get("request_path"),
         "run_packet_path": run_rel or None,
         "elapsed_seconds": elapsed,
-        "active_process_running": active_running,
+        "start_request_age_seconds": start_request_age_seconds,
+        "start_no_receipt_grace_seconds": START_NO_RECEIPT_GRACE_SECONDS,
+        "active_process_running": worker_running,
         "stale_active_reference_detected": stale_active_run_detected,
         "worker_sign_in_status": awareness_status,
         "worker_context_awareness_receipt_path": awareness_receipt_rel or None,
@@ -1308,9 +1357,11 @@ def reconcile_codex_queue_runner_state(root: str | Path | None = None, *, write:
         "live_execution_authority": False,
     }
 
-    latest_run_rel = str(state.get("latest_run") or "").strip()
+    latest_run_rel = str(state.get("latest_run") or "").strip() or (_latest_run_packet_rel(shell_root) or "")
     if not active:
         if latest_run_rel:
+            if _classify_start_no_receipt_if_needed(shell_root, latest_run_rel, write=write, result=result):
+                return result
             _classify_terminal_run_if_needed(shell_root, latest_run_rel, write=write, result=result)
         return result
 
@@ -1472,6 +1523,90 @@ def reconcile_codex_queue_runner_state(root: str | Path | None = None, *, write:
             "manual_proceed_relay_required": False,
         })
     return result
+
+
+def _classify_start_no_receipt_if_needed(
+    root: Path,
+    run_rel: str,
+    *,
+    write: bool,
+    result: dict[str, Any],
+) -> bool:
+    try:
+        run_path = _safe_rel_path(root, run_rel)
+    except ValueError:
+        result["latest_run_finding"] = "latest_run_path_not_repo_relative"
+        return False
+    run = _read_json(run_path)
+    if not isinstance(run, dict):
+        result["latest_run_finding"] = "latest_run_packet_missing_or_invalid"
+        return False
+    previous_status = str(run.get("status") or "")
+    if previous_status not in START_REQUESTED_RUN_STATUSES:
+        return False
+
+    run_pid = int(run.get("pid")) if run.get("pid") else None
+    if _pid_running(run_pid):
+        result["action"] = "start_requested_worker_running_without_active_state"
+        result["latest_run_packet_path"] = _connector_rel(run_path, root)
+        result["latest_run_status"] = previous_status
+        result["active_process_running"] = True
+        return True
+
+    now_dt = datetime.now(timezone.utc)
+    age = _run_start_request_age_seconds(run, now_dt)
+    result["latest_run_packet_path"] = _connector_rel(run_path, root)
+    result["latest_run_status"] = previous_status
+    result["start_request_age_seconds"] = age
+    result["start_no_receipt_grace_seconds"] = START_NO_RECEIPT_GRACE_SECONDS
+
+    if age is None or age < START_NO_RECEIPT_GRACE_SECONDS:
+        result["action"] = "start_requested_waiting_for_receipt"
+        return True
+
+    result["stale_active_run_detected"] = True
+    result["action"] = "mark_start_no_receipt"
+    if not write:
+        return True
+
+    now = _now()
+    output_presence = _run_output_presence(root, run)
+    run["status"] = START_NO_RECEIPT_STATUS
+    run["completed_at"] = now
+    run["updated_at"] = now
+    run["failure_classification"] = "CARRIER_ADAPTER_FAILURE"
+    run["start_no_receipt_diagnostic"] = {
+        "detected_at": now,
+        "reason": "start_requested_but_no_worker_receipt_or_active_process_after_grace",
+        "previous_status": previous_status,
+        "age_seconds": age,
+        "grace_seconds": START_NO_RECEIPT_GRACE_SECONDS,
+        "pid": run_pid,
+        "output_presence": output_presence,
+    }
+    _append_worker_lifecycle_event(
+        run,
+        "start_no_receipt",
+        terminal_state="start_no_receipt",
+        failure_classification="CARRIER_ADAPTER_FAILURE",
+    )
+    _write_run_packet(run_path, run)
+    request_rel = str(run.get("request_path") or "")
+    if request_rel:
+        _update_request_status(
+            root,
+            request_rel,
+            status=START_NO_RECEIPT_STATUS,
+            failure_classification="CARRIER_ADAPTER_FAILURE",
+        )
+    _update_runner_state(root, {
+        "active_run": None,
+        "latest_run": _connector_rel(run_path, root),
+        "manual_proceed_relay_required": False,
+    })
+    result["start_no_receipt_updated"] = True
+    result["output_presence"] = output_presence
+    return True
 
 
 def _classify_terminal_run_if_needed(
