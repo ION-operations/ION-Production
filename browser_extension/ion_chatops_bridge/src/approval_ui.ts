@@ -3147,6 +3147,7 @@ function ensurePanel(): HTMLElement {
         <div class="ion-tab-panel" data-panel="diagnostics">
           <div class="ion-detail" data-field="diagnostics"></div>
           <div class="ion-toolbar-actions">
+            <button type="button" class="ion-tool" data-tool="native-dom-diagnostics">DOM Snapshot</button>
             <button type="button" class="ion-tool" data-tool="insert-smoke">Submit Smoke Test</button>
             <button type="button" class="ion-tool" data-tool="insert-codex">Queue Codex Test Work</button>
           </div>
@@ -3331,6 +3332,12 @@ function ensurePanel(): HTMLElement {
     panel.dataset.tab = "diagnostics";
     syncSettingsMode(panel, true);
     renderPanel(panel);
+  });
+  panel.querySelector('[data-tool="native-dom-diagnostics"]')?.addEventListener("click", () => {
+    panel.dataset.expanded = "true";
+    panel.dataset.tab = "diagnostics";
+    syncSettingsMode(panel, true);
+    window.dispatchEvent(new CustomEvent("ion-chatops-native-dom-diagnostics"));
   });
   panel.querySelector('[data-tool="insert-smoke"]')?.addEventListener("click", () => {
     window.dispatchEvent(new CustomEvent("ion-chatops-insert-smoke"));

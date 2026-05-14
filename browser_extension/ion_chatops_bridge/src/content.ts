@@ -5155,6 +5155,164 @@ function minimizeChatGptLeftDrawer(): void {
   scheduleNativeLeftSync();
 }
 
+function domDiagnosticsRect(rect: DOMRect): Record<string, number> {
+  return {
+    left: Math.round(rect.left),
+    top: Math.round(rect.top),
+    right: Math.round(rect.right),
+    bottom: Math.round(rect.bottom),
+    width: Math.round(rect.width),
+    height: Math.round(rect.height),
+  };
+}
+
+function domDiagnosticsAttributes(element: HTMLElement): Record<string, string> {
+  const names = ["id", "class", "role", "aria-label", "title", "data-testid", "aria-expanded", "aria-controls", "data-state"];
+  const attrs: Record<string, string> = {};
+  names.forEach((name) => {
+    const value = element.getAttribute(name)?.trim();
+    if (value) attrs[name] = value.slice(0, 180);
+  });
+  return attrs;
+}
+
+function domDiagnosticsStyle(element: HTMLElement): Record<string, string> {
+  const style = window.getComputedStyle(element);
+  return {
+    display: style.display,
+    visibility: style.visibility,
+    opacity: style.opacity,
+    position: style.position,
+    zIndex: style.zIndex,
+    pointerEvents: style.pointerEvents,
+  };
+}
+
+function redactedElementSnippet(element: HTMLElement): string {
+  const attrs = Object.entries(domDiagnosticsAttributes(element))
+    .map(([name, value]) => `${name}="${value.replace(/"/g, "&quot;")}"`)
+    .join(" ");
+  const children = Array.from(element.children)
+    .slice(0, 6)
+    .filter((child): child is HTMLElement => child instanceof HTMLElement)
+    .map((child) => {
+      const childAttrs = Object.entries(domDiagnosticsAttributes(child))
+        .map(([name, value]) => `${name}="${value.replace(/"/g, "&quot;")}"`)
+        .join(" ");
+      return `<${child.tagName.toLowerCase()}${childAttrs ? ` ${childAttrs}` : ""}></${child.tagName.toLowerCase()}>`;
+    })
+    .join("");
+  return `<${element.tagName.toLowerCase()}${attrs ? ` ${attrs}` : ""}>${children}</${element.tagName.toLowerCase()}>`;
+}
+
+function domDiagnosticsLabel(element: HTMLElement): string {
+  const tag = element.tagName.toLowerCase();
+  const role = element.getAttribute("role") ?? "";
+  const buttonLike = tag === "button" || tag === "a" || role === "button";
+  return [
+    element.getAttribute("aria-label") ?? "",
+    element.getAttribute("title") ?? "",
+    buttonLike ? element.textContent ?? "" : "",
+  ].join(" ").replace(/\s+/g, " ").trim().slice(0, 140);
+}
+
+function domDiagnosticsElement(role: string, element: HTMLElement | null, rectOverride?: DOMRect | null): Record<string, unknown> {
+  if (!element) return { role, found: false };
+  const rect = rectOverride ?? element.getBoundingClientRect();
+  return {
+    role,
+    found: true,
+    selector: selectorForElement(element),
+    tag: element.tagName.toLowerCase(),
+    attrs: domDiagnosticsAttributes(element),
+    label: domDiagnosticsLabel(element),
+    rect: domDiagnosticsRect(rect),
+    style: domDiagnosticsStyle(element),
+    snippet: redactedElementSnippet(element),
+  };
+}
+
+function chatGptShareCandidates(): Array<{ element: HTMLElement; rect: DOMRect }> {
+  const selectors = [
+    "button[aria-label='Share']",
+    "button[aria-label*='share' i]",
+    "a[role='button'][aria-label*='share' i]",
+    "[data-testid='share-button']",
+    "[data-testid*='share' i]",
+  ];
+  const seenButtons = new Set<HTMLElement>();
+  const candidates: Array<{ element: HTMLElement; rect: DOMRect }> = [];
+  document.querySelectorAll<HTMLElement>(selectors.join(",")).forEach((element) => {
+    const target = (element.closest("button, a[role='button']") ?? element) as HTMLElement;
+    if (seenButtons.has(target) || isBridgeElement(target)) return;
+    seenButtons.add(target);
+    const style = window.getComputedStyle(target);
+    if (style.display === "none" || style.visibility === "hidden" || Number(style.opacity) === 0) return;
+    const rect = target.getBoundingClientRect();
+    if (rect.width < 16 || rect.height < 16 || rect.bottom <= 0 || rect.right <= 0) return;
+    if (rect.top > 120 || rect.left < window.innerWidth * 0.35) return;
+    candidates.push({ element: target, rect });
+  });
+  return candidates.sort((a, b) => a.rect.left - b.rect.left || a.rect.top - b.rect.top).slice(0, 8);
+}
+
+function nativeDomDiagnosticsPacket(): Record<string, unknown> {
+  const leftSurfaces = leftSurfaceCandidates().slice(0, 10);
+  const railHost = findChatGptLeftRailHost();
+  const drawerHost = findChatGptLeftDrawerHost();
+  const sidebarToggle = findChatGptSidebarToggleButton();
+  const sidebarMinimize = findChatGptSidebarMinimizeButton();
+  const shareCandidates = chatGptShareCandidates();
+  return {
+    schema: "ion.chatops.native_dom_diagnostics.v0_1",
+    captured_at: new Date().toISOString(),
+    url: location.origin + location.pathname,
+    viewport: {
+      width: window.innerWidth,
+      height: window.innerHeight,
+      visual_width: Math.round(window.visualViewport?.width ?? window.innerWidth),
+      visual_height: Math.round(window.visualViewport?.height ?? window.innerHeight),
+      scroll_x: Math.round(window.scrollX),
+      scroll_y: Math.round(window.scrollY),
+    },
+    detected: {
+      rail_host: domDiagnosticsElement("rail_host", railHost),
+      drawer_host: domDiagnosticsElement("drawer_host", drawerHost),
+      sidebar_toggle: domDiagnosticsElement("sidebar_toggle", sidebarToggle),
+      sidebar_minimize: domDiagnosticsElement("sidebar_minimize", sidebarMinimize),
+      share_primary: domDiagnosticsElement("share_primary", shareCandidates[0]?.element ?? null, shareCandidates[0]?.rect ?? null),
+      ion_drawer_panel: domDiagnosticsElement("ion_drawer_panel", document.getElementById(CHATGPT_NATIVE_LEFT_DRAWER_ID) as HTMLElement | null),
+      ion_rail_panel: domDiagnosticsElement("ion_rail_panel", document.getElementById(CHATGPT_NATIVE_LEFT_RAIL_ID) as HTMLElement | null),
+    },
+    left_surface_candidates: leftSurfaces.map(({ element, rect }, index) => domDiagnosticsElement(`left_surface_candidate_${index}`, element, rect)),
+    share_candidates: shareCandidates.map(({ element, rect }, index) => domDiagnosticsElement(`share_candidate_${index}`, element, rect)),
+    ion_state: {
+      native_left_mode: nativeLeftMode,
+      native_drawer_open_panels: nativeDrawerOpenPanels,
+      native_drawer_is_open: nativeLeftDrawerIsOpen(),
+      queue_items: messageQueueItems.length,
+      project_packages: projectPackages.length,
+      selected_project_paths: contextWorkflowSelectedPaths().length,
+      browser_queue_gateway_status: browserQueueGatewayStatus,
+    },
+  };
+}
+
+function nativeDomDiagnosticsText(): string {
+  return JSON.stringify(nativeDomDiagnosticsPacket(), null, 2);
+}
+
+function captureNativeDomDiagnostics(): void {
+  const detail = nativeDomDiagnosticsText();
+  setBridgeDiagnosticsDetail(`Native DOM diagnostics packet\n\n${detail}`);
+  setBridgeStatus("DOM diagnostics captured", "ChatGPT rail/drawer/share/toggle candidates captured in Diagnostics.", "success");
+  try {
+    void navigator.clipboard?.writeText(detail);
+  } catch (_error) {
+    // Clipboard is optional; diagnostics remain visible in the panel.
+  }
+}
+
 function nativeLeftButton(action: string, label: string, title: string, primary = false, disabled = false): HTMLButtonElement {
   const button = document.createElement("button");
   button.type = "button";
@@ -7522,6 +7680,9 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   previewAttachTarget,
   previewDropTarget,
   findDropTarget,
+  nativeDomDiagnosticsPacket,
+  nativeDomDiagnosticsText,
+  captureNativeDomDiagnostics,
   localAttachPayload,
   requestArtifactLocalAttachDryRun,
   beginDomInspector,
@@ -7544,6 +7705,9 @@ window.addEventListener("ion-chatops-rescan", () => {
       "idle",
     );
   }
+});
+window.addEventListener("ion-chatops-native-dom-diagnostics", () => {
+  captureNativeDomDiagnostics();
 });
 window.addEventListener("ion-chatops-insert-reentry", () => {
   insertSevContextBrief();
