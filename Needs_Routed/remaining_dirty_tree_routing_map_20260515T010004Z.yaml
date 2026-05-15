@@ -1,0 +1,95 @@
+schema_id: ion.remaining_dirty_tree.routing_map.v0_1
+map_id: remaining_dirty_tree_routing_map_20260515T010004Z
+created_at_utc: 2026-05-15T01:00:04Z
+posture: sandbox-candidate
+accepted_state_claim: false
+production_authority: false
+live_execution_authority: false
+secrets_authority: false
+branch: codex/ion-custom-gpt-front-door-carrier-v4
+recent_local_commits:
+  - hash: c9c58f5f
+    message: "ION: update Codex Solo context snapshot"
+  - hash: fa69a8f5
+    message: "ION: preserve Helixion preview planning context"
+  - hash: "0585c278"
+    message: "ION: route project context and Codex model override lane"
+  - hash: 77f2d579
+    message: "ION_GPT: harden boot and project hash handshake"
+remaining_dirty_summary:
+  tracked_modified_count: 8
+  untracked_count: 9
+  source_code_remaining: false
+  dirty_tree_verdict: runtime_context_evidence_and_external_backlog_only
+tracked_runtime_context_state:
+  route_class: runtime_context_evidence_do_not_broad_stage
+  default_action: preserve_locally_do_not_commit_without_runtime_state_policy
+  paths:
+    - ION_Developement/ION/05_context/current/ACTIVE_CHATGPT_CONNECTOR_CODEX_WORK_QUEUE.json
+    - ION_Developement/ION/05_context/current/ACTIVE_CODEX_CAPSULE_CHAT_MODEL.json
+    - ION_Developement/ION/05_context/current/ACTIVE_OPERATOR_MESSAGE_QUEUE.json
+    - ION_Developement/ION/05_context/current/CHATGPT_BROWSER_HTTP_MCP_PREVIEW_V121.json
+    - ION_Developement/ION/05_context/current/CHATGPT_BROWSER_MCP_CONNECTOR_CONTRACT_V120.json
+    - ION_Developement/ION/05_context/current/chatgpt_connector/runtime/bounded_patch_apply_idempotency_ledger.json
+    - ION_Developement/ION/05_context/current/chatgpt_connector/runtime/codex_queue_runner_state.json
+    - ION_Developement/ION/05_context/current/codex_capsule_chat/state.json
+untracked_runtime_evidence:
+  route_class: runtime_smoke_or_service_receipt
+  default_action: preserve_locally_or_archive_under_a_runtime_evidence_packet
+  paths:
+    - ION_Developement/ION/05_context/current/chatgpt_connector/runtime/connector_contract_refresh_20260515T001145Z.json
+    - ION_Developement/ION/05_context/current/chatgpt_connector/runtime/http_preview_refresh_20260515T001145Z.json
+    - ION_Developement/ION/05_context/current/chatgpt_connector/runtime/mcp_call_ion_project_context_capsule_smoke.json
+    - ION_Developement/ION/05_context/current/chatgpt_connector/runtime/mcp_call_ion_project_file_slice_read_smoke.json
+    - ION_Developement/ION/05_context/current/chatgpt_connector/runtime/mcp_tools_list_smoke.json
+    - ION_Developement/ION/05_context/current/chatops_bridge/receipts/service_control_20260515T004508Z613549.json
+external_or_deferred_backlog:
+  route_class: owner_or_specialist_review_required
+  default_action: do_not_commit_in_current_lane
+  notes:
+    - Browser extension artifacts are intentionally left for the other Codex CLI worker per operator instruction.
+    - Native DOM snapshot is diagnostic evidence for extension/native-left UI work, not a source lane here.
+  paths:
+    - Needs_Routed/ION_BROWSER_EXTENSION_TAG_CONTRACT_20260514T032414Z.yaml
+    - Needs_Routed/ion_native_dom_snapshot_20260514T1857344.json
+local_preservation_evidence:
+  route_class: dirty_state_snapshot_evidence
+  default_action: keep_local_unless_a_cleanup_packet decides archive policy
+  paths:
+    - Needs_Routed/current_dirty_state_remaining_after_ion_gpt_commit_20260515T000000Z.stat
+needs_routed_read_only_intake:
+  command: >
+    PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=ION/04_packages python3 -m
+    kernel.ion_needs_routed_intake --ion-root ION --workspace-root ..
+    --needs-root ../Needs_Routed --scan-scope root --json
+  workdir: /home/sev/ION - Production/ION_Developement
+  write_performed: false
+  verdict: ION_NEEDS_ROUTED_INTAKE_READY
+  item_count: 79
+  queue_proposal_count: 64
+  route_class_counts:
+    apply_candidate_patch: 11
+    branch_context_package_review: 5
+    browser_extension_package_review: 7
+    context_package_ingest: 2
+    custom_gpt_package_review: 32
+    duplicate_or_superseded: 1
+    owner_review_required: 12
+    queue_codex_workpacket: 4
+    queue_hygiene_patch_review: 3
+    runtime_evidence_archive: 1
+    source_lane_archive: 1
+recommended_next_packets:
+  - packet_id: PCKT-ION-RUNTIME-CONTEXT-STATE-TRACKING-POLICY-20260515
+    objective: Decide whether active queue/model/context JSON should stay tracked, move to ignored runtime evidence, or be snapshotted under explicit receipts.
+  - packet_id: PCKT-ION-CODEX-LIVE-LISTENER-RELOAD-AND-PROJECT-TOOL-SMOKE-20260515
+    objective: After operator-approved service reload, rerun MCP tools/list and project context/file-slice smokes.
+  - packet_id: PCKT-ION-HELIXION-EPHEMERAL-PREVIEW-LANE-STATUS-POLICY-SCHEMA-20260515
+    objective: Implement the first read-only policy/schema packet for the preview lane.
+excluded_actions:
+  - no_git_push
+  - no_service_restart
+  - no_runtime_state_commit_without_policy
+  - no_extension_artifact_commit_in_this_lane
+  - no_secret_or_vault_access
+  - no_accepted_state_claim
