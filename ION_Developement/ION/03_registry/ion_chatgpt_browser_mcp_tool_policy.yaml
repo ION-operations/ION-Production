@@ -43,7 +43,9 @@ allowed_status_read_tools:
   - ion_project_preview_status
   - ion_project_git_status
   - ion_project_workbench_timeline
+  - ion_project_context_capsule
   - ion_project_file_read
+  - ion_project_file_slice_read
   - ion_project_patch_preview
   - ion_kernel_fanout_carrier_dryrun_status
 allowed_bounded_queue_receipt_tools:
@@ -121,7 +123,9 @@ project_workbench:
     - ion_project_preview_status
     - ion_project_git_status
     - ion_project_workbench_timeline
+    - ion_project_context_capsule
     - ion_project_file_read
+    - ion_project_file_slice_read
     - ion_project_patch_preview
     - ion_project_patch_apply
     - ion_project_patch_revert

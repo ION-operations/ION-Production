@@ -259,6 +259,15 @@ def test_tools_list_exposes_only_v120_contract_tools():
             assert tool["annotations"]["destructiveHint"] is False
         if tool["name"] == "ion_kernel_fanout_carrier_dryrun_status":
             assert tool["annotations"]["readOnlyHint"] is True
+    request_tool = next(tool for tool in tools if tool["name"] == "ion_request_codex_work_packet")
+    request_properties = request_tool["inputSchema"]["properties"]
+    assert "codex_model_override" in request_properties
+    assert "requested_model" in request_properties
+    assert "requested_reasoning_effort" in request_properties
+    assert "model_override_reason" in request_properties
+    assert "project_hash" in request_properties
+    assert "selected_model" in request_properties["codex_model_override"]["properties"]
+    assert "selected_reasoning_effort" in request_properties["codex_model_override"]["properties"]
 
 
 def test_kernel_fanout_dryrun_status_tool_call_is_read_only(tmp_path):

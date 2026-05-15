@@ -222,6 +222,30 @@ def test_queue_tool_writes_only_bounded_operator_queue(tmp_path):
     assert "chatgpt_browser_connector" in queue_path.read_text(encoding="utf-8")
 
 
+def test_project_context_capsule_and_file_slice_read_tools(tmp_path, monkeypatch):
+    _seed_root(tmp_path)
+    cosmos = tmp_path / "cosmos"
+    (cosmos / "src").mkdir(parents=True, exist_ok=True)
+    (cosmos / "src/App.tsx").write_text("export const VALUE = 1;\n", encoding="utf-8")
+    (cosmos / "package.json").write_text("{\"scripts\":{}}\n", encoding="utf-8")
+    monkeypatch.setenv("ION_COSMOS_PROJECT_ROOT", cosmos.as_posix())
+
+    capsule = call_chatgpt_connector_tool(tmp_path, "ion_project_context_capsule", {"project_id": "cosmos", "probe_preview": False})
+    slice_read = call_chatgpt_connector_tool(
+        tmp_path,
+        "ion_project_file_slice_read",
+        {"project_id": "cosmos", "path": "src/App.tsx", "start_byte": 0, "max_bytes": 64},
+    )
+
+    assert "ion_project_context_capsule" in STATUS_READ_TOOLS
+    assert "ion_project_file_slice_read" in STATUS_READ_TOOLS
+    assert capsule["ok"] is True
+    assert capsule["data"]["schema_id"] == "ion.project_context_capsule.v1"
+    assert slice_read["ok"] is True
+    assert slice_read["data"]["schema_id"] == "ion.project_file_slice_read_result.v1"
+    assert slice_read["data"]["is_final_chunk"] is True
+
+
 def test_connector_timeout_policy_enforces_minimum_for_agent_invoke(tmp_path, monkeypatch):
     import kernel.ion_chatgpt_browser_mcp_connector_contract as contract
 
@@ -310,6 +334,52 @@ def test_codex_work_packet_request_is_idempotent_for_safe_retry(tmp_path):
     assert second["data"]["packet_path"] == first["data"]["packet_path"]
     assert len(list((tmp_path / "ION/05_context/current/chatgpt_connector/codex_work_requests").glob("*.json"))) == 1
     assert queue["data"]["request_count"] == 1
+
+
+def test_codex_work_packet_request_persists_model_override_fields(tmp_path):
+    _seed_root(tmp_path)
+    args = {
+        "objective": "Model override persistence test",
+        "codex_model_override": {
+            "selected_model": "gpt-5.5",
+            "selected_reasoning_effort": "medium",
+            "reason": "proof repair route",
+        },
+        "requested_model": "gpt-5.5",
+        "requested_reasoning_effort": "medium",
+        "model_override_reason": "fallback fields",
+        "project_hash": "proj_hash_20260514_preview",
+    }
+
+    result = call_chatgpt_connector_tool(tmp_path, "ion_request_codex_work_packet", args)
+
+    assert result["ok"] is True
+    packet_path = tmp_path / result["data"]["packet_path"]
+    packet = json.loads(packet_path.read_text(encoding="utf-8"))
+    assert packet["codex_model_override"]["selected_model"] == "gpt-5.5"
+    assert packet["codex_model_override"]["selected_reasoning_effort"] == "medium"
+    assert packet["codex_model_override"]["reason"] == "proof repair route"
+    assert packet["requested_model"] == "gpt-5.5"
+    assert packet["requested_reasoning_effort"] == "medium"
+    assert packet["model_override_reason"] == "fallback fields"
+    assert packet["project_hash"] == "proj_hash_20260514_preview"
+
+
+def test_codex_work_packet_request_default_shape_unchanged_without_override(tmp_path):
+    _seed_root(tmp_path)
+    args = {
+        "objective": "No override defaults stay unchanged",
+    }
+
+    result = call_chatgpt_connector_tool(tmp_path, "ion_request_codex_work_packet", args)
+
+    assert result["ok"] is True
+    packet_path = tmp_path / result["data"]["packet_path"]
+    packet = json.loads(packet_path.read_text(encoding="utf-8"))
+    assert "codex_model_override" not in packet
+    assert "requested_model" not in packet
+    assert "requested_reasoning_effort" not in packet
+    assert "model_override_reason" not in packet
 
 
 def test_codex_work_packet_request_implicit_objective_dedupe_catches_no_receipt_retry(tmp_path):

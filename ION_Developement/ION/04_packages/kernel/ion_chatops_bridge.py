@@ -195,6 +195,25 @@ PLACEHOLDER_OBJECTIVES = (
     "State the exact bounded work for local Codex/ION to perform.",
 )
 
+CODEX_MODEL_OVERRIDE_FORWARD_FIELDS = (
+    "selected_model",
+    "selected_reasoning_effort",
+    "reason",
+    "source",
+    "model",
+    "reasoning_effort",
+    "requested_model",
+    "requested_reasoning_effort",
+)
+
+CODEX_WORK_PACKET_FORWARD_STRING_FIELDS = (
+    "requested_model",
+    "requested_reasoning_effort",
+    "model_override_reason",
+    "request_kind",
+    "project_hash",
+)
+
 
 def _now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat()
@@ -322,6 +341,38 @@ def _content_text_from_action(action: Mapping[str, Any]) -> str:
     if isinstance(content, Mapping):
         return str(content.get("text") or "")
     return ""
+
+
+def _sanitize_codex_model_override(value: Any) -> dict[str, str] | None:
+    if not isinstance(value, Mapping):
+        return None
+    sanitized: dict[str, str] = {}
+    for key in CODEX_MODEL_OVERRIDE_FORWARD_FIELDS:
+        text = str(value.get(key) or "").strip()
+        if text:
+            sanitized[key] = text
+    return sanitized or None
+
+
+def _build_codex_work_packet_connector_args(action: Mapping[str, Any]) -> dict[str, Any]:
+    connector_args: dict[str, Any] = {
+        "objective": str(action.get("objective") or "").strip(),
+        "confirmation": "ION_BOUNDED_WRITE_CONFIRMED",
+    }
+    override = _sanitize_codex_model_override(action.get("codex_model_override"))
+    if override:
+        connector_args["codex_model_override"] = override
+    for key in CODEX_WORK_PACKET_FORWARD_STRING_FIELDS:
+        value = str(action.get(key) or "").strip()
+        if value:
+            connector_args[key] = value
+    required_context_reads = action.get("required_context_reads")
+    if isinstance(required_context_reads, list):
+        connector_args["required_context_reads"] = [
+            dict(item) if isinstance(item, Mapping) else item
+            for item in required_context_reads
+        ]
+    return connector_args
 
 
 def _validate_repo_relative_path(root: Path, rel_value: str) -> tuple[Path | None, str | None]:
@@ -553,14 +604,11 @@ def _handle_write_file_draft(root: Path, action: Mapping[str, Any], receipt: dic
 
 
 def _handle_create_codex_work_packet(root: Path, action: Mapping[str, Any], receipt: dict[str, Any]) -> dict[str, Any]:
-    objective = str(action.get("objective") or "").strip()
+    connector_args = _build_codex_work_packet_connector_args(action)
     result = call_chatgpt_connector_tool(
         root,
         "ion_request_codex_work_packet",
-        {
-            "objective": objective,
-            "confirmation": "ION_BOUNDED_WRITE_CONFIRMED",
-        },
+        connector_args,
     )
     if not result.get("ok"):
         receipt["status"] = "failed"

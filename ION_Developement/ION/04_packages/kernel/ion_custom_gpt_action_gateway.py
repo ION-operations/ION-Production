@@ -740,6 +740,22 @@ def validate_gateway_action_packet(root: str | Path | None, packet: Mapping[str,
     envelope = validate_gateway_request_envelope(packet, mutation=False)
     chatops_packet = _normalize_packet_for_chatops(packet)
     chatops_validation = validate_chatops_action(chatops_packet, require_approval=False) if envelope["accepted"] else None
+    approval_checked = False
+    approval_mode = "not_checked"
+    approval_findings: list[str] = []
+    approval_source = "none"
+    if envelope["accepted"]:
+        approval_checked = True
+        approval_mode = "submit_equivalent_evidence_check"
+        if isinstance(chatops_packet.get("approval"), Mapping):
+            approval_source = "approval"
+        elif isinstance(chatops_packet.get("operator_approval_evidence"), Mapping):
+            approval_source = "operator_approval_evidence"
+        approval_result = _validate_operator_approval(chatops_packet)
+        approval_findings = [str(item) for item in approval_result.get("findings", []) if item]
+    else:
+        approval_mode = "skipped_envelope_invalid"
+        approval_findings = ["approval_check_skipped_due_to_envelope_refusal"]
     refusal = envelope.get("refusal_class")
     if chatops_validation and not chatops_validation.get("accepted"):
         refusal = _map_chatops_validation_refusal(chatops_validation, chatops_packet)
@@ -755,6 +771,10 @@ def validate_gateway_action_packet(root: str | Path | None, packet: Mapping[str,
         "chatops_validation": chatops_validation,
         "assistant_work_route": assistant_work_route,
         "refusal_class": None if accepted else (refusal or "SCHEMA_INVALID"),
+        "approval_checked": approval_checked,
+        "approval_mode": approval_mode,
+        "approval_findings": approval_findings,
+        "approval_source": approval_source,
         "owner": "ION/04_packages/kernel/ion_chatops_bridge.py",
         "validated_without_mutation": True,
         "root": shell_root.as_posix(),

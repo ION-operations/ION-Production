@@ -217,6 +217,56 @@ def _selected_effort(model: str, work_class: str, stage_id: str | None, risk_lev
     return "medium"
 
 
+def validate_codex_model_override(selected_model: str, selected_reasoning_effort: str) -> dict[str, Any]:
+    model = str(selected_model or "").strip()
+    effort = str(selected_reasoning_effort or "").strip()
+    if not model:
+        return {
+            "ok": False,
+            "finding": "requested_model_required",
+            "supported_models": sorted(CODEX_MODEL_PROFILES.keys()),
+        }
+    profile = CODEX_MODEL_PROFILES.get(model)
+    if not isinstance(profile, Mapping):
+        return {
+            "ok": False,
+            "finding": "unknown_requested_model",
+            "selected_model": model,
+            "supported_models": sorted(CODEX_MODEL_PROFILES.keys()),
+        }
+    if not effort:
+        return {
+            "ok": False,
+            "finding": "requested_reasoning_effort_required",
+            "selected_model": model,
+            "supported_reasoning_efforts": list(profile.get("reasoning_efforts_supported") or REASONING_EFFORTS),
+        }
+    if effort not in REASONING_EFFORTS:
+        return {
+            "ok": False,
+            "finding": "unknown_requested_reasoning_effort",
+            "selected_model": model,
+            "selected_reasoning_effort": effort,
+            "supported_reasoning_efforts": list(REASONING_EFFORTS),
+        }
+    supported_efforts = [str(item) for item in (profile.get("reasoning_efforts_supported") or []) if str(item)]
+    if supported_efforts and effort not in supported_efforts:
+        return {
+            "ok": False,
+            "finding": "requested_reasoning_effort_not_supported_for_model",
+            "selected_model": model,
+            "selected_reasoning_effort": effort,
+            "supported_reasoning_efforts": supported_efforts,
+        }
+    return {
+        "ok": True,
+        "selected_model": model,
+        "selected_reasoning_effort": effort,
+        "model_profile": dict(profile),
+        "supported_reasoning_efforts": supported_efforts or list(REASONING_EFFORTS),
+    }
+
+
 def list_codex_model_profiles() -> dict[str, Any]:
     return {
         "schema_id": MODEL_PROFILE_SCHEMA_ID,

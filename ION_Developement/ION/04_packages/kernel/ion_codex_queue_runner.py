@@ -19,7 +19,12 @@ from pathlib import Path
 from typing import Any, Mapping
 
 from .ion_carrier_onboard import resolve_shell_root_from_ion_root
-from .ion_codex_model_moves import build_codex_model_move_plan, codex_exec_args_from_model_move, summarize_model_move
+from .ion_codex_model_moves import (
+    build_codex_model_move_plan,
+    codex_exec_args_from_model_move,
+    summarize_model_move,
+    validate_codex_model_override,
+)
 
 SCHEMA_ID = "ion.codex_queue_runner.v1"
 READY_VERDICT = "ION_CODEX_QUEUE_RUNNER_READY"
@@ -698,14 +703,113 @@ def _context_receipt_for_request(root: Path, request_rel: str, request: Mapping[
 
 def _model_move_for_request(root: Path, request: Mapping[str, Any]) -> dict[str, Any]:
     existing = request.get("codex_model_move") if isinstance(request.get("codex_model_move"), Mapping) else None
-    if existing:
-        return dict(existing)
-    return build_codex_model_move_plan(
-        root,
-        lane_id=str(request.get("lane_id") or "codex_general"),
-        stage_id=str(request.get("ion_stage_id") or "codex_general_work"),
-        objective=str(request.get("objective") or ""),
+    model_move = (
+        dict(existing)
+        if existing
+        else build_codex_model_move_plan(
+            root,
+            lane_id=str(request.get("lane_id") or "codex_general"),
+            stage_id=str(request.get("ion_stage_id") or "codex_general_work"),
+            objective=str(request.get("objective") or ""),
+        )
     )
+
+    override = request.get("codex_model_override") if isinstance(request.get("codex_model_override"), Mapping) else None
+    if override is None:
+        requested_model = str(request.get("requested_model") or "").strip()
+        requested_effort = str(request.get("requested_reasoning_effort") or "").strip()
+        requested_reason = str(request.get("model_override_reason") or "").strip()
+        if requested_model or requested_effort or requested_reason:
+            override = {
+                "selected_model": requested_model,
+                "selected_reasoning_effort": requested_effort,
+                "reason": requested_reason,
+                "source": "request.requested_model_fields",
+            }
+
+    override_receipt: dict[str, Any] = {
+        "schema_id": "ion.codex_model_override_receipt.v1",
+        "requested": False,
+        "applied": False,
+        "source": "none",
+        "reason": "",
+        "claim_boundary": [
+            "Model overrides configure Codex CLI invocation only.",
+            "Overrides do not authorize production, provider API dispatch, credentials, shell expansion, deploy, push, or accepted state.",
+        ],
+        "production_authority": False,
+        "live_execution_authority": False,
+    }
+
+    if isinstance(override, Mapping):
+        source = str(override.get("source") or "request.codex_model_override").strip() or "request.codex_model_override"
+        requested_model = str(override.get("selected_model") or override.get("model") or override.get("requested_model") or "").strip()
+        requested_effort = str(
+            override.get("selected_reasoning_effort")
+            or override.get("reasoning_effort")
+            or override.get("requested_reasoning_effort")
+            or ""
+        ).strip()
+        requested_reason = str(override.get("reason") or "").strip()
+        validation = validate_codex_model_override(requested_model, requested_effort)
+        override_receipt.update({
+            "requested": True,
+            "applied": bool(validation.get("ok")),
+            "source": source,
+            "reason": requested_reason,
+            "requested_model": requested_model,
+            "requested_reasoning_effort": requested_effort,
+            "validation": validation,
+        })
+        if not validation.get("ok"):
+            return {
+                "ok": False,
+                "result": "MODEL_OVERRIDE_INVALID",
+                "finding": str(validation.get("finding") or "model_override_invalid"),
+                "model_override_receipt": override_receipt,
+            }
+        model_move["selected_model"] = validation["selected_model"]
+        model_move["selected_reasoning_effort"] = validation["selected_reasoning_effort"]
+        model_move["model_profile"] = dict(validation.get("model_profile") or {})
+        if isinstance(model_move.get("model_profile"), Mapping):
+            profile = dict(model_move.get("model_profile") or {})
+            model_move["usage_pool_id"] = profile.get("usage_pool_id")
+            model_move["usage_pool_authority"] = profile.get("usage_pool_authority")
+            model_move["limit_authority"] = profile.get("limit_authority")
+        model_move["config_overrides"] = {
+            "model": validation["selected_model"],
+            "model_reasoning_effort": validation["selected_reasoning_effort"],
+        }
+        model_move["codex_exec_args"] = codex_exec_args_from_model_move(model_move)
+        model_move["command_preview"] = ["codex", "exec", *codex_exec_args_from_model_move(model_move)]
+        reasons = list(model_move.get("selection_reason") or [])
+        reasons.append("explicit_request_model_override")
+        model_move["selection_reason"] = reasons
+        model_move["model_override"] = {
+            "source": source,
+            "reason": requested_reason,
+            "requested_model": requested_model,
+            "requested_reasoning_effort": requested_effort,
+        }
+
+    final_validation = validate_codex_model_override(
+        str(model_move.get("selected_model") or ""),
+        str(model_move.get("selected_reasoning_effort") or ""),
+    )
+    if not final_validation.get("ok"):
+        override_receipt["validation"] = final_validation
+        return {
+            "ok": False,
+            "result": "MODEL_MOVE_INVALID",
+            "finding": str(final_validation.get("finding") or "model_move_invalid"),
+            "model_override_receipt": override_receipt,
+        }
+
+    return {
+        "ok": True,
+        "model_move": model_move,
+        "model_override_receipt": override_receipt,
+    }
 
 
 def _request_requires_workload_diff(request: Mapping[str, Any]) -> bool:
@@ -1097,6 +1201,28 @@ def prepare_codex_queue_run(
         }
     request = _load_request(selected)
     request_rel = _connector_rel(selected, shell_root)
+    model_move_result = _model_move_for_request(shell_root, request)
+    if not model_move_result.get("ok"):
+        if claim:
+            _update_request_status(
+                shell_root,
+                request_rel,
+                status="CODEX_QUEUE_RUNNER_FAILED",
+                failure_classification="CARRIER_ADAPTER_FAILURE",
+            )
+        return {
+            "schema_id": SCHEMA_ID,
+            "ok": False,
+            "result": model_move_result.get("result") or "MODEL_MOVE_INVALID",
+            "finding": model_move_result.get("finding") or "model_move_invalid",
+            "request_path": request_rel,
+            "request_id": request.get("request_id"),
+            "model_override_receipt": model_move_result.get("model_override_receipt"),
+            "production_authority": False,
+            "live_execution_authority": False,
+        }
+    model_move = dict(model_move_result["model_move"])
+    model_override_receipt = dict(model_move_result.get("model_override_receipt") or {})
     now = _now()
     run_id = f"codex_run_{now.replace(':', '').replace('+', 'Z')}_{_safe_slug(str(request.get('request_id') or selected.stem))}"
     run_dir = shell_root / CODEX_QUEUE_RUNS_DIR / run_id
@@ -1115,7 +1241,6 @@ def prepare_codex_queue_run(
     run_packet_path = run_dir / "run.json"
     worker_context_awareness_receipt_path = run_dir / WORKER_CONTEXT_AWARENESS_RECEIPT_FILENAME
     _write_json(context_receipt_path, context_receipt)
-    model_move = _model_move_for_request(shell_root, request)
     timeout = min(max(int(timeout_seconds), 30), MAX_CODEX_TIMEOUT_SECONDS)
     spawn_contract = _worker_spawn_contract_for_request(request, timeout_seconds=timeout)
     prompt = _build_prompt(request, request_rel, _connector_rel(context_receipt_path, shell_root), model_move, spawn_contract)
@@ -1140,6 +1265,7 @@ def prepare_codex_queue_run(
         "worker_context_awareness_receipt_path": _connector_rel(worker_context_awareness_receipt_path, shell_root),
         "codex_model_move": model_move,
         "codex_model_move_summary": summarize_model_move(model_move),
+        "codex_model_override_receipt": model_override_receipt,
         "codex_command": _codex_command(codex_binary, model_move, last_message_rel),
         "worker_spawn_contract": spawn_contract,
         "timeout_seconds": timeout,

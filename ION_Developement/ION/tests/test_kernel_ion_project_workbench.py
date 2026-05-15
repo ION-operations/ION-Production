@@ -1,11 +1,14 @@
+import base64
 from pathlib import Path
 
 from kernel.ion_project_workbench import (
     WRITE_CONFIRMATION_TOKEN,
     build_project_workbench_timeline,
     build_project_workspace_status,
+    project_context_capsule,
     project_browser_capture,
     project_file_read,
+    project_file_slice_read,
     project_patch_apply,
     project_patch_preview,
     project_patch_revert,
@@ -185,3 +188,61 @@ def test_project_workbench_timeline_compiles_patch_and_visual_history(monkeypatc
     assert timeline["rollback_supported_receipts"][0]["receipt_path"] == applied["data"]["receipt_path"]
     assert timeline["next_recommended_safe_action"]["tool"] == "ion_project_patch_revert"
     assert any(item["bookmark"] == "orbit" for item in timeline["allowed_bookmarks"])
+
+
+def test_project_context_capsule_compact_shape_and_budget(monkeypatch, tmp_path):
+    ion_root, cosmos = _seed_cosmos(tmp_path, monkeypatch)
+    (cosmos / "docs/cosmos").mkdir(parents=True, exist_ok=True)
+    (cosmos / "docs/cosmos/notes.md").write_text("context\n", encoding="utf-8")
+
+    capsule = project_context_capsule(ion_root, {"project_id": "cosmos", "probe_preview": False})
+
+    assert capsule["ok"] is True
+    data = capsule["data"]
+    assert data["schema_id"] == "ion.project_context_capsule.v1"
+    assert data["project"]["project_id"] == "cosmos"
+    assert "src" in data["project"]["allowed_roots"]
+    assert "package.json" in data["project"]["allowed_files"]
+    assert data["timeline_counters"]["patch_receipt_count"] >= 0
+    assert data["size_budget_posture"]["action_gateway_max_body_bytes"] == 262144
+    assert data["size_budget_posture"]["capsule_response_bytes"] < data["size_budget_posture"]["action_gateway_max_body_bytes"]
+    assert any(item["tool"] == "ion_project_file_slice_read" for item in data["suggested_next_reads"])
+    assert all(not row["path"].startswith("../") for row in data["files_index"])
+
+
+def test_project_file_slice_read_paginates_and_rejects_traversal(monkeypatch, tmp_path):
+    ion_root, cosmos = _seed_cosmos(tmp_path, monkeypatch)
+    payload = ("0123456789abcdef" * 7000).encode("utf-8")
+    target = cosmos / "src/Chunk.txt"
+    target.write_bytes(payload)
+
+    first = project_file_slice_read(ion_root, {"project_id": "cosmos", "path": "src/Chunk.txt", "start_byte": 0, "max_bytes": 131072})
+    assert first["ok"] is True
+    first_data = first["data"]
+    assert first_data["start_byte"] == 0
+    assert first_data["end_byte"] == 112000
+    assert first_data["is_final_chunk"] is True
+    assert first_data["slice_cursor"] is None
+    assert first_data["sha256_full"] == first_data["sha256_chunk"]
+    assert base64.b64decode(first_data["content_b64"].encode("ascii")) == payload
+
+    paged = project_file_slice_read(ion_root, {"project_id": "cosmos", "path": "src/Chunk.txt", "start_byte": 10, "max_bytes": 64})
+    assert paged["ok"] is True
+    paged_data = paged["data"]
+    assert paged_data["start_byte"] == 10
+    assert paged_data["end_byte"] == 74
+    assert paged_data["is_final_chunk"] is False
+    assert paged_data["slice_cursor"]["start_byte"] == 74
+    assert paged_data["slice_cursor"]["expected_sha256"] == paged_data["sha256_full"]
+    assert base64.b64decode(paged_data["content_b64"].encode("ascii")) == payload[10:74]
+
+    mismatch = project_file_slice_read(
+        ion_root,
+        {"project_id": "cosmos", "path": "src/Chunk.txt", "start_byte": 0, "max_bytes": 12, "expected_sha256": "deadbeef"},
+    )
+    traversal = project_file_slice_read(ion_root, {"project_id": "cosmos", "path": "../outside.txt", "start_byte": 0, "max_bytes": 32})
+
+    assert mismatch["ok"] is False
+    assert mismatch["finding"] == "expected_sha256_mismatch"
+    assert traversal["ok"] is False
+    assert traversal["finding"] == "project_path_must_be_relative"

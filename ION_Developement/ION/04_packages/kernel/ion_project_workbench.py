@@ -8,6 +8,7 @@ filesystem access.
 from __future__ import annotations
 
 import difflib
+import base64
 import hashlib
 import json
 import os
@@ -32,7 +33,9 @@ RUNTIME_DIR = WORKBENCH_ROOT / "runtime"
 PATCH_IDEMPOTENCY_LEDGER = RUNTIME_DIR / "project_patch_apply_idempotency_ledger.json"
 MAX_PATCH_OPERATIONS = 25
 MAX_READ_BYTES = 256 * 1024
+MAX_FILE_SLICE_BYTES = 128 * 1024
 MAX_ACTION_LOG_BYTES = 160_000
+ACTION_GATEWAY_MAX_BODY_BYTES = 262_144
 DEFAULT_PREVIEW_TIMEOUT_SECONDS = 0.6
 DEFAULT_BROWSER_TIMEOUT_MS = 45_000
 BROWSER_CAPTURE_BASE_URL = os.environ.get("ION_HELIXION_PROJECT_BASE_URL") or "http://127.0.0.1:8765"
@@ -87,6 +90,10 @@ def utc_now() -> str:
 
 def _sha256_text(value: str) -> str:
     return hashlib.sha256(value.encode("utf-8")).hexdigest()
+
+
+def _sha256_bytes(value: bytes) -> str:
+    return hashlib.sha256(value).hexdigest()
 
 
 def _sha256_file(path: Path) -> str:
@@ -541,6 +548,224 @@ def build_project_workspace_status(
     }
 
 
+def _compact_git_delta_summary(spec: IonProjectSpec) -> dict[str, Any]:
+    if not spec.root.exists():
+        return {
+            "ok": False,
+            "finding": "project_root_missing",
+            "branch": None,
+            "ahead_behind": None,
+            "changed_files": 0,
+            "staged_files": 0,
+            "untracked_files": 0,
+            "modified_files": 0,
+            "sample_lines": [],
+        }
+    result = _run_read_command(["git", "status", "--short", "--branch"], spec.root)
+    lines = [line.strip() for line in str(result.get("stdout") or "").splitlines() if line.strip()]
+    branch = None
+    ahead_behind = None
+    status_lines = lines
+    if lines and lines[0].startswith("## "):
+        branch_line = lines[0][3:]
+        status_lines = lines[1:]
+        if "..." in branch_line:
+            branch = branch_line.split("...", 1)[0].strip() or None
+            ahead_behind = branch_line.split("...", 1)[1].strip() or None
+        else:
+            branch = branch_line.strip() or None
+    staged = 0
+    untracked = 0
+    modified = 0
+    for line in status_lines:
+        if line.startswith("??"):
+            untracked += 1
+            continue
+        if len(line) >= 2 and line[0] not in {" ", "?"}:
+            staged += 1
+        if len(line) >= 2 and line[1] not in {" ", "?"}:
+            modified += 1
+    return {
+        "ok": bool(result.get("ok")),
+        "finding": result.get("finding"),
+        "branch": branch,
+        "ahead_behind": ahead_behind,
+        "changed_files": len(status_lines),
+        "staged_files": staged,
+        "untracked_files": untracked,
+        "modified_files": modified,
+        "sample_lines": status_lines[:12],
+    }
+
+
+def _iter_allowlisted_files(spec: IonProjectSpec, *, limit: int = 64) -> list[Path]:
+    files: list[Path] = []
+    seen: set[str] = set()
+    for rel in spec.allowed_files:
+        target = spec.root / rel
+        if target.exists() and target.is_file():
+            files.append(target)
+            seen.add(target.as_posix())
+            if len(files) >= limit:
+                return files
+    for root in spec.allowed_roots:
+        base = spec.root / root
+        if not base.exists() or not base.is_dir():
+            continue
+        for path in sorted(base.rglob("*")):
+            if len(files) >= limit:
+                return files
+            if not path.is_file():
+                continue
+            rel = path.relative_to(spec.root)
+            if {part.lower() for part in rel.parts} & FORBIDDEN_PATH_PARTS:
+                continue
+            key = path.as_posix()
+            if key in seen:
+                continue
+            files.append(path)
+            seen.add(key)
+    return files
+
+
+def _project_file_index(spec: IonProjectSpec, *, limit: int = 64) -> list[dict[str, Any]]:
+    rows: list[dict[str, Any]] = []
+    for path in _iter_allowlisted_files(spec, limit=limit):
+        rel = path.relative_to(spec.root).as_posix()
+        stat = path.stat()
+        head = path.read_bytes()[:4096]
+        rows.append({
+            "path": rel,
+            "size_bytes": stat.st_size,
+            "mtime": datetime.fromtimestamp(stat.st_mtime, timezone.utc).replace(microsecond=0).isoformat(),
+            "sha256_head": _sha256_bytes(head),
+        })
+    return rows
+
+
+def _suggested_next_reads(
+    project_id: str,
+    *,
+    preview: Mapping[str, Any],
+    latest_patch_receipts: list[dict[str, Any]],
+    latest_browser_captures: list[dict[str, Any]],
+    file_index: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    suggestions: list[dict[str, Any]] = []
+    if str(preview.get("status") or "") != "ready":
+        suggestions.append({
+            "tool": "ion_project_preview_status",
+            "reason": "Preview status is not ready; verify local preview first.",
+            "args": {"project_id": project_id, "probe_preview": True},
+        })
+    if file_index:
+        first = file_index[0]["path"]
+        suggestions.append({
+            "tool": "ion_project_file_slice_read",
+            "reason": "Start bounded content intake from the first allowlisted file.",
+            "args": {"project_id": project_id, "path": first, "start_byte": 0, "max_bytes": MAX_FILE_SLICE_BYTES},
+        })
+    if latest_patch_receipts:
+        suggestions.append({
+            "tool": "ion_file_read",
+            "reason": "Inspect latest patch receipt details before any additional mutations.",
+            "args": {"path": latest_patch_receipts[0]["path"], "max_bytes": 32768},
+        })
+    if latest_browser_captures:
+        suggestions.append({
+            "tool": "ion_file_read",
+            "reason": "Inspect latest browser capture receipt for visual/runtime diagnostics.",
+            "args": {"path": latest_browser_captures[0]["path"], "max_bytes": 32768},
+        })
+    suggestions.append({
+        "tool": "ion_project_workbench_timeline",
+        "reason": "Refresh timeline counters and rollback posture.",
+        "args": {"project_id": project_id, "max_items": 6},
+    })
+    return suggestions[:6]
+
+
+def project_context_capsule(ion_root: str | Path | None, args: Mapping[str, Any]) -> dict[str, Any]:
+    root = Path(ion_root or ".").expanduser().resolve()
+    spec, finding = resolve_project(root, str(args.get("project_id") or "cosmos"))
+    if spec is None:
+        return _blocked("ion_project_context_capsule", finding or "project_not_registered")
+    preview = _probe_preview(spec) if bool(args.get("probe_preview", True)) else {
+        "status": "not_probed",
+        "http_status": None,
+        "local_url": f"http://127.0.0.1:{spec.preview_port}/",
+        "finding": None,
+    }
+    latest_patch_receipts = _latest_receipts(root, spec.project_id, limit=6)
+    latest_browser_captures = _latest_browser_captures(root, spec.project_id, limit=6)
+    patch_receipts = _all_patch_receipts(root, spec.project_id)
+    capture_receipts = _all_browser_capture_receipts(root, spec.project_id)
+    rollback_candidates = [row for row in patch_receipts if row.get("action") == "ion_project_patch_apply" and row.get("rollback_supported") is True]
+    file_index = _project_file_index(spec, limit=48)
+    largest_files = sorted(file_index, key=lambda row: int(row.get("size_bytes") or 0), reverse=True)[:3]
+    cursor_hints = [
+        {
+            "path": row["path"],
+            "start_byte": 0,
+            "max_bytes": MAX_FILE_SLICE_BYTES,
+            "reason": "largest_allowlisted_file",
+        }
+        for row in largest_files
+    ]
+    suggested_reads = _suggested_next_reads(
+        spec.project_id,
+        preview=preview,
+        latest_patch_receipts=latest_patch_receipts,
+        latest_browser_captures=latest_browser_captures,
+        file_index=file_index,
+    )
+    payload = {
+        "schema_id": "ion.project_context_capsule.v1",
+        "project_id": spec.project_id,
+        "project": {
+            "project_id": spec.project_id,
+            "label": spec.label,
+            "root": spec.root.as_posix(),
+            "preview_port": spec.preview_port,
+            "preview_public_path": spec.preview_public_path,
+            "preview_base_path": spec.preview_base_path,
+            "allowed_roots": [path.as_posix() for path in spec.allowed_roots],
+            "allowed_files": [path.as_posix() for path in spec.allowed_files],
+            "action_ids": sorted(spec.action_commands),
+        },
+        "preview": preview,
+        "git_delta_summary": _compact_git_delta_summary(spec),
+        "timeline_counters": {
+            "patch_receipt_count": len(patch_receipts),
+            "browser_capture_count": len(capture_receipts),
+            "rollback_candidate_count": len(rollback_candidates),
+        },
+        "latest_refs": {
+            "patch_receipt_path": latest_patch_receipts[0]["path"] if latest_patch_receipts else None,
+            "browser_capture_receipt_path": latest_browser_captures[0]["path"] if latest_browser_captures else None,
+            "browser_capture_screenshot_path": latest_browser_captures[0].get("screenshot_path") if latest_browser_captures else None,
+        },
+        "history": {
+            "latest_patch_receipts": latest_patch_receipts,
+            "latest_browser_captures": latest_browser_captures,
+        },
+        "files_index": file_index,
+        "suggested_next_reads": suggested_reads,
+        "cursor_hints": cursor_hints,
+        "size_budget_posture": {
+            "action_gateway_max_body_bytes": ACTION_GATEWAY_MAX_BODY_BYTES,
+            "file_slice_max_bytes": MAX_FILE_SLICE_BYTES,
+            "recommended_safe_response_bytes": 220_000,
+            "capsule_response_bytes": 0,
+        },
+        "production_authority": False,
+        "live_execution_authority": False,
+    }
+    encoded = json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    payload["size_budget_posture"]["capsule_response_bytes"] = len(encoded)
+    return _ok("ion_project_context_capsule", payload)
+
+
 def project_file_read(ion_root: str | Path | None, args: Mapping[str, Any]) -> dict[str, Any]:
     spec, finding = resolve_project(ion_root, str(args.get("project_id") or "cosmos"))
     if spec is None:
@@ -561,6 +786,62 @@ def project_file_read(ion_root: str | Path | None, args: Mapping[str, Any]) -> d
         "truncated": target.stat().st_size > len(data),
         "sha256": _sha256_file(target),
         "text": text,
+        "production_authority": False,
+        "live_execution_authority": False,
+    })
+
+
+def project_file_slice_read(ion_root: str | Path | None, args: Mapping[str, Any]) -> dict[str, Any]:
+    spec, finding = resolve_project(ion_root, str(args.get("project_id") or "cosmos"))
+    if spec is None:
+        return _blocked("ion_project_file_slice_read", finding or "project_not_registered")
+    target, path_finding = _validate_project_path(spec, str(args.get("path") or ""))
+    if target is None:
+        return _blocked("ion_project_file_slice_read", path_finding or "invalid_project_path")
+    if not target.exists():
+        return _blocked("ion_project_file_slice_read", "project_path_missing", {"path": target.relative_to(spec.root).as_posix()})
+    start_byte = int(args.get("start_byte") or 0)
+    if start_byte < 0:
+        return _blocked("ion_project_file_slice_read", "start_byte_must_be_non_negative")
+    max_bytes = int(args.get("max_bytes") or MAX_FILE_SLICE_BYTES)
+    if max_bytes < 1 or max_bytes > MAX_FILE_SLICE_BYTES:
+        return _blocked("ion_project_file_slice_read", "max_bytes_out_of_range", {"max_bytes_limit": MAX_FILE_SLICE_BYTES})
+    data = target.read_bytes()
+    total_bytes = len(data)
+    if start_byte > total_bytes:
+        return _blocked("ion_project_file_slice_read", "start_byte_out_of_range", {"total_bytes": total_bytes})
+    sha256_full = _sha256_bytes(data)
+    expected_sha256 = str(args.get("expected_sha256") or "").strip()
+    if expected_sha256 and expected_sha256 != sha256_full:
+        return _blocked("ion_project_file_slice_read", "expected_sha256_mismatch", {"expected_sha256": expected_sha256, "actual_sha256": sha256_full})
+    chunk = data[start_byte:start_byte + max_bytes]
+    end_byte = start_byte + len(chunk)
+    is_final_chunk = end_byte >= total_bytes
+    rel_path = target.relative_to(spec.root).as_posix()
+    slice_cursor: dict[str, Any] | None
+    if is_final_chunk:
+        slice_cursor = None
+    else:
+        slice_cursor = {
+            "project_id": spec.project_id,
+            "path": rel_path,
+            "start_byte": end_byte,
+            "max_bytes": max_bytes,
+            "expected_sha256": sha256_full,
+        }
+    return _ok("ion_project_file_slice_read", {
+        "schema_id": "ion.project_file_slice_read_result.v1",
+        "project_id": spec.project_id,
+        "path": rel_path,
+        "start_byte": start_byte,
+        "end_byte": end_byte,
+        "total_bytes": total_bytes,
+        "max_bytes": max_bytes,
+        "is_final_chunk": is_final_chunk,
+        "sha256_full": sha256_full,
+        "sha256_chunk": _sha256_bytes(chunk),
+        "content_b64": base64.b64encode(chunk).decode("ascii"),
+        "slice_cursor": slice_cursor,
         "production_authority": False,
         "live_execution_authority": False,
     })

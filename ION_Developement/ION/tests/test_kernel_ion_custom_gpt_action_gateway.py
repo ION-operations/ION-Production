@@ -385,6 +385,10 @@ def test_gateway_validate_does_not_write_receipts(tmp_path):
 
     assert result["ok"] is True
     assert result["assistant_work_route"]["candidate_only"] is True
+    assert result["approval_checked"] is True
+    assert result["approval_mode"] == "submit_equivalent_evidence_check"
+    assert result["approval_source"] == "none"
+    assert "operator_approval_evidence_required" in result["approval_findings"]
     assert not (tmp_path / "ION/05_context/current/action_gateway/receipts").exists()
 
 
@@ -426,6 +430,19 @@ def test_gateway_validate_surfaces_dynamic_domain_agent_proposal(tmp_path):
     assert proposal["candidate_domains"][0]["domain_id"] == "pr_agent_work_domain"
     assert "CI_EVIDENCE_TRIAGER" in [agent["agent_id"] for agent in proposal["candidate_agents"]]
     assert proposal["authority_boundary"]["requires_explicit_acceptance_to_land"] is True
+
+
+def test_gateway_validate_reports_approval_source_and_no_findings_when_evidence_present(tmp_path):
+    _seed_root(tmp_path)
+    packet = _approved(_action("gateway-validate-approval-source"), idempotency_key="validate-approval-source")
+
+    result = validate_gateway_action_packet(tmp_path, packet)
+
+    assert result["ok"] is True
+    assert result["approval_checked"] is True
+    assert result["approval_mode"] == "submit_equivalent_evidence_check"
+    assert result["approval_source"] == "approval"
+    assert result["approval_findings"] == []
 
 
 def test_gateway_submit_requires_idempotency_key(tmp_path):
@@ -487,6 +504,39 @@ def test_gateway_submit_routes_to_chatops_owner_and_blocks_replay(tmp_path):
     assert second["ok"] is False
     assert second["refusal_class"] == "IDEMPOTENCY_REPLAY_BLOCKED"
 
+
+def test_gateway_submit_create_codex_work_packet_persists_model_override_fields(tmp_path):
+    _seed_root(tmp_path)
+    packet = _action("gateway-codex-work-override", intent="create_codex_work_packet")
+    action = packet["ion_action"]
+    action["objective"] = "Gateway should preserve codex override fields into work request JSON."
+    action["codex_model_override"] = {
+        "selected_model": "gpt-5.5",
+        "selected_reasoning_effort": "medium",
+        "reason": "gateway front door proof",
+        "unsafe_extra": "drop_me",
+    }
+    action["requested_model"] = "gpt-5.5"
+    action["requested_reasoning_effort"] = "medium"
+    action["model_override_reason"] = "gateway fallback fields"
+    action["project_hash"] = "proj_hash_gateway_20260514"
+    action["unexpected_unallowlisted_field"] = "must_not_forward"
+
+    result = submit_gateway_action_packet(tmp_path, _approved(packet, idempotency_key="gateway-codex-override-1"))
+
+    assert result["ok"] is True
+    owner_result = result["owner_result"]
+    request_path = tmp_path / owner_result["execution"]["packet_path"]
+    request_packet = json.loads(request_path.read_text(encoding="utf-8"))
+    assert request_packet["codex_model_override"]["selected_model"] == "gpt-5.5"
+    assert request_packet["codex_model_override"]["selected_reasoning_effort"] == "medium"
+    assert request_packet["codex_model_override"]["reason"] == "gateway front door proof"
+    assert "unsafe_extra" not in request_packet["codex_model_override"]
+    assert request_packet["requested_model"] == "gpt-5.5"
+    assert request_packet["requested_reasoning_effort"] == "medium"
+    assert request_packet["model_override_reason"] == "gateway fallback fields"
+    assert request_packet["project_hash"] == "proj_hash_gateway_20260514"
+    assert "unexpected_unallowlisted_field" not in request_packet
 
 
 def test_gateway_agent_invocation_status_and_relay_wrappers(tmp_path):

@@ -780,6 +780,20 @@ def _tool_schema(name: str) -> dict[str, Any]:
                     "description": "Optional deterministic Codex CLI model-move plan created by ION.",
                     "additionalProperties": True,
                 },
+                "codex_model_override": {
+                    "type": "object",
+                    "description": "Optional explicit Codex model override validated by queue-runner against model profiles.",
+                    "properties": {
+                        "selected_model": {"type": "string"},
+                        "selected_reasoning_effort": {"type": "string"},
+                        "reason": {"type": "string"},
+                    },
+                    "additionalProperties": True,
+                },
+                "requested_model": {"type": "string"},
+                "requested_reasoning_effort": {"type": "string"},
+                "model_override_reason": {"type": "string"},
+                "project_hash": {"type": "string"},
                 "required_context_reads": {
                     "type": "array",
                     "items": {

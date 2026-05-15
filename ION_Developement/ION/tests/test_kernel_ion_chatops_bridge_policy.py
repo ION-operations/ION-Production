@@ -264,8 +264,53 @@ def test_chatops_create_codex_work_packet_uses_existing_queue_owner(tmp_path):
     packet_path = result["execution"]["packet_path"]
     assert packet_path.startswith("ION/05_context/current/chatgpt_connector/codex_work_requests/")
     assert (tmp_path / packet_path).exists()
+    request_packet = json.loads((tmp_path / packet_path).read_text(encoding="utf-8"))
+    assert "codex_model_override" not in request_packet
+    assert "requested_model" not in request_packet
+    assert "requested_reasoning_effort" not in request_packet
+    assert "model_override_reason" not in request_packet
     queue = json.loads((tmp_path / "ION/05_context/current/ACTIVE_CHATGPT_CONNECTOR_CODEX_WORK_QUEUE.json").read_text(encoding="utf-8"))
     assert queue["request_count"] == 1
+
+
+def test_chatops_create_codex_work_packet_persists_model_override_fields(tmp_path):
+    _seed_root(tmp_path)
+    packet = _approved(
+        _action(
+            "sev-codex-work-override",
+            "create_codex_work_packet",
+            objective="Queue override persistence test via ChatOps front door.",
+        )
+    )
+    action = packet["ion_action"]
+    action["codex_model_override"] = {
+        "selected_model": "gpt-5.5",
+        "selected_reasoning_effort": "medium",
+        "reason": "front door persistence proof",
+        "unsafe_extra": "drop_me",
+    }
+    action["requested_model"] = "gpt-5.5"
+    action["requested_reasoning_effort"] = "medium"
+    action["model_override_reason"] = "fallback top-level"
+    action["project_hash"] = "proj_hash_front_door_20260514"
+    action["required_context_reads"] = [{"path": "ION/REPO_AUTHORITY.md", "kind": "file", "required": True}]
+    action["unexpected_unallowlisted_field"] = "must_not_forward"
+
+    result = submit_chatops_action(tmp_path, packet)
+
+    assert result["ok"] is True
+    packet_path = tmp_path / result["execution"]["packet_path"]
+    request_packet = json.loads(packet_path.read_text(encoding="utf-8"))
+    assert request_packet["codex_model_override"]["selected_model"] == "gpt-5.5"
+    assert request_packet["codex_model_override"]["selected_reasoning_effort"] == "medium"
+    assert request_packet["codex_model_override"]["reason"] == "front door persistence proof"
+    assert "unsafe_extra" not in request_packet["codex_model_override"]
+    assert request_packet["requested_model"] == "gpt-5.5"
+    assert request_packet["requested_reasoning_effort"] == "medium"
+    assert request_packet["model_override_reason"] == "fallback top-level"
+    assert request_packet["project_hash"] == "proj_hash_front_door_20260514"
+    assert request_packet["required_context_reads"][0]["path"] == "ION/REPO_AUTHORITY.md"
+    assert "unexpected_unallowlisted_field" not in request_packet
 
 
 def test_chatops_flat_sev_codex_work_shape_is_canonicalized(tmp_path):

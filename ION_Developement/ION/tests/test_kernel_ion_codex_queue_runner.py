@@ -21,7 +21,14 @@ def _seed_root(root: Path) -> None:
         target.write_text(f"seeded test context for {rel}\n", encoding="utf-8")
 
 
-def _seed_request(root: Path) -> str:
+def _seed_request(
+    root: Path,
+    *,
+    codex_model_override: dict[str, object] | None = None,
+    requested_model: str | None = None,
+    requested_reasoning_effort: str | None = None,
+    model_override_reason: str | None = None,
+) -> str:
     rel = "ION/05_context/current/chatgpt_connector/codex_work_requests/2026-05-04T000000Z0000_runner_test.json"
     path = root / rel
     path.parent.mkdir(parents=True, exist_ok=True)
@@ -57,6 +64,14 @@ def _seed_request(root: Path) -> str:
         "production_authority": False,
         "live_execution_authority": False,
     }
+    if codex_model_override is not None:
+        payload["codex_model_override"] = codex_model_override
+    if requested_model is not None:
+        payload["requested_model"] = requested_model
+    if requested_reasoning_effort is not None:
+        payload["requested_reasoning_effort"] = requested_reasoning_effort
+    if model_override_reason is not None:
+        payload["model_override_reason"] = model_override_reason
     path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
     return rel
 
@@ -303,6 +318,99 @@ def test_prepare_codex_queue_run_writes_machine_generated_worker_context_awarene
     assert isinstance(receipt["machine_attestation_sha256"], str) and len(receipt["machine_attestation_sha256"]) == 64
     assert receipt["required_context_reads"]
     assert all(row["status"] == "READY" for row in receipt["required_context_reads"])
+
+
+def test_prepare_codex_queue_run_applies_requested_codex_model_override(tmp_path):
+    _seed_root(tmp_path)
+    request_rel = _seed_request(
+        tmp_path,
+        codex_model_override={
+            "selected_model": "gpt-5.5",
+            "selected_reasoning_effort": "medium",
+            "reason": "proof repair requires explicit model route",
+        },
+    )
+
+    prepared = prepare_codex_queue_run(tmp_path, request_path=request_rel)
+
+    assert prepared["ok"] is True
+    run = prepared["run"]
+    assert run["codex_model_move"]["selected_model"] == "gpt-5.5"
+    assert run["codex_model_move"]["selected_reasoning_effort"] == "medium"
+    assert run["codex_command"][:6] == ["codex", "exec", "-m", "gpt-5.5", "-c", "model_reasoning_effort=medium"]
+    override_receipt = run["codex_model_override_receipt"]
+    assert override_receipt["requested"] is True
+    assert override_receipt["applied"] is True
+    assert override_receipt["source"] == "request.codex_model_override"
+    assert override_receipt["reason"] == "proof repair requires explicit model route"
+    assert run["codex_model_move"]["model_override"]["source"] == "request.codex_model_override"
+
+
+def test_prepare_codex_queue_run_applies_requested_codex_model_override_for_spark_medium(tmp_path):
+    _seed_root(tmp_path)
+    request_rel = _seed_request(
+        tmp_path,
+        requested_model="gpt-5.3-codex-spark",
+        requested_reasoning_effort="medium",
+        model_override_reason="bounded fast lane test",
+    )
+
+    prepared = prepare_codex_queue_run(tmp_path, request_path=request_rel)
+
+    assert prepared["ok"] is True
+    run = prepared["run"]
+    assert run["codex_model_move"]["selected_model"] == "gpt-5.3-codex-spark"
+    assert run["codex_model_move"]["selected_reasoning_effort"] == "medium"
+    assert run["codex_command"][:6] == ["codex", "exec", "-m", "gpt-5.3-codex-spark", "-c", "model_reasoning_effort=medium"]
+    override_receipt = run["codex_model_override_receipt"]
+    assert override_receipt["requested"] is True
+    assert override_receipt["applied"] is True
+    assert override_receipt["source"] == "request.requested_model_fields"
+    assert override_receipt["reason"] == "bounded fast lane test"
+
+
+def test_prepare_codex_queue_run_rejects_unknown_requested_model_override(tmp_path):
+    _seed_root(tmp_path)
+    request_rel = _seed_request(
+        tmp_path,
+        codex_model_override={
+            "selected_model": "gpt-not-real",
+            "selected_reasoning_effort": "medium",
+            "reason": "negative test",
+        },
+    )
+
+    prepared = prepare_codex_queue_run(tmp_path, request_path=request_rel)
+
+    assert prepared["ok"] is False
+    assert prepared["result"] == "MODEL_OVERRIDE_INVALID"
+    assert prepared["finding"] == "unknown_requested_model"
+    receipt = prepared["model_override_receipt"]
+    assert receipt["requested"] is True
+    assert receipt["applied"] is False
+    assert receipt["validation"]["finding"] == "unknown_requested_model"
+
+
+def test_prepare_codex_queue_run_rejects_unknown_requested_reasoning_effort(tmp_path):
+    _seed_root(tmp_path)
+    request_rel = _seed_request(
+        tmp_path,
+        codex_model_override={
+            "selected_model": "gpt-5.5",
+            "selected_reasoning_effort": "turbo",
+            "reason": "negative test",
+        },
+    )
+
+    prepared = prepare_codex_queue_run(tmp_path, request_path=request_rel)
+
+    assert prepared["ok"] is False
+    assert prepared["result"] == "MODEL_OVERRIDE_INVALID"
+    assert prepared["finding"] == "unknown_requested_reasoning_effort"
+    receipt = prepared["model_override_receipt"]
+    assert receipt["requested"] is True
+    assert receipt["applied"] is False
+    assert receipt["validation"]["finding"] == "unknown_requested_reasoning_effort"
 
 
 def test_prepare_codex_queue_run_includes_workload_diff_for_agent_cartography_contract(tmp_path):

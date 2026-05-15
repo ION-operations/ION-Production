@@ -40,6 +40,8 @@ from .ion_kernel_fanout_carrier_dryrun import build_kernel_fanout_carrier_dryrun
 from .ion_cockpit_view_model import build_cockpit_view_model
 from .ion_context_proof_gate import evaluate_context_proof_return
 from .ion_project_workbench import (
+    project_context_capsule,
+    project_file_slice_read,
     build_project_workbench_timeline,
     build_project_workspace_status,
     project_action_run,
@@ -84,6 +86,16 @@ MAX_READ_BYTES = 256 * 1024
 MAX_SEARCH_FILE_BYTES = 128 * 1024
 MAX_SEARCH_FILES = 500
 MIN_COMPLEX_WORKLOAD_TIMEOUT_SECONDS = 900
+CODEX_MODEL_OVERRIDE_ALLOWED_FIELDS = (
+    "selected_model",
+    "selected_reasoning_effort",
+    "reason",
+    "source",
+    "model",
+    "reasoning_effort",
+    "requested_model",
+    "requested_reasoning_effort",
+)
 BASE_RETURN_CONTRACT_SECTIONS = (
     "### CONTEXT PROOF",
     "### TEMPLATE ACTION PROOF",
@@ -204,7 +216,9 @@ STATUS_READ_TOOLS = {
     "ion_project_preview_status",
     "ion_project_git_status",
     "ion_project_workbench_timeline",
+    "ion_project_context_capsule",
     "ion_project_file_read",
+    "ion_project_file_slice_read",
     "ion_project_patch_preview",
     "ion_kernel_fanout_carrier_dryrun_status",
 }
@@ -322,6 +336,17 @@ def _sanitize_required_context_reads(value: Any) -> list[dict[str, Any]]:
         seen.add(path)
         reads.append({"kind": kind, "path": path, "required": required})
     return reads[:64]
+
+
+def _sanitize_codex_model_override(value: Any) -> dict[str, str] | None:
+    if not isinstance(value, Mapping):
+        return None
+    sanitized: dict[str, str] = {}
+    for key in CODEX_MODEL_OVERRIDE_ALLOWED_FIELDS:
+        text = str(value.get(key) or "").strip()
+        if text:
+            sanitized[key] = text
+    return sanitized or None
 
 
 def _safe_slug(value: str) -> str:
@@ -2651,8 +2676,12 @@ def call_chatgpt_connector_tool(
                 max_items=int(args.get("max_items") or 6),
             ),
         )
+    if tool_name == "ion_project_context_capsule":
+        return project_context_capsule(shell_root, args)
     if tool_name == "ion_project_file_read":
         return project_file_read(shell_root, args)
+    if tool_name == "ion_project_file_slice_read":
+        return project_file_slice_read(shell_root, args)
     if tool_name == "ion_project_patch_preview":
         return project_patch_preview(shell_root, args)
     if tool_name == "ion_kernel_fanout_carrier_dryrun_status":
@@ -2762,6 +2791,21 @@ def call_chatgpt_connector_tool(
         }
         if isinstance(args.get("codex_model_move"), Mapping):
             payload["codex_model_move"] = dict(args["codex_model_move"])
+        codex_model_override = _sanitize_codex_model_override(args.get("codex_model_override"))
+        if codex_model_override:
+            payload["codex_model_override"] = codex_model_override
+        requested_model = str(args.get("requested_model") or "").strip()
+        requested_reasoning_effort = str(args.get("requested_reasoning_effort") or "").strip()
+        model_override_reason = str(args.get("model_override_reason") or "").strip()
+        project_hash = str(args.get("project_hash") or "").strip()
+        if requested_model:
+            payload["requested_model"] = requested_model
+        if requested_reasoning_effort:
+            payload["requested_reasoning_effort"] = requested_reasoning_effort
+        if model_override_reason:
+            payload["model_override_reason"] = model_override_reason
+        if project_hash:
+            payload["project_hash"] = project_hash
         request_kind = str(args.get("request_kind") or "").strip()
         if request_kind:
             payload["request_kind"] = request_kind
