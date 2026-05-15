@@ -1,5 +1,5 @@
 {
-  "capsule_entry_count": 112,
+  "capsule_entry_count": 115,
   "epoch_count": 12,
   "epoch_size_rows": 10,
   "epochs": [
@@ -739,7 +739,7 @@
       ]
     },
     {
-      "date_end": "2026-05-14",
+      "date_end": "2026-05-15",
       "date_start": "2026-05-14",
       "epoch_id": "E-012",
       "evidence_refs": [
@@ -752,13 +752,25 @@
         "ION/02_architecture/BRANCH_DELEGATION_ROUTER_PROTOCOL.md",
         "ION/02_architecture/AI_GIT_BRANCH_CONTAINMENT_PROTOCOL.md",
         "ION/04_packages/kernel/ion_branch_delegate_router.py",
-        "ION/04_packages/kernel/ion_ai_git_branch_containment.py"
+        "ION/04_packages/kernel/ion_ai_git_branch_containment.py",
+        "ION/05_context/current/helixion_preview_lane/PCKT-ION-HELIXION-EPHEMERAL-PREVIEW-LANE-SOURCE-DISCOVERY-REPORT-20260514T201359Z.md",
+        "ION/05_context/current/chatgpt_connector/codex_work_requests/2026-05-14T200930Z0000_pckt_ion_helixion_ephemeral_preview_lane_source_discovery_20260514_goal_run_sour.json",
+        "ION/05_context/current/chatgpt_connector/codex_queue_runs/codex_run_2026-05-14T200941Z0000_codex_req_2026_05_14t200930122849z_pckt_ion_helixion_ephemeral_preview_lane_sour/context_",
+        "ION/04_packages/kernel/ion_codex_model_moves.py",
+        "ION/04_packages/kernel/ion_codex_queue_runner.py",
+        "ION/04_packages/kernel/ion_chatgpt_browser_mcp_connector_contract.py",
+        "ION/04_packages/kernel/ion_chatgpt_browser_mcp_http_preview.py",
+        "ION/tests/test_kernel_ion_codex_queue_runner.py",
+        "ION/tests/test_kernel_ion_chatgpt_browser_mcp_connector_contract.py",
+        "ION/tests/test_kernel_ion_chatgpt_browser_mcp_http_preview.py"
       ],
-      "row_count": 2,
-      "row_end": "C-112",
+      "row_count": 5,
+      "row_end": "C-115",
       "row_start": "C-111",
       "status_counts": {
         "CANDIDATE_PACKAGE_REFRESHED_TESTED": 1,
+        "COMPLETE": 2,
+        "IMPLEMENTED": 1,
         "ROUTED_PACKAGES_COMMITTED_TESTED": 1
       },
       "summaries": [
@@ -773,11 +785,29 @@
           "id": "C-112",
           "status": "ROUTED_PACKAGES_COMMITTED_TESTED",
           "summary": "Applied and committed Branch Delegation Router v0.1 plus AI Git Branch Containment v0.1 from Needs_Routed packages as separate scoped architecture/source packets."
+        },
+        {
+          "date": "2026-05-14",
+          "id": "C-113",
+          "status": "COMPLETE",
+          "summary": "Completed Helixion Ephemeral Preview Lane source discovery and architecture reconciliation with proof-gated next-packet sequence."
+        },
+        {
+          "date": "2026-05-14",
+          "id": "C-114",
+          "status": "IMPLEMENTED",
+          "summary": "Implemented queue-runner explicit model override validation/apply path with MCP request schema fields and focused regression coverage for gpt-5.5/medium routing."
+        },
+        {
+          "date": "2026-05-15",
+          "id": "C-115",
+          "status": "COMPLETE",
+          "summary": "Proof-repair audit: confirmed Project Workbench tools in source (65-tool contract) and isolated stale 63-tool live MCP listener; recorded bounded smoke artifacts and operator reloa"
         }
       ]
     }
   ],
-  "generated_at": "2026-05-14T17:16:25+00:00",
+  "generated_at": "2026-05-15T00:45:11+00:00",
   "latest_epochs": [
     {
       "date_end": "2026-05-10",
@@ -1121,7 +1151,7 @@
       ]
     },
     {
-      "date_end": "2026-05-14",
+      "date_end": "2026-05-15",
       "date_start": "2026-05-14",
       "epoch_id": "E-012",
       "evidence_refs": [
@@ -1134,13 +1164,25 @@
         "ION/02_architecture/BRANCH_DELEGATION_ROUTER_PROTOCOL.md",
         "ION/02_architecture/AI_GIT_BRANCH_CONTAINMENT_PROTOCOL.md",
         "ION/04_packages/kernel/ion_branch_delegate_router.py",
-        "ION/04_packages/kernel/ion_ai_git_branch_containment.py"
+        "ION/04_packages/kernel/ion_ai_git_branch_containment.py",
+        "ION/05_context/current/helixion_preview_lane/PCKT-ION-HELIXION-EPHEMERAL-PREVIEW-LANE-SOURCE-DISCOVERY-REPORT-20260514T201359Z.md",
+        "ION/05_context/current/chatgpt_connector/codex_work_requests/2026-05-14T200930Z0000_pckt_ion_helixion_ephemeral_preview_lane_source_discovery_20260514_goal_run_sour.json",
+        "ION/05_context/current/chatgpt_connector/codex_queue_runs/codex_run_2026-05-14T200941Z0000_codex_req_2026_05_14t200930122849z_pckt_ion_helixion_ephemeral_preview_lane_sour/context_",
+        "ION/04_packages/kernel/ion_codex_model_moves.py",
+        "ION/04_packages/kernel/ion_codex_queue_runner.py",
+        "ION/04_packages/kernel/ion_chatgpt_browser_mcp_connector_contract.py",
+        "ION/04_packages/kernel/ion_chatgpt_browser_mcp_http_preview.py",
+        "ION/tests/test_kernel_ion_codex_queue_runner.py",
+        "ION/tests/test_kernel_ion_chatgpt_browser_mcp_connector_contract.py",
+        "ION/tests/test_kernel_ion_chatgpt_browser_mcp_http_preview.py"
       ],
-      "row_count": 2,
-      "row_end": "C-112",
+      "row_count": 5,
+      "row_end": "C-115",
       "row_start": "C-111",
       "status_counts": {
         "CANDIDATE_PACKAGE_REFRESHED_TESTED": 1,
+        "COMPLETE": 2,
+        "IMPLEMENTED": 1,
         "ROUTED_PACKAGES_COMMITTED_TESTED": 1
       },
       "summaries": [
@@ -1155,6 +1197,24 @@
           "id": "C-112",
           "status": "ROUTED_PACKAGES_COMMITTED_TESTED",
           "summary": "Applied and committed Branch Delegation Router v0.1 plus AI Git Branch Containment v0.1 from Needs_Routed packages as separate scoped architecture/source packets."
+        },
+        {
+          "date": "2026-05-14",
+          "id": "C-113",
+          "status": "COMPLETE",
+          "summary": "Completed Helixion Ephemeral Preview Lane source discovery and architecture reconciliation with proof-gated next-packet sequence."
+        },
+        {
+          "date": "2026-05-14",
+          "id": "C-114",
+          "status": "IMPLEMENTED",
+          "summary": "Implemented queue-runner explicit model override validation/apply path with MCP request schema fields and focused regression coverage for gpt-5.5/medium routing."
+        },
+        {
+          "date": "2026-05-15",
+          "id": "C-115",
+          "status": "COMPLETE",
+          "summary": "Proof-repair audit: confirmed Project Workbench tools in source (65-tool contract) and isolated stale 63-tool live MCP listener; recorded bounded smoke artifacts and operator reloa"
         }
       ]
     }
