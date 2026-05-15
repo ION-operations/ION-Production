@@ -585,18 +585,61 @@ def test_reconcile_marks_dead_active_worker_failed_and_clears_state(tmp_path):
 
     assert result["ok"] is True
     assert result["stale_active_run_detected"] is True
-    assert result["action"] == "mark_daemon_failure_and_clear_active"
+    assert result["action"] == "mark_codex_cli_vanished_no_output_and_clear_active"
     updated_run = json.loads(run_path.read_text(encoding="utf-8"))
-    assert updated_run["status"] == "DAEMON_WORKER_EXITED_WITHOUT_FINALIZATION"
-    assert updated_run["failure_classification"] == "DAEMON_FAILURE"
+    assert updated_run["status"] == "CODEX_CLI_VANISHED_NO_OUTPUT"
+    assert updated_run["failure_classification"] == "CODEX_CLI_FAILURE"
     assert updated_run["daemon_reconciliation"]["output_presence"] == {
         "stdout_exists": False,
         "stderr_exists": False,
         "last_message_exists": False,
     }
+    assert updated_run["daemon_reconciliation"]["reason"] == "active_pid_not_running_no_terminal_output"
+    assert updated_run["worker_lifecycle_events"][-1]["terminal_state"] == "vanished_no_output"
     updated_request = json.loads((tmp_path / request_rel).read_text(encoding="utf-8"))
     assert updated_request["status"] == "CODEX_QUEUE_RUNNER_FAILED"
-    assert updated_request["failure_classification"] == "DAEMON_FAILURE"
+    assert updated_request["failure_classification"] == "CODEX_CLI_FAILURE"
+    runner_state = json.loads(state_path.read_text(encoding="utf-8"))
+    assert runner_state["active_run"] is None
+
+
+def test_reconcile_marks_latest_running_without_active_state_as_vanished_no_output(tmp_path):
+    _seed_root(tmp_path)
+    request_rel = _seed_request(tmp_path)
+    prepared = prepare_codex_queue_run(tmp_path, request_path=request_rel, claim=True)
+    run = dict(prepared["run"])
+    run_path = tmp_path / run["run_packet_path"]
+    run["status"] = "CODEX_CLI_RUNNING"
+    run["pid"] = 999999999
+    run_path.write_text(json.dumps(run, indent=2), encoding="utf-8")
+    state_path = tmp_path / "ION/05_context/current/chatgpt_connector/runtime/codex_queue_runner_state.json"
+    state_path.parent.mkdir(parents=True, exist_ok=True)
+    state_path.write_text(
+        json.dumps(
+            {
+                "schema_id": "ion.codex_queue_runner_state.v1",
+                "active_run": None,
+                "latest_run": run["run_packet_path"],
+                "production_authority": False,
+                "live_execution_authority": False,
+            },
+            indent=2,
+        ),
+        encoding="utf-8",
+    )
+
+    result = reconcile_codex_queue_runner_state(tmp_path, write=True)
+
+    assert result["ok"] is True
+    assert result["stale_active_run_detected"] is True
+    assert result["action"] == "mark_codex_cli_vanished_no_output"
+    updated_run = json.loads(run_path.read_text(encoding="utf-8"))
+    assert updated_run["status"] == "CODEX_CLI_VANISHED_NO_OUTPUT"
+    assert updated_run["failure_classification"] == "CODEX_CLI_FAILURE"
+    assert updated_run["daemon_reconciliation"]["reason"] == "latest_run_pid_not_running_no_terminal_output"
+    updated_request = json.loads((tmp_path / request_rel).read_text(encoding="utf-8"))
+    assert updated_request["status"] == "CODEX_QUEUE_RUNNER_FAILED"
+    assert updated_request["failure_classification"] == "CODEX_CLI_FAILURE"
     runner_state = json.loads(state_path.read_text(encoding="utf-8"))
     assert runner_state["active_run"] is None
 

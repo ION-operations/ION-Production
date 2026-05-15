@@ -46,6 +46,7 @@ START_REQUESTED_RUN_STATUSES = {
     "CODEX_QUEUE_RUNNER_WORKER_STARTED",
 }
 START_NO_RECEIPT_STATUS = "CODEX_QUEUE_START_NO_RECEIPT"
+CODEX_CLI_VANISHED_NO_OUTPUT_STATUS = "CODEX_CLI_VANISHED_NO_OUTPUT"
 WORKER_CONTEXT_AWARENESS_RECEIPT_FILENAME = "worker_context_awareness_receipt.json"
 WORKER_CONTEXT_ACKNOWLEDGED = "WORKER_CONTEXT_ACKNOWLEDGED"
 WORKER_CONTEXT_BLOCKED = "WORKER_CONTEXT_BLOCKED"
@@ -102,6 +103,7 @@ TERMINAL_RUN_STATUSES = {
     "RETURN_RECORDED_PROOF_BLOCKED",
     "RETURN_TEMPLATE_INVALID",
     "CODEX_CLI_EXIT_NONZERO",
+    CODEX_CLI_VANISHED_NO_OUTPUT_STATUS,
     "CODEX_CLI_TIMEOUT",
     "WORKER_CONTEXT_MOUNT_INVALID",
     "DAEMON_WORKER_EXITED_WITHOUT_FINALIZATION",
@@ -110,6 +112,7 @@ TERMINAL_RUN_STATUSES = {
 
 TERMINAL_FAILED_STATUSES = {
     "CODEX_CLI_EXIT_NONZERO",
+    CODEX_CLI_VANISHED_NO_OUTPUT_STATUS,
     "CODEX_CLI_TIMEOUT",
     "WORKER_CONTEXT_MOUNT_INVALID",
     "DAEMON_WORKER_EXITED_WITHOUT_FINALIZATION",
@@ -328,6 +331,20 @@ def _run_output_presence(root: Path, run: Mapping[str, Any]) -> dict[str, bool]:
         key.replace("_path", "_exists"): bool(run.get(key) and (root / str(run.get(key))).exists())
         for key in ("stdout_path", "stderr_path", "last_message_path")
     }
+
+
+def _run_has_terminal_output(root: Path, run: Mapping[str, Any]) -> bool:
+    for key in ("stdout_path", "stderr_path", "last_message_path"):
+        rel = str(run.get(key) or "").strip()
+        if not rel:
+            continue
+        path = root / rel
+        try:
+            if path.exists() and path.stat().st_size > 0:
+                return True
+        except OSError:
+            continue
+    return False
 
 
 def _parse_iso8601(value: Any) -> datetime | None:
@@ -1488,6 +1505,8 @@ def reconcile_codex_queue_runner_state(root: str | Path | None = None, *, write:
         if latest_run_rel:
             if _classify_start_no_receipt_if_needed(shell_root, latest_run_rel, write=write, result=result):
                 return result
+            if _classify_vanished_latest_run_if_needed(shell_root, latest_run_rel, write=write, result=result):
+                return result
             _classify_terminal_run_if_needed(shell_root, latest_run_rel, write=write, result=result)
         return result
 
@@ -1585,18 +1604,36 @@ def reconcile_codex_queue_runner_state(root: str | Path | None = None, *, write:
     result["action"] = "clear_stale_active_reference"
 
     if previous_status in ACTIVE_RUN_STATUSES:
-        result["action"] = "mark_daemon_failure_and_clear_active"
+        no_terminal_output = not _run_has_terminal_output(shell_root, run)
+        result["action"] = (
+            "mark_codex_cli_vanished_no_output_and_clear_active"
+            if no_terminal_output
+            else "mark_daemon_failure_and_clear_active"
+        )
         if write:
-            run["status"] = "DAEMON_WORKER_EXITED_WITHOUT_FINALIZATION"
+            failure_status = CODEX_CLI_VANISHED_NO_OUTPUT_STATUS if no_terminal_output else "DAEMON_WORKER_EXITED_WITHOUT_FINALIZATION"
+            failure_classification = "CODEX_CLI_FAILURE" if no_terminal_output else "DAEMON_FAILURE"
+            reason = (
+                "active_pid_not_running_no_terminal_output"
+                if no_terminal_output
+                else "active_pid_not_running_before_worker_finalized"
+            )
+            run["status"] = failure_status
             run["completed_at"] = now
-            run["failure_classification"] = "DAEMON_FAILURE"
+            run["failure_classification"] = failure_classification
             run["daemon_reconciliation"] = {
                 "reconciled_at": now,
-                "reason": "active_pid_not_running_before_worker_finalized",
+                "reason": reason,
                 "previous_status": previous_status,
                 "pid": active_pid,
                 "output_presence": result["output_presence"],
             }
+            _append_worker_lifecycle_event(
+                run,
+                "worker_terminal",
+                terminal_state="vanished_no_output" if no_terminal_output else "daemon_exit",
+                failure_classification=failure_classification,
+            )
             _write_run_packet(run_path, run)
             request_rel = str(run.get("request_path") or active.get("request_path") or "")
             if request_rel:
@@ -1604,7 +1641,7 @@ def reconcile_codex_queue_runner_state(root: str | Path | None = None, *, write:
                     shell_root,
                     request_rel,
                     status="CODEX_QUEUE_RUNNER_FAILED",
-                    failure_classification="DAEMON_FAILURE",
+                    failure_classification=failure_classification,
                 )
     elif previous_status == "RETURN_RECORDED_PROOF_BLOCKED" and not run.get("failure_classification"):
         result["action"] = "classify_proof_blocked_terminal_run_and_clear_active"
@@ -1732,6 +1769,93 @@ def _classify_start_no_receipt_if_needed(
     })
     result["start_no_receipt_updated"] = True
     result["output_presence"] = output_presence
+    return True
+
+
+def _classify_vanished_latest_run_if_needed(
+    root: Path,
+    run_rel: str,
+    *,
+    write: bool,
+    result: dict[str, Any],
+) -> bool:
+    try:
+        run_path = _safe_rel_path(root, run_rel)
+    except ValueError:
+        result["latest_run_finding"] = "latest_run_path_not_repo_relative"
+        return False
+    run = _read_json(run_path)
+    if not isinstance(run, dict):
+        result["latest_run_finding"] = "latest_run_packet_missing_or_invalid"
+        return False
+    previous_status = str(run.get("status") or "")
+    if previous_status not in ACTIVE_RUN_STATUSES:
+        return False
+    if previous_status in START_REQUESTED_RUN_STATUSES:
+        return False
+
+    run_pid = int(run.get("pid")) if run.get("pid") else None
+    if _pid_running(run_pid):
+        result["action"] = "latest_active_run_process_running_without_active_state"
+        result["latest_run_packet_path"] = _connector_rel(run_path, root)
+        result["latest_run_status"] = previous_status
+        result["active_process_running"] = True
+        return True
+
+    output_presence = _run_output_presence(root, run)
+    no_terminal_output = not _run_has_terminal_output(root, run)
+    result["stale_active_run_detected"] = True
+    result["latest_run_packet_path"] = _connector_rel(run_path, root)
+    result["latest_run_status"] = previous_status
+    result["output_presence"] = output_presence
+    result["action"] = (
+        "mark_codex_cli_vanished_no_output"
+        if no_terminal_output
+        else "mark_latest_active_run_daemon_failure"
+    )
+    if not write:
+        return True
+
+    now = _now()
+    failure_status = CODEX_CLI_VANISHED_NO_OUTPUT_STATUS if no_terminal_output else "DAEMON_WORKER_EXITED_WITHOUT_FINALIZATION"
+    failure_classification = "CODEX_CLI_FAILURE" if no_terminal_output else "DAEMON_FAILURE"
+    reason = (
+        "latest_run_pid_not_running_no_terminal_output"
+        if no_terminal_output
+        else "latest_run_pid_not_running_before_worker_finalized"
+    )
+    run["status"] = failure_status
+    run["completed_at"] = now
+    run["updated_at"] = now
+    run["failure_classification"] = failure_classification
+    run["daemon_reconciliation"] = {
+        "reconciled_at": now,
+        "reason": reason,
+        "previous_status": previous_status,
+        "pid": run_pid,
+        "output_presence": output_presence,
+    }
+    _append_worker_lifecycle_event(
+        run,
+        "worker_terminal",
+        terminal_state="vanished_no_output" if no_terminal_output else "daemon_exit",
+        failure_classification=failure_classification,
+    )
+    _write_run_packet(run_path, run)
+    request_rel = str(run.get("request_path") or "")
+    if request_rel:
+        _update_request_status(
+            root,
+            request_rel,
+            status="CODEX_QUEUE_RUNNER_FAILED",
+            failure_classification=failure_classification,
+        )
+    _update_runner_state(root, {
+        "active_run": None,
+        "latest_run": _connector_rel(run_path, root),
+        "manual_proceed_relay_required": False,
+    })
+    result["latest_run_failure_classification_updated"] = True
     return True
 
 
