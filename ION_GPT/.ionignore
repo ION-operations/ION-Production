@@ -9,3 +9,14 @@ __pycache__/
 .local_cache/
 *.zip
 !ION_CONTINUITY_TRANSFER_PACKAGE_*.zip
+# v5.1 project hash identity exports public identity/key branches only.
+!ION_PROJECT_IDENTITY.yaml
+!ION_HASH_BRANCHES.yaml
+!ION_VALIDATION_POINTERS.yaml
+*.private
+*.pem
+*.key
+.env.*
+*capability_token*
+*oauth_token*
+*session_cookie*

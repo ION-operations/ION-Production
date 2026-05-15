@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ION Custom GPT Boot Perfection Audit",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "ion_boot_audit"
+  ],
+  "properties": {
+    "ion_boot_audit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_id",
+        "verdict",
+        "audit_items",
+        "warnings",
+        "blockers"
+      ],
+      "properties": {
+        "schema_id": {
+          "const": "ion.boot_perfection_audit.v1"
+        },
+        "verdict": {
+          "enum": [
+            "pass",
+            "pass_with_warnings",
+            "warn",
+            "fail",
+            "blocked",
+            "not_available"
+          ]
+        },
+        "audit_items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "item",
+              "status",
+              "evidence_source",
+              "reason"
+            ],
+            "properties": {
+              "item": {
+                "type": "string"
+              },
+              "status": {
+                "enum": [
+                  "pass",
+                  "pass_with_warnings",
+                  "warn",
+                  "fail",
+                  "not_inspected",
+                  "not_available"
+                ]
+              },
+              "evidence_source": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "reason": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "blockers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

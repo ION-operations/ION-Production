@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ion.project_identity.v1",
+  "title": "ION Project Identity",
+  "type": "object",
+  "required": ["schema_id", "ion_project_hash", "hash_role", "identity_is_secret", "security_model", "helixion"],
+  "properties": {
+    "schema_id": {"const": "ion.project_identity.v1"},
+    "ion_project_hash": {"type": "string", "minLength": 32},
+    "project_label": {"type": "string"},
+    "hash_role": {"enum": ["public_identity_locator"]},
+    "identity_is_secret": {"const": false},
+    "created_at_utc": {"type": "string"},
+    "issuer": {"type": "string"},
+    "security_model": {
+      "type": "object",
+      "required": ["hash_grants_access", "authorization_lives_at", "secrets_in_folder"],
+      "properties": {
+        "hash_grants_access": {"const": false},
+        "authorization_lives_at": {"const": "helixion"},
+        "secrets_in_folder": {"const": false}
+      }
+    },
+    "helixion": {
+      "type": "object",
+      "required": ["validation_base_url", "claim_required_for_private_context"],
+      "properties": {
+        "validation_base_url": {"type": "string"},
+        "claim_required_for_private_context": {"const": true}
+      }
+    },
+    "public_validation": {"type": "object"},
+    "non_exportable": {"type": "array", "items": {"type": "string"}}
+  }
+}

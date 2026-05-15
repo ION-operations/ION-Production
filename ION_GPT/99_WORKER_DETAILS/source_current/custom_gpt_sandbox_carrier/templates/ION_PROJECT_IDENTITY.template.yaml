@@ -1,0 +1,26 @@
+schema_id: ion.project_identity.v1
+ion_project_hash: "<public_random_project_hash_or_helixion_issued_hash>"
+project_label: "<safe_project_label>"
+hash_role: public_identity_locator
+identity_is_secret: false
+created_at_utc: "<timestamp>"
+issuer: "helixion_or_local_candidate"
+security_model:
+  hash_grants_access: false
+  authorization_lives_at: helixion
+  secrets_in_folder: false
+helixion:
+  validation_base_url: "https://helixion.net"
+  claim_required_for_private_context: true
+public_validation:
+  key_branch_registry: ION_HASH_BRANCHES.yaml
+  validation_pointers: ION_VALIDATION_POINTERS.yaml
+non_exportable:
+  - private_keys
+  - bearer_tokens
+  - oauth_tokens
+  - session_cookies
+  - vault_contents
+  - credentials
+  - capability_tokens
+  - hidden_chain_of_thought

@@ -1,0 +1,44 @@
+route_id: ACTION_SURFACE_BOOT_AUDIT_ROUTE
+schema_id: ion.custom_gpt.action_surface_boot_audit_route.v1
+purpose: Deep-read the Action/MCP/tool surface during boot or Action/Git/UI work without mutating protected systems.
+trigger_phrases:
+  - boot-sequence
+  - action audit
+  - check actions
+  - UI preview
+  - Git agent
+required_objects:
+  - ion.boot_sequence_result.v1
+  - ion.boot_perfection_audit.v1
+  - ion.action_surface_audit.v1
+  - ion.persona_response_envelope.v0_1
+authority:
+  read_only_probes_allowed: true
+  mutation_allowed_by_default: false
+  protected_actions_require_operator_approval: true
+  secrets_vaults_credentials_default: not_inspected
+  production_authority: false
+  live_execution_authority: false
+output_contract:
+  final_answer_must_start_with: BOOT
+  free_preamble_allowed_before_boot: false
+  compact_sections:
+    - BOOT
+    - POSTURE
+    - SOURCES
+    - OBJECTIVE
+    - BLOCKER
+    - NEXT
+    - AUTHORITY
+  fenced_yaml_blocks:
+    - ion_boot_sequence_result
+    - ion_boot_audit
+    - ion_action_surface_audit
+    - ion_persona
+  final_section: ION
+failure_modes:
+  action_surface_not_available: mark not_inspected or not_available; do not imply proof
+  auth_invalid: stop protected Action calls immediately
+  stale_schema_path: block GPT Builder or Action release
+  unfenced_machine_yaml: fail boot perfection gate
+  secret_absence_claim_without_inspection: fail boot perfection gate

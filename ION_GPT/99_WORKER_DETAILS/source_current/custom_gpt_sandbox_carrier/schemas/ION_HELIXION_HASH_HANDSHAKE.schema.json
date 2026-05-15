@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ion.helixion_hash_handshake.v1",
+  "title": "ION Helixion Hash Handshake",
+  "type": "object",
+  "required": ["schema_id", "request", "server_decision", "authorization_boundary"],
+  "properties": {
+    "schema_id": {"const": "ion.helixion_hash_handshake.v1"},
+    "request": {
+      "type": "object",
+      "required": ["ion_project_hash", "carrier_instance_id", "challenge_nonce"],
+      "properties": {
+        "ion_project_hash": {"type": "string"},
+        "carrier_instance_id": {"type": "string"},
+        "challenge_nonce": {"type": "string"},
+        "package_hash": {"type": "string"},
+        "branch_hashes": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "server_decision": {
+      "type": "object",
+      "required": ["status", "private_metadata_returned"],
+      "properties": {
+        "status": {"enum": ["approved", "pending_approval", "requires_claim_or_forbidden", "blocked"]},
+        "private_metadata_returned": {"type": "boolean"},
+        "approval_url": {"type": "string"},
+        "claim_id": {"type": "string"}
+      }
+    },
+    "authorization_boundary": {
+      "type": "object",
+      "required": ["hash_grants_access", "user_identity_source", "capability_token_exportable"],
+      "properties": {
+        "hash_grants_access": {"const": false},
+        "user_identity_source": {"enum": ["helixion_oauth", "helixion_session_approval", "none_for_public_only"]},
+        "capability_token_exportable": {"const": false}
+      }
+    }
+  }
+}

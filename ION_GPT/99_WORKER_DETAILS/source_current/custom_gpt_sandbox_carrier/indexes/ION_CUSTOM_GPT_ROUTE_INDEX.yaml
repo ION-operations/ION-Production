@@ -51,3 +51,8 @@ route_families:
     use_when: build, validate, and remount a candidate context package from the active capsule mesh
     routes:
       - DOGFOOD_CONTEXT_PACKAGE_BUILD_ROUTE
+  action_surface_boot_audit:
+    roles: [STEWARD, VIZIER, NEMESIS, SCRIBE]
+    use_when: boot or Action/Git/UI work requires deep read-only audit of gateway/MCP/schema posture
+    routes:
+      - ACTION_SURFACE_BOOT_AUDIT_ROUTE

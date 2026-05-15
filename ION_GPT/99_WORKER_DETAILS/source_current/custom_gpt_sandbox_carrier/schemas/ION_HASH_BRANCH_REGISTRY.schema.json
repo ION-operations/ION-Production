@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ion.hash_branch_registry.v1",
+  "title": "ION Hash Branch Registry",
+  "type": "object",
+  "required": ["schema_id", "ion_project_hash", "branches", "secrets_present"],
+  "properties": {
+    "schema_id": {"const": "ion.hash_branch_registry.v1"},
+    "ion_project_hash": {"type": "string", "minLength": 32},
+    "secrets_present": {"const": false},
+    "branches": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["branch_id", "branch_type", "hash_or_pointer", "secret", "validation_role"],
+        "properties": {
+          "branch_id": {"type": "string"},
+          "branch_type": {"type": "string"},
+          "hash_or_pointer": {"type": "string"},
+          "secret": {"const": false},
+          "validation_role": {"type": "string"},
+          "exportable": {"type": "boolean"}
+        }
+      }
+    }
+  }
+}

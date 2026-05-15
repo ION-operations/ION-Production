@@ -88,7 +88,7 @@ def build_persona_envelope(
     profile_status = PROFILE_STATUSES.get(selected_profile, "recovered_candidate")
     return {
         "ion_persona": {
-            "schema": "ion.persona_response_envelope.v0_1",
+            "schema_id": "ion.persona_response_envelope.v0_1",
             "verdict": "ION_PERSONA_RESPONSE_ENVELOPE_READY",
             "persona": {
                 "visible_name": "ION" if selected_profile == "ion_default" else selected_profile,

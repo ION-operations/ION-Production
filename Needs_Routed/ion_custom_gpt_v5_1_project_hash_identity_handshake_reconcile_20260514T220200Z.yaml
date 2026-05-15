@@ -1,0 +1,61 @@
+schema_id: ion.custom_gpt.v5_1.project_hash_identity_handshake_reconcile_receipt.v1
+created_at_utc: "20260514T220200Z"
+posture: sandbox-candidate
+accepted_state_claim: false
+production_authority: false
+live_execution_authority: false
+secrets_authority: false
+branch: codex/ion-custom-gpt-front-door-carrier-v4
+source_bundle:
+  path: Needs_Routed/ION_CUSTOM_GPT_V5_1_PROJECT_HASH_IDENTITY_HANDSHAKE_CANDIDATE_20260514T220500Z.zip
+  sha256: 63c7b33321ba3b4fd9ab830a438cfa015420f5f9171caa9872d7e450cdbc9ad3
+raw_patch:
+  path: /tmp/ion_v51_project_hash_handshake/ion_custom_gpt_v5_1_project_hash_identity_handshake_20260514T220500Z.patch
+  applied: false
+  reason: dirty active branch and patch base includes v5.0/cache/instruction baseline conflicts
+reconciliation_strategy: scoped_manual_reconcile_from_final_candidate_tree
+dirty_state_preserved:
+  patch: Needs_Routed/current_dirty_state_before_v5_1_project_hash_reconcile_20260514T215534Z.patch
+contracts:
+  project_hash_is_public_identity_locator: pass
+  project_hash_is_not_password_or_credential: pass
+  key_branches_are_non_secret_validation_pointers: pass
+  helixion_is_authorization_authority: pass
+  shared_action_api_key_is_not_user_identity: pass
+  unauthorized_hash_returns_blind_response: pass
+  capability_grants_non_exportable_scoped_receipted: pass
+validation:
+  - command: PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -q ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tests/test_project_hash_identity_handshake_candidate.py
+    exit_code: 0
+    result: 7 passed
+  - command: PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -q ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tests
+    exit_code: 0
+    result: 67 passed
+  - command: YAML/JSON parse over ION_GPT and Needs_Routed
+    exit_code: 0
+    result: YAML_JSON_PARSE_PASS roots=ION_GPT,Needs_Routed
+  - command: PYTHONDONTWRITEBYTECODE=1 python3 -m py_compile ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tools/ion_project_hash_identity.py
+    exit_code: 0
+    result: passed
+  - command: instruction length check
+    exit_code: 0
+    result: 7826 characters
+  - command: static project hash contract searches
+    exit_code: 0
+    result: passed
+  - command: git diff --check on scoped Custom GPT and v5.1 receipt paths
+    exit_code: 0
+    result: passed
+non_claims:
+  - no_push
+  - no_deploy
+  - no_gpt_builder_update
+  - no_accepted_state_claim
+  - no_secret_or_vault_inspection
+  - no_live_or_protected_mutation_action_call
+  - no_commit
+next:
+  - review scoped diff
+  - stage only Custom GPT v4.9 plus v5.1 candidate paths if approved
+  - keep unrelated ION_Developement runtime/context lanes separate
+  - add Helixion endpoints for hash resolve, claim start/status, context export, action run, and hash verify in a separate packet

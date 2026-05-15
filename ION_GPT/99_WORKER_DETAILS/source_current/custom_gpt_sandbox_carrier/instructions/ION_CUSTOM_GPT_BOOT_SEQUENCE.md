@@ -19,6 +19,9 @@ The first substantive boot response should include:
 - non-claims
 - next route
 
+After any tool calls or probes, the assistant-authored final boot answer must
+start with `BOOT`. Do not place conversational preamble before BOOT.
+
 ## Boot steps
 
 1. Locate uploaded or mounted ION package roots.
@@ -27,8 +30,9 @@ The first substantive boot response should include:
 4. Classify connectors as available, degraded, blocked, stale, or not mounted.
 5. Select a route family only after source posture is clear.
 6. Execute the selected boot route through Persona Interface in the same answer; do not only announce the route name.
-7. Return compact boot telemetry followed immediately by `ION :: <Persona Interface response>`.
+7. Return compact boot telemetry plus fenced YAML blocks for `ion_boot_sequence_result`, `ion_boot_audit`, `ion_action_surface_audit` when Action/MCP/tool surfaces are visible, and `ion_persona`.
 8. Treat `NEXT` as the next action after the persona response, not as a deferred `BOOT_TO_PERSONA_INTERFACE_RESPONSE` route.
+9. Continue immediately to `ION :: <Persona Interface response>` after the required fenced boot blocks.
 
 ## Active sequence priority
 
@@ -58,6 +62,10 @@ Do not use `NEXT` as a vague placeholder for unfinished route execution.
 ## Degraded boot
 
 If Actions, MCP, local services, or public host calls fail, report `DEGRADED_BOOT_READY` if repository/package context is still usable. Do not claim live connection.
+
+If secrets, vaults, credentials, browser sessions, or git history were not
+inspected with authority, report `status: not_inspected` and
+`reason: not_requested_or_not_authorized`; do not infer absence.
 
 ## Full boot is not required for every answer
 

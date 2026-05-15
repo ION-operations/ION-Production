@@ -25,6 +25,26 @@ primary_start_files:
     purpose: durable architecture signal candidate object schema
   - path: ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/templates/ION_CUSTOM_GPT_ARCHITECTURE_SIGNAL_CAPTURE.template.yaml
     purpose: sample capture object for sequential baton requirements
+v4_9_boot_perfection_nodes:
+  - path: ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/instructions/ION_CUSTOM_GPT_BOOT_PERFECTION_GATE.md
+    purpose: v1.1 boot-first answer, fenced machine blocks, and boot audit law.
+  - path: ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/instructions/ION_CUSTOM_GPT_ACTION_SURFACE_DEEP_AUDIT.md
+    purpose: dedicated Action/MCP/tool surface audit law.
+  - path: ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/schemas/ION_CUSTOM_GPT_BOOT_PERFECTION_AUDIT.schema.json
+    purpose: canonical ion_boot_audit schema.
+  - path: ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/schemas/ION_CUSTOM_GPT_ACTION_SURFACE_AUDIT.schema.json
+    purpose: canonical ion_action_surface_audit schema.
+  - path: ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/routes/ACTION_SURFACE_BOOT_AUDIT_ROUTE.yaml
+    purpose: route for read-only boot Action/MCP surface audit.
+v5_1_project_hash_identity_nodes:
+  - path: ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/instructions/ION_CUSTOM_GPT_PROJECT_HASH_IDENTITY_HANDSHAKE.md
+    purpose: project hash as public identity/locator with Helixion authorization boundary.
+  - path: ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/schemas/ION_PROJECT_IDENTITY.schema.json
+    purpose: canonical ion.project_identity.v1 schema.
+  - path: ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/schemas/ION_HELIXION_HASH_HANDSHAKE.schema.json
+    purpose: canonical Helixion claim/resolve handshake schema.
+  - path: ION_GPT/02_PACKAGES_TO_UPLOAD/HOT_DIRECT/ION_GPT_PROJECT_HASH_IDENTITY_AND_HANDSHAKE.md
+    purpose: hot-direct upload knowledge for project hash identity and handshake law.
 v4_7_candidate_nodes:
   - path: ION_CONTEXT_CAPSULE.yaml
     purpose: root machine-readable context capsule for transfer/remount.

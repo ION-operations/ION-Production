@@ -1,0 +1,294 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ION Custom GPT Action Surface Audit",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "ion_action_surface_audit"
+  ],
+  "properties": {
+    "ion_action_surface_audit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "schema_id",
+        "verdict",
+        "inspected",
+        "inspection_mode",
+        "action_gateway",
+        "action_schemas",
+        "mcp_preview",
+        "project_workbench",
+        "browser_queue",
+        "supabase_cockpit",
+        "secrets_vaults_credentials",
+        "non_claims"
+      ],
+      "properties": {
+        "schema_id": {
+          "const": "ion.action_surface_audit.v1"
+        },
+        "verdict": {
+          "enum": [
+            "pass",
+            "pass_with_warnings",
+            "warn",
+            "fail",
+            "blocked",
+            "not_available"
+          ]
+        },
+        "inspected": {
+          "type": "boolean"
+        },
+        "inspection_mode": {
+          "enum": [
+            "read_only",
+            "not_available",
+            "blocked"
+          ]
+        },
+        "action_gateway": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "health_probe",
+            "policy_probe",
+            "status",
+            "auth_required",
+            "production_authority",
+            "live_execution_authority",
+            "supported_mvp_intents",
+            "supported_mvp_intents_count",
+            "allowed_get_paths_count",
+            "allowed_post_paths_count",
+            "hard_gated_intents",
+            "refusal_classes_count"
+          ],
+          "properties": {
+            "health_probe": {
+              "type": "string"
+            },
+            "policy_probe": {
+              "type": "string"
+            },
+            "status": {
+              "type": "string"
+            },
+            "auth_required": {
+              "type": "boolean"
+            },
+            "production_authority": {
+              "const": false
+            },
+            "live_execution_authority": {
+              "const": false
+            },
+            "supported_mvp_intents": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "supported_mvp_intents_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "allowed_get_paths_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "allowed_post_paths_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "hard_gated_intents": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "refusal_classes_count": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "action_schemas": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "canonical_targets",
+            "ion_actions_operation_count",
+            "ion_mcp_operation_count",
+            "duplicate_operation_ids"
+          ],
+          "properties": {
+            "canonical_targets": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "ion_actions_operation_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "ion_mcp_operation_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "duplicate_operation_ids": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "mcp_preview": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "health_probe",
+            "app_status_probe",
+            "tool_list_probe",
+            "connector_state",
+            "read_only_tools_count",
+            "mutation_tools_count",
+            "write_confirmation_required",
+            "write_confirmation_token",
+            "production_authority",
+            "live_execution_authority"
+          ],
+          "properties": {
+            "health_probe": {
+              "type": "string"
+            },
+            "app_status_probe": {
+              "type": "string"
+            },
+            "tool_list_probe": {
+              "type": "string"
+            },
+            "connector_state": {
+              "type": "string"
+            },
+            "read_only_tools_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "mutation_tools_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "write_confirmation_required": {
+              "type": "boolean"
+            },
+            "write_confirmation_token": {
+              "type": "string"
+            },
+            "production_authority": {
+              "const": false
+            },
+            "live_execution_authority": {
+              "const": false
+            }
+          }
+        },
+        "project_workbench": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "inspected",
+            "git_status_probe",
+            "preview_status_probe",
+            "patch_apply_requires_confirmation"
+          ],
+          "properties": {
+            "inspected": {
+              "type": "boolean"
+            },
+            "git_status_probe": {
+              "type": "string"
+            },
+            "preview_status_probe": {
+              "type": "string"
+            },
+            "patch_apply_requires_confirmation": {
+              "type": "boolean"
+            }
+          }
+        },
+        "browser_queue": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "inspected",
+            "pending_count",
+            "auto_accept"
+          ],
+          "properties": {
+            "inspected": {
+              "type": "boolean"
+            },
+            "pending_count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "auto_accept": {
+              "type": "boolean"
+            }
+          }
+        },
+        "supabase_cockpit": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "inspected",
+            "settlement_required",
+            "accepted_state_claim"
+          ],
+          "properties": {
+            "inspected": {
+              "type": "boolean"
+            },
+            "settlement_required": {
+              "type": "boolean"
+            },
+            "accepted_state_claim": {
+              "const": false
+            }
+          }
+        },
+        "secrets_vaults_credentials": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "status",
+            "reason"
+          ],
+          "properties": {
+            "status": {
+              "enum": [
+                "not_inspected",
+                "not_available",
+                "blocked",
+                "inspected_without_secret_disclosure"
+              ]
+            },
+            "reason": {
+              "type": "string"
+            }
+          }
+        },
+        "non_claims": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,91 +1,17 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ION Persona Visible Envelope",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "ion_persona"
+  ],
   "properties": {
     "ion_persona": {
-      "properties": {
-        "boundaries": {
-          "properties": {
-            "hidden_chain_of_thought_exposed": {
-              "const": false
-            },
-            "live_execution_authority": {
-              "const": false
-            },
-            "production_authority": {
-              "const": false
-            }
-          },
-          "required": [
-            "output_is_not_state",
-            "candidate_until_receipted_or_accepted",
-            "production_authority",
-            "live_execution_authority",
-            "hidden_chain_of_thought_exposed"
-          ],
-          "type": "object"
-        },
-        "confidence": {
-          "required": [
-            "level",
-            "semantic"
-          ],
-          "type": "object"
-        },
-        "dynamic_domain_signal": {
-          "required": [
-            "needed",
-            "semantic"
-          ],
-          "type": "object"
-        },
-        "gesture": {
-          "required": [
-            "gesture",
-            "semantic"
-          ],
-          "type": "object"
-        },
-        "inner_monologue": {
-          "properties": {
-            "type": {
-              "const": "operator_visible_persona_signal_not_hidden_reasoning"
-            }
-          },
-          "required": [
-            "type",
-            "text",
-            "not_claimed"
-          ],
-          "type": "object"
-        },
-        "persona": {
-          "required": [
-            "visible_name",
-            "role_ref",
-            "selected_profile",
-            "profile_status",
-            "persona_is_total_ion"
-          ],
-          "type": "object"
-        },
-        "route": {
-          "required": [
-            "route_id",
-            "selection_basis",
-            "candidate_domains",
-            "candidate_agents"
-          ],
-          "type": "object"
-        },
-        "schema": {
-          "const": "ion.persona_response_envelope.v0_1"
-        },
-        "verdict": {
-          "const": "ION_PERSONA_RESPONSE_ENVELOPE_READY"
-        }
-      },
+      "type": "object",
+      "additionalProperties": true,
       "required": [
-        "schema",
+        "schema_id",
         "verdict",
         "persona",
         "route",
@@ -95,12 +21,110 @@
         "inner_monologue",
         "boundaries"
       ],
-      "type": "object"
+      "anyOf": [
+        {
+          "required": [
+            "operator_visible_persona_signal_not_hidden_reasoning"
+          ]
+        },
+        {
+          "required": [
+            "inner_monologue"
+          ],
+          "properties": {
+            "inner_monologue": {
+              "required": [
+                "type"
+              ]
+            }
+          }
+        }
+      ],
+      "properties": {
+        "schema_id": {
+          "const": "ion.persona_response_envelope.v0_1"
+        },
+        "verdict": {
+          "const": "ION_PERSONA_RESPONSE_ENVELOPE_READY"
+        },
+        "persona": {
+          "type": "object",
+          "required": [
+            "visible_name",
+            "role_ref",
+            "selected_profile",
+            "profile_status",
+            "persona_is_total_ion"
+          ]
+        },
+        "route": {
+          "type": "object",
+          "required": [
+            "route_id",
+            "selection_basis",
+            "candidate_domains",
+            "candidate_agents"
+          ]
+        },
+        "dynamic_domain_signal": {
+          "type": "object",
+          "required": [
+            "needed",
+            "semantic"
+          ]
+        },
+        "confidence": {
+          "type": "object",
+          "required": [
+            "level",
+            "semantic"
+          ]
+        },
+        "gesture": {
+          "type": "object",
+          "required": [
+            "gesture",
+            "semantic"
+          ]
+        },
+        "operator_visible_persona_signal_not_hidden_reasoning": {
+          "type": "string"
+        },
+        "inner_monologue": {
+          "type": "object",
+          "required": [
+            "type",
+            "text",
+            "not_claimed"
+          ],
+          "properties": {
+            "type": {
+              "const": "operator_visible_persona_signal_not_hidden_reasoning"
+            }
+          }
+        },
+        "boundaries": {
+          "type": "object",
+          "required": [
+            "output_is_not_state",
+            "candidate_until_receipted_or_accepted",
+            "production_authority",
+            "live_execution_authority",
+            "hidden_chain_of_thought_exposed"
+          ],
+          "properties": {
+            "hidden_chain_of_thought_exposed": {
+              "const": false
+            },
+            "production_authority": {
+              "const": false
+            },
+            "live_execution_authority": {
+              "const": false
+            }
+          }
+        }
+      }
     }
-  },
-  "required": [
-    "ion_persona"
-  ],
-  "title": "ION Persona Visible Envelope",
-  "type": "object"
+  }
 }

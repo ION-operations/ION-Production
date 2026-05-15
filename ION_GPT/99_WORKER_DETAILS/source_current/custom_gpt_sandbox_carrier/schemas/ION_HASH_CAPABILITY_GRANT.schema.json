@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ion.hash_capability_grant.v1",
+  "title": "ION Hash Capability Grant",
+  "type": "object",
+  "required": ["schema_id", "ion_project_hash", "grant_scope", "exportable", "expires_at_utc", "accepted_state_claim"],
+  "properties": {
+    "schema_id": {"const": "ion.hash_capability_grant.v1"},
+    "ion_project_hash": {"type": "string"},
+    "subject_binding": {"type": "string"},
+    "carrier_instance_id": {"type": "string"},
+    "grant_scope": {"type": "array", "items": {"type": "string"}},
+    "exportable": {"const": false},
+    "expires_at_utc": {"type": "string"},
+    "accepted_state_claim": {"const": false}
+  }
+}

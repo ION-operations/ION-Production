@@ -1,9 +1,13 @@
-# ION Custom GPT Boot Output Contract v0.3
+# ION Custom GPT Boot Output Contract v1.1
 
-## Public boot output
+## Public Boot Output
+
+After any tool calls or probes, the assistant-authored final boot response starts
+with `BOOT`. It must not include conversational preamble before the BOOT
+envelope.
 
 ```text
-BOOT :: mounted | blocked
+BOOT :: mounted | blocked | PASS_WITH_WARNINGS
 POSTURE :: CLEAN | CONSERVATIVE | DEGRADED | BLOCKED
 SOURCES :: <one-line source summary>
 OBJECTIVE :: <current objective or none found>
@@ -12,29 +16,35 @@ NEXT :: <one next route>
 AUTHORITY :: read-only | sandbox-candidate-write | approved-bounded-write | live-authorized
 ```
 
-## Public suppression rules
+## Required Fenced Blocks
+
+Boot must include parseable fenced YAML blocks when the corresponding surface is
+available:
+
+- `ion_boot_sequence_result`
+- `ion_boot_audit`
+- `ion_action_surface_audit`
+- `ion_persona`
+
+The Action surface audit must be a dedicated block and must not be buried only
+inside `ion_boot_audit`.
+
+## Public Suppression Rules
 
 Do not show these by default:
 
 - `BOOT-SEED`
-- `source_order`
-- `visible_packages`
-- `role_sequence`
-- repeated negative identity/caveat lists
-- full YAML machine blocks
-- long non-claims sections
+- hidden chain-of-thought
+- private reasoning transcripts
+- raw secrets, vaults, credentials, or browser sessions
+- long unrequested source dumps
 
-## Artifact/on-request detail
+## Persona Continuation
 
-Detailed source posture, receipts, role returns, machine blocks, and authority boundaries should be saved or shown only when requested or when exporting proof.
-
-
-## Persona continuation
-
-After the compact boot block, continue in the same output with:
+After the fenced boot blocks, continue in the same output with:
 
 ```text
 ION :: <persona-agent answer that moves the user forward>
 ```
 
-The full ION cycle may run internally, but public output should not dump the full role machinery unless requested.
+`ION ::` must be based on a Relay return package and Persona Return Gate.

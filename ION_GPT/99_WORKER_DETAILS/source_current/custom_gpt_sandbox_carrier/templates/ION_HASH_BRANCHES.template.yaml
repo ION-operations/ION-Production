@@ -1,0 +1,28 @@
+schema_id: ion.hash_branch_registry.v1
+ion_project_hash: "<public_project_hash>"
+secrets_present: false
+branches:
+  - branch_id: root_identity
+    branch_type: project_identity
+    hash_or_pointer: ION_PROJECT_IDENTITY.yaml
+    secret: false
+    validation_role: "locates project for Helixion validation"
+    exportable: true
+  - branch_id: context_mesh
+    branch_type: content_hash
+    hash_or_pointer: "<context_mesh_sha256>"
+    secret: false
+    validation_role: "proves mounted context mesh content"
+    exportable: true
+  - branch_id: continuity_package
+    branch_type: package_hash
+    hash_or_pointer: "<continuity_package_sha256>"
+    secret: false
+    validation_role: "proves transfer package content"
+    exportable: true
+  - branch_id: action_capability
+    branch_type: helixion_pointer
+    hash_or_pointer: "helixion://capability/request/<claim_id_or_route>"
+    secret: false
+    validation_role: "requests server-side capability; does not contain capability secret"
+    exportable: true

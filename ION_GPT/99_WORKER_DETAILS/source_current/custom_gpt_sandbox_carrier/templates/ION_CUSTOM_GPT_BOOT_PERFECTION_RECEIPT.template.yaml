@@ -1,0 +1,21 @@
+schema_id: ion.custom_gpt.boot_perfection_receipt_template.v1
+posture: sandbox-candidate
+accepted_state_claim: false
+production_authority: false
+live_execution_authority: false
+required_fenced_blocks:
+  - ion_boot_sequence_result
+  - ion_boot_audit
+  - ion_action_surface_audit
+  - ion_persona
+canonical_schema_ids:
+  ion_boot_sequence_result: ion.boot_sequence_result.v1
+  ion_boot_audit: ion.boot_perfection_audit.v1
+  ion_action_surface_audit: ion.action_surface_audit.v1
+  ion_persona: ion.persona_response_envelope.v0_1
+secrets_vaults_credentials:
+  status: not_inspected
+  reason: not_requested_or_not_authorized
+final_answer_boundary:
+  boot_final_answer_must_start_with: BOOT
+  free_preamble_allowed_before_boot: false

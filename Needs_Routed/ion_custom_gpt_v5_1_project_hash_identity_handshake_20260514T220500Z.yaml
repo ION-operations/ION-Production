@@ -1,0 +1,36 @@
+schema_id: ion.custom_gpt.v5_1.project_hash_identity_handshake_receipt.v1
+created_at_utc: "20260514T220500Z"
+posture: sandbox-candidate
+accepted_state_claim: false
+production_authority: false
+live_execution_authority: false
+objective: "Add project hash identity, non-secret key branches, and Helixion per-user access handshake contract."
+source_base: "ION_CUSTOM_GPT_V5_0_KNOWLEDGE_SLOT_ARCHITECTURE_CANDIDATE_20260514T213500Z.zip"
+contracts:
+  project_hash_is_identity_not_secret: pass
+  key_branches_non_secret: pass
+  helixion_authorizes_access: pass
+  one_gpt_many_users_acl_boundary: pass
+  capability_tokens_never_exported: pass
+files_added:
+  - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/instructions/ION_CUSTOM_GPT_PROJECT_HASH_IDENTITY_HANDSHAKE.md
+  - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/schemas/ION_PROJECT_IDENTITY.schema.json
+  - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/schemas/ION_HASH_BRANCH_REGISTRY.schema.json
+  - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/schemas/ION_HELIXION_HASH_HANDSHAKE.schema.json
+  - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/schemas/ION_HASH_CAPABILITY_GRANT.schema.json
+  - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/templates/ION_PROJECT_IDENTITY.template.yaml
+  - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/templates/ION_HASH_BRANCHES.template.yaml
+  - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/templates/ION_HELIXION_HASH_HANDSHAKE.template.yaml
+  - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/registries/ION_PROJECT_HASH_CAPABILITY_LEVELS.yaml
+  - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tools/ion_project_hash_identity.py
+  - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tests/test_project_hash_identity_handshake_candidate.py
+  - ION_GPT/02_PACKAGES_TO_UPLOAD/HOT_DIRECT/ION_GPT_PROJECT_HASH_IDENTITY_AND_HANDSHAKE.md
+files_modified:
+  - ION_GPT/01_GPT_BUILDER_INPUTS/CURRENT_INSTRUCTIONS_TO_PASTE.md
+  - ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/instructions/ION_CUSTOM_GPT_MAIN_INSTRUCTIONS_8000.md
+  - ION_GPT/.ionignore
+tests_run: []
+blockers:
+  - "Not reconciled into live repo or GPT Builder."
+next:
+  - "Have Codex reconcile v5.1 after v5.0/v4.9 lanes are stable, then add Helixion API endpoints if not present."

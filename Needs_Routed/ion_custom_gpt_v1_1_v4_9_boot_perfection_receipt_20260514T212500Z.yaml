@@ -1,0 +1,53 @@
+schema_id: ion.custom_gpt.v1_1_v4_9.boot_perfection_receipt.v1
+posture: sandbox-candidate
+accepted_state_claim: false
+production_authority: false
+live_execution_authority: false
+secrets_authority: false
+branch: codex/ion-custom-gpt-front-door-carrier-v4
+source_package:
+  path: Needs_Routed/ION_CUSTOM_GPT_V4_9_BOOT_PERFECTION_ACTION_AUDIT_CANDIDATE_20260514T010900Z.zip
+  sha256: 28454d54d873a02919784c37685c00aa5d96bf02d98b09042ebfaae0116d4c57
+reconciliation_strategy: scoped_manual_reconcile_from_final_candidate_tree
+reason_raw_patch_not_applied: current branch diverged and raw patch dry-run failed on active Custom GPT files
+dirty_state_preserved:
+  patch: Needs_Routed/current_dirty_state_before_v1_1_boot_perfection_20260514T210329Z.patch
+boot_perfection_requirements:
+  machine_yaml_blocks_fenced: pass
+  dedicated_action_surface_audit_block: pass
+  secrets_vault_default_not_inspected: pass
+  action_surface_detail_deepened: pass
+  schema_naming_stabilized: pass
+  final_boot_answer_starts_with_boot: pass
+canonical_schema_ids:
+  ion_boot_sequence_result: ion.boot_sequence_result.v1
+  ion_boot_audit: ion.boot_perfection_audit.v1
+  ion_action_surface_audit: ion.action_surface_audit.v1
+  ion_persona: ion.persona_response_envelope.v0_1
+validation:
+  - command: PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -q ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tests
+    exit_code: 0
+    result: 60 passed
+  - command: python3 YAML/JSON parse over ION_GPT
+    exit_code: 0
+    result: YAML_JSON_PARSE_PASS parsed_roots=ION_GPT
+  - command: PYTHONDONTWRITEBYTECODE=1 python3 -m py_compile ION_GPT/99_WORKER_DETAILS/source_current/custom_gpt_sandbox_carrier/tools/ion_custom_gpt_persona_envelope.py
+    exit_code: 0
+    result: passed
+  - command: cmp builder instructions and worker instructions
+    exit_code: 0
+    result: instructions match
+  - command: git diff --check on scoped Custom GPT boot-perfection paths
+    exit_code: 0
+    result: passed
+non_claims:
+  - no_push
+  - no_deploy
+  - no_gpt_builder_update
+  - no_accepted_state_claim
+  - no_secret_or_vault_inspection
+  - no_live_or_protected_mutation_action_call
+next:
+  - review scoped diff
+  - stage only v1.1/v4.9 boot-perfection paths if approved
+  - keep unrelated ION_Developement dirty lanes separate

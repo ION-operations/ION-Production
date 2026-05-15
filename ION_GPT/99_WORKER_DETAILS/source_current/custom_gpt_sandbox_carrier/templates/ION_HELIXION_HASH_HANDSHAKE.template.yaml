@@ -1,0 +1,16 @@
+schema_id: ion.helixion_hash_handshake.v1
+request:
+  ion_project_hash: "<public_project_hash>"
+  carrier_instance_id: "<carrier_id>"
+  challenge_nonce: "<nonce>"
+  package_hash: "<optional_package_sha256>"
+  branch_hashes: []
+server_decision:
+  status: pending_approval
+  private_metadata_returned: false
+  approval_url: "https://helixion.net/project/claim/<claim_id>"
+  claim_id: "<claim_id>"
+authorization_boundary:
+  hash_grants_access: false
+  user_identity_source: helixion_session_approval
+  capability_token_exportable: false

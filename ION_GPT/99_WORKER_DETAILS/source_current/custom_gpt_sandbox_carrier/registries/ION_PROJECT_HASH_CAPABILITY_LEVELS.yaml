@@ -1,0 +1,31 @@
+schema_id: ion.project_hash_capability_levels.v1
+posture: candidate_contract
+levels:
+  public_probe:
+    description: Resolve non-sensitive posture for a hash without revealing private metadata.
+    requires_helixion_auth: false
+    private_metadata_returned: false
+  claim_pending:
+    description: User must approve hash claim at Helixion.
+    requires_helixion_auth: true
+    private_metadata_returned: false
+  context_read:
+    description: Return scoped context package for approved project/user.
+    requires_helixion_auth: true
+    private_metadata_returned: true
+    export_capability_token: false
+  candidate_write:
+    description: Create draft/patch/preview against approved project.
+    requires_helixion_auth: true
+    requires_receipt: true
+    production_authority: false
+  lead_dev_ion_root:
+    description: High-trust ION maintainer lane for ION root hash; still proof/receipt gated.
+    requires_helixion_auth: true
+    requires_explicit_approval_for_live: true
+non_exportable:
+  - oauth_token
+  - bearer_token
+  - capability_token
+  - private_signing_key
+  - session_cookie

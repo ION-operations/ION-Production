@@ -1,62 +1,17 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ION Custom GPT Boot Sequence Result",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "ion_boot_sequence_result"
+  ],
   "properties": {
     "ion_boot_sequence_result": {
-      "properties": {
-        "accepted_state_claim": {
-          "const": false
-        },
-        "active_workflow_object": {
-          "type": "string"
-        },
-        "boot_id": {
-          "type": "string"
-        },
-        "live_execution_authority": {
-          "const": false
-        },
-        "mounted_packages": {
-          "required": [
-            "count",
-            "posture"
-          ],
-          "type": "object"
-        },
-        "objective": {
-          "type": "string"
-        },
-        "persona_return_gate": {
-          "enum": [
-            "pass",
-            "blocked"
-          ]
-        },
-        "phases_completed": {
-          "items": {
-            "type": "string"
-          },
-          "type": "array"
-        },
-        "production_authority": {
-          "const": false
-        },
-        "receipt_status": {
-          "enum": [
-            "candidate_boot_receipt",
-            "candidate_work_receipt",
-            "blocked_receipt"
-          ]
-        },
-        "route_id": {
-          "type": "string"
-        },
-        "schema_id": {
-          "const": "ion.boot_sequence_result.v1"
-        }
-      },
+      "type": "object",
+      "additionalProperties": true,
       "required": [
         "schema_id",
-        "boot_id",
         "route_id",
         "mounted_packages",
         "objective",
@@ -68,12 +23,110 @@
         "live_execution_authority",
         "receipt_status"
       ],
-      "type": "object"
+      "anyOf": [
+        {
+          "required": [
+            "boot_id"
+          ]
+        },
+        {
+          "required": [
+            "workflow_object"
+          ],
+          "properties": {
+            "workflow_object": {
+              "required": [
+                "id"
+              ]
+            }
+          }
+        }
+      ],
+      "properties": {
+        "schema_id": {
+          "const": "ion.boot_sequence_result.v1"
+        },
+        "boot_id": {
+          "type": "string"
+        },
+        "workflow_object": {
+          "type": "object",
+          "required": [
+            "id"
+          ],
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "kind": {
+              "type": "string"
+            },
+            "route_id": {
+              "type": "string"
+            }
+          }
+        },
+        "route_id": {
+          "type": "string"
+        },
+        "mounted_packages": {
+          "type": "object",
+          "required": [
+            "count",
+            "posture"
+          ],
+          "properties": {
+            "count": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "posture": {
+              "type": "string"
+            }
+          }
+        },
+        "objective": {
+          "type": "string"
+        },
+        "active_workflow_object": {
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "object"
+            }
+          ]
+        },
+        "phases_completed": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "persona_return_gate": {
+          "enum": [
+            "pass",
+            "blocked"
+          ]
+        },
+        "accepted_state_claim": {
+          "const": false
+        },
+        "production_authority": {
+          "const": false
+        },
+        "live_execution_authority": {
+          "const": false
+        },
+        "receipt_status": {
+          "enum": [
+            "candidate_boot_receipt",
+            "candidate_work_receipt",
+            "blocked_receipt"
+          ]
+        }
+      }
     }
-  },
-  "required": [
-    "ion_boot_sequence_result"
-  ],
-  "title": "ION Custom GPT Boot Sequence Result",
-  "type": "object"
+  }
 }
