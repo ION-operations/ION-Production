@@ -1,0 +1,75 @@
+{
+  "approval_phrase": "APPROVE_M32_1_NORMALIZE_M25_README_WHITESPACE_AND_SETTLE_CUSTODY",
+  "changed_file_count": 3,
+  "created_at": "2026-05-20T03:17:43+00:00",
+  "m25_source_zip": "Needs_Routed/ION_ORGANIZATION_MILESTONE_025_ION_VNEXT_SKELETON_LANDING_DECISION_20260519T195049Z.zip",
+  "m29_manifest": "ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_029_M25_SKELETON_LANDING_20260519T231729Z/APPLIED_FILE_MANIFEST.json",
+  "normalized_files": [
+    {
+      "bytes_removed": 2,
+      "line": 3,
+      "line_changes": [
+        {
+          "line": 3,
+          "normalized_repr": "Status: candidate skeleton only",
+          "original_repr": "Status: candidate skeleton only  "
+        }
+      ],
+      "matches_expected_normalized": true,
+      "matches_m29_original": true,
+      "normalized_bytes": 529,
+      "normalized_sha256": "95e68e20138a13bae85fa200a7cf73c1e75d611f07760bcd8f0a612e1b8be9ca",
+      "original_bytes": 531,
+      "original_m29_sha256": "4573555e4ec0d150762c2b4f93a6128864be21ae0025f6c278ad888e2aa29277",
+      "original_zip_sha256": "4573555e4ec0d150762c2b4f93a6128864be21ae0025f6c278ad888e2aa29277",
+      "path": "ION_VNEXT/00_front_door/README.md",
+      "reason": "whitespace-only normalization to satisfy git diff --check",
+      "whitespace_only": true
+    },
+    {
+      "bytes_removed": 2,
+      "line": 3,
+      "line_changes": [
+        {
+          "line": 3,
+          "normalized_repr": "Status: candidate skeleton only",
+          "original_repr": "Status: candidate skeleton only  "
+        }
+      ],
+      "matches_expected_normalized": true,
+      "matches_m29_original": true,
+      "normalized_bytes": 650,
+      "normalized_sha256": "a7a1314f5dd2d2f1e4e25971c801a328d4220f2c8756de657adb839b3ce79a22",
+      "original_bytes": 652,
+      "original_m29_sha256": "f204081ae1ce955959f1837b8acb9a5e5b3a6cfee08d3c776c0558c1008a5efc",
+      "original_zip_sha256": "f204081ae1ce955959f1837b8acb9a5e5b3a6cfee08d3c776c0558c1008a5efc",
+      "path": "ION_VNEXT/01_canon/README.md",
+      "reason": "whitespace-only normalization to satisfy git diff --check",
+      "whitespace_only": true
+    },
+    {
+      "bytes_removed": 2,
+      "line": 3,
+      "line_changes": [
+        {
+          "line": 3,
+          "normalized_repr": "Status: candidate skeleton, no migration applied",
+          "original_repr": "Status: candidate skeleton, no migration applied  "
+        }
+      ],
+      "matches_expected_normalized": true,
+      "matches_m29_original": true,
+      "normalized_bytes": 600,
+      "normalized_sha256": "99b4a30f47bf71e664bd1886b7e333393cb51abddf3df475bc487a3891b2c7d6",
+      "original_bytes": 602,
+      "original_m29_sha256": "3fa71bb7aaa84f994b129af233c098530cfe850206824d62bda750f27ac3aeb7",
+      "original_zip_sha256": "3fa71bb7aaa84f994b129af233c098530cfe850206824d62bda750f27ac3aeb7",
+      "path": "ION_VNEXT/README.md",
+      "reason": "whitespace-only normalization to satisfy git diff --check",
+      "whitespace_only": true
+    }
+  ],
+  "schema_id": "ion.organization.m32_1.normalized_file_hash_report.v1",
+  "verdict": "PASS_READY_FOR_STAGE_AND_COMMIT",
+  "workspace_root": "/home/sev/ION - Production"
+}

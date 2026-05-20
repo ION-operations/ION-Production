@@ -1,0 +1,95 @@
+schema_id: ion.vnext_legacy_source_pools.v1_candidate
+created_at_utc: 20260519T195049Z
+policy: Legacy/current roots are source pools and evidence. They are not final canon
+  and are not bulk-migrated.
+source_pools:
+  kernel:
+    canonical_path: 02_kernel/ion_core
+    source_pools:
+    - ION_Developement
+    promotion: audit_then_copy
+  custom_gpt:
+    canonical_path: 03_products/custom_gpt
+    source_pools:
+    - ION_GPT
+    promotion: audit_release_schema_then_copy
+  daimon:
+    canonical_path: 03_products/daimon
+    source_pools:
+    - dAimon
+    promotion: hygiene_audit_before_copy
+  browser_extension:
+    canonical_path: 04_carriers/browser_extension
+    source_pools:
+    - browser_extension
+    promotion: carrier_audit_then_copy
+  mcp:
+    canonical_path: 04_carriers/mcp
+    source_pools:
+    - mcp
+    promotion: carrier_audit_then_copy
+  cursor:
+    canonical_path: 04_carriers/cursor
+    source_pools:
+    - Cursor
+    promotion: if_present_audit_then_copy
+  codex_cli:
+    canonical_path: 04_carriers/codex_cli
+    source_pools:
+    - ION_Developement/.codex
+    - ION_Developement/ION/05_context/current/codex_solo
+    promotion: context_safe_audit_only
+  github_actions:
+    canonical_path: 04_carriers/github_actions
+    source_pools:
+    - .github
+    promotion: root_shim_and_ci_audit
+  runtime:
+    canonical_path: 05_runtime
+    source_pools:
+    - ION_Developement/ION/05_context/current
+    promotion: do_not_bulk_copy_regenerate_or_curate
+  context:
+    canonical_path: 06_context
+    source_pools:
+    - ION_Developement/ION/05_context
+    promotion: split_current_runtime_from_context_packages
+  work:
+    canonical_path: 07_work
+    source_pools:
+    - Needs_Routed
+    promotion: triage_before_activation
+  releases:
+    canonical_path: 08_releases
+    source_pools:
+    - ION_EXPORTS_LOCAL
+    - product_packager
+    promotion: release_artifact_hygiene_required
+  references:
+    canonical_path: 09_references
+    source_pools:
+    - ATLAS
+    - AIM-OS
+    - wisdomNET
+    promotion: reference_by_default_promote_only_with proof
+  archive:
+    canonical_path: 90_archive
+    source_pools:
+    - quarentine
+    - quarantine
+    - '*.zip witnesses'
+    promotion: archive_evidence_only
+  private:
+    canonical_path: 99_private
+    source_pools:
+    - ION_VAULT_LOCAL
+    - .env*
+    - sessions
+    promotion: never_package_presence_only
+aliases:
+  quarantine_quarentine:
+    strategic_importance: low
+    policy: legacy alias cleanup under 90_archive; not a strategic blocker
+  ION_Developement:
+    strategic_importance: high
+    policy: preserve until kernel source is audited and copied to 02_kernel/ion_core

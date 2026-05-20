@@ -1,0 +1,30 @@
+schema_id: ion.vnext_state_lifecycle.v1_candidate
+created_at_utc: 20260519T195049Z
+state_classes:
+  front_door: orientation; may point to canon; not proof by itself
+  canon: organizational truth after acceptance; must be versioned and receipt-backed
+  active_source: source code/docs/tests that can be built and validated
+  runtime_state: queues/ledgers/active snapshots/generated state; do not hand-patch
+  context_state: capsules/context packages/continuity; may become inherited context
+    after receipt
+  work_state: inbox/backlog/task return/routed work; candidate until accepted
+  release_state: validated bundle/export/release candidate with checks
+  reference_state: knowledge/source reference; not active implementation by default
+  archive_state: historical or superseded evidence; promote before reuse
+  private_state: local private data; never packaged or printed
+promotion_decisions:
+- PROMOTE_ACTIVE
+- PROMOTE_WITH_RENAME
+- MERGE
+- ARCHIVE_EVIDENCE
+- STALE_REMOVE_LATER
+- PRIVATE_EXCLUDE
+- REGENERATE
+- BLOCKED_NEEDS_HUMAN
+required_for_accepted_state:
+- source_evidence
+- work_packet
+- path_policy_decision
+- validation
+- receipt
+- operator_or_steward_acceptance

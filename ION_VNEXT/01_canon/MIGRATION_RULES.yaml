@@ -1,0 +1,18 @@
+schema_id: ion.vnext_migration_rules.v1_candidate
+created_at_utc: 20260519T195049Z
+status: candidate_no_migration_yet
+phase_order:
+- M25 skeleton landing
+- M26 source pool audit
+- M27 path/cwd validation gates
+- M28 low-risk references/releases curation
+- M29 carriers/products curation
+- M30 kernel source curation
+- M31 runtime/context split
+- M32 cutover readiness review
+copy_not_move_until_cutover: true
+bulk_copy_forbidden: true
+runtime_json_bulk_copy_forbidden: true
+private_material_copy_forbidden: true
+archive_reuse_requires_promotion_packet: true
+stale_removal_requires_later_backup_receipt: true

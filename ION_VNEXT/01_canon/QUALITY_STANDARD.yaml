@@ -1,0 +1,18 @@
+schema_id: ion.vnext_quality_standard.v1_candidate
+created_at_utc: 20260519T195049Z
+bar: production_level_ion_quality
+must_be:
+- obvious for a human
+- machine-readable for AI agents
+- enforceable by tests/gates
+- receipt-backed for state transitions
+- secret-safe
+- rollback-aware
+- not dependent on memory of this chat
+must_not_be:
+- another stale plan
+- minor tidy-up
+- folder rename without path policy
+- source migration without audit
+- runtime state patching
+- unbounded archive unpacking

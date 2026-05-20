@@ -1,0 +1,237 @@
+{
+  "accepted_state_claim": false,
+  "approval_phrase": "APPROVE_M32_1_NORMALIZE_M25_README_WHITESPACE_AND_SETTLE_CUSTODY",
+  "blockers": [],
+  "checks": [
+    {
+      "detail": {
+        "full_status_line_count": 428,
+        "relevant_status": [
+          "?? ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_032_M25_SKELETON_GIT_CUSTODY_20260520T024442Z/",
+          "?? ION_VNEXT/00_front_door/",
+          "?? ION_VNEXT/01_canon/FAMILY_REGISTRY.yaml",
+          "?? ION_VNEXT/01_canon/LEGACY_SOURCE_POOLS.yaml",
+          "?? ION_VNEXT/01_canon/MIGRATION_RULES.yaml",
+          "?? ION_VNEXT/01_canon/PATH_POLICY.yaml",
+          "?? ION_VNEXT/01_canon/QUALITY_STANDARD.yaml",
+          "?? ION_VNEXT/01_canon/README.md",
+          "?? ION_VNEXT/01_canon/STATE_LIFECYCLE.yaml",
+          "?? ION_VNEXT/01_canon/WORKSPACE_CANON.yaml",
+          "?? ION_VNEXT/02_kernel/README.md",
+          "?? ION_VNEXT/03_products/",
+          "?? ION_VNEXT/04_carriers/",
+          "?? ION_VNEXT/05_runtime/",
+          "?? ION_VNEXT/06_context/",
+          "?? ION_VNEXT/07_work/",
+          "?? ION_VNEXT/08_releases/",
+          "?? ION_VNEXT/09_references/",
+          "?? ION_VNEXT/90_archive/",
+          "?? ION_VNEXT/99_private/",
+          "?? ION_VNEXT/README.md"
+        ]
+      },
+      "name": "git_status_before_captured",
+      "result": "PASS"
+    },
+    {
+      "detail": [
+        "ION_VNEXT/README.md:3",
+        "ION_VNEXT/00_front_door/README.md:3",
+        "ION_VNEXT/01_canon/README.md:3"
+      ],
+      "name": "m32_blocker_exact",
+      "result": "PASS"
+    },
+    {
+      "detail": {
+        "changed_detected": [
+          "ION_VNEXT/00_front_door/README.md",
+          "ION_VNEXT/01_canon/README.md",
+          "ION_VNEXT/README.md"
+        ],
+        "unexpected_content_changes": []
+      },
+      "name": "only_three_readmes_changed",
+      "result": "PASS"
+    },
+    {
+      "detail": [
+        {
+          "bytes_removed": 2,
+          "line": 3,
+          "line_changes": [
+            {
+              "line": 3,
+              "normalized_repr": "Status: candidate skeleton only",
+              "original_repr": "Status: candidate skeleton only  "
+            }
+          ],
+          "matches_expected_normalized": true,
+          "matches_m29_original": true,
+          "normalized_bytes": 529,
+          "normalized_sha256": "95e68e20138a13bae85fa200a7cf73c1e75d611f07760bcd8f0a612e1b8be9ca",
+          "original_bytes": 531,
+          "original_m29_sha256": "4573555e4ec0d150762c2b4f93a6128864be21ae0025f6c278ad888e2aa29277",
+          "original_zip_sha256": "4573555e4ec0d150762c2b4f93a6128864be21ae0025f6c278ad888e2aa29277",
+          "path": "ION_VNEXT/00_front_door/README.md",
+          "reason": "whitespace-only normalization to satisfy git diff --check",
+          "whitespace_only": true
+        },
+        {
+          "bytes_removed": 2,
+          "line": 3,
+          "line_changes": [
+            {
+              "line": 3,
+              "normalized_repr": "Status: candidate skeleton only",
+              "original_repr": "Status: candidate skeleton only  "
+            }
+          ],
+          "matches_expected_normalized": true,
+          "matches_m29_original": true,
+          "normalized_bytes": 650,
+          "normalized_sha256": "a7a1314f5dd2d2f1e4e25971c801a328d4220f2c8756de657adb839b3ce79a22",
+          "original_bytes": 652,
+          "original_m29_sha256": "f204081ae1ce955959f1837b8acb9a5e5b3a6cfee08d3c776c0558c1008a5efc",
+          "original_zip_sha256": "f204081ae1ce955959f1837b8acb9a5e5b3a6cfee08d3c776c0558c1008a5efc",
+          "path": "ION_VNEXT/01_canon/README.md",
+          "reason": "whitespace-only normalization to satisfy git diff --check",
+          "whitespace_only": true
+        },
+        {
+          "bytes_removed": 2,
+          "line": 3,
+          "line_changes": [
+            {
+              "line": 3,
+              "normalized_repr": "Status: candidate skeleton, no migration applied",
+              "original_repr": "Status: candidate skeleton, no migration applied  "
+            }
+          ],
+          "matches_expected_normalized": true,
+          "matches_m29_original": true,
+          "normalized_bytes": 600,
+          "normalized_sha256": "99b4a30f47bf71e664bd1886b7e333393cb51abddf3df475bc487a3891b2c7d6",
+          "original_bytes": 602,
+          "original_m29_sha256": "3fa71bb7aaa84f994b129af233c098530cfe850206824d62bda750f27ac3aeb7",
+          "original_zip_sha256": "3fa71bb7aaa84f994b129af233c098530cfe850206824d62bda750f27ac3aeb7",
+          "path": "ION_VNEXT/README.md",
+          "reason": "whitespace-only normalization to satisfy git diff --check",
+          "whitespace_only": true
+        }
+      ],
+      "name": "changes_whitespace_only",
+      "result": "PASS"
+    },
+    {
+      "detail": {
+        "expected": 20,
+        "extra": [],
+        "missing": [],
+        "untracked": 20
+      },
+      "name": "m25_final_file_set",
+      "result": "PASS"
+    },
+    {
+      "detail": "M32.1 changes only three README status-line trailing spaces; M25 staged skeleton contains no Python source/tests.",
+      "name": "no_source_module_expansion",
+      "result": "PASS"
+    },
+    {
+      "detail": "No runtime/current-state JSON is part of the approved M32.1 file set.",
+      "name": "no_runtime_current_state_json_touched",
+      "result": "PASS"
+    },
+    {
+      "detail": "No .git/.env/vault/credential/session/auth/cache paths are modified. ION_VNEXT/99_private/README.md remains an M29 lane marker only.",
+      "name": "no_private_secret_cache_git_paths_touched",
+      "result": "PASS"
+    },
+    {
+      "detail": {
+        "m25": 20,
+        "m32_1_report": 8,
+        "m32_report": 8,
+        "missing_m25": [],
+        "missing_m32": [],
+        "missing_m32_1": [],
+        "staged_count": 36,
+        "unexpected": []
+      },
+      "name": "staged_file_manifest_bounded",
+      "result": "PASS"
+    },
+    {
+      "detail": [],
+      "name": "no_non_m25_ion_vnext_files_staged",
+      "result": "PASS"
+    },
+    {
+      "detail": [],
+      "name": "no_source_modules_beyond_m31_control_surface_staged",
+      "result": "PASS"
+    },
+    {
+      "detail": [],
+      "name": "no_runtime_current_state_json_staged",
+      "result": "PASS"
+    },
+    {
+      "detail": [],
+      "name": "no_private_secret_cache_git_paths_staged",
+      "result": "PASS"
+    },
+    {
+      "detail": "git diff --cached --check returned no issues.",
+      "name": "git_diff_check_cached",
+      "result": "PASS"
+    }
+  ],
+  "created_at": "2026-05-20T03:17:43+00:00",
+  "git_status_after_staging_relevant": [
+    "A  ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_032_1_M25_SKELETON_WHITESPACE_CUSTODY_20260520T031743Z/ION_VNEXT_M32_1_SKELETON_CUSTODY_RECEIPT.json",
+    "A  ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_032_1_M25_SKELETON_WHITESPACE_CUSTODY_20260520T031743Z/M25_SKELETON_FINAL_CUSTODY_MANIFEST.json",
+    "A  ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_032_1_M25_SKELETON_WHITESPACE_CUSTODY_20260520T031743Z/M32_1_WHITESPACE_CUSTODY_REPORT.md",
+    "A  ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_032_1_M25_SKELETON_WHITESPACE_CUSTODY_20260520T031743Z/NEXT_CHAT_BATON.md",
+    "A  ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_032_1_M25_SKELETON_WHITESPACE_CUSTODY_20260520T031743Z/NEXT_PACKET_M33_FRONT_DOOR_BINDING_OR_M34_KERNEL_EXPANSION.md",
+    "A  ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_032_1_M25_SKELETON_WHITESPACE_CUSTODY_20260520T031743Z/NORMALIZED_FILE_HASH_REPORT.json",
+    "AM ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_032_1_M25_SKELETON_WHITESPACE_CUSTODY_20260520T031743Z/STAGED_FILE_MANIFEST.json",
+    "A  ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_032_1_M25_SKELETON_WHITESPACE_CUSTODY_20260520T031743Z/VALIDATION_REPORT.json",
+    "A  ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_032_M25_SKELETON_GIT_CUSTODY_20260520T024442Z/ION_VNEXT_M32_SKELETON_GIT_CUSTODY_RECEIPT.json",
+    "A  ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_032_M25_SKELETON_GIT_CUSTODY_20260520T024442Z/M29_RECEIPT_MATCH_REPORT.json",
+    "A  ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_032_M25_SKELETON_GIT_CUSTODY_20260520T024442Z/M32_SKELETON_GIT_CUSTODY_REPORT.md",
+    "A  ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_032_M25_SKELETON_GIT_CUSTODY_20260520T024442Z/NEXT_CHAT_BATON.md",
+    "A  ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_032_M25_SKELETON_GIT_CUSTODY_20260520T024442Z/NEXT_PACKET_M33_FRONT_DOOR_BINDING_OR_M34_KERNEL_EXPANSION.md",
+    "A  ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_032_M25_SKELETON_GIT_CUSTODY_20260520T024442Z/STAGED_FILE_MANIFEST.json",
+    "A  ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_032_M25_SKELETON_GIT_CUSTODY_20260520T024442Z/UNTRACKED_FILE_AUDIT.json",
+    "A  ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_032_M25_SKELETON_GIT_CUSTODY_20260520T024442Z/VALIDATION_REPORT.json",
+    "A  ION_VNEXT/00_front_door/README.md",
+    "A  ION_VNEXT/01_canon/FAMILY_REGISTRY.yaml",
+    "A  ION_VNEXT/01_canon/LEGACY_SOURCE_POOLS.yaml",
+    "A  ION_VNEXT/01_canon/MIGRATION_RULES.yaml",
+    "A  ION_VNEXT/01_canon/PATH_POLICY.yaml",
+    "A  ION_VNEXT/01_canon/QUALITY_STANDARD.yaml",
+    "A  ION_VNEXT/01_canon/README.md",
+    "A  ION_VNEXT/01_canon/STATE_LIFECYCLE.yaml",
+    "A  ION_VNEXT/01_canon/WORKSPACE_CANON.yaml",
+    "A  ION_VNEXT/02_kernel/README.md",
+    "A  ION_VNEXT/03_products/README.md",
+    "A  ION_VNEXT/04_carriers/README.md",
+    "A  ION_VNEXT/05_runtime/README.md",
+    "A  ION_VNEXT/06_context/README.md",
+    "A  ION_VNEXT/07_work/README.md",
+    "A  ION_VNEXT/08_releases/README.md",
+    "A  ION_VNEXT/09_references/README.md",
+    "A  ION_VNEXT/90_archive/README.md",
+    "A  ION_VNEXT/99_private/README.md",
+    "A  ION_VNEXT/README.md"
+  ],
+  "live_execution_authority": false,
+  "overall_verdict": "PASS_READY_FOR_COMMIT",
+  "pre_commit_staged_count": 36,
+  "production_authority": false,
+  "schema_id": "ion.organization.m32_1.validation_report.v1",
+  "updated_at": "2026-05-20T03:18:54+00:00",
+  "workspace_root": "/home/sev/ION - Production"
+}

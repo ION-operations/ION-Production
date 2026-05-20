@@ -1,0 +1,33 @@
+schema_id: ion.vnext_path_policy.v1_candidate
+created_at_utc: 20260519T195049Z
+status: candidate_skeleton_landing_ready
+default:
+  read: bounded_by_family_and_secret_policy
+  write: denied_unless_work_packet_and_path_policy_allow
+  delete: denied_without_explicit_operator_approval_and_backup_receipt
+  production_deploy: denied_without_explicit_release_approval
+  git_push: denied_without_explicit_operator_approval
+forbidden_to_package_or_print:
+- .env
+- .env.*
+- ION_VAULT_LOCAL
+- 99_private
+- .ssh
+- .config
+- browser_sessions
+- credentials
+- tokens
+- node_modules
+- .venv
+- __pycache__
+- .git internals unless explicit Git audit
+cwd_boundary:
+  agents_must_report_cwd: true
+  agents_must_resolve_workspace_root: true
+  wrong_root_work_is_blocked: true
+  target_path_must_classify_to_family: true
+write_roots_initial:
+- ION_VNEXT/00_front_door
+- ION_VNEXT/01_canon
+write_roots_initial_note: First landing creates skeleton contracts only. Future write
+  roots require source pool audit.

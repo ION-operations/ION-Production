@@ -1,0 +1,90 @@
+schema_id: ion.vnext_workspace_canon.v1_candidate
+created_at_utc: 20260519T195049Z
+status: candidate_skeleton_landing_ready
+workspace_root: /home/sev/ION - Production
+vnext_root: ION_VNEXT
+mission: A clean, self-explaining, enforceable ION Production canon for humans and
+  AI agents.
+principles:
+- Current estate is preserved source evidence, not future canon.
+- Directories are lifecycle contracts, not mere containers.
+- Runtime state, context state, work state, release state, archive evidence, and private
+  material are separate.
+- All state-bearing actions require proof, gates, receipts, and operator approval
+  when risky.
+- AI agents must be able to determine where they are, what they may read/write, and
+  what proof they owe.
+top_level_roots:
+- path: 00_front_door
+  purpose: Human and AI entrypoint, boot instructions, operator-facing map, mount
+    posture, first reads.
+  state_class: front_door
+  initial_landing: directory_contract_only_no_source
+- path: 01_canon
+  purpose: Single source for workspace organization, family registry, path policy,
+    lifecycle, aliases, gates.
+  state_class: canon
+  initial_landing: directory_contract_only_no_source
+- path: 02_kernel
+  purpose: ION kernel/core source, tests, packages, doctrine, architecture, templates
+    that belong to core.
+  state_class: active_source
+  initial_landing: directory_contract_only_no_source
+- path: 03_products
+  purpose: 'Product surfaces and product-specific release inputs: Custom GPT, dAimon,
+    productized apps.'
+  state_class: active_source
+  initial_landing: directory_contract_only_no_source
+- path: 04_carriers
+  purpose: 'Carrier adapters and integrations: MCP, browser extension, Cursor, Codex
+    CLI, GitHub Actions, local daemon, systemd.'
+  state_class: active_source
+  initial_landing: directory_contract_only_no_source
+- path: 05_runtime
+  purpose: Runtime queues, ledgers, active snapshots, receipts, generated state; not
+    hand-patched.
+  state_class: runtime_state
+  initial_landing: directory_contract_only_no_source
+- path: 06_context
+  purpose: Context packages, capsules, branch context graph, continuity exports, transfer
+    packages.
+  state_class: context_state
+  initial_landing: directory_contract_only_no_source
+- path: 07_work
+  purpose: Inbox, routed work, work packets, task returns, backlog, triage lanes.
+  state_class: work_state
+  initial_landing: directory_contract_only_no_source
+- path: 08_releases
+  purpose: Validated bundles, release candidates, export packages, packaging tooling,
+    release manifests.
+  state_class: release_state
+  initial_landing: directory_contract_only_no_source
+- path: 09_references
+  purpose: Reference corpora, research, ATLAS, AIM-OS, WisdomNET, explainers unless
+    promoted.
+  state_class: reference_state
+  initial_landing: directory_contract_only_no_source
+- path: 90_archive
+  purpose: Historical, superseded, quarantine-hold, ZIP witnesses, legacy evidence;
+    promote before reuse.
+  state_class: archive_state
+  initial_landing: directory_contract_only_no_source
+- path: 99_private
+  purpose: Vault, credentials, sessions, local-only private material; presence-only,
+    never packaged.
+  state_class: private_state
+  initial_landing: directory_contract_only_no_source
+root_shims_after_cutover:
+- README.md
+- AGENTS.md
+- START_HERE_FOR_ANY_AGENT.md
+- ION_WORKSPACE_MANIFEST.yaml
+- ION_CONTEXT_CAPSULE.yaml
+cutover_blocked_until:
+- source_pool_audit_complete
+- path_policy_tests_pass
+- cwd_boundary_tests_pass
+- package_hygiene_tests_pass
+- carrier_profiles_updated
+- rollback_package_exists
+- operator_approval

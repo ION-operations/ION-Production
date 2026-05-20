@@ -1,0 +1,74 @@
+{
+  "applied": false,
+  "approval_phrase": "APPROVE_M32_M25_SKELETON_GIT_CUSTODY_ONLY_NO_CONTENT_CHANGE",
+  "approval_phrase_confirmed": true,
+  "blockers": [
+    "M29-verified M25 skeleton files contain trailing whitespace in three README status lines.",
+    "M32 forbids ION_VNEXT content changes, so the whitespace cannot be normalized in this packet.",
+    "Required git diff --check validation cannot pass without either content normalization approval or a custody exception."
+  ],
+  "blocking_git_diff_check_findings": [
+    {
+      "issue": "trailing whitespace",
+      "line": 3,
+      "line_text": "Status: candidate skeleton only  ",
+      "path": "ION_VNEXT/00_front_door/README.md"
+    },
+    {
+      "issue": "trailing whitespace",
+      "line": 3,
+      "line_text": "Status: candidate skeleton only  ",
+      "path": "ION_VNEXT/01_canon/README.md"
+    },
+    {
+      "issue": "trailing whitespace",
+      "line": 3,
+      "line_text": "Status: candidate skeleton, no migration applied  ",
+      "path": "ION_VNEXT/README.md"
+    }
+  ],
+  "committed": false,
+  "created_at": "2026-05-20T02:44:42+00:00",
+  "custody_action": "stage_and_commit_m29_verified_m25_skeleton_files_only_plus_m32_report_package",
+  "m25_skeleton_file_count": 20,
+  "m25_skeleton_files": [
+    "ION_VNEXT/00_front_door/README.md",
+    "ION_VNEXT/01_canon/FAMILY_REGISTRY.yaml",
+    "ION_VNEXT/01_canon/LEGACY_SOURCE_POOLS.yaml",
+    "ION_VNEXT/01_canon/MIGRATION_RULES.yaml",
+    "ION_VNEXT/01_canon/PATH_POLICY.yaml",
+    "ION_VNEXT/01_canon/QUALITY_STANDARD.yaml",
+    "ION_VNEXT/01_canon/README.md",
+    "ION_VNEXT/01_canon/STATE_LIFECYCLE.yaml",
+    "ION_VNEXT/01_canon/WORKSPACE_CANON.yaml",
+    "ION_VNEXT/02_kernel/README.md",
+    "ION_VNEXT/03_products/README.md",
+    "ION_VNEXT/04_carriers/README.md",
+    "ION_VNEXT/05_runtime/README.md",
+    "ION_VNEXT/06_context/README.md",
+    "ION_VNEXT/07_work/README.md",
+    "ION_VNEXT/08_releases/README.md",
+    "ION_VNEXT/09_references/README.md",
+    "ION_VNEXT/90_archive/README.md",
+    "ION_VNEXT/99_private/README.md",
+    "ION_VNEXT/README.md"
+  ],
+  "m29_receipt": "ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_029_M25_SKELETON_LANDING_20260519T231729Z/ION_VNEXT_M25_SKELETON_LANDING_RECEIPT.json",
+  "m31_commit_inheritance": "434c7b512879d2155bc349d3be42e228c136a689",
+  "non_actions": [
+    "no kernel dependency expansion",
+    "no front door binding",
+    "no source pool migration",
+    "no ION_VNEXT content modification",
+    "no runtime/current-state JSON touch",
+    "no ION_Developement rename",
+    "no sibling package movement",
+    "no GPT Builder, Actions/MCP, services, deployment, .git.zip, vault, env, credential, session, or private auth access"
+  ],
+  "schema_id": "ion.organization.m32.skeleton_git_custody_receipt.v1",
+  "staged_file_count": 0,
+  "staged_verdict": "UNSTAGED_AFTER_VALIDATION_BLOCKER",
+  "updated_at": "2026-05-20T02:46:16+00:00",
+  "validation_verdict": "BLOCKED_BY_GIT_DIFF_CHECK_M25_TRAILING_WHITESPACE_CONTENT_IMMUTABILITY",
+  "workspace_root": "/home/sev/ION - Production"
+}
