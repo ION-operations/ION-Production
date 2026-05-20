@@ -1,0 +1,38 @@
+schema_id: ion.vnext.promotion_wave.v1
+wave_id: M39_OPERATOR_ARTIFACT_HYGIENE_LAYER
+status: landed_with_receipt
+purpose: "Promote the M38 dependency-closed operator artifact hygiene layer into ION_VNEXT."
+approval_phrase: APPROVE_M39_PROMOTE_OPERATOR_ARTIFACT_HYGIENE_NO_RUNTIME
+landing_target: ION_VNEXT/02_kernel/ion_core
+source_evidence:
+  m38_package: ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_038_KERNEL_LAYER_SELECTION_20260520T134808Z
+  m38_decision: READY_FOR_M39_SMALL_KERNEL_LAYER_REVIEW
+promoted_files:
+  - target_path: ION_VNEXT/02_kernel/ion_core/src/kernel/ion_operator_artifact_hygiene_check.py
+    candidate_sha256: 8c88933e41382fadc3b9285b8a26d6656a7e08cbfdebc0d3be661da642673c94
+    category: operator_artifact_hygiene_check
+  - target_path: ION_VNEXT/02_kernel/ion_core/tests/control/test_kernel_ion_operator_artifact_hygiene_check.py
+    candidate_sha256: 5adb6ee1a849a3b3c2a1935d3a38de772ae4394b6d8ca40d8ccf103b6cc49929
+    category: operator_artifact_hygiene_check_test
+dependency_closure:
+  module_import_class: stdlib_only
+  internal_helper_modules: []
+  declared_external_dependencies: []
+non_actions:
+  - no_runtime_current_state_json
+  - no_source_pool_bulk_copy
+  - no_queues_or_ledgers
+  - no_actions_mcp_runtime_wrappers
+  - no_gpt_builder_schemas
+  - no_browser_execution
+  - no_supabase_cockpit_provider_integrations
+  - no_private_vault_session_material
+  - no_clean_export_builder_promotion
+  - no_receipt_hydration_promotion
+  - no_package_profile_promotion
+  - no_status_visibility_promotion
+post_landing_required_validation:
+  - "Run normal pytest from ION_VNEXT/02_kernel/ion_core with pyproject pythonpath."
+  - "Verify all promoted Python files parse."
+  - "Verify YAML, JSON, and TOML files parse."
+  - "Verify no runtime/current-state JSON, private material, cache, or Git paths were introduced."

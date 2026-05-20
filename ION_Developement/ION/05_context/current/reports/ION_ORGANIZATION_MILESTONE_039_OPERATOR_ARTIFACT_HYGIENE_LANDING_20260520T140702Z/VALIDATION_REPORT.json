@@ -1,0 +1,118 @@
+{
+  "approval_phrase": "APPROVE_M39_PROMOTE_OPERATOR_ARTIFACT_HYGIENE_NO_RUNTIME",
+  "checks": [
+    {
+      "detail": "READY_FOR_M39_SMALL_KERNEL_LAYER_REVIEW",
+      "name": "m38_decision",
+      "result": "PASS"
+    },
+    {
+      "detail": "PASS_M38_PLAN_AND_CANDIDATE_VALIDATED",
+      "name": "m38_validation",
+      "result": "PASS"
+    },
+    {
+      "detail": [
+        {
+          "candidate_path": "ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_038_KERNEL_LAYER_SELECTION_20260520T134808Z/M38_CANDIDATE_NEXT_KERNEL_LAYER/ION_VNEXT/02_kernel/ion_core/src/kernel/ion_operator_artifact_hygiene_check.py",
+          "candidate_sha256": "8c88933e41382fadc3b9285b8a26d6656a7e08cbfdebc0d3be661da642673c94",
+          "category": "operator_artifact_hygiene_check",
+          "dependency_class": "stdlib_only",
+          "expected_sha256": "8c88933e41382fadc3b9285b8a26d6656a7e08cbfdebc0d3be661da642673c94",
+          "hash_match": true,
+          "source_path": "ION_Developement/ION/04_packages/kernel/ion_operator_artifact_hygiene_check.py",
+          "source_sha256": "8c88933e41382fadc3b9285b8a26d6656a7e08cbfdebc0d3be661da642673c94",
+          "target_bytes": 12043,
+          "target_path": "ION_VNEXT/02_kernel/ion_core/src/kernel/ion_operator_artifact_hygiene_check.py",
+          "target_sha256": "8c88933e41382fadc3b9285b8a26d6656a7e08cbfdebc0d3be661da642673c94"
+        },
+        {
+          "candidate_path": "ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_038_KERNEL_LAYER_SELECTION_20260520T134808Z/M38_CANDIDATE_NEXT_KERNEL_LAYER/ION_VNEXT/02_kernel/ion_core/tests/control/test_kernel_ion_operator_artifact_hygiene_check.py",
+          "candidate_sha256": "5adb6ee1a849a3b3c2a1935d3a38de772ae4394b6d8ca40d8ccf103b6cc49929",
+          "category": "operator_artifact_hygiene_check_test",
+          "dependency_class": "imports_promoted_kernel_module_only",
+          "expected_sha256": "5adb6ee1a849a3b3c2a1935d3a38de772ae4394b6d8ca40d8ccf103b6cc49929",
+          "hash_match": true,
+          "source_path": "ION_Developement/ION/tests/test_kernel_ion_operator_artifact_hygiene_check.py",
+          "source_sha256": "5adb6ee1a849a3b3c2a1935d3a38de772ae4394b6d8ca40d8ccf103b6cc49929",
+          "target_bytes": 4029,
+          "target_path": "ION_VNEXT/02_kernel/ion_core/tests/control/test_kernel_ion_operator_artifact_hygiene_check.py",
+          "target_sha256": "5adb6ee1a849a3b3c2a1935d3a38de772ae4394b6d8ca40d8ccf103b6cc49929"
+        }
+      ],
+      "name": "candidate_hash_match_and_source_freshness",
+      "result": "PASS"
+    },
+    {
+      "detail": "stdlib-only module; test imports only kernel.ion_operator_artifact_hygiene_check; no helper modules",
+      "name": "dependency_closure",
+      "result": "PASS"
+    },
+    {
+      "detail": "60 passed in 0.15s",
+      "name": "vnext_pytest",
+      "result": "PASS"
+    },
+    {
+      "detail": "2 promoted Python files parsed",
+      "name": "python_parse",
+      "result": "PASS"
+    },
+    {
+      "detail": "CONTROL_SURFACE_REGISTRY.yaml, PROMOTION_WAVE_M39.yaml, pyproject.toml, and M38 validation JSON parsed",
+      "name": "yaml_json_toml_parse",
+      "result": "PASS"
+    },
+    {
+      "detail": "No JSON target files promoted by M39",
+      "name": "no_runtime_current_state_json_copied",
+      "result": "PASS"
+    },
+    {
+      "detail": "No forbidden path classes in approved M39 targets",
+      "name": "no_private_secret_cache_git_paths",
+      "result": "PASS"
+    },
+    {
+      "detail": "Exactly one source module and one focused test copied from M38 candidate tree",
+      "name": "no_source_pool_bulk_copy",
+      "result": "PASS"
+    },
+    {
+      "detail": "Existing README.md, ION_WORKSPACE_MANIFEST.yaml, Needs_Routed dirty state, and untracked M38 report package remain outside M39 stage set",
+      "name": "unrelated_dirty_state_outside_boundary",
+      "result": "PASS"
+    },
+    {
+      "detail": "git diff --check passed for approved M39 paths and M39 report package using intent-to-add for untracked files.",
+      "name": "git_diff_check",
+      "result": "PASS"
+    }
+  ],
+  "created_at": "2026-05-20T14:07:02.834819+00:00",
+  "git_status_relevant_before_report_package": [
+    " M ION_VNEXT/01_canon/CONTROL_SURFACE_REGISTRY.yaml",
+    " M ION_WORKSPACE_MANIFEST.yaml",
+    " M Needs_Routed/indexes/NEEDS_ROUTED_INDEX.json",
+    " M Needs_Routed/routed/NEEDS_ROUTED_ROUTE_PLAN.json",
+    " M README.md",
+    "?? ION_VNEXT/01_canon/PROMOTION_WAVE_M39.yaml",
+    "?? ION_VNEXT/02_kernel/ion_core/src/kernel/ion_operator_artifact_hygiene_check.py",
+    "?? ION_VNEXT/02_kernel/ion_core/tests/control/test_kernel_ion_operator_artifact_hygiene_check.py",
+    "?? Needs_Routed/CODEX_B_AND_DEV2_SETTLEMENT_REVIEW.md",
+    "?? Needs_Routed/CODEX_U1_CODEX_CHAT_UI_AUDIT_REPAIR_PACKET.md",
+    "?? Needs_Routed/ION_ACTIONS_VS_LOCAL_SANDBOX_MOUNT_DECISION_20260516T1245Z.md",
+    "?? Needs_Routed/ION_BROWSER_EXTENSION_TAG_CONTRACT_20260514T032414Z.yaml",
+    "?? Needs_Routed/ION_CONTEXT_CAPSULE.candidate.yaml",
+    "?? Needs_Routed/ION_NEXT_ACTION_CONTEXT_PACKAGE_BINDING_AUDIT.md",
+    "?? Needs_Routed/current_dirty_state_remaining_after_ion_gpt_commit_20260515T000000Z.stat",
+    "?? Needs_Routed/ion-deep-research-report-2.md",
+    "?? Needs_Routed/ion-deep-research-report.md",
+    "?? Needs_Routed/ion_native_dom_snapshot_20260514T1857344.json",
+    "?? Needs_Routed/receipts/needs_routed_intake_20260515T142443Z.json"
+  ],
+  "overall_verdict": "PASS_READY_FOR_BOUNDED_COMMIT",
+  "schema_id": "ion.organization.m39.validation_report.v1",
+  "updated_at": "2026-05-20T14:07:35.589000+00:00",
+  "workspace_root": "/home/sev/ION - Production"
+}

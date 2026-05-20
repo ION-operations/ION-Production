@@ -35,6 +35,10 @@ controls:
     source_module: 02_kernel/ion_core/src/kernel/ion_carrier_mount_receipt.py
     purpose: "Build and validate carrier mount receipts and persona presentation authority boundaries."
     required_before: ["carrier_remount", "persona_presentation", "context_mount_claim"]
+  operator_artifact_hygiene_check:
+    source_module: 02_kernel/ion_core/src/kernel/ion_operator_artifact_hygiene_check.py
+    purpose: "Validate operator-facing artifact and upload-kit shape before release, export, or package handoff."
+    required_before: ["operator_artifact_release", "gpt_upload_kit_handoff", "package_export_review"]
 test_roots:
   - 02_kernel/ion_core/tests/control
 blocked_from_this_wave:
