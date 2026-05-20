@@ -1,0 +1,19 @@
+schema_id: ion.vnext.promotion_wave.v1
+wave_id: M27_KERNEL_FRONT_DOOR_CANON_CONTROL_PROMOTION
+status: candidate_no_apply
+purpose: "First curated copy plan for controls that make later rebuild work safe."
+prerequisites:
+  - "M25 skeleton exists or is landed first."
+  - "Current project remains untouched as source evidence."
+  - "No source pool bulk-copy."
+  - "No runtime/current-state JSON promotion."
+  - "No private/vault/git/cache promotion."
+landing_target: ION_VNEXT
+approval_phrase: APPROVE_ION_VNEXT_M27_CANON_CONTROL_PROMOTION_NO_RUNTIME
+post_landing_required_validation:
+  - "All promoted Python files parse."
+  - "Control tests are present."
+  - "Workspace-root registry can classify old/current roots and vNext roots."
+  - "AI movement gate rejects wrong-root and private/vault movements."
+  - "Agent CWD boundary rejects unknown or alias CWD."
+  - "Codex work request target binding projects target root evidence."

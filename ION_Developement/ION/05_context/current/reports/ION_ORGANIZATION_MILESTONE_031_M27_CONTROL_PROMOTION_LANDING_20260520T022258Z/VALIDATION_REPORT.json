@@ -1,0 +1,88 @@
+{
+  "accepted_state_claim": false,
+  "checks": [
+    {
+      "detail": "Pre-apply M31 check required ION_VNEXT file set to match the M29 skeleton receipt exactly: 20 files, no extras, no missing.",
+      "name": "m29_skeleton_inherited_cleanly_before_m31",
+      "result": "PASS"
+    },
+    {
+      "detail": "skeleton_checks=20 mismatches=[]",
+      "name": "m29_skeleton_files_still_present_after_m31",
+      "result": "PASS"
+    },
+    {
+      "detail": "READY_FOR_M31_CONTROL_PROMOTION_LANDING",
+      "name": "m30_decision_ready",
+      "result": "PASS"
+    },
+    {
+      "detail": "APPROVE_M31_M27_DEPENDENCY_CLOSED_CONTROL_PROMOTION_NO_RUNTIME matched M30 approval phrase exactly.",
+      "name": "approval_phrase",
+      "result": "PASS"
+    },
+    {
+      "detail": "applied path set=23 expected=23; ION_MOUNT_CONTRACT.md target had two trailing-whitespace lines normalized after git diff --check.",
+      "name": "applied_only_m30_revised_manifest",
+      "result": "PASS_WITH_POST_LANDING_HYGIENE"
+    },
+    {
+      "detail": "cd ION_VNEXT/02_kernel/ion_core && PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -p no:cacheprovider -> 36 passed in 0.22s; no shell PYTHONPATH supplied.",
+      "name": "pytest_normal_pyproject_config",
+      "result": "PASS"
+    },
+    {
+      "detail": "python3 -m compileall -q src/kernel passed; generated __pycache__ validation byproducts were removed afterward.",
+      "name": "compileall_check",
+      "result": "PASS_WITH_CLEANUP"
+    },
+    {
+      "detail": {
+        "failed": [],
+        "python_file_count": 11
+      },
+      "name": "python_ast_parse",
+      "result": "PASS"
+    },
+    {
+      "detail": {
+        "failed": [],
+        "structured_file_count": 12
+      },
+      "name": "yaml_toml_json_parse",
+      "result": "PASS"
+    },
+    {
+      "detail": {
+        "json_files": []
+      },
+      "name": "no_runtime_current_state_json",
+      "result": "PASS"
+    },
+    {
+      "detail": {
+        "forbidden_hits": []
+      },
+      "name": "no_forbidden_private_cache_git_paths",
+      "result": "PASS"
+    },
+    {
+      "detail": "Applied exactly 23 M30 manifest target files; no directory source-pool copy performed.",
+      "name": "no_source_pool_bulk_copy",
+      "result": "PASS"
+    },
+    {
+      "detail": "Initial staged diff check found two trailing-space lines in the landed ION_MOUNT_CONTRACT.md target; final git diff --check passed after bounded target/report metadata normalization.",
+      "name": "git_diff_check",
+      "result": "PASS"
+    }
+  ],
+  "created_at": "2026-05-20T02:24:07+00:00",
+  "ion_vnext_file_count": 43,
+  "live_execution_authority": false,
+  "m31_applied_file_count": 23,
+  "overall_verdict": "PASS_M31_CONTROL_PROMOTION_LANDED",
+  "production_authority": false,
+  "schema_id": "ion.organization.m31.validation_report.v1",
+  "workspace_root": "/home/sev/ION - Production"
+}

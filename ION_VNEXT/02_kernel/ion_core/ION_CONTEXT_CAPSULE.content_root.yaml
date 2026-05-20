@@ -1,0 +1,78 @@
+schema_id: ion.branch_context_node.v0_1
+branch_id: ion_core
+branch_label: ION Core
+path: ION
+maturity_level: B2_capsule_node
+purpose: Canonical ION content root containing architecture, doctrine, registries, packages, templates, context, tests, and receipts.
+
+authority:
+  accepted_state_claim: false
+  production_authority: false
+  live_execution_authority: false
+  default_work_authority: read_only_or_sandbox_candidate
+  requires_operator_approval_for:
+    - production_write
+    - live_execution
+    - connector_mutation
+    - accepted_state_landing
+    - secrets_access
+
+parent_domain: ion_repo_root
+parent_chain:
+  - ion_repo_root
+child_domains:
+  - ion_architecture
+  - ion_templates_context
+
+read_order:
+  - README.md
+  - ION_CONTEXT_CAPSULE.yaml
+  - REPO_AUTHORITY.md
+  - 02_architecture/README.md
+
+local_surfaces:
+  protocols:
+    - 02_architecture/README_BRANCH_CONTEXT_PROTOCOL.md
+    - 02_architecture/ION_MOUNT_CONTRACT.md
+  routes: []
+  templates:
+    - 07_templates/context/README_BRANCH_NODE.template.md
+    - 07_templates/context/ION_CONTEXT_CAPSULE.branch.template.yaml
+  schemas:
+    - 03_registry/ion_branch_context_node.schema.json
+  agents: []
+  registries:
+    - 03_registry/ion_branch_context_policy.yaml
+  tests:
+    - tests/test_kernel_ion_readme_branch_context_protocol.py
+  receipts: []
+  status: []
+  child_index:
+    - 02_architecture/ION_CONTEXT_CAPSULE.yaml
+    - 07_templates/context/ION_CONTEXT_CAPSULE.yaml
+
+receipts:
+  latest: []
+  required_before_state_claim: true
+  missing_receipt_response: emit_blocker_or_candidate_receipt_fragment
+
+continuity_export:
+  include:
+    - README.md
+    - ION_CONTEXT_CAPSULE.yaml
+    - REPO_AUTHORITY.md
+    - 02_architecture/README_BRANCH_CONTEXT_PROTOCOL.md
+    - 03_registry/ion_branch_context_node.schema.json
+    - 03_registry/ion_branch_context_policy.yaml
+  exclude:
+    - secrets
+    - credentials
+    - current_hot_runtime_context_unless_explicit
+  export_profile: null
+
+tags:
+  - branch:ion-core
+  - node:capsule
+  - state:candidate
+  - authority:no-production
+  - authority:no-live
