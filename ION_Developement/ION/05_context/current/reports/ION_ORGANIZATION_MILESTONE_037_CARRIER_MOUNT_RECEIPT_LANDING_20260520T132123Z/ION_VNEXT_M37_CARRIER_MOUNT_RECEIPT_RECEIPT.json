@@ -1,0 +1,33 @@
+{
+  "applied": true,
+  "applied_files": [
+    "ION_VNEXT/02_kernel/ion_core/src/kernel/ion_carrier_mount_receipt.py",
+    "ION_VNEXT/02_kernel/ion_core/tests/control/test_kernel_ion_carrier_mount_receipt.py",
+    "ION_VNEXT/01_canon/CONTROL_SURFACE_REGISTRY.yaml",
+    "ION_VNEXT/01_canon/PROMOTION_WAVE_M37.yaml"
+  ],
+  "approval_phrase": "APPROVE_M37_PROMOTE_CARRIER_MOUNT_RECEIPT_NO_RUNTIME",
+  "approval_phrase_confirmed": true,
+  "commit_expected": true,
+  "commit_message": "R0028: Promote ION_VNEXT carrier mount receipt layer",
+  "created_at": "2026-05-20T13:21:23.618035+00:00",
+  "landing_area": "ION_VNEXT/02_kernel/ion_core",
+  "m36_decision": "READY_FOR_M37_CARRIER_MOUNT_RECEIPT_REVIEW",
+  "m36_package_sha256": "543961ed38771a2877a553a5a9a065aeaba324958d93db555081f5036695dbff",
+  "m36_package_zip": "Needs_Routed/ION_ORGANIZATION_MILESTONE_036_KERNEL_LAYER_SELECTION_20260520T125219Z.zip",
+  "non_actions": [
+    "no source-pool migration",
+    "no ION_Developement rename",
+    "no runtime/current-state JSON modification or copy",
+    "no legacy root shim modification by M37",
+    "no GPT Builder, Actions/MCP, services, deployment, .git.zip, vault, env, credentials, sessions, or private auth access",
+    "no queues or ledgers",
+    "no browser execution",
+    "no Supabase/cockpit/provider/API integrations",
+    "no carrier automation or daemon control",
+    "no helper-module expansion beyond the M36 candidate"
+  ],
+  "schema_id": "ion.organization.m37.carrier_mount_receipt_receipt.v1",
+  "validation_verdict": "PASS_READY_FOR_COMMIT",
+  "workspace_root": "/home/sev/ION - Production"
+}

@@ -1,0 +1,35 @@
+schema_id: ion.vnext.promotion_wave.v1
+wave_id: M37_CARRIER_MOUNT_RECEIPT_LAYER
+status: landed_with_receipt
+purpose: "Promote the M36 dependency-closed carrier mount receipt layer into ION_VNEXT."
+approval_phrase: APPROVE_M37_PROMOTE_CARRIER_MOUNT_RECEIPT_NO_RUNTIME
+landing_target: ION_VNEXT/02_kernel/ion_core
+source_evidence:
+  m36_package_zip: Needs_Routed/ION_ORGANIZATION_MILESTONE_036_KERNEL_LAYER_SELECTION_20260520T125219Z.zip
+  m36_decision: READY_FOR_M37_CARRIER_MOUNT_RECEIPT_REVIEW
+promoted_files:
+  - target_path: ION_VNEXT/02_kernel/ion_core/src/kernel/ion_carrier_mount_receipt.py
+    candidate_sha256: 6e2696c74d25a160dd0241d49fd5871986f7acb57bdd1c68f8e0ae9d78366d8d
+    category: carrier_mount_receipt
+  - target_path: ION_VNEXT/02_kernel/ion_core/tests/control/test_kernel_ion_carrier_mount_receipt.py
+    candidate_sha256: f0e03b925e20268f042b73c135f95d5df131e00672092872c5cbcd731ffec831
+    category: carrier_mount_receipt_test
+dependency_closure:
+  module_import_class: stdlib_only
+  internal_helper_modules: []
+  declared_external_dependencies: []
+non_actions:
+  - no_runtime_current_state_json
+  - no_source_pool_bulk_copy
+  - no_queues_or_ledgers
+  - no_actions_mcp_runtime_wrappers
+  - no_gpt_builder_schemas
+  - no_browser_execution
+  - no_supabase_cockpit_provider_integrations
+  - no_private_vault_session_material
+  - no_carrier_automation_or_daemon_control
+post_landing_required_validation:
+  - "Run normal pytest from ION_VNEXT/02_kernel/ion_core with pyproject pythonpath."
+  - "Verify all promoted Python files parse."
+  - "Verify YAML, JSON, and TOML files parse."
+  - "Verify no runtime/current-state JSON, private material, cache, or Git paths were introduced."

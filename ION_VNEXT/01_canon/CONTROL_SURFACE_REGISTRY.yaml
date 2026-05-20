@@ -31,6 +31,10 @@ controls:
     source_module: 02_kernel/ion_core/src/kernel/ion_template_action_gate.py
     purpose: "Validate worker return template/action proof and touched-path shape before state-bearing movement."
     required_before: ["state_bearing_return", "source_promotion_landing", "next_packet_execution"]
+  carrier_mount_receipt:
+    source_module: 02_kernel/ion_core/src/kernel/ion_carrier_mount_receipt.py
+    purpose: "Build and validate carrier mount receipts and persona presentation authority boundaries."
+    required_before: ["carrier_remount", "persona_presentation", "context_mount_claim"]
 test_roots:
   - 02_kernel/ion_core/tests/control
 blocked_from_this_wave:
