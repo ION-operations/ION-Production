@@ -1,0 +1,36 @@
+schema_id: ion.vnext.promotion_wave.v1
+wave_id: M43_PROMOTE_VNEXT_CONTEXT_PACKAGE_CORE_NO_RUNTIME
+status: landed_with_receipt
+approval_phrase: APPROVE_M43_PROMOTE_VNEXT_CONTEXT_PACKAGE_CORE_NO_RUNTIME
+source_evidence:
+  m42_report_package: ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_042_KERNEL_LAYER_SELECTION_20260520T225000Z
+  m42_decision: READY_FOR_M43_SMALL_KERNEL_LAYER_REVIEW
+  m42_validation: PASS_M42_PLAN_AND_CANDIDATE_VALIDATED
+  m41_receipt: ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_041_VNEXT_RECEIPT_CORE_LANDING_20260520T205023Z/ION_VNEXT_M41_RECEIPT_CORE_RECEIPT.json
+promoted_files:
+  - path: ION_VNEXT/02_kernel/ion_core/src/kernel/ion_context_package_core.py
+    source: ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_042_KERNEL_LAYER_SELECTION_20260520T225000Z/M42_CANDIDATE_NEXT_KERNEL_LAYER/ION_VNEXT/02_kernel/ion_core/src/kernel/ion_context_package_core.py
+    sha256: 97154a04889ac53ea034a6df96054910e9f3ccb65a1a10ac8e55c9e6e2b6ecb1
+    dependency_class: stdlib_only
+  - path: ION_VNEXT/02_kernel/ion_core/tests/control/test_kernel_ion_context_package_core.py
+    source: ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_042_KERNEL_LAYER_SELECTION_20260520T225000Z/M42_CANDIDATE_NEXT_KERNEL_LAYER/ION_VNEXT/02_kernel/ion_core/tests/control/test_kernel_ion_context_package_core.py
+    sha256: 02b92c69e9fd0a545528a11c10c7d880ddd0f1bdcfebb1c7c3500ee35d727623
+    dependency_class: imports_candidate_module_only
+canon_updates:
+  - ION_VNEXT/01_canon/CONTROL_SURFACE_REGISTRY.yaml
+non_actions:
+  - no legacy context module promotion
+  - no branch materialization
+  - no context compiler promotion
+  - no package/profile handling promotion
+  - no receipt hydration or indexing promotion
+  - no source-pool scanning
+  - no clean export or status surface promotion
+  - no Actions/MCP runtime wrappers
+  - no GPT Builder schemas
+  - no queues or ledgers
+  - no runtime/current-state JSON copy
+  - no ACTIVE defaults
+  - no generated reports promoted into ION_VNEXT
+  - no private/vault/session material
+  - no source-pool migration

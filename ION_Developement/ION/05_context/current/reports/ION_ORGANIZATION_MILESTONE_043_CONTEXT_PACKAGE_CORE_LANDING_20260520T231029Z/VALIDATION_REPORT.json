@@ -1,0 +1,79 @@
+{
+  "schema_id": "ion.organization.m43.validation_report.v1",
+  "created_at_utc": "2026-05-20T23:10:29Z",
+  "overall_verdict": "PASS_READY_FOR_BOUNDED_COMMIT",
+  "checks": [
+    {
+      "name": "m42_decision",
+      "result": "PASS",
+      "detail": "READY_FOR_M43_SMALL_KERNEL_LAYER_REVIEW"
+    },
+    {
+      "name": "m42_validation",
+      "result": "PASS",
+      "detail": "PASS_M42_PLAN_AND_CANDIDATE_VALIDATED"
+    },
+    {
+      "name": "candidate_hashes_and_source_freshness",
+      "result": "PASS",
+      "detail": "candidate and source-law witness hashes matched M42 manifest"
+    },
+    {
+      "name": "target_absence_before_landing",
+      "result": "PASS",
+      "detail": "context package core module and test targets were absent before M43"
+    },
+    {
+      "name": "vnext_pytest",
+      "result": "PASS",
+      "detail": "72 passed in 0.23s"
+    },
+    {
+      "name": "python_parse",
+      "result": "PASS",
+      "detail": "M43 Python files parsed with ast.parse"
+    },
+    {
+      "name": "yaml_toml_parse",
+      "result": "PASS",
+      "detail": "CONTROL_SURFACE_REGISTRY.yaml, PROMOTION_WAVE_M43.yaml, and pyproject.toml parsed"
+    },
+    {
+      "name": "json_parse",
+      "result": "PASS",
+      "detail": "all M43 report JSON files parsed with json.tool"
+    },
+    {
+      "name": "no_runtime_current_state_json_copied",
+      "result": "PASS",
+      "detail": "M43 promoted no JSON files into ION_VNEXT"
+    },
+    {
+      "name": "no_queues_or_ledgers_copied",
+      "result": "PASS",
+      "detail": "M43 promoted one source module, one test, one canon registry update, and one promotion wave manifest"
+    },
+    {
+      "name": "no_active_defaults_introduced",
+      "result": "PASS",
+      "detail": "candidate has no file IO or default ACTIVE current-state output paths"
+    },
+    {
+      "name": "no_private_secret_cache_git_paths",
+      "result": "PASS",
+      "detail": "approved M43 target paths contain no forbidden private/cache/git path classes"
+    },
+    {
+      "name": "no_source_pool_bulk_copy",
+      "result": "PASS",
+      "detail": "only the M42 candidate files were copied; no active source-pool tree was copied"
+    },
+    {
+      "name": "git_diff_check",
+      "result": "PASS",
+      "detail": "git diff --check passed for approved M43 paths and the M43 report package using intent-to-add, then index was reset"
+    }
+  ],
+  "approval_phrase": "APPROVE_M43_PROMOTE_VNEXT_CONTEXT_PACKAGE_CORE_NO_RUNTIME",
+  "commit_message": "R0031: Promote ION_VNEXT context package core layer"
+}
