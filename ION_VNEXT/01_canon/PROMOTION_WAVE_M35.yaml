@@ -1,0 +1,40 @@
+schema_id: ion.vnext.promotion_wave.v1
+wave_id: M35_PROMOTE_M34_RETURN_PROOF_GATES_NO_RUNTIME
+status: landed_with_receipt
+purpose: "Promote the M34 dependency-closed return-proof gate layer into ION_VNEXT."
+approval_phrase: APPROVE_M35_PROMOTE_M34_RETURN_PROOF_GATES_NO_RUNTIME
+landing_target: ION_VNEXT/02_kernel/ion_core
+source_evidence:
+  m34_package: ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_034_KERNEL_DEPENDENCY_EXPANSION_PLAN_20260520T050412Z
+  m34_decision: READY_FOR_M35_SMALL_KERNEL_LAYER_REVIEW
+promoted_files:
+  - target_path: ION_VNEXT/02_kernel/ion_core/src/kernel/ion_context_proof_gate.py
+    candidate_sha256: 7108450d7318cae42abae447137f2514b1040d54fe62df1770869287a3dba649
+    category: context_proof_gate
+  - target_path: ION_VNEXT/02_kernel/ion_core/src/kernel/ion_template_action_gate.py
+    candidate_sha256: bb1d1868db945a6fbb40e1c2d61dae3df341603129b77ca54026df563707a634
+    category: template_action_gate
+  - target_path: ION_VNEXT/02_kernel/ion_core/tests/control/test_kernel_ion_context_proof_gate.py
+    candidate_sha256: ab8124b32a55656c32ec633064768753aa96bd127fb7351c998355ddf8dea0d3
+    category: context_proof_gate_test
+  - target_path: ION_VNEXT/02_kernel/ion_core/tests/control/test_kernel_ion_template_action_gate.py
+    candidate_sha256: 6efa6b60c2815f498e6d970da4f68e0a3427f3cf3283010148f6c72b890b0893
+    category: template_action_gate_test
+non_actions:
+  - no_runtime_current_state_json
+  - no_source_pool_bulk_copy
+  - no_carrier_mount_receipt_promotion
+  - no_package_profile_handling_promotion
+  - no_clean_export_promotion
+  - no_status_visibility_promotion
+  - no_branch_context_capsule_materialization_promotion
+  - no_worker_shift_automation_promotion
+  - no_actions_mcp_runtime_wrappers
+  - no_gpt_builder_schema_promotion
+  - no_browser_execution_promotion
+  - no_private_vault_session_material
+post_landing_required_validation:
+  - "Run normal pytest from ION_VNEXT/02_kernel/ion_core with pyproject pythonpath."
+  - "Verify all promoted Python files parse."
+  - "Verify YAML, JSON, and TOML files parse."
+  - "Verify no runtime/current-state JSON, private material, cache, or Git paths were introduced."

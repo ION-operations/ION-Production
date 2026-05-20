@@ -1,0 +1,116 @@
+{
+  "approval_phrase": "APPROVE_M35_PROMOTE_M34_RETURN_PROOF_GATES_NO_RUNTIME",
+  "checks": [
+    {
+      "detail": "READY_FOR_M35_SMALL_KERNEL_LAYER_REVIEW",
+      "name": "m34_decision",
+      "result": "PASS"
+    },
+    {
+      "detail": [
+        {
+          "candidate_path": "ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_034_KERNEL_DEPENDENCY_EXPANSION_PLAN_20260520T050412Z/M34_CANDIDATE_NEXT_KERNEL_LAYER/ION_VNEXT/02_kernel/ion_core/src/kernel/ion_context_proof_gate.py",
+          "candidate_sha256": "7108450d7318cae42abae447137f2514b1040d54fe62df1770869287a3dba649",
+          "category": "context_proof_gate",
+          "expected_sha256": "7108450d7318cae42abae447137f2514b1040d54fe62df1770869287a3dba649",
+          "hash_match": true,
+          "source_path": "ION_Developement/ION/04_packages/kernel/ion_context_proof_gate.py",
+          "target_bytes": 5261,
+          "target_path": "ION_VNEXT/02_kernel/ion_core/src/kernel/ion_context_proof_gate.py",
+          "target_sha256": "7108450d7318cae42abae447137f2514b1040d54fe62df1770869287a3dba649"
+        },
+        {
+          "candidate_path": "ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_034_KERNEL_DEPENDENCY_EXPANSION_PLAN_20260520T050412Z/M34_CANDIDATE_NEXT_KERNEL_LAYER/ION_VNEXT/02_kernel/ion_core/src/kernel/ion_template_action_gate.py",
+          "candidate_sha256": "bb1d1868db945a6fbb40e1c2d61dae3df341603129b77ca54026df563707a634",
+          "category": "template_action_gate",
+          "expected_sha256": "bb1d1868db945a6fbb40e1c2d61dae3df341603129b77ca54026df563707a634",
+          "hash_match": true,
+          "source_path": "ION_Developement/ION/04_packages/kernel/ion_template_action_gate.py",
+          "target_bytes": 5487,
+          "target_path": "ION_VNEXT/02_kernel/ion_core/src/kernel/ion_template_action_gate.py",
+          "target_sha256": "bb1d1868db945a6fbb40e1c2d61dae3df341603129b77ca54026df563707a634"
+        },
+        {
+          "candidate_path": "ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_034_KERNEL_DEPENDENCY_EXPANSION_PLAN_20260520T050412Z/M34_CANDIDATE_NEXT_KERNEL_LAYER/ION_VNEXT/02_kernel/ion_core/tests/control/test_kernel_ion_context_proof_gate.py",
+          "candidate_sha256": "ab8124b32a55656c32ec633064768753aa96bd127fb7351c998355ddf8dea0d3",
+          "category": "context_proof_gate_test",
+          "expected_sha256": "ab8124b32a55656c32ec633064768753aa96bd127fb7351c998355ddf8dea0d3",
+          "hash_match": true,
+          "source_path": null,
+          "target_bytes": 2101,
+          "target_path": "ION_VNEXT/02_kernel/ion_core/tests/control/test_kernel_ion_context_proof_gate.py",
+          "target_sha256": "ab8124b32a55656c32ec633064768753aa96bd127fb7351c998355ddf8dea0d3"
+        },
+        {
+          "candidate_path": "ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_034_KERNEL_DEPENDENCY_EXPANSION_PLAN_20260520T050412Z/M34_CANDIDATE_NEXT_KERNEL_LAYER/ION_VNEXT/02_kernel/ion_core/tests/control/test_kernel_ion_template_action_gate.py",
+          "candidate_sha256": "6efa6b60c2815f498e6d970da4f68e0a3427f3cf3283010148f6c72b890b0893",
+          "category": "template_action_gate_test",
+          "expected_sha256": "6efa6b60c2815f498e6d970da4f68e0a3427f3cf3283010148f6c72b890b0893",
+          "hash_match": true,
+          "source_path": "ION_Developement/ION/tests/test_kernel_ion_template_action_gate.py",
+          "target_bytes": 1393,
+          "target_path": "ION_VNEXT/02_kernel/ion_core/tests/control/test_kernel_ion_template_action_gate.py",
+          "target_sha256": "6efa6b60c2815f498e6d970da4f68e0a3427f3cf3283010148f6c72b890b0893"
+        }
+      ],
+      "name": "candidate_hash_match",
+      "result": "PASS"
+    },
+    {
+      "detail": "43 passed in 0.14s",
+      "name": "vnext_pytest",
+      "result": "PASS"
+    },
+    {
+      "detail": "4 promoted Python files parsed",
+      "name": "python_parse",
+      "result": "PASS"
+    },
+    {
+      "detail": "CONTROL_SURFACE_REGISTRY.yaml, PROMOTION_WAVE_M35.yaml, pyproject.toml, M34_VALIDATION_REPORT.json parsed",
+      "name": "yaml_json_toml_parse",
+      "result": "PASS"
+    },
+    {
+      "detail": "No JSON target files promoted by M35",
+      "name": "no_runtime_current_state_json_copied",
+      "result": "PASS"
+    },
+    {
+      "detail": "No forbidden path classes in approved M35 targets",
+      "name": "no_private_secret_cache_git_paths",
+      "result": "PASS"
+    },
+    {
+      "detail": "Exactly two source modules and two tests copied from M34 candidate tree",
+      "name": "no_source_pool_bulk_copy",
+      "result": "PASS"
+    },
+    {
+      "detail": "README.md and ION_WORKSPACE_MANIFEST.yaml were pre-existing dirty files and are not included in approved M35 stage set.",
+      "name": "unrelated_root_shims_not_in_m35_boundary",
+      "result": "PASS"
+    },
+    {
+      "detail": "git diff --check passed for approved M35 paths and M35 report package using intent-to-add for untracked files.",
+      "name": "git_diff_check",
+      "result": "PASS"
+    }
+  ],
+  "created_at": "2026-05-20T12:26:01.287200+00:00",
+  "git_status_relevant_before_report_package": [
+    " M ION_VNEXT/01_canon/CONTROL_SURFACE_REGISTRY.yaml",
+    " M ION_WORKSPACE_MANIFEST.yaml",
+    " M README.md",
+    "?? ION_VNEXT/01_canon/PROMOTION_WAVE_M35.yaml",
+    "?? ION_VNEXT/02_kernel/ion_core/src/kernel/ion_context_proof_gate.py",
+    "?? ION_VNEXT/02_kernel/ion_core/src/kernel/ion_template_action_gate.py",
+    "?? ION_VNEXT/02_kernel/ion_core/tests/control/test_kernel_ion_context_proof_gate.py",
+    "?? ION_VNEXT/02_kernel/ion_core/tests/control/test_kernel_ion_template_action_gate.py"
+  ],
+  "m34_decision_verified": true,
+  "overall_verdict": "PASS_READY_FOR_BOUNDED_COMMIT",
+  "schema_id": "ion.organization.m35.validation_report.v1",
+  "updated_at": "2026-05-20T12:26:51.495435+00:00",
+  "workspace_root": "/home/sev/ION - Production"
+}

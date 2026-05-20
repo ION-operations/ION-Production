@@ -23,6 +23,14 @@ controls:
     source_module: 02_kernel/ion_core/src/kernel/ion_agent_cwd_boundary.py
     purpose: "Prevent AI workers from silently launching from the wrong project root."
     required_before: ["codex_cli_worker", "cursor_worker", "carrier_subagent"]
+  context_proof_gate:
+    source_module: 02_kernel/ion_core/src/kernel/ion_context_proof_gate.py
+    purpose: "Validate worker return context proof before domain output can be treated as reviewable."
+    required_before: ["domain_worker_return", "context_bound_integration", "state_claim_review"]
+  template_action_gate:
+    source_module: 02_kernel/ion_core/src/kernel/ion_template_action_gate.py
+    purpose: "Validate worker return template/action proof and touched-path shape before state-bearing movement."
+    required_before: ["state_bearing_return", "source_promotion_landing", "next_packet_execution"]
 test_roots:
   - 02_kernel/ion_core/tests/control
 blocked_from_this_wave:
