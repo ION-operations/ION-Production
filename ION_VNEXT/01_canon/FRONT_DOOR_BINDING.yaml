@@ -1,0 +1,54 @@
+schema_id: ion.vnext.front_door_binding.v1
+status: candidate
+created_by_packet: M33_ION_VNEXT_FRONT_DOOR_BINDING
+approval_phrase: APPROVE_M33_ION_VNEXT_FRONT_DOOR_BINDING_DOCS_ONLY
+scope:
+  root: ION_VNEXT
+  production_root_cutover: false
+  legacy_root_shim_updates: false
+  source_pool_migration: false
+  runtime_current_state_copy: false
+front_door:
+  human_entry:
+    - ION_VNEXT/README.md
+    - ION_VNEXT/00_front_door/HUMAN_START_HERE.md
+    - ION_VNEXT/00_front_door/AUTHORITY_BOUNDARIES.md
+    - ION_VNEXT/00_front_door/ROUTE_MAP.md
+  ai_entry:
+    - ION_VNEXT/00_front_door/AI_START_HERE.md
+    - ION_VNEXT/01_canon/PATH_POLICY.yaml
+    - ION_VNEXT/01_canon/CONTROL_SURFACE_REGISTRY.yaml
+    - ION_VNEXT/02_kernel/ion_core/pyproject.toml
+canon_files:
+  - ION_VNEXT/01_canon/WORKSPACE_CANON.yaml
+  - ION_VNEXT/01_canon/FAMILY_REGISTRY.yaml
+  - ION_VNEXT/01_canon/PATH_POLICY.yaml
+  - ION_VNEXT/01_canon/STATE_LIFECYCLE.yaml
+  - ION_VNEXT/01_canon/LEGACY_SOURCE_POOLS.yaml
+  - ION_VNEXT/01_canon/MIGRATION_RULES.yaml
+  - ION_VNEXT/01_canon/QUALITY_STANDARD.yaml
+control_surface:
+  registry: ION_VNEXT/01_canon/CONTROL_SURFACE_REGISTRY.yaml
+  package_root: ION_VNEXT/02_kernel/ion_core
+  controls:
+    - path_authority
+    - workspace_root_registry
+    - ai_movement_gate
+    - codex_work_request_target_binding
+    - agent_cwd_boundary
+authority_boundaries:
+  accepted_state_requires_receipt: true
+  migration_requires_audit: true
+  runtime_current_state_json_copy_forbidden: true
+  private_secret_material_forbidden: true
+  source_pool_bulk_copy_forbidden: true
+  root_shim_changes_forbidden_in_m33: true
+next_routes:
+  - packet: M34_KERNEL_DEPENDENCY_EXPANSION
+    purpose: Expand the dependency-closed kernel slice after M31 controls.
+  - packet: M35_PRODUCT_AND_CARRIER_SOURCE_POOL_AUDIT
+    purpose: Audit product and carrier source pools before promotion.
+  - packet: M36_RUNTIME_CONTEXT_LIFECYCLE_DESIGN
+    purpose: Design runtime/context split before any state copy.
+  - packet: M37_RELEASE_EXPORT_HYGIENE
+    purpose: Define release, export, package, and private-material gates.

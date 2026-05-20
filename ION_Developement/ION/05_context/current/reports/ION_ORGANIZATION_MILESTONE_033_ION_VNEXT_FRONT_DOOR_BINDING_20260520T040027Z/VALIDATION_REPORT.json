@@ -1,0 +1,144 @@
+{
+  "accepted_state_claim": false,
+  "approval_phrase": "APPROVE_M33_ION_VNEXT_FRONT_DOOR_BINDING_DOCS_ONLY",
+  "checks": [
+    {
+      "detail": [
+        "ION_VNEXT/README.md",
+        "ION_VNEXT/00_front_door/README.md",
+        "ION_VNEXT/00_front_door/HUMAN_START_HERE.md",
+        "ION_VNEXT/00_front_door/AI_START_HERE.md",
+        "ION_VNEXT/00_front_door/ROUTE_MAP.md",
+        "ION_VNEXT/00_front_door/AUTHORITY_BOUNDARIES.md",
+        "ION_VNEXT/01_canon/FRONT_DOOR_BINDING.yaml"
+      ],
+      "name": "allowed_file_scope_pre_stage",
+      "result": "PASS"
+    },
+    {
+      "detail": {
+        "json_report_files": [
+          "ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_033_ION_VNEXT_FRONT_DOOR_BINDING_20260520T040027Z/APPLIED_FILE_MANIFEST.json",
+          "ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_033_ION_VNEXT_FRONT_DOOR_BINDING_20260520T040027Z/ION_VNEXT_M33_FRONT_DOOR_BINDING_RECEIPT.json",
+          "ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_033_ION_VNEXT_FRONT_DOOR_BINDING_20260520T040027Z/SOURCE_EVIDENCE_MANIFEST.json",
+          "ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_033_ION_VNEXT_FRONT_DOOR_BINDING_20260520T040027Z/VALIDATION_REPORT.json"
+        ],
+        "yaml_files": [
+          "ION_VNEXT/01_canon/FRONT_DOOR_BINDING.yaml"
+        ]
+      },
+      "name": "yaml_json_parse",
+      "result": "PASS"
+    },
+    {
+      "detail": "M33 markdown files and report markdown files have no trailing whitespace.",
+      "name": "markdown_no_trailing_whitespace",
+      "result": "PASS"
+    },
+    {
+      "detail": "git diff --check -- ION_VNEXT <M33 report dir> returned no issues.",
+      "name": "git_diff_check",
+      "result": "PASS"
+    },
+    {
+      "detail": "cd ION_VNEXT/02_kernel/ion_core && PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -p no:cacheprovider -> 36 passed in 0.11s",
+      "name": "m31_control_tests",
+      "result": "PASS"
+    },
+    {
+      "detail": {
+        "m33_stages_none_of": [
+          "README.md",
+          "AGENTS.md",
+          "START_HERE_FOR_ANY_AGENT.md",
+          "ION_WORKSPACE_MANIFEST.yaml"
+        ],
+        "observed_dirty_preexisting": [
+          " M ION_WORKSPACE_MANIFEST.yaml",
+          " M README.md"
+        ]
+      },
+      "name": "legacy_root_shims_not_modified_by_m33",
+      "result": "PASS"
+    },
+    {
+      "detail": [],
+      "name": "source_modules_not_modified",
+      "result": "PASS"
+    },
+    {
+      "detail": "M33 allowed write set contains no runtime/current-state JSON paths.",
+      "name": "runtime_current_state_json_not_touched",
+      "result": "PASS"
+    },
+    {
+      "detail": "No .git/.env/vault/credential/session/auth/cache paths are in the M33 allowed write set.",
+      "name": "private_secret_cache_git_paths_not_touched",
+      "result": "PASS"
+    },
+    {
+      "detail": {
+        "missing": [],
+        "staged_count": 14,
+        "staged_files": [
+          "ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_033_ION_VNEXT_FRONT_DOOR_BINDING_20260520T040027Z/APPLIED_FILE_MANIFEST.json",
+          "ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_033_ION_VNEXT_FRONT_DOOR_BINDING_20260520T040027Z/ION_VNEXT_M33_FRONT_DOOR_BINDING_RECEIPT.json",
+          "ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_033_ION_VNEXT_FRONT_DOOR_BINDING_20260520T040027Z/M33_FRONT_DOOR_BINDING_REPORT.md",
+          "ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_033_ION_VNEXT_FRONT_DOOR_BINDING_20260520T040027Z/NEXT_CHAT_BATON.md",
+          "ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_033_ION_VNEXT_FRONT_DOOR_BINDING_20260520T040027Z/NEXT_PACKET_M34_KERNEL_DEPENDENCY_EXPANSION.md",
+          "ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_033_ION_VNEXT_FRONT_DOOR_BINDING_20260520T040027Z/SOURCE_EVIDENCE_MANIFEST.json",
+          "ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_033_ION_VNEXT_FRONT_DOOR_BINDING_20260520T040027Z/VALIDATION_REPORT.json",
+          "ION_VNEXT/00_front_door/AI_START_HERE.md",
+          "ION_VNEXT/00_front_door/AUTHORITY_BOUNDARIES.md",
+          "ION_VNEXT/00_front_door/HUMAN_START_HERE.md",
+          "ION_VNEXT/00_front_door/README.md",
+          "ION_VNEXT/00_front_door/ROUTE_MAP.md",
+          "ION_VNEXT/01_canon/FRONT_DOOR_BINDING.yaml",
+          "ION_VNEXT/README.md"
+        ],
+        "unexpected": []
+      },
+      "name": "staged_file_set_bounded",
+      "result": "PASS"
+    },
+    {
+      "detail": [],
+      "name": "no_legacy_root_shims_staged",
+      "result": "PASS"
+    },
+    {
+      "detail": [],
+      "name": "no_source_modules_staged",
+      "result": "PASS"
+    },
+    {
+      "detail": [],
+      "name": "no_runtime_current_state_json_staged",
+      "result": "PASS"
+    },
+    {
+      "detail": [],
+      "name": "no_private_secret_cache_git_paths_staged",
+      "result": "PASS"
+    }
+  ],
+  "created_at": "2026-05-20T04:00:27+00:00",
+  "git_status_before_m33_validation_relevant": [
+    " M ION_VNEXT/00_front_door/README.md",
+    " M ION_VNEXT/README.md",
+    " M ION_WORKSPACE_MANIFEST.yaml",
+    " M README.md",
+    "?? ION_VNEXT/00_front_door/AI_START_HERE.md",
+    "?? ION_VNEXT/00_front_door/AUTHORITY_BOUNDARIES.md",
+    "?? ION_VNEXT/00_front_door/HUMAN_START_HERE.md",
+    "?? ION_VNEXT/00_front_door/ROUTE_MAP.md",
+    "?? ION_VNEXT/01_canon/FRONT_DOOR_BINDING.yaml"
+  ],
+  "live_execution_authority": false,
+  "overall_verdict": "PASS_READY_FOR_COMMIT",
+  "production_authority": false,
+  "schema_id": "ion.organization.m33.validation_report.v1",
+  "staged_count": 14,
+  "updated_at": "2026-05-20T04:02:04+00:00",
+  "workspace_root": "/home/sev/ION - Production"
+}
