@@ -1,0 +1,74 @@
+{
+  "schema_id": "ion.organization.m41.validation_report.v1",
+  "created_at_utc": "2026-05-20T20:50:23Z",
+  "overall_verdict": "PASS_READY_FOR_BOUNDED_COMMIT",
+  "checks": [
+    {
+      "name": "m40_decision",
+      "result": "PASS",
+      "detail": "READY_FOR_M41_SMALL_KERNEL_LAYER_REVIEW"
+    },
+    {
+      "name": "m40_validation",
+      "result": "PASS",
+      "detail": "PASS_M40_PLAN_AND_CANDIDATE_VALIDATED"
+    },
+    {
+      "name": "candidate_hashes_and_source_freshness",
+      "result": "PASS",
+      "detail": "candidate and source-law witness hashes matched M40 manifest"
+    },
+    {
+      "name": "target_absence_before_landing",
+      "result": "PASS",
+      "detail": "receipt core module and test targets were absent before M41"
+    },
+    {
+      "name": "vnext_pytest",
+      "result": "PASS",
+      "detail": "66 passed in 0.17s"
+    },
+    {
+      "name": "python_parse",
+      "result": "PASS",
+      "detail": "M41 Python files parsed with ast.parse"
+    },
+    {
+      "name": "yaml_toml_parse",
+      "result": "PASS",
+      "detail": "CONTROL_SURFACE_REGISTRY.yaml, PROMOTION_WAVE_M41.yaml, and pyproject.toml parsed"
+    },
+    {
+      "name": "json_parse",
+      "result": "PASS",
+      "detail": "all M41 report JSON files parsed with json.tool"
+    },
+    {
+      "name": "no_runtime_current_state_json_copied",
+      "result": "PASS",
+      "detail": "M41 promoted no JSON files into ION_VNEXT"
+    },
+    {
+      "name": "no_queues_or_ledgers_copied",
+      "result": "PASS",
+      "detail": "M41 promoted one source module, one test, one canon registry update, and one promotion wave manifest"
+    },
+    {
+      "name": "no_private_secret_cache_git_paths",
+      "result": "PASS",
+      "detail": "approved M41 target paths contain no forbidden private/cache/git path classes"
+    },
+    {
+      "name": "no_source_pool_bulk_copy",
+      "result": "PASS",
+      "detail": "only the M40 candidate files were copied; no active source-pool tree was copied"
+    },
+    {
+      "name": "git_diff_check",
+      "result": "PASS",
+      "detail": "git diff --check passed for approved M41 paths and the M41 report package using intent-to-add, then index was reset"
+    }
+  ],
+  "approval_phrase": "APPROVE_M41_PROMOTE_VNEXT_RECEIPT_CORE_NO_RUNTIME",
+  "commit_message": "R0030: Promote ION_VNEXT receipt core layer"
+}

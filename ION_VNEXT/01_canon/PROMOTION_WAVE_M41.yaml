@@ -1,0 +1,35 @@
+schema_id: ion.vnext.promotion_wave.v1
+wave_id: M41_PROMOTE_VNEXT_RECEIPT_CORE_NO_RUNTIME
+status: landed_with_receipt
+approval_phrase: APPROVE_M41_PROMOTE_VNEXT_RECEIPT_CORE_NO_RUNTIME
+source_evidence:
+  m40_report_package: ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_040_KERNEL_LAYER_SELECTION_20260520T142452Z
+  m40_decision: READY_FOR_M41_SMALL_KERNEL_LAYER_REVIEW
+  m40_validation: PASS_M40_PLAN_AND_CANDIDATE_VALIDATED
+  m39_receipt: ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_039_OPERATOR_ARTIFACT_HYGIENE_LANDING_20260520T140702Z/ION_VNEXT_M39_OPERATOR_ARTIFACT_HYGIENE_RECEIPT.json
+promoted_files:
+  - path: ION_VNEXT/02_kernel/ion_core/src/kernel/ion_receipt_core.py
+    source: ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_040_KERNEL_LAYER_SELECTION_20260520T142452Z/M40_CANDIDATE_NEXT_KERNEL_LAYER/ION_VNEXT/02_kernel/ion_core/src/kernel/ion_receipt_core.py
+    sha256: 854cac32806c6c3f8412a4fe04d632548e019e62c06491438d2b6fb3f1bb9c66
+    dependency_class: stdlib_only
+  - path: ION_VNEXT/02_kernel/ion_core/tests/control/test_kernel_ion_receipt_core.py
+    source: ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_040_KERNEL_LAYER_SELECTION_20260520T142452Z/M40_CANDIDATE_NEXT_KERNEL_LAYER/ION_VNEXT/02_kernel/ion_core/tests/control/test_kernel_ion_receipt_core.py
+    sha256: 19bfb57cf62bfdb0e52fa89f3c83dd3294c4c0024fae5c663033580a390e2aa9
+    dependency_class: imports_candidate_module_only
+canon_updates:
+  - ION_VNEXT/01_canon/CONTROL_SURFACE_REGISTRY.yaml
+non_actions:
+  - no legacy receipts.py promotion
+  - no ion_receipt_hydration_mapper.py promotion
+  - no conversational_receipt.py promotion
+  - no package profile promotion
+  - no branch context promotion
+  - no clean export builder promotion
+  - no status visibility promotion
+  - no Actions/MCP runtime wrappers
+  - no GPT Builder schemas
+  - no queues or ledgers
+  - no runtime/current-state JSON copy
+  - no generated reports promoted into ION_VNEXT
+  - no private/vault/session material
+  - no source-pool migration

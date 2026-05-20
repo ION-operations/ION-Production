@@ -1,0 +1,54 @@
+{
+  "schema_id": "ion.organization.m41.source_to_target_manifest.v1",
+  "created_at_utc": "2026-05-20T20:50:23Z",
+  "m40_package": "ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_040_KERNEL_LAYER_SELECTION_20260520T142452Z",
+  "m40_decision": "READY_FOR_M41_SMALL_KERNEL_LAYER_REVIEW",
+  "m40_validation": "PASS_M40_PLAN_AND_CANDIDATE_VALIDATED",
+  "mappings": [
+    {
+      "candidate_path": "ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_040_KERNEL_LAYER_SELECTION_20260520T142452Z/M40_CANDIDATE_NEXT_KERNEL_LAYER/ION_VNEXT/02_kernel/ion_core/src/kernel/ion_receipt_core.py",
+      "target_path": "ION_VNEXT/02_kernel/ion_core/src/kernel/ion_receipt_core.py",
+      "candidate_sha256": "854cac32806c6c3f8412a4fe04d632548e019e62c06491438d2b6fb3f1bb9c66",
+      "target_sha256": "854cac32806c6c3f8412a4fe04d632548e019e62c06491438d2b6fb3f1bb9c66",
+      "hash_match": true,
+      "dependency_class": "stdlib_only",
+      "direct_source_copy": false
+    },
+    {
+      "candidate_path": "ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_040_KERNEL_LAYER_SELECTION_20260520T142452Z/M40_CANDIDATE_NEXT_KERNEL_LAYER/ION_VNEXT/02_kernel/ion_core/tests/control/test_kernel_ion_receipt_core.py",
+      "target_path": "ION_VNEXT/02_kernel/ion_core/tests/control/test_kernel_ion_receipt_core.py",
+      "candidate_sha256": "19bfb57cf62bfdb0e52fa89f3c83dd3294c4c0024fae5c663033580a390e2aa9",
+      "target_sha256": "19bfb57cf62bfdb0e52fa89f3c83dd3294c4c0024fae5c663033580a390e2aa9",
+      "hash_match": true,
+      "dependency_class": "imports_candidate_module_only",
+      "direct_source_copy": false
+    }
+  ],
+  "source_law_witnesses_checked": [
+    {
+      "path": "ION_Developement/ION/04_packages/kernel/receipts.py",
+      "sha256": "a1375a7875a29340986238a07c23f439c53397615302ff50a7b7815d07572b54",
+      "hash_match": true
+    },
+    {
+      "path": "ION_Developement/ION/04_packages/kernel/conversational_receipt.py",
+      "sha256": "017c3efaee7faa7b768ff41f9309c15e27ad54ca472a31f33337579194654b6c",
+      "hash_match": true
+    },
+    {
+      "path": "ION_Developement/ION/04_packages/kernel/ion_receipt_hydration_mapper.py",
+      "sha256": "4e2a3cbb1152f7dffaa318a3c9861a1c11c7e111ca869ffcb9014d677f81c75f",
+      "hash_match": true
+    },
+    {
+      "path": "ION_VNEXT/02_kernel/ion_core/src/kernel/ion_carrier_mount_receipt.py",
+      "sha256": "6e2696c74d25a160dd0241d49fd5871986f7acb57bdd1c68f8e0ae9d78366d8d",
+      "hash_match": true
+    },
+    {
+      "path": "ION_VNEXT/02_kernel/ion_core/src/kernel/ion_operator_artifact_hygiene_check.py",
+      "sha256": "8c88933e41382fadc3b9285b8a26d6656a7e08cbfdebc0d3be661da642673c94",
+      "hash_match": true
+    }
+  ]
+}

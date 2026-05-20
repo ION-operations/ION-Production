@@ -39,6 +39,10 @@ controls:
     source_module: 02_kernel/ion_core/src/kernel/ion_operator_artifact_hygiene_check.py
     purpose: "Validate operator-facing artifact and upload-kit shape before release, export, or package handoff."
     required_before: ["operator_artifact_release", "gpt_upload_kit_handoff", "package_export_review"]
+  receipt_core:
+    source_module: 02_kernel/ion_core/src/kernel/ion_receipt_core.py
+    purpose: "Build, validate, classify, and hash source-bound receipt records without runtime queues or current-state defaults."
+    required_before: ["receipt_backed_state_claim", "control_promotion_receipt", "next_context_compiler_input"]
 test_roots:
   - 02_kernel/ion_core/tests/control
 blocked_from_this_wave:
