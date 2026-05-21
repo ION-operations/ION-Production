@@ -1,0 +1,55 @@
+{
+  "applied": true,
+  "applied_files": [
+    {
+      "kind": "kernel_source",
+      "path": "ION_VNEXT/02_kernel/ion_core/src/kernel/ion_promotion_plan_core.py",
+      "sha256": "2877c77b10b1263261f64e5e2fd627ed8334c0074e96772de1ee1ff9867f7665"
+    },
+    {
+      "kind": "kernel_test",
+      "path": "ION_VNEXT/02_kernel/ion_core/tests/control/test_kernel_ion_promotion_plan_core.py",
+      "sha256": "1f960e7de9674e04f52ead3e6ded183d920b990aa37942d80a5d69ed05ec65b3"
+    },
+    {
+      "kind": "canon_manifest",
+      "path": "ION_VNEXT/01_canon/CONTROL_SURFACE_REGISTRY.yaml",
+      "sha256": "e70fd90a2ec40a006ecc7ce21f8367ae695e97a64361d65e2e50f97e73c82b56"
+    },
+    {
+      "kind": "canon_manifest",
+      "path": "ION_VNEXT/01_canon/PROMOTION_WAVE_M47.yaml",
+      "sha256": "63c99e2852feef20d221abf071a669b50449657a96344ac539ff647f34f0ab2b"
+    }
+  ],
+  "approval_phrase": "APPROVE_M47_PROMOTE_VNEXT_PROMOTION_PLAN_CORE_NO_RUNTIME",
+  "approval_phrase_confirmed": true,
+  "authority": {
+    "accepted_state_claim": false,
+    "live_execution_authority": false,
+    "production_authority": false,
+    "secrets_authority": false
+  },
+  "commit_expected": true,
+  "commit_message": "R0033: Promote ION_VNEXT promotion plan core layer",
+  "created_at_utc": "20260521T130015Z",
+  "landing_area": [
+    "ION_VNEXT/01_canon",
+    "ION_VNEXT/02_kernel/ion_core"
+  ],
+  "m46_decision": "READY_FOR_M47_SMALL_KERNEL_LAYER_REVIEW",
+  "m46_package": "ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_046_KERNEL_LAYER_SELECTION_20260521T011154Z",
+  "non_actions": [
+    "no legacy profile/manifest/export/runtime modules promoted",
+    "no source-pool scanning performed",
+    "no source-pool copy/move/delete/rename/migration performed",
+    "no runtime/current-state JSON copied or modified",
+    "no queues or ledgers copied",
+    "no ACTIVE defaults introduced",
+    "no private/vault/session material read or copied",
+    "no Needs_Routed evidence packages staged"
+  ],
+  "schema_id": "ion.organization.m47.promotion_plan_core_landing_receipt.v1",
+  "validation_verdict": "PASS_READY_FOR_BOUNDED_COMMIT",
+  "workspace_root": "/home/sev/ION - Production"
+}

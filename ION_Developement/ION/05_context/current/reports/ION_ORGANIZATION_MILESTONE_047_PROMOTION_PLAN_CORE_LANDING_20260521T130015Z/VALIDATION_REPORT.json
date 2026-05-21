@@ -1,0 +1,73 @@
+{
+  "checks": [
+    {
+      "detail": "M46_VALIDATION_REPORT.json decision is READY_FOR_M47_SMALL_KERNEL_LAYER_REVIEW.",
+      "name": "m46_decision",
+      "result": "PASS"
+    },
+    {
+      "detail": "Candidate module and test hashes matched packet-required sha256 values before landing and after copy.",
+      "name": "candidate_hashes",
+      "result": "PASS"
+    },
+    {
+      "detail": "Target module, target test, and PROMOTION_WAVE_M47.yaml were absent before landing.",
+      "name": "target_absence_before_landing",
+      "result": "PASS"
+    },
+    {
+      "command": "cd ION_VNEXT/02_kernel/ion_core && PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -p no:cacheprovider",
+      "detail": "87 passed in 0.22s",
+      "name": "vnext_pytest",
+      "result": "PASS"
+    },
+    {
+      "detail": "M47 module and test parsed with ast.parse.",
+      "name": "python_parse",
+      "result": "PASS"
+    },
+    {
+      "detail": "CONTROL_SURFACE_REGISTRY.yaml, PROMOTION_WAVE_M47.yaml, and pyproject.toml parsed.",
+      "name": "yaml_toml_parse",
+      "result": "PASS"
+    },
+    {
+      "detail": "No Path/open/read_text/write_text/rglob/iterdir/shutil/subprocess/os/unlink/rename/remove/rmdir/copy/move tokens found.",
+      "name": "no_file_operation_tokens_in_core_module",
+      "result": "PASS"
+    },
+    {
+      "detail": "Touched M47 files did not match private, env, cache, runtime, queue, ledger, git, node_modules, or venv path patterns.",
+      "name": "forbidden_path_scan",
+      "result": "PASS"
+    },
+    {
+      "detail": "git diff --check passed for M47 paths.",
+      "name": "git_diff_check_pre_stage",
+      "result": "PASS"
+    }
+  ],
+  "commit": {
+    "expected": true,
+    "message": "R0033: Promote ION_VNEXT promotion plan core layer",
+    "post_commit_validation_recorded_in_final_return": true
+  },
+  "created_at_utc": "20260521T130015Z",
+  "milestone": "M47_PROMOTE_VNEXT_PROMOTION_PLAN_CORE_NO_RUNTIME",
+  "overall_verdict": "PASS_READY_FOR_BOUNDED_COMMIT",
+  "pre_commit_head": "621bd8c7 R0032: Promote ION_VNEXT source-pool audit core layer",
+  "required_proofs": {
+    "existing_m31_m35_m37_m39_m41_m43_m45_tests_still_pass": true,
+    "m47_tests_pass": true,
+    "no_active_defaults_introduced": true,
+    "no_filesystem_copy_move_delete_git_behavior_introduced_by_core_module": true,
+    "no_private_secret_cache_git_paths_touched": true,
+    "no_queues_or_ledgers_copied": true,
+    "no_runtime_current_state_json_copied": true,
+    "no_source_pool_bulk_copy": true,
+    "normal_pytest_through_pyproject_config": true,
+    "python_parse_passes": true,
+    "yaml_json_toml_parse_passes": true
+  },
+  "schema_id": "ion.organization.m47.validation_report.v1"
+}

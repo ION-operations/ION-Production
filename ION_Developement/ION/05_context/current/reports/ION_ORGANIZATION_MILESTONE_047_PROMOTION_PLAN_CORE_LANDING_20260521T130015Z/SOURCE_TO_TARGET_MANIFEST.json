@@ -1,0 +1,39 @@
+{
+  "approval_phrase": "APPROVE_M47_PROMOTE_VNEXT_PROMOTION_PLAN_CORE_NO_RUNTIME",
+  "canon_updates": [
+    "ION_VNEXT/01_canon/CONTROL_SURFACE_REGISTRY.yaml",
+    "ION_VNEXT/01_canon/PROMOTION_WAVE_M47.yaml"
+  ],
+  "milestone": "M47_PROMOTE_VNEXT_PROMOTION_PLAN_CORE_NO_RUNTIME",
+  "non_actions": [
+    "no legacy profile/manifest/export/runtime modules promoted",
+    "no source-pool scanning performed",
+    "no source-pool copy/move/delete/rename/migration performed",
+    "no runtime/current-state JSON copied or modified",
+    "no queues or ledgers copied",
+    "no ACTIVE defaults introduced",
+    "no private/vault/session material read or copied",
+    "no Needs_Routed evidence packages staged"
+  ],
+  "schema_id": "ion.organization.m47.source_to_target_manifest.v1",
+  "source_evidence": {
+    "m46_candidate_manifest": "ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_046_KERNEL_LAYER_SELECTION_20260521T011154Z/M46_CANDIDATE_PROMOTION_MANIFEST.yaml",
+    "m46_validation_report": "ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_046_KERNEL_LAYER_SELECTION_20260521T011154Z/M46_VALIDATION_REPORT.json",
+    "previous_receipt": "ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_045_SOURCE_POOL_AUDIT_CORE_LANDING_20260521T002942Z/ION_VNEXT_M45_SOURCE_POOL_AUDIT_CORE_RECEIPT.json",
+    "selection_packet": "ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_046_KERNEL_LAYER_SELECTION_20260521T011154Z"
+  },
+  "source_to_target": [
+    {
+      "expected_sha256": "2877c77b10b1263261f64e5e2fd627ed8334c0074e96772de1ee1ff9867f7665",
+      "sha256": "2877c77b10b1263261f64e5e2fd627ed8334c0074e96772de1ee1ff9867f7665",
+      "source": "ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_046_KERNEL_LAYER_SELECTION_20260521T011154Z/M46_CANDIDATE_NEXT_KERNEL_LAYER/ION_VNEXT/02_kernel/ion_core/src/kernel/ion_promotion_plan_core.py",
+      "target": "ION_VNEXT/02_kernel/ion_core/src/kernel/ion_promotion_plan_core.py"
+    },
+    {
+      "expected_sha256": "1f960e7de9674e04f52ead3e6ded183d920b990aa37942d80a5d69ed05ec65b3",
+      "sha256": "1f960e7de9674e04f52ead3e6ded183d920b990aa37942d80a5d69ed05ec65b3",
+      "source": "ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_046_KERNEL_LAYER_SELECTION_20260521T011154Z/M46_CANDIDATE_NEXT_KERNEL_LAYER/ION_VNEXT/02_kernel/ion_core/tests/control/test_kernel_ion_promotion_plan_core.py",
+      "target": "ION_VNEXT/02_kernel/ion_core/tests/control/test_kernel_ion_promotion_plan_core.py"
+    }
+  ]
+}

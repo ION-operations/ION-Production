@@ -51,6 +51,10 @@ controls:
     source_module: 02_kernel/ion_core/src/kernel/ion_source_pool_audit_core.py
     purpose: "Classify declared source pools and promotion decisions without filesystem scanning, source-pool copying, or runtime/current-state coupling."
     required_before: ["source_pool_promotion_review", "product_carrier_pool_audit", "reference_archive_private_boundary_review"]
+  promotion_plan_core:
+    source_module: 02_kernel/ion_core/src/kernel/ion_promotion_plan_core.py
+    purpose: "Build, validate, classify, and hash typed promotion plans without file copy/move/delete, git operations, source-pool scanning, or runtime/current-state coupling."
+    required_before: ["curated_source_promotion", "source_pool_copy_packet", "promotion_rollback_review"]
 test_roots:
   - 02_kernel/ion_core/tests/control
 blocked_from_this_wave:

@@ -1,0 +1,34 @@
+schema_id: ion.vnext.promotion_wave.v1
+wave_id: M47_PROMOTE_VNEXT_PROMOTION_PLAN_CORE_NO_RUNTIME
+status: landed_with_receipt
+approval_phrase: APPROVE_M47_PROMOTE_VNEXT_PROMOTION_PLAN_CORE_NO_RUNTIME
+landed_layer:
+  id: promotion_plan_core
+  purpose: Build typed promotion plans connecting source-pool audit decisions to future curated copy actions without performing file IO.
+source_evidence:
+  selection_packet: ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_046_KERNEL_LAYER_SELECTION_20260521T011154Z
+  previous_receipt: ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_045_SOURCE_POOL_AUDIT_CORE_LANDING_20260521T002942Z/ION_VNEXT_M45_SOURCE_POOL_AUDIT_CORE_RECEIPT.json
+promoted_files:
+  - path: ION_VNEXT/02_kernel/ion_core/src/kernel/ion_promotion_plan_core.py
+    sha256: 2877c77b10b1263261f64e5e2fd627ed8334c0074e96772de1ee1ff9867f7665
+  - path: ION_VNEXT/02_kernel/ion_core/tests/control/test_kernel_ion_promotion_plan_core.py
+    sha256: 1f960e7de9674e04f52ead3e6ded183d920b990aa37942d80a5d69ed05ec65b3
+canon_updates:
+  - ION_VNEXT/01_canon/CONTROL_SURFACE_REGISTRY.yaml
+  - ION_VNEXT/01_canon/PROMOTION_WAVE_M47.yaml
+non_actions:
+  - no legacy profile/manifest/export/runtime modules promoted
+  - no source-pool scanning
+  - no source-pool migration
+  - no file copy/move/delete behavior introduced by core module
+  - no git operations introduced by core module
+  - no runtime/current-state JSON copied
+  - no queues or ledgers copied
+  - no ACTIVE defaults introduced
+  - no private material copied
+  - no source-pool bulk copy
+authority:
+  accepted_state_claim: false
+  production_authority: false
+  live_execution_authority: false
+  secrets_authority: false
