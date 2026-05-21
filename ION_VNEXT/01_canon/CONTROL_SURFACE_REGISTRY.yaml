@@ -47,6 +47,10 @@ controls:
     source_module: 02_kernel/ion_core/src/kernel/ion_context_package_core.py
     purpose: "Build, validate, classify, and hash bounded context-package records without runtime/current-state coupling."
     required_before: ["domain_context_binding", "context_package_review", "next_context_compiler_input"]
+  source_pool_audit_core:
+    source_module: 02_kernel/ion_core/src/kernel/ion_source_pool_audit_core.py
+    purpose: "Classify declared source pools and promotion decisions without filesystem scanning, source-pool copying, or runtime/current-state coupling."
+    required_before: ["source_pool_promotion_review", "product_carrier_pool_audit", "reference_archive_private_boundary_review"]
 test_roots:
   - 02_kernel/ion_core/tests/control
 blocked_from_this_wave:

@@ -1,0 +1,25 @@
+{
+  "schema_id": "ion.organization.m45.source_to_target_manifest.v1",
+  "created_at_utc": "2026-05-21T00:29:42Z",
+  "m44_package": "ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_044_KERNEL_LAYER_SELECTION_20260521T000834Z",
+  "m44_decision": "READY_FOR_M45_SMALL_KERNEL_LAYER_REVIEW",
+  "m44_validation": "PASS_M44_PLAN_AND_CANDIDATE_VALIDATED",
+  "mappings": [
+    {
+      "source": "ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_044_KERNEL_LAYER_SELECTION_20260521T000834Z/M44_CANDIDATE_NEXT_KERNEL_LAYER/ION_VNEXT/02_kernel/ion_core/src/kernel/ion_source_pool_audit_core.py",
+      "target": "ION_VNEXT/02_kernel/ion_core/src/kernel/ion_source_pool_audit_core.py",
+      "sha256": "947c7583a527942e89322b7392b3adb12a961d77f102e96a99587a25129b2fd0",
+      "target_existed_before_landing": false
+    },
+    {
+      "source": "ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_044_KERNEL_LAYER_SELECTION_20260521T000834Z/M44_CANDIDATE_NEXT_KERNEL_LAYER/ION_VNEXT/02_kernel/ion_core/tests/control/test_kernel_ion_source_pool_audit_core.py",
+      "target": "ION_VNEXT/02_kernel/ion_core/tests/control/test_kernel_ion_source_pool_audit_core.py",
+      "sha256": "18c169e2b3f8a150d66fc74210839a46c6ac087c57b8d9675279ffffddef53a2",
+      "target_existed_before_landing": false
+    }
+  ],
+  "canon_updates": [
+    "ION_VNEXT/01_canon/CONTROL_SURFACE_REGISTRY.yaml",
+    "ION_VNEXT/01_canon/PROMOTION_WAVE_M45.yaml"
+  ]
+}

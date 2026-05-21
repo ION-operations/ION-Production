@@ -1,0 +1,73 @@
+{
+  "schema_id": "ion.organization.m45.validation_report.v1",
+  "created_at_utc": "2026-05-21T00:29:42Z",
+  "overall_verdict": "PASS_READY_FOR_BOUNDED_COMMIT",
+  "checks": [
+    {
+      "name": "m44_decision",
+      "status": "PASS",
+      "observed": "READY_FOR_M45_SMALL_KERNEL_LAYER_REVIEW"
+    },
+    {
+      "name": "m44_candidate_hashes",
+      "status": "PASS",
+      "observed": "both candidate hashes matched expected M44 values"
+    },
+    {
+      "name": "target_absence_before_landing",
+      "status": "PASS",
+      "observed": "source-pool audit core module and test were absent before landing"
+    },
+    {
+      "name": "vnext_pytest",
+      "status": "PASS",
+      "command": "cd ION_VNEXT/02_kernel/ion_core && PYTHONDONTWRITEBYTECODE=1 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 python3 -m pytest -p no:cacheprovider",
+      "observed": "80 passed in 0.19s"
+    },
+    {
+      "name": "python_yaml_toml_parse",
+      "status": "PASS",
+      "observed": "M45_PRE_REPORT_PARSE_PASS"
+    },
+    {
+      "name": "json_parse",
+      "status": "PASS",
+      "observed": "M45_PARSE_PASS"
+    },
+    {
+      "name": "no_runtime_current_state_json",
+      "status": "PASS",
+      "observed": "no runtime/current-state JSON copied"
+    },
+    {
+      "name": "no_queues_or_ledgers",
+      "status": "PASS",
+      "observed": "no queue or ledger files copied"
+    },
+    {
+      "name": "no_active_defaults",
+      "status": "PASS",
+      "observed": "no ACTIVE_* defaults introduced"
+    },
+    {
+      "name": "no_filesystem_scanning_side_effects",
+      "status": "PASS",
+      "observed": "candidate module has no Path/open/read/write/rglob/iterdir/os filesystem operations"
+    },
+    {
+      "name": "no_private_secret_cache_git_paths",
+      "status": "PASS",
+      "observed": "no private, secret, cache, or git artifacts copied or staged"
+    },
+    {
+      "name": "no_source_pool_bulk_copy",
+      "status": "PASS",
+      "observed": "only the two approved candidate files were copied from the M44 report package"
+    },
+    {
+      "name": "git_diff_check",
+      "status": "PASS",
+      "observed": "git diff --check scoped to M45 paths returned no output"
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "schema_id": "ion.organization.m45.source_pool_audit_core_landing_receipt.v1",
+  "created_at_utc": "2026-05-21T00:29:42Z",
+  "workspace_root": "/home/sev/ION - Production",
+  "approval_phrase": "APPROVE_M45_PROMOTE_VNEXT_SOURCE_POOL_AUDIT_CORE_NO_RUNTIME",
+  "approval_phrase_confirmed": true,
+  "m44_package": "ION_Developement/ION/05_context/current/reports/ION_ORGANIZATION_MILESTONE_044_KERNEL_LAYER_SELECTION_20260521T000834Z",
+  "m44_decision": "READY_FOR_M45_SMALL_KERNEL_LAYER_REVIEW",
+  "m44_validation": "PASS_M44_PLAN_AND_CANDIDATE_VALIDATED",
+  "landing_area": "ION_VNEXT/02_kernel/ion_core",
+  "applied": true,
+  "applied_files": [
+    "ION_VNEXT/02_kernel/ion_core/src/kernel/ion_source_pool_audit_core.py",
+    "ION_VNEXT/02_kernel/ion_core/tests/control/test_kernel_ion_source_pool_audit_core.py",
+    "ION_VNEXT/01_canon/CONTROL_SURFACE_REGISTRY.yaml",
+    "ION_VNEXT/01_canon/PROMOTION_WAVE_M45.yaml"
+  ],
+  "validation_verdict": "PASS_READY_FOR_BOUNDED_COMMIT",
+  "commit_expected": true,
+  "commit_message": "R0032: Promote ION_VNEXT source-pool audit core layer",
+  "authority": {
+    "accepted_state_claim": false,
+    "production_authority": false,
+    "live_execution_authority": false,
+    "secrets_authority": false
+  },
+  "non_actions": [
+    "no legacy scanner promotion",
+    "no filesystem source-pool scanner promotion",
+    "no package/profile handling promotion",
+    "no receipt hydration/indexing promotion",
+    "no clean export/status surface promotion",
+    "no GPT Builder schema promotion",
+    "no Actions/MCP wrapper promotion",
+    "no browser execution promotion",
+    "no runtime/current-state JSON copy",
+    "no queue or ledger copy",
+    "no ACTIVE defaults",
+    "no private/vault/session material",
+    "no source-pool migration",
+    "no source-pool bulk copy",
+    "no legacy root shim modification by M45",
+    "no Needs_Routed evidence package staged"
+  ]
+}
