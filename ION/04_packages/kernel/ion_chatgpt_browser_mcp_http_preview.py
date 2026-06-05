@@ -45,6 +45,7 @@ from .ion_browser_gpt_screen_automation import (
     learn_screen_automation_state,
 )
 from .ion_automation_control_plane import execute_automation_action
+from .ion_build_workspace_model import build_build_workspace_model
 from .ion_cockpit_service_manager import restart_service
 from .ion_codex_conversation_archive import attach_codex_conversation_to_chat, build_codex_conversation_archive
 from .ion_codex_context_timeline import build_codex_context_timeline_model
@@ -4000,6 +4001,28 @@ try {
                 self._send_public_cockpit_blocked(str(finding), next_path="/cockpit/system/model.json")
                 return
             self._send_json(200, build_system_diagnostics_model(self.server.ion_root))  # type: ignore[attr-defined]
+            return
+        if path == "/cockpit/build/workspace.json":
+            ok, finding, _token = self._check_public_cockpit_access()
+            if not ok:
+                self._send_public_cockpit_blocked(str(finding), next_path=path)
+                return
+            query = parse_qs(urlparse(self.path).query)
+            project_id = str((query.get("project_id") or ["ion_dev"])[-1] or "ion_dev")
+            probe_preview = str((query.get("probe_preview") or [""])[-1]).lower() in {"1", "true", "yes"}
+            try:
+                max_items = int((query.get("max_items") or ["8"])[-1] or 8)
+            except (TypeError, ValueError):
+                max_items = 8
+            self._send_json(
+                200,
+                build_build_workspace_model(
+                    self.server.ion_root,  # type: ignore[attr-defined]
+                    project_id=project_id,
+                    probe_preview=probe_preview,
+                    max_items=max_items,
+                ),
+            )
             return
         if path in {
             "/cockpit/codex/model.json",

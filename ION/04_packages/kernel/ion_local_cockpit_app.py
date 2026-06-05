@@ -43,6 +43,7 @@ from .ion_agent_comms_audit_actions import audit_agent_comms_run, maybe_audit_ag
 from .ion_agent_spawn_templates import execute_agent_spawn_template
 from .ion_steward_dispatcher import pause_steward_dispatcher, route_steward_dispatcher, run_steward_dispatcher_runner, tick_steward_dispatcher
 from .ion_automation_control_plane import execute_automation_action
+from .ion_build_workspace_model import build_build_workspace_model
 from .ion_cockpit_view_model import build_cockpit_surface_view_model, build_cockpit_view_model
 from .ion_cockpit_service_manager import RESTART_CONFIRMATION, build_service_console_model, restart_service
 from .ion_codex_conversation_archive import attach_codex_conversation_to_chat, build_codex_conversation_archive
@@ -1008,6 +1009,16 @@ def make_handler(root: Path) -> type[BaseHTTPRequestHandler]:
                 return
             if path in {"/model.json", "/cockpit/model.json"}:
                 self._send_json(200, build_cockpit_view_model(root))
+                return
+            if path == "/cockpit/build/workspace.json":
+                query = parse_qs(parsed_url.query)
+                project_id = str((query.get("project_id") or ["ion_dev"])[-1] or "ion_dev")
+                probe_preview = str((query.get("probe_preview") or [""])[-1]).lower() in {"1", "true", "yes"}
+                max_items = _payload_int({"max_items": (query.get("max_items") or ["8"])[-1]}, "max_items", 8)
+                self._send_json(
+                    200,
+                    build_build_workspace_model(root, project_id=project_id, probe_preview=probe_preview, max_items=max_items),
+                )
                 return
             if path in {
                 "/cockpit/codex/model.json",

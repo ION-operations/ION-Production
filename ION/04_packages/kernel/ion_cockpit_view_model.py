@@ -4597,6 +4597,7 @@ def build_cockpit_surface_view_model(ion_root: str | Path = ".", *, surface: str
                 "blocked": blocked,
                 "audit_findings": findings,
             },
+            "build_workspace_route": "/cockpit/build/workspace.json",
             "top_bar": top_bar,
             "joc_comms": {"schema_id": "ion.joc_comms_projection.v1", "summary": {}, "channels": [], "messages": []},
             "queues": {"operator_messages": [], "carrier_messages": [], "human_gates": gates, "steward_integration": []},
