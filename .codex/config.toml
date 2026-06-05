@@ -1,26 +1,96 @@
-# Parent-scope Codex config for the ION production workspace.
+# Project-scoped Codex config for the active ION root only.
 # Do not store secrets here.
 
+sandbox_mode = "workspace-write"
+approval_policy = "on-request"
 developer_instructions = """
-ION parent-scope Codex carrier guidance:
-- This config covers chats launched from /home/sev/ION - Production.
-- The active ION root is /home/sev/ION - Production/ION_Developement.
-- Before substantive ION work, use the active root as authority and confirm pyproject.toml and ION/REPO_AUTHORITY.md are siblings there.
-- Use ION/05_context/current/codex_solo/HOT_CONTEXT.md as the natural boot context for the standalone Codex lane.
-- Capsule is minimum working context; Mini is a lookup/receipt index only.
+ION project-scoped Codex carrier guidance:
+- This config applies only to /home/sev/ION - Production/ION_Developement.
+- Before substantive ION work, confirm the shell root contains pyproject.toml and ION/REPO_AUTHORITY.md.
+- Treat ION/REPO_AUTHORITY.md, ION/02_architecture/ION_MOUNT_CONTRACT.md, carrier profiles, carrier templates, and active packets as authority.
+- Do not treat ION/05_context/current/codex_solo as a unique working capsule. It is a shared lead/fallback witness only.
+- For material domain/core work, start Codex from a generated folder-local mount under ION/05_context/current/codex_agent_mounts/<mount_id> or from an explicit context starter capsule.
+- Folder-local .ion/ION_CONTEXT_CAPSULE.yaml and .ion/ACTIVE_CONTEXT_PACKAGE.md are the working context for mounted agent/domain lanes.
 - Do not create or use old /home/sev/ION - Production/ION_CODEX or ION_CODEX FULL roots without explicit operator approval.
-- Do not claim ION identity, STEWARD authority, RELAY authority, PERSONA authority, production authority, live execution authority, or secrets authority.
-- If automatic capsule context is unavailable, inspect /home/sev/.codex/history.jsonl, /home/sev/.codex/session_index.jsonl, latest matching /home/sev/.codex/sessions file, and the current codex_solo HOT_CONTEXT/MINI/CAPSULE/STATUS files before asking the operator to repeat context.
+- Operate as the mounted ION Codex carrier for the active root; STEWARD/RELAY/PERSONA, production, live execution, accepted-state, and secrets authority remain explicitly gated.
+- After material work, write receipts to the folder-local .ion/receipts lane first. Shared codex_solo fan-in requires an explicit lead settlement receipt and confirmation token ION_BOUNDED_WRITE_CONFIRMED.
 """
 
 [features]
 hooks = true
+multi_agent = true
+
+[agents]
+max_threads = 10
+max_depth = 2
+
+[sandbox_workspace_write]
+network_access = false
+writable_roots = [
+  ".",
+  "ION/05_context/current/codex_cli",
+  "ION/05_context/current/codex_agent_mounts",
+  "ION/05_context/current/action_gateway",
+]
+
+[mcp_servers.ion_local]
+enabled = true
+required = false
+command = "python3"
+args = ["-S", "-m", "kernel.ion_mcp_local_bridge", "--ion-root", ".", "--stdio"]
+cwd = "."
+startup_timeout_sec = 10
+tool_timeout_sec = 60
+enabled_tools = [
+  "ion.status",
+  "ion.boot_packet",
+  "ion.horizon.current",
+  "ion.receipts.list",
+  "ion.tools.list",
+]
+env = { PYTHONPATH = "ION/04_packages", PYTHONDONTWRITEBYTECODE = "1" }
 
 [[hooks.SessionStart]]
 matcher = "startup|resume"
 
 [[hooks.SessionStart.hooks]]
 type = "command"
-command = 'python3 "/home/sev/ION - Production/.codex/hooks/ion_parent_session_start_context.py"'
+command = 'python3 "/home/sev/ION - Production/ION_Developement/.codex/hooks/ion_session_start_context.py"'
 timeout = 10
-statusMessage = "Loading ION parent capsule bridge"
+statusMessage = "Loading ION Codex context boundary"
+
+[[hooks.UserPromptSubmit]]
+matcher = ".*"
+
+[[hooks.UserPromptSubmit.hooks]]
+type = "command"
+command = 'python3 "/home/sev/ION - Production/ION_Developement/.codex/hooks/ion_user_prompt_submit.py"'
+timeout = 10
+statusMessage = "Syncing ION prompt route"
+
+[[hooks.PreCompact]]
+matcher = "manual|auto"
+
+[[hooks.PreCompact.hooks]]
+type = "command"
+command = 'python3 "/home/sev/ION - Production/ION_Developement/.codex/hooks/ion_precompact.py"'
+timeout = 10
+statusMessage = "Checkpointing ION context baton"
+
+[[hooks.PostCompact]]
+matcher = "manual|auto"
+
+[[hooks.PostCompact.hooks]]
+type = "command"
+command = 'python3 "/home/sev/ION - Production/ION_Developement/.codex/hooks/ion_postcompact.py"'
+timeout = 10
+statusMessage = "Verifying ION compact baton"
+
+[[hooks.Stop]]
+matcher = ".*"
+
+[[hooks.Stop.hooks]]
+type = "command"
+command = 'python3 "/home/sev/ION - Production/ION_Developement/.codex/hooks/ion_stop.py"'
+timeout = 10
+statusMessage = "Recording ION turn receipt"
