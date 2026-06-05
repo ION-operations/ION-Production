@@ -1,0 +1,635 @@
+schema_id: ion.skill_registry.v1
+status: ACTIVE_PROVISIONAL
+authority_scope: A3_OPERATIONAL_SKILL_ACTIVATION
+protocol: ION/02_architecture/ION_SKILL_ACTIVATION_PROTOCOL.md
+production_authority: false
+live_execution_authority: false
+secrets_authority: false
+principle: "Skills activate workflows; templates govern proof."
+default_context_mount:
+  required_packages:
+    - minimum_working_capsule
+    - mini_lookup_index
+    - active_authority_package
+    - mission_active_package
+  route_deeper_packages:
+    - route_depth_package
+    - evidence_receipt_package
+    - recovery_package
+global_proof_contract:
+  context_proof_required: true
+  template_action_proof_required_for_mutation: true
+  receipt_required_for_material_work: true
+  state_acceptance_requires_steward_or_human_gate: true
+skills:
+  - skill_id: codex-chat-answer
+    display_name: Codex Chat Answer
+    class: user_visible
+    purpose: "Answer normal operator chat using Capsule context without queuing Codex work."
+    trigger_summary: "Default for respond-only Codex chat."
+    selection_priority: 40
+    model_stage_id: persona_response
+    preferred_model: gpt-5.5
+    default_reasoning_effort: medium
+    activates_templates:
+      - ION/07_templates/context/ION_CONTEXT_LOAD_PROOF.md
+    template_bindings: []
+    context_mount:
+      required_packages:
+        - minimum_working_capsule
+        - mini_lookup_index
+        - mission_active_package
+      route_deeper_packages:
+        - active_authority_package
+        - route_depth_package
+    allowed_authority:
+      read_context: true
+      queue_work: false
+      write_files: false
+      production_authority: false
+      live_execution_authority: false
+      secrets_authority: false
+    proof_contract:
+      context_proof_required: true
+      template_action_proof_required: false
+      receipt_required: false
+    ui:
+      label: Chat
+      drawer_visible: true
+      user_chore: false
+  - skill_id: codex-solo-work
+    display_name: Codex Work
+    class: user_visible
+    purpose: "Queue or execute bounded Codex CLI work from the Capsule-backed Codex chat."
+    trigger_summary: "Selected when the operator chooses Run task or asks for implementation/verification work."
+    selection_priority: 80
+    model_stage_id: mason_codex_work
+    preferred_model: gpt-5.3-codex
+    default_reasoning_effort: medium
+    activates_templates:
+      - ION/07_templates/context/ION_CONTEXT_LOAD_PROOF.md
+      - ION/07_templates/carriers/CODEX_CLI_EXECUTION_PACKET.md
+      - ION/07_templates/bindings/MASON__CODE.md
+      - ION/07_templates/actions/FULL_CARRIER_ACTION_RECEIPT.md
+    template_bindings:
+      - ION/07_templates/bindings/MASON__CODE.md
+    context_mount:
+      required_packages:
+        - minimum_working_capsule
+        - mini_lookup_index
+        - active_authority_package
+        - mission_active_package
+      route_deeper_packages:
+        - route_depth_package
+        - evidence_receipt_package
+    allowed_authority:
+      read_context: true
+      queue_work: true
+      write_files: bounded_scoped_only
+      production_authority: false
+      live_execution_authority: false
+      secrets_authority: false
+    proof_contract:
+      context_proof_required: true
+      template_action_proof_required: true
+      receipt_required: true
+    ui:
+      label: Work
+      drawer_visible: true
+      user_chore: false
+  - skill_id: codex-recovery
+    display_name: Recovery
+    class: user_visible
+    purpose: "Stop drift, verify active root, inspect evidence, and repair confusing or failed Codex/ION state."
+    trigger_summary: "Selected for wrong-root risk, UI drift, failed chat behavior, or operator confusion/anger."
+    selection_priority: 100
+    model_stage_id: steward_route
+    preferred_model: gpt-5.5
+    default_reasoning_effort: high
+    activates_templates:
+      - ION/07_templates/context/ION_CONTEXT_LOAD_PROOF.md
+      - ION/07_templates/bindings/VESTIGE__EVIDENCE.md
+      - ION/07_templates/reports/AUDIT.md
+    template_bindings:
+      - ION/07_templates/bindings/VESTIGE__EVIDENCE.md
+      - ION/07_templates/bindings/NEMESIS__AUDIT.md
+    context_mount:
+      required_packages:
+        - minimum_working_capsule
+        - active_authority_package
+        - recovery_package
+      route_deeper_packages:
+        - route_depth_package
+        - evidence_receipt_package
+    allowed_authority:
+      read_context: true
+      queue_work: false
+      write_files: repair_only_after_plan_or_explicit_approval
+      production_authority: false
+      live_execution_authority: false
+      secrets_authority: false
+    proof_contract:
+      context_proof_required: true
+      template_action_proof_required: true
+      receipt_required: true
+    ui:
+      label: Recover
+      drawer_visible: true
+      user_chore: false
+  - skill_id: ion-full-workflow-handoff
+    display_name: ION Handoff
+    class: bridge
+    purpose: "Project a user request into the existing full ION Relay/Steward/role workflow without creating a second queue."
+    trigger_summary: "Selected for ION lane messages and full workflow handoffs."
+    selection_priority: 70
+    model_stage_id: relay_ingress
+    preferred_model: gpt-5.3-codex-spark
+    default_reasoning_effort: low
+    activates_templates:
+      - ION/07_templates/bindings/RELAY__HANDOFF.md
+      - ION/07_templates/bindings/STEWARD__TASK.md
+      - ION/07_templates/context/ION_CONTEXT_LOAD_PROOF.md
+    template_bindings:
+      - ION/07_templates/bindings/RELAY__HANDOFF.md
+      - ION/07_templates/bindings/STEWARD__TASK.md
+    context_mount:
+      required_packages:
+        - active_authority_package
+        - mission_active_package
+      route_deeper_packages:
+        - route_depth_package
+        - evidence_receipt_package
+    allowed_authority:
+      read_context: true
+      queue_work: bounded_existing_queue_only
+      write_files: false
+      production_authority: false
+      live_execution_authority: false
+      secrets_authority: false
+    proof_contract:
+      context_proof_required: true
+      template_action_proof_required: true
+      receipt_required: true
+    ui:
+      label: ION Handoff
+      drawer_visible: true
+      user_chore: false
+  - skill_id: template-curation
+    display_name: Template Curation
+    class: specialist
+    purpose: "Create, revise, or audit ION skills, templates, bindings, and proof contracts."
+    trigger_summary: "Selected when the operator asks about skills, templates, bindings, or governance surfaces."
+    selection_priority: 90
+    model_stage_id: vizier_plan
+    preferred_model: gpt-5.5
+    default_reasoning_effort: high
+    activates_templates:
+      - ION/07_templates/actions/TEMPLATE_DEVELOPMENT.md
+      - ION/07_templates/actions/TEMPLATE_SURFACE_CHANGE.md
+      - ION/07_templates/context/ION_CONTEXT_LOAD_PROOF.md
+    template_bindings:
+      - ION/07_templates/bindings/STEWARD__TEMPLATE_SURFACE_CHANGE.md
+    context_mount:
+      required_packages:
+        - active_authority_package
+        - mission_active_package
+      route_deeper_packages:
+        - route_depth_package
+        - evidence_receipt_package
+    allowed_authority:
+      read_context: true
+      queue_work: false
+      write_files: scoped_governance_surfaces_only
+      production_authority: false
+      live_execution_authority: false
+      secrets_authority: false
+    proof_contract:
+      context_proof_required: true
+      template_action_proof_required: true
+      receipt_required: true
+    ui:
+      label: Templates
+      drawer_visible: true
+      user_chore: false
+  - skill_id: ui-frontend-excellence
+    display_name: UI Frontend Excellence
+    class: specialist
+    purpose: "Route JOC/ION/Codex Chat/dAimon frontend work through the UI specialist domain before implementation, preventing monolithic cockpit/dashboard drift."
+    trigger_summary: "Selected for JOC UI, cockpit shell, drawers, rails, inspector, bottom timeline, Codex Chat UI, extension UI, dAimon companion, visual proof, or monolith complaints."
+    selection_priority: 110
+    model_stage_id: frontend_work_surface_architect
+    preferred_model: gpt-5.5
+    default_reasoning_effort: high
+    activates_templates:
+      - ION/05_context/current/ai_assistant_work/template_specs/joc_work_surface_ui_packet.template_spec.yaml
+      - ION/07_templates/context/ION_CONTEXT_LOAD_PROOF.md
+      - ION/07_templates/actions/FULL_CARRIER_ACTION_RECEIPT.md
+      - ION/07_templates/reports/AUDIT.md
+    template_bindings:
+      - ION/05_context/current/ai_assistant_work/template_specs/joc_work_surface_ui_packet.template_spec.yaml
+      - ION/07_templates/bindings/VESTIGE__EVIDENCE.md
+      - ION/07_templates/bindings/NEMESIS__AUDIT.md
+    context_mount:
+      required_packages:
+        - minimum_working_capsule
+        - mini_lookup_index
+        - active_authority_package
+        - mission_active_package
+        - ui_frontend_excellence_package
+      route_deeper_packages:
+        - route_depth_package
+        - evidence_receipt_package
+        - recovery_package
+        - helixion_joc_orchestration_package
+    allowed_authority:
+      read_context: true
+      queue_work: false
+      write_files: scoped_ui_protocol_receipts_and_explicitly_approved_ui_surfaces_only
+      production_authority: false
+      live_execution_authority: false
+      secrets_authority: false
+    proof_contract:
+      context_proof_required: true
+      template_action_proof_required: true
+      receipt_required: true
+      visual_proof_required_before_acceptance: true
+      non_monolith_shell_required: true
+    ui:
+      label: UI Canon
+      drawer_visible: true
+      user_chore: false
+  - skill_id: helixion-joc-orchestration
+    display_name: Helixion JOC Orchestration
+    class: specialist
+    purpose: "Orchestrate the Helixion/JOC rebuild across ION, dAimon, WisdomNET, Codex Chat, browser extension, Custom GPT Actions, queues, receipts, context packages, and cockpit surfaces."
+    trigger_summary: "Selected for Helixion app rebuild, JOC/ION cockpit planning, dAimon extension orchestration, WisdomNET planning, browser-carrier queue architecture, and context package assembly for this rebuild."
+    selection_priority: 95
+    model_stage_id: vizier_plan
+    preferred_model: gpt-5.5
+    default_reasoning_effort: high
+    activates_templates:
+      - ION/07_templates/context/ION_CONTEXT_LOAD_PROOF.md
+      - ION/07_templates/actions/TEMPLATE_DEVELOPMENT.md
+      - ION/07_templates/actions/FULL_CARRIER_ACTION_RECEIPT.md
+      - ION/07_templates/reports/AUDIT.md
+    template_bindings:
+      - ION/07_templates/bindings/STEWARD__TEMPLATE_SURFACE_CHANGE.md
+      - ION/07_templates/bindings/VESTIGE__EVIDENCE.md
+      - ION/07_templates/bindings/NEMESIS__AUDIT.md
+    context_mount:
+      required_packages:
+        - minimum_working_capsule
+        - mini_lookup_index
+        - active_authority_package
+        - mission_active_package
+        - helixion_joc_orchestration_package
+      route_deeper_packages:
+        - route_depth_package
+        - evidence_receipt_package
+        - recovery_package
+    allowed_authority:
+      read_context: true
+      queue_work: bounded_existing_queue_only
+      write_files: scoped_planning_and_requested_rebuild_surfaces_only
+      production_authority: false
+      live_execution_authority: false
+      secrets_authority: false
+    proof_contract:
+      context_proof_required: true
+      template_action_proof_required: true
+      receipt_required: true
+    ui:
+      label: Helixion
+      drawer_visible: true
+      user_chore: false
+  - skill_id: ion-orchestration
+    display_name: ION Orchestration
+    class: codex_native
+    purpose: "Map operator intent into ION context load, situation route, domain/package selection, template gate, receipt posture, and next-packet shape."
+    trigger_summary: "Selected for ION GPT handoffs, carrier feature mapping, packet routing, context/receipt orchestration, and cross-surface continuity planning."
+    selection_priority: 120
+    model_stage_id: steward_route
+    preferred_model: gpt-5.5
+    default_reasoning_effort: high
+    ion_ops:
+      - context_load
+      - situation_route
+      - receipt_preservation
+      - next_packet_compile
+    activates_templates:
+      - ION/07_templates/context/ION_CONTEXT_LOAD_PROOF.md
+      - ION/07_templates/actions/TASK.md
+      - ION/07_templates/actions/FULL_CARRIER_ACTION_RECEIPT.md
+    template_bindings:
+      - ION/07_templates/bindings/STEWARD__TASK.md
+      - ION/07_templates/bindings/RELAY__HANDOFF.md
+    context_mount:
+      required_packages:
+        - minimum_working_capsule
+        - mini_lookup_index
+        - active_authority_package
+        - mission_active_package
+      route_deeper_packages:
+        - route_depth_package
+        - evidence_receipt_package
+        - helixion_joc_orchestration_package
+    allowed_authority:
+      read_context: true
+      queue_work: bounded_existing_queue_only
+      write_files: scoped_protocol_packet_receipt_surfaces_only
+      production_authority: false
+      live_execution_authority: false
+      secrets_authority: false
+    proof_contract:
+      context_proof_required: true
+      template_action_proof_required: true
+      receipt_required: true
+      memory_is_recall_not_authority: true
+    ui:
+      label: ION Route
+      drawer_visible: true
+      user_chore: false
+  - skill_id: ion-context-scout
+    display_name: ION Context Scout
+    class: codex_native
+    purpose: "Find and rank branch context, parent inheritance, local capsules, receipts, and evidence before a worker edits or routes deeper."
+    trigger_summary: "Selected for branch context, folder context, lazy materialization, route-deeper, context scouting, and evidence lookup."
+    selection_priority: 118
+    model_stage_id: context_cartographer
+    preferred_model: gpt-5.5
+    default_reasoning_effort: medium
+    ion_ops:
+      - context_load
+      - situation_route
+      - domain_capsule_update
+      - drift_repair
+    activates_templates:
+      - ION/07_templates/context/ION_CONTEXT_LOAD_PROOF.md
+      - ION/07_templates/context/ION_BRANCH_CONTEXT_CAPSULE_CANDIDATE.template.yaml
+      - ION/07_templates/context/ION_BRANCH_CONTEXT_MATERIALIZATION_RECEIPT.template.yaml
+    template_bindings:
+      - ION/07_templates/bindings/VESTIGE__EVIDENCE.md
+    context_mount:
+      required_packages:
+        - minimum_working_capsule
+        - active_authority_package
+        - route_depth_package
+      route_deeper_packages:
+        - evidence_receipt_package
+        - recovery_package
+    allowed_authority:
+      read_context: true
+      queue_work: false
+      write_files: candidate_branch_context_only_when_requested
+      production_authority: false
+      live_execution_authority: false
+      secrets_authority: false
+    proof_contract:
+      context_proof_required: true
+      template_action_proof_required: true
+      receipt_required: true
+      accepted_state_claim: false
+    ui:
+      label: Context Scout
+      drawer_visible: true
+      user_chore: false
+  - skill_id: ion-memory-curator
+    display_name: ION Memory Curator
+    class: codex_native
+    purpose: "Observe Codex native memory, classify contribution/generated lanes, propose ad-hoc memory notes, and reconcile carrier recall against ION truth."
+    trigger_summary: "Selected for Codex memory, MEMORY.md, memory_summary.md, raw_memories, ad-hoc notes, and memory reverse engineering."
+    selection_priority: 116
+    model_stage_id: context_cartographer
+    preferred_model: gpt-5.5
+    default_reasoning_effort: medium
+    ion_ops:
+      - context_load
+      - receipt_preservation
+      - drift_repair
+      - next_packet_compile
+    activates_templates:
+      - ION/02_architecture/CODEX_MEMORY_CURATOR_PROTOCOL.md
+      - ION/07_templates/codex_memory/ION_CODEX_AD_HOC_MEMORY_NOTE.template.md
+      - ION/07_templates/codex_memory/ION_CODEX_MEMORY_CURATOR_SNAPSHOT_RECEIPT.template.yaml
+    template_bindings:
+      - ION/07_templates/bindings/VESTIGE__EVIDENCE.md
+    context_mount:
+      required_packages:
+        - minimum_working_capsule
+        - active_authority_package
+        - evidence_receipt_package
+      route_deeper_packages:
+        - recovery_package
+    allowed_authority:
+      read_context: true
+      queue_work: false
+      write_files: ad_hoc_memory_contribution_lane_only_when_requested
+      production_authority: false
+      live_execution_authority: false
+      secrets_authority: false
+    proof_contract:
+      context_proof_required: true
+      template_action_proof_required: true
+      receipt_required: true
+      memory_is_recall_not_authority: true
+      generated_memory_observe_not_primary_edit: true
+    ui:
+      label: Memory
+      drawer_visible: true
+      user_chore: false
+  - skill_id: ion-workbench
+    display_name: ION Workbench
+    class: codex_native
+    purpose: "Use Project Workbench context/file-slice/patch-preview surfaces for bounded repo inspection, patch planning, preview capture, rollback posture, and receipt-backed work."
+    trigger_summary: "Selected for project workbench, file-slice reads, patch preview/apply planning, preview capture, git status, rollback, and bounded workbench diagnostics."
+    selection_priority: 114
+    model_stage_id: mason_codex_work
+    preferred_model: gpt-5.3-codex
+    default_reasoning_effort: medium
+    ion_ops:
+      - context_load
+      - bounded_execution
+      - receipt_preservation
+      - drift_repair
+    activates_templates:
+      - ION/07_templates/context/ION_CONTEXT_LOAD_PROOF.md
+      - ION/07_templates/actions/PATCH_PACKAGE.md
+      - ION/07_templates/actions/FULL_CARRIER_ACTION_RECEIPT.md
+    template_bindings:
+      - ION/07_templates/bindings/MASON__CODE.md
+      - ION/07_templates/bindings/VESTIGE__EVIDENCE.md
+    context_mount:
+      required_packages:
+        - minimum_working_capsule
+        - active_authority_package
+        - mission_active_package
+      route_deeper_packages:
+        - route_depth_package
+        - evidence_receipt_package
+    allowed_authority:
+      read_context: true
+      queue_work: bounded_existing_queue_only
+      write_files: bounded_patch_or_requested_repo_surfaces_only
+      production_authority: false
+      live_execution_authority: false
+      secrets_authority: false
+    proof_contract:
+      context_proof_required: true
+      template_action_proof_required: true
+      receipt_required: true
+      rollback_posture_required_for_patch_preview: true
+    ui:
+      label: Workbench
+      drawer_visible: true
+      user_chore: false
+  - skill_id: ion-hook-engineer
+    display_name: ION Hook Engineer
+    class: codex_native
+    purpose: "Design, audit, and safely evolve Codex hook wiring through the shared carrier-sync adapter, with quiet fail-soft lifecycle receipts."
+    trigger_summary: "Selected for SessionStart, UserPromptSubmit, PreCompact, PostCompact, Stop, PreToolUse/PostToolUse, hook receipts, and carrier sync lifecycle work."
+    selection_priority: 112
+    model_stage_id: carrier_sync_engineer
+    preferred_model: gpt-5.5
+    default_reasoning_effort: high
+    ion_ops:
+      - context_load
+      - situation_route
+      - receipt_preservation
+      - drift_repair
+      - next_packet_compile
+    activates_templates:
+      - ION/02_architecture/CODEX_CARRIER_LIMITS_CONTEXT_PROTOCOL.md
+      - ION/07_templates/context/ION_CONTEXT_LOAD_PROOF.md
+      - ION/07_templates/actions/FULL_CARRIER_ACTION_RECEIPT.md
+    template_bindings:
+      - ION/07_templates/bindings/VESTIGE__EVIDENCE.md
+      - ION/07_templates/bindings/NEMESIS__AUDIT.md
+    context_mount:
+      required_packages:
+        - minimum_working_capsule
+        - active_authority_package
+        - mission_active_package
+      route_deeper_packages:
+        - route_depth_package
+        - evidence_receipt_package
+        - recovery_package
+    allowed_authority:
+      read_context: true
+      queue_work: false
+      write_files: scoped_codex_hook_and_config_surfaces_only
+      production_authority: false
+      live_execution_authority: false
+      secrets_authority: false
+    proof_contract:
+      context_proof_required: true
+      template_action_proof_required: true
+      receipt_required: true
+      fail_soft_hook_behavior_required: true
+    ui:
+      label: Hooks
+      drawer_visible: true
+      user_chore: false
+  - skill_id: context-mount
+    display_name: Context Mount
+    class: internal_support
+    purpose: "Prove the active context package, Capsule, Mini, authority, and route-deeper map were loaded."
+    trigger_summary: "Used as a support skill before serious Codex or ION work."
+    selection_priority: 10
+    model_stage_id: relay_ingress
+    preferred_model: gpt-5.3-codex-spark
+    default_reasoning_effort: low
+    activates_templates:
+      - ION/07_templates/context/ION_CONTEXT_LOAD_PROOF.md
+    template_bindings: []
+    context_mount:
+      required_packages:
+        - minimum_working_capsule
+        - active_authority_package
+      route_deeper_packages:
+        - route_depth_package
+    allowed_authority:
+      read_context: true
+      queue_work: false
+      write_files: false
+      production_authority: false
+      live_execution_authority: false
+      secrets_authority: false
+    proof_contract:
+      context_proof_required: true
+      template_action_proof_required: false
+      receipt_required: false
+    ui:
+      label: Context
+      drawer_visible: true
+      user_chore: false
+  - skill_id: receipt-post
+    display_name: Receipt Post
+    class: internal_support
+    purpose: "Settle material Codex solo work into Capsule, Mini, HOT_CONTEXT, and history."
+    trigger_summary: "Used after material work or queue posting to preserve recoverable context."
+    selection_priority: 10
+    model_stage_id: relay_return
+    preferred_model: gpt-5.5
+    default_reasoning_effort: medium
+    activates_templates:
+      - ION/07_templates/actions/FULL_CARRIER_ACTION_RECEIPT.md
+      - ION/07_templates/context/ION_CONTEXT_DELTA_RECEIPT.md
+    template_bindings: []
+    context_mount:
+      required_packages:
+        - minimum_working_capsule
+        - mini_lookup_index
+      route_deeper_packages:
+        - evidence_receipt_package
+    allowed_authority:
+      read_context: true
+      queue_work: false
+      write_files: capsule_surfaces_only
+      production_authority: false
+      live_execution_authority: false
+      secrets_authority: false
+    proof_contract:
+      context_proof_required: true
+      template_action_proof_required: true
+      receipt_required: true
+    ui:
+      label: Receipt
+      drawer_visible: true
+      user_chore: false
+  - skill_id: agent-branch-capsule-governance
+    display_name: Agent Branch Capsule Governance
+    class: internal_support
+    purpose: "Create, validate, guard, reconcile, and settle candidate per-agent context branches."
+    trigger_summary: "Used before material multi-agent work so each agent carries unique branch identity and write scope."
+    selection_priority: 10
+    model_stage_id: relay_ingress
+    preferred_model: gpt-5.5
+    default_reasoning_effort: medium
+    activates_templates:
+      - ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_PROTOCOL_V0_1.md
+      - ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_MATERIAL_WORK_GUARD_PROTOCOL_V0_1.md
+      - ION/02_architecture/ION_AGENT_BRANCH_CAPSULE_SETTLEMENT_INTAKE_PROTOCOL_V0_1.md
+    template_bindings: []
+    context_mount:
+      required_packages:
+        - minimum_working_capsule
+        - active_authority_package
+      route_deeper_packages:
+        - evidence_receipt_package
+    allowed_authority:
+      read_context: true
+      queue_work: false
+      write_files: declared_branch_write_scope_only
+      production_authority: false
+      live_execution_authority: false
+      secrets_authority: false
+      accepted_state_authority: false
+    proof_contract:
+      context_proof_required: true
+      branch_identity_required: true
+      material_work_guard_required: true
+      receipt_required: true
+    ui:
+      label: Branch Capsule
+      drawer_visible: true
+      user_chore: false

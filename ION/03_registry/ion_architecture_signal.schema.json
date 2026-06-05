@@ -1,0 +1,192 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ion.architecture_signal.v0_1.schema.json",
+  "title": "ION Architecture Signal",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_id",
+    "signal_id",
+    "captured_at_utc",
+    "source",
+    "raw_summary",
+    "normalized_requirement",
+    "aliases",
+    "related_existing_protocols",
+    "product_version_target",
+    "status",
+    "continuity_export_required",
+    "tests_required",
+    "accepted_state_claim",
+    "route",
+    "continuity_export_refs",
+    "ordered_context_fanout"
+  ],
+  "properties": {
+    "schema_id": {
+      "const": "ion.architecture_signal.v0_1"
+    },
+    "signal_id": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^ARCHSIG-[A-Z0-9][A-Z0-9-]*$"
+    },
+    "captured_at_utc": {
+      "type": "string",
+      "pattern": "^20\\d{6}T\\d{6}Z$"
+    },
+    "source": {
+      "enum": [
+        "operator_chat",
+        "mounted_doc",
+        "codex_return",
+        "artifact"
+      ]
+    },
+    "raw_summary": {
+      "type": "string",
+      "minLength": 1
+    },
+    "normalized_requirement": {
+      "type": "string",
+      "minLength": 1
+    },
+    "aliases": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "related_existing_protocols": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "product_version_target": {
+      "type": "string",
+      "minLength": 1
+    },
+    "status": {
+      "enum": [
+        "candidate_unimplemented",
+        "candidate_implemented",
+        "deferred",
+        "rejected_with_reason"
+      ]
+    },
+    "continuity_export_required": {
+      "const": true
+    },
+    "tests_required": {
+      "const": true
+    },
+    "accepted_state_claim": {
+      "const": false
+    },
+    "route": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "route_id",
+        "target_protocol",
+        "route_reason",
+        "ordered_baton_required"
+      ],
+      "properties": {
+        "route_id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "target_protocol": {
+          "const": "ION_ORDERED_CONTEXT_FANOUT_V4_4"
+        },
+        "route_reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "ordered_baton_required": {
+          "const": true
+        }
+      }
+    },
+    "continuity_export_refs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "ordered_context_fanout": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "protocol_id",
+        "scope",
+        "section_order",
+        "upstream_reopen_alert_required",
+        "fan_in_settlement_input_required"
+      ],
+      "properties": {
+        "protocol_id": {
+          "const": "ION_ORDERED_CONTEXT_FANOUT_V4_4"
+        },
+        "scope": {
+          "enum": [
+            "ion_wide",
+            "custom_gpt_projection",
+            "codex_projection",
+            "browser_gpt_projection",
+            "project_workbench_projection"
+          ]
+        },
+        "section_order": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "agent",
+              "section",
+              "input_batons",
+              "output_baton"
+            ],
+            "properties": {
+              "agent": {
+                "type": "string",
+                "minLength": 1
+              },
+              "section": {
+                "type": "string",
+                "minLength": 1
+              },
+              "input_batons": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "output_baton": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        },
+        "upstream_reopen_alert_required": {
+          "const": true
+        },
+        "fan_in_settlement_input_required": {
+          "const": true
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,233 @@
+schema_id: ion.chatgpt_browser_mcp_tool_policy.v1
+version: V120_CHATGPT_BROWSER_MCP_CONNECTOR_AND_CORRECT_CARRIER_ONBOARDING
+connector_id: ION_CHATGPT_BROWSER_CONNECTOR
+host_family: chatgpt_browser
+authority_scope: BOUNDED_COORDINATOR_AND_CONTINUITY_LANE
+full_carrier_parity_extension: DRAFT_NON_PRODUCTION_STAGING
+transport_target: HTTPS_MCP_OR_CHATGPT_CUSTOM_CONNECTOR
+default_connector_state: CONTRACT_READY_NOT_DEPLOYED
+allowed_status_read_tools:
+  - ion_status
+  - ion_current_operating_packet
+  - ion_carrier_onboarding_packet
+  - ion_read_active_packet
+  - ion_context_plan
+  - ion_cockpit_view
+  - ion_artifact_manifest
+  - ion_receipt_search
+  - ion_git_status_summary
+  - ion_codex_work_queue
+  - ion_codex_queue_duplicate_audit
+  - ion_codex_queue_parallel_plan_preview
+  - ion_carrier_message_poll
+  - ion_file_read
+  - ion_file_search
+  - ion_tree_list
+  - ion_registry_read
+  - ion_template_read
+  - ion_context_compile
+  - ion_receipt_hydrate
+  - ion_tool_manifest
+  - ion_daemon_status
+  - ion_codex_queue_autorun_status
+  - ion_codex_worker_live_status
+  - ion_codex_worker_trace
+  - ion_agent_list
+  - ion_agent_status
+  - ion_agent_result
+  - ion_agent_queue
+  - ion_agent_spawn_plan
+  - ion_swarm_status
+  - ion_codex_capsule_chat_status
+  - ion_codex_capsule_message_poll
+  - ion_bounded_patch_preview
+  - ion_project_workspace_status
+  - ion_project_preview_status
+  - ion_project_git_status
+  - ion_project_workbench_timeline
+  - ion_project_context_capsule
+  - ion_project_file_read
+  - ion_project_file_slice_read
+  - ion_project_patch_preview
+  - ion_kernel_fanout_carrier_dryrun_status
+  - ion_action_branch_list
+  - ion_action_branch_describe
+  - ion_action_branch_receipts
+allowed_bounded_queue_receipt_tools:
+  - ion_queue_operator_message
+  - ion_request_codex_work_packet
+  - ion_submit_task_return
+  - ion_submit_alternate_worker_return
+  - ion_record_alternate_worker_provenance
+  - ion_record_native_subagent_transcript
+  - ion_record_chatgpt_decision
+  - ion_create_containment_receipt
+  - ion_file_put_text
+  - ion_bounded_patch_apply
+  - ion_artifact_upload_init
+  - ion_artifact_upload_chunk
+  - ion_artifact_upload_commit
+  - ion_carrier_message_send
+  - ion_carrier_message_ack
+  - ion_codex_queue_process_once
+  - ion_agent_invoke
+  - ion_agent_cancel
+  - ion_swarm_step_once
+  - ion_codex_runner_reconcile
+  - ion_codex_queue_supersede_duplicates
+  - ion_codex_capsule_message_send
+  - ion_codex_capsule_sync_to_queue
+  - ion_project_patch_apply
+  - ion_project_patch_revert
+  - ion_project_action_run
+  - ion_project_browser_capture
+  - ion_action_branch_invoke
+forbidden_tools:
+  - arbitrary_shell
+  - arbitrary_file_write
+  - direct_delete
+  - git_push
+  - credential_access
+  - browser_computer_control
+  - provider_api_calls
+  - unbounded_local_filesystem_access
+  - production_deployment
+  - direct_accept_unproofed_worker_output
+required_task_return_sections:
+  - "### CONTEXT PROOF"
+  - "### TEMPLATE ACTION PROOF"
+  - "### RESULT"
+bounded_write_roots:
+  - ION/05_context/current/ACTIVE_OPERATOR_MESSAGE_QUEUE.json
+  - ION/05_context/current/ACTIVE_CHATGPT_CONNECTOR_CODEX_WORK_QUEUE.json
+  - ION/05_context/current/ACTIVE_CARRIER_MESSAGE_QUEUE.json
+  - ION/05_context/current/ACTIVE_CARRIER_ONBOARDING_PACKET.json
+  - ION/05_context/current/ACTIVE_CARRIER_ONBOARDING_PACKET.chatgpt_browser.json
+  - ION/05_context/current/ACTIVE_CARRIER_ONBOARDING_PACKET.codex_cli.json
+  - ION/05_context/current/ACTIVE_CARRIER_ONBOARDING_PACKET.codex_extension.json
+  - ION/05_context/current/chatgpt_connector/
+  - ION/05_context/current/CHATGPT_BROWSER_MCP_CONNECTOR_CONTRACT_V120.json
+artifact_transfer_roots:
+  - ION/05_context/current/ACTIVE_CARRIER_ONBOARDING_PACKET.json
+  - ION/05_context/current/ACTIVE_CARRIER_ONBOARDING_PACKET.chatgpt_browser.json
+  - ION/05_context/current/ACTIVE_CARRIER_ONBOARDING_PACKET.codex_cli.json
+  - ION/05_context/current/ACTIVE_CARRIER_ONBOARDING_PACKET.codex_extension.json
+  - ION/05_context/current/chatgpt_connector/artifacts/
+  - ION/05_context/current/chatgpt_connector/context_packages/
+  - ION/05_context/current/chatgpt_connector/scripts/
+  - ION/05_context/current/gemini_cli_carrier/
+  - dAimon/gemini_cli/
+  - dAimon/ion_kernel/
+  - ION/01_doctrine/
+  - ION/02_architecture/
+  - ION/03_registry/
+  - ION/05_context/current/action_surface_cartography/
+  - ION/05_context/current/chatgpt_connector/
+  - ION/05_context/current/context_settlement/
+  - ION/05_context/inbox/
+  - ION/07_templates/
+  - ION/tests/
+  - ION/05_context/signals/
+  - ION_VNEXT/06_context/
+  - ION_VNEXT/07_work/
+  - ION_VNEXT/09_references/
+  - browser_extension/ion_chatops_bridge/examples/
+bounded_patch_roots:
+  - ION/05_context/current/ACTIVE_CARRIER_ONBOARDING_PACKET.json
+  - ION/05_context/current/ACTIVE_CARRIER_ONBOARDING_PACKET.chatgpt_browser.json
+  - ION/05_context/current/ACTIVE_CARRIER_ONBOARDING_PACKET.codex_cli.json
+  - ION/05_context/current/ACTIVE_CARRIER_ONBOARDING_PACKET.codex_extension.json
+  - .codex/
+  - docs/
+  - ION/01_doctrine/
+  - ION/02_architecture/
+  - ION/03_registry/
+  - ION/04_packages/kernel/
+  - ION/05_context/current/action_surface_cartography/
+  - ION/05_context/current/chatgpt_connector/
+  - ION/05_context/current/context_settlement/
+  - ION/05_context/inbox/
+  - ION/06_artifacts/
+  - ION/07_templates/
+  - ION/09_integrations/
+  - ION_VNEXT/06_context/
+  - ION_VNEXT/07_work/
+  - ION_VNEXT/09_references/
+  - ION/tests/
+  - dAimon/ion_kernel/
+  - browser_extension/ion_chatops_bridge/src/
+project_workbench:
+  default_project_id: cosmos
+  public_preview_allowed: true
+  mutation_requires_cockpit_auth: true
+  write_confirmation_required: true
+  allowed_project_tools:
+    - ion_project_workspace_status
+    - ion_project_preview_status
+    - ion_project_git_status
+    - ion_project_workbench_timeline
+    - ion_project_context_capsule
+    - ion_project_file_read
+    - ion_project_file_slice_read
+    - ion_project_patch_preview
+    - ion_project_patch_apply
+    - ion_project_patch_revert
+    - ion_project_action_run
+    - ion_project_browser_capture
+  first_project:
+    project_id: cosmos
+    preview_base_path: /projects/cosmos/preview/
+    preview_local_url: http://127.0.0.1:5173/
+first_full_carrier_tool_surfaces:
+  - ion_file_put_text
+  - ion_bounded_patch_preview
+  - ion_bounded_patch_apply
+  - ion_artifact_upload_init
+  - ion_artifact_upload_chunk
+  - ion_artifact_upload_commit
+  - ion_carrier_message_send
+  - ion_carrier_message_poll
+  - ion_carrier_message_ack
+next_visibility_tool_surfaces:
+  - ion_file_read
+  - ion_file_search
+  - ion_tree_list
+  - ion_registry_read
+  - ion_template_read
+  - ion_context_compile
+  - ion_receipt_hydrate
+  - ion_tool_manifest
+automation_tool_surfaces:
+  - ion_daemon_status
+  - ion_codex_queue_autorun_status
+  - ion_codex_worker_live_status
+  - ion_codex_worker_trace
+  - ion_codex_queue_process_once
+  - ion_codex_runner_reconcile
+capsule_chat_bridge_tool_surfaces:
+  - ion_codex_capsule_chat_status
+  - ion_codex_capsule_message_send
+  - ion_codex_capsule_message_poll
+  - ion_codex_capsule_sync_to_queue
+agent_invocation_broker_tool_surfaces:
+  - ion_agent_list
+  - ion_agent_status
+  - ion_agent_result
+  - ion_agent_queue
+  - ion_agent_spawn_plan
+  - ion_swarm_status
+  - ion_agent_invoke
+  - ion_agent_cancel
+  - ion_swarm_step_once
+staging_notes:
+  - "V120 bounded-management restrictions remain current safety guardrails only."
+  - "Full-carrier parity tools must distinguish CARRIER_ADAPTER_FAILURE from ION_CORE_FAILURE."
+  - "File/artifact transfer tools stage into ION custody roots and preserve no-silent-loss."
+  - "Codex queue automation must use fixed local carrier commands over queued work packets only; no arbitrary shell bridge."
+  - "Agent invocation broker tools must reuse the Codex work queue, task-return proof gates, carrier messages, agent roster, and context-system registries."
+  - "Raw Codex output must not become state without context proof and template action proof acceptance."
+must_state_mounted_ion_carrier_posture: true
+role_authority_requires_phase_proof: true
+production_authority: false
+live_execution_authority: false
+deployment_authority: false

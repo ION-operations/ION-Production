@@ -1,0 +1,39 @@
+schema_id: ion.custom_gpt_action_release_registry.v1
+status: candidate_domain_registry
+domain_id: CUSTOM_GPT_ACTION_RELEASE
+domain_type: human_admin_control_surface
+owner_role: action_release_steward
+primary_carrier: codex_cli
+human_surface: GPT Builder
+risk_class: high_trust_operator_surface
+default_authority: candidate_release_only
+accepted_state_authority: false
+settlement_required: true
+canonical_schema_path: ION_GPT/03_ACTIONS/ion-actions.helixion.net/SCHEMA_TO_PASTE.yaml
+gpt_builder_schema_targets:
+  - ION_GPT/03_ACTIONS/ion-actions.helixion.net/SCHEMA_TO_PASTE.yaml
+  - ION_GPT/03_ACTIONS/ion.helixion.net_mcp/SCHEMA_TO_PASTE.yaml
+legacy_schema_path: ION/09_integrations/custom_gpt_action_gateway/openapi.yaml
+public_server_url: https://ion-actions.helixion.net
+token_source_path: /home/sev/.config/ion/action-gateway.env
+token_env_var: ION_ACTION_GATEWAY_TOKEN
+forbidden_install_targets:
+  - ION/07_templates/actions/ION_SUPABASE_ACTIONS_OPENAPI_V0_1.yaml
+required_release_artifacts:
+  - ACTION_SCHEMA_RELEASE_REPORT.md
+  - COMBINED_OPENAPI_SCHEMA.yaml
+  - OPERATION_ID_MANIFEST.json
+  - ROUTE_SOURCE_INVENTORY.md
+  - GPT_BUILDER_INSTALL_SHEET.md
+  - GPT_BUILDER_ROLLBACK_SHEET.md
+  - AUTH_TOKEN_HANDOFF_CHECKLIST.md
+  - POST_INSTALL_SMOKE_PLAN.md
+stop_conditions:
+  - AUTH_INVALID
+  - gateway_token_invalid
+  - unexpected_AUTH_MISSING
+non_claims:
+  - no_production_authority
+  - no_deployment_authority
+  - no_accepted_state_authority
+  - no_supabase_secret_exposure

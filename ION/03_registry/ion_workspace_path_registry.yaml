@@ -1,0 +1,59 @@
+schema_id: ion.workspace_path_registry.v1
+status: candidate_workspace_reorganization_map
+workspace_root: /home/sev/ION - Production
+active_repo_root: /home/sev/ION - Production/ION_Developement
+previous_repo_roots:
+  - /home/sev/ION - Production/ION_CODEX FULL
+source_truth_posture: candidate_reorganized_workspace
+path_strategy: promoted_integrations_with_legacy_resolution
+promoted_integrations:
+  custom_gpt_action_gateway:
+    old_repo_root: ION/09_integrations/custom_gpt_action_gateway
+    workspace_root: ../ION_GPT/custom_gpt_action_gateway
+    critical_files:
+      - openapi.yaml
+    live_control_surface: true
+  chatgpt_browser_mcp_action:
+    old_repo_root: ION/09_integrations/chatgpt_browser_mcp_action
+    workspace_root: ../mcp/chatgpt_browser_mcp_action
+    critical_files:
+      - openapi.yaml
+    live_control_surface: true
+  mcp:
+    old_repo_root: ION/09_integrations/mcp
+    workspace_root: ../mcp
+    live_control_surface: true
+  browser_extension:
+    old_repo_root: ION/09_integrations/browser_extension
+    workspace_root: ../browser_extension
+    live_control_surface: true
+  cursor_extension:
+    old_repo_root: ION/09_integrations/cursor_extension
+    workspace_root: ../Cursor/cursor_extension
+    live_control_surface: false
+  cursor_sdk:
+    old_repo_root: ION/09_integrations/cursor_sdk
+    workspace_root: ../Cursor/cursor_sdk
+    live_control_surface: false
+  local_daemon:
+    old_repo_root: ION/09_integrations/local_daemon
+    workspace_root: ../local_daemon
+    live_control_surface: true
+  product_packager:
+    old_repo_root: ION/09_integrations/product_packager
+    workspace_root: ../product_packager
+    live_control_surface: false
+  systemd_user:
+    old_repo_root: ION/09_integrations/systemd/user
+    workspace_root: ../systemd/user
+    live_control_surface: true
+rules:
+  - resolve old repo integration paths to promoted workspace paths when the old path is missing
+  - do not restart live services until path resolution is proven for their control surface
+  - do not treat promoted workspace files as deleted evidence without a move receipt
+  - keep Supabase canonical root inside active repo at supabase/
+non_claims:
+  - no_production_deployment
+  - no_accepted_state_claim
+  - no_file_deletion_authority
+  - no_service_restart_authority

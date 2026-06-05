@@ -1,0 +1,61 @@
+schema_id: ion.branch_delegation_router_policy.v0_1
+status: candidate_not_accepted_state
+purpose: Govern path-addressable branch delegation for Codex, MCP, ION agents, and
+  browser queue carriers.
+rules:
+  folder_file_refs_are_routing_handles: true
+  delegation_request_is_not_invocation: true
+  tool_call_or_receipt_required_to_claim_invocation: true
+  tags_never_grant_authority: true
+  delegate_return_is_candidate_until_receipted_and_accepted: true
+  reject_path_traversal: true
+  reject_external_absolute_paths_by_default: true
+  default_production_authority: false
+  default_live_execution_authority: false
+  default_write_authority: none
+allowed_delegate_modes:
+- route_only
+- ask_for_context
+- review_plan
+- patch_plan
+- run_tests
+allowed_surfaces:
+- local_context_compile
+- codex_subagent
+- codex_mcp
+- ion_agent_queue
+- browser_queue
+- manual_receipt_packet
+reserved_tags:
+- route:branch-delegation
+- carrier:codex-cli
+- carrier:mcp
+- carrier:ion-agent
+- carrier:browser-queue
+- phase:delegate-request
+- phase:delegate-return
+- state:candidate
+- state:blocked
+- proof:context-compiled
+- proof:delegate-called
+- proof:missing
+- authority:read-only
+- authority:approval-required
+- authority:no-production
+- authority:no-live
+proof_required_to_claim:
+  codex_subagent:
+  - subagent_invocation_id_or_transcript
+  - branch_delegate_return
+  codex_mcp:
+  - mcp_tool_call_receipt
+  - returned_context_refs
+  ion_agent_queue:
+  - invocation_id
+  - queue_receipt
+  browser_queue:
+  - packet_id
+  - browser_queue_receipt
+  local_context_compile:
+  - files_read
+  - context_refs

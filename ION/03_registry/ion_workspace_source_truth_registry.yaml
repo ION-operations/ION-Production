@@ -1,0 +1,75 @@
+schema_id: ion.workspace_source_truth_registry.v0_1
+status: candidate
+packet_id: PCKT-ION-WORKSPACE-MONOREPO-SOURCE-TRUTH-001
+created_at: '2026-05-13'
+accepted_state_authority: false
+settlement_required: true
+
+workspace_root: /home/sev/ION - Production
+current_kernel_repo: /home/sev/ION - Production/ION_Developement
+forbidden_git_root: /home/sev
+
+recommended_git_model: monorepo_absorb_after_backup
+
+nested_repos:
+  - path: ION_Developement
+    role: active_ion_kernel_repo
+    action: absorb_or_preserve_history_before_root_commit
+  - path: dAimon
+    role: daimon_agent_application
+    action: decide_absorb_or_submodule
+  - path: AIM-OS
+    role: adjacent_architecture_corpus
+    action: decide_absorb_or_archive_reference
+
+workspace_families:
+  ION_Developement:
+    role: active ION kernel/context repo
+    source_posture: current_working_source
+  ION_GPT:
+    role: Custom GPT and Action Gateway release surfaces
+    source_posture: promoted_integration_candidate
+  browser_extension:
+    role: browser carrier extension
+    source_posture: promoted_integration_candidate
+  mcp:
+    role: MCP preview/action/connector surfaces
+    source_posture: promoted_integration_candidate
+  local_daemon:
+    role: local daemon bridges
+    source_posture: promoted_integration_candidate
+  systemd:
+    role: user service templates
+    source_posture: promoted_integration_candidate
+  product_packager:
+    role: product/package builders
+    source_posture: promoted_integration_candidate
+  Cursor:
+    role: Cursor extension and SDK
+    source_posture: promoted_integration_candidate
+  dAimon:
+    role: dAimon app/agent repo
+    source_posture: nested_repo_current
+  AIM-OS:
+    role: AIM/legacy/adjacent architecture corpus
+    source_posture: nested_repo_current
+  wisdomNET:
+    role: WisdomNET surfaces
+    source_posture: candidate_workspace_family
+  ATLAS:
+    role: ATLAS surfaces
+    source_posture: candidate_workspace_family
+  Needs_Routed:
+    role: staging/routing inbox
+    source_posture: operator_staging
+  quarentine:
+    role: evidence quarantine
+    source_posture: archive_witness_not_active_source
+
+migration_gates:
+  - no_home_directory_git_root_use
+  - nested_repo_bundle_backups_written
+  - root_gitignore_reviewed
+  - secrets_scan_before_first_root_commit
+  - quarantine_not_active_source
+  - integration_promotions_tracked_or_restored

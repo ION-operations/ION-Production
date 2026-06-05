@@ -1,0 +1,51 @@
+schema_id: ion.gdrive_context_mirror_registry.v1
+status: active_candidate
+protocol: ION/02_architecture/ION_GDRIVE_CONTEXT_MIRROR_PROTOCOL_V0_1.md
+runtime_helper: ION/04_packages/kernel/ion_gdrive_context_mirror.py
+default_output: "/home/sev/ION - Production/ION_GDRIVE_CONTEXT_MIRROR"
+intended_drive_account: crinkedart@gmail.com
+intended_drive_folder_uri: google-drive://crinkedart@gmail.com/0ABqIU0r0h-u2Uk9PVA
+authority:
+  production_authority: false
+  live_execution_authority: false
+  accepted_state_authority: false
+  google_api_authority: false
+mirror_role:
+  active_repo: false
+  read_export_mirror: true
+  manifest_driven: true
+source_posture_classes:
+  - accepted
+  - candidate
+  - runtime_evidence
+  - stale_index
+  - archive_witness
+curated_roots:
+  - ION/02_architecture/
+  - ION/03_registry/
+  - ION/docs/
+  - ION/07_templates/
+selected_current_context:
+  - ION/05_context/current/codex_solo/CAPSULE.md
+  - ION/05_context/current/codex_solo/MINI.md
+  - ION/05_context/current/codex_solo/HOT_CONTEXT.md
+  - ION/05_context/current/codex_solo/CONTEXT_PACKAGES.json
+  - ION/05_context/current/codex_solo/ROUTE.json
+  - ION/05_context/current/helixion_joc_rebuild/HELIXION_JOC_ORCHESTRATION_CONTEXT_PACKAGE.md
+  - ION/05_context/current/helixion_joc_rebuild/HELIXION_JOC_ORCHESTRATION_CONTEXT_PACKAGE.json
+excluded:
+  - .git/
+  - .env
+  - .venv/
+  - node_modules/
+  - __pycache__/
+  - tmp/
+  - raw_logs
+  - secrets
+  - tokens
+  - credential_paths
+  - vault_paths
+non_claims:
+  - exported_files_are_not_accepted_state
+  - google_drive_is_not_active_repo
+  - no_google_api_use
