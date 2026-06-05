@@ -549,6 +549,7 @@ def build_project_cockpit_model(
         portfolio=project_portfolio,
         launcher_status=launcher_status,
     )
+    preview_summary = preview_sessions.get("summary") if isinstance(preview_sessions.get("summary"), Mapping) else {}
     timeline = _project_timeline(
         ledger=ledger,
         vnext=vnext,
@@ -632,6 +633,13 @@ def build_project_cockpit_model(
             "preview_running_session_count": preview_sessions.get("summary", {}).get("running_count", 0)
             if isinstance(preview_sessions.get("summary"), Mapping)
             else 0,
+            "preview_detached_session_count": preview_summary.get("detached_count", 0),
+            "preview_orphaned_session_count": preview_summary.get("orphaned_count", 0),
+            "preview_stale_session_count": preview_summary.get("stale_count", 0),
+            "preview_comparison_count": preview_summary.get("comparison_count", 0),
+            "preview_comparable_session_count": preview_summary.get("comparable_session_count", 0),
+            "preview_session_counts_by_location": preview_summary.get("session_counts_by_location", {}),
+            "preview_session_counts_by_provider": preview_summary.get("session_counts_by_provider", {}),
         },
         "authority": {
             "candidate_state_write_authority": True,

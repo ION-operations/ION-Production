@@ -1151,6 +1151,13 @@ export type IonProjectCockpit = {
     preview_provider_count?: number;
     preview_session_count?: number;
     preview_running_session_count?: number;
+    preview_detached_session_count?: number;
+    preview_orphaned_session_count?: number;
+    preview_stale_session_count?: number;
+    preview_comparison_count?: number;
+    preview_comparable_session_count?: number;
+    preview_session_counts_by_location?: Record<string, number>;
+    preview_session_counts_by_provider?: Record<string, number>;
   };
   authority?: {
     candidate_state_write_authority?: boolean;

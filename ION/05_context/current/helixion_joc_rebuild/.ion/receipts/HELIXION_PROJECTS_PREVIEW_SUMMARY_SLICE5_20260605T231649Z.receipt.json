@@ -1,0 +1,62 @@
+{
+  "schema_id": "ion.helixion_joc_rebuild.receipt.v0_1",
+  "receipt_id": "HELIXION_PROJECTS_PREVIEW_SUMMARY_SLICE5_20260605T231649Z",
+  "generated_at": "2026-06-05T23:16:49Z",
+  "status": "candidate_validated",
+  "domain": "helixion_projects_app_preview",
+  "slice": "slice5_project_cockpit_preview_summary",
+  "summary": "Lifted preview comparison and surface counts from the nested PreviewSession model into the Project Cockpit summary and TypeScript contract.",
+  "authority": {
+    "candidate_only": true,
+    "production_authority": false,
+    "live_execution_authority": false,
+    "accepted_state_authority": false,
+    "secrets_authority": false,
+    "service_restart": false,
+    "git_push": false
+  },
+  "changed_files": [
+    "ION/04_packages/kernel/ion_project_cockpit.py",
+    "ION/08_ui/joc_cockpit_shell/ionRuntimeCockpitTypes.ts",
+    "ION/tests/test_kernel_ion_cockpit_view_model.py"
+  ],
+  "receipt_files": [
+    "ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_PREVIEW_SUMMARY_SLICE5_20260605T231649Z.receipt.json"
+  ],
+  "summary_fields": [
+    "preview_detached_session_count",
+    "preview_orphaned_session_count",
+    "preview_stale_session_count",
+    "preview_comparison_count",
+    "preview_comparable_session_count",
+    "preview_session_counts_by_location",
+    "preview_session_counts_by_provider"
+  ],
+  "validation": [
+    {
+      "command": "PYTHONPATH=ION/04_packages python3 -m py_compile ION/04_packages/kernel/ion_project_cockpit.py ION/04_packages/kernel/ion_project_preview_sessions.py",
+      "result": "passed"
+    },
+    {
+      "command": "PYTHONPATH=ION/04_packages pytest -q -p no:cacheprovider ION/tests/test_kernel_ion_project_preview_sessions.py ION/tests/test_kernel_ion_cockpit_view_model.py::test_cockpit_projects_vnext_mission_control_read_only",
+      "result": "passed",
+      "test_count": 9
+    },
+    {
+      "command": "npm --prefix ION/08_ui/joc_cockpit_shell run build",
+      "result": "passed",
+      "note": "Vite emitted the existing large chunk warning only."
+    },
+    {
+      "command": "git diff --check -- bounded slice files",
+      "result": "passed"
+    }
+  ],
+  "non_claims": [
+    "No production deployment.",
+    "No service restart.",
+    "No live Action/MCP mutation.",
+    "No accepted-state claim.",
+    "No Git push."
+  ]
+}

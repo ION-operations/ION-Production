@@ -816,6 +816,17 @@ def test_cockpit_projects_vnext_mission_control_read_only(tmp_path):
     assert project["summary"]["derived_blocker_count"] == 2
     assert project["summary"]["open_blocker_count"] == 2
     assert project["summary"]["open_question_count"] == 0
+    preview_summary = project["preview_sessions"]["summary"]
+    assert project["summary"]["preview_provider_count"] == preview_summary["provider_count"]
+    assert project["summary"]["preview_session_count"] == preview_summary["session_count"]
+    assert project["summary"]["preview_running_session_count"] == preview_summary["running_count"]
+    assert project["summary"]["preview_detached_session_count"] == preview_summary["detached_count"]
+    assert project["summary"]["preview_orphaned_session_count"] == preview_summary["orphaned_count"]
+    assert project["summary"]["preview_stale_session_count"] == preview_summary["stale_count"]
+    assert project["summary"]["preview_comparison_count"] == preview_summary["comparison_count"]
+    assert project["summary"]["preview_comparable_session_count"] == preview_summary["comparable_session_count"]
+    assert project["summary"]["preview_session_counts_by_location"] == preview_summary["session_counts_by_location"]
+    assert project["summary"]["preview_session_counts_by_provider"] == preview_summary["session_counts_by_provider"]
     assert {blocker["source"] for blocker in project["blockers"]} == {"derived_vnext_gate"}
     assert any(event["event_type"] == "packet" for event in project["timeline_events"])
     assert any(event["event_type"] == "blocker" for event in project["timeline_events"])
