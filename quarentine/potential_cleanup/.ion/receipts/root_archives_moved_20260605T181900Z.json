@@ -1,0 +1,39 @@
+{
+  "receipt_id": "root_archives_moved_20260605T181900Z",
+  "created_at": "2026-06-05T18:19:00Z",
+  "lane": "quarentine/potential_cleanup",
+  "mission": "Bounded Git root cleanup and source-stage recovery",
+  "phase": "move_ignored_root_archives_to_quarantine",
+  "status": "complete_no_deletion",
+  "source_scope": "root-level ignored ZIP artifacts",
+  "destination": "quarentine/potential_cleanup/moved_artifacts/20260605T181900Z/root_archives",
+  "moved_file_count": 12,
+  "total_bytes": 1525327002,
+  "moved_files": [
+    "ATLAS.zip",
+    "ION.zip",
+    "ION_.zip",
+    "ION__.zip",
+    "ION_GPT.zip",
+    "ION_VNEXT.zip",
+    "ION_VNEXT_.zip",
+    "Needs_Routed.zip",
+    "Needs_Routed_.zip",
+    "browser_extension.zip",
+    "dAimon.zip",
+    "supabase.zip"
+  ],
+  "non_actions": [
+    "no source directory move",
+    "no tracked file move",
+    "no file deletion",
+    "no git rm",
+    "no git push"
+  ],
+  "verification": [
+    "root-level ZIP search returned no files",
+    "moved ZIP paths remain ignored by global *.zip rule",
+    "moved archives are not staged or committed"
+  ],
+  "confirmation": "ION_BOUNDED_WRITE_CONFIRMED"
+}
