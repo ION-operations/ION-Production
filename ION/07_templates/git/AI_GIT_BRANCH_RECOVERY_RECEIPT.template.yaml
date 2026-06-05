@@ -1,0 +1,29 @@
+schema_id: ion.ai_git_branch_receipt.v0_1
+receipt_id: <recovery_receipt_id>
+receipt_type: recovery
+created_at: <iso8601_utc>
+agent: <agent_or_carrier>
+objective: <objective>
+branch:
+  name: ion/<agent>/<branch-node>/<objective>-recovery/<stamp>
+  base_ref: <last_known_good_ref_or_clean_base>
+  worktree_path: <external_recovery_worktree_path>
+  protected_branch: false
+  isolated_worktree: true
+recovery_source:
+  damaged_branch: <damaged_branch_name>
+  last_known_good_ref: <sha_or_tag>
+  recovered_from:
+    - failing_test_summary
+    - diff_summary
+    - mistake_receipt
+  excluded:
+    - unsafe_generated_files
+    - secrets
+authority:
+  production_authority: false
+  live_execution_authority: false
+  protected_branch_write: false
+  operator_approval: false
+verdict: allow_edit
+missing_proof: []
