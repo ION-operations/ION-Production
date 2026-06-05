@@ -79,6 +79,7 @@ from .ion_project_launcher import (
     project_launcher_status,
     project_launcher_stop,
 )
+from .ion_project_preview_sessions import build_project_preview_sessions_model
 from .ion_app_diagnostics_timeline import (
     app_diagnostics_config_update,
     app_diagnostics_record_browser_event,
@@ -101,7 +102,19 @@ DEFAULT_HOST = "127.0.0.1"
 DEFAULT_PORT = 8788
 JOC_REACT_DIST = Path("ION/08_ui/joc_cockpit_shell/dist")
 LEGACY_CSP = "default-src 'none'; style-src 'unsafe-inline'; base-uri 'none'; frame-ancestors 'none'"
-REACT_CSP = "default-src 'none'; script-src 'self' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; connect-src 'self' https://cloudflareinsights.com; img-src 'self' data:; base-uri 'none'; frame-ancestors 'none'"
+BUILD_PREVIEW_SCRIPT_HASHES = (
+    "'sha256-k59sHn5lU/5KRNtJuBEjwy5JrO65xximXYR4JRPkg6Y='",
+    "'sha256-/vrpKG4NHzSZI4p8EC40bTsM/nNtQacF53bcLOnacWM='",
+    "'sha256-9LoPJR9VY/9/Ad/ASyDJX/gx+OptRwrsNQfGCtaoLeU='",
+    "'sha256-AkJskVSRwbkGUEkSrb+BvYupGuGYi5VmmWiqU5G5E6k='",
+    "'sha256-Fgo4ohJMTFedkF1coY7+0nanCs/81jHD31q3AuxQKTc='",
+    "'sha256-oQ4zDlv/dJiXk1ecAlhFUZAj+avYhaQt/fmbswEgCt4='",
+)
+REACT_CSP = (
+    "default-src 'none'; script-src 'self' https://static.cloudflareinsights.com "
+    + " ".join(BUILD_PREVIEW_SCRIPT_HASHES)
+    + "; style-src 'self' 'unsafe-inline'; connect-src 'self' https://cloudflareinsights.com; img-src 'self' data:; base-uri 'none'; frame-ancestors 'none'"
+)
 PROJECT_LAUNCH_CSP = "default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src 'self'; img-src 'self' data:; frame-src http://127.0.0.1:* http://localhost:*; child-src http://127.0.0.1:* http://localhost:*; base-uri 'none'; frame-ancestors 'none'"
 DEFAULT_APPLICATION_DEV_LAUNCHER_URL = "http://127.0.0.1:5199"
 
@@ -1010,6 +1023,9 @@ def make_handler(root: Path) -> type[BaseHTTPRequestHandler]:
             if path in {"/model.json", "/cockpit/model.json"}:
                 self._send_json(200, build_cockpit_view_model(root))
                 return
+            if path in {"/cockpit/previews/model.json", "/cockpit/projects/previews/model.json"}:
+                self._send_json(200, build_project_preview_sessions_model(root))
+                return
             if path == "/cockpit/build/workspace.json":
                 query = parse_qs(parsed_url.query)
                 project_id = str((query.get("project_id") or ["ion_dev"])[-1] or "ion_dev")
@@ -1024,6 +1040,7 @@ def make_handler(root: Path) -> type[BaseHTTPRequestHandler]:
                 "/cockpit/codex/model.json",
                 "/cockpit/browser-gpt/model.json",
                 "/cockpit/projects/model.json",
+                "/cockpit/apps/model.json",
                 "/cockpit/build/model.json",
                 "/cockpit/weave/model.json",
                 "/cockpit/domain-weave/model.json",
@@ -1032,7 +1049,7 @@ def make_handler(root: Path) -> type[BaseHTTPRequestHandler]:
                     "browser-gpt"
                     if path.startswith("/cockpit/browser-gpt/")
                     else "projects"
-                    if path.startswith("/cockpit/projects/")
+                    if path.startswith(("/cockpit/projects/", "/cockpit/apps/"))
                     else "build"
                     if path.startswith("/cockpit/build/")
                     else "weave"

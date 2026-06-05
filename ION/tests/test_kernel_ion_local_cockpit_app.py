@@ -190,6 +190,52 @@ def test_local_cockpit_serves_weave_surface_endpoint(monkeypatch, tmp_path: Path
         server.shutdown()
 
 
+def test_local_cockpit_serves_preview_sessions_model_endpoint(monkeypatch, tmp_path: Path):
+    captured = {}
+
+    def fake_preview_sessions_model(root: Path):
+        captured["root"] = root
+        return {"schema_id": "ion.project_preview_sessions.v0_1", "ok": True, "sessions": []}
+
+    monkeypatch.setattr("kernel.ion_local_cockpit_app.build_project_preview_sessions_model", fake_preview_sessions_model)
+    server = ThreadingHTTPServer(("127.0.0.1", 0), make_handler(tmp_path))
+    thread = Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    try:
+        with urllib.request.urlopen(f"http://127.0.0.1:{server.server_address[1]}/cockpit/previews/model.json", timeout=8) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+
+        assert payload["schema_id"] == "ion.project_preview_sessions.v0_1"
+        assert payload["ok"] is True
+        assert captured["root"] == tmp_path
+    finally:
+        server.shutdown()
+
+
+def test_local_cockpit_serves_apps_surface_as_projects_shell_model(monkeypatch, tmp_path: Path):
+    captured = {}
+
+    def fake_surface_model(root: Path, *, surface: str):
+        captured["root"] = root
+        captured["surface"] = surface
+        return {"schema_id": "ion.cockpit_surface_view_model.v1", "surface": surface}
+
+    monkeypatch.setattr("kernel.ion_local_cockpit_app.build_cockpit_surface_view_model", fake_surface_model)
+    server = ThreadingHTTPServer(("127.0.0.1", 0), make_handler(tmp_path))
+    thread = Thread(target=server.serve_forever, daemon=True)
+    thread.start()
+    try:
+        with urllib.request.urlopen(f"http://127.0.0.1:{server.server_address[1]}/cockpit/apps/model.json", timeout=8) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+
+        assert payload["schema_id"] == "ion.cockpit_surface_view_model.v1"
+        assert payload["surface"] == "projects"
+        assert captured["surface"] == "projects"
+        assert captured["root"] == tmp_path
+    finally:
+        server.shutdown()
+
+
 def test_local_cockpit_action_branch_invoke_endpoint_profiles_large_artifact(tmp_path: Path):
     seed_branch_action_root(tmp_path)
     server = ThreadingHTTPServer(("127.0.0.1", 0), make_handler(tmp_path))

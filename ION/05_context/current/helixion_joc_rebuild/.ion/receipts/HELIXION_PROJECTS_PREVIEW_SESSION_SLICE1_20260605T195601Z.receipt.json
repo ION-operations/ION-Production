@@ -1,0 +1,55 @@
+{
+  "receipt_schema": "ion.folder_local_receipt.v0_1",
+  "created_at": "2026-06-05T19:56:01Z",
+  "lane": "helixion_joc_rebuild",
+  "work_unit": "HELIXION_PROJECTS_PREVIEW_SESSION_SLICE1_20260605T195601Z",
+  "status": "candidate_slice_implemented",
+  "source_packet": "ION/05_context/current/helixion_joc_rebuild/diagnostics_research/HELIXION_PROJECTS_MULTI_ORIGIN_PREVIEW_ARCHITECTURE_20260605T192746Z.candidate.md",
+  "authority": {
+    "production": false,
+    "live_execution": false,
+    "accepted_state": false,
+    "secrets": false,
+    "service_restart": false,
+    "git_push": false
+  },
+  "implemented": {
+    "summary": "Added read-only PreviewSession projection, local and protected public model routes, #apps shell-compatible model routing, cockpit UI hydration, and focused tests.",
+    "files": [
+      "ION/04_packages/kernel/ion_project_preview_sessions.py",
+      "ION/04_packages/kernel/ion_project_cockpit.py",
+      "ION/04_packages/kernel/ion_local_cockpit_app.py",
+      "ION/04_packages/kernel/ion_chatgpt_browser_mcp_http_preview.py",
+      "ION/08_ui/joc_cockpit_shell/ionRuntimeCockpitTypes.ts",
+      "ION/08_ui/joc_cockpit_shell/LocalCockpitApp.tsx",
+      "ION/08_ui/joc_cockpit_shell/HelixionAppsPreviewPanel.tsx",
+      "ION/tests/test_kernel_ion_project_preview_sessions.py",
+      "ION/tests/test_kernel_ion_local_cockpit_app.py",
+      "ION/tests/test_kernel_ion_chatgpt_browser_mcp_http_preview.py"
+    ]
+  },
+  "verification": {
+    "py_compile": "passed",
+    "diff_check": "passed",
+    "frontend_build": "npm --prefix ION/08_ui/joc_cockpit_shell run build passed",
+    "focused_tests": "6 passed",
+    "cockpit_model_regression": "28 passed",
+    "current_root_projection": {
+      "schema_id": "ion.project_preview_sessions.v0_1",
+      "provider_count": 8,
+      "session_count": 164,
+      "running_count": 0,
+      "public_preview_count": 2,
+      "portfolio_session_count": 160
+    },
+    "broad_regression_note": "Related backend ring had 73 passed and 3 failed in existing HTTP preview audit/tool-list tests for alternate-worker write tools missing confirmation schemas: ion_record_alternate_worker_provenance, ion_record_native_subagent_transcript, ion_submit_alternate_worker_return."
+  },
+  "security_notes": [
+    "PreviewSession model does not emit raw stop tokens.",
+    "PreviewSession model does not emit direct loopback URLs as public URLs.",
+    "PreviewSession model does not start, stop, install, probe, screenshot, or proxy app runtimes.",
+    "Protected public /cockpit/previews/model.json uses existing public cockpit bearer/session auth and rejects query-token access.",
+    "Existing launch, stop, diagnostics, patch, and rollback gates remain unchanged."
+  ],
+  "next_recommended_action": "Slice 2 should add durable launch reconciliation and Slice 3 should harden same-origin preview proxy auth parity before VM or viewer-local runners become mutation-capable."
+}

@@ -1013,6 +1013,67 @@ def test_public_project_model_and_preview_require_auth_on_public_host(monkeypatc
         preview_server.shutdown()
 
 
+def test_public_preview_sessions_model_requires_auth_and_accepts_bearer(monkeypatch, tmp_path):
+    _seed_root(tmp_path)
+    monkeypatch.setenv("ION_COCKPIT_PUBLIC_TOKEN", "test-token")
+
+    from kernel import ion_chatgpt_browser_mcp_http_preview as preview
+    from kernel.ion_chatgpt_browser_mcp_http_preview import IonChatGPTPreviewHandler
+
+    monkeypatch.setattr(
+        preview,
+        "build_project_preview_sessions_model",
+        lambda root: {
+            "schema_id": "ion.project_preview_sessions.v0_1",
+            "ok": True,
+            "sessions": [],
+            "authority": {"preview_read": True, "preview_mutation": False},
+        },
+    )
+    preview_server = ThreadingHTTPServer(("127.0.0.1", 0), IonChatGPTPreviewHandler)
+    preview_server.ion_root = tmp_path
+    preview_thread = Thread(target=preview_server.serve_forever, daemon=True)
+    preview_thread.start()
+    try:
+        base = f"http://127.0.0.1:{preview_server.server_address[1]}"
+        unauthenticated = urllib.request.Request(
+            f"{base}/cockpit/previews/model.json",
+            headers={"Host": "ion.example.test", "Accept": "application/json"},
+        )
+        try:
+            urllib.request.urlopen(unauthenticated, timeout=5)
+            raise AssertionError("unauthenticated preview sessions model should not return 200")
+        except urllib.error.HTTPError as exc:
+            payload = json.loads(exc.read().decode("utf-8"))
+            assert exc.code == 401
+            assert payload["finding"] == "public_cockpit_login_required"
+
+        allowed = urllib.request.Request(
+            f"{base}/cockpit/previews/model.json",
+            headers={"Host": "ion.example.test", "Accept": "application/json", "Authorization": "Bearer test-token"},
+        )
+        with urllib.request.urlopen(allowed, timeout=5) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+
+        assert payload["schema_id"] == "ion.project_preview_sessions.v0_1"
+        assert payload["ok"] is True
+        assert payload["authority"]["preview_mutation"] is False
+
+        query_token = urllib.request.Request(
+            f"{base}/cockpit/previews/model.json?token=test-token",
+            headers={"Host": "ion.example.test", "Accept": "application/json"},
+        )
+        try:
+            urllib.request.urlopen(query_token, timeout=5)
+            raise AssertionError("query token preview sessions model should not return 200")
+        except urllib.error.HTTPError as exc:
+            payload = json.loads(exc.read().decode("utf-8"))
+            assert exc.code == 401
+            assert payload["finding"] == "public_cockpit_login_required"
+    finally:
+        preview_server.shutdown()
+
+
 def test_public_mutation_routes_require_same_origin_evidence(monkeypatch, tmp_path):
     _seed_root(tmp_path)
     monkeypatch.setenv("ION_COCKPIT_PUBLIC_TOKEN", "test-token")

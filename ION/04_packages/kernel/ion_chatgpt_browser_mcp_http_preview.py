@@ -86,6 +86,7 @@ from .ion_project_launcher import (
     project_launcher_status,
     project_launcher_stop,
 )
+from .ion_project_preview_sessions import build_project_preview_sessions_model
 from .ion_app_diagnostics_timeline import (
     app_diagnostics_config_update,
     app_diagnostics_record_browser_event,
@@ -3995,6 +3996,13 @@ try {
                 return
             self._send_json(200, build_cockpit_view_model(self.server.ion_root))  # type: ignore[attr-defined]
             return
+        if path in {"/cockpit/previews/model.json", "/cockpit/projects/previews/model.json"}:
+            ok, finding, _token = self._check_public_cockpit_access()
+            if not ok:
+                self._send_public_cockpit_blocked(str(finding), next_path=path)
+                return
+            self._send_json(200, build_project_preview_sessions_model(self.server.ion_root))  # type: ignore[attr-defined]
+            return
         if path == "/cockpit/system/model.json":
             ok, finding, _token = self._check_public_cockpit_access()
             if not ok:
@@ -4028,6 +4036,7 @@ try {
             "/cockpit/codex/model.json",
             "/cockpit/browser-gpt/model.json",
             "/cockpit/projects/model.json",
+            "/cockpit/apps/model.json",
             "/cockpit/build/model.json",
             "/cockpit/weave/model.json",
             "/cockpit/domain-weave/model.json",
@@ -4040,7 +4049,7 @@ try {
                 "browser-gpt"
                 if path.startswith("/cockpit/browser-gpt/")
                 else "projects"
-                if path.startswith("/cockpit/projects/")
+                if path.startswith(("/cockpit/projects/", "/cockpit/apps/"))
                 else "build"
                 if path.startswith("/cockpit/build/")
                 else "weave"

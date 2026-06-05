@@ -15,6 +15,7 @@ from pathlib import Path
 from typing import Any, Mapping
 
 from .ion_project_launcher import PROJECT_LOCAL_LAUNCH_CONFIRMATION, build_project_launcher_status
+from .ion_project_preview_sessions import build_preview_sessions_from_cockpit
 from .ion_project_canon_dossier import DOSSIER_INDEX
 from .ion_project_specialist_context import SPECIALIST_INDEX
 from .ion_project_portfolio import (
@@ -542,6 +543,12 @@ def build_project_cockpit_model(
     project_portfolio, portfolio_load_mode = _project_portfolio_for_cockpit(shell_root)
     organization_state = _portfolio_organization_state(shell_root, project_portfolio, portfolio_load_mode)
     launcher_status = build_project_launcher_status(shell_root)
+    preview_sessions = build_preview_sessions_from_cockpit(
+        shell_root,
+        projects=projects,
+        portfolio=project_portfolio,
+        launcher_status=launcher_status,
+    )
     timeline = _project_timeline(
         ledger=ledger,
         vnext=vnext,
@@ -591,6 +598,7 @@ def build_project_cockpit_model(
         "portfolio_load_mode": portfolio_load_mode,
         "organization_state": organization_state,
         "launcher": launcher_status,
+        "preview_sessions": preview_sessions,
         "summary": {
             "project_count": len(projects),
             "mission_count": len(missions),
@@ -615,6 +623,15 @@ def build_project_cockpit_model(
             "portfolio_diff_manifest_count": organization_state.get("diff_manifest_count", 0),
             "portfolio_copy_count": organization_state.get("copy_count", 0),
             "portfolio_load_mode": portfolio_load_mode,
+            "preview_provider_count": preview_sessions.get("summary", {}).get("provider_count", 0)
+            if isinstance(preview_sessions.get("summary"), Mapping)
+            else 0,
+            "preview_session_count": preview_sessions.get("summary", {}).get("session_count", 0)
+            if isinstance(preview_sessions.get("summary"), Mapping)
+            else 0,
+            "preview_running_session_count": preview_sessions.get("summary", {}).get("running_count", 0)
+            if isinstance(preview_sessions.get("summary"), Mapping)
+            else 0,
         },
         "authority": {
             "candidate_state_write_authority": True,
