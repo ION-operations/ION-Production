@@ -1,0 +1,131 @@
+{
+  "schema_id": "ion.helixion_projects_multi_origin_preview_architecture.candidate.v1",
+  "created_at": "2026-06-05T19:27:46Z",
+  "status": "candidate_research_complete",
+  "authority": {
+    "accepted_state_authority": false,
+    "production_authority": false,
+    "live_execution_authority": false,
+    "secrets_authority": false,
+    "service_restart": false,
+    "git_push": false
+  },
+  "objective": "Design a unified Helixion Projects/App Preview model for local, VM, remote same-origin, viewer-local, static, and AI-observable preview surfaces.",
+  "core_recommendation": "Introduce a first-class PreviewSession contract and keep local launch, VM launch, viewer-local launch, preview read, preview interaction, preview mutation, and AI observation as separate capabilities.",
+  "current_state": {
+    "project_cockpit_status": "project_cockpit_ready",
+    "portfolio_load_mode": "cached_manifest",
+    "portfolio_project_root_count": 199,
+    "portfolio_family_count": 45,
+    "reported_launchable_project_count": 117,
+    "current_launcher_running_count": 0,
+    "cosmos_preview_status": "not_running",
+    "ion_dev_preview_status": "ready"
+  },
+  "proposed_objects": [
+    "PreviewProvider",
+    "PreviewSession",
+    "PreviewComparison"
+  ],
+  "provider_ids": [
+    "local_loopback_launcher",
+    "local_static_file_server",
+    "application_dev_launcher",
+    "cockpit_internal_surface",
+    "vm_runner",
+    "remote_runner",
+    "viewer_local_runner",
+    "static_hosted_artifact"
+  ],
+  "capability_classes": [
+    "preview_read",
+    "managed_local_preview_launch",
+    "managed_vm_preview_launch",
+    "viewer_local_preview_launch",
+    "preview_interaction",
+    "preview_mutation",
+    "ai_observe_preview"
+  ],
+  "recommended_slices": [
+    {
+      "slice_id": 1,
+      "title": "Preview Session Projection",
+      "primary_files": [
+        "ION/04_packages/kernel/ion_project_preview_sessions.py",
+        "ION/04_packages/kernel/ion_local_cockpit_app.py",
+        "ION/08_ui/joc_cockpit_shell/HelixionAppsPreviewPanel.tsx",
+        "ION/08_ui/joc_cockpit_shell/LocalCockpitApp.tsx"
+      ],
+      "mutation_level": "read_only_projection_plus_ui_hydration"
+    },
+    {
+      "slice_id": 2,
+      "title": "Durable Launch Reconciliation",
+      "primary_files": [
+        "ION/04_packages/kernel/ion_project_launcher.py",
+        "ION/tests/test_kernel_ion_project_launcher.py"
+      ],
+      "mutation_level": "local_runtime_state_hardening"
+    },
+    {
+      "slice_id": 3,
+      "title": "Same-Origin Preview Proxy Hardening",
+      "primary_files": [
+        "ION/04_packages/kernel/ion_chatgpt_browser_mcp_http_preview.py",
+        "ION/04_packages/kernel/ion_project_launcher.py",
+        "ION/tests/test_kernel_ion_chatgpt_browser_mcp_http_preview.py"
+      ],
+      "mutation_level": "security_hardening"
+    },
+    {
+      "slice_id": 4,
+      "title": "Comparison Receipts",
+      "primary_files": [
+        "ION/04_packages/kernel/ion_project_preview_compare.py",
+        "ION/05_context/current/project_workbench/browser_captures"
+      ],
+      "mutation_level": "new_candidate_receipt_surface"
+    },
+    {
+      "slice_id": 5,
+      "title": "VM Runner Protocol",
+      "primary_files": [
+        "ION/02_architecture"
+      ],
+      "mutation_level": "protocol_first"
+    },
+    {
+      "slice_id": 6,
+      "title": "Viewer-Local Helper",
+      "primary_files": [
+        "browser_extension/ion_chatops_bridge",
+        "ION/04_packages/kernel"
+      ],
+      "mutation_level": "protocol_then_adapter"
+    }
+  ],
+  "hard_boundaries": [
+    "No arbitrary loopback proxying.",
+    "No public page direct fetch of viewer 127.0.0.1 app servers.",
+    "No frontend bearer tokens or cockpit permission tokens.",
+    "No tunnel availability as production authority.",
+    "No VM/remote process start through the existing local launcher path.",
+    "No global CSP widening.",
+    "No accepted-state claim from screenshots, DOM captures, or visual-agent findings without proof and settlement."
+  ],
+  "evidence_files": [
+    "ION/08_ui/joc_cockpit_shell/HelixionAppsPreviewPanel.tsx",
+    "ION/08_ui/joc_cockpit_shell/VNextMissionControlPanel.tsx",
+    "ION/08_ui/joc_cockpit_shell/BuildWorkbenchPage.tsx",
+    "ION/08_ui/joc_cockpit_shell/LocalCockpitApp.tsx",
+    "ION/04_packages/kernel/ion_project_launcher.py",
+    "ION/04_packages/kernel/ion_project_workbench.py",
+    "ION/04_packages/kernel/ion_local_cockpit_app.py",
+    "ION/04_packages/kernel/ion_chatgpt_browser_mcp_http_preview.py",
+    "ION/04_packages/kernel/ion_helixion_project_access_inventory.py",
+    "ION/03_registry/ion_chatgpt_browser_mcp_tool_policy.yaml",
+    "ION/03_registry/ion_local_port_routing_registry.json",
+    "browser_extension/ion_chatops_bridge"
+  ],
+  "next_safe_action": "Implement Slice 1 as a read-only PreviewSession projection plus /cockpit/previews/model.json and #apps fast model route, then audit proxy auth parity before expanding remote preview behavior."
+}

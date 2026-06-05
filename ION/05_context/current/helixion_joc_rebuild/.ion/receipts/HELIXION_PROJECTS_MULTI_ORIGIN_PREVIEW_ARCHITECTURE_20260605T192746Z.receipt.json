@@ -1,0 +1,64 @@
+{
+  "receipt_schema": "ion.folder_local_receipt.v0_1",
+  "created_at": "2026-06-05T19:27:46Z",
+  "lane": "helixion_joc_rebuild",
+  "work_unit": "HELIXION_PROJECTS_MULTI_ORIGIN_PREVIEW_ARCHITECTURE_20260605T192746Z",
+  "status": "candidate_research_packet_written",
+  "authority": {
+    "production": false,
+    "live_execution": false,
+    "accepted_state": false,
+    "secrets": false,
+    "service_restart": false,
+    "git_push": false
+  },
+  "operator_request": "Research the Helixion website app, Projects system, app preview, and local/VM/remote/viewer-local preview topology with specialist assistance.",
+  "agent_swarm": [
+    {
+      "agent_id": "019e9926-8d62-7681-a56c-ad678e3da005",
+      "nickname": "Popper",
+      "focus": "Helixion UI, cockpit pages, app preview panels"
+    },
+    {
+      "agent_id": "019e9926-a14d-7aa1-a165-86c29825a564",
+      "nickname": "Einstein",
+      "focus": "Project launcher, catalog, runtime records"
+    },
+    {
+      "agent_id": "019e9926-bba8-7743-b529-898b21ccf6a8",
+      "nickname": "Dalton",
+      "focus": "Transport, tunnels, remote and VM preview"
+    },
+    {
+      "agent_id": "019e9926-cee1-71e2-a927-7725b9eca2c2",
+      "nickname": "Poincare",
+      "focus": "Browser GPT, AI observability, dual preview capture"
+    },
+    {
+      "agent_id": "019e9926-e95b-7192-9936-0f17ca10e3f0",
+      "nickname": "Ramanujan",
+      "focus": "Security, capability boundaries, governance"
+    }
+  ],
+  "evidence": [
+    "ION/05_context/current/helixion_joc_rebuild/diagnostics_research/HELIXION_PROJECTS_MULTI_ORIGIN_PREVIEW_ARCHITECTURE_20260605T192746Z.candidate.md",
+    "ION/05_context/current/helixion_joc_rebuild/diagnostics_research/HELIXION_PROJECTS_MULTI_ORIGIN_PREVIEW_ARCHITECTURE_20260605T192746Z.candidate.json"
+  ],
+  "local_observations": {
+    "project_cockpit_status": "project_cockpit_ready",
+    "portfolio_load_mode": "cached_manifest",
+    "portfolio_project_root_count": 199,
+    "portfolio_family_count": 45,
+    "current_launcher_running_count": 0,
+    "cosmos_preview_probe": "not_running",
+    "ion_development_preview_probe": "ready"
+  },
+  "conclusion": "ION has local launcher, project workbench, public Projects, Application Dev, build sandbox, and Browser GPT observation pieces, but lacks a shared durable PreviewSession contract across local, remote, VM, viewer-local, static, and AI-observable preview surfaces.",
+  "recommended_next_action": "Implement Slice 1: a read-only Preview Session Projection with /cockpit/previews/model.json, unified provider/session/comparison schema, and #apps/#projects hydration before adding VM or viewer-local mutation adapters.",
+  "verification": {
+    "json_parse": "jq_ok",
+    "diff_check": "git_diff_check_ok",
+    "runtime_services_restarted": false,
+    "source_code_modified": false
+  }
+}
