@@ -192,10 +192,36 @@ def test_local_cockpit_serves_weave_surface_endpoint(monkeypatch, tmp_path: Path
 
 def test_local_cockpit_serves_preview_sessions_model_endpoint(monkeypatch, tmp_path: Path):
     captured = {}
+    expected_comparisons = [
+        {
+            "comparison_id": "cmp-local-viewer-current",
+            "pair_basis": "project",
+            "baseline_preview_id": "local-current",
+            "candidate_preview_id": "viewer-current",
+            "surface_pair": "local_host_to_viewer_local",
+            "route": "/cockpit/previews/compare/cmp-local-viewer-current",
+            "status": "registered_read_only",
+        }
+    ]
+    expected_surface_matrix = {
+        "schema_id": "ion.project_preview_surface_matrix.v0_1",
+        "comparison_count": 1,
+        "session_counts_by_location": {"local_host": 1, "viewer_local": 1},
+        "session_counts_by_provider": {"vite": 2},
+    }
 
     def fake_preview_sessions_model(root: Path):
         captured["root"] = root
-        return {"schema_id": "ion.project_preview_sessions.v0_1", "ok": True, "sessions": []}
+        return {
+            "schema_id": "ion.project_preview_sessions.v0_1",
+            "ok": True,
+            "sessions": [
+                {"preview_id": "local-current", "runner_location": "local_host", "provider": "vite"},
+                {"preview_id": "viewer-current", "runner_location": "viewer_local", "provider": "vite"},
+            ],
+            "comparisons": expected_comparisons,
+            "surface_matrix": expected_surface_matrix,
+        }
 
     monkeypatch.setattr("kernel.ion_local_cockpit_app.build_project_preview_sessions_model", fake_preview_sessions_model)
     server = ThreadingHTTPServer(("127.0.0.1", 0), make_handler(tmp_path))
@@ -207,6 +233,8 @@ def test_local_cockpit_serves_preview_sessions_model_endpoint(monkeypatch, tmp_p
 
         assert payload["schema_id"] == "ion.project_preview_sessions.v0_1"
         assert payload["ok"] is True
+        assert payload["comparisons"] == expected_comparisons
+        assert payload["surface_matrix"] == expected_surface_matrix
         assert captured["root"] == tmp_path
     finally:
         server.shutdown()

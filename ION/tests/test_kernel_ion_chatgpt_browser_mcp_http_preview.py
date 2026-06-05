@@ -1020,13 +1020,36 @@ def test_public_preview_sessions_model_requires_auth_and_accepts_bearer(monkeypa
     from kernel import ion_chatgpt_browser_mcp_http_preview as preview
     from kernel.ion_chatgpt_browser_mcp_http_preview import IonChatGPTPreviewHandler
 
+    expected_comparisons = [
+        {
+            "comparison_id": "cmp-public-local-remote-current",
+            "pair_basis": "project",
+            "baseline_preview_id": "public-local-current",
+            "candidate_preview_id": "public-remote-current",
+            "surface_pair": "local_host_to_remote_host",
+            "route": "/cockpit/previews/compare/cmp-public-local-remote-current",
+            "status": "registered_read_only",
+        }
+    ]
+    expected_surface_matrix = {
+        "schema_id": "ion.project_preview_surface_matrix.v0_1",
+        "comparison_count": 1,
+        "session_counts_by_location": {"local_host": 1, "remote_host": 1},
+        "session_counts_by_provider": {"vite": 2},
+    }
+
     monkeypatch.setattr(
         preview,
         "build_project_preview_sessions_model",
         lambda root: {
             "schema_id": "ion.project_preview_sessions.v0_1",
             "ok": True,
-            "sessions": [],
+            "sessions": [
+                {"preview_id": "public-local-current", "runner_location": "local_host", "provider": "vite"},
+                {"preview_id": "public-remote-current", "runner_location": "remote_host", "provider": "vite"},
+            ],
+            "comparisons": expected_comparisons,
+            "surface_matrix": expected_surface_matrix,
             "authority": {"preview_read": True, "preview_mutation": False},
         },
     )
@@ -1057,6 +1080,8 @@ def test_public_preview_sessions_model_requires_auth_and_accepts_bearer(monkeypa
 
         assert payload["schema_id"] == "ion.project_preview_sessions.v0_1"
         assert payload["ok"] is True
+        assert payload["comparisons"] == expected_comparisons
+        assert payload["surface_matrix"] == expected_surface_matrix
         assert payload["authority"]["preview_mutation"] is False
 
         query_token = urllib.request.Request(

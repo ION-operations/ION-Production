@@ -1,0 +1,64 @@
+{
+  "schema_id": "ion.helixion_joc_rebuild.receipt.v0_1",
+  "receipt_id": "HELIXION_PROJECTS_PREVIEW_ROUTE_SURFACE_SLICE6_20260605T232114Z",
+  "generated_at": "2026-06-05T23:21:14Z",
+  "status": "candidate_validated",
+  "domain": "helixion_projects_app_preview",
+  "slice": "slice6_preview_route_surface_contract",
+  "summary": "Added focused route-surface assertions proving the local and protected public preview model endpoints preserve the PreviewSession comparisons and surface_matrix contract.",
+  "authority": {
+    "candidate_only": true,
+    "production_authority": false,
+    "live_execution_authority": false,
+    "accepted_state_authority": false,
+    "secrets_authority": false,
+    "service_restart": false,
+    "git_push": false
+  },
+  "changed_files": [
+    "ION/tests/test_kernel_ion_local_cockpit_app.py",
+    "ION/tests/test_kernel_ion_chatgpt_browser_mcp_http_preview.py"
+  ],
+  "receipt_files": [
+    "ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_PREVIEW_ROUTE_SURFACE_SLICE6_20260605T232114Z.receipt.json"
+  ],
+  "route_surfaces": [
+    {
+      "route": "/cockpit/previews/model.json",
+      "surface": "local_cockpit_app",
+      "proved_fields": [
+        "comparisons",
+        "surface_matrix"
+      ]
+    },
+    {
+      "route": "/cockpit/previews/model.json",
+      "surface": "public_chatgpt_browser_mcp_http_preview",
+      "proved_fields": [
+        "comparisons",
+        "surface_matrix",
+        "authority.preview_mutation"
+      ]
+    }
+  ],
+  "validation": [
+    {
+      "command": "PYTHONPATH=ION/04_packages pytest -q -p no:cacheprovider ION/tests/test_kernel_ion_local_cockpit_app.py::test_local_cockpit_serves_preview_sessions_model_endpoint ION/tests/test_kernel_ion_chatgpt_browser_mcp_http_preview.py::test_public_preview_sessions_model_requires_auth_and_accepts_bearer",
+      "result": "passed",
+      "test_count": 2
+    },
+    {
+      "command": "PYTHONPATH=ION/04_packages pytest -q -p no:cacheprovider ION/tests/test_kernel_ion_project_preview_sessions.py ION/tests/test_kernel_ion_local_cockpit_app.py::test_local_cockpit_serves_preview_sessions_model_endpoint ION/tests/test_kernel_ion_chatgpt_browser_mcp_http_preview.py::test_public_preview_sessions_model_requires_auth_and_accepts_bearer",
+      "result": "passed",
+      "test_count": 10
+    }
+  ],
+  "non_claims": [
+    "No route handler change.",
+    "No production deployment.",
+    "No service restart.",
+    "No live Action/MCP mutation.",
+    "No accepted-state claim.",
+    "No Git push."
+  ]
+}
