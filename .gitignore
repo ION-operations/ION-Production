@@ -3,6 +3,7 @@
 __pycache__/
 *.py[cod]
 .DS_Store
+desktop.ini
 .vscode/.ropeproject/
 
 # Python environments and build output
@@ -118,6 +119,10 @@ Cosmos/**/*.nc
 Cosmos/**/*.tif
 Cosmos/**/*.tiff
 
+# Cosmos local index and IDE state.
+Cosmos/**/.icip/
+Cosmos/**/.claude/settings.local.json
+
 # Browser/runtime state that must not ride with source receipts.
 ION/05_context/current/browser_gpt_dom_profiles/runtime/*/chromium-profile/
 ION/05_context/current/browser_gpt_dom_profiles/probe_snapshots/
@@ -127,11 +132,16 @@ ION/05_context/current/chatgpt_connector/runtime/active_connector_url.txt
 ION/05_context/current/chatgpt_connector/runtime/cloudflared_version.txt
 ION/05_context/current/project_workbench/runtime/*_idempotency_ledger.json
 ION/05_context/current/execution_cycles/*cloudflared*/
+ION/05_context/current/project_launcher/app_diagnostics/
+ION/05_context/current/reports/*.jsonl
+ION/05_context/runtime_state/v64_local_mcp_bridge/runtime_sessions/
+ION/05_context/current/codex_capsule_chat/raw_cli_runs/
 
 # Full path-list Git audits are generated local evidence and can exceed 100 MB
 # on this workspace. Keep compact review packets trackable instead.
 ION/05_context/current/codex_carrier/commit_boundary/CODEX_COMMIT_BOUNDARY_AUDIT.json
 ION/05_context/current/codex_carrier/commit_boundary/CODEX_COMMIT_STAGE_MANIFEST.candidate.json
+ION/05_context/current/codex_carrier/commit_boundary/CODEX_SOURCE_BUNDLE_STAGE_MANIFEST.candidate.json
 ION/05_context/current/codex_carrier/commit_boundary/CODEX_SOURCE_BUNDLE_STAGE_REVIEW.json
 ION/05_context/current/repo_organization/GIT_ROOT_NORMALIZATION_PREVIEW.candidate.json
 ION/05_context/current/repo_organization/GIT_ROOT_NORMALIZATION_PREVIEW_*.candidate.json
