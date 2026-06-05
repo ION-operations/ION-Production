@@ -1,0 +1,47 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ion.codex_commit_boundary_audit.v1",
+  "title": "ION Codex Commit Boundary Audit",
+  "type": "object",
+  "required": [
+    "schema_id",
+    "generated_at",
+    "verdict",
+    "ok",
+    "git",
+    "path_counts",
+    "bundles",
+    "candidate_stage_manifest",
+    "accepted_state_authority",
+    "git_mutation_performed"
+  ],
+  "properties": {
+    "schema_id": {"const": "ion.codex_commit_boundary_audit.v1"},
+    "generated_at": {"type": "string"},
+    "verdict": {
+      "type": "string",
+      "enum": [
+        "ION_CODEX_COMMIT_BOUNDARY_AUDIT_READY",
+        "ION_CODEX_COMMIT_BOUNDARY_AUDIT_PARTIAL",
+        "ION_CODEX_COMMIT_BOUNDARY_AUDIT_BLOCKED"
+      ]
+    },
+    "ok": {"type": "boolean"},
+    "ready_for_source_commit_bundle": {"type": "boolean"},
+    "git": {"type": "object"},
+    "path_counts": {"type": "object", "additionalProperties": {"type": "integer"}},
+    "bundles": {"type": "array", "items": {"type": "object"}},
+    "candidate_stage_manifest": {"type": "object"},
+    "blocking_findings": {"type": "array", "items": {"type": "string"}},
+    "warning_findings": {"type": "array", "items": {"type": "string"}},
+    "accepted_state_authority": {"const": false},
+    "production_authority": {"const": false},
+    "live_execution_authority": {"const": false},
+    "secrets_authority": {"const": false},
+    "git_mutation_performed": {"const": false},
+    "git_push_authority": {"const": false},
+    "github_mutation_performed": {"const": false},
+    "raw_codex_context_promoted": {"const": false}
+  },
+  "additionalProperties": true
+}
