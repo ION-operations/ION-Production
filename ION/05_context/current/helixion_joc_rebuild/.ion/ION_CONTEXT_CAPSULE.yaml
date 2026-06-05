@@ -13,23 +13,44 @@ authority:
 source_packets:
   - ION/05_context/current/helixion_joc_rebuild/diagnostics_research/HELIXION_PROJECTS_MULTI_ORIGIN_PREVIEW_ARCHITECTURE_20260605T192746Z.candidate.md
   - ION/05_context/current/helixion_joc_rebuild/diagnostics_research/HELIXION_PROJECTS_MULTI_ORIGIN_PREVIEW_ARCHITECTURE_20260605T192746Z.candidate.json
+recent_receipts:
+  - ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_PREVIEW_SESSION_SLICE1_20260605T195601Z.receipt.json
+  - ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_LAUNCH_RECONCILIATION_SLICE2_20260605T205438Z.receipt.json
+  - ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_RUNTIME_IDENTITY_SLICE3_20260605T212912Z.receipt.json
+  - ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_PREVIEW_COMPARISON_SLICE4_20260605T231416Z.receipt.json
+  - ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_PREVIEW_SUMMARY_SLICE5_20260605T231649Z.receipt.json
+  - ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_PREVIEW_ROUTE_SURFACE_SLICE6_20260605T232114Z.receipt.json
+  - ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_AI_OBSERVE_SUBSTRATE_SLICE7_20260605T232851Z.receipt.json
+  - ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_PREVIEW_PAIRING_MAP_SLICE8_20260605T233010Z.receipt.json
 current_objective:
-  title: Helixion Project Launcher Slice 2
-  summary: Add durable local launcher state reconciliation and protected public app-preview POST proxy/event routing without claiming restart-time process ownership.
-  next_slice: launcher_durable_reconciliation
+  title: Helixion Projects App Preview Architecture
+  summary: PreviewSession model, durable launcher reconciliation, runtime ownership classification, comparison registration, route-surface proof, metadata-only AI observe targets, and no-CSS pairing-map UI are committed as candidate work.
+  next_slice: choose_between_resolved_peer_pair_urls_preview_observe_ui_details_or_gated_capture_plan
 scope:
   include:
+    - ION/04_packages/kernel/ion_project_preview_sessions.py
     - ION/04_packages/kernel/ion_project_launcher.py
+    - ION/04_packages/kernel/ion_project_cockpit.py
     - ION/04_packages/kernel/ion_chatgpt_browser_mcp_http_preview.py
     - ION/04_packages/kernel/ion_local_cockpit_app.py
+    - ION/08_ui/joc_cockpit_shell/HelixionAppsPreviewPanel.tsx
+    - ION/08_ui/joc_cockpit_shell/ionRuntimeCockpitTypes.ts
+    - ION/tests/test_kernel_ion_project_preview_sessions.py
     - ION/tests/test_kernel_ion_project_launcher.py
+    - ION/tests/test_kernel_ion_local_cockpit_app.py
     - ION/tests/test_kernel_ion_chatgpt_browser_mcp_http_preview.py
+    - ION/tests/test_kernel_ion_cockpit_view_model.py
   exclude:
     - production deployment
     - Cloudflare tunnel mutation
     - service restart
     - live VM runner implementation
+    - live remote runner implementation
     - viewer-local helper mutation
+    - browser automation
+    - screenshot capture without a new gated packet
+    - accepted-state claim
+    - secrets access
     - destructive cleanup
 boundaries:
   - Durable launcher state is candidate local runtime state only.
@@ -37,4 +58,7 @@ boundaries:
   - Stop may mark detached records stopped but must not claim a process was killed.
   - Raw stop tokens must not appear in launcher status or receipts through tokenized open_href values.
   - Public mutation auth and same-origin rules must not be weakened.
+  - Preview comparisons are registered read-only pairs; no DOM, console, network, accessibility, screenshot, or visual diff has occurred.
+  - AI observe preview is metadata-only target registration; observe, capture, browser automation, loopback probe, and loopback mutation authority remain false.
+  - UI preview pairing map is display-only and grants no runtime authority.
 receipt_lane: ION/05_context/current/helixion_joc_rebuild/.ion/receipts

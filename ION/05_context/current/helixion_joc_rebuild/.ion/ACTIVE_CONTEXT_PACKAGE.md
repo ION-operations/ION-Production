@@ -1,11 +1,22 @@
-# Helixion Project Launcher Slice 2 Context
+# Helixion Projects App Preview Context
 
 Status: active candidate folder-local package
 Created: 2026-06-05T20:53:57Z
+Updated: 2026-06-05T23:30:48Z
 
 ## Objective
 
-Implement the second bounded slice from the Helixion Projects multi-origin preview architecture: durable local launcher reconciliation that survives cockpit process restarts without claiming process ownership, plus public same-origin protection for app-preview POST proxy/event routes.
+Continue the Helixion Projects multi-origin preview architecture from the folder-local context lane.
+
+Committed candidate slices now cover:
+
+- PreviewSession projection over project, portfolio, launcher, local, same-origin, VM, remote, viewer-local, and static provider classes.
+- Durable local launcher state reconciliation and protected public app-preview POST proxy/event routing.
+- Runtime ownership classification for attached, detached, stale, and orphaned preview records.
+- Read-only preview comparison registration and Project Cockpit summary counts.
+- Local and protected public route-surface tests proving `comparisons` and `surface_matrix` survive `/cockpit/previews/model.json`.
+- Metadata-only AI observe-preview substrate with capture, browser automation, loopback mutation, live execution, secrets, and accepted-state authority all false.
+- No-CSS Preview Pairing Map in the Helixion app preview detail panel.
 
 ## Authority
 
@@ -23,8 +34,38 @@ Implement the second bounded slice from the Helixion Projects multi-origin previ
 
 ## Slice Scope
 
-Persist managed launcher state under `ION/05_context/current/project_launcher/state/launches`, recover prior active launches as detached records, expose honest control fields in launcher status, and keep raw stop tokens out of status/receipt `open_href` payloads. Add focused tests for empty reconciliation, launch persistence, detached restart recovery, and protected public POST proxy behavior.
+Current active source/test/UI scope:
+
+- `ION/04_packages/kernel/ion_project_preview_sessions.py`
+- `ION/04_packages/kernel/ion_project_launcher.py`
+- `ION/04_packages/kernel/ion_project_cockpit.py`
+- `ION/04_packages/kernel/ion_chatgpt_browser_mcp_http_preview.py`
+- `ION/04_packages/kernel/ion_local_cockpit_app.py`
+- `ION/08_ui/joc_cockpit_shell/HelixionAppsPreviewPanel.tsx`
+- `ION/08_ui/joc_cockpit_shell/ionRuntimeCockpitTypes.ts`
+- `ION/tests/test_kernel_ion_project_preview_sessions.py`
+- `ION/tests/test_kernel_ion_project_launcher.py`
+- `ION/tests/test_kernel_ion_local_cockpit_app.py`
+- `ION/tests/test_kernel_ion_chatgpt_browser_mcp_http_preview.py`
+- `ION/tests/test_kernel_ion_cockpit_view_model.py`
+
+Current receipts:
+
+- `ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_PREVIEW_SESSION_SLICE1_20260605T195601Z.receipt.json`
+- `ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_LAUNCH_RECONCILIATION_SLICE2_20260605T205438Z.receipt.json`
+- `ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_RUNTIME_IDENTITY_SLICE3_20260605T212912Z.receipt.json`
+- `ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_PREVIEW_COMPARISON_SLICE4_20260605T231416Z.receipt.json`
+- `ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_PREVIEW_SUMMARY_SLICE5_20260605T231649Z.receipt.json`
+- `ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_PREVIEW_ROUTE_SURFACE_SLICE6_20260605T232114Z.receipt.json`
+- `ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_AI_OBSERVE_SUBSTRATE_SLICE7_20260605T232851Z.receipt.json`
+- `ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_PREVIEW_PAIRING_MAP_SLICE8_20260605T233010Z.receipt.json`
 
 ## Next Safe Step
 
-Validate the launcher/public proxy slice, write a folder-local receipt, and commit only the bounded source/test/context changes.
+Choose one bounded next slice:
+
+- Resolve peer session URL/label details directly inside comparison records so the UI can show a complete two-sided map without inferring from only the selected session.
+- Add a compact read-only AI observe-preview detail panel for target and blocked-target counts, still with no capture or browser automation.
+- Draft, but do not execute, a gated capture plan for future screenshot/DOM/console/network observation with explicit approval and receipts.
+
+Do not start live VM, remote, viewer-local, browser automation, screenshot, or loopback probe work without a new explicit gated packet.

@@ -1,0 +1,39 @@
+{
+  "schema_id": "ion.helixion_joc_rebuild.receipt.v0_1",
+  "receipt_id": "HELIXION_PROJECTS_CONTEXT_REFRESH_SLICE9_20260605T233048Z",
+  "generated_at": "2026-06-05T23:30:48Z",
+  "status": "candidate_validated",
+  "domain": "helixion_projects_app_preview",
+  "slice": "slice9_folder_local_context_refresh",
+  "summary": "Refreshed the Helixion folder-local context capsule and active context package from stale Slice 2 wording to the committed PreviewSession, launcher reconciliation, runtime identity, comparison, route-surface, AI observe substrate, and pairing-map slice chain.",
+  "authority": {
+    "candidate_only": true,
+    "production_authority": false,
+    "live_execution_authority": false,
+    "accepted_state_authority": false,
+    "secrets_authority": false,
+    "service_restart": false,
+    "git_push": false
+  },
+  "changed_files": [
+    "ION/05_context/current/helixion_joc_rebuild/.ion/ION_CONTEXT_CAPSULE.yaml",
+    "ION/05_context/current/helixion_joc_rebuild/.ion/ACTIVE_CONTEXT_PACKAGE.md"
+  ],
+  "receipt_files": [
+    "ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_CONTEXT_REFRESH_SLICE9_20260605T233048Z.receipt.json"
+  ],
+  "validation": [
+    {
+      "command": "git diff --check -- folder-local context slice files",
+      "result": "passed"
+    }
+  ],
+  "non_claims": [
+    "No source runtime change.",
+    "No production deployment.",
+    "No service restart.",
+    "No live Action/MCP mutation.",
+    "No accepted-state claim.",
+    "No Git push."
+  ]
+}
