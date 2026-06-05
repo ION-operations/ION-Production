@@ -1,0 +1,66 @@
+{
+  "schema_id": "ion.helixion_projects_launch_reconciliation_slice2_receipt.v0_1",
+  "created_at": "2026-06-05T20:54:38Z",
+  "status": "candidate_bounded_slice_complete",
+  "domain": "helixion_projects_app_preview",
+  "objective": "Persist durable local project launcher state, reconcile prior active launches as detached after restart, and protect public app-preview POST proxy/event routes with cockpit mutation gates.",
+  "authority": {
+    "production": false,
+    "live_execution": false,
+    "accepted_state": false,
+    "secrets": false,
+    "service_restart": false,
+    "git_push": false
+  },
+  "changes": [
+    {
+      "path": "ION/04_packages/kernel/ion_project_launcher.py",
+      "summary": "Added candidate durable launch state files under ION/05_context/current/project_launcher/state/launches, restart reconciliation, detached launch status fields, persisted lifecycle updates, and untokenized status open_href values."
+    },
+    {
+      "path": "ION/04_packages/kernel/ion_chatgpt_browser_mcp_http_preview.py",
+      "summary": "Added public cockpit mutation access and same-origin checks before POST diagnostics/event and app-preview proxy delegation."
+    },
+    {
+      "path": "ION/tests/test_kernel_ion_project_launcher.py",
+      "summary": "Added focused coverage for empty durable reconciliation, persisted static launch state, detached restart recovery, wrong-token rejection, and mark-only detached stop behavior."
+    },
+    {
+      "path": "ION/tests/test_kernel_ion_chatgpt_browser_mcp_http_preview.py",
+      "summary": "Added HTTP-level public POST proxy auth and same-origin regression coverage."
+    },
+    {
+      "path": "ION/05_context/current/helixion_joc_rebuild/.ion/ACTIVE_CONTEXT_PACKAGE.md",
+      "summary": "Advanced folder-local working context from PreviewSession Slice 1 to Launcher Reconciliation Slice 2."
+    },
+    {
+      "path": "ION/05_context/current/helixion_joc_rebuild/.ion/ION_CONTEXT_CAPSULE.yaml",
+      "summary": "Updated mounted context capsule scope and boundaries for launcher durable reconciliation."
+    }
+  ],
+  "validation": [
+    {
+      "command": "PYTHONPATH=ION/04_packages python3 -m py_compile ION/04_packages/kernel/ion_project_launcher.py ION/04_packages/kernel/ion_chatgpt_browser_mcp_http_preview.py",
+      "ok": true
+    },
+    {
+      "command": "PYTHONPATH=ION/04_packages pytest -q -p no:cacheprovider ION/tests/test_kernel_ion_project_launcher.py ION/tests/test_kernel_ion_project_preview_sessions.py ION/tests/test_kernel_ion_chatgpt_browser_mcp_http_preview.py::test_public_launch_post_proxy_requires_auth_and_same_origin",
+      "ok": true,
+      "result": "7 passed"
+    },
+    {
+      "command": "git diff --check -- bounded slice files",
+      "ok": true
+    },
+    {
+      "command": "PYTHONPATH=ION/04_packages pytest -q -p no:cacheprovider ION/tests/test_kernel_ion_chatgpt_browser_mcp_http_preview.py",
+      "ok": false,
+      "result": "3 unrelated existing failures: audit verdict blocked in test_http_preview_audit_ready_on_current_tree and test_write_http_preview_audit; bounded queue tool schema missing confirmation in test_tools_list_exposes_only_v120_contract_tools. New public POST proxy regression passed in this run."
+    }
+  ],
+  "notes": [
+    "Recovered records from active durable states are marked detached and running false; stop on detached records records a mark-only stop with actual_process_stopped false.",
+    "Status and receipts use untokenized open_href values. The immediate start response still returns a tokenized open_href for the initiating local preview window.",
+    "No services were restarted, no production deployment was attempted, and no live VM/viewer-local runner was implemented in this slice."
+  ]
+}

@@ -1533,6 +1533,71 @@ def test_public_cockpit_serves_weave_surface_endpoint(monkeypatch, tmp_path):
         preview_server.shutdown()
 
 
+def test_public_launch_post_proxy_requires_auth_and_same_origin(monkeypatch, tmp_path):
+    _seed_root(tmp_path)
+    monkeypatch.setenv("ION_COCKPIT_PUBLIC_TOKEN", "test-token")
+    captured = []
+
+    def fake_proxy_fetch(root: Path, launch_id: str, proxy_path: str, **kwargs):
+        captured.append({"root": root, "launch_id": launch_id, "proxy_path": proxy_path, **kwargs})
+        return {
+            "ok": True,
+            "status": 200,
+            "content_type": "application/json",
+            "body": json.dumps({"ok": True, "relayed": True}).encode("utf-8"),
+        }
+
+    monkeypatch.setattr("kernel.ion_chatgpt_browser_mcp_http_preview.project_launcher_proxy_fetch", fake_proxy_fetch)
+
+    from kernel.ion_chatgpt_browser_mcp_http_preview import IonChatGPTPreviewHandler
+
+    preview_server = ThreadingHTTPServer(("127.0.0.1", 0), IonChatGPTPreviewHandler)
+    preview_server.ion_root = tmp_path
+    preview_thread = Thread(target=preview_server.serve_forever, daemon=True)
+    preview_thread.start()
+
+    def post_proxy(headers: dict[str, str]) -> tuple[int, dict]:
+        request = urllib.request.Request(
+            f"http://127.0.0.1:{preview_server.server_address[1]}/cockpit/projects/launch/proxy/demo-launch/api/echo?x=1",
+            data=json.dumps({"hello": "world"}).encode("utf-8"),
+            headers={
+                "Host": "ion.example.test",
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                **headers,
+            },
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=5) as response:
+                return response.status, json.loads(response.read().decode("utf-8"))
+        except urllib.error.HTTPError as exc:
+            return exc.code, json.loads(exc.read().decode("utf-8"))
+
+    try:
+        unauth_status, unauth_payload = post_proxy({"Origin": "https://ion.example.test"})
+        assert unauth_status == 401
+        assert unauth_payload["finding"] == "public_cockpit_login_required"
+        assert captured == []
+
+        no_origin_status, no_origin_payload = post_proxy({"Authorization": "Bearer test-token"})
+        assert no_origin_status == 403
+        assert no_origin_payload["finding"] == "same_origin_required"
+        assert captured == []
+
+        ok_status, ok_payload = post_proxy({"Authorization": "Bearer test-token", "Origin": "https://ion.example.test"})
+        assert ok_status == 200
+        assert ok_payload["relayed"] is True
+        assert captured[-1]["root"] == tmp_path
+        assert captured[-1]["launch_id"] == "demo-launch"
+        assert captured[-1]["proxy_path"] == "api/echo"
+        assert captured[-1]["query"] == "x=1"
+        assert captured[-1]["method"] == "POST"
+        assert json.loads(captured[-1]["body"].decode("utf-8")) == {"hello": "world"}
+    finally:
+        preview_server.shutdown()
+
+
 def test_public_cockpit_serves_system_diagnostics_endpoint(monkeypatch, tmp_path):
     _seed_root(tmp_path)
     monkeypatch.setenv("ION_COCKPIT_PUBLIC_TOKEN", "test-token")

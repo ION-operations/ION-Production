@@ -1,11 +1,11 @@
-# Helixion PreviewSession Slice 1 Context
+# Helixion Project Launcher Slice 2 Context
 
 Status: active candidate folder-local package
-Created: 2026-06-05T19:38:21Z
+Created: 2026-06-05T20:53:57Z
 
 ## Objective
 
-Implement the first bounded slice from the Helixion Projects multi-origin preview architecture: a read-only `PreviewSession` projection that gives the cockpit one model for local, workbench, Application Dev, static/catalog, future VM, and future viewer-local preview surfaces.
+Implement the second bounded slice from the Helixion Projects multi-origin preview architecture: durable local launcher reconciliation that survives cockpit process restarts without claiming process ownership, plus public same-origin protection for app-preview POST proxy/event routes.
 
 ## Authority
 
@@ -23,8 +23,8 @@ Implement the first bounded slice from the Helixion Projects multi-origin previe
 
 ## Slice Scope
 
-Create a kernel projection, expose a local cockpit JSON route, and hydrate the cockpit Projects/App Preview surfaces from that read-only projection. Existing local launch mutations keep their current confirmation gates.
+Persist managed launcher state under `ION/05_context/current/project_launcher/state/launches`, recover prior active launches as detached records, expose honest control fields in launcher status, and keep raw stop tokens out of status/receipt `open_href` payloads. Add focused tests for empty reconciliation, launch persistence, detached restart recovery, and protected public POST proxy behavior.
 
 ## Next Safe Step
 
-Add `ion_project_preview_sessions.py`, route `/cockpit/previews/model.json`, focused tests, and minimal UI hydration that shows provider/session state without starting any app or VM.
+Validate the launcher/public proxy slice, write a folder-local receipt, and commit only the bounded source/test/context changes.

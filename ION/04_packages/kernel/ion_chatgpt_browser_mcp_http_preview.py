@@ -4236,6 +4236,10 @@ try {
             return
         if path == "/cockpit/projects/launch/diagnostics/event":
             payload = self._read_payload()
+            ok, finding, _token = self._check_public_cockpit_mutation_access(payload)
+            if not ok:
+                self._send_public_cockpit_blocked(str(finding), next_path="/cockpit#apps")
+                return
             try:
                 result = app_diagnostics_record_browser_event(
                     self.server.ion_root,  # type: ignore[attr-defined]
@@ -4246,6 +4250,11 @@ try {
             self._send_json(200 if result.get("ok") else 409, result)
             return
         if path.startswith("/cockpit/projects/launch/proxy/"):
+            payload = self._read_payload()
+            ok, finding, _token = self._check_public_cockpit_mutation_access(payload)
+            if not ok:
+                self._send_public_cockpit_blocked(str(finding), next_path="/cockpit#apps")
+                return
             parsed = urlparse(self.path)
             rest = parsed.path.removeprefix("/cockpit/projects/launch/proxy/")
             launch_id, _, proxy_path = rest.partition("/")
@@ -4255,7 +4264,7 @@ try {
                 proxy_path,
                 query=parsed.query,
                 method="POST",
-                body=json.dumps(self._read_payload()).encode("utf-8"),
+                body=json.dumps(payload).encode("utf-8"),
                 headers={key: value for key, value in self.headers.items()},
             )
             self._send_bytes(

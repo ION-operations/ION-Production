@@ -40,6 +40,8 @@ PROJECT_LAUNCHER_DIR = CURRENT / "project_launcher"
 PROJECT_LAUNCHER_LOG_DIR = PROJECT_LAUNCHER_DIR / "logs"
 PROJECT_LAUNCHER_RECEIPTS_DIR = PROJECT_LAUNCHER_DIR / "receipts"
 PROJECT_LAUNCHER_SCREENSHOTS_DIR = PROJECT_LAUNCHER_DIR / "screenshots"
+PROJECT_LAUNCHER_STATE_DIR = PROJECT_LAUNCHER_DIR / "state"
+PROJECT_LAUNCHER_LAUNCH_STATE_DIR = PROJECT_LAUNCHER_STATE_DIR / "launches"
 APP_DIAGNOSTICS_CONFIG_PATH = PROJECT_LAUNCHER_DIR / "app_diagnostics" / "APP_DIAGNOSTICS_CONFIG.json"
 APP_DIAGNOSTICS_MATRIX_DIR = PROJECT_LAUNCHER_DIR / "app_diagnostics" / "matrix_runs"
 DIAGNOSTIC_SMOKE_APPS_DIR = PROJECT_LAUNCHER_DIR / "diagnostic_smoke_apps"
@@ -72,6 +74,9 @@ class LaunchRecord:
     created_at: str = field(default_factory=lambda: utc_now())
     updated_at: str = field(default_factory=lambda: utc_now())
     exit_code: int | None = None
+    detached: bool = False
+    recovered_at: str = ""
+    last_known_state: str = ""
 
 
 def utc_now() -> str:
@@ -132,9 +137,15 @@ def project_launch_metadata(path: str | Path, *, scripts: Mapping[str, Any] | No
 
 def build_project_launcher_status(root: str | Path = ".") -> dict[str, Any]:
     shell_root = Path(root).expanduser().resolve()
+    reconciliation = _reconcile_durable_launches(shell_root)
     with _LOCK:
-        records = [_record_payload(shell_root, record) for record in list(_LAUNCHES.values())]
+        records = [
+            _record_payload(shell_root, record)
+            for record in list(_LAUNCHES.values())
+            if _record_belongs_to_root(shell_root, record)
+        ]
     running = [item for item in records if item.get("running")]
+    detached = [item for item in records if item.get("detached")]
     return {
         "schema_id": "ion.project_launcher_status.v1",
         "ok": True,
@@ -142,8 +153,17 @@ def build_project_launcher_status(root: str | Path = ".") -> dict[str, Any]:
         "confirmation": PROJECT_LOCAL_LAUNCH_CONFIRMATION,
         "host": HOST,
         "running_count": len(running),
+        "detached_count": len(detached),
         "launch_count": len(records),
         "launches": records,
+        "durable_state": {
+            "schema_id": "ion.project_launcher_durable_state_summary.v0_1",
+            "enabled": True,
+            "state_dir": PROJECT_LAUNCHER_LAUNCH_STATE_DIR.as_posix(),
+            "recovered_count": reconciliation.get("recovered_count", 0),
+            "state_file_count": reconciliation.get("state_file_count", 0),
+            "detached_count": len(detached),
+        },
         "authority": {
             "candidate_local_runtime_control": True,
             "accepted_state_authority": False,
@@ -187,7 +207,7 @@ def project_launcher_start(root: str | Path, payload: Mapping[str, Any]) -> dict
                     "ok": True,
                     "reused": True,
                     "launch": _record_payload(shell_root, record),
-                    "open_href": _open_href(record),
+                    "open_href": _open_href(record, include_stop_token=True),
                     "url": record.url,
                     "managed_window_stops_server": True,
                 }
@@ -216,24 +236,26 @@ def project_launcher_start(root: str | Path, payload: Mapping[str, Any]) -> dict
         )
         _LAUNCHES[launch_id] = record
         log_path.parent.mkdir(parents=True, exist_ok=True)
+        _persist_launch_state(shell_root, record, reason="created")
 
     try:
         if install_repair and (source_path / "package.json").exists():
-            _spawn_install_then_launch(record, source_path)
+            _spawn_install_then_launch(record, source_path, shell_root)
         else:
-            _spawn_dev_server(record, source_path, command)
+            _spawn_dev_server(record, source_path, command, shell_root)
     except Exception as exc:
         with _LOCK:
             record.state = "failed"
             record.message = f"launch failed: {exc.__class__.__name__}"
             record.updated_at = utc_now()
+            _persist_launch_state(shell_root, record, reason="launch_failed")
         return {"ok": False, "finding": "project_launch_failed", "error": exc.__class__.__name__, "launch": _record_payload(shell_root, record)}
 
     _write_launch_receipt(shell_root, "start", record)
     return {
         "ok": True,
         "launch": _record_payload(shell_root, record),
-        "open_href": _open_href(record),
+        "open_href": _open_href(record, include_stop_token=True),
         "url": record.url,
         "managed_window_stops_server": True,
         "production_authority": False,
@@ -247,6 +269,7 @@ def project_launcher_stop(root: str | Path, payload: Mapping[str, Any]) -> dict[
     launch_id = compact(payload.get("launch_id"))
     if not launch_id:
         return {"ok": False, "finding": "launch_id_required"}
+    _reconcile_durable_launches(shell_root, launch_id=launch_id)
     with _LOCK:
         record = _LAUNCHES.get(launch_id)
     if not record:
@@ -257,14 +280,31 @@ def project_launcher_stop(root: str | Path, payload: Mapping[str, Any]) -> dict[
     if not confirmation_ok and not stop_token_ok:
         return {"ok": False, "finding": "launch_stop_confirmation_required", "required_confirmation": PROJECT_LOCAL_LAUNCH_CONFIRMATION}
 
-    _terminate_record(record)
+    detached = bool(record.detached)
+    if detached:
+        with _LOCK:
+            record.state = "stopped"
+            record.message = f"{record.label} detached record marked stopped; no process handle was available"
+            record.updated_at = utc_now()
+            _persist_launch_state(shell_root, record, reason="detached_marked_stopped")
+    else:
+        _terminate_record(record)
+        _persist_launch_state(shell_root, record, reason="stop")
     _write_launch_receipt(shell_root, "stop", record)
-    return {"ok": True, "launch": _record_payload(shell_root, record), "production_authority": False, "accepted_state_authority": False}
+    return {
+        "ok": True,
+        "finding": "launch_process_detached_marked_stopped" if detached else None,
+        "launch": _record_payload(shell_root, record),
+        "actual_process_stopped": not detached,
+        "production_authority": False,
+        "accepted_state_authority": False,
+    }
 
 
 def project_launcher_status(root: str | Path, payload: Mapping[str, Any]) -> dict[str, Any]:
     shell_root = Path(root).expanduser().resolve()
     launch_id = compact(payload.get("launch_id"))
+    _reconcile_durable_launches(shell_root, launch_id=launch_id or None)
     with _LOCK:
         if launch_id:
             record = _LAUNCHES.get(launch_id)
@@ -279,6 +319,7 @@ def project_launcher_diagnostics(root: str | Path, payload: Mapping[str, Any]) -
     launch_id = compact(payload.get("launch_id"))
     if not launch_id:
         return {"ok": False, "finding": "launch_id_required"}
+    _reconcile_durable_launches(shell_root, launch_id=launch_id)
     with _LOCK:
         record = _LAUNCHES.get(launch_id)
     if not record:
@@ -613,6 +654,7 @@ def _safe_file_token(value: str) -> str:
 
 def build_project_launcher_open_html(root: str | Path, launch_id: str, stop_token: str = "") -> str:
     shell_root = Path(root).expanduser().resolve()
+    _reconcile_durable_launches(shell_root, launch_id=launch_id)
     with _LOCK:
         record = _LAUNCHES.get(launch_id)
     if not record:
@@ -1321,7 +1363,7 @@ def _launch_command(path: Path, framework: str, port: int) -> list[str] | None:
     return None
 
 
-def _spawn_install_then_launch(record: LaunchRecord, path: Path) -> None:
+def _spawn_install_then_launch(record: LaunchRecord, path: Path, shell_root: Path) -> None:
     log = Path(record.log_path)
     stream = log.open("ab")
     installer = subprocess.Popen(
@@ -1336,6 +1378,7 @@ def _spawn_install_then_launch(record: LaunchRecord, path: Path) -> None:
     record.state = "installing"
     record.message = "installing or repairing dependencies"
     record.updated_at = utc_now()
+    _persist_launch_state(shell_root, record, reason="installing")
 
     def waiter() -> None:
         code = installer.wait()
@@ -1347,13 +1390,14 @@ def _spawn_install_then_launch(record: LaunchRecord, path: Path) -> None:
                 record.message = f"npm install failed with exit code {code}"
                 record.exit_code = code
                 record.updated_at = utc_now()
+                _persist_launch_state(shell_root, record, reason="install_failed")
             return
-        _spawn_dev_server(record, path, record.command)
+        _spawn_dev_server(record, path, record.command, shell_root)
 
     threading.Thread(target=waiter, name=f"ion-project-install-{record.launch_id}", daemon=True).start()
 
 
-def _spawn_dev_server(record: LaunchRecord, path: Path, command: list[str]) -> None:
+def _spawn_dev_server(record: LaunchRecord, path: Path, command: list[str], shell_root: Path) -> None:
     log = Path(record.log_path)
     stream = log.open("ab")
     process = subprocess.Popen(
@@ -1369,6 +1413,7 @@ def _spawn_dev_server(record: LaunchRecord, path: Path, command: list[str]) -> N
         record.state = "running"
         record.message = f"{record.label} is running at {record.url}"
         record.updated_at = utc_now()
+        _persist_launch_state(shell_root, record, reason="running")
 
     def waiter() -> None:
         code = process.wait()
@@ -1379,6 +1424,7 @@ def _spawn_dev_server(record: LaunchRecord, path: Path, command: list[str]) -> N
             record.state = "stopped"
             record.message = f"{record.label} stopped with exit code {code}"
             record.updated_at = utc_now()
+            _persist_launch_state(shell_root, record, reason="process_exit")
 
     threading.Thread(target=waiter, name=f"ion-project-dev-{record.launch_id}", daemon=True).start()
 
@@ -1405,6 +1451,8 @@ def _terminate_record(record: LaunchRecord) -> None:
 
 
 def _record_running(record: LaunchRecord) -> bool:
+    if record.detached:
+        return False
     process = record.process
     if not process:
         return record.state in {"installing", "starting", "running"}
@@ -1420,7 +1468,11 @@ def _record_running(record: LaunchRecord) -> bool:
 
 
 def _record_payload(shell_root: Path, record: LaunchRecord) -> dict[str, Any]:
+    before = (record.state, record.exit_code, record.updated_at)
     running = _record_running(record)
+    if before != (record.state, record.exit_code, record.updated_at):
+        _persist_launch_state(shell_root, record, reason="status_reconcile")
+    process_pid = record.process.pid if record.process else None
     return {
         "launch_id": record.launch_id,
         "project_id": record.project_id,
@@ -1435,6 +1487,13 @@ def _record_payload(shell_root: Path, record: LaunchRecord) -> dict[str, Any]:
         "state": record.state,
         "message": record.message,
         "running": running,
+        "detached": record.detached,
+        "process_attached": bool(record.process and not record.detached),
+        "process_pid": process_pid,
+        "actual_process_control": bool(record.process and not record.detached),
+        "recovered_at": record.recovered_at,
+        "last_known_state": record.last_known_state,
+        "stop_available": bool(running and not record.detached),
         "created_at": record.created_at,
         "updated_at": record.updated_at,
         "exit_code": record.exit_code,
@@ -1452,6 +1511,7 @@ def _record_payload(shell_root: Path, record: LaunchRecord) -> dict[str, Any]:
 def project_launcher_proxy_fetch(root: str | Path, launch_id: str, proxy_path: str, query: str = "", method: str = "GET", body: bytes = b"", headers: Mapping[str, str] | None = None) -> dict[str, Any]:
     shell_root = Path(root).expanduser().resolve()
     safe_launch_id = compact(launch_id)
+    _reconcile_durable_launches(shell_root, launch_id=safe_launch_id)
     with _LOCK:
         record = _LAUNCHES.get(safe_launch_id)
     if not record:
@@ -2018,8 +2078,11 @@ except Exception as exc:
     return last_payload
 
 
-def _open_href(record: LaunchRecord) -> str:
-    return f"/cockpit/projects/launch/open/{record.launch_id}?stop_token={record.stop_token}"
+def _open_href(record: LaunchRecord, *, include_stop_token: bool = False) -> str:
+    href = f"/cockpit/projects/launch/open/{record.launch_id}"
+    if include_stop_token and record.stop_token:
+        return f"{href}?stop_token={record.stop_token}"
+    return href
 
 
 def _tail(path: str, limit: int = 3000) -> str:
@@ -2034,6 +2097,140 @@ def _tail(path: str, limit: int = 3000) -> str:
             return handle.read().decode("utf-8", errors="replace")
     except Exception:
         return ""
+
+
+def _record_belongs_to_root(shell_root: Path, record: LaunchRecord) -> bool:
+    try:
+        log_path = Path(record.log_path).expanduser().resolve()
+        log_path.relative_to((shell_root / PROJECT_LAUNCHER_LOG_DIR).resolve())
+        return True
+    except Exception:
+        return False
+
+
+def _launch_state_path(shell_root: Path, launch_id: str) -> Path:
+    return shell_root / PROJECT_LAUNCHER_LAUNCH_STATE_DIR / f"{_safe_file_token(launch_id)}.json"
+
+
+def _record_state_payload(record: LaunchRecord, *, reason: str) -> dict[str, Any]:
+    process = record.process
+    command_text = "\0".join(record.command)
+    return {
+        "schema_id": "ion.project_launcher_durable_state.v0_1",
+        "updated_at": utc_now(),
+        "reason": reason,
+        "launch": {
+            "launch_id": record.launch_id,
+            "project_id": record.project_id,
+            "version_id": record.version_id,
+            "label": record.label,
+            "path": record.path,
+            "path_sha256": hashlib.sha256(record.path.encode("utf-8")).hexdigest(),
+            "framework": record.framework,
+            "command": record.command,
+            "command_sha256": hashlib.sha256(command_text.encode("utf-8")).hexdigest(),
+            "url": record.url,
+            "port": record.port,
+            "log_path": record.log_path,
+            "stop_token": record.stop_token,
+            "stop_token_sha256": hashlib.sha256(record.stop_token.encode("utf-8")).hexdigest() if record.stop_token else "",
+            "state": record.state,
+            "message": record.message,
+            "created_at": record.created_at,
+            "updated_at": record.updated_at,
+            "exit_code": record.exit_code,
+            "detached": record.detached,
+            "recovered_at": record.recovered_at,
+            "last_known_state": record.last_known_state or record.state,
+            "process_pid": process.pid if process else None,
+            "process_attached": bool(process and not record.detached),
+        },
+    }
+
+
+def _persist_launch_state(shell_root: Path, record: LaunchRecord, *, reason: str) -> None:
+    try:
+        write_json(_launch_state_path(shell_root, record.launch_id), _record_state_payload(record, reason=reason))
+    except Exception:
+        pass
+
+
+def _load_launch_record_from_state(shell_root: Path, path: Path) -> LaunchRecord | None:
+    payload = read_json(path)
+    launch = payload.get("launch") if isinstance(payload.get("launch"), Mapping) else {}
+    launch_id = compact(launch.get("launch_id"), path.stem)
+    source_path = _authorized_project_path(shell_root, compact(launch.get("path")))
+    if not launch_id or source_path is None:
+        return None
+    command_value = launch.get("command")
+    command = [compact(item) for item in command_value if compact(item)] if isinstance(command_value, list) else []
+    try:
+        port = int(launch.get("port") or 0)
+    except (TypeError, ValueError):
+        port = 0
+    if port <= 0:
+        return None
+    log_path = compact(launch.get("log_path")) or (shell_root / PROJECT_LAUNCHER_LOG_DIR / f"{launch_id}.log").as_posix()
+    state = compact(launch.get("state"), "detached")
+    terminal_states = {"stopped", "failed", "install_failed"}
+    last_known_state = compact(launch.get("last_known_state"), state)
+    detached = state not in terminal_states
+    visible_state = "detached" if detached else state
+    label = compact(launch.get("label"), source_path.name)
+    message = compact(launch.get("message"))
+    if detached:
+        message = f"{label} recovered from durable state; process ownership is detached"
+    record = LaunchRecord(
+        launch_id=launch_id,
+        project_id=compact(launch.get("project_id"), _hash_id(source_path.as_posix())[:12]),
+        version_id=compact(launch.get("version_id"), _hash_id(source_path.as_posix())[:12]),
+        label=label,
+        path=source_path.as_posix(),
+        framework=compact(launch.get("framework"), project_launch_metadata(source_path).get("framework", "metadata")),
+        command=command,
+        url=compact(launch.get("url"), f"http://{HOST}:{port}/"),
+        port=port,
+        log_path=log_path,
+        stop_token=compact(launch.get("stop_token")),
+        state=visible_state,
+        message=message or f"{label} recovered from durable state",
+        created_at=compact(launch.get("created_at"), utc_now()),
+        updated_at=compact(launch.get("updated_at"), utc_now()),
+        exit_code=launch.get("exit_code") if isinstance(launch.get("exit_code"), int) else None,
+        detached=detached,
+        recovered_at=compact(launch.get("recovered_at"), utc_now()),
+        last_known_state=last_known_state,
+    )
+    if not _record_belongs_to_root(shell_root, record):
+        return None
+    return record
+
+
+def _reconcile_durable_launches(shell_root: Path, *, launch_id: str | None = None) -> dict[str, Any]:
+    state_dir = shell_root / PROJECT_LAUNCHER_LAUNCH_STATE_DIR
+    if not state_dir.exists():
+        return {"state_file_count": 0, "recovered_count": 0}
+    safe_launch_id = compact(launch_id)
+    paths = [_launch_state_path(shell_root, safe_launch_id)] if safe_launch_id else sorted(
+        state_dir.glob("*.json"),
+        key=lambda item: item.stat().st_mtime if item.exists() else 0,
+        reverse=True,
+    )[:200]
+    paths = [path for path in paths if path.exists()]
+    recovered_count = 0
+    with _LOCK:
+        for path in paths:
+            payload = read_json(path)
+            launch = payload.get("launch") if isinstance(payload.get("launch"), Mapping) else {}
+            record_id = compact(launch.get("launch_id"), path.stem)
+            if not record_id or record_id in _LAUNCHES:
+                continue
+            record = _load_launch_record_from_state(shell_root, path)
+            if record is None:
+                continue
+            _LAUNCHES[record.launch_id] = record
+            recovered_count += 1
+    return {"state_file_count": len(paths), "recovered_count": recovered_count}
 
 
 def _next_free_port() -> int:

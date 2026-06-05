@@ -1,5 +1,5 @@
 schema_id: ion.folder_local_context_capsule.v0_1
-created_at: "2026-06-05T19:38:21Z"
+created_at: "2026-06-05T20:53:57Z"
 folder: ION/05_context/current/helixion_joc_rebuild
 domain: helixion_projects_app_preview
 status: active_candidate_context
@@ -14,26 +14,27 @@ source_packets:
   - ION/05_context/current/helixion_joc_rebuild/diagnostics_research/HELIXION_PROJECTS_MULTI_ORIGIN_PREVIEW_ARCHITECTURE_20260605T192746Z.candidate.md
   - ION/05_context/current/helixion_joc_rebuild/diagnostics_research/HELIXION_PROJECTS_MULTI_ORIGIN_PREVIEW_ARCHITECTURE_20260605T192746Z.candidate.json
 current_objective:
-  title: Helixion PreviewSession Slice 1
-  summary: Add a read-only PreviewSession projection that unifies existing local launcher, project workbench, Application Dev, public projects, and cockpit preview signals.
-  next_slice: preview_session_projection
+  title: Helixion Project Launcher Slice 2
+  summary: Add durable local launcher state reconciliation and protected public app-preview POST proxy/event routing without claiming restart-time process ownership.
+  next_slice: launcher_durable_reconciliation
 scope:
   include:
-    - ION/04_packages/kernel/ion_project_preview_sessions.py
+    - ION/04_packages/kernel/ion_project_launcher.py
+    - ION/04_packages/kernel/ion_chatgpt_browser_mcp_http_preview.py
     - ION/04_packages/kernel/ion_local_cockpit_app.py
-    - ION/08_ui/joc_cockpit_shell/LocalCockpitApp.tsx
-    - ION/08_ui/joc_cockpit_shell/HelixionAppsPreviewPanel.tsx
-    - ION/tests/test_kernel_ion_project_preview_sessions.py
+    - ION/tests/test_kernel_ion_project_launcher.py
+    - ION/tests/test_kernel_ion_chatgpt_browser_mcp_http_preview.py
   exclude:
     - production deployment
     - Cloudflare tunnel mutation
     - service restart
     - live VM runner implementation
     - viewer-local helper mutation
+    - destructive cleanup
 boundaries:
-  - Read-only preview projection is allowed.
-  - Existing local launch start/stop confirmations remain unchanged.
-  - No new generic launch_app permission.
-  - VM and viewer-local runners are schema placeholders only in this slice.
+  - Durable launcher state is candidate local runtime state only.
+  - Recovered launches without process handles must be marked detached.
+  - Stop may mark detached records stopped but must not claim a process was killed.
+  - Raw stop tokens must not appear in launcher status or receipts through tokenized open_href values.
   - Public mutation auth and same-origin rules must not be weakened.
 receipt_lane: ION/05_context/current/helixion_joc_rebuild/.ion/receipts
