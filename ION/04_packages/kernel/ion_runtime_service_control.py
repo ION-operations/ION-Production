@@ -5872,7 +5872,7 @@ def invoke_runtime_service_route(root: str | Path | None, *, route_id: str, args
         return local_intelligence_context_pack_compile_plus(root, args)
     if route_id == "lexical_index_manifest":
         return local_intelligence_lexical_index_manifest(root, args)
-    if route_id == DOMAIN_WEAVER_SWARM_EXPANSION_INDEX_ROUTE_ID:
+    if route_id in {DOMAIN_WEAVER_SWARM_EXPANSION_INDEX_ROUTE_ID, "domain_weaver_swarm_expansion_index"}:
         return local_intelligence_domain_weaver_swarm_expansion_index(root, args)
     if route_id == "large_file_profile":
         return large_file_profile(root, args)

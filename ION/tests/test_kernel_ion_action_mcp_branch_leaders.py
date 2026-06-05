@@ -3874,6 +3874,11 @@ def test_local_intelligence_domain_weaver_swarm_expansion_index_is_monitor_frien
         args={"max_files": 50},
         expected_route_schema_version="v0",
     )
+    direct_runtime_index = runtime_services.invoke_runtime_service_route(
+        root,
+        route_id="domain_weaver_swarm_expansion_index",
+        args={"root_path": "ION/05_context/current/domain_weaver/swarm_expansion", "max_files": 50},
+    )
     child_index = action_branch_invoke(
         root,
         branch_id="local_intelligence",
@@ -3904,6 +3909,12 @@ def test_local_intelligence_domain_weaver_swarm_expansion_index_is_monitor_frien
     assert indexed["ok"] is True
     assert indexed["mutates_active_state"] is False
     result = indexed["delegated_result"]
+    assert direct_runtime_index["ok"] is True
+    assert direct_runtime_index["route_id_used"] == "domain_weaver_swarm_expansion_index"
+    assert direct_runtime_index["stored_index_written"] is False
+    assert direct_runtime_index["mutates_active_state"] is False
+    assert direct_runtime_index["accepted_state_claim"] is False
+    assert direct_runtime_index["materialization_claim"] is False
     assert result["ok"] is True
     assert result["route_id_used"] == "domain_weaver_swarm_expansion_index"
     assert result["index_route_version"] == "ion.local_intelligence.domain_weaver_swarm_expansion_index.v0_1"

@@ -25,6 +25,7 @@ MAX_PROCESS_ROWS = 120
 MAX_PORT_ROWS = 240
 MAX_DEV_SERVER_ROWS = 120
 HTTP_PROBE_TIMEOUT_SECONDS = 0.45
+STOPPABLE_PROJECT_WORKSPACES = {"Application_Dev", "Cosmos"}
 
 
 def _utc_now() -> str:
@@ -93,8 +94,6 @@ def _protected_process(pid: int, command: str = "", cwd: str | None = None, ion_
     lower = f"{command} {cwd or ''}".lower()
     if pid <= 1:
         return True
-    if ion_root is not None and _is_under(cwd, ion_root):
-        return True
     markers = (
         "codex",
         "kernel.ion_",
@@ -111,7 +110,11 @@ def _protected_process(pid: int, command: str = "", cwd: str | None = None, ion_
         "pipewire",
         "pulseaudio",
     )
-    return any(marker in lower for marker in markers)
+    if any(marker in lower for marker in markers):
+        return True
+    if ion_root is not None and _is_under(cwd, ion_root):
+        return _classify_workspace(cwd, command) not in STOPPABLE_PROJECT_WORKSPACES
+    return False
 
 
 def _dev_server(command: str = "", cwd: str | None = None, ion_root: Path | None = None) -> bool:
