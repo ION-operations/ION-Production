@@ -1,0 +1,67 @@
+schema_id: ion.architecture_signal.v0_1
+signal_id: ARCHSIG-ION-ORDERED-CONTEXT-FANOUT-SEQUENTIAL-BATON-V4-4
+captured_at_utc: "20260513T000000Z"
+source: operator_chat
+raw_summary: "Agent B needs Agent A's findings before reading section B."
+normalized_requirement: >-
+  ION-wide ordered fan-out requires downstream agents, sections, carriers, or
+  project workers to inherit dense upstream context batons before beginning
+  dependent analysis. Agent B inherits Agent A before section B; Agent C
+  inherits Agent A plus Agent B before section C.
+aliases:
+  - relay packet
+  - context baton
+  - handoff capsule
+  - forward alert
+  - downstream alert
+  - upstream reopen alert
+  - branch return metadata
+  - fan-in settlement input
+related_existing_protocols:
+  - ION/02_architecture/ARCHITECTURE_SIGNAL_CAPTURE_AND_ORDERED_CONTEXT_FANOUT_PROTOCOL.md
+  - ION/02_architecture/BOUNDED_PARALLELISM_AND_SETTLEMENT_PROTOCOL.md
+  - ION/02_architecture/FAN_IN_MERGE_REVIEW_SETTLEMENT_PROTOCOL.md
+  - ION/02_architecture/BOUNDED_MULTI_AGENT_ALLOCATOR_PROTOCOL.md
+  - ION/02_architecture/CONTEXT_GRAPH_SUBSTRATE_PROTOCOL.md
+  - ION/02_architecture/AGENT_GRAPH_CUSTODIAN_AND_SUBSPECIALIST_FANOUT_PROTOCOL.md
+  - ION/02_architecture/ACTIVATION_SUMMARY_HANDOFF_CAPSULE_MATERIALIZATION_PROTOCOL.md
+  - ION/02_architecture/HANDOFF_CAPSULE_EXECUTOR_ENTRY_REHEARSAL_PROTOCOL.md
+product_version_target: v4.4a_v4.4b
+status: candidate_unimplemented
+continuity_export_required: true
+tests_required: true
+accepted_state_claim: false
+route:
+  route_id: ARCHITECTURE_SIGNAL_CAPTURE_TO_ION_ORDERED_CONTEXT_FANOUT
+  target_protocol: ION_ORDERED_CONTEXT_FANOUT_V4_4
+  route_reason: >-
+    The operator identified an ION-wide sequential baton requirement that must
+    be preserved as candidate architecture and recovered by future chats and
+    carriers.
+  ordered_baton_required: true
+continuity_export_refs:
+  - ION/02_architecture/ARCHITECTURE_SIGNAL_CAPTURE_AND_ORDERED_CONTEXT_FANOUT_PROTOCOL.md
+  - ION/03_registry/ion_architecture_signal.schema.json
+  - ION/07_templates/context/ARCHITECTURE_SIGNAL_CAPTURE.template.yaml
+  - ION/tests/test_kernel_ion_architecture_signal_capture.py
+ordered_context_fanout:
+  protocol_id: ION_ORDERED_CONTEXT_FANOUT_V4_4
+  scope: ion_wide
+  section_order:
+    - agent: Agent A
+      section: section A
+      input_batons: []
+      output_baton: Agent A dense baton
+    - agent: Agent B
+      section: section B
+      input_batons:
+        - Agent A dense baton
+      output_baton: Agent A plus Agent B dense baton
+    - agent: Agent C
+      section: section C
+      input_batons:
+        - Agent A dense baton
+        - Agent B dense baton
+      output_baton: Agent A plus Agent B plus Agent C dense baton
+  upstream_reopen_alert_required: true
+  fan_in_settlement_input_required: true

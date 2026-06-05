@@ -1,0 +1,30 @@
+schema_id: ion.persona_presentation.template.v1
+status: active_candidate
+purpose: "Template for user-visible persona presentation attached to a carrier mount receipt."
+required_fields:
+  persona_presentation:
+    - persona_id
+    - persona_mounted
+    - presentation_mode
+    - public_voice
+    - gesture_state
+    - visible_stance
+    - public_working_state
+    - hidden_reasoning_exposed
+    - fallback_behavior
+presentation_modes:
+  - full_persona
+  - partial_persona
+  - receipt_only
+fallback_behavior:
+  - show_mount_receipt
+  - show_source_posture
+  - show_authority
+  - show_blockers
+  - operate_receipt_only
+hard_blocks:
+  hidden_reasoning_exposed: true
+non_claims:
+  - "persona is presentation, not authority"
+  - "public working state is allowed"
+  - "hidden chain-of-thought is never exposed"

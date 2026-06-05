@@ -1,0 +1,26 @@
+schema_id: ion.continuity_transfer_manifest.v0_1
+package_id: ION_CONTINUITY_TRANSFER_PACKAGE_<timestamp>
+ion_project_hash: ionproj_<hash>
+project_hash_status: assigned_candidate
+created_at_utc: <timestamp>
+source_workspace: <workspace_root>
+source_branch: <git_branch>
+source_commit: <git_commit>
+posture: candidate_continuity_transfer
+accepted_state_claim: false
+production_authority: false
+live_execution_authority: false
+secrets_authority: false
+settlement_required: true
+package_files:
+  - README_START_HERE.md
+  - ion_boot_sequence_result.yaml
+  - ion_persona_response_envelope.yaml
+  - ion_sequence_continuation.yaml
+  - ion_dynamic_domain_agent_expansion.yaml
+  - ion_project_profile.yaml
+  - ion_receipt_summary.yaml
+  - ion_proof_manifest.yaml
+  - ion_non_claims.yaml
+  - ion_settlement_required.yaml
+  - NEXT_CHAT_PROMPT.txt

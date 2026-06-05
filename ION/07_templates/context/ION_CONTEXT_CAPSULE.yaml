@@ -1,0 +1,73 @@
+schema_id: ion.branch_context_node.v0_1
+branch_id: ion_templates_context
+branch_label: ION Context Templates
+path: ION/07_templates/context
+maturity_level: B3_routed_branch
+purpose: Template branch for context packages, README branch nodes, context capsules, child indexes, and receipt fragments.
+
+authority:
+  accepted_state_claim: false
+  production_authority: false
+  live_execution_authority: false
+  default_work_authority: read_only_or_sandbox_candidate
+  requires_operator_approval_for:
+    - production_write
+    - accepted_state_landing
+
+parent_domain: ion_core
+parent_chain:
+  - ion_repo_root
+  - ion_core
+child_domains: []
+
+read_order:
+  - README.md
+  - ION_CONTEXT_CAPSULE.yaml
+  - README_BRANCH_NODE.template.md
+  - ION_CONTEXT_CAPSULE.branch.template.yaml
+
+local_surfaces:
+  protocols:
+    - ../../02_architecture/README_BRANCH_CONTEXT_PROTOCOL.md
+  routes: []
+  templates:
+    - README_BRANCH_NODE.template.md
+    - ION_CONTEXT_CAPSULE.branch.template.yaml
+    - BRANCH_CHILD_INDEX.template.yaml
+    - ../receipts/BRANCH_CONTEXT_RECEIPT_FRAGMENT.template.yaml
+  schemas:
+    - ../../03_registry/ion_branch_context_node.schema.json
+  agents: []
+  registries:
+    - ../../03_registry/ion_branch_context_policy.yaml
+  tests:
+    - ../../tests/test_kernel_ion_readme_branch_context_protocol.py
+  receipts: []
+  status: []
+  child_index: []
+
+receipts:
+  latest: []
+  required_before_state_claim: true
+  missing_receipt_response: emit_blocker_or_candidate_receipt_fragment
+
+continuity_export:
+  include:
+    - README.md
+    - ION_CONTEXT_CAPSULE.yaml
+    - README_BRANCH_NODE.template.md
+    - ION_CONTEXT_CAPSULE.branch.template.yaml
+    - BRANCH_CHILD_INDEX.template.yaml
+    - ../receipts/BRANCH_CONTEXT_RECEIPT_FRAGMENT.template.yaml
+  exclude:
+    - secrets
+    - credentials
+  export_profile: null
+
+tags:
+  - branch:templates-context
+  - node:capsule
+  - state:candidate
+  - authority:no-production
+  - authority:no-live
+  - artifact:template
