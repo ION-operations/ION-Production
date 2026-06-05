@@ -5,6 +5,7 @@ import type {
   IonProjectLauncherRecord,
   IonProjectPortfolioFamily,
   IonProjectPortfolioVersion,
+  IonProjectPreviewComparison,
   IonProjectPreviewSession,
 } from './ionRuntimeCockpitTypes';
 
@@ -70,6 +71,7 @@ export function HelixionAppsPreviewPanel({ runtime, onRuntimeRefresh }: { runtim
   const portfolio = projectCockpit?.portfolio;
   const previewSessionModel = projectCockpit?.preview_sessions;
   const previewSessions = previewSessionModel?.sessions ?? [];
+  const previewComparisons = previewSessionModel?.comparisons ?? [];
   const localLaunchConfirmation = projectCockpit?.local_launch_confirmation ?? projectCockpit?.launcher?.confirmation ?? 'ION_PROJECT_LOCAL_LAUNCH_CONFIRMED';
   const [projectLaunchRecords, setProjectLaunchRecords] = useState<IonProjectLauncherRecord[]>([]);
   const [launchBusyKey, setLaunchBusyKey] = useState('');
@@ -111,6 +113,7 @@ export function HelixionAppsPreviewPanel({ runtime, onRuntimeRefresh }: { runtim
   const selectedApp = visibleApps.find((app) => app.key === selectedKey) ?? visibleApps[0] ?? appRows[0];
   const selectedRecord = launchRecordForApp(selectedApp, launchRecords);
   const selectedPreviewSession = previewSessionForApp(selectedApp, previewSessions, selectedRecord);
+  const selectedComparison = comparisonForSession(selectedPreviewSession, previewComparisons);
   const runningCount = launchRecords.filter((record) => isManagedLaunchRunning(record)).length;
   const detachedCount = launchRecords.filter((record) => record.detached).length;
   const launchableCount = appRows.filter((app) => app.launchable || app.launcherUrl || app.previewHref).length;
@@ -345,6 +348,7 @@ export function HelixionAppsPreviewPanel({ runtime, onRuntimeRefresh }: { runtim
           <Metric label="running" value={String(runningCount)} />
           <Metric label="detached" value={String(previewSessionSummary.detached_count ?? detachedCount)} />
           <Metric label="sessions" value={String(previewSessionSummary.session_count ?? previewSessions.length)} />
+          <Metric label="pairs" value={String(previewSessionSummary.comparison_count ?? previewSessionModel?.comparisons?.length ?? 0)} />
           <Metric label="providers" value={String(previewSessionSummary.provider_count ?? previewSessionModel?.providers?.length ?? 0)} />
         </div>
       </div>
@@ -385,6 +389,7 @@ export function HelixionAppsPreviewPanel({ runtime, onRuntimeRefresh }: { runtim
           onStart={() => startApp(selectedApp)}
           onStop={() => stopLaunch(selectedRecord)}
           previewSession={selectedPreviewSession}
+          comparison={selectedComparison}
           record={selectedRecord}
         />
       </div>
@@ -740,6 +745,7 @@ function AppPreviewDetail({
   app,
   busyKey,
   diagnostics,
+  comparison,
   onCapture,
   onStart,
   onStop,
@@ -749,6 +755,7 @@ function AppPreviewDetail({
   app?: AppPreviewRow;
   busyKey: string;
   diagnostics?: Record<string, unknown>;
+  comparison?: IonProjectPreviewComparison;
   onCapture: () => void;
   onStart: () => void;
   onStop: () => void;
@@ -791,6 +798,10 @@ function AppPreviewDetail({
       <PathRow label="control" value={previewSession?.process_control_level ?? record?.process_control_level} />
       <PathRow label="last known" value={previewSession?.last_known_state ?? record?.last_known_state} />
       <PathRow label="finding" value={previewSession?.launcher_finding ?? text(record?.runtime_truth?.finding, '')} />
+      <PathRow label="pair" value={comparison?.comparison_id} />
+      <PathRow label="pair status" value={comparison ? `${text(comparison.status, 'registered')} / ${text(comparison.verdict, 'not compared')}` : ''} />
+      <PathRow label="surface pair" value={comparison?.surface_pair} />
+      <PathRow label="comparison route" value={comparison?.route} />
       <PathRow label="active url" value={running ? record?.url ?? app.previewHref : app.previewHref} />
       <PathRow label="launcher" value={app.launcherUrl} />
       <div className="ion-project-launch-actions">
@@ -899,6 +910,12 @@ function previewSessionForApp(app: AppPreviewRow | undefined, sessions: IonProje
   const projectId = app.version?.launch?.project_id ?? app.version?.project_id ?? app.project?.project_id;
   return sessions.find((session) => Boolean(versionId && session.version_id === versionId))
     ?? sessions.find((session) => Boolean(projectId && session.project_id === projectId));
+}
+
+function comparisonForSession(session: IonProjectPreviewSession | undefined, comparisons: IonProjectPreviewComparison[]) {
+  const previewId = session?.preview_id;
+  if (!previewId) return undefined;
+  return comparisons.find((comparison) => comparison.baseline_preview_id === previewId || comparison.candidate_preview_id === previewId);
 }
 
 function matchesLaunch(record: IonProjectLauncherRecord, path?: string, versionId?: string, projectId?: string) {

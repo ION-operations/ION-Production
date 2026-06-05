@@ -1,0 +1,103 @@
+{
+  "schema_id": "ion.helixion_joc_rebuild.receipt.v0_1",
+  "receipt_id": "HELIXION_PROJECTS_PREVIEW_COMPARISON_SLICE4_20260605T231416Z",
+  "generated_at": "2026-06-05T23:14:16Z",
+  "status": "candidate_validated",
+  "domain": "helixion_projects_app_preview",
+  "slice": "slice4_read_only_preview_comparisons",
+  "summary": "Added read-only PreviewComparison and surface-matrix projection for multi-origin app previews, with composite pairing keys, safe same-origin route provenance, UI pair count/details, and focused route-scrubbing tests.",
+  "authority": {
+    "candidate_only": true,
+    "production_authority": false,
+    "live_execution_authority": false,
+    "accepted_state_authority": false,
+    "secrets_authority": false,
+    "service_restart": false,
+    "git_push": false
+  },
+  "changed_files": [
+    "ION/04_packages/kernel/ion_project_preview_sessions.py",
+    "ION/08_ui/joc_cockpit_shell/HelixionAppsPreviewPanel.tsx",
+    "ION/08_ui/joc_cockpit_shell/ionRuntimeCockpitTypes.ts",
+    "ION/tests/test_kernel_ion_project_preview_sessions.py"
+  ],
+  "receipt_files": [
+    "ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_PREVIEW_COMPARISON_SLICE4_20260605T231416Z.receipt.json"
+  ],
+  "model_additions": {
+    "comparison_schema": "ion.project_preview_comparison.v0_1",
+    "surface_matrix_schema": "ion.project_preview_surface_matrix.v0_1",
+    "comparison_status": "registered_read_only",
+    "comparison_verdict": "not_compared",
+    "pairing_keys": [
+      "project",
+      "project_version",
+      "family",
+      "family_version"
+    ],
+    "route_fields": [
+      "route",
+      "route_source",
+      "route_basis",
+      "baseline_route",
+      "baseline_route_basis",
+      "candidate_route",
+      "candidate_route_basis"
+    ]
+  },
+  "sidecar_review": [
+    {
+      "agent": "Lovelace",
+      "agent_id": "019e9a02-a830-7372-9888-a6bf03cfba54",
+      "result": "read_only_review_integrated",
+      "integrated_findings": [
+        "Removed bare version-id pairing risk by using project/family lineage keys.",
+        "Hardened same-origin path scrubbing against protocol-relative paths, backslashes, and token/session query parameters.",
+        "Added route provenance fields and avoided status_url as comparison surface route.",
+        "Added regression tests for unrelated same-version projects and unsafe route scrubbing."
+      ]
+    },
+    {
+      "agent": "Carson",
+      "agent_id": "019e9a02-a969-7303-874f-04497bef6189",
+      "result": "read_only_review_integrated",
+      "integrated_findings": [
+        "Typed PreviewComparison fields in the cockpit model.",
+        "Added existing-Metric pair count and existing-PathRow selected comparison details without CSS changes."
+      ]
+    }
+  ],
+  "validation": [
+    {
+      "command": "PYTHONPATH=ION/04_packages python3 -m py_compile ION/04_packages/kernel/ion_project_preview_sessions.py",
+      "result": "passed"
+    },
+    {
+      "command": "PYTHONPATH=ION/04_packages pytest -q -p no:cacheprovider ION/tests/test_kernel_ion_project_preview_sessions.py ION/tests/test_kernel_ion_local_cockpit_app.py::test_local_cockpit_serves_preview_sessions_model_endpoint ION/tests/test_kernel_ion_chatgpt_browser_mcp_http_preview.py::test_public_preview_sessions_model_requires_auth_and_accepts_bearer",
+      "result": "passed",
+      "test_count": 10
+    },
+    {
+      "command": "npm --prefix ION/08_ui/joc_cockpit_shell run build",
+      "result": "passed",
+      "note": "Vite emitted the existing large chunk warning only."
+    },
+    {
+      "command": "git diff --check -- bounded slice files",
+      "result": "passed"
+    }
+  ],
+  "control_boundaries": [
+    "PreviewComparison records register comparable surfaces only; they do not capture screenshots, DOM, AX, console, network, or visual diffs.",
+    "Comparison authority is read-only and does not inherit provider launch, interaction, capture, stop, deployment, or accepted-state capabilities.",
+    "Protocol-relative, backslash, tokenized, and direct loopback URLs are not emitted as comparison routes.",
+    "VM, remote, and viewer-local runners remain registered provider classes only; no runner launch authority is granted."
+  ],
+  "non_claims": [
+    "No production deployment.",
+    "No service restart.",
+    "No live Action/MCP mutation.",
+    "No accepted-state claim.",
+    "No Git push."
+  ]
+}

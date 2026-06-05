@@ -18,6 +18,8 @@ from .ion_project_launcher import PROJECT_LOCAL_LAUNCH_CONFIRMATION, build_proje
 SCHEMA_ID = "ion.project_preview_sessions.v0_1"
 SESSION_SCHEMA_ID = "ion.project_preview_session.v0_1"
 PROVIDER_SCHEMA_ID = "ion.project_preview_provider.v0_1"
+COMPARISON_SCHEMA_ID = "ion.project_preview_comparison.v0_1"
+SURFACE_MATRIX_SCHEMA_ID = "ion.project_preview_surface_matrix.v0_1"
 READY_VERDICT = "ION_PROJECT_PREVIEW_SESSIONS_READY"
 
 _SAFE_ID_RE = re.compile(r"[^a-z0-9]+")
@@ -65,7 +67,10 @@ def _same_origin_path(value: Any) -> str:
     text = compact(value)
     if not text or not text.startswith("/"):
         return ""
-    if "stop_token=" in text or "token=" in text.lower():
+    lower = text.lower()
+    if text.startswith("//") or "\\" in text:
+        return ""
+    if re.search(r"[?&](stop_token|token|access_token|id_token|refresh_token|session|session_id|auth|api_key|key)=", lower):
         return ""
     return text
 
@@ -75,6 +80,21 @@ def _authority(*, control: bool = False) -> dict[str, bool]:
         "preview_read": True,
         "preview_interaction": control,
         "preview_mutation": False,
+        "process_start_authority": False,
+        "process_stop_authority": False,
+        "accepted_state_authority": False,
+        "production_authority": False,
+        "live_execution_authority": False,
+        "secrets_authority": False,
+    }
+
+
+def _comparison_authority() -> dict[str, bool]:
+    return {
+        "preview_read": True,
+        "preview_interaction": False,
+        "preview_mutation": False,
+        "ai_observe_preview": False,
         "process_start_authority": False,
         "process_stop_authority": False,
         "accepted_state_authority": False,
@@ -465,6 +485,175 @@ def _latest_receipt_refs_for_launch(root: Path, launch_id: str) -> list[str]:
     return refs
 
 
+def _session_group_keys(session: Mapping[str, Any]) -> list[tuple[str, str]]:
+    keys: list[tuple[str, str]] = []
+    project_id = compact(session.get("project_id"))
+    version_id = compact(session.get("version_id"))
+    family_id = compact(session.get("family_id"))
+    if project_id and version_id:
+        keys.append(("project_version", f"project_version:{project_id}:{version_id}"))
+    if project_id:
+        keys.append(("project", f"project:{project_id}"))
+    if family_id and version_id:
+        keys.append(("family_version", f"family_version:{family_id}:{version_id}"))
+    if family_id:
+        keys.append(("family", f"family:{family_id}"))
+    return keys
+
+
+def _session_comparison_priority(session: Mapping[str, Any]) -> tuple[int, str]:
+    provider = compact(session.get("provider_id"))
+    source = compact(session.get("source_kind"))
+    state = compact(session.get("runtime_state_class"), compact(session.get("lifecycle_state")))
+    if session.get("public_preview_allowed") or provider in {"cockpit_internal_surface", "static_hosted_artifact"}:
+        priority = 0
+    elif state == "running" and provider in {"local_loopback_launcher", "local_static_file_server"}:
+        priority = 1
+    elif source == "portfolio_version":
+        priority = 2
+    else:
+        priority = 3
+    return (priority, compact(session.get("preview_id")))
+
+
+def _comparison_surface_route(session: Mapping[str, Any]) -> tuple[str, str]:
+    for field in ("same_origin_embed_url", "public_url"):
+        value = _same_origin_path(session.get(field))
+        if value:
+            return value, field
+    return "", ""
+
+
+def _comparison_from_pair(baseline: Mapping[str, Any], candidate: Mapping[str, Any], *, pair_basis: str) -> dict[str, Any]:
+    left_id = compact(baseline.get("preview_id"))
+    right_id = compact(candidate.get("preview_id"))
+    digest = hashlib.sha256(f"{left_id}\0{right_id}".encode("utf-8")).hexdigest()[:16]
+    baseline_route, baseline_route_basis = _comparison_surface_route(baseline)
+    candidate_route, candidate_route_basis = _comparison_surface_route(candidate)
+    if candidate_route:
+        route = candidate_route
+        route_source = "candidate"
+        route_basis = candidate_route_basis
+    elif baseline_route:
+        route = baseline_route
+        route_source = "baseline"
+        route_basis = baseline_route_basis
+    else:
+        route = ""
+        route_source = ""
+        route_basis = ""
+    return {
+        "schema_id": COMPARISON_SCHEMA_ID,
+        "comparison_id": f"compare:{digest}",
+        "pair_basis": pair_basis,
+        "project_id": compact(candidate.get("project_id"), compact(baseline.get("project_id"))),
+        "version_id": compact(candidate.get("version_id"), compact(baseline.get("version_id"))),
+        "family_id": compact(candidate.get("family_id"), compact(baseline.get("family_id"))),
+        "baseline_preview_id": left_id,
+        "candidate_preview_id": right_id,
+        "baseline_provider_id": compact(baseline.get("provider_id")),
+        "candidate_provider_id": compact(candidate.get("provider_id")),
+        "baseline_runner_location": compact(baseline.get("runner_location")),
+        "candidate_runner_location": compact(candidate.get("runner_location")),
+        "surface_pair": f"{compact(baseline.get('runner_location'), 'unknown')}_to_{compact(candidate.get('runner_location'), 'unknown')}",
+        "route": route,
+        "route_source": route_source,
+        "route_basis": route_basis,
+        "baseline_route": baseline_route,
+        "baseline_route_basis": baseline_route_basis,
+        "candidate_route": candidate_route,
+        "candidate_route_basis": candidate_route_basis,
+        "viewport": "desktop",
+        "capture_pair_receipt_refs": [],
+        "screenshot_refs": [],
+        "console_delta": "not_captured",
+        "network_delta": "not_captured",
+        "dom_delta_ref": "",
+        "accessibility_delta_ref": "",
+        "visual_diff_ref": "",
+        "verdict": "not_compared",
+        "status": "registered_read_only",
+        "finding": "comparison_pair_registered_no_capture",
+        "capabilities": {
+            "preview_read": True,
+            "preview_interaction": False,
+            "preview_mutation": False,
+            "ai_observe_preview": False,
+        },
+        "authority": _comparison_authority(),
+        "non_claims": [
+            "No screenshot capture occurred.",
+            "No DOM, network, console, accessibility, or visual diff was computed.",
+            "No preview start, stop, probe, patch, deploy, or accepted-state action is authorized by this comparison record.",
+        ],
+    }
+
+
+def _build_preview_comparisons(sessions: list[dict[str, Any]], *, max_comparisons: int = 60) -> list[dict[str, Any]]:
+    grouped: dict[str, dict[str, Any]] = {}
+    for session in sessions:
+        for pair_basis, key in _session_group_keys(session):
+            group = grouped.setdefault(key, {"pair_basis": pair_basis, "sessions": []})
+            group["sessions"].append(session)
+
+    comparisons: list[dict[str, Any]] = []
+    seen_pairs: set[tuple[str, str]] = set()
+    for key in sorted(grouped):
+        group_data = grouped[key]
+        group = sorted(group_data["sessions"], key=_session_comparison_priority)
+        if len(group) < 2:
+            continue
+        pair_basis = compact(group_data.get("pair_basis"), "unknown")
+        baseline = group[0]
+        for candidate in group[1:]:
+            if compact(candidate.get("preview_id")) == compact(baseline.get("preview_id")):
+                continue
+            pair = (compact(baseline.get("preview_id")), compact(candidate.get("preview_id")))
+            if pair in seen_pairs:
+                continue
+            seen_pairs.add(pair)
+            comparisons.append(_comparison_from_pair(baseline, candidate, pair_basis=pair_basis))
+            if len(comparisons) >= max_comparisons:
+                return comparisons
+    return comparisons
+
+
+def _build_surface_matrix(providers: list[dict[str, Any]], sessions: list[dict[str, Any]], comparisons: list[dict[str, Any]]) -> dict[str, Any]:
+    provider_ids_by_location: dict[str, list[str]] = {}
+    for provider in providers:
+        location = compact(provider.get("runner_location"), "unknown")
+        provider_ids_by_location.setdefault(location, []).append(compact(provider.get("provider_id"), "unknown"))
+
+    session_counts_by_location: dict[str, int] = {}
+    session_counts_by_provider: dict[str, int] = {}
+    comparable_session_ids: set[str] = set()
+    for session in sessions:
+        location = compact(session.get("runner_location"), "unknown")
+        provider = compact(session.get("provider_id"), "unknown")
+        session_counts_by_location[location] = session_counts_by_location.get(location, 0) + 1
+        session_counts_by_provider[provider] = session_counts_by_provider.get(provider, 0) + 1
+    for comparison in comparisons:
+        comparable_session_ids.add(compact(comparison.get("baseline_preview_id")))
+        comparable_session_ids.add(compact(comparison.get("candidate_preview_id")))
+
+    return {
+        "schema_id": SURFACE_MATRIX_SCHEMA_ID,
+        "runner_locations": sorted(provider_ids_by_location),
+        "provider_ids_by_location": {key: sorted(value) for key, value in sorted(provider_ids_by_location.items())},
+        "session_counts_by_location": dict(sorted(session_counts_by_location.items())),
+        "session_counts_by_provider": dict(sorted(session_counts_by_provider.items())),
+        "comparison_count": len(comparisons),
+        "comparable_session_count": len([item for item in comparable_session_ids if item]),
+        "capability_boundaries": {
+            "local_host": "Current managed local launcher and static sessions; mutation remains confirmation-gated outside this read-only model.",
+            "vm": "Registered provider class only; no VM launch authority.",
+            "remote_host": "Registered provider class only; no remote process authority.",
+            "viewer_local": "Registered provider class only; no viewer-local helper launch authority.",
+            "static_host": "Read-only artifact/session projection.",
+        },
+    }
+
+
 def build_preview_sessions_from_cockpit(
     root: str | Path,
     *,
@@ -513,6 +702,8 @@ def build_preview_sessions_from_cockpit(
             if portfolio_session_count >= max_portfolio_sessions:
                 break
 
+    comparisons = _build_preview_comparisons(sessions)
+    surface_matrix = _build_surface_matrix(providers, sessions, comparisons)
     source_counts: dict[str, int] = {}
     runtime_state_counts: dict[str, int] = {}
     for session in sessions:
@@ -538,18 +729,25 @@ def build_preview_sessions_from_cockpit(
             "detached_count": detached_count,
             "orphaned_count": orphaned_count,
             "stale_count": stale_count,
+            "comparison_count": len(comparisons),
+            "comparable_session_count": surface_matrix.get("comparable_session_count", 0),
             "public_preview_count": public_preview_count,
             "portfolio_session_count": portfolio_session_count,
             "source_counts": source_counts,
             "runtime_state_counts": runtime_state_counts,
+            "session_counts_by_location": surface_matrix.get("session_counts_by_location", {}),
+            "session_counts_by_provider": surface_matrix.get("session_counts_by_provider", {}),
         },
         "providers": providers,
         "sessions": sessions,
-        "comparisons": [],
+        "comparisons": comparisons,
+        "surface_matrix": surface_matrix,
         "capability_classes": {
             "preview_read": "Read session state, safe same-origin URLs, screenshots, status, and receipt refs.",
+            "preview_compare": "Register safe pairs of preview surfaces for later capture/diff work without performing capture.",
             "preview_interaction": "Navigation, screenshot, and diagnostics actions remain separate authenticated routes.",
             "preview_mutation": "Not granted by this projection.",
+            "ai_observe_preview": "Future DOM, screenshot, AX, console, and network observation lane; not executed by this projection.",
         },
         "routes": {
             "model": "/cockpit/previews/model.json",
@@ -574,8 +772,9 @@ def build_preview_sessions_from_cockpit(
         },
         "non_claims": [
             "This model does not start, stop, probe, install, screenshot, or proxy any app.",
+            "Preview comparisons are registered pairings only; no capture, DOM diff, visual diff, or equivalence verdict is produced.",
             "Raw stop tokens and direct loopback URLs are not emitted.",
-            "VM, remote, and viewer-local providers are placeholders only in Slice 1.",
+            "VM, remote, and viewer-local providers are registered as read-only provider classes only.",
             "Launch, stop, diagnostics, patch, and rollback mutations keep their existing cockpit gates.",
         ],
         "findings": [],

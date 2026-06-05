@@ -15,6 +15,10 @@ def test_preview_sessions_empty_projection_is_read_only(tmp_path: Path):
     assert model["schema_id"] == "ion.project_preview_sessions.v0_1"
     assert model["ok"] is True
     assert model["summary"]["session_count"] == 0
+    assert model["summary"]["comparison_count"] == 0
+    assert model["comparisons"] == []
+    assert model["surface_matrix"]["schema_id"] == "ion.project_preview_surface_matrix.v0_1"
+    assert "viewer_local" in model["surface_matrix"]["runner_locations"]
     assert {provider["provider_id"] for provider in model["providers"]} >= {
         "local_loopback_launcher",
         "application_dev_launcher",
@@ -89,6 +93,166 @@ def test_preview_sessions_maps_launcher_record_without_leaking_tokens(tmp_path: 
     assert "/tmp/private/demo" not in payload
     assert session["authority"]["process_start_authority"] is False
     assert session["authority"]["process_stop_authority"] is False
+
+
+def test_preview_sessions_registers_read_only_comparison_pair_without_capture_or_loopback(tmp_path: Path):
+    launcher_status = {
+        "ok": True,
+        "running_count": 1,
+        "launch_count": 1,
+        "launches": [
+            {
+                "launch_id": "demo-launch",
+                "project_id": "demo",
+                "version_id": "v1",
+                "label": "Demo App",
+                "path": "/tmp/private/demo",
+                "framework": "vite",
+                "url": "http://127.0.0.1:6320/",
+                "instrumented_open_href": "/cockpit/projects/launch/proxy/demo-launch/",
+                "status_path": "/cockpit/projects/launch/status",
+                "diagnostics_path": "/cockpit/projects/launch/diagnostics",
+                "running": True,
+                "detached": False,
+                "process_attached": True,
+                "actual_process_control": True,
+                "stop_available": True,
+                "ownership_confidence": "attached_process_object",
+                "process_control_level": "attached_popen",
+                "runtime_truth": {"finding": "process_control_attached"},
+                "state": "running",
+            }
+        ],
+    }
+    projects = [
+        {
+            "project_id": "demo",
+            "label": "Demo Public Project",
+            "status": "registered",
+            "path": "/tmp/private/demo",
+            "route_href": "/projects/demo",
+            "preview_href": "/projects/demo/preview/",
+        }
+    ]
+
+    model = build_preview_sessions_from_cockpit(tmp_path, projects=projects, portfolio={}, launcher_status=launcher_status)
+    payload = json.dumps(model, sort_keys=True)
+    comparison = model["comparisons"][0]
+
+    assert model["summary"]["comparison_count"] == 1
+    assert model["summary"]["comparable_session_count"] == 2
+    assert comparison["schema_id"] == "ion.project_preview_comparison.v0_1"
+    assert comparison["baseline_preview_id"] == "project:demo:cockpit_internal_surface"
+    assert comparison["candidate_preview_id"] == "launch:demo-launch"
+    assert comparison["pair_basis"] == "project"
+    assert comparison["surface_pair"] == "local_host_to_local_host"
+    assert comparison["route"] == "/cockpit/projects/launch/proxy/demo-launch/"
+    assert comparison["route_source"] == "candidate"
+    assert comparison["route_basis"] == "same_origin_embed_url"
+    assert comparison["baseline_route"] == "/projects/demo/preview/"
+    assert comparison["baseline_route_basis"] == "same_origin_embed_url"
+    assert comparison["candidate_route"] == "/cockpit/projects/launch/proxy/demo-launch/"
+    assert comparison["candidate_route_basis"] == "same_origin_embed_url"
+    assert comparison["verdict"] == "not_compared"
+    assert comparison["status"] == "registered_read_only"
+    assert comparison["capabilities"]["preview_read"] is True
+    assert comparison["capabilities"]["preview_interaction"] is False
+    assert comparison["authority"]["preview_mutation"] is False
+    assert comparison["authority"]["ai_observe_preview"] is False
+    assert comparison["capture_pair_receipt_refs"] == []
+    assert comparison["screenshot_refs"] == []
+    assert comparison["console_delta"] == "not_captured"
+    assert comparison["network_delta"] == "not_captured"
+    assert model["surface_matrix"]["comparison_count"] == 1
+    assert model["surface_matrix"]["session_counts_by_location"]["local_host"] == 2
+    assert "http://127.0.0.1:6320" not in payload
+    assert "/tmp/private/demo" not in payload
+
+
+def test_preview_sessions_comparisons_do_not_pair_unrelated_same_version_ids(tmp_path: Path):
+    projects = [
+        {
+            "project_id": "alpha",
+            "label": "Alpha",
+            "status": "registered",
+            "path": "/tmp/private/alpha",
+            "route_href": "/projects/alpha",
+            "preview_href": "/projects/alpha/preview/",
+        },
+        {
+            "project_id": "beta",
+            "label": "Beta",
+            "status": "registered",
+            "path": "/tmp/private/beta",
+            "route_href": "/projects/beta",
+            "preview_href": "/projects/beta/preview/",
+        },
+    ]
+    portfolio = {
+        "families": [
+            {
+                "family_id": "alpha-family",
+                "versions": [{"version_id": "v1", "project_id": "alpha", "path": "/tmp/private/alpha", "launchable": True}],
+            },
+            {
+                "family_id": "beta-family",
+                "versions": [{"version_id": "v1", "project_id": "beta", "path": "/tmp/private/beta", "launchable": True}],
+            },
+        ]
+    }
+
+    model = build_preview_sessions_from_cockpit(
+        tmp_path,
+        projects=projects,
+        portfolio=portfolio,
+        launcher_status={"ok": True, "running_count": 0, "launch_count": 0, "launches": []},
+    )
+
+    assert model["summary"]["comparison_count"] == 2
+    pairs = {(item["baseline_preview_id"], item["candidate_preview_id"]) for item in model["comparisons"]}
+    assert ("project:alpha:cockpit_internal_surface", "portfolio:alpha-family:v1") in pairs
+    assert ("project:beta:cockpit_internal_surface", "portfolio:beta-family:v1") in pairs
+    assert all("alpha" in left + right or "beta" in left + right for left, right in pairs)
+    assert {item["pair_basis"] for item in model["comparisons"]} == {"project"}
+
+
+def test_preview_sessions_scrubs_protocol_relative_and_tokenized_comparison_routes(tmp_path: Path):
+    projects = [
+        {
+            "project_id": "demo",
+            "label": "Demo Public Project",
+            "status": "registered",
+            "path": "/tmp/private/demo",
+            "route_href": "/projects/demo?access_token=secret",
+            "preview_href": "//127.0.0.1:5173/preview/?token=secret",
+        }
+    ]
+    portfolio = {
+        "families": [
+            {
+                "family_id": "demo-family",
+                "versions": [{"version_id": "v1", "project_id": "demo", "path": "/tmp/private/demo", "launchable": True}],
+            }
+        ]
+    }
+
+    model = build_preview_sessions_from_cockpit(
+        tmp_path,
+        projects=projects,
+        portfolio=portfolio,
+        launcher_status={"ok": True, "running_count": 0, "launch_count": 0, "launches": []},
+    )
+    payload = json.dumps(model, sort_keys=True)
+    comparison = model["comparisons"][0]
+
+    assert comparison["route"] == ""
+    assert comparison["route_source"] == ""
+    assert comparison["route_basis"] == ""
+    assert comparison["baseline_route"] == ""
+    assert comparison["candidate_route"] == ""
+    assert "127.0.0.1:5173" not in payload
+    assert "access_token=secret" not in payload
+    assert "token=secret" not in payload
 
 
 def test_preview_sessions_classifies_detached_manifest_without_managed_preview_url(tmp_path: Path):

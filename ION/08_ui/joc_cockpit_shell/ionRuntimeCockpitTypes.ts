@@ -654,6 +654,43 @@ export type IonProjectPreviewSession = {
   authority?: Record<string, boolean>;
 };
 
+export type IonProjectPreviewComparison = {
+  schema_id?: 'ion.project_preview_comparison.v0_1' | string;
+  comparison_id?: string;
+  pair_basis?: string;
+  project_id?: string;
+  version_id?: string;
+  family_id?: string;
+  baseline_preview_id?: string;
+  candidate_preview_id?: string;
+  baseline_provider_id?: string;
+  candidate_provider_id?: string;
+  baseline_runner_location?: string;
+  candidate_runner_location?: string;
+  surface_pair?: string;
+  route?: string;
+  route_source?: string;
+  route_basis?: string;
+  baseline_route?: string;
+  baseline_route_basis?: string;
+  candidate_route?: string;
+  candidate_route_basis?: string;
+  viewport?: string;
+  capture_pair_receipt_refs?: string[];
+  screenshot_refs?: string[];
+  console_delta?: string;
+  network_delta?: string;
+  dom_delta_ref?: string;
+  accessibility_delta_ref?: string;
+  visual_diff_ref?: string;
+  verdict?: string;
+  status?: string;
+  finding?: string;
+  capabilities?: Record<string, boolean>;
+  authority?: Record<string, boolean>;
+  non_claims?: string[];
+};
+
 export type IonProjectPreviewSessionsModel = {
   schema_id?: 'ion.project_preview_sessions.v0_1' | string;
   ok?: boolean;
@@ -667,14 +704,19 @@ export type IonProjectPreviewSessionsModel = {
     detached_count?: number;
     orphaned_count?: number;
     stale_count?: number;
+    comparison_count?: number;
+    comparable_session_count?: number;
     public_preview_count?: number;
     portfolio_session_count?: number;
     source_counts?: Record<string, number>;
     runtime_state_counts?: Record<string, number>;
+    session_counts_by_location?: Record<string, number>;
+    session_counts_by_provider?: Record<string, number>;
   };
   providers?: IonProjectPreviewProvider[];
   sessions?: IonProjectPreviewSession[];
-  comparisons?: Array<Record<string, unknown>>;
+  comparisons?: IonProjectPreviewComparison[];
+  surface_matrix?: Record<string, unknown>;
   capability_classes?: Record<string, string>;
   routes?: Record<string, string>;
   source_models?: Record<string, string>;
