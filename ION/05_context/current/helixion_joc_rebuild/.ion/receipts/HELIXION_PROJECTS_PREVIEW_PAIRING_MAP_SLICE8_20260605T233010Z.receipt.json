@@ -1,0 +1,49 @@
+{
+  "schema_id": "ion.helixion_joc_rebuild.receipt.v0_1",
+  "receipt_id": "HELIXION_PROJECTS_PREVIEW_PAIRING_MAP_SLICE8_20260605T233010Z",
+  "generated_at": "2026-06-05T23:30:10Z",
+  "status": "candidate_validated",
+  "domain": "helixion_projects_app_preview",
+  "slice": "slice8_preview_pairing_map_ui",
+  "summary": "Added a no-CSS Preview Pairing Map to the Helixion app preview detail panel using existing PathRow rendering for viewer, local, remote/public, runner, pair basis, baseline, candidate, and route proof fields.",
+  "authority": {
+    "candidate_only": true,
+    "production_authority": false,
+    "live_execution_authority": false,
+    "accepted_state_authority": false,
+    "secrets_authority": false,
+    "service_restart": false,
+    "git_push": false
+  },
+  "changed_files": [
+    "ION/08_ui/joc_cockpit_shell/HelixionAppsPreviewPanel.tsx"
+  ],
+  "receipt_files": [
+    "ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_PREVIEW_PAIRING_MAP_SLICE8_20260605T233010Z.receipt.json"
+  ],
+  "ui_fields": [
+    "viewer",
+    "local",
+    "remote/public",
+    "runner map",
+    "pair basis",
+    "baseline",
+    "candidate",
+    "route proof"
+  ],
+  "validation": [
+    {
+      "command": "npm --prefix ION/08_ui/joc_cockpit_shell run build",
+      "result": "passed",
+      "note": "Vite emitted the existing large chunk warning only. No tracked dist artifacts changed."
+    }
+  ],
+  "non_claims": [
+    "No CSS change.",
+    "No production deployment.",
+    "No service restart.",
+    "No live Action/MCP mutation.",
+    "No accepted-state claim.",
+    "No Git push."
+  ]
+}

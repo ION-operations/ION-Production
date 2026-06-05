@@ -803,6 +803,14 @@ function AppPreviewDetail({
       <PathRow label="pair status" value={comparison ? `${text(comparison.status, 'registered')} / ${text(comparison.verdict, 'not compared')}` : ''} />
       <PathRow label="surface pair" value={comparison?.surface_pair} />
       <PathRow label="comparison route" value={comparison?.route} />
+      <PathRow label="viewer" value={joinParts(previewSession?.same_origin_embed_url, previewSession?.viewer_scope, previewSession?.auth_mode)} />
+      <PathRow label="local" value={text(previewSession?.local_url_ref, '') || text(record?.url, '')} />
+      <PathRow label="remote/public" value={joinParts(previewSession?.public_url, previewSession?.public_preview_allowed ? 'public allowed' : '')} />
+      <PathRow label="runner map" value={joinParts(previewSession?.provider_id, previewSession?.runner_location, previewSession?.source_root_ref)} />
+      <PathRow label="pair basis" value={joinParts(comparison?.pair_basis, comparison?.surface_pair)} />
+      <PathRow label="baseline" value={joinParts(comparison?.baseline_provider_id, comparison?.baseline_runner_location, comparison?.baseline_route)} />
+      <PathRow label="candidate" value={joinParts(comparison?.candidate_provider_id, comparison?.candidate_runner_location, comparison?.candidate_route)} />
+      <PathRow label="route proof" value={joinParts(comparison?.route_source, comparison?.route_basis, comparison?.viewport)} />
       <PathRow label="active url" value={running ? record?.url ?? app.previewHref : app.previewHref} />
       <PathRow label="launcher" value={app.launcherUrl} />
       <div className="ion-project-launch-actions">
@@ -967,6 +975,10 @@ function PathRow({ label, value }: { label: string; value: unknown }) {
       <code>{text(value, '')}</code>
     </div>
   );
+}
+
+function joinParts(...values: unknown[]) {
+  return values.map((value) => text(value, '')).filter(Boolean).join(' / ');
 }
 
 function text(value: unknown, fallback = 'unknown') {
