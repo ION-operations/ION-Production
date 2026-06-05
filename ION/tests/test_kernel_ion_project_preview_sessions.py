@@ -19,6 +19,25 @@ def test_preview_sessions_empty_projection_is_read_only(tmp_path: Path):
     assert model["comparisons"] == []
     assert model["surface_matrix"]["schema_id"] == "ion.project_preview_surface_matrix.v0_1"
     assert "viewer_local" in model["surface_matrix"]["runner_locations"]
+    assert model["summary"]["ai_observe_target_count"] == 0
+    assert model["summary"]["ai_observe_blocked_target_count"] == 0
+    assert model["ai_observe_preview"]["schema_id"] == "ion.project_preview_ai_observe_substrate.v0_1"
+    assert model["ai_observe_preview"]["status"] == "registered_read_only"
+    assert model["ai_observe_preview"]["observe_mode"] == "metadata_only_no_capture"
+    assert model["ai_observe_preview"]["target_count"] == 0
+    assert model["ai_observe_preview"]["blocked_target_count"] == 0
+    assert model["ai_observe_preview"]["targets"] == []
+    assert model["ai_observe_preview"]["blocked_targets"] == []
+    assert model["ai_observe_preview"]["authority"]["preview_read"] is True
+    assert model["ai_observe_preview"]["authority"]["ai_observe_preview"] is False
+    assert model["ai_observe_preview"]["authority"]["capture_authority"] is False
+    assert model["ai_observe_preview"]["authority"]["browser_automation_authority"] is False
+    assert model["ai_observe_preview"]["authority"]["loopback_mutation"] is False
+    assert model["ai_observe_preview"]["authority"]["accepted_state_authority"] is False
+    assert model["ai_observe_preview"]["authority"]["production_authority"] is False
+    assert model["ai_observe_preview"]["authority"]["live_execution_authority"] is False
+    assert model["ai_observe_preview"]["authority"]["secrets_authority"] is False
+    assert "capture" in model["ai_observe_preview"]["policy"]["forbidden_capabilities"]
     assert {provider["provider_id"] for provider in model["providers"]} >= {
         "local_loopback_launcher",
         "application_dev_launcher",
@@ -165,6 +184,25 @@ def test_preview_sessions_registers_read_only_comparison_pair_without_capture_or
     assert comparison["network_delta"] == "not_captured"
     assert model["surface_matrix"]["comparison_count"] == 1
     assert model["surface_matrix"]["session_counts_by_location"]["local_host"] == 2
+    assert model["ai_observe_preview"]["status"] == "registered_read_only"
+    assert model["ai_observe_preview"]["authority"]["ai_observe_preview"] is False
+    assert model["summary"]["ai_observe_target_count"] == model["ai_observe_preview"]["target_count"]
+    comparison_targets = [
+        target for target in model["ai_observe_preview"]["targets"] if target["target_kind"] == "preview_comparison"
+    ]
+    assert len(comparison_targets) == 1
+    observe_target = comparison_targets[0]
+    assert observe_target["comparison_id"] == comparison["comparison_id"]
+    assert observe_target["route"] == "/cockpit/projects/launch/proxy/demo-launch/"
+    assert observe_target["route_basis"] == "comparison.route"
+    assert observe_target["comparison_route_basis"] == "same_origin_embed_url"
+    assert observe_target["capture_state"] == "not_captured"
+    assert observe_target["observation_receipt_refs"] == []
+    assert observe_target["artifact_refs"] == []
+    assert "screenshot_refs" not in observe_target
+    assert "console_delta" not in observe_target
+    assert "network_delta" not in observe_target
+    assert "dom_delta_ref" not in observe_target
     assert "http://127.0.0.1:6320" not in payload
     assert "/tmp/private/demo" not in payload
 
@@ -250,6 +288,8 @@ def test_preview_sessions_scrubs_protocol_relative_and_tokenized_comparison_rout
     assert comparison["route_basis"] == ""
     assert comparison["baseline_route"] == ""
     assert comparison["candidate_route"] == ""
+    assert model["ai_observe_preview"]["targets"] == []
+    assert model["ai_observe_preview"]["target_count"] == 0
     assert "127.0.0.1:5173" not in payload
     assert "access_token=secret" not in payload
     assert "token=secret" not in payload
@@ -316,6 +356,15 @@ def test_preview_sessions_classifies_detached_manifest_without_managed_preview_u
     assert model["summary"]["detached_count"] == 1
     assert model["summary"]["stale_count"] == 1
     assert model["summary"]["runtime_state_counts"]["stale"] == 1
+    assert model["ai_observe_preview"]["target_count"] == 0
+    assert model["ai_observe_preview"]["blocked_target_count"] == 1
+    blocked_target = model["ai_observe_preview"]["blocked_targets"][0]
+    assert blocked_target["preview_id"] == "launch:detached-launch"
+    assert blocked_target["runtime_state_class"] == "stale"
+    assert blocked_target["route"] == ""
+    assert blocked_target["route_basis"] == ""
+    assert blocked_target["capture_state"] == "not_captured"
+    assert blocked_target["blocked_reason"] == "runtime_state_stale_not_observable"
     assert "http://127.0.0.1:6321" not in payload
 
 
@@ -365,6 +414,12 @@ def test_preview_sessions_classifies_orphaned_listener_as_visible_not_controlled
     assert session["launcher_finding"] == "loopback_listener_present_but_process_ownership_unverified"
     assert model["summary"]["orphaned_count"] == 1
     assert model["summary"]["runtime_state_counts"]["orphaned"] == 1
+    assert model["ai_observe_preview"]["target_count"] == 0
+    assert model["ai_observe_preview"]["blocked_target_count"] == 1
+    blocked_target = model["ai_observe_preview"]["blocked_targets"][0]
+    assert blocked_target["preview_id"] == "launch:orphaned-launch"
+    assert blocked_target["runtime_state_class"] == "orphaned"
+    assert blocked_target["blocked_reason"] == "runtime_state_orphaned_not_observable"
 
 
 def test_preview_sessions_maps_project_and_portfolio_rows(tmp_path: Path):

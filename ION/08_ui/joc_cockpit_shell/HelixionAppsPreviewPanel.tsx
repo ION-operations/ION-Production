@@ -349,6 +349,7 @@ export function HelixionAppsPreviewPanel({ runtime, onRuntimeRefresh }: { runtim
           <Metric label="detached" value={String(previewSessionSummary.detached_count ?? detachedCount)} />
           <Metric label="sessions" value={String(previewSessionSummary.session_count ?? previewSessions.length)} />
           <Metric label="pairs" value={String(previewSessionSummary.comparison_count ?? previewSessionModel?.comparisons?.length ?? 0)} />
+          <Metric label="observe" value={String(previewSessionSummary.ai_observe_target_count ?? previewSessionModel?.ai_observe_preview?.target_count ?? 0)} />
           <Metric label="providers" value={String(previewSessionSummary.provider_count ?? previewSessionModel?.providers?.length ?? 0)} />
         </div>
       </div>

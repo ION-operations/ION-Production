@@ -20,6 +20,7 @@ SESSION_SCHEMA_ID = "ion.project_preview_session.v0_1"
 PROVIDER_SCHEMA_ID = "ion.project_preview_provider.v0_1"
 COMPARISON_SCHEMA_ID = "ion.project_preview_comparison.v0_1"
 SURFACE_MATRIX_SCHEMA_ID = "ion.project_preview_surface_matrix.v0_1"
+AI_OBSERVE_SUBSTRATE_SCHEMA_ID = "ion.project_preview_ai_observe_substrate.v0_1"
 READY_VERDICT = "ION_PROJECT_PREVIEW_SESSIONS_READY"
 
 _SAFE_ID_RE = re.compile(r"[^a-z0-9]+")
@@ -97,6 +98,22 @@ def _comparison_authority() -> dict[str, bool]:
         "ai_observe_preview": False,
         "process_start_authority": False,
         "process_stop_authority": False,
+        "accepted_state_authority": False,
+        "production_authority": False,
+        "live_execution_authority": False,
+        "secrets_authority": False,
+    }
+
+
+def _observe_authority() -> dict[str, bool]:
+    return {
+        "preview_read": True,
+        "preview_mutation": False,
+        "ai_observe_preview": False,
+        "capture_authority": False,
+        "browser_automation_authority": False,
+        "loopback_probe": False,
+        "loopback_mutation": False,
         "accepted_state_authority": False,
         "production_authority": False,
         "live_execution_authority": False,
@@ -654,6 +671,153 @@ def _build_surface_matrix(providers: list[dict[str, Any]], sessions: list[dict[s
     }
 
 
+def _observe_target_common(*, target_id: str, target_kind: str, route: str, route_basis: str) -> dict[str, Any]:
+    return {
+        "target_id": target_id,
+        "target_kind": target_kind,
+        "route": route,
+        "route_basis": route_basis,
+        "capture_state": "not_captured",
+        "observation_receipt_refs": [],
+        "artifact_refs": [],
+    }
+
+
+def _observe_target_from_session(session: Mapping[str, Any]) -> tuple[dict[str, Any] | None, dict[str, Any] | None]:
+    preview_id = compact(session.get("preview_id"))
+    runtime_state = compact(session.get("runtime_state_class"), compact(session.get("lifecycle_state"), "unknown"))
+    blocked = bool(session.get("detached")) or bool(session.get("stale")) or runtime_state in {"detached", "stale", "orphaned"}
+    if blocked:
+        blocked_reason = f"runtime_state_{slug(runtime_state, 'unknown')}_not_observable"
+        target = _observe_target_common(
+            target_id=f"blocked:session:{slug(preview_id, 'preview')}",
+            target_kind="preview_session",
+            route="",
+            route_basis="",
+        )
+        target.update(
+            {
+                "preview_id": preview_id,
+                "project_id": compact(session.get("project_id")),
+                "provider_id": compact(session.get("provider_id")),
+                "runner_location": compact(session.get("runner_location")),
+                "runtime_state_class": runtime_state,
+                "blocked_reason": blocked_reason,
+                "finding": blocked_reason,
+                "stale_reasons": [compact(item) for item in listify(session.get("stale_reasons")) if compact(item)],
+            }
+        )
+        return None, target
+
+    route = ""
+    route_basis = ""
+    for field in ("same_origin_embed_url", "public_url"):
+        candidate_route = _same_origin_path(session.get(field))
+        if candidate_route:
+            route = candidate_route
+            route_basis = field
+            break
+    if not route:
+        return None, None
+
+    target = _observe_target_common(
+        target_id=f"observe:session:{slug(preview_id, 'preview')}",
+        target_kind="preview_session",
+        route=route,
+        route_basis=route_basis,
+    )
+    target.update(
+        {
+            "preview_id": preview_id,
+            "project_id": compact(session.get("project_id")),
+            "provider_id": compact(session.get("provider_id")),
+            "runner_location": compact(session.get("runner_location")),
+            "runtime_state_class": runtime_state,
+        }
+    )
+    return target, None
+
+
+def _observe_target_from_comparison(comparison: Mapping[str, Any]) -> dict[str, Any] | None:
+    route = _same_origin_path(comparison.get("route"))
+    if not route:
+        return None
+    comparison_id = compact(comparison.get("comparison_id"))
+    target = _observe_target_common(
+        target_id=f"observe:comparison:{slug(comparison_id, 'comparison')}",
+        target_kind="preview_comparison",
+        route=route,
+        route_basis="comparison.route",
+    )
+    target.update(
+        {
+            "comparison_id": comparison_id,
+            "project_id": compact(comparison.get("project_id")),
+            "provider_id": compact(comparison.get("candidate_provider_id"), compact(comparison.get("baseline_provider_id"))),
+            "runner_location": compact(
+                comparison.get("candidate_runner_location"),
+                compact(comparison.get("baseline_runner_location"), "unknown"),
+            ),
+            "runtime_state_class": "comparison_pair_registered",
+            "comparison_route_source": compact(comparison.get("route_source")),
+            "comparison_route_basis": compact(comparison.get("route_basis")),
+        }
+    )
+    return target
+
+
+def _build_ai_observe_preview_substrate(sessions: list[dict[str, Any]], comparisons: list[dict[str, Any]]) -> dict[str, Any]:
+    targets: list[dict[str, Any]] = []
+    blocked_targets: list[dict[str, Any]] = []
+    for session in sessions:
+        target, blocked_target = _observe_target_from_session(session)
+        if target:
+            targets.append(target)
+        if blocked_target:
+            blocked_targets.append(blocked_target)
+    for comparison in comparisons:
+        target = _observe_target_from_comparison(comparison)
+        if target:
+            targets.append(target)
+
+    target_counts_by_kind: dict[str, int] = {}
+    for target in targets:
+        kind = compact(target.get("target_kind"), "unknown")
+        target_counts_by_kind[kind] = target_counts_by_kind.get(kind, 0) + 1
+
+    return {
+        "schema_id": AI_OBSERVE_SUBSTRATE_SCHEMA_ID,
+        "status": "registered_read_only",
+        "observe_mode": "metadata_only_no_capture",
+        "target_count": len(targets),
+        "blocked_target_count": len(blocked_targets),
+        "target_counts_by_kind": dict(sorted(target_counts_by_kind.items())),
+        "targets": targets,
+        "blocked_targets": blocked_targets,
+        "policy": {
+            "route_policy": "same_origin_relative_paths_only",
+            "allowed_route_basis": ["same_origin_embed_url", "public_url", "comparison.route"],
+            "forbidden_capabilities": [
+                "capture",
+                "browser_automation",
+                "loopback_probe",
+                "loopback_mutation",
+                "secrets_access",
+                "live_execution",
+                "accepted_state_claim",
+            ],
+        },
+        "authority": _observe_authority(),
+        "non_claims": [
+            "No screenshot capture occurred.",
+            "No browser automation, loopback probe, DOM read, console read, network read, or visual diff was executed.",
+            "Observation targets are metadata-only references to existing same-origin preview routes.",
+            "Detached, stale, and orphaned preview records are blocked from observation targets.",
+            "No production, live execution, secrets, mutation, or accepted-state authority is granted.",
+        ],
+    }
+
+
 def build_preview_sessions_from_cockpit(
     root: str | Path,
     *,
@@ -704,6 +868,7 @@ def build_preview_sessions_from_cockpit(
 
     comparisons = _build_preview_comparisons(sessions)
     surface_matrix = _build_surface_matrix(providers, sessions, comparisons)
+    ai_observe_preview = _build_ai_observe_preview_substrate(sessions, comparisons)
     source_counts: dict[str, int] = {}
     runtime_state_counts: dict[str, int] = {}
     for session in sessions:
@@ -731,6 +896,8 @@ def build_preview_sessions_from_cockpit(
             "stale_count": stale_count,
             "comparison_count": len(comparisons),
             "comparable_session_count": surface_matrix.get("comparable_session_count", 0),
+            "ai_observe_target_count": ai_observe_preview.get("target_count", 0),
+            "ai_observe_blocked_target_count": ai_observe_preview.get("blocked_target_count", 0),
             "public_preview_count": public_preview_count,
             "portfolio_session_count": portfolio_session_count,
             "source_counts": source_counts,
@@ -742,12 +909,13 @@ def build_preview_sessions_from_cockpit(
         "sessions": sessions,
         "comparisons": comparisons,
         "surface_matrix": surface_matrix,
+        "ai_observe_preview": ai_observe_preview,
         "capability_classes": {
             "preview_read": "Read session state, safe same-origin URLs, screenshots, status, and receipt refs.",
             "preview_compare": "Register safe pairs of preview surfaces for later capture/diff work without performing capture.",
             "preview_interaction": "Navigation, screenshot, and diagnostics actions remain separate authenticated routes.",
             "preview_mutation": "Not granted by this projection.",
-            "ai_observe_preview": "Future DOM, screenshot, AX, console, and network observation lane; not executed by this projection.",
+            "ai_observe_preview": "Metadata-only observe target registry; capture, DOM, AX, console, network, and visual work are not executed by this projection.",
         },
         "routes": {
             "model": "/cockpit/previews/model.json",
@@ -773,6 +941,7 @@ def build_preview_sessions_from_cockpit(
         "non_claims": [
             "This model does not start, stop, probe, install, screenshot, or proxy any app.",
             "Preview comparisons are registered pairings only; no capture, DOM diff, visual diff, or equivalence verdict is produced.",
+            "AI observe preview is a metadata-only target registry; no capture, browser automation, loopback probe, or observation execution occurred.",
             "Raw stop tokens and direct loopback URLs are not emitted.",
             "VM, remote, and viewer-local providers are registered as read-only provider classes only.",
             "Launch, stop, diagnostics, patch, and rollback mutations keep their existing cockpit gates.",

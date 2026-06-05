@@ -691,6 +691,45 @@ export type IonProjectPreviewComparison = {
   non_claims?: string[];
 };
 
+export type IonProjectPreviewObserveTarget = {
+  target_id?: string;
+  target_kind?: string;
+  route?: string;
+  route_basis?: string;
+  capture_state?: string;
+  observation_receipt_refs?: string[];
+  artifact_refs?: string[];
+  preview_id?: string;
+  comparison_id?: string;
+  project_id?: string;
+  provider_id?: string;
+  runner_location?: string;
+  runtime_state_class?: string;
+  comparison_route_source?: string;
+  comparison_route_basis?: string;
+  blocked_reason?: string;
+  finding?: string;
+  stale_reasons?: string[];
+};
+
+export type IonProjectPreviewAiObserveSubstrate = {
+  schema_id?: 'ion.project_preview_ai_observe_substrate.v0_1' | string;
+  status?: string;
+  observe_mode?: string;
+  target_count?: number;
+  blocked_target_count?: number;
+  target_counts_by_kind?: Record<string, number>;
+  targets?: IonProjectPreviewObserveTarget[];
+  blocked_targets?: IonProjectPreviewObserveTarget[];
+  policy?: {
+    route_policy?: string;
+    allowed_route_basis?: string[];
+    forbidden_capabilities?: string[];
+  };
+  authority?: Record<string, boolean>;
+  non_claims?: string[];
+};
+
 export type IonProjectPreviewSessionsModel = {
   schema_id?: 'ion.project_preview_sessions.v0_1' | string;
   ok?: boolean;
@@ -706,6 +745,8 @@ export type IonProjectPreviewSessionsModel = {
     stale_count?: number;
     comparison_count?: number;
     comparable_session_count?: number;
+    ai_observe_target_count?: number;
+    ai_observe_blocked_target_count?: number;
     public_preview_count?: number;
     portfolio_session_count?: number;
     source_counts?: Record<string, number>;
@@ -717,6 +758,7 @@ export type IonProjectPreviewSessionsModel = {
   sessions?: IonProjectPreviewSession[];
   comparisons?: IonProjectPreviewComparison[];
   surface_matrix?: Record<string, unknown>;
+  ai_observe_preview?: IonProjectPreviewAiObserveSubstrate;
   capability_classes?: Record<string, string>;
   routes?: Record<string, string>;
   source_models?: Record<string, string>;

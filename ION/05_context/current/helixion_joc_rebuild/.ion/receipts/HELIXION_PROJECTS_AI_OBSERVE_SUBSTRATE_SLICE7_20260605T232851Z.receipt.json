@@ -1,0 +1,67 @@
+{
+  "schema_id": "ion.helixion_joc_rebuild.receipt.v0_1",
+  "receipt_id": "HELIXION_PROJECTS_AI_OBSERVE_SUBSTRATE_SLICE7_20260605T232851Z",
+  "generated_at": "2026-06-05T23:28:51Z",
+  "status": "candidate_validated",
+  "domain": "helixion_projects_app_preview",
+  "slice": "slice7_ai_observe_preview_substrate",
+  "summary": "Added a metadata-only AI observe-preview substrate to the existing PreviewSession model, surfaced its target count in the Helixion app preview UI, and preserved explicit false authority for capture, browser automation, loopback mutation, live execution, secrets, and accepted state.",
+  "authority": {
+    "candidate_only": true,
+    "production_authority": false,
+    "live_execution_authority": false,
+    "accepted_state_authority": false,
+    "secrets_authority": false,
+    "service_restart": false,
+    "git_push": false
+  },
+  "changed_files": [
+    "ION/04_packages/kernel/ion_project_preview_sessions.py",
+    "ION/tests/test_kernel_ion_project_preview_sessions.py",
+    "ION/08_ui/joc_cockpit_shell/ionRuntimeCockpitTypes.ts",
+    "ION/08_ui/joc_cockpit_shell/HelixionAppsPreviewPanel.tsx"
+  ],
+  "receipt_files": [
+    "ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_AI_OBSERVE_SUBSTRATE_SLICE7_20260605T232851Z.receipt.json"
+  ],
+  "schema_fields": [
+    "ai_observe_preview.schema_id",
+    "ai_observe_preview.status",
+    "ai_observe_preview.observe_mode",
+    "ai_observe_preview.target_count",
+    "ai_observe_preview.blocked_target_count",
+    "ai_observe_preview.targets",
+    "ai_observe_preview.blocked_targets",
+    "ai_observe_preview.policy",
+    "ai_observe_preview.authority",
+    "summary.ai_observe_target_count",
+    "summary.ai_observe_blocked_target_count"
+  ],
+  "validation": [
+    {
+      "command": "PYTHONPATH=ION/04_packages python3 -m py_compile ION/04_packages/kernel/ion_project_preview_sessions.py",
+      "result": "passed"
+    },
+    {
+      "command": "PYTHONPATH=ION/04_packages pytest -q -p no:cacheprovider ION/tests/test_kernel_ion_project_preview_sessions.py ION/tests/test_kernel_ion_local_cockpit_app.py::test_local_cockpit_serves_preview_sessions_model_endpoint ION/tests/test_kernel_ion_chatgpt_browser_mcp_http_preview.py::test_public_preview_sessions_model_requires_auth_and_accepts_bearer",
+      "result": "passed",
+      "test_count": 10
+    },
+    {
+      "command": "npm --prefix ION/08_ui/joc_cockpit_shell run build",
+      "result": "passed",
+      "note": "Vite emitted the existing large chunk warning only."
+    }
+  ],
+  "non_claims": [
+    "No screenshot capture.",
+    "No browser automation.",
+    "No loopback probe or loopback mutation.",
+    "No new endpoint or route handler.",
+    "No production deployment.",
+    "No service restart.",
+    "No live Action/MCP mutation.",
+    "No accepted-state claim.",
+    "No Git push."
+  ]
+}
