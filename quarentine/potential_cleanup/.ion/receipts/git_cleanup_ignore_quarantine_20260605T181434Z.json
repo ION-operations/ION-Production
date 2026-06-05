@@ -1,0 +1,42 @@
+{
+  "receipt_id": "git_cleanup_ignore_quarantine_20260605T181434Z",
+  "created_at": "2026-06-05T18:14:34Z",
+  "lane": "quarentine/potential_cleanup",
+  "mission": "Bounded Git root cleanup and source-stage recovery",
+  "phase": "ignore_and_quarantine_potential_cleanup_index",
+  "status": "complete_no_deletion",
+  "commit": "df3a881d",
+  "actions": [
+    "added narrow .gitignore rules for generated/local residue",
+    "created potential cleanup quarantine index",
+    "committed the bounded ignore and index packet"
+  ],
+  "non_actions": [
+    "no file deletion",
+    "no file move",
+    "no git rm",
+    "no git push",
+    "no tracked-state hiding"
+  ],
+  "evidence": [
+    ".gitignore",
+    "quarentine/potential_cleanup/README.md",
+    "quarentine/potential_cleanup/GIT_CLEANUP_POTENTIAL_20260605T181217Z.md",
+    "/tmp/ion_commit_boundary_after_ignore_quarantine.json"
+  ],
+  "audit_summary": {
+    "commit_boundary_ok": true,
+    "blocking_findings": [],
+    "post_commit_status_counts": {
+      "untracked": 70010,
+      "deleted": 18578,
+      "modified": 60
+    }
+  },
+  "remaining_boundaries": [
+    "tracked deletion paths cannot be hidden by .gitignore",
+    "untracked source-like families remain visible for owner review",
+    "destructive cleanup still requires explicit operator approval"
+  ],
+  "confirmation": "ION_BOUNDED_WRITE_CONFIRMED"
+}
