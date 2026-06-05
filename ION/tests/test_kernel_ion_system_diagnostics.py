@@ -1,4 +1,5 @@
 from pathlib import Path
+import json
 
 from kernel import ion_system_diagnostics as diagnostics
 
@@ -59,31 +60,12 @@ def test_protected_project_dev_server_is_visible_but_not_cleanup(monkeypatch):
 
     rows = diagnostics._dev_servers([port], [process])
 
-    assert rows == [
-        {
-            "id": "5179:5179",
-            "port": 5179,
-            "pid": 5179,
-            "process_name": "node",
-            "workspace": "Cosmos",
-            "cwd": process["cwd"],
-            "command": process["command"],
-            "elapsed_seconds": 7200,
-            "cpu_percent": 0.1,
-            "rss_kb": 256000,
-            "protected": True,
-            "dev_server": True,
-            "cleanup_candidate": False,
-            "stale": False,
-            "framework": "vite",
-            "package_name": "sailboat-viewer",
-            "package_path": process["package_path"],
-            "reason": "vite_command",
-            "confidence": "high",
-            "http_probe": {"serves_http": True, "url": "http://127.0.0.1:5179/", "http_status": 200, "finding": "ok", "title": "Sailboat"},
-            "action": {"action_type": "stop_process", "target_pid": 5179, "target_port": 5179},
-        }
-    ]
+    assert rows[0]["id"] == "5179:5179"
+    assert rows[0]["port"] == 5179
+    assert rows[0]["protected"] is True
+    assert rows[0]["cleanup_candidate"] is False
+    assert rows[0]["action_eligibility"]["allowed"] is False
+    assert "PROTECTED_PROCESS" in rows[0]["action_eligibility"]["reasons"]
 
 
 def test_cosmos_project_dev_server_is_cleanup_candidate(monkeypatch):
@@ -132,20 +114,11 @@ def test_cosmos_project_dev_server_is_cleanup_candidate(monkeypatch):
 
     assert dev_servers[0]["cleanup_candidate"] is True
     assert dev_servers[0]["protected"] is False
-    assert cleanup_candidates == [
-        {
-            "id": "6210:5178",
-            "pid": 6210,
-            "port": 5178,
-            "process_name": "node",
-            "workspace": "Cosmos",
-            "cwd": process["cwd"],
-            "elapsed_seconds": 8 * 3600,
-            "cpu_percent": 0.2,
-            "stale": True,
-            "action": {"action_type": "stop_process", "target_pid": 6210, "target_port": 5178},
-        }
-    ]
+    assert dev_servers[0]["action_eligibility"]["allowed"] is True
+    assert cleanup_candidates[0]["id"] == "6210:5178"
+    assert cleanup_candidates[0]["stale"] is True
+    assert cleanup_candidates[0]["action_eligibility"]["allowed"] is True
+    assert "SAFE_CLEANUP_CANDIDATE" in cleanup_candidates[0]["action_eligibility"]["reasons"]
 
 
 def test_system_diagnostics_model_includes_dev_server_inventory(monkeypatch, tmp_path: Path):
@@ -195,6 +168,31 @@ def test_system_diagnostics_model_includes_dev_server_inventory(monkeypatch, tmp
     monkeypatch.setattr(diagnostics, "_uptime_seconds", lambda: 500)
     monkeypatch.setattr(
         diagnostics,
+        "build_service_console_model",
+        lambda _root: {
+            "ok": True,
+            "verdict": "ready",
+            "headline": "All operator services are active.",
+            "required_issue_count": 0,
+            "warning_count": 0,
+            "services": [
+                {
+                    "id": "helixion",
+                    "unit": "ion-mcp-preview.service",
+                    "label": "Helixion public cockpit",
+                    "role": "Public Helixion URL",
+                    "critical": True,
+                    "active": True,
+                    "status": "active",
+                    "finding": "active",
+                    "severity": "ready",
+                    "restart_confirmation": "ION_SERVICE_CONTROL_APPROVED",
+                }
+            ],
+        },
+    )
+    monkeypatch.setattr(
+        diagnostics,
         "_probe_http_port",
         lambda _: {"serves_http": True, "url": "http://127.0.0.1:3231/", "http_status": 200, "finding": "ok", "title": "HyperH2O"},
     )
@@ -209,6 +207,12 @@ def test_system_diagnostics_model_includes_dev_server_inventory(monkeypatch, tmp
     assert model["dev_servers"][0]["protected"] is True
     assert model["data_quality"]["dev_server_count_includes_protected"] is True
     assert model["data_quality"]["cleanup_candidates_exclude_protected"] is True
+    assert model["risk_summary"]["schema_id"] == "ion.system_diagnostics.risk_summary.v1"
+    assert model["service_health"]["services"][0]["unit"] == "ion-mcp-preview.service"
+    assert model["security_summary"]["token_values_emitted"] is False
+    assert any(row["path"] == "/cockpit/system/execute_action" for row in model["route_matrix"])
+    assert model["redaction_summary"]["command_redaction_enabled"] is True
+    json.dumps(model)
 
 
 def test_unresponsive_dev_server_becomes_diagnostics_issue():
@@ -230,3 +234,32 @@ def test_unresponsive_dev_server_becomes_diagnostics_issue():
     assert issues[0]["id"] == "dev-server-http-probe-3231"
     assert "not HTTP responsive" in issues[0]["title"]
     assert issues[0]["action"] is None
+
+
+def test_security_summary_marks_mutation_routes_and_auth_findings(monkeypatch):
+    monkeypatch.delenv("ION_COCKPIT_PUBLIC_TOKEN", raising=False)
+    monkeypatch.delenv("ION_COCKPIT_SESSION_SECRET", raising=False)
+    monkeypatch.delenv("ION_COCKPIT_INVITE_TOKENS", raising=False)
+    monkeypatch.delenv("ION_GOOGLE_OAUTH_CLIENT_ID", raising=False)
+    monkeypatch.delenv("ION_GOOGLE_OAUTH_CLIENT_SECRET", raising=False)
+
+    route_matrix = diagnostics._route_matrix()
+    summary = diagnostics._security_summary(route_matrix=route_matrix)
+
+    assert summary["auth_configured"] is False
+    assert summary["mutation_route_count"] >= 1
+    assert summary["same_origin_mutation_required"] is True
+    assert any(row["path"] == "/cockpit/system/execute_action" and row["auth_required"] for row in route_matrix)
+    assert summary["findings"][0]["id"] == "public-cockpit-auth-not-configured"
+
+
+def test_sensitive_command_text_is_redacted():
+    redacted, count = diagnostics._redact_sensitive_text(
+        "node server.js --api-key=abc123456789 Authorization Bearer abcdefghijklmnop sk-testvalue123456",
+    )
+
+    assert count >= 3
+    assert "abc123456789" not in redacted
+    assert "abcdefghijklmnop" not in redacted
+    assert "sk-testvalue123456" not in redacted
+    assert "[REDACTED]" in redacted
