@@ -1,0 +1,21 @@
+schema_id: ion.branch_context_materialization_receipt.v0_1
+created_at: <iso8601>
+branch_path: <relative/path>
+parent_context_used:
+  path: <parent/path>
+  readme_path: <parent/README.md>
+  capsule_path: <parent/ION_CONTEXT_CAPSULE.yaml>
+local_files_inspected:
+  - <relative/path>
+classification: <inherited|materializable_branch|existing_local_context|local_stub|ignored_path|missing_path>
+decision: <created|proposed|inherited|not_branch|blocked>
+touched_paths:
+  - <relative/path>
+created_file_sha256:
+  <relative/path>: <sha256>
+next_carrier_instructions:
+  - <Instruction for the next carrier.>
+accepted_state_claim: false
+production_authority: false
+live_execution_authority: false
+candidate_state_only: true

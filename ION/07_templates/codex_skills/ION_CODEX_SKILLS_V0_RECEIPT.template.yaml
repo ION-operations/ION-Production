@@ -1,0 +1,31 @@
+schema_id: ion.codex_skills_v0_receipt.v0_1
+created_at: <iso8601>
+packet_id: PCKT-ION-CODEX-SKILLS-V0
+status: <candidate_implemented|candidate_implemented_tested|blocked>
+skill_ids:
+  - ion-orchestration
+  - ion-context-scout
+  - ion-memory-curator
+  - ion-workbench
+  - ion-hook-engineer
+maps_to_ion_ops:
+  context_load: <true|false>
+  situation_route: <true|false>
+  bounded_execution: <true|false>
+  receipt_preservation: <true|false>
+  domain_capsule_update: <true|false>
+  drift_repair: <true|false>
+  next_packet_compile: <true|false>
+implemented_paths:
+  - <path>
+validation:
+  - command: <command>
+    result: <passed|failed|not_run>
+boundaries:
+  accepted_state_claim: false
+  production_authority: false
+  live_execution_authority: false
+  secrets_authority: false
+  global_codex_skill_install_modified: false
+next_handoff:
+  - <next step>

@@ -1,0 +1,32 @@
+schema_id: ion.ai_movement_gate_decision.v1
+receipt_type: ai_movement_gate_decision
+created_at: "<iso8601>"
+true_name: "<declared_true_name>"
+packet_id: "<packet_id>"
+movement_class: null
+accepted: false
+verdict: BLOCKED
+target_root_id: null
+target_root_class: null
+target_root_relation: null
+blockers: []
+warnings: []
+path_authority_decisions: []
+root_classifications: []
+required_receipts:
+  - "ION/05_context/current/worker_shift/signons/**"
+  - "ION/05_context/current/worker_shift/leases/**"
+  - "ION/05_context/current/worker_shift/signoffs/**"
+settlement_target: null
+worker_shift_receipt_integration:
+  schema_id: ion.ai_movement_worker_shift_receipt_fragment.v1
+  required_on_signon: true
+  required_on_lease: true
+  required_on_signoff: true
+  lease_block_status_when_rejected: BLOCKED_AI_MOVEMENT_GATE
+  runner_integration_performed: false
+authority:
+  production_authority: false
+  live_execution_authority: false
+  accepted_state_claim: false
+  secrets_authority: false

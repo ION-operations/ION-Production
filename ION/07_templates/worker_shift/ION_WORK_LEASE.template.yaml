@@ -1,0 +1,24 @@
+schema_id: ion.worker_shift_work_lease_receipt.v0_1
+receipt_type: lease_claim
+created_at: "<iso8601>"
+lease:
+  lease_id: "<lease:id>"
+  worker_id: "<worker_id>"
+  mode: read | write | exclusive_write
+  lease_type: read | write | exclusive_write
+  paths: []
+  objective: "<objective>"
+  packet_id: "<packet_id>"
+  branch_id: "<branch_id>"
+  status: ACTIVE
+  claimed_at: "<iso8601>"
+conflicts:
+  hard_conflicts: []
+  advisory_conflicts: []
+  policy: exclusive_write_blocks_overlapping_read_write_or_exclusive_write
+result: ACTIVE
+authority:
+  accepted_state_authority: false
+  production_authority: false
+  live_execution_authority: false
+  secrets_authority: false

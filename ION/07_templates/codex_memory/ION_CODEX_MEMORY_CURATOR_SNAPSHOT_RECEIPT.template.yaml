@@ -1,0 +1,35 @@
+schema_id: ion.codex_memory_curator_receipt.v0_1
+created_at: <iso8601>
+packet_id: PCKT-ION-CODEX-MEMORY-CURATOR-V0_1
+memory_root: /home/sev/.codex/memories
+snapshot_before:
+  git_head: <short_sha_or_null>
+  git_status_short:
+    - <status line>
+  file_count: <int>
+snapshot_after:
+  git_head: <short_sha_or_null>
+  git_status_short:
+    - <status line>
+  file_count: <int>
+diff:
+  added_paths:
+    - <path>
+  changed_paths:
+    - <path>
+  removed_paths:
+    - <path>
+  generated_paths_changed:
+    - <MEMORY.md|memory_summary.md|raw_memories.md>
+  contribution_paths_changed:
+    - <extensions/ad_hoc/...>
+classification: <generated_consolidation_observed|contribution_or_no_generated_change|blocked>
+inference_boundary: Codex memory artifact changes do not reveal hidden scoring, selection, or injection rules.
+reconcile_with_ion_truth:
+  - <receipt_or_packet_path>
+next_carrier_instructions:
+  - Treat Codex memory as recall, not authority.
+  - Write new memories through contribution lanes first.
+accepted_state_claim: false
+production_authority: false
+live_execution_authority: false

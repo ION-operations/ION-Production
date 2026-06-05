@@ -1,0 +1,56 @@
+domain_id: domain.browser_dom_perception
+display_name: Browser DOM Perception
+true_name_status: PROVISIONAL_CURRENT_PHASE
+status: ACTIVE_FIRST_PASS
+authority: A3_OPERATIONAL
+mission: >-
+  Hold the Browser GPT DOM perception burden for ION: ChatGPT page DOM health,
+  selector-profile calibration, phase-aware surface discovery, extension runtime
+  observation, Playwright/screen automation proof, JOC DOM twin projection, and
+  permission posture receipts.
+scope:
+  - ChatGPT page DOM health and selector profile calibration
+  - fresh-chat versus in-progress-chat page-state evidence
+  - phase-aware capture for menus, drawers, slash commands, model picker, thinking effort, attach/drop surfaces, and native action cards
+  - extension runtime bridge diagnostics and own-UI ignore boundaries
+  - Playwright calibration and screen automation receipts
+  - Browser GPT DOM twin projection into JOC
+  - Chrome extension permission posture evidence for local development
+primary_roles:
+  - BROWSER_DOM_CARTOGRAPHER
+secondary_roles:
+  - CODEX_CARRIER_STEWARD
+  - RUNTIME_CARTOGRAPHER
+  - CONTEXT_CARTOGRAPHER
+  - MASON
+  - NEMESIS
+  - VICE
+  - STEWARD
+owned_or_stewarded_surfaces:
+  - ION/04_packages/kernel/ion_browser_gpt_dom_calibration.py
+  - ION/04_packages/kernel/ion_browser_gpt_screen_automation.py
+  - ION/05_context/current/browser_gpt_dom_profiles/
+  - ION/05_context/current/browser_dom_perception_specialist/
+  - ION/08_ui/joc_cockpit_shell/BrowserGptDomTwinPanel.tsx
+  - browser_extension/ion_chatops_bridge/src/content.ts
+  - browser_extension/ion_chatops_bridge/src/background.ts
+  - browser_extension/ion_chatops_bridge/src/cockpit_bridge.ts
+  - browser_extension/ion_chatops_bridge/dist/content.js
+  - browser_extension/ion_chatops_bridge/dist/background.js
+  - browser_extension/ion_chatops_bridge/dist/cockpit_bridge.js
+  - browser_extension/ion_chatops_bridge/manifest.json
+  - browser_extension/ion_chatops_bridge/tools/browser_gpt_calibrate.py
+  - browser_extension/ion_chatops_bridge/tools/browser_gpt_screen_ops.py
+  - browser_extension/browser_gpt_dom_probe/
+  - ION/tests/test_kernel_ion_browser_gpt_dom_calibration.py
+  - ION/tests/test_kernel_ion_browser_gpt_screen_automation.py
+open_edges:
+  - broad Chrome extension permissions must remain explicitly receipted and justified; local capture posture is not a general entitlement
+  - source/dist drift in the extension remains a known failure mode until the domain owns a build convention and runtime sync proof
+  - Playwright launched with an isolated browser profile may not share the operator logged-in Chrome session; the extension remains the logged-in runtime observer
+  - selector profiles must degrade and request recalibration on DOM drift rather than pretending stale selectors are valid
+  - upload/drop and action-card automation must remain previewed and receipted; no silent send or autonomous approval authority is granted
+activation_witness:
+  - ION/05_context/current/browser_dom_perception_specialist/RESEARCH_BRIEF_20260526.md
+  - ION/05_context/current/browser_gpt_dom_profiles/latest.selector_profile.json
+  - ION/05_context/current/browser_gpt_dom_profiles/latest.dom_health.json

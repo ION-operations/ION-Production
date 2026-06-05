@@ -1,0 +1,41 @@
+domain_id: domain.agent_communication_systems
+display_name: Agent Communication Systems
+true_name_status: PROVISIONAL_CURRENT_PHASE
+status: ACTIVE_FIRST_PASS
+authority: A3_OPERATIONAL
+canon_status: PROVISIONAL_BRIDGE_NOT_FINAL_CANON
+mission: >-
+  Own the visible agent communication substrate: contact contracts, room
+  contracts, room capsules, directive pickup, bounded automation limits, and
+  cockpit projections that let agents coordinate without fake simulation or
+  hidden authority expansion.
+scope:
+  - agent contact discovery and address books
+  - Team Comms rooms, direct rooms, domain rooms, and mission rooms
+  - room capsules and route-deeper refs
+  - ion-agent-comms directive schema and pickup evidence
+  - bounded automation prompt/time limits for comms dispatch
+  - cockpit visibility for messages, runs, rooms, contacts, receipts, and proof chains
+primary_roles:
+  - COMMS_CARTOGRAPHER
+secondary_roles:
+  - STEWARD
+  - RELAY
+  - IONOLOGIST
+  - CODEX_CARRIER_STEWARD
+owned_or_stewarded_surfaces:
+  - ION/05_context/current/agent_comms/COMMUNICATION_DIRECTORY.json
+  - ION/05_context/current/agent_comms/rooms/
+  - ION/04_packages/kernel/ion_agent_comms.py
+  - ION/04_packages/kernel/ion_agent_comms_directory.py
+  - ION/04_packages/kernel/ion_agent_comms_directives.py
+  - ION/04_packages/kernel/ion_agent_comms_runs.py
+  - ION/04_packages/kernel/ion_agent_spawn_templates.py
+  - ION/04_packages/kernel/ion_agent_control_plane.py
+  - ION/08_ui/joc_cockpit_shell/AgentControlPlanePanel.tsx
+open_edges:
+  - Room and contact contracts are operational substrate; they do not grant accepted-state, production, live execution, or secrets authority.
+  - Agents decide when to contact each other; automation validates limits, carries packets, starts governed workers, and writes machine receipts.
+  - Direct rooms must report decisions or blockers back to a visible team or mission room when relevant.
+activation_witness:
+  - ION/05_context/current/automation_kernel/receipts/20260527T020346Z_agent_comms_directory_materialize.json

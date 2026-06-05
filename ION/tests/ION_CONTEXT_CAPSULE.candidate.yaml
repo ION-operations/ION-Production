@@ -1,0 +1,132 @@
+schema_id: ion.branch_context_capsule_candidate.v0_1
+branch_id: ion_tests
+path: ION/tests
+parent_branch_ref: ION/ION_CONTEXT_CAPSULE.yaml
+maturity_level: level_3_candidate
+purpose: Candidate package for validation entry, focused test routing, and maturity-claim
+  checks.
+when_to_enter:
+- when a bounded packet or carrier task touches this branch
+- when parent context is insufficient for safe local work
+- when this branch is needed for context package graph Wave 001 dogfood work
+read_first:
+- ION_CONTEXT_CAPSULE.candidate.yaml
+local_templates: []
+local_agents_or_roles: []
+allowed_operations:
+- read_only_inspection
+- candidate_patch_with_receipt
+- focused_tests_when_in_scope
+receipts_path: ION/05_context/current/branch_context_materialization/receipts
+known_blockers: []
+escalation_routes:
+- parent_branch_context
+- operator_gate_for_authority_or_destructive_work
+last_updated: '2026-05-16T23:03:13+00:00'
+wave:
+  wave_id: PCKT-ION-CONTEXT-PACKAGE-GRAPH-WAVE-001
+  plan_ref: ION/05_context/current/forensic_audit_20260516/CONTEXT_PACKAGE_LAYER_BUILDOUT_PLAN.md
+  package_type: anchor
+  score_total: 15
+  score_phase: phase_3_or_4
+  score:
+    active_work_frequency: 2
+    authority_risk: 2
+    dirty_tree_risk: 2
+    carrier_entry_frequency: 2
+    receipt_density: 1
+    operator_confusion_risk: 2
+    external_boundary_risk: 0
+    test_or_validation_availability: 3
+    ui_cockpit_visibility_value: 1
+  source_classification: materializable_branch
+  source_maturity_level: level_1_inherited
+  materialization_decision: created_candidate_by_wave_001
+accepted_state_claim: false
+production_authority: false
+live_execution_authority: false
+candidate_state_only: true
+wave_002_review:
+  packet_id: PCKT-ION-CONTEXT-PACKAGE-GRAPH-WAVE-002
+  review_path: ION/05_context/current/context_package_graph_wave_001/CONTEXT_PACKAGE_GRAPH_WAVE_001_REVIEW.json
+  promotion_readiness: candidate_review_ready_with_gaps
+  gaps:
+  - readme_missing
+  local_surface_hints:
+    agents: []
+    package_files: []
+    protocols:
+    - ION/tests/test_kernel_ion_branch_delegate_router_protocol.py
+    - ION/tests/test_kernel_ion_readme_branch_context_protocol.py
+    readme: []
+    receipts:
+    - ION/tests/__pycache__/test_kernel_ion_carrier_mount_receipt.cpython-313.pyc
+    - ION/tests/test_kernel_ion_carrier_mount_receipt.py
+    - ION/tests/test_kernel_ion_github_commit_proposal_receipt.py
+    - ION/tests/test_kernel_ion_mcp_hosted_storage_receipt_ledger_alpha.py
+    - ION/tests/test_kernel_ion_receipt_hydration_mapper.py
+    routes:
+    - ION/tests/__pycache__/test_kernel_ion_assistant_work_route_compiler.cpython-313-pytest-9.0.3.pyc
+    - ION/tests/__pycache__/test_kernel_ion_custom_gpt_action_gateway.cpython-313-pytest-9.0.3.pyc
+    - ION/tests/__pycache__/test_kernel_ion_custom_gpt_action_gateway_policy.cpython-313-pytest-9.0.3.pyc
+    - ION/tests/__pycache__/test_kernel_ion_custom_gpt_action_gateway_policy.cpython-313.pyc
+    - ION/tests/__pycache__/test_kernel_ion_custom_gpt_action_gateway_supabase.cpython-313.pyc
+    - ION/tests/test_kernel_ion_assistant_work_route_compiler.py
+    - ION/tests/test_kernel_ion_branch_delegate_router_protocol.py
+    - ION/tests/test_kernel_ion_custom_gpt_action_gateway.py
+    - ION/tests/test_kernel_ion_custom_gpt_action_gateway_policy.py
+    - ION/tests/test_kernel_ion_custom_gpt_action_gateway_supabase.py
+    - ION/tests/test_kernel_ion_needs_routed_intake.py
+    - ION/tests/test_kernel_ion_self_knowledge_route_usage.py
+    schemas:
+    - ION/tests/__pycache__/test_kernel_ion_action_schema_release.cpython-313.pyc
+    - ION/tests/test_kernel_ion_action_schema_release.py
+    - ION/tests/test_kernel_ion_chatops_action_schema.py
+    source_files_sample:
+    - ION/tests/test_codex_project_config_and_hook.py
+    - ION/tests/test_kernel_ai_assistant_work_agent_boot_template_specs.py
+    - ION/tests/test_kernel_ai_assistant_work_dataset_genesis.py
+    - ION/tests/test_kernel_ai_assistant_work_domain_candidate.py
+    - ION/tests/test_kernel_ai_assistant_work_domain_fission_candidate.py
+    - ION/tests/test_kernel_ai_assistant_work_template_instances.py
+    - ION/tests/test_kernel_ion_action_mcp_branch_leaders.py
+    - ION/tests/test_kernel_ion_action_schema_release.py
+    - ION/tests/test_kernel_ion_active_state_integrity_audit.py
+    - ION/tests/test_kernel_ion_agent_branch_capsule.py
+    - ION/tests/test_kernel_ion_agent_context_dynamics.py
+    - ION/tests/test_kernel_ion_agent_invocation_broker.py
+    status:
+    - ION/tests/__pycache__/test_kernel_ion_local_service_status.cpython-313-pytest-9.0.3.pyc
+    - ION/tests/test_kernel_ion_local_service_status.py
+    - ION/tests/test_kernel_ion_operator_queue_human_gate_status.py
+    - ION/tests/test_kernel_ion_status.py
+    templates:
+    - ION/tests/__pycache__/test_kernel_ai_assistant_work_agent_boot_template_specs.cpython-313-pytest-9.0.3.pyc
+    - ION/tests/__pycache__/test_kernel_ion_template_action_gate.cpython-313-pytest-9.0.3.pyc
+    - ION/tests/test_kernel_ai_assistant_work_agent_boot_template_specs.py
+    - ION/tests/test_kernel_ai_assistant_work_template_instances.py
+    - ION/tests/test_kernel_ion_template_action_gate.py
+    tests:
+    - ION/tests/ION_CONTEXT_CAPSULE.candidate.yaml
+    - ION/tests/__pycache__/test_codex_project_config_and_hook.cpython-313-pytest-9.0.3.pyc
+    - ION/tests/__pycache__/test_kernel_ai_assistant_work_agent_boot_template_specs.cpython-313-pytest-9.0.3.pyc
+    - ION/tests/__pycache__/test_kernel_ai_assistant_work_domain_candidate.cpython-313-pytest-9.0.3.pyc
+    - ION/tests/__pycache__/test_kernel_ai_assistant_work_domain_fission_candidate.cpython-313-pytest-9.0.3.pyc
+    - ION/tests/__pycache__/test_kernel_ion_action_schema_release.cpython-313.pyc
+    - ION/tests/__pycache__/test_kernel_ion_agent_branch_capsule.cpython-313.pyc
+    - ION/tests/__pycache__/test_kernel_ion_agent_invocation_broker.cpython-313-pytest-9.0.3.pyc
+    - ION/tests/__pycache__/test_kernel_ion_architecture_signal_capture.cpython-313-pytest-9.0.3.pyc
+    - ION/tests/__pycache__/test_kernel_ion_architecture_signal_capture.cpython-313.pyc
+    - ION/tests/__pycache__/test_kernel_ion_assistant_work_route_compiler.cpython-313-pytest-9.0.3.pyc
+    - ION/tests/__pycache__/test_kernel_ion_carrier_mount_receipt.cpython-313.pyc
+  readme_projection_candidate: ION/05_context/current/context_package_graph_wave_001/readme_projection_candidates/ion_tests_README_BRANCH_ENTRY_CANDIDATE.md
+  cockpit_context_explorer_projection: true
+  next_required_action:
+  - review candidate README projection before touching README.md
+  - review local surface hints before promotion
+  - keep candidate-only until accepted by explicit governance path
+  accepted_state_claim: false
+  production_authority: false
+  live_execution_authority: false
+  candidate_state_only: true
+  updated_at: '2026-05-16T23:03:13+00:00'

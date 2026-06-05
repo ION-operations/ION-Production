@@ -1,0 +1,52 @@
+ai_movement_root_envelope:
+  schema_id: ion.ai_movement_root_envelope.v1
+  generated_at: "<iso8601>"
+  true_name: "<declared_true_name>"
+  packet_id: "<packet_id>"
+  workspace_root: "/home/sev/ION - Production"
+  active_ion_root: "/home/sev/ION - Production/ION_Developement"
+  actual_cwd: null
+  actual_realpath: null
+  expected_cwd: null
+  expected_realpath: null
+  target_project_root: null
+  target_content_root: null
+  root_relation: null
+  movement_class: null
+  domain_context_package: null
+  active_template: null
+  allowed_read_roots: []
+  allowed_write_paths: []
+  planned_reads: []
+  planned_writes: []
+  planned_artifacts: []
+  forbidden_roots:
+    - "/home/sev/ION - Production/ION_VAULT_LOCAL"
+    - "/home/sev/ION - Production/.env*"
+    - "/home/sev/ION_EXPORTS_LOCAL"
+    - "/home/sev/.ssh"
+    - "/home/sev/.config"
+  artifact_output_root: null
+  requested_authority:
+    production_authority: false
+    live_execution_authority: false
+    accepted_state_claim: false
+    git_push_authority: false
+    deletion_authority: false
+    service_restart_authority: false
+  path_authority_base_root: null
+  context_proof_required: true
+  duplicate_root_policy: reject_existing_or_parallel_root_creation_without_packet
+  validation_commands:
+    - "pwd"
+    - "realpath ."
+  settlement_target: null
+  receipt_paths:
+    - "ION/05_context/current/worker_shift/signons/**"
+    - "ION/05_context/current/worker_shift/leases/**"
+    - "ION/05_context/current/worker_shift/signoffs/**"
+  authority:
+    production_authority: false
+    live_execution_authority: false
+    accepted_state_claim: false
+    secrets_authority: false

@@ -1,0 +1,12 @@
+schema_id: ion.worker_shift_heartbeat_receipt.v0_1
+receipt_type: heartbeat
+created_at: "<iso8601>"
+worker_id: "<worker_id>"
+shift_id: "<shift:id>"
+status: HEARTBEAT
+note: "<optional compact note>"
+authority:
+  accepted_state_authority: false
+  production_authority: false
+  live_execution_authority: false
+  secrets_authority: false

@@ -1,0 +1,47 @@
+domain_id: domain.codex_carrier_sync
+display_name: Codex Carrier Synchronization
+true_name_status: PROVISIONAL_CURRENT_PHASE
+status: ACTIVE_FIRST_PASS
+authority: A3_OPERATIONAL
+mission: >-
+  Hold the Codex CLI carrier substrate burden for ION: project-local
+  configuration, AGENTS.md inheritance, lifecycle hooks, skills, MCP exposure,
+  sandbox and writable-root posture, session/compaction evidence, queue-runner
+  integration, and agent/domain mount proof.
+scope:
+  - Codex CLI project configuration and trust posture
+  - folder-local AGENTS.md and generated agent/domain mounts
+  - lifecycle hooks and carrier-sync receipts
+  - Codex skills, MCP, tools, slash-command, and model/config visibility
+  - session archive, compaction, history, and prompt-input proof diagnostics
+  - sandbox, writable-root, network, and approval posture evidence
+primary_roles:
+  - CODEX_CARRIER_STEWARD
+secondary_roles:
+  - STEWARD
+  - RUNTIME_CARTOGRAPHER
+  - CONTEXT_CARTOGRAPHER
+  - MASON
+  - VESTIGE
+owned_or_stewarded_surfaces:
+  - .codex/
+  - ION/02_architecture/CODEX_CLI_CARRIER_PROTOCOL.md
+  - ION/02_architecture/CODEX_CARRIER_DOMAIN_PROTOCOL.md
+  - ION/02_architecture/CODEX_CARRIER_EVENT_BUS_PROTOCOL.md
+  - ION/02_architecture/CODEX_RAW_CONTEXT_SYNC_LANE_PROTOCOL.md
+  - ION/03_registry/codex_cli_carrier_profile.yaml
+  - ION/04_packages/kernel/ion_codex_carrier_sync.py
+  - ION/04_packages/kernel/ion_codex_carrier_domain.py
+  - ION/04_packages/kernel/ion_codex_agent_mount.py
+  - ION/04_packages/kernel/ion_codex_queue_runner.py
+  - ION/05_context/current/codex_carrier/
+  - ION/05_context/current/codex_cli/
+  - ION/05_context/current/codex_agent_mounts/
+  - ION/05_context/current/codex_skills_v0/
+  - ION/07_templates/carriers/CODEX_CLI_EXECUTION_PACKET.md
+open_edges:
+  - per-folder skills.config behavior must remain proof-gated until a dedicated prompt-input and runtime harness proves differential skill exposure
+  - Codex upstream CLI behavior and config schema can change; this domain must verify against local CLI help and official docs before widening assumptions
+  - carrier-specific surfaces must remain mapped back into ION ops and may not become a parallel role authority
+activation_witness:
+  - ION/05_context/current/codex_solo/history/codex_solo_post_20260525T155642+0000.json

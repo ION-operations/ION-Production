@@ -1,0 +1,28 @@
+schema_id: ion.worker_shift_signon_receipt.v0_1
+receipt_type: sign_on
+created_at: "<iso8601>"
+shift_id: "<shift:id>"
+worker_id: "<carrier_type>:<workspace>:<yyyymmdd>:<ordinal>"
+identity:
+  worker_id: "<worker_id>"
+  display_callsign: "<carrier-family>-001 / <role> / <domain>"
+  carrier_type: "<carrier_type>"
+  carrier_instance_id: "<carrier_instance_id>"
+  model: "<model>"
+  role_hint: "<role>"
+  domain_hint: "<domain>"
+  active_root: "<repo-root>"
+status: SIGNED_ON
+executor_lifecycle_state: ACTIVE
+packet_id: "<packet_id>"
+current_objective: "<objective>"
+current_branch: "<branch>"
+return_target: "<return-target>"
+likely_touched_paths: []
+candidate_leases: []
+mount_receipt_ref: "<optional-carrier-mount-receipt>"
+authority:
+  accepted_state_authority: false
+  production_authority: false
+  live_execution_authority: false
+  secrets_authority: false

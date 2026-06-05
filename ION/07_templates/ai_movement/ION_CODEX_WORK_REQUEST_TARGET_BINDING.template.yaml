@@ -1,0 +1,62 @@
+codex_work_request_target_binding:
+  schema_id: ion.codex_work_request_target_binding.v1
+  generated_at: "<iso8601>"
+  request_id: "<codex_request_id>"
+  source: "<request_emitter>"
+  target_root_id: "<active_ion_control|ion_gpt|browser_extension|mcp|local_daemon|systemd|daimon|needs_routed|ion_exports_local|quarentine|aim_os|atlas|wisdomnet>"
+  movement_class: "<ION_KERNEL_CONTROL_MOVEMENT|CUSTOM_GPT_RELEASE_MOVEMENT|BROWSER_EXTENSION_MOVEMENT|MCP_BRIDGE_MOVEMENT|LOCAL_DAEMON_MOVEMENT|DAIMON_PROJECT_MOVEMENT|INTAKE_ROUTING_MOVEMENT|EXPORT_PACKAGE_MOVEMENT|ARCHIVE_REFERENCE_MOVEMENT>"
+  target_family: "<workspace_family>"
+  root_relation: "<root_relation>"
+  binding_source: "<request.field|default.active_ion_control>"
+  target_project_subpath: null
+  target_project_subpath_source: null
+  planned_writes: []
+  planned_artifacts: []
+  required_for_queue_preflight: true
+  runner_legacy_default_allowed: false
+  accepted_state_claim: false
+  production_authority: false
+  live_execution_authority: false
+required_top_level_request_fields:
+  - target_root_id
+  - movement_class
+  - ai_movement_request_template
+allowed_binding_sources:
+  explicit_target_fields:
+    - ai_movement_target_root_id
+    - target_root_id
+    - workspace_target_root_id
+    - target_workspace_root_id
+    - target_project_root_id
+    - target_family
+    - target_project
+    - target_project_root_name
+  explicit_movement_class:
+    - movement_class
+  domain_fields:
+    - movement_domain
+    - domain
+    - project_id
+    - project
+    - request_kind
+    - route_family
+    - work_class
+    - workload_class
+  path_evidence_fields:
+    - planned_writes
+    - allowed_write_paths
+    - target_write_paths
+    - write_scope
+    - expected_touched_paths
+    - planned_artifacts
+    - artifact_paths
+    - planned_output_artifacts
+default_policy:
+  default_target_root_id: active_ion_control
+  default_status: explicit_control_plane_default
+  legacy_default_without_template: blocked_by_queue_runner
+authority:
+  accepted_state_claim: false
+  production_authority: false
+  live_execution_authority: false
+  secrets_authority: false

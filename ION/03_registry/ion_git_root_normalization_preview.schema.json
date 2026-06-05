@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "ion.git_root_normalization_preview.v1",
+  "title": "ION Git Root Normalization Preview",
+  "type": "object",
+  "required": [
+    "schema_id",
+    "generated_at",
+    "status",
+    "ok",
+    "root_normalization_ready",
+    "tracked_to_active_map_summary",
+    "mutation_boundary"
+  ],
+  "properties": {
+    "schema_id": {
+      "const": "ion.git_root_normalization_preview.v1"
+    },
+    "generated_at": {
+      "type": "string"
+    },
+    "status": {
+      "const": "candidate_preview_only"
+    },
+    "ok": {
+      "type": "boolean"
+    },
+    "root_normalization_ready": {
+      "type": "boolean"
+    },
+    "tracked_to_active_map_summary": {
+      "type": "object"
+    },
+    "mutation_boundary": {
+      "type": "object"
+    }
+  },
+  "additionalProperties": true
+}

@@ -1,0 +1,18 @@
+schema_id: ion.worker_shift_signoff_receipt.v0_1
+receipt_type: sign_off
+created_at: "<iso8601>"
+worker_id: "<worker_id>"
+shift_id: "<shift:id>"
+status: RETURNED
+executor_lifecycle_state: RETURNED
+work_done: "<compact summary>"
+touched_paths: []
+validation: []
+receipts_created: []
+released_lease_ids: []
+next_baton: "<next lawful handoff>"
+authority:
+  accepted_state_authority: false
+  production_authority: false
+  live_execution_authority: false
+  secrets_authority: false

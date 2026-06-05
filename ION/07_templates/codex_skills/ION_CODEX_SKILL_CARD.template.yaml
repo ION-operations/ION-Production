@@ -1,0 +1,26 @@
+schema_id: ion.codex_skill_card.v0_1
+skill_id: <ion-skill-id>
+display_name: <Skill Name>
+status: candidate
+maps_to_ion_ops:
+  - <context_load|situation_route|bounded_execution|receipt_preservation|domain_capsule_update|drift_repair|next_packet_compile>
+purpose: <What this skill helps Codex do.>
+trigger_summary: <When Codex should activate it.>
+context_mount:
+  required_packages:
+    - minimum_working_capsule
+  route_deeper_packages:
+    - route_depth_package
+templates:
+  activates:
+    - <template path>
+authority:
+  accepted_state_claim: false
+  production_authority: false
+  live_execution_authority: false
+  secrets_authority: false
+boundaries:
+  - Skills activate workflows; templates govern proof.
+  - Memory is recall, not authority.
+  - No generated memory edits before contribution lanes are tried.
+next_packet_output: <receipt_or_next_packet_shape>

@@ -1,0 +1,116 @@
+schema_id: ion.branch_context_capsule_candidate.v0_1
+branch_id: ion_04_packages_kernel
+path: ION/04_packages/kernel
+parent_branch_ref: ION/04_packages/README.md
+maturity_level: level_3_candidate
+purpose: Candidate package for kernel modules, queue runners, gateways, carrier sync,
+  and validation entry.
+when_to_enter:
+- when a bounded packet or carrier task touches this branch
+- when parent context is insufficient for safe local work
+- when this branch is needed for context package graph Wave 001 dogfood work
+read_first:
+- ION_CONTEXT_CAPSULE.candidate.yaml
+local_templates: []
+local_agents_or_roles: []
+allowed_operations:
+- read_only_inspection
+- candidate_patch_with_receipt
+- focused_tests_when_in_scope
+receipts_path: ION/05_context/current/branch_context_materialization/receipts
+known_blockers: []
+escalation_routes:
+- parent_branch_context
+- operator_gate_for_authority_or_destructive_work
+last_updated: '2026-05-16T23:03:13+00:00'
+wave:
+  wave_id: PCKT-ION-CONTEXT-PACKAGE-GRAPH-WAVE-001
+  plan_ref: ION/05_context/current/forensic_audit_20260516/CONTEXT_PACKAGE_LAYER_BUILDOUT_PLAN.md
+  package_type: operational_lane
+  score_total: 24
+  score_phase: phase_1_or_2
+  score:
+    active_work_frequency: 3
+    authority_risk: 3
+    dirty_tree_risk: 3
+    carrier_entry_frequency: 3
+    receipt_density: 2
+    operator_confusion_risk: 3
+    external_boundary_risk: 1
+    test_or_validation_availability: 3
+    ui_cockpit_visibility_value: 3
+  source_classification: materializable_branch
+  source_maturity_level: level_1_inherited
+  materialization_decision: created_candidate_by_wave_001
+accepted_state_claim: false
+production_authority: false
+live_execution_authority: false
+candidate_state_only: true
+wave_002_review:
+  packet_id: PCKT-ION-CONTEXT-PACKAGE-GRAPH-WAVE-002
+  review_path: ION/05_context/current/context_package_graph_wave_001/CONTEXT_PACKAGE_GRAPH_WAVE_001_REVIEW.json
+  promotion_readiness: candidate_review_ready_with_gaps
+  gaps:
+  - readme_missing
+  local_surface_hints:
+    agents: []
+    package_files: []
+    protocols: []
+    readme: []
+    receipts:
+    - ION/04_packages/kernel/ion_carrier_mount_receipt.py
+    - ION/04_packages/kernel/ion_github_commit_proposal_receipt.py
+    - ION/04_packages/kernel/ion_mcp_hosted_storage_receipt_ledger_alpha.py
+    - ION/04_packages/kernel/ion_receipt_hydration_mapper.py
+    - ION/04_packages/kernel/local_browser_execution_run_receipt.py
+    - ION/04_packages/kernel/temporal_receipts.py
+    - ION/04_packages/kernel/visual_diagnosis_receipt.py
+    - ION/04_packages/kernel/visual_run_receipt_to_diagnosis_binding.py
+    routes:
+    - ION/04_packages/kernel/cost_quality_router.py
+    - ION/04_packages/kernel/ion_agent_route_enforcement.py
+    - ION/04_packages/kernel/ion_assistant_work_route_compiler.py
+    - ION/04_packages/kernel/ion_branch_delegate_router.py
+    - ION/04_packages/kernel/ion_needs_routed_intake.py
+    - ION/04_packages/kernel/joc_cognitive_explorer_route_view_model.py
+    - ION/04_packages/kernel/joc_mission_dispatch_route_view_model.py
+    - ION/04_packages/kernel/joc_synthetic_synthesis_route_result_view_model.py
+    - ION/04_packages/kernel/model_router.py
+    schemas:
+    - ION/04_packages/kernel/ion_action_schema_release.py
+    source_files_sample:
+    - ION/04_packages/kernel/__init__.py
+    - ION/04_packages/kernel/__main__.py
+    - ION/04_packages/kernel/agent_self_surface.py
+    - ION/04_packages/kernel/agent_succession_packet.py
+    - ION/04_packages/kernel/allocator.py
+    - ION/04_packages/kernel/api_rate_governor.py
+    - ION/04_packages/kernel/api_runtime_entry.py
+    - ION/04_packages/kernel/authority_lineage.py
+    - ION/04_packages/kernel/automation_policy.py
+    - ION/04_packages/kernel/automation_state.py
+    - ION/04_packages/kernel/bootstrap_bridge.py
+    - ION/04_packages/kernel/branch_controls.py
+    status:
+    - ION/04_packages/kernel/ion_status.py
+    templates:
+    - ION/04_packages/kernel/ion_template_action_gate.py
+    - ION/04_packages/kernel/template_completion_events.py
+    - ION/04_packages/kernel/template_contract_registry.py
+    - ION/04_packages/kernel/template_contract_release_gate.py
+    - ION/04_packages/kernel/template_graph_writeback_proposals.py
+    - ION/04_packages/kernel/template_graph_writeback_review.py
+    - ION/04_packages/kernel/template_index_projection.py
+    - ION/04_packages/kernel/template_metadata_contracts.py
+    tests: []
+  readme_projection_candidate: ION/05_context/current/context_package_graph_wave_001/readme_projection_candidates/ion_04_packages_kernel_README_BRANCH_ENTRY_CANDIDATE.md
+  cockpit_context_explorer_projection: true
+  next_required_action:
+  - review candidate README projection before touching README.md
+  - review local surface hints before promotion
+  - keep candidate-only until accepted by explicit governance path
+  accepted_state_claim: false
+  production_authority: false
+  live_execution_authority: false
+  candidate_state_only: true
+  updated_at: '2026-05-16T23:03:13+00:00'

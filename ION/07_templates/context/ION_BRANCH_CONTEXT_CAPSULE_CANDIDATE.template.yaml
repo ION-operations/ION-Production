@@ -1,0 +1,27 @@
+schema_id: ion.branch_context_capsule_candidate.v0_1
+branch_id: <branch_id>
+path: <relative/path>
+parent_branch_ref: <nearest_parent_context_ref>
+maturity_level: level_3_candidate
+purpose: <Compact reason this folder may need local branch context.>
+when_to_enter:
+  - <When real work should enter this branch.>
+read_first:
+  - README.md
+  - ION_CONTEXT_CAPSULE.yaml
+local_templates: []
+local_agents_or_roles: []
+allowed_operations:
+  - read_only_inspection
+  - candidate_patch_with_receipt
+  - focused_tests_when_in_scope
+receipts_path: ION/05_context/current/branch_context_materialization/receipts
+known_blockers: []
+escalation_routes:
+  - parent_branch_context
+  - operator_gate_for_authority_or_destructive_work
+last_updated: <iso8601>
+accepted_state_claim: false
+production_authority: false
+live_execution_authority: false
+candidate_state_only: true
