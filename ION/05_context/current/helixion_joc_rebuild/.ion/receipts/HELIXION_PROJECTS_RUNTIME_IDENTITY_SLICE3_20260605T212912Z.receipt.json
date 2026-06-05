@@ -1,0 +1,89 @@
+{
+  "schema_id": "ion.helixion_joc_rebuild.receipt.v0_1",
+  "receipt_id": "HELIXION_PROJECTS_RUNTIME_IDENTITY_SLICE3_20260605T212912Z",
+  "generated_at": "2026-06-05T21:29:12Z",
+  "status": "candidate_validated",
+  "domain": "helixion_projects_app_preview",
+  "slice": "slice3_runtime_identity_and_detached_preview_control",
+  "summary": "Added durable launcher process identity, runtime truth classification, detached/orphaned PreviewSession propagation, UI control gating, and direct managed-wrapper fail-closed behavior for detached launch records.",
+  "authority": {
+    "candidate_only": true,
+    "production_authority": false,
+    "live_execution_authority": false,
+    "accepted_state_authority": false,
+    "secrets_authority": false,
+    "service_restart": false,
+    "git_push": false
+  },
+  "changed_files": [
+    "ION/04_packages/kernel/ion_project_launcher.py",
+    "ION/04_packages/kernel/ion_project_preview_sessions.py",
+    "ION/08_ui/joc_cockpit_shell/HelixionAppsPreviewPanel.tsx",
+    "ION/08_ui/joc_cockpit_shell/ionRuntimeCockpitTypes.ts",
+    "ION/tests/test_kernel_ion_project_launcher.py",
+    "ION/tests/test_kernel_ion_project_preview_sessions.py"
+  ],
+  "receipt_files": [
+    "ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_RUNTIME_IDENTITY_SLICE3_20260605T212912Z.receipt.json"
+  ],
+  "runtime_identity": {
+    "durable_state_schema": "ion.project_launcher_durable_state.v0_2",
+    "process_identity_schema": "ion.project_launcher.process_identity.v0_1",
+    "runtime_truth_schema": "ion.project_launcher.runtime_truth.v0_1",
+    "captures": [
+      "runner_instance_id",
+      "process_pid",
+      "process_pgid",
+      "process_sid",
+      "process_start_time_ticks",
+      "os_boot_id",
+      "command_sha256",
+      "path_sha256",
+      "stop_token_sha256"
+    ]
+  },
+  "runtime_state_classes": [
+    "running",
+    "detached",
+    "orphaned",
+    "stale"
+  ],
+  "control_boundaries": [
+    "Stop authority remains tied to an attached live subprocess handle.",
+    "Persisted PID identity is retained as evidence only and does not grant process-control authority.",
+    "Detached and orphaned launcher records are visible in app preview state, but managed open, instrumented preview, diagnostics, and stop affordances are withheld.",
+    "Direct managed-wrapper URL rendering fails closed for detached or orphaned records and does not embed stop tokens, direct loopback URLs, iframe preview, or pagehide stop behavior."
+  ],
+  "sidecar_review": {
+    "agent": "Hume",
+    "agent_id": "019e99a9-407a-7770-94c0-c52b10aaec9a",
+    "finding": "Verifier found that detached/orphaned records could still render the managed open wrapper by direct URL. The issue was repaired before this receipt: payload open_href and instrumented_open_href now require managed preview availability, and build_project_launcher_open_html fails closed for non-controlled records."
+  },
+  "validation": [
+    {
+      "command": "PYTHONPATH=ION/04_packages python3 -m py_compile ION/04_packages/kernel/ion_project_launcher.py ION/04_packages/kernel/ion_project_preview_sessions.py",
+      "result": "passed"
+    },
+    {
+      "command": "PYTHONPATH=ION/04_packages pytest -q -p no:cacheprovider ION/tests/test_kernel_ion_project_launcher.py ION/tests/test_kernel_ion_project_preview_sessions.py",
+      "result": "passed",
+      "test_count": 9
+    },
+    {
+      "command": "npm --prefix ION/08_ui/joc_cockpit_shell run build",
+      "result": "passed",
+      "note": "Vite emitted the existing large chunk warning only."
+    },
+    {
+      "command": "git diff --check -- bounded slice files",
+      "result": "passed"
+    }
+  ],
+  "non_claims": [
+    "No production deployment.",
+    "No service restart.",
+    "No live Action/MCP mutation.",
+    "No accepted-state claim.",
+    "No Git push."
+  ]
+}

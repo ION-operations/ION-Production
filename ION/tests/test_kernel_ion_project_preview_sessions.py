@@ -50,6 +50,17 @@ def test_preview_sessions_maps_launcher_record_without_leaking_tokens(tmp_path: 
                 "status_path": "/cockpit/projects/launch/status",
                 "diagnostics_path": "/cockpit/projects/launch/diagnostics",
                 "running": True,
+                "detached": False,
+                "process_attached": True,
+                "actual_process_control": True,
+                "stop_available": True,
+                "ownership_confidence": "attached_process_object",
+                "process_control_level": "attached_popen",
+                "runtime_truth": {
+                    "finding": "process_control_attached",
+                    "process_identity_verified": True,
+                    "stop_would_signal_process": True,
+                },
                 "state": "running",
                 "created_at": "2026-06-05T19:00:00+00:00",
             }
@@ -64,6 +75,11 @@ def test_preview_sessions_maps_launcher_record_without_leaking_tokens(tmp_path: 
     assert session["provider_id"] == "local_loopback_launcher"
     assert session["lifecycle_state"] == "running"
     assert session["same_origin_embed_url"] == "/cockpit/projects/launch/proxy/demo-launch/"
+    assert session["runtime_state_class"] == "running"
+    assert session["state_basis"] == "attached_process_object"
+    assert session["association_state"] == "managed_attached_process"
+    assert session["actual_process_control"] is True
+    assert session["stop_available"] is True
     assert session["local_url_ref"] == "loopback_url_present"
     assert session["source_root_ref"].startswith("local_path_sha256:")
     assert session["receipt_refs"] == ["ION/05_context/current/project_launcher/receipts/20260605_demo-launch_start.json"]
@@ -73,6 +89,118 @@ def test_preview_sessions_maps_launcher_record_without_leaking_tokens(tmp_path: 
     assert "/tmp/private/demo" not in payload
     assert session["authority"]["process_start_authority"] is False
     assert session["authority"]["process_stop_authority"] is False
+
+
+def test_preview_sessions_classifies_detached_manifest_without_managed_preview_url(tmp_path: Path):
+    launcher_status = {
+        "ok": True,
+        "running_count": 0,
+        "detached_count": 1,
+        "launch_count": 1,
+        "launches": [
+            {
+                "launch_id": "detached-launch",
+                "project_id": "demo",
+                "version_id": "v1",
+                "label": "Detached App",
+                "path": "/tmp/private/detached",
+                "framework": "vite",
+                "url": "http://127.0.0.1:6321/",
+                "instrumented_open_href": "/cockpit/projects/launch/proxy/detached-launch/",
+                "status_path": "/cockpit/projects/launch/status",
+                "diagnostics_path": "/cockpit/projects/launch/diagnostics",
+                "running": False,
+                "detached": True,
+                "process_attached": False,
+                "actual_process_control": False,
+                "stop_available": False,
+                "ownership_confidence": "stale_manifest_no_listener",
+                "process_control_level": "none",
+                "loopback_reachable": False,
+                "last_known_state": "running",
+                "recovered_at": "2026-06-05T20:00:00+00:00",
+                "runtime_truth": {
+                    "finding": "durable_manifest_recovered_without_process_or_listener",
+                    "process_identity_available": True,
+                    "process_identity_verified": False,
+                    "stop_would_signal_process": False,
+                    "unsafe_to_kill_by_pid_only": True,
+                },
+                "state": "detached",
+            }
+        ],
+    }
+
+    model = build_preview_sessions_from_cockpit(tmp_path, projects=[], portfolio={}, launcher_status=launcher_status)
+    payload = json.dumps(model, sort_keys=True)
+    session = model["sessions"][0]
+
+    assert session["preview_id"] == "launch:detached-launch"
+    assert session["runtime_state_class"] == "stale"
+    assert session["state_basis"] == "durable_state_recovery"
+    assert session["association_state"] == "recovered_detached_record"
+    assert session["same_origin_embed_url"] == ""
+    assert session["public_url"] == ""
+    assert session["capabilities"]["preview_interaction"] is False
+    assert session["authority"]["preview_interaction"] is False
+    assert session["detached"] is True
+    assert session["actual_process_control"] is False
+    assert session["stop_available"] is False
+    assert session["stale"] is True
+    assert session["stale_reasons"] == ["detached_durable_manifest", "loopback_listener_absent", "no_attached_process_control"]
+    assert session["launcher_finding"] == "durable_manifest_recovered_without_process_or_listener"
+    assert model["summary"]["detached_count"] == 1
+    assert model["summary"]["stale_count"] == 1
+    assert model["summary"]["runtime_state_counts"]["stale"] == 1
+    assert "http://127.0.0.1:6321" not in payload
+
+
+def test_preview_sessions_classifies_orphaned_listener_as_visible_not_controlled(tmp_path: Path):
+    launcher_status = {
+        "ok": True,
+        "running_count": 0,
+        "detached_count": 1,
+        "launch_count": 1,
+        "launches": [
+            {
+                "launch_id": "orphaned-launch",
+                "project_id": "demo",
+                "version_id": "v1",
+                "label": "Orphaned Listener",
+                "path": "/tmp/private/orphaned",
+                "framework": "static",
+                "url": "http://127.0.0.1:6322/",
+                "running": False,
+                "detached": True,
+                "actual_process_control": False,
+                "stop_available": False,
+                "ownership_confidence": "orphaned_local_preview_unverified",
+                "process_control_level": "none",
+                "loopback_reachable": True,
+                "last_known_state": "running",
+                "runtime_truth": {
+                    "finding": "loopback_listener_present_but_process_ownership_unverified",
+                    "stop_would_signal_process": False,
+                },
+                "state": "detached",
+            }
+        ],
+    }
+
+    model = build_preview_sessions_from_cockpit(tmp_path, projects=[], portfolio={}, launcher_status=launcher_status)
+    session = model["sessions"][0]
+
+    assert session["provider_id"] == "local_static_file_server"
+    assert session["runtime_state_class"] == "orphaned"
+    assert session["association_state"] == "orphaned_listener_unverified"
+    assert session["same_origin_embed_url"] == ""
+    assert session["local_url_ref"] == "loopback_listener_unverified"
+    assert session["capabilities"]["preview_interaction"] is False
+    assert session["loopback_reachable"] is True
+    assert session["actual_process_control"] is False
+    assert session["launcher_finding"] == "loopback_listener_present_but_process_ownership_unverified"
+    assert model["summary"]["orphaned_count"] == 1
+    assert model["summary"]["runtime_state_counts"]["orphaned"] == 1
 
 
 def test_preview_sessions_maps_project_and_portfolio_rows(tmp_path: Path):

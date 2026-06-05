@@ -11,15 +11,17 @@ import type {
 type AppPreviewRow = {
   key: string;
   label: string;
-  source: 'portfolio' | 'project';
+  source: 'portfolio' | 'project' | 'launcher';
   domainLabel?: string;
   family?: IonProjectPortfolioFamily;
   version?: IonProjectPortfolioVersion;
   project?: IonProjectCockpitProject;
+  launchId?: string;
   launchable: boolean;
   path?: string;
   framework?: string;
   status?: string;
+  runtimeState?: string;
   previewHref?: string;
   launcherUrl?: string;
   catalogUrl?: string;
@@ -90,15 +92,16 @@ export function HelixionAppsPreviewPanel({ runtime, onRuntimeRefresh }: { runtim
     () => mergeLaunchRecords(projectCockpit?.launcher?.launches ?? [], projectLaunchRecords),
     [projectCockpit?.launcher?.launches, projectLaunchRecords],
   );
-  const appRows = useMemo(() => buildAppRows(projectCockpit?.projects ?? [], portfolio?.families ?? []), [portfolio?.families, projectCockpit?.projects]);
-  const runningPathSet = useMemo(() => new Set(launchRecords.filter((record) => record.running && record.path).map((record) => record.path as string)), [launchRecords]);
+  const catalogAppRows = useMemo(() => buildAppRows(projectCockpit?.projects ?? [], portfolio?.families ?? []), [portfolio?.families, projectCockpit?.projects]);
+  const appRows = useMemo(() => mergeLauncherRows(catalogAppRows, launchRecords), [catalogAppRows, launchRecords]);
+  const runningPathSet = useMemo(() => new Set(launchRecords.filter((record) => isManagedLaunchRunning(record) && record.path).map((record) => record.path as string)), [launchRecords]);
   const visibleApps = useMemo(() => {
     const needle = query.trim().toLowerCase();
     return appRows.filter((app) => {
-      if (filter === 'launchable' && !app.launchable && !app.launcherUrl && !app.previewHref) return false;
+      if (filter === 'launchable' && !app.launchable && !app.launcherUrl && !app.previewHref && app.source !== 'launcher') return false;
       if (filter === 'running' && (!app.path || !runningPathSet.has(app.path))) return false;
       if (!needle) return true;
-      return [app.label, app.domainLabel, app.family?.family_id, app.version?.version_id, app.project?.project_id, app.path, app.framework, app.status]
+      return [app.label, app.domainLabel, app.family?.family_id, app.version?.version_id, app.project?.project_id, app.launchId, app.path, app.framework, app.status, app.runtimeState]
         .join(' ')
         .toLowerCase()
         .includes(needle);
@@ -108,7 +111,8 @@ export function HelixionAppsPreviewPanel({ runtime, onRuntimeRefresh }: { runtim
   const selectedApp = visibleApps.find((app) => app.key === selectedKey) ?? visibleApps[0] ?? appRows[0];
   const selectedRecord = launchRecordForApp(selectedApp, launchRecords);
   const selectedPreviewSession = previewSessionForApp(selectedApp, previewSessions, selectedRecord);
-  const runningCount = launchRecords.filter((record) => record.running).length;
+  const runningCount = launchRecords.filter((record) => isManagedLaunchRunning(record)).length;
+  const detachedCount = launchRecords.filter((record) => record.detached).length;
   const launchableCount = appRows.filter((app) => app.launchable || app.launcherUrl || app.previewHref).length;
   const previewSessionSummary = previewSessionModel?.summary ?? {};
 
@@ -339,9 +343,9 @@ export function HelixionAppsPreviewPanel({ runtime, onRuntimeRefresh }: { runtim
           <Metric label="apps" value={String(appRows.length)} />
           <Metric label="launchable" value={String(launchableCount)} />
           <Metric label="running" value={String(runningCount)} />
+          <Metric label="detached" value={String(previewSessionSummary.detached_count ?? detachedCount)} />
           <Metric label="sessions" value={String(previewSessionSummary.session_count ?? previewSessions.length)} />
           <Metric label="providers" value={String(previewSessionSummary.provider_count ?? previewSessionModel?.providers?.length ?? 0)} />
-          <Metric label="authority" value={projectCockpit.authority?.production_authority ? 'prod' : 'local'} />
         </div>
       </div>
 
@@ -360,9 +364,11 @@ export function HelixionAppsPreviewPanel({ runtime, onRuntimeRefresh }: { runtim
             const record = launchRecordForApp(app, launchRecords);
             const previewSession = previewSessionForApp(app, previewSessions, record);
             const active = selectedApp?.key === app.key;
+            const runtimeClass = launcherRuntimeClass(record, previewSession);
+            const tone = runtimeClass === 'running' ? 'running' : runtimeClass === 'orphaned' ? 'orphaned' : ['detached', 'stale'].includes(runtimeClass) ? 'stale' : app.launchable ? 'ready' : 'watch';
             return (
-              <button className={`ion-app-preview-row is-${record?.running ? 'running' : app.launchable ? 'ready' : 'watch'}${active ? ' is-active' : ''}`} key={app.key} onClick={() => setSelectedKey(app.key)} type="button">
-                <span>{record?.running ? 'RUNNING' : app.framework ?? app.source}</span>
+              <button className={`ion-app-preview-row is-${safeClassToken(tone, 'watch')}${active ? ' is-active' : ''}`} key={app.key} onClick={() => setSelectedKey(app.key)} type="button">
+                <span>{runtimeClass === 'registered' || runtimeClass === 'ready' ? app.framework ?? app.source : runtimeClass.toUpperCase()}</span>
                 <b>{app.label}</b>
                 <small>{previewSession?.provider_id ?? app.domainLabel ?? app.family?.family_id ?? app.project?.project_id ?? 'app'}</small>
               </button>
@@ -750,30 +756,42 @@ function AppPreviewDetail({
   record?: IonProjectLauncherRecord;
 }) {
   if (!app) return <div className="ion-app-preview-detail"><div className="ion-empty-state">NO APP SELECTED</div></div>;
-  const running = Boolean(record?.running);
+  const runtimeClass = launcherRuntimeClass(record, previewSession);
+  const sessionFromLaunch = previewSession?.source_kind === 'launcher_record';
+  const running = runtimeClass === 'running' && isManagedLaunchRunning(record);
+  const stopAvailable = Boolean(record?.stop_available && running);
+  const diagnosticsAvailable = Boolean(record?.launch_id && running);
   const launchBusy = busyKey === app.key || busyKey === record?.launch_id;
   const diagnosticsBusy = record?.launch_id ? busyKey === `diagnostics:${record.launch_id}` : false;
-  const openHref = previewSession?.same_origin_embed_url ?? previewSession?.public_url ?? record?.instrumented_open_href ?? record?.url ?? app.previewHref;
-  const instrumentedHref = previewSession?.same_origin_embed_url ?? record?.instrumented_open_href;
+  const managedOpenHref = running ? previewSession?.same_origin_embed_url ?? record?.instrumented_open_href ?? record?.url : undefined;
+  const openHref = sessionFromLaunch ? managedOpenHref : previewSession?.same_origin_embed_url ?? previewSession?.public_url ?? app.previewHref;
+  const instrumentedHref = running ? previewSession?.same_origin_embed_url ?? record?.instrumented_open_href : undefined;
   const screenshot = diagnostics?.screenshot as Record<string, unknown> | undefined;
+  const detailTone = running ? 'running' : ['detached', 'orphaned', 'stale'].includes(runtimeClass) ? runtimeClass : app.launchable ? 'ready' : 'watch';
   return (
-    <article className={`ion-app-preview-detail is-${running ? 'running' : app.launchable ? 'ready' : 'watch'}`}>
+    <article className={`ion-app-preview-detail is-${safeClassToken(detailTone, 'watch')}`}>
       <div className="ion-runtime-card-head">
-        <span>{running ? 'active preview' : app.launchable ? 'ready to launch' : 'external or catalog preview'}</span>
+        <span>{running ? 'active preview' : ['detached', 'orphaned', 'stale'].includes(runtimeClass) ? runtimeClass : app.launchable ? 'ready to launch' : 'external or catalog preview'}</span>
         <b>{app.label}</b>
       </div>
       <p>{app.domainLabel ?? app.family?.family_id ?? app.project?.summary ?? 'Discovered app preview target.'}</p>
       <div className="ion-vnext-packet-meta">
         <small>{app.framework ?? 'app'}</small>
         <small>{app.source}</small>
-        <small>{record?.port ? `port ${record.port}` : previewSession?.lifecycle_state ?? app.status ?? 'preview'}</small>
+        <small>{record?.port && running ? `port ${record.port}` : runtimeClass || previewSession?.lifecycle_state || app.status || 'preview'}</small>
       </div>
       <PathRow label="source" value={app.path ?? app.project?.path} />
       <PathRow label="preview session" value={previewSession?.preview_id} />
       <PathRow label="provider" value={previewSession?.provider_id} />
       <PathRow label="runner" value={previewSession?.runner_location} />
       <PathRow label="session source ref" value={previewSession?.source_root_ref} />
-      <PathRow label="active url" value={record?.url ?? app.previewHref} />
+      <PathRow label="runtime" value={runtimeClass} />
+      <PathRow label="state basis" value={previewSession?.state_basis} />
+      <PathRow label="ownership" value={previewSession?.ownership_confidence ?? record?.ownership_confidence} />
+      <PathRow label="control" value={previewSession?.process_control_level ?? record?.process_control_level} />
+      <PathRow label="last known" value={previewSession?.last_known_state ?? record?.last_known_state} />
+      <PathRow label="finding" value={previewSession?.launcher_finding ?? text(record?.runtime_truth?.finding, '')} />
+      <PathRow label="active url" value={running ? record?.url ?? app.previewHref : app.previewHref} />
       <PathRow label="launcher" value={app.launcherUrl} />
       <div className="ion-project-launch-actions">
         {app.version && <button disabled={!app.launchable || launchBusy} onClick={onStart} type="button">{running ? 'Open Managed' : launchBusy ? 'Starting' : 'Launch Preview'}</button>}
@@ -781,8 +799,8 @@ function AppPreviewDetail({
         {instrumentedHref && <a href={instrumentedHref} target="_blank" rel="noreferrer">Instrumented Preview</a>}
         {app.launcherUrl && <a href={app.launcherUrl} target="_blank" rel="noreferrer">Open Launcher</a>}
         {app.catalogUrl && <a href={app.catalogUrl}>Catalog</a>}
-        {running && <button disabled={launchBusy} onClick={onStop} type="button">Stop Server</button>}
-        {running && <button disabled={diagnosticsBusy} onClick={onCapture} type="button">{diagnosticsBusy ? 'Capturing' : 'Diagnostics'}</button>}
+        {stopAvailable && <button disabled={launchBusy} onClick={onStop} type="button">Stop Server</button>}
+        {diagnosticsAvailable && <button disabled={diagnosticsBusy} onClick={onCapture} type="button">{diagnosticsBusy ? 'Capturing' : 'Diagnostics'}</button>}
       </div>
       {record?.message && <p>{record.message}</p>}
       {screenshot?.screenshot_href && <img alt="App preview diagnostic capture" className="ion-app-preview-screenshot" src={String(screenshot.screenshot_href)} />}
@@ -839,12 +857,35 @@ function buildAppRows(projects: IonProjectCockpitProject[], families: IonProject
   });
 }
 
+function mergeLauncherRows(rows: AppPreviewRow[], records: IonProjectLauncherRecord[]) {
+  const merged = [...rows];
+  records.forEach((record) => {
+    if (!record.launch_id) return;
+    const matched = merged.some((row) => matchesLaunch(record, row.version?.launch?.project_path ?? row.version?.path ?? row.path, row.version?.launch?.version_id ?? row.version?.version_id, row.version?.launch?.project_id ?? row.version?.project_id ?? row.project?.project_id));
+    if (matched) return;
+    const runtimeState = launcherRuntimeClass(record);
+    merged.push({
+      key: `launch:${record.launch_id}`,
+      label: text(record.label ?? record.launch_id, 'Recovered launch'),
+      source: 'launcher',
+      launchId: record.launch_id,
+      launchable: false,
+      path: record.path,
+      framework: record.framework,
+      status: record.ownership_confidence ?? record.state,
+      runtimeState,
+    });
+  });
+  return merged;
+}
+
 function launchRecordForApp(app: AppPreviewRow | undefined, records: IonProjectLauncherRecord[]) {
   if (!app) return undefined;
+  if (app.launchId) return records.find((record) => record.launch_id === app.launchId);
   const path = app.version?.launch?.project_path ?? app.version?.path ?? app.path;
   const versionId = app.version?.launch?.version_id ?? app.version?.version_id;
   const projectId = app.version?.launch?.project_id ?? app.version?.project_id ?? app.project?.project_id;
-  return records.find((record) => record.running && matchesLaunch(record, path, versionId, projectId))
+  return records.find((record) => isManagedLaunchRunning(record) && matchesLaunch(record, path, versionId, projectId))
     ?? records.find((record) => matchesLaunch(record, path, versionId, projectId));
 }
 
@@ -864,6 +905,20 @@ function matchesLaunch(record: IonProjectLauncherRecord, path?: string, versionI
   return Boolean((path && record.path === path) || (versionId && record.version_id === versionId) || (projectId && record.project_id === projectId));
 }
 
+function isManagedLaunchRunning(record?: IonProjectLauncherRecord) {
+  return Boolean(record?.running && !record.detached && record.actual_process_control !== false);
+}
+
+function launcherRuntimeClass(record?: IonProjectLauncherRecord, previewSession?: IonProjectPreviewSession) {
+  if (previewSession?.runtime_state_class) return previewSession.runtime_state_class;
+  if (!record) return previewSession?.lifecycle_state ?? 'registered';
+  if (isManagedLaunchRunning(record)) return 'running';
+  if (record.ownership_confidence === 'orphaned_local_preview_unverified') return 'orphaned';
+  if (record.detached && record.ownership_confidence === 'stale_manifest_no_listener') return 'stale';
+  if (record.detached) return 'detached';
+  return text(record.state, 'not_running');
+}
+
 function mergeLaunchRecords(...sets: IonProjectLauncherRecord[][]) {
   const byId = new Map<string, IonProjectLauncherRecord>();
   sets.flat().forEach((record) => {
@@ -872,8 +927,8 @@ function mergeLaunchRecords(...sets: IonProjectLauncherRecord[][]) {
     byId.set(key, record);
   });
   return Array.from(byId.values()).sort((left, right) => {
-    const leftRunning = left.running ? 0 : 1;
-    const rightRunning = right.running ? 0 : 1;
+    const leftRunning = isManagedLaunchRunning(left) ? 0 : 1;
+    const rightRunning = isManagedLaunchRunning(right) ? 0 : 1;
     if (leftRunning !== rightRunning) return leftRunning - rightRunning;
     return String(right.updated_at ?? '').localeCompare(String(left.updated_at ?? ''));
   });

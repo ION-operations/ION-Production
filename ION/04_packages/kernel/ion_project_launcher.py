@@ -53,6 +53,7 @@ MAX_PORT_SCAN = 240
 
 _LOCK = threading.RLock()
 _LAUNCHES: dict[str, "LaunchRecord"] = {}
+_RUNNER_INSTANCE_ID = f"project-launcher-{datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')}-{os.getpid()}"
 
 
 @dataclass
@@ -77,6 +78,7 @@ class LaunchRecord:
     detached: bool = False
     recovered_at: str = ""
     last_known_state: str = ""
+    process_identity: dict[str, Any] = field(default_factory=dict)
 
 
 def utc_now() -> str:
@@ -203,13 +205,15 @@ def project_launcher_start(root: str | Path, payload: Mapping[str, Any]) -> dict
     with _LOCK:
         for record in list(_LAUNCHES.values()):
             if record.path == source_path.as_posix() and _record_running(record):
+                launch_payload = _record_payload(shell_root, record)
+                managed_preview_available = bool(launch_payload.get("open_href"))
                 return {
                     "ok": True,
                     "reused": True,
-                    "launch": _record_payload(shell_root, record),
-                    "open_href": _open_href(record, include_stop_token=True),
+                    "launch": launch_payload,
+                    "open_href": _open_href(record, include_stop_token=True) if managed_preview_available else "",
                     "url": record.url,
-                    "managed_window_stops_server": True,
+                    "managed_window_stops_server": managed_preview_available,
                 }
 
         port = _next_free_port()
@@ -252,12 +256,14 @@ def project_launcher_start(root: str | Path, payload: Mapping[str, Any]) -> dict
         return {"ok": False, "finding": "project_launch_failed", "error": exc.__class__.__name__, "launch": _record_payload(shell_root, record)}
 
     _write_launch_receipt(shell_root, "start", record)
+    launch_payload = _record_payload(shell_root, record)
+    managed_preview_available = bool(launch_payload.get("open_href"))
     return {
         "ok": True,
-        "launch": _record_payload(shell_root, record),
-        "open_href": _open_href(record, include_stop_token=True),
+        "launch": launch_payload,
+        "open_href": _open_href(record, include_stop_token=True) if managed_preview_available else "",
         "url": record.url,
-        "managed_window_stops_server": True,
+        "managed_window_stops_server": managed_preview_available,
         "production_authority": False,
         "accepted_state_authority": False,
         "secrets_authority": False,
@@ -663,6 +669,31 @@ def build_project_launcher_open_html(root: str | Path, launch_id: str, stop_toke
         return _launcher_html(title, body)
     token = compact(stop_token) or record.stop_token
     launch = _record_payload(shell_root, record)
+    if not _managed_preview_available(record, running=bool(launch.get("running"))):
+        title = f"{record.label} detached"
+        runtime_truth = launch.get("runtime_truth") if isinstance(launch.get("runtime_truth"), Mapping) else {}
+        body = f"""
+<main class="ion-preview-shell">
+  <header class="ion-preview-topbar">
+    <div>
+      <span>launcher state only</span>
+      <h1>{_html(record.label)}</h1>
+      <p>{_html(compact(launch.get("message"), "This launch record is not attached to a controllable local process."))}</p>
+    </div>
+    <nav class="ion-preview-top-actions" aria-label="Preview actions">
+      <a href="/cockpit#projects" target="_blank" rel="noreferrer">Projects</a>
+    </nav>
+  </header>
+  <section class="ion-preview-stage" aria-label="Detached launch state">
+    <div class="ion-preview-detached-state">
+      <span>{_html(compact(launch.get("ownership_confidence"), "process_control_unavailable"))}</span>
+      <b>{_html(compact(runtime_truth.get("finding"), "managed_preview_not_available"))}</b>
+      <p>State: {_html(compact(launch.get("state"), "unknown"))}; last known: {_html(compact(launch.get("last_known_state"), "unknown"))}</p>
+    </div>
+  </section>
+</main>
+"""
+        return _launcher_html(title, body)
     launch_state = json.dumps(
         {
             "launch_id": launch_id,
@@ -1472,7 +1503,11 @@ def _record_payload(shell_root: Path, record: LaunchRecord) -> dict[str, Any]:
     running = _record_running(record)
     if before != (record.state, record.exit_code, record.updated_at):
         _persist_launch_state(shell_root, record, reason="status_reconcile")
-    process_pid = record.process.pid if record.process else None
+    process_identity = _refresh_attached_process_identity(record)
+    process_pid = record.process.pid if record.process else process_identity.get("pid")
+    loopback_reachable = _loopback_port_reachable(record.port)
+    runtime_truth = _runtime_truth(record, running=running, loopback_reachable=loopback_reachable)
+    managed_preview_available = _managed_preview_available(record, running=running)
     return {
         "launch_id": record.launch_id,
         "project_id": record.project_id,
@@ -1482,7 +1517,7 @@ def _record_payload(shell_root: Path, record: LaunchRecord) -> dict[str, Any]:
         "framework": record.framework,
         "command": record.command,
         "url": record.url,
-        "open_href": _open_href(record),
+        "open_href": _open_href(record) if managed_preview_available else "",
         "port": record.port,
         "state": record.state,
         "message": record.message,
@@ -1490,7 +1525,17 @@ def _record_payload(shell_root: Path, record: LaunchRecord) -> dict[str, Any]:
         "detached": record.detached,
         "process_attached": bool(record.process and not record.detached),
         "process_pid": process_pid,
-        "actual_process_control": bool(record.process and not record.detached),
+        "process_pgid": process_identity.get("process_pgid"),
+        "process_sid": process_identity.get("process_sid"),
+        "process_start_time_ticks": process_identity.get("process_start_time_ticks", ""),
+        "os_boot_id": process_identity.get("os_boot_id", ""),
+        "runner_instance_id": process_identity.get("runner_instance_id", _RUNNER_INSTANCE_ID),
+        "actual_process_control": managed_preview_available,
+        "process_identity": process_identity,
+        "runtime_truth": runtime_truth,
+        "process_control_level": runtime_truth.get("process_control_level"),
+        "ownership_confidence": runtime_truth.get("ownership_confidence"),
+        "loopback_reachable": loopback_reachable,
         "recovered_at": record.recovered_at,
         "last_known_state": record.last_known_state,
         "stop_available": bool(running and not record.detached),
@@ -1499,12 +1544,12 @@ def _record_payload(shell_root: Path, record: LaunchRecord) -> dict[str, Any]:
         "exit_code": record.exit_code,
         "log_path": record.log_path,
         "log_tail": _tail(record.log_path),
-        "managed_window_stops_server": True,
+        "managed_window_stops_server": managed_preview_available,
         "stop_path": "/cockpit/projects/launch/stop",
         "status_path": "/cockpit/projects/launch/status",
         "diagnostics_path": "/cockpit/projects/launch/diagnostics",
         "diagnostics_event_path": "/cockpit/projects/launch/diagnostics/event",
-        "instrumented_open_href": f"/cockpit/projects/launch/proxy/{record.launch_id}/",
+        "instrumented_open_href": f"/cockpit/projects/launch/proxy/{record.launch_id}/" if managed_preview_available else "",
     }
 
 
@@ -2079,10 +2124,19 @@ except Exception as exc:
 
 
 def _open_href(record: LaunchRecord, *, include_stop_token: bool = False) -> str:
+    if not _managed_preview_available(record):
+        return ""
     href = f"/cockpit/projects/launch/open/{record.launch_id}"
     if include_stop_token and record.stop_token:
         return f"{href}?stop_token={record.stop_token}"
     return href
+
+
+def _managed_preview_available(record: LaunchRecord, *, running: bool | None = None) -> bool:
+    process = record.process
+    if running is None:
+        running = bool(process and process.poll() is None)
+    return bool(running and process and not record.detached)
 
 
 def _tail(path: str, limit: int = 3000) -> str:
@@ -2097,6 +2151,102 @@ def _tail(path: str, limit: int = 3000) -> str:
             return handle.read().decode("utf-8", errors="replace")
     except Exception:
         return ""
+
+
+def _os_boot_id() -> str:
+    try:
+        return Path("/proc/sys/kernel/random/boot_id").read_text(encoding="utf-8").strip()
+    except Exception:
+        return ""
+
+
+def _process_start_time_ticks(pid: int) -> str:
+    try:
+        stat_text = Path(f"/proc/{pid}/stat").read_text(encoding="utf-8")
+        after_name = stat_text.rsplit(")", 1)[-1].strip().split()
+        return after_name[19] if len(after_name) > 19 else ""
+    except Exception:
+        return ""
+
+
+def _refresh_attached_process_identity(record: LaunchRecord) -> dict[str, Any]:
+    process = record.process
+    if not process:
+        return dict(record.process_identity)
+    pid = int(process.pid)
+    try:
+        process_pgid = os.getpgid(pid)
+    except Exception:
+        process_pgid = None
+    try:
+        process_sid = os.getsid(pid)
+    except Exception:
+        process_sid = None
+    command_text = "\0".join(record.command)
+    identity = {
+        "schema_id": "ion.project_launcher.process_identity.v0_1",
+        "captured_at": utc_now(),
+        "runner_instance_id": _RUNNER_INSTANCE_ID,
+        "pid": pid,
+        "process_pgid": process_pgid,
+        "process_sid": process_sid,
+        "process_start_time_ticks": _process_start_time_ticks(pid),
+        "os_boot_id": _os_boot_id(),
+        "cwd_ref": "project_path",
+        "command_sha256": hashlib.sha256(command_text.encode("utf-8")).hexdigest(),
+        "attached_process_object": True,
+        "process_alive": process.poll() is None,
+    }
+    record.process_identity = identity
+    return dict(identity)
+
+
+def _loopback_port_reachable(port: int) -> bool:
+    try:
+        with socket.create_connection((HOST, int(port)), timeout=0.08):
+            return True
+    except Exception:
+        return False
+
+
+def _runtime_truth(record: LaunchRecord, *, running: bool, loopback_reachable: bool) -> dict[str, Any]:
+    process_identity = dict(record.process_identity)
+    if record.process and not record.detached and running:
+        control_level = "attached_popen"
+        confidence = "attached_process_object"
+        finding = "process_control_attached"
+    elif record.process and not record.detached:
+        control_level = "none"
+        confidence = "attached_terminal_process_object"
+        finding = "attached_process_object_terminal"
+    elif record.detached and record.state in {"stopped", "failed", "install_failed"}:
+        control_level = "none"
+        confidence = "terminal_record"
+        finding = "terminal_record_no_process_control"
+    elif record.detached and loopback_reachable:
+        control_level = "none"
+        confidence = "orphaned_local_preview_unverified"
+        finding = "loopback_listener_present_but_process_ownership_unverified"
+    elif record.detached:
+        control_level = "none"
+        confidence = "stale_manifest_no_listener"
+        finding = "durable_manifest_recovered_without_process_or_listener"
+    else:
+        control_level = "none"
+        confidence = "memory_record_without_process_identity"
+        finding = "process_identity_unavailable"
+    return {
+        "schema_id": "ion.project_launcher.runtime_truth.v0_1",
+        "process_control_level": control_level,
+        "ownership_confidence": confidence,
+        "finding": finding,
+        "running": running,
+        "loopback_reachable": loopback_reachable,
+        "process_identity_available": bool(process_identity),
+        "process_identity_verified": bool(record.process and not record.detached),
+        "stop_would_signal_process": bool(running and record.process and not record.detached),
+        "unsafe_to_kill_by_pid_only": bool(record.detached and process_identity.get("pid")),
+    }
 
 
 def _record_belongs_to_root(shell_root: Path, record: LaunchRecord) -> bool:
@@ -2115,10 +2265,12 @@ def _launch_state_path(shell_root: Path, launch_id: str) -> Path:
 def _record_state_payload(record: LaunchRecord, *, reason: str) -> dict[str, Any]:
     process = record.process
     command_text = "\0".join(record.command)
+    process_identity = _refresh_attached_process_identity(record)
     return {
-        "schema_id": "ion.project_launcher_durable_state.v0_1",
+        "schema_id": "ion.project_launcher_durable_state.v0_2",
         "updated_at": utc_now(),
         "reason": reason,
+        "runner_instance_id": _RUNNER_INSTANCE_ID,
         "launch": {
             "launch_id": record.launch_id,
             "project_id": record.project_id,
@@ -2142,8 +2294,14 @@ def _record_state_payload(record: LaunchRecord, *, reason: str) -> dict[str, Any
             "detached": record.detached,
             "recovered_at": record.recovered_at,
             "last_known_state": record.last_known_state or record.state,
-            "process_pid": process.pid if process else None,
+            "process_pid": process.pid if process else process_identity.get("pid"),
+            "process_pgid": process_identity.get("process_pgid"),
+            "process_sid": process_identity.get("process_sid"),
+            "process_start_time_ticks": process_identity.get("process_start_time_ticks", ""),
+            "os_boot_id": process_identity.get("os_boot_id", ""),
+            "runner_instance_id": _RUNNER_INSTANCE_ID,
             "process_attached": bool(process and not record.detached),
+            "process_identity": process_identity,
         },
     }
 
@@ -2180,6 +2338,21 @@ def _load_launch_record_from_state(shell_root: Path, path: Path) -> LaunchRecord
     message = compact(launch.get("message"))
     if detached:
         message = f"{label} recovered from durable state; process ownership is detached"
+    process_identity = dict(launch.get("process_identity")) if isinstance(launch.get("process_identity"), Mapping) else {}
+    if not process_identity and launch.get("process_pid"):
+        process_identity = {
+            "schema_id": "ion.project_launcher.process_identity.v0_1",
+            "runner_instance_id": compact(launch.get("runner_instance_id")),
+            "pid": launch.get("process_pid"),
+            "process_pgid": launch.get("process_pgid"),
+            "process_sid": launch.get("process_sid"),
+            "process_start_time_ticks": compact(launch.get("process_start_time_ticks")),
+            "os_boot_id": compact(launch.get("os_boot_id")),
+            "command_sha256": compact(launch.get("command_sha256")),
+            "attached_process_object": False,
+            "process_alive": False,
+            "loaded_from_legacy_state": True,
+        }
     record = LaunchRecord(
         launch_id=launch_id,
         project_id=compact(launch.get("project_id"), _hash_id(source_path.as_posix())[:12]),
@@ -2200,6 +2373,7 @@ def _load_launch_record_from_state(shell_root: Path, path: Path) -> LaunchRecord
         detached=detached,
         recovered_at=compact(launch.get("recovered_at"), utc_now()),
         last_known_state=last_known_state,
+        process_identity=process_identity,
     )
     if not _record_belongs_to_root(shell_root, record):
         return None

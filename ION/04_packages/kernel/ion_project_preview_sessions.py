@@ -203,6 +203,21 @@ def _session(
     public_preview_allowed: bool = False,
     finding: str = "",
     interaction: bool = False,
+    runtime_state_class: str = "",
+    state_basis: str = "",
+    association_state: str = "",
+    detached: bool = False,
+    process_attached: bool = False,
+    actual_process_control: bool = False,
+    stop_available: bool = False,
+    last_known_state: str = "",
+    recovered_at: str = "",
+    launcher_finding: str = "",
+    ownership_confidence: str = "",
+    process_control_level: str = "",
+    loopback_reachable: bool = False,
+    stale: bool = False,
+    stale_reasons: list[str] | None = None,
 ) -> dict[str, Any]:
     return {
         "schema_id": SESSION_SCHEMA_ID,
@@ -234,6 +249,21 @@ def _session(
         "receipt_refs": receipt_refs or [],
         "public_preview_allowed": public_preview_allowed,
         "finding": finding,
+        "runtime_state_class": compact(runtime_state_class, lifecycle_state),
+        "state_basis": compact(state_basis, source_kind),
+        "association_state": compact(association_state, "catalog_projection"),
+        "detached": detached,
+        "process_attached": process_attached,
+        "actual_process_control": actual_process_control,
+        "stop_available": stop_available,
+        "last_known_state": last_known_state,
+        "recovered_at": recovered_at,
+        "launcher_finding": launcher_finding,
+        "ownership_confidence": ownership_confidence,
+        "process_control_level": process_control_level,
+        "loopback_reachable": loopback_reachable,
+        "stale": stale,
+        "stale_reasons": stale_reasons or [],
         "capabilities": {
             "preview_read": True,
             "preview_interaction": interaction,
@@ -243,15 +273,66 @@ def _session(
     }
 
 
+def _launcher_runtime_state_class(record: Mapping[str, Any], *, running: bool) -> str:
+    if running:
+        return "running"
+    ownership = compact(record.get("ownership_confidence"))
+    state = compact(record.get("state"), "not_running")
+    if ownership == "orphaned_local_preview_unverified":
+        return "orphaned"
+    if bool(record.get("detached")) and ownership == "stale_manifest_no_listener":
+        return "stale"
+    if bool(record.get("detached")):
+        return "detached"
+    return state
+
+
+def _launcher_state_basis(record: Mapping[str, Any], *, running: bool) -> str:
+    if running and bool(record.get("actual_process_control")):
+        return "attached_process_object"
+    if bool(record.get("detached")) or compact(record.get("recovered_at")):
+        return "durable_state_recovery"
+    return "launcher_record"
+
+
+def _launcher_association_state(record: Mapping[str, Any], runtime_state_class: str) -> str:
+    if runtime_state_class == "running" and bool(record.get("actual_process_control")):
+        return "managed_attached_process"
+    if runtime_state_class == "orphaned":
+        return "orphaned_listener_unverified"
+    if bool(record.get("detached")):
+        return "recovered_detached_record"
+    return "launcher_record"
+
+
+def _launcher_stale_reasons(record: Mapping[str, Any], runtime_state_class: str) -> list[str]:
+    reasons: list[str] = []
+    if bool(record.get("detached")):
+        reasons.append("detached_durable_manifest")
+    if runtime_state_class == "stale":
+        reasons.append("loopback_listener_absent")
+    if runtime_state_class == "orphaned":
+        reasons.extend(["loopback_listener_present", "process_ownership_unverified"])
+    if not bool(record.get("actual_process_control")) and runtime_state_class in {"detached", "orphaned", "stale"}:
+        reasons.append("no_attached_process_control")
+    return list(dict.fromkeys(reasons))
+
+
 def _session_from_launch_record(root: Path, record: Mapping[str, Any]) -> dict[str, Any] | None:
     launch_id = compact(record.get("launch_id"))
     if not launch_id:
         return None
-    running = bool(record.get("running"))
+    running = bool(record.get("running") and not record.get("detached") and record.get("actual_process_control") is not False)
     lifecycle = "running" if running else compact(record.get("state"), "not_running")
     framework = compact(record.get("framework"))
     provider_id = "local_static_file_server" if framework == "static" else "local_loopback_launcher"
-    same_origin_embed_url = f"/cockpit/projects/launch/proxy/{launch_id}/"
+    same_origin_embed_url = f"/cockpit/projects/launch/proxy/{launch_id}/" if running else ""
+    runtime_state_class = _launcher_runtime_state_class(record, running=running)
+    state_basis = _launcher_state_basis(record, running=running)
+    association_state = _launcher_association_state(record, runtime_state_class)
+    runtime_truth = record.get("runtime_truth") if isinstance(record.get("runtime_truth"), Mapping) else {}
+    launcher_finding = compact(runtime_truth.get("finding"), compact(record.get("finding")))
+    stale_reasons = _launcher_stale_reasons(record, runtime_state_class)
     return _session(
         preview_id=f"launch:{launch_id}",
         label=compact(record.get("label"), launch_id),
@@ -263,17 +344,33 @@ def _session_from_launch_record(root: Path, record: Mapping[str, Any]) -> dict[s
         source_root_ref=_path_ref(record.get("path")),
         public_url=same_origin_embed_url,
         same_origin_embed_url=same_origin_embed_url,
-        local_url_ref="loopback_url_present" if compact(record.get("url")) else "",
+        local_url_ref="loopback_url_present" if running and compact(record.get("url")) else "loopback_listener_unverified" if record.get("loopback_reachable") else "",
         control_url=compact(record.get("status_path"), "/cockpit/projects/launch/status"),
         status_url=compact(record.get("status_path"), "/cockpit/projects/launch/status"),
         diagnostics_url=compact(record.get("diagnostics_path"), "/cockpit/projects/launch/diagnostics"),
-        auth_mode="cockpit_confirmation_or_internal_stop_token",
+        auth_mode="cockpit_confirmation_or_internal_stop_token" if running else "read_only_detached_state",
         lifecycle_state=lifecycle,
         created_at=compact(record.get("created_at")),
         updated_at=compact(record.get("updated_at")),
         receipt_refs=_latest_receipt_refs_for_launch(root, launch_id),
         public_preview_allowed=False,
-        interaction=True,
+        finding=launcher_finding,
+        interaction=running,
+        runtime_state_class=runtime_state_class,
+        state_basis=state_basis,
+        association_state=association_state,
+        detached=bool(record.get("detached")),
+        process_attached=bool(record.get("process_attached")),
+        actual_process_control=bool(record.get("actual_process_control") and running),
+        stop_available=bool(record.get("stop_available") and running),
+        last_known_state=compact(record.get("last_known_state")),
+        recovered_at=compact(record.get("recovered_at")),
+        launcher_finding=launcher_finding,
+        ownership_confidence=compact(record.get("ownership_confidence")),
+        process_control_level=compact(record.get("process_control_level")),
+        loopback_reachable=bool(record.get("loopback_reachable")),
+        stale=runtime_state_class == "stale",
+        stale_reasons=stale_reasons,
     )
 
 
@@ -417,10 +514,16 @@ def build_preview_sessions_from_cockpit(
                 break
 
     source_counts: dict[str, int] = {}
+    runtime_state_counts: dict[str, int] = {}
     for session in sessions:
         source_kind = compact(session.get("source_kind"), "unknown")
         source_counts[source_kind] = source_counts.get(source_kind, 0) + 1
-    running_count = len([session for session in sessions if session.get("lifecycle_state") == "running"])
+        runtime_state = compact(session.get("runtime_state_class"), "unknown")
+        runtime_state_counts[runtime_state] = runtime_state_counts.get(runtime_state, 0) + 1
+    running_count = len([session for session in sessions if session.get("runtime_state_class") == "running"])
+    detached_count = len([session for session in sessions if session.get("detached")])
+    orphaned_count = len([session for session in sessions if session.get("runtime_state_class") == "orphaned"])
+    stale_count = len([session for session in sessions if session.get("stale")])
     public_preview_count = len([session for session in sessions if session.get("public_preview_allowed")])
     return {
         "schema_id": SCHEMA_ID,
@@ -432,9 +535,13 @@ def build_preview_sessions_from_cockpit(
             "provider_count": len(providers),
             "session_count": len(sessions),
             "running_count": running_count,
+            "detached_count": detached_count,
+            "orphaned_count": orphaned_count,
+            "stale_count": stale_count,
             "public_preview_count": public_preview_count,
             "portfolio_session_count": portfolio_session_count,
             "source_counts": source_counts,
+            "runtime_state_counts": runtime_state_counts,
         },
         "providers": providers,
         "sessions": sessions,
