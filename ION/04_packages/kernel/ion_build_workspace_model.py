@@ -413,7 +413,7 @@ def build_build_workspace_model(
         build_project_cockpit_model,
         shell_root,
         runtime_timeline=[],
-        lane_timeline=[],
+        lane_timeline={},
     )
     project = dict(_as_mapping(workspace_status.get("project")))
     tool_contracts = _tool_contracts()
