@@ -2,7 +2,7 @@
 
 Status: active candidate folder-local package
 Created: 2026-06-05T20:53:57Z
-Updated: 2026-06-06T01:30:29Z
+Updated: 2026-06-06T01:59:02Z
 
 ## Objective
 
@@ -23,6 +23,8 @@ Committed candidate slices now cover:
 - Metadata-only app-cast preview projection for future multi-user app-only host/viewer sharing, derived from sanitized observe targets with no stream, capture, desktop share, viewer control, live, production, accepted-state, or secrets authority.
 - Read-only app-cast share-grant contract projection for host/viewer membership requirements, public-vs-object-grant viewer rules, expiry/revocation/audit placeholders, route-auth evidence, and passive UI wording.
 - Protected public preview route real-model tests proving bearer auth, query-token rejection, served app-cast share-grant contract fields, target route-auth evidence, and no token/root leakage across both preview model endpoints.
+- Candidate Helixion collaboration route registry/session-access projection and protected public front-door routes for `/cockpit/session/access.json`, `/cockpit/collab/model.json`, and `/cockpit/devsecops/model.json`.
+- App-cast route-auth reconciliation proving public project app routes, public project preview routes, and same-origin launched-app proxy routes resolve through registered candidate route vocabulary while live enforcement remains false.
 
 ## Authority
 
@@ -45,6 +47,7 @@ Current active source/test/UI scope:
 - `ION/04_packages/kernel/ion_project_preview_sessions.py`
 - `ION/04_packages/kernel/ion_project_launcher.py`
 - `ION/04_packages/kernel/ion_project_cockpit.py`
+- `ION/04_packages/kernel/ion_helixion_collaboration_access.py`
 - `ION/04_packages/kernel/ion_chatgpt_browser_mcp_http_preview.py`
 - `ION/04_packages/kernel/ion_local_cockpit_app.py`
 - `ION/08_ui/joc_cockpit_shell/HelixionAppsPreviewPanel.tsx`
@@ -55,6 +58,7 @@ Current active source/test/UI scope:
 - `ION/tests/test_kernel_ion_chatgpt_browser_mcp_http_preview.py`
 - `ION/tests/test_kernel_ion_cockpit_view_model.py`
 - `ION/tests/test_kernel_ion_project_preview_public_routes.py`
+- `ION/tests/test_kernel_ion_helixion_collaboration_access.py`
 
 Current receipts:
 
@@ -73,11 +77,14 @@ Current receipts:
 - `ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_APP_CAST_SHARE_GRANT_CONTRACT_SLICE17_20260606T010857Z.receipt.json`
 - `ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_PREVIEW_REAL_ROUTE_TESTS_SLICE19_20260606T012948Z.receipt.json`
 - `ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_CONTEXT_REFRESH_SLICE20_20260606T013029Z.receipt.json`
+- `ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_COLLAB_ROUTE_REGISTRY_FRONT_DOOR_SLICE21_20260606T015623Z.receipt.json`
+- `ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_APP_CAST_ROUTE_REGISTRY_RECONCILE_SLICE22_20260606T015820Z.receipt.json`
+- `ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_CONTEXT_REFRESH_SLICE23_20260606T015902Z.receipt.json`
 
 ## Next Safe Step
 
 Next bounded slice:
 
-- After the parallel collaboration route-registry lane is committed, reconcile app-cast route-auth evidence with the committed route registry and add route-vocabulary tests. This may verify registered-route vocabulary alignment and route-auth evidence shape, but it must not open WebRTC, websocket, media, screenshot, browser automation, loopback, viewer-control, or mutation channels.
+- Design the next candidate layer for durable workspace membership, object grants, and share-link lifecycle. This may model grant records, expiry/revocation/audit states, and host/viewer pairing references, but it must not enable live route enforcement, active app sharing, WebRTC, websocket, media, screenshot, browser automation, loopback, viewer-control, or mutation channels.
 
 Do not start live VM, remote, viewer-local, app-cast stream, browser automation, screenshot, or loopback probe work without a new explicit gated packet.
