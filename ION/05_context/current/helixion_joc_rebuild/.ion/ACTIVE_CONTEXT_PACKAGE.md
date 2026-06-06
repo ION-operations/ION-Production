@@ -2,7 +2,7 @@
 
 Status: active candidate folder-local package
 Created: 2026-06-05T20:53:57Z
-Updated: 2026-06-06T00:13:18Z
+Updated: 2026-06-06T00:25:59Z
 
 ## Objective
 
@@ -20,6 +20,7 @@ Committed candidate slices now cover:
 - Sanitized comparison peer surfaces for baseline/candidate labels, providers, runner locations, and safe same-origin routes.
 - Read-only observe target and blocked-target detail rows in the app preview detail panel.
 - Draft-only gated capture plan for future screenshot, DOM, console, network, and accessibility observation.
+- Metadata-only app-cast preview projection for future multi-user app-only host/viewer sharing, derived from sanitized observe targets with no stream, capture, desktop share, viewer control, live, production, accepted-state, or secrets authority.
 
 ## Authority
 
@@ -65,11 +66,12 @@ Current receipts:
 - `ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_PREVIEW_PEER_SURFACES_SLICE10_20260606T000738Z.receipt.json`
 - `ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_OBSERVE_DETAIL_UI_SLICE11_20260606T000923Z.receipt.json`
 - `ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_GATED_CAPTURE_PLAN_SLICE13_20260606T001028Z.receipt.json`
+- `ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_APP_CAST_PREVIEW_SLICE15_20260606T002520Z.receipt.json`
 
 ## Next Safe Step
 
 Next bounded slice:
 
-- Implement a capture-plan preview model only. It may project target eligibility, planned lanes, redaction rules, and required approval, but it must not execute browser automation, screenshot capture, DOM reads, console reads, network reads, loopback probes, or mutation.
+- Coordinate the app-cast preview contract with the parallel multi-user system by adding read-only membership/share-grant eligibility projection and protected route tests. It may model host/viewer pairing requirements, public-vs-object-grant viewer requirements, expiry/revocation/audit fields, and route auth evidence, but it must not open WebRTC, websocket, media, screenshot, browser automation, loopback, viewer-control, or mutation channels.
 
-Do not start live VM, remote, viewer-local, browser automation, screenshot, or loopback probe work without a new explicit gated packet.
+Do not start live VM, remote, viewer-local, app-cast stream, browser automation, screenshot, or loopback probe work without a new explicit gated packet.
