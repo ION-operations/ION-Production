@@ -1,0 +1,56 @@
+{
+  "receipt_id": "HELIXION_COLLAB_ROUTE_REGISTRY_FRONT_DOOR_SLICE21_20260606T015623Z",
+  "created_at_utc": "2026-06-06T01:56:23Z",
+  "root": "/home/sev/ION - Production/ION_Developement",
+  "context_lane": "ION/05_context/current/helixion_joc_rebuild/.ion",
+  "workstream": "helixion_collaboration_route_registry",
+  "slice": "candidate_route_registry_session_access_and_public_front_door",
+  "bounded_write_confirmation": "ION_BOUNDED_WRITE_CONFIRMED",
+  "summary": [
+    "Landed the candidate Helixion collaboration route registry/access projection module needed by committed cockpit/devsecops surfaces.",
+    "Added deny-by-default route lookup, session access projection, candidate route access decisions, route registry projection counts, and no-live-enforcement authority flags.",
+    "Exposed protected public HTTP read endpoints for /cockpit/session/access.json, /cockpit/collab/model.json, and /cockpit/devsecops/model.json.",
+    "Added TypeScript model contracts for collab and devsecops cockpit projections.",
+    "Repaired HTTP MCP advertised schemas for alternate-worker receipt tools so bounded write tools expose confirmation and the audit returns ready."
+  ],
+  "changed_files": [
+    "ION/04_packages/kernel/ion_helixion_collaboration_access.py",
+    "ION/tests/test_kernel_ion_helixion_collaboration_access.py",
+    "ION/04_packages/kernel/ion_chatgpt_browser_mcp_http_preview.py",
+    "ION/tests/test_kernel_ion_chatgpt_browser_mcp_http_preview.py",
+    "ION/08_ui/joc_cockpit_shell/ionRuntimeCockpitTypes.ts"
+  ],
+  "validation": [
+    {
+      "command": "PYTHONPATH=ION/04_packages pytest -q -p no:cacheprovider ION/tests/test_kernel_ion_chatgpt_browser_mcp_http_preview.py",
+      "result": "48 passed in 21.39s"
+    },
+    {
+      "command": "PYTHONPATH=ION/04_packages pytest -q -p no:cacheprovider ION/tests/test_kernel_ion_helixion_collaboration_access.py ION/tests/test_kernel_ion_devsecops_cockpit.py",
+      "result": "14 passed in 3.25s"
+    },
+    {
+      "command": "PYTHONPATH=ION/04_packages pytest -q -p no:cacheprovider ION/tests/test_kernel_ion_project_preview_sessions.py ION/tests/test_kernel_ion_project_preview_public_routes.py",
+      "result": "10 passed in 0.90s"
+    },
+    {
+      "command": "PYTHONPATH=ION/04_packages python3 -m py_compile ION/04_packages/kernel/ion_helixion_collaboration_access.py ION/04_packages/kernel/ion_chatgpt_browser_mcp_http_preview.py ION/04_packages/kernel/ion_cockpit_view_model.py ION/04_packages/kernel/ion_devsecops_cockpit.py",
+      "result": "passed"
+    },
+    {
+      "command": "npm --prefix ION/08_ui/joc_cockpit_shell run build",
+      "result": "passed with existing large chunk warning"
+    },
+    {
+      "command": "git diff --check -- ION/04_packages/kernel/ion_helixion_collaboration_access.py ION/tests/test_kernel_ion_helixion_collaboration_access.py ION/04_packages/kernel/ion_chatgpt_browser_mcp_http_preview.py ION/tests/test_kernel_ion_chatgpt_browser_mcp_http_preview.py ION/08_ui/joc_cockpit_shell/ionRuntimeCockpitTypes.ts",
+      "result": "passed"
+    }
+  ],
+  "non_claims": [
+    "No live route enforcement was enabled.",
+    "No co-user app share, app stream, WebRTC, websocket, screenshot, DOM, console, accessibility, network, browser automation, media capture, loopback probe, or viewer-control channel was started.",
+    "No production deployment, service restart, git push, accepted-state claim, or destructive cleanup occurred.",
+    "No protected secret value was read or printed."
+  ],
+  "next_safe_step": "Reconcile app-cast route-auth evidence against the now-committed collaboration route registry and add route-vocabulary tests; still no live sharing."
+}

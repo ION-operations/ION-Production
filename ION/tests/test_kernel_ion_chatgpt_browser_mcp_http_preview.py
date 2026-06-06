@@ -1558,6 +1558,141 @@ def test_public_cockpit_serves_weave_surface_endpoint(monkeypatch, tmp_path):
         preview_server.shutdown()
 
 
+def test_public_cockpit_session_access_requires_auth(monkeypatch, tmp_path):
+    _seed_root(tmp_path)
+    monkeypatch.setenv("ION_COCKPIT_PUBLIC_TOKEN", "test-token")
+
+    from kernel.ion_chatgpt_browser_mcp_http_preview import IonChatGPTPreviewHandler
+
+    preview_server = ThreadingHTTPServer(("127.0.0.1", 0), IonChatGPTPreviewHandler)
+    preview_server.ion_root = tmp_path
+    preview_thread = Thread(target=preview_server.serve_forever, daemon=True)
+    preview_thread.start()
+    try:
+        request = urllib.request.Request(
+            f"http://127.0.0.1:{preview_server.server_address[1]}/cockpit/session/access.json",
+            headers={"Host": "ion.example.test", "Accept": "application/json"},
+        )
+        try:
+            urllib.request.urlopen(request, timeout=5)
+            payload = {}
+        except urllib.error.HTTPError as exc:
+            payload = json.loads(exc.read().decode("utf-8"))
+
+        assert payload["finding"] == "public_cockpit_login_required"
+        assert payload["session_cookie"] == "ion_cockpit_session"
+    finally:
+        preview_server.shutdown()
+        preview_server.server_close()
+        preview_thread.join(timeout=5)
+
+
+def test_public_cockpit_session_access_projects_invite_without_raw_token(monkeypatch, tmp_path):
+    _seed_root(tmp_path)
+    monkeypatch.setenv("ION_COCKPIT_INVITE_TOKENS", "friend=friend-token")
+
+    from kernel.ion_chatgpt_browser_mcp_http_preview import IonChatGPTPreviewHandler
+
+    preview_server = ThreadingHTTPServer(("127.0.0.1", 0), IonChatGPTPreviewHandler)
+    preview_server.ion_root = tmp_path
+    preview_thread = Thread(target=preview_server.serve_forever, daemon=True)
+    preview_thread.start()
+    try:
+        request = urllib.request.Request(
+            f"http://127.0.0.1:{preview_server.server_address[1]}/cockpit/session/access.json",
+            headers={"Host": "ion.example.test", "Accept": "application/json", "Authorization": "Bearer friend-token"},
+        )
+        with urllib.request.urlopen(request, timeout=5) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+
+        payload_text = json.dumps(payload, sort_keys=True)
+        routes = payload["route_registry"]["routes"]
+        assert payload["schema_id"] == "ion.helixion_cockpit_session_access_projection.v0_2"
+        assert payload["principal_projection"]["subject"]["rank_ceiling"] == "viewer_client"
+        assert payload["principal_projection"]["rank_is_permission"] is False
+        assert payload["live_route_enforcement"] is False
+        assert any(route["path_template"] == "/cockpit/collab/model.json" for route in routes)
+        assert "friend-token" not in payload_text
+        assert str(tmp_path) not in payload_text
+    finally:
+        preview_server.shutdown()
+        preview_server.server_close()
+        preview_thread.join(timeout=5)
+
+
+def test_public_cockpit_serves_collab_surface_endpoint(monkeypatch, tmp_path):
+    _seed_root(tmp_path)
+    monkeypatch.setenv("ION_COCKPIT_PUBLIC_TOKEN", "test-token")
+
+    from kernel.ion_chatgpt_browser_mcp_http_preview import IonChatGPTPreviewHandler
+
+    preview_server = ThreadingHTTPServer(("127.0.0.1", 0), IonChatGPTPreviewHandler)
+    preview_server.ion_root = tmp_path
+    preview_thread = Thread(target=preview_server.serve_forever, daemon=True)
+    preview_thread.start()
+    try:
+        request = urllib.request.Request(
+            f"http://127.0.0.1:{preview_server.server_address[1]}/cockpit/collab/model.json",
+            headers={"Host": "ion.example.test", "Accept": "application/json", "Authorization": "Bearer test-token"},
+        )
+        with urllib.request.urlopen(request, timeout=5) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+
+        assert payload["surface"] == "collab"
+        assert payload["runtime"]["shell_root"] == "local_ion_root_redacted"
+        assert payload["collab_cockpit"]["candidate_packet"] == "PCKT-COLLAB-001"
+        assert payload["collab_cockpit"]["live_route_enforcement"] is False
+        assert payload["collab_cockpit"]["session_access"]["subject"]["rank_ceiling"] == "founder_root_steward"
+        assert str(tmp_path) not in json.dumps(payload, sort_keys=True)
+    finally:
+        preview_server.shutdown()
+        preview_server.server_close()
+        preview_thread.join(timeout=5)
+
+
+def test_public_cockpit_serves_devsecops_surface_endpoint(monkeypatch, tmp_path):
+    _seed_root(tmp_path)
+    monkeypatch.setenv("ION_COCKPIT_PUBLIC_TOKEN", "test-token")
+
+    from kernel.ion_chatgpt_browser_mcp_http_preview import IonChatGPTPreviewHandler
+
+    preview_server = ThreadingHTTPServer(("127.0.0.1", 0), IonChatGPTPreviewHandler)
+    preview_server.ion_root = tmp_path
+    preview_thread = Thread(target=preview_server.serve_forever, daemon=True)
+    preview_thread.start()
+    try:
+        unauthenticated = urllib.request.Request(
+            f"http://127.0.0.1:{preview_server.server_address[1]}/cockpit/devsecops/model.json",
+            headers={"Host": "ion.example.test", "Accept": "application/json"},
+        )
+        try:
+            urllib.request.urlopen(unauthenticated, timeout=5)
+            blocked_payload = {}
+        except urllib.error.HTTPError as exc:
+            blocked_payload = json.loads(exc.read().decode("utf-8"))
+
+        request = urllib.request.Request(
+            f"http://127.0.0.1:{preview_server.server_address[1]}/cockpit/devsecops/model.json",
+            headers={"Host": "ion.example.test", "Accept": "application/json", "Authorization": "Bearer test-token"},
+        )
+        with urllib.request.urlopen(request, timeout=5) as response:
+            payload = json.loads(response.read().decode("utf-8"))
+
+        payload_text = json.dumps(payload, sort_keys=True)
+        assert blocked_payload["finding"] == "public_cockpit_login_required"
+        assert payload["surface"] == "devsecops"
+        assert payload["runtime"]["shell_root"] == "local_ion_root_redacted"
+        assert payload["devsecops_cockpit"]["candidate_packet"] == "PCKT-DEVSECOPS-001"
+        assert payload["devsecops_cockpit"]["summary"]["live_route_enforcement"] is False
+        assert payload["devsecops_cockpit"]["read_only_projection"] is True
+        assert "test-token" not in payload_text
+        assert str(tmp_path) not in payload_text
+    finally:
+        preview_server.shutdown()
+        preview_server.server_close()
+        preview_thread.join(timeout=5)
+
+
 def test_public_launch_post_proxy_requires_auth_and_same_origin(monkeypatch, tmp_path):
     _seed_root(tmp_path)
     monkeypatch.setenv("ION_COCKPIT_PUBLIC_TOKEN", "test-token")

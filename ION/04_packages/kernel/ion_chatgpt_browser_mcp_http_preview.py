@@ -98,6 +98,7 @@ from .ion_helixion_project_access_inventory import (
     build_helixion_project_family_detail_model_from_file,
     build_helixion_projects_surface_model_from_file,
 )
+from .ion_helixion_collaboration_access import build_helixion_collaboration_access_model
 from .ion_project_portfolio import materialize_project_portfolio_action
 from .ion_project_workbench import (
     WRITE_CONFIRMATION_TOKEN as PROJECT_WRITE_CONFIRMATION_TOKEN,
@@ -159,7 +160,9 @@ COCKPIT_UI_PATHS = {
     "chatgpt-dom-twin",
     "browser-gpt",
     "chat",
+    "collab",
     "codex",
+    "devsecops",
     "docs",
     "extension",
     "gates",
@@ -1024,6 +1027,79 @@ def _tool_schema(name: str) -> dict[str, Any]:
             },
             "required": ["task_output_text", "context_receipt", "confirmation"],
             "additionalProperties": True,
+        }
+    if name == "ion_submit_alternate_worker_return":
+        return {
+            "type": "object",
+            "properties": {
+                "task_output_text": {"type": "string"},
+                "context_receipt": {"type": "object", "additionalProperties": True},
+                "work_request_id": {"type": "string"},
+                "work_request_path": {"type": "string"},
+                "confirmation": {"type": "string"},
+                "alternate_worker_identity": {"type": "object", "additionalProperties": True},
+                "alternate_worker_provenance": {"type": "object", "additionalProperties": True},
+                "worker_output_sha256": {"type": "string"},
+                "alternate_worker_provenance_receipt_path": {"type": "string"},
+                "require_provenance_receipt": {"type": "boolean"},
+            },
+            "required": [
+                "task_output_text",
+                "context_receipt",
+                "work_request_path",
+                "confirmation",
+                "alternate_worker_identity",
+                "alternate_worker_provenance",
+            ],
+            "additionalProperties": False,
+        }
+    if name == "ion_record_native_subagent_transcript":
+        return {
+            "type": "object",
+            "properties": {
+                "confirmation": {"type": "string"},
+                "idempotency_key": {"type": "string"},
+                "subagent_id": {"type": "string"},
+                "worker_id": {"type": "string"},
+                "source_ref": {"type": "string"},
+                "work_request_path": {"type": "string"},
+                "status": {"type": "string"},
+                "worker_output_text": {"type": "string"},
+                "observed_by": {"type": "string"},
+                "claim_boundary": {"type": "string"},
+            },
+            "required": [
+                "confirmation",
+                "idempotency_key",
+                "subagent_id",
+                "worker_id",
+                "source_ref",
+                "work_request_path",
+                "status",
+                "worker_output_text",
+                "claim_boundary",
+            ],
+            "additionalProperties": False,
+        }
+    if name == "ion_record_alternate_worker_provenance":
+        return {
+            "type": "object",
+            "properties": {
+                "confirmation": {"type": "string"},
+                "idempotency_key": {"type": "string"},
+                "alternate_worker_identity": {"type": "object", "additionalProperties": True},
+                "worker_identity": {"type": "object", "additionalProperties": True},
+                "alternate_worker_provenance": {"type": "object", "additionalProperties": True},
+                "worker_output_sha256": {"type": "string"},
+                "native_subagent_transcript_receipt_path": {"type": "string"},
+            },
+            "required": [
+                "confirmation",
+                "idempotency_key",
+                "alternate_worker_provenance",
+                "worker_output_sha256",
+            ],
+            "additionalProperties": False,
         }
     if name == "ion_record_chatgpt_decision":
         return {
@@ -3458,22 +3534,76 @@ class IonChatGPTPreviewHandler(BaseHTTPRequestHandler):
         *,
         allow_query_token: bool = False,
     ) -> tuple[bool, str | None, str | None]:
+        context = self._resolve_public_cockpit_access_context(payload, allow_query_token=allow_query_token)
+        return bool(context.get("ok")), context.get("finding"), context.get("token")
+
+    def _resolve_public_cockpit_access_context(
+        self,
+        payload: Mapping[str, Any] | None = None,
+        *,
+        allow_query_token: bool = False,
+    ) -> dict[str, Any]:
+        """Resolve auth once and preserve a redacted server-side principal."""
+
         secret = cockpit_session_secret()
         if secret:
             session = validate_session_cookie(self.headers.get("cookie"), secret=secret)
             if session.ok:
-                return True, None, None
+                return {
+                    "ok": True,
+                    "finding": None,
+                    "token": None,
+                    "auth_source": "session_cookie",
+                    "principal": dict(session.principal or {}),
+                }
         if self._is_local_loopback_preview_request():
-            return True, None, None
+            return {
+                "ok": True,
+                "finding": None,
+                "token": None,
+                "auth_source": "local_loopback",
+                "principal": {
+                    "auth_method": "local_loopback",
+                    "subject": "local_operator",
+                    "token_label": "local_loopback",
+                    "rank_ceiling": "founder_root_steward",
+                    "production_authority": False,
+                    "live_execution_authority": False,
+                },
+            }
         supplied = self._request_token(payload, allow_query_token=allow_query_token)
         if supplied:
             token_result = validate_permission_token(supplied)
             if token_result.ok:
-                return True, None, supplied
-            return False, token_result.finding or "permission_token_invalid", None
+                return {
+                    "ok": True,
+                    "finding": None,
+                    "token": supplied,
+                    "auth_source": "permission_token",
+                    "principal": dict(token_result.principal or {}),
+                }
+            return {
+                "ok": False,
+                "finding": token_result.finding or "permission_token_invalid",
+                "token": None,
+                "auth_source": "permission_token",
+                "principal": {},
+            }
         if not secret and not validate_permission_token(os.environ.get(PUBLIC_COCKPIT_TOKEN_ENV) or "").ok and not google_oauth_configured():
-            return False, "public_cockpit_auth_not_configured", None
-        return False, "public_cockpit_login_required", None
+            return {
+                "ok": False,
+                "finding": "public_cockpit_auth_not_configured",
+                "token": None,
+                "auth_source": "not_configured",
+                "principal": {},
+            }
+        return {
+            "ok": False,
+            "finding": "public_cockpit_login_required",
+            "token": None,
+            "auth_source": "missing_login",
+            "principal": {},
+        }
 
     def _check_public_cockpit_mutation_access(self, payload: Mapping[str, Any] | None = None) -> tuple[bool, str | None, str | None]:
         ok, finding, token = self._check_public_cockpit_access(payload)
@@ -3995,6 +4125,58 @@ try {
                 self._send_public_cockpit_blocked(str(finding), next_path="/cockpit/model.json")
                 return
             self._send_json(200, build_cockpit_view_model(self.server.ion_root))  # type: ignore[attr-defined]
+            return
+        if path == "/cockpit/session/access.json":
+            access_context = self._resolve_public_cockpit_access_context()
+            if not access_context.get("ok"):
+                self._send_public_cockpit_blocked(str(access_context.get("finding") or "public_cockpit_login_required"), next_path=path)
+                return
+            collab = build_helixion_collaboration_access_model(
+                self.server.ion_root,  # type: ignore[attr-defined]
+                principal=access_context.get("principal") if isinstance(access_context.get("principal"), Mapping) else {},
+            )
+            self._send_json(
+                200,
+                {
+                    "schema_id": "ion.helixion_cockpit_session_access_projection.v0_2",
+                    "authenticated": True,
+                    "auth_source": access_context.get("auth_source"),
+                    "principal_projection": collab["session_access"],
+                    "route_registry": collab["route_registry"],
+                    "candidate_enforcement_active": False,
+                    "live_route_enforcement": False,
+                    "redaction": "no_raw_cookie_or_token",
+                    "authority": collab["authority"],
+                },
+            )
+            return
+        if path == "/cockpit/collab/model.json":
+            access_context = self._resolve_public_cockpit_access_context()
+            if not access_context.get("ok"):
+                self._send_public_cockpit_blocked(str(access_context.get("finding") or "public_cockpit_login_required"), next_path=path)
+                return
+            self._send_json(
+                200,
+                build_cockpit_surface_view_model(
+                    self.server.ion_root,  # type: ignore[attr-defined]
+                    surface="collab",
+                    principal=access_context.get("principal") if isinstance(access_context.get("principal"), Mapping) else {},
+                ),
+            )
+            return
+        if path == "/cockpit/devsecops/model.json":
+            access_context = self._resolve_public_cockpit_access_context()
+            if not access_context.get("ok"):
+                self._send_public_cockpit_blocked(str(access_context.get("finding") or "public_cockpit_login_required"), next_path=path)
+                return
+            self._send_json(
+                200,
+                build_cockpit_surface_view_model(
+                    self.server.ion_root,  # type: ignore[attr-defined]
+                    surface="devsecops",
+                    principal=access_context.get("principal") if isinstance(access_context.get("principal"), Mapping) else {},
+                ),
+            )
             return
         if path in {"/cockpit/previews/model.json", "/cockpit/projects/previews/model.json"}:
             ok, finding, _token = self._check_public_cockpit_access()

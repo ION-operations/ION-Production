@@ -2355,6 +2355,153 @@ export type JocCommsProjection = {
   non_claims?: string[];
 };
 
+export type IonCollabRouteRow = {
+  schema_id?: string;
+  route_id?: string;
+  path_template?: string;
+  methods?: string[];
+  route_class?: string;
+  capability?: string;
+  sensitivity?: string;
+  object_resolver?: string;
+  mutation?: boolean;
+  same_origin_required?: boolean;
+  localhost_context_required?: boolean;
+  object_grant_required?: boolean;
+  approval_required?: boolean;
+  receipt_required?: boolean;
+  shareable_with_co_users?: boolean;
+  default_outcome?: string;
+  status?: string;
+  description?: string;
+};
+
+export type IonCollabAccessDecision = {
+  path?: string;
+  method?: string;
+  allowed_if_enforced?: boolean;
+  finding?: string | null;
+  reasons?: string[];
+  route?: IonCollabRouteRow | null;
+};
+
+export type IonCollabCockpitModel = {
+  schema_id?: string;
+  generated_at?: string;
+  root?: string;
+  status?: string;
+  candidate_packet?: string;
+  live_route_enforcement?: boolean;
+  candidate_enforcement_active?: boolean;
+  deny_by_default?: boolean;
+  product_posture?: string;
+  session_access?: {
+    subject?: Record<string, unknown>;
+    session?: Record<string, unknown>;
+    membership?: Record<string, unknown>;
+    connection?: Record<string, unknown>;
+    rank_ceiling?: Record<string, unknown>;
+    rank_is_permission?: boolean;
+    rank_is_ceiling?: boolean;
+    enforcement_active?: boolean;
+    authority?: Record<string, boolean>;
+  };
+  route_registry?: {
+    schema_id?: string;
+    status?: string;
+    route_count?: number;
+    mutation_route_count?: number;
+    shareable_route_count?: number;
+    local_control_route_count?: number;
+    source_route_count?: number;
+    live_route_enforcement?: boolean;
+    deny_by_default?: boolean;
+    routes?: IonCollabRouteRow[];
+    authority?: Record<string, boolean>;
+  };
+  route_checks?: IonCollabAccessDecision[];
+  denial_defaults?: string[];
+  next_packets?: string[];
+  non_claims?: string[];
+  authority?: Record<string, boolean>;
+};
+
+export type IonDevSecOpsIncident = {
+  id?: string;
+  severity?: string;
+  status?: string;
+  source?: string;
+  title?: string;
+  detail?: string;
+  evidence?: string[];
+  recommended_next_step?: string;
+  authority?: Record<string, boolean>;
+};
+
+export type IonDevSecOpsCockpitModel = {
+  schema_id?: string;
+  generated_at?: string;
+  candidate_packet?: string;
+  root?: string;
+  status?: string;
+  read_only_projection?: boolean;
+  summary?: {
+    posture?: string;
+    readiness_score?: number;
+    incident_count?: number;
+    critical_incident_count?: number;
+    high_incident_count?: number;
+    medium_incident_count?: number;
+    auth_configured?: boolean;
+    route_count?: number;
+    mutation_route_count?: number;
+    local_control_route_count?: number;
+    source_route_count?: number;
+    service_count?: number;
+    service_status?: string;
+    probe_http?: boolean;
+    secret_values_emitted?: boolean;
+    token_values_emitted?: boolean;
+    live_route_enforcement?: boolean;
+    candidate_only?: boolean;
+  };
+  security_posture?: Record<string, unknown>;
+  access_route_coverage?: {
+    schema_id?: string;
+    registry_status?: string;
+    deny_by_default?: boolean;
+    live_route_enforcement?: boolean;
+    registered_route_count?: number;
+    route_matrix_count?: number;
+    mutation_route_count?: number;
+    local_control_route_count?: number;
+    source_route_count?: number;
+    shareable_route_count?: number;
+    route_matrix_registered_count?: number;
+    missing_registered_route_count?: number;
+    missing_registered_routes?: Array<Record<string, unknown>>;
+    route_matrix_coverage_mode?: string;
+    actual_http_handler_map_generated?: boolean;
+    stale_route_matrix_blocks_ready_status?: boolean;
+    routes?: IonCollabRouteRow[];
+  };
+  system_health?: Record<string, unknown>;
+  service_health?: Record<string, unknown>;
+  audit_receipt_health?: {
+    recent_receipt_count?: number;
+    recent_receipts?: Array<Record<string, unknown>>;
+    receipt_values_redacted?: boolean;
+    unresolved_count?: number;
+    hydration_conflict_count?: number;
+  };
+  incidents?: IonDevSecOpsIncident[];
+  realtime_readiness?: Record<string, unknown>;
+  framework_alignment?: Record<string, unknown>;
+  next_packets?: string[];
+  non_claims?: string[];
+  authority?: Record<string, boolean>;
+};
+
 export type IonCockpitViewModel = {
   schema_id: 'ion.cockpit_view_model.v1';
   generated_at: string;
@@ -2463,6 +2610,8 @@ export type IonCockpitViewModel = {
   codex_ide_workbench?: IonCodexIdeWorkbench;
   codex_conversation_archive?: IonCodexConversationArchive;
   codex_git_rollback?: IonCodexGitRollback;
+  collab_cockpit?: IonCollabCockpitModel;
+  devsecops_cockpit?: IonDevSecOpsCockpitModel;
   joc_comms?: JocCommsProjection;
   agent_control_plane?: IonAgentControlPlane;
   automation_control_plane?: Record<string, unknown>;
