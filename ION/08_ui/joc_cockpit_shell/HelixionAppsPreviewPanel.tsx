@@ -5,6 +5,7 @@ import type {
   IonProjectLauncherRecord,
   IonProjectPortfolioFamily,
   IonProjectPortfolioVersion,
+  IonProjectPreviewAppCastTarget,
   IonProjectPreviewComparison,
   IonProjectPreviewObserveTarget,
   IonProjectPreviewSession,
@@ -117,6 +118,8 @@ export function HelixionAppsPreviewPanel({ runtime, onRuntimeRefresh }: { runtim
   const selectedComparison = comparisonForSession(selectedPreviewSession, previewComparisons);
   const selectedObserveTarget = observeTargetForSelection(selectedPreviewSession, selectedComparison, previewSessionModel?.ai_observe_preview?.targets ?? []);
   const selectedBlockedObserveTarget = blockedObserveTargetForSession(selectedPreviewSession, previewSessionModel?.ai_observe_preview?.blocked_targets ?? []);
+  const selectedAppCastTarget = appCastTargetForSelection(selectedPreviewSession, selectedComparison, previewSessionModel?.app_cast_preview?.targets ?? []);
+  const selectedBlockedAppCastTarget = blockedAppCastTargetForSession(selectedPreviewSession, previewSessionModel?.app_cast_preview?.blocked_targets ?? []);
   const runningCount = launchRecords.filter((record) => isManagedLaunchRunning(record)).length;
   const detachedCount = launchRecords.filter((record) => record.detached).length;
   const launchableCount = appRows.filter((app) => app.launchable || app.launcherUrl || app.previewHref).length;
@@ -353,6 +356,7 @@ export function HelixionAppsPreviewPanel({ runtime, onRuntimeRefresh }: { runtim
           <Metric label="sessions" value={String(previewSessionSummary.session_count ?? previewSessions.length)} />
           <Metric label="pairs" value={String(previewSessionSummary.comparison_count ?? previewSessionModel?.comparisons?.length ?? 0)} />
           <Metric label="observe" value={String(previewSessionSummary.ai_observe_target_count ?? previewSessionModel?.ai_observe_preview?.target_count ?? 0)} />
+          <Metric label="cast" value={String(previewSessionSummary.app_cast_target_count ?? previewSessionModel?.app_cast_preview?.target_count ?? 0)} />
           <Metric label="providers" value={String(previewSessionSummary.provider_count ?? previewSessionModel?.providers?.length ?? 0)} />
         </div>
       </div>
@@ -396,6 +400,8 @@ export function HelixionAppsPreviewPanel({ runtime, onRuntimeRefresh }: { runtim
           comparison={selectedComparison}
           observeTarget={selectedObserveTarget}
           blockedObserveTarget={selectedBlockedObserveTarget}
+          appCastTarget={selectedAppCastTarget}
+          blockedAppCastTarget={selectedBlockedAppCastTarget}
           record={selectedRecord}
         />
       </div>
@@ -751,6 +757,8 @@ function AppPreviewDetail({
   app,
   busyKey,
   diagnostics,
+  appCastTarget,
+  blockedAppCastTarget,
   comparison,
   blockedObserveTarget,
   observeTarget,
@@ -763,6 +771,8 @@ function AppPreviewDetail({
   app?: AppPreviewRow;
   busyKey: string;
   diagnostics?: Record<string, unknown>;
+  appCastTarget?: IonProjectPreviewAppCastTarget;
+  blockedAppCastTarget?: IonProjectPreviewAppCastTarget;
   comparison?: IonProjectPreviewComparison;
   blockedObserveTarget?: IonProjectPreviewObserveTarget;
   observeTarget?: IonProjectPreviewObserveTarget;
@@ -780,7 +790,7 @@ function AppPreviewDetail({
   const diagnosticsAvailable = Boolean(record?.launch_id && running);
   const launchBusy = busyKey === app.key || busyKey === record?.launch_id;
   const diagnosticsBusy = record?.launch_id ? busyKey === `diagnostics:${record.launch_id}` : false;
-  const managedOpenHref = running ? previewSession?.same_origin_embed_url ?? record?.instrumented_open_href ?? record?.url : undefined;
+  const managedOpenHref = running ? previewSession?.same_origin_embed_url ?? record?.instrumented_open_href : undefined;
   const openHref = sessionFromLaunch ? managedOpenHref : previewSession?.same_origin_embed_url ?? previewSession?.public_url ?? app.previewHref;
   const instrumentedHref = running ? previewSession?.same_origin_embed_url ?? record?.instrumented_open_href : undefined;
   const screenshot = diagnostics?.screenshot as Record<string, unknown> | undefined;
@@ -813,7 +823,7 @@ function AppPreviewDetail({
       <PathRow label="surface pair" value={comparison?.surface_pair} />
       <PathRow label="comparison route" value={comparison?.route} />
       <PathRow label="viewer" value={joinParts(previewSession?.same_origin_embed_url, previewSession?.viewer_scope, previewSession?.auth_mode)} />
-      <PathRow label="local" value={text(previewSession?.local_url_ref, '') || text(record?.url, '')} />
+      <PathRow label="local" value={previewSession?.local_url_ref} />
       <PathRow label="remote/public" value={joinParts(previewSession?.public_url, previewSession?.public_preview_allowed ? 'public allowed' : '')} />
       <PathRow label="runner map" value={joinParts(previewSession?.provider_id, previewSession?.runner_location, previewSession?.source_root_ref)} />
       <PathRow label="pair basis" value={joinParts(comparison?.pair_basis, comparison?.surface_pair)} />
@@ -823,7 +833,11 @@ function AppPreviewDetail({
       <PathRow label="observe target" value={joinParts(observeTarget?.target_kind, observeTarget?.capture_state)} />
       <PathRow label="observe route" value={joinParts(observeTarget?.route, observeTarget?.route_basis)} />
       <PathRow label="observe block" value={joinParts(blockedObserveTarget?.blocked_reason, blockedObserveTarget?.runtime_state_class)} />
-      <PathRow label="active url" value={running ? record?.url ?? app.previewHref : app.previewHref} />
+      <PathRow label="cast target" value={joinParts(appCastTarget?.source_target_kind, appCastTarget?.cast_mode, appCastTarget?.stream_state, appCastTarget?.viewer_interaction_state)} />
+      <PathRow label="cast route" value={joinParts(appCastTarget?.route, appCastTarget?.route_basis)} />
+      <PathRow label="cast viewer" value={joinParts(appCastTarget?.viewer_scope, appCastTarget?.auth_mode, appCastTarget?.viewer_grant_requirement)} />
+      <PathRow label="cast block" value={joinParts(blockedAppCastTarget?.blocked_reason, blockedAppCastTarget?.runtime_state_class, blockedAppCastTarget?.stream_state)} />
+      <PathRow label="active url" value={openHref ?? app.previewHref} />
       <PathRow label="launcher" value={app.launcherUrl} />
       <div className="ion-project-launch-actions">
         {app.version && <button disabled={!app.launchable || launchBusy} onClick={onStart} type="button">{running ? 'Open Managed' : launchBusy ? 'Starting' : 'Launch Preview'}</button>}
@@ -954,6 +968,26 @@ function observeTargetForSelection(
 }
 
 function blockedObserveTargetForSession(session: IonProjectPreviewSession | undefined, blockedTargets: IonProjectPreviewObserveTarget[]) {
+  const previewId = session?.preview_id;
+  if (!previewId) return undefined;
+  return blockedTargets.find((target) => target.preview_id === previewId);
+}
+
+function appCastTargetForSelection(
+  session: IonProjectPreviewSession | undefined,
+  comparison: IonProjectPreviewComparison | undefined,
+  targets: IonProjectPreviewAppCastTarget[],
+) {
+  if (comparison?.comparison_id) {
+    const comparisonTarget = targets.find((target) => target.source_target_kind === 'preview_comparison' && target.comparison_id === comparison.comparison_id);
+    if (comparisonTarget) return comparisonTarget;
+  }
+  const previewId = session?.preview_id;
+  if (!previewId) return undefined;
+  return targets.find((target) => target.preview_id === previewId);
+}
+
+function blockedAppCastTargetForSession(session: IonProjectPreviewSession | undefined, blockedTargets: IonProjectPreviewAppCastTarget[]) {
   const previewId = session?.preview_id;
   if (!previewId) return undefined;
   return blockedTargets.find((target) => target.preview_id === previewId);

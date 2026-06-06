@@ -38,6 +38,33 @@ def test_preview_sessions_empty_projection_is_read_only(tmp_path: Path):
     assert model["ai_observe_preview"]["authority"]["live_execution_authority"] is False
     assert model["ai_observe_preview"]["authority"]["secrets_authority"] is False
     assert "capture" in model["ai_observe_preview"]["policy"]["forbidden_capabilities"]
+    assert model["summary"]["app_cast_target_count"] == 0
+    assert model["summary"]["app_cast_blocked_target_count"] == 0
+    assert model["app_cast_preview"]["schema_id"] == "ion.project_preview_app_cast_preview.v0_1"
+    assert model["app_cast_preview"]["status"] == "candidate_projection_only_no_stream"
+    assert model["app_cast_preview"]["cast_mode"] == "app_only_not_desktop_screen_share"
+    assert model["app_cast_preview"]["target_count"] == 0
+    assert model["app_cast_preview"]["blocked_target_count"] == 0
+    assert model["app_cast_preview"]["targets"] == []
+    assert model["app_cast_preview"]["blocked_targets"] == []
+    assert model["app_cast_preview"]["authority"]["preview_read"] is True
+    assert model["app_cast_preview"]["authority"]["app_cast_authority"] is False
+    assert model["app_cast_preview"]["authority"]["stream_authority"] is False
+    assert model["app_cast_preview"]["authority"]["capture_authority"] is False
+    assert model["app_cast_preview"]["authority"]["browser_automation_authority"] is False
+    assert model["app_cast_preview"]["authority"]["viewer_control_authority"] is False
+    assert model["app_cast_preview"]["authority"]["accepted_state_authority"] is False
+    assert model["app_cast_preview"]["authority"]["production_authority"] is False
+    assert model["app_cast_preview"]["authority"]["live_execution_authority"] is False
+    assert model["app_cast_preview"]["authority"]["secrets_authority"] is False
+    assert model["app_cast_preview"]["roles"]["host_user"]["required_capabilities"] == ["preview_launch"]
+    assert model["app_cast_preview"]["roles"]["host_control_user"]["required_capabilities"] == ["local_control_request"]
+    assert model["app_cast_preview"]["roles"]["viewer_user"]["required_capabilities"] == ["public_preview_read"]
+    assert "desktop_screen_share" in model["app_cast_preview"]["policy"]["forbidden_capabilities"]
+    assert "full_desktop_capture" in model["app_cast_preview"]["policy"]["forbidden_capabilities"]
+    assert "browser_automation" in model["app_cast_preview"]["policy"]["forbidden_capabilities"]
+    assert "viewer_control" in model["app_cast_preview"]["policy"]["forbidden_capabilities"]
+    assert "live_execution" in model["app_cast_preview"]["policy"]["forbidden_capabilities"]
     assert {provider["provider_id"] for provider in model["providers"]} >= {
         "local_loopback_launcher",
         "application_dev_launcher",
@@ -241,6 +268,42 @@ def test_preview_sessions_registers_read_only_comparison_pair_without_capture_or
     assert "dom_delta_ref" not in observe_target
     assert "http://127.0.0.1:6320" not in payload
     assert "/tmp/private/demo" not in payload
+    observe_by_id = {target["target_id"]: target for target in model["ai_observe_preview"]["targets"]}
+    assert observe_by_id
+    for cast in model["app_cast_preview"]["targets"]:
+        source = observe_by_id[cast["source_target_id"]]
+        assert cast["route"] == source["route"]
+        assert cast["route_basis"] == source["route_basis"]
+        assert cast["source_capture_state"] == source["capture_state"]
+    assert model["summary"]["app_cast_target_count"] == model["app_cast_preview"]["target_count"]
+    assert model["summary"]["app_cast_blocked_target_count"] == 0
+    comparison_cast_targets = [
+        target for target in model["app_cast_preview"]["targets"] if target["source_target_kind"] == "preview_comparison"
+    ]
+    assert len(comparison_cast_targets) == 1
+    cast_target = comparison_cast_targets[0]
+    assert cast_target["target_kind"] == "app_cast_target"
+    assert cast_target["comparison_id"] == comparison["comparison_id"]
+    assert cast_target["route"] == "/cockpit/projects/launch/proxy/demo-launch/"
+    assert cast_target["route_basis"] == "comparison.route"
+    assert cast_target["auth_mode"] == "cockpit_confirmation_or_internal_stop_token"
+    assert cast_target["viewer_scope"] == "local_operator"
+    assert cast_target["public_preview_allowed"] is False
+    assert cast_target["viewer_grant_requirement"] == "explicit_object_share_grant_required"
+    assert cast_target["cast_mode"] == "app_only_view"
+    assert cast_target["stream_state"] == "not_streaming"
+    assert cast_target["transport_state"] == "transport_deferred"
+    assert cast_target["viewer_interaction"] == "view_only"
+    assert cast_target["viewer_interaction_state"] == "view_only"
+    assert cast_target["host_control_state"] == "not_granted"
+    assert cast_target["app_only_boundary"] == "single_preview_route_only"
+    assert cast_target["source_capture_state"] == "not_captured"
+    assert cast_target["authority"]["app_cast_authority"] is False
+    assert cast_target["authority"]["stream_authority"] is False
+    assert cast_target["authority"]["viewer_control_authority"] is False
+    assert cast_target["authority"]["live_execution_authority"] is False
+    assert cast_target["authority"]["production_authority"] is False
+    assert cast_target["authority"]["secrets_authority"] is False
 
 
 def test_preview_sessions_comparisons_do_not_pair_unrelated_same_version_ids(tmp_path: Path):
@@ -330,9 +393,62 @@ def test_preview_sessions_scrubs_protocol_relative_and_tokenized_comparison_rout
     assert comparison["candidate_surface"]["route_basis"] == ""
     assert model["ai_observe_preview"]["targets"] == []
     assert model["ai_observe_preview"]["target_count"] == 0
+    assert model["app_cast_preview"]["targets"] == []
+    assert model["app_cast_preview"]["target_count"] == 0
     assert "127.0.0.1:5173" not in payload
     assert "access_token=secret" not in payload
     assert "token=secret" not in payload
+
+
+def test_preview_sessions_scrubs_fragment_and_encoded_preview_routes(tmp_path: Path):
+    projects = [
+        {
+            "project_id": "hash-token",
+            "label": "Hash Token",
+            "status": "registered",
+            "path": "/tmp/private/hash-token",
+            "preview_href": "/projects/hash-token/preview/#token=secret",
+        },
+        {
+            "project_id": "encoded-slash",
+            "label": "Encoded Slash",
+            "status": "registered",
+            "path": "/tmp/private/encoded-slash",
+            "preview_href": "/projects/encoded-slash/%2Fsecret",
+        },
+        {
+            "project_id": "encoded-backslash",
+            "label": "Encoded Backslash",
+            "status": "registered",
+            "path": "/tmp/private/encoded-backslash",
+            "preview_href": "/projects/encoded-backslash/%5Csecret",
+        },
+        {
+            "project_id": "path-traversal",
+            "label": "Path Traversal",
+            "status": "registered",
+            "path": "/tmp/private/path-traversal",
+            "preview_href": "/projects/path-traversal/%2e%2e/secret",
+        },
+    ]
+
+    model = build_preview_sessions_from_cockpit(
+        tmp_path,
+        projects=projects,
+        portfolio={},
+        launcher_status={"ok": True, "running_count": 0, "launch_count": 0, "launches": []},
+    )
+    payload = json.dumps(model, sort_keys=True)
+
+    assert model["summary"]["session_count"] == 4
+    assert model["ai_observe_preview"]["targets"] == []
+    assert model["ai_observe_preview"]["target_count"] == 0
+    assert model["app_cast_preview"]["targets"] == []
+    assert model["app_cast_preview"]["target_count"] == 0
+    assert "token=secret" not in payload
+    assert "%2Fsecret" not in payload
+    assert "%5Csecret" not in payload
+    assert "%2e%2e" not in payload.lower()
 
 
 def test_preview_sessions_classifies_detached_manifest_without_managed_preview_url(tmp_path: Path):
@@ -405,6 +521,18 @@ def test_preview_sessions_classifies_detached_manifest_without_managed_preview_u
     assert blocked_target["route_basis"] == ""
     assert blocked_target["capture_state"] == "not_captured"
     assert blocked_target["blocked_reason"] == "runtime_state_stale_not_observable"
+    assert model["summary"]["app_cast_target_count"] == 0
+    assert model["summary"]["app_cast_blocked_target_count"] == 1
+    blocked_cast_target = model["app_cast_preview"]["blocked_targets"][0]
+    assert blocked_cast_target["preview_id"] == "launch:detached-launch"
+    assert blocked_cast_target["runtime_state_class"] == "stale"
+    assert blocked_cast_target["route"] == ""
+    assert blocked_cast_target["route_basis"] == ""
+    assert blocked_cast_target["stream_state"] == "blocked_not_streaming"
+    assert blocked_cast_target["transport_state"] == "blocked_transport_deferred"
+    assert blocked_cast_target["blocked_reason"] == "runtime_state_stale_not_observable"
+    assert blocked_cast_target["authority"]["stream_authority"] is False
+    assert blocked_cast_target["authority"]["viewer_control_authority"] is False
     assert "http://127.0.0.1:6321" not in payload
 
 
@@ -460,6 +588,14 @@ def test_preview_sessions_classifies_orphaned_listener_as_visible_not_controlled
     assert blocked_target["preview_id"] == "launch:orphaned-launch"
     assert blocked_target["runtime_state_class"] == "orphaned"
     assert blocked_target["blocked_reason"] == "runtime_state_orphaned_not_observable"
+    assert model["summary"]["app_cast_target_count"] == 0
+    assert model["summary"]["app_cast_blocked_target_count"] == 1
+    blocked_cast_target = model["app_cast_preview"]["blocked_targets"][0]
+    assert blocked_cast_target["preview_id"] == "launch:orphaned-launch"
+    assert blocked_cast_target["runtime_state_class"] == "orphaned"
+    assert blocked_cast_target["blocked_reason"] == "runtime_state_orphaned_not_observable"
+    assert blocked_cast_target["stream_state"] == "blocked_not_streaming"
+    assert blocked_cast_target["authority"]["stream_authority"] is False
 
 
 def test_preview_sessions_maps_project_and_portfolio_rows(tmp_path: Path):

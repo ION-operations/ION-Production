@@ -750,6 +750,58 @@ export type IonProjectPreviewAiObserveSubstrate = {
   non_claims?: string[];
 };
 
+export type IonProjectPreviewAppCastTarget = {
+  cast_target_id?: string;
+  target_kind?: string;
+  source_target_id?: string;
+  source_target_kind?: string;
+  preview_id?: string;
+  comparison_id?: string;
+  project_id?: string;
+  provider_id?: string;
+  runner_location?: string;
+  runtime_state_class?: string;
+  auth_mode?: string;
+  viewer_scope?: string;
+  public_preview_allowed?: boolean;
+  viewer_grant_requirement?: string;
+  route?: string;
+  route_basis?: string;
+  cast_mode?: string;
+  stream_state?: string;
+  transport_state?: string;
+  viewer_interaction?: string;
+  viewer_interaction_state?: string;
+  host_control_state?: string;
+  app_only_boundary?: string;
+  source_capture_state?: string;
+  receipt_refs?: string[];
+  blocked_reason?: string;
+  finding?: string;
+  authority?: Record<string, boolean>;
+};
+
+export type IonProjectPreviewAppCastPreview = {
+  schema_id?: 'ion.project_preview_app_cast_preview.v0_1' | string;
+  status?: string;
+  cast_mode?: string;
+  target_count?: number;
+  blocked_target_count?: number;
+  targets?: IonProjectPreviewAppCastTarget[];
+  blocked_targets?: IonProjectPreviewAppCastTarget[];
+  roles?: Record<string, unknown>;
+  policy?: {
+    target_source_policy?: string;
+    app_only_boundary?: string;
+    transport_policy?: string;
+    viewer_control_policy?: string;
+    forbidden_capabilities?: string[];
+  };
+  multi_user_system_contract?: Record<string, unknown>;
+  authority?: Record<string, boolean>;
+  non_claims?: string[];
+};
+
 export type IonProjectPreviewSessionsModel = {
   schema_id?: 'ion.project_preview_sessions.v0_1' | string;
   ok?: boolean;
@@ -767,6 +819,8 @@ export type IonProjectPreviewSessionsModel = {
     comparable_session_count?: number;
     ai_observe_target_count?: number;
     ai_observe_blocked_target_count?: number;
+    app_cast_target_count?: number;
+    app_cast_blocked_target_count?: number;
     public_preview_count?: number;
     portfolio_session_count?: number;
     source_counts?: Record<string, number>;
@@ -779,6 +833,7 @@ export type IonProjectPreviewSessionsModel = {
   comparisons?: IonProjectPreviewComparison[];
   surface_matrix?: Record<string, unknown>;
   ai_observe_preview?: IonProjectPreviewAiObserveSubstrate;
+  app_cast_preview?: IonProjectPreviewAppCastPreview;
   capability_classes?: Record<string, string>;
   routes?: Record<string, string>;
   source_models?: Record<string, string>;

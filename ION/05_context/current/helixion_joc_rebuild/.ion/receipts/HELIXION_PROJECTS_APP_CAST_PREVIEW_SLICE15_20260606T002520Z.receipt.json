@@ -1,0 +1,73 @@
+{
+  "schema_id": "ion.helixion_joc_rebuild.receipt.v0_1",
+  "receipt_id": "HELIXION_PROJECTS_APP_CAST_PREVIEW_SLICE15_20260606T002520Z",
+  "generated_at": "2026-06-06T00:25:20Z",
+  "status": "candidate_validated",
+  "domain": "helixion_projects_app_preview",
+  "slice": "slice15_app_cast_preview_projection",
+  "summary": "Added a metadata-only app-cast preview projection derived from sanitized AI observe-preview targets, exposing app-only host/viewer target eligibility for future multi-user sharing while keeping stream, capture, browser automation, loopback, viewer-control, live, production, accepted-state, and secrets authority false.",
+  "authority": {
+    "candidate_only": true,
+    "production_authority": false,
+    "live_execution_authority": false,
+    "accepted_state_authority": false,
+    "secrets_authority": false,
+    "service_restart": false,
+    "git_push": false
+  },
+  "changed_files": [
+    "ION/04_packages/kernel/ion_project_preview_sessions.py",
+    "ION/tests/test_kernel_ion_project_preview_sessions.py",
+    "ION/08_ui/joc_cockpit_shell/ionRuntimeCockpitTypes.ts",
+    "ION/08_ui/joc_cockpit_shell/HelixionAppsPreviewPanel.tsx"
+  ],
+  "receipt_files": [
+    "ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_APP_CAST_PREVIEW_SLICE15_20260606T002520Z.receipt.json"
+  ],
+  "validation": [
+    {
+      "command": "PYTHONPATH=ION/04_packages python3 -m py_compile ION/04_packages/kernel/ion_project_preview_sessions.py",
+      "result": "passed"
+    },
+    {
+      "command": "PYTHONPATH=ION/04_packages pytest -q -p no:cacheprovider ION/tests/test_kernel_ion_project_preview_sessions.py",
+      "result": "passed",
+      "evidence": "9 passed in 0.14s"
+    },
+    {
+      "command": "npm --prefix ION/08_ui/joc_cockpit_shell run build",
+      "result": "passed",
+      "evidence": "vite build completed; existing large chunk warning remains"
+    }
+  ],
+  "specialist_inputs": [
+    {
+      "agent": "Peirce",
+      "focus": "multi-user identity terms",
+      "integrated": true,
+      "summary": "Aligned host/viewer roles with public_preview_read, preview_launch, local_control_request, rank ceilings, object grants, and false authority boundaries."
+    },
+    {
+      "agent": "Epicurus",
+      "focus": "app-cast safety and route invariants",
+      "integrated": true,
+      "summary": "Pinned app-cast targets to sanitized observe target sources, tightened route scrubbing, blocked detached/orphaned targets, and removed raw loopback display fallbacks."
+    },
+    {
+      "agent": "Schrodinger",
+      "focus": "cockpit UI contract",
+      "integrated": true,
+      "summary": "Kept cockpit display passive with a cast metric and read-only status rows only; no cast buttons, live-cast wording, or mutation route was added."
+    }
+  ],
+  "non_claims": [
+    "No app stream was started.",
+    "No WebRTC, websocket, snapshot, or media transport was opened.",
+    "No screenshot, DOM, console, network, accessibility, or visual capture occurred.",
+    "No browser automation, loopback probe, or loopback mutation occurred.",
+    "No desktop, full browser, terminal, source file, local path, or secret surface is shared.",
+    "No viewer interaction, mutation, production, live execution, or accepted-state authority is granted.",
+    "No service restart.",
+    "No Git push."
+  ]
+}

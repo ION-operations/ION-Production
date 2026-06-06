@@ -12,6 +12,7 @@ import hashlib
 from pathlib import Path
 import re
 from typing import Any, Mapping
+from urllib.parse import parse_qsl, unquote, urlsplit
 
 from .ion_project_launcher import PROJECT_LOCAL_LAUNCH_CONFIRMATION, build_project_launcher_status
 
@@ -21,9 +22,24 @@ PROVIDER_SCHEMA_ID = "ion.project_preview_provider.v0_1"
 COMPARISON_SCHEMA_ID = "ion.project_preview_comparison.v0_1"
 SURFACE_MATRIX_SCHEMA_ID = "ion.project_preview_surface_matrix.v0_1"
 AI_OBSERVE_SUBSTRATE_SCHEMA_ID = "ion.project_preview_ai_observe_substrate.v0_1"
+APP_CAST_PREVIEW_SCHEMA_ID = "ion.project_preview_app_cast_preview.v0_1"
 READY_VERDICT = "ION_PROJECT_PREVIEW_SESSIONS_READY"
 
 _SAFE_ID_RE = re.compile(r"[^a-z0-9]+")
+_SECRET_ROUTE_KEYS = frozenset(
+    {
+        "stop_token",
+        "token",
+        "access_token",
+        "id_token",
+        "refresh_token",
+        "session",
+        "session_id",
+        "auth",
+        "api_key",
+        "key",
+    }
+)
 
 
 def utc_now() -> str:
@@ -69,9 +85,24 @@ def _same_origin_path(value: Any) -> str:
     if not text or not text.startswith("/"):
         return ""
     lower = text.lower()
-    if text.startswith("//") or "\\" in text:
+    decoded = unquote(text)
+    decoded_lower = decoded.lower()
+    if text.startswith("//") or "\\" in text or "\\" in decoded:
         return ""
-    if re.search(r"[?&](stop_token|token|access_token|id_token|refresh_token|session|session_id|auth|api_key|key)=", lower):
+    if "%2f" in lower or "%5c" in lower:
+        return ""
+    parts = urlsplit(text)
+    if parts.scheme or parts.netloc:
+        return ""
+    decoded_path = unquote(parts.path)
+    if not decoded_path.startswith("/") or decoded_path.startswith("//") or "\\" in decoded_path:
+        return ""
+    if any(segment == ".." for segment in decoded_path.split("/")):
+        return ""
+    query_keys = {unquote(key).lower() for key, _value in parse_qsl(parts.query, keep_blank_values=True)}
+    if query_keys & _SECRET_ROUTE_KEYS:
+        return ""
+    if re.search(r"(^|[?&#;/])(?:stop_token|token|access_token|id_token|refresh_token|session|session_id|auth|api_key|key)=", decoded_lower):
         return ""
     return text
 
@@ -112,6 +143,28 @@ def _observe_authority() -> dict[str, bool]:
         "ai_observe_preview": False,
         "capture_authority": False,
         "browser_automation_authority": False,
+        "loopback_probe": False,
+        "loopback_mutation": False,
+        "accepted_state_authority": False,
+        "production_authority": False,
+        "live_execution_authority": False,
+        "secrets_authority": False,
+    }
+
+
+def _app_cast_authority() -> dict[str, bool]:
+    return {
+        "preview_read": True,
+        "preview_mutation": False,
+        "app_cast_authority": False,
+        "app_cast_preview": False,
+        "app_cast_host_authority": False,
+        "app_cast_view_authority": False,
+        "app_cast_interaction_authority": False,
+        "stream_authority": False,
+        "capture_authority": False,
+        "browser_automation_authority": False,
+        "viewer_control_authority": False,
         "loopback_probe": False,
         "loopback_mutation": False,
         "accepted_state_authority": False,
@@ -724,6 +777,9 @@ def _observe_target_from_session(session: Mapping[str, Any]) -> tuple[dict[str, 
                 "provider_id": compact(session.get("provider_id")),
                 "runner_location": compact(session.get("runner_location")),
                 "runtime_state_class": runtime_state,
+                "auth_mode": compact(session.get("auth_mode")),
+                "viewer_scope": compact(session.get("viewer_scope")),
+                "public_preview_allowed": bool(session.get("public_preview_allowed")),
                 "blocked_reason": blocked_reason,
                 "finding": blocked_reason,
                 "stale_reasons": [compact(item) for item in listify(session.get("stale_reasons")) if compact(item)],
@@ -755,6 +811,9 @@ def _observe_target_from_session(session: Mapping[str, Any]) -> tuple[dict[str, 
             "provider_id": compact(session.get("provider_id")),
             "runner_location": compact(session.get("runner_location")),
             "runtime_state_class": runtime_state,
+            "auth_mode": compact(session.get("auth_mode")),
+            "viewer_scope": compact(session.get("viewer_scope")),
+            "public_preview_allowed": bool(session.get("public_preview_allowed")),
         }
     )
     return target, None
@@ -765,6 +824,11 @@ def _observe_target_from_comparison(comparison: Mapping[str, Any]) -> dict[str, 
     if not route:
         return None
     comparison_id = compact(comparison.get("comparison_id"))
+    route_source = compact(comparison.get("route_source"))
+    surface_key = f"{route_source}_surface" if route_source in {"baseline", "candidate"} else ""
+    surface = comparison.get(surface_key) if surface_key else {}
+    if not isinstance(surface, Mapping):
+        surface = {}
     target = _observe_target_common(
         target_id=f"observe:comparison:{slug(comparison_id, 'comparison')}",
         target_kind="preview_comparison",
@@ -783,6 +847,9 @@ def _observe_target_from_comparison(comparison: Mapping[str, Any]) -> dict[str, 
             "runtime_state_class": "comparison_pair_registered",
             "comparison_route_source": compact(comparison.get("route_source")),
             "comparison_route_basis": compact(comparison.get("route_basis")),
+            "auth_mode": compact(surface.get("auth_mode")),
+            "viewer_scope": compact(surface.get("viewer_scope")),
+            "public_preview_allowed": bool(surface.get("public_preview_allowed")),
         }
     )
     return target
@@ -840,6 +907,173 @@ def _build_ai_observe_preview_substrate(sessions: list[dict[str, Any]], comparis
     }
 
 
+def _cast_target_from_observe_target(target: Mapping[str, Any]) -> dict[str, Any] | None:
+    route = _same_origin_path(target.get("route"))
+    if not route:
+        return None
+    source_target_id = compact(target.get("target_id"))
+    return {
+        "cast_target_id": f"cast:{slug(source_target_id, 'target')}",
+        "target_kind": "app_cast_target",
+        "source_target_id": source_target_id,
+        "source_target_kind": compact(target.get("target_kind")),
+        "preview_id": compact(target.get("preview_id")),
+        "comparison_id": compact(target.get("comparison_id")),
+        "project_id": compact(target.get("project_id")),
+        "provider_id": compact(target.get("provider_id")),
+        "runner_location": compact(target.get("runner_location")),
+        "runtime_state_class": compact(target.get("runtime_state_class")),
+        "auth_mode": compact(target.get("auth_mode")),
+        "viewer_scope": compact(target.get("viewer_scope")),
+        "public_preview_allowed": bool(target.get("public_preview_allowed")),
+        "viewer_grant_requirement": "public_preview_read" if bool(target.get("public_preview_allowed")) else "explicit_object_share_grant_required",
+        "route": route,
+        "route_basis": compact(target.get("route_basis")),
+        "cast_mode": "app_only_view",
+        "stream_state": "not_streaming",
+        "transport_state": "transport_deferred",
+        "viewer_interaction": "view_only",
+        "viewer_interaction_state": "view_only",
+        "host_control_state": "not_granted",
+        "app_only_boundary": "single_preview_route_only",
+        "source_capture_state": compact(target.get("capture_state"), "not_captured"),
+        "receipt_refs": [],
+        "authority": _app_cast_authority(),
+    }
+
+
+def _cast_blocked_target_from_observe_target(target: Mapping[str, Any]) -> dict[str, Any]:
+    return {
+        "cast_target_id": f"blocked_cast:{slug(target.get('target_id'), 'target')}",
+        "source_target_id": compact(target.get("target_id")),
+        "preview_id": compact(target.get("preview_id")),
+        "project_id": compact(target.get("project_id")),
+        "provider_id": compact(target.get("provider_id")),
+        "runner_location": compact(target.get("runner_location")),
+        "runtime_state_class": compact(target.get("runtime_state_class")),
+        "auth_mode": compact(target.get("auth_mode")),
+        "viewer_scope": compact(target.get("viewer_scope")),
+        "public_preview_allowed": bool(target.get("public_preview_allowed")),
+        "viewer_grant_requirement": "explicit_object_share_grant_required",
+        "blocked_reason": compact(target.get("blocked_reason"), "observe_target_blocked"),
+        "finding": compact(target.get("finding"), "observe_target_blocked"),
+        "route": "",
+        "route_basis": "",
+        "cast_mode": "app_only_view",
+        "stream_state": "blocked_not_streaming",
+        "transport_state": "blocked_transport_deferred",
+        "viewer_interaction": "view_only",
+        "viewer_interaction_state": "view_only",
+        "host_control_state": "not_granted",
+        "app_only_boundary": "single_preview_route_only",
+        "authority": _app_cast_authority(),
+    }
+
+
+def _build_app_cast_preview(ai_observe_preview: Mapping[str, Any]) -> dict[str, Any]:
+    targets: list[dict[str, Any]] = []
+    for target in listify(ai_observe_preview.get("targets")):
+        if isinstance(target, Mapping):
+            cast_target = _cast_target_from_observe_target(target)
+            if cast_target:
+                targets.append(cast_target)
+
+    blocked_targets: list[dict[str, Any]] = []
+    for target in listify(ai_observe_preview.get("blocked_targets")):
+        if isinstance(target, Mapping):
+            blocked_targets.append(_cast_blocked_target_from_observe_target(target))
+
+    return {
+        "schema_id": APP_CAST_PREVIEW_SCHEMA_ID,
+        "status": "candidate_projection_only_no_stream",
+        "cast_mode": "app_only_not_desktop_screen_share",
+        "target_count": len(targets),
+        "blocked_target_count": len(blocked_targets),
+        "targets": targets,
+        "blocked_targets": blocked_targets,
+        "roles": {
+            "host_user": {
+                "role_id": "app_cast_host",
+                "capability_model": "ion_helixion_multi_user_identity",
+                "minimum_rank_ceiling": "builder_contributor",
+                "required_capabilities": ["preview_launch"],
+                "conditional_capabilities": {
+                    "local_control_request": "required before any local control, stop, or viewer interaction grant",
+                },
+                "object_grant_required": True,
+                "approval_required": True,
+            },
+            "host_control_user": {
+                "role_id": "app_cast_local_control_host",
+                "capability_model": "ion_helixion_multi_user_identity",
+                "minimum_rank_ceiling": "lead_architect",
+                "required_capabilities": ["local_control_request"],
+                "object_grant_required": True,
+                "approval_required": True,
+                "control_authority_granted_by_projection": False,
+            },
+            "viewer_user": {
+                "role_id": "app_cast_viewer",
+                "capability_model": "ion_helixion_multi_user_identity",
+                "minimum_rank_ceiling": "viewer_client",
+                "required_capabilities": ["public_preview_read"],
+                "object_grant_required": "non_public_targets_only",
+                "view_only": True,
+            },
+        },
+        "policy": {
+            "target_source_policy": "derived_from_ai_observe_preview_targets_only",
+            "app_only_boundary": "single_preview_route_only",
+            "transport_policy": "transport_deferred_no_webrtc_or_media_stream_started",
+            "viewer_control_policy": "view_only_no_interaction_granted",
+            "forbidden_capabilities": [
+                "desktop_screen_share",
+                "full_desktop_capture",
+                "whole_browser_share",
+                "terminal_capture",
+                "filesystem_capture",
+                "source_file_share",
+                "raw_local_path_share",
+                "screenshot_capture",
+                "browser_automation",
+                "secret_value_read",
+                "secrets_access",
+                "viewer_control",
+                "viewer_mutation",
+                "loopback_probe",
+                "loopback_mutation",
+                "live_execution",
+                "production_deploy",
+                "accepted_state_claim",
+            ],
+        },
+        "multi_user_system_contract": {
+            "expected_from_parallel_multi_user_agent": [
+                "membership_and_object_grants",
+                "host_viewer_session_pairing",
+                "ephemeral_cast_channel",
+                "revocation_and_expiry",
+                "audit_events",
+                "viewer_presence",
+            ],
+            "preview_layer_provides": [
+                "safe_same_origin_cast_targets",
+                "blocked_target_reasons",
+                "host_viewer_role_requirements",
+                "app_only_boundary_non_claims",
+            ],
+        },
+        "authority": _app_cast_authority(),
+        "non_claims": [
+            "No app stream was started.",
+            "No WebRTC, websocket, snapshot, or media transport was opened.",
+            "No screenshot, DOM, console, network, accessibility, or visual capture occurred.",
+            "No desktop, full browser, terminal, source file, local path, or secret surface is shared.",
+            "No viewer interaction, mutation, production, live execution, or accepted-state authority is granted.",
+        ],
+    }
+
+
 def build_preview_sessions_from_cockpit(
     root: str | Path,
     *,
@@ -891,6 +1125,7 @@ def build_preview_sessions_from_cockpit(
     comparisons = _build_preview_comparisons(sessions)
     surface_matrix = _build_surface_matrix(providers, sessions, comparisons)
     ai_observe_preview = _build_ai_observe_preview_substrate(sessions, comparisons)
+    app_cast_preview = _build_app_cast_preview(ai_observe_preview)
     source_counts: dict[str, int] = {}
     runtime_state_counts: dict[str, int] = {}
     for session in sessions:
@@ -920,6 +1155,8 @@ def build_preview_sessions_from_cockpit(
             "comparable_session_count": surface_matrix.get("comparable_session_count", 0),
             "ai_observe_target_count": ai_observe_preview.get("target_count", 0),
             "ai_observe_blocked_target_count": ai_observe_preview.get("blocked_target_count", 0),
+            "app_cast_target_count": app_cast_preview.get("target_count", 0),
+            "app_cast_blocked_target_count": app_cast_preview.get("blocked_target_count", 0),
             "public_preview_count": public_preview_count,
             "portfolio_session_count": portfolio_session_count,
             "source_counts": source_counts,
@@ -932,12 +1169,14 @@ def build_preview_sessions_from_cockpit(
         "comparisons": comparisons,
         "surface_matrix": surface_matrix,
         "ai_observe_preview": ai_observe_preview,
+        "app_cast_preview": app_cast_preview,
         "capability_classes": {
             "preview_read": "Read session state, safe same-origin URLs, screenshots, status, and receipt refs.",
             "preview_compare": "Register safe pairs of preview surfaces for later capture/diff work without performing capture.",
             "preview_interaction": "Navigation, screenshot, and diagnostics actions remain separate authenticated routes.",
             "preview_mutation": "Not granted by this projection.",
             "ai_observe_preview": "Metadata-only observe target registry; capture, DOM, AX, console, network, and visual work are not executed by this projection.",
+            "app_cast_preview": "App-only cast target registry for future multi-user host/viewer sharing; no stream or capture is executed by this projection.",
         },
         "routes": {
             "model": "/cockpit/previews/model.json",
@@ -964,6 +1203,7 @@ def build_preview_sessions_from_cockpit(
             "This model does not start, stop, probe, install, screenshot, or proxy any app.",
             "Preview comparisons are registered pairings only; no capture, DOM diff, visual diff, or equivalence verdict is produced.",
             "AI observe preview is a metadata-only target registry; no capture, browser automation, loopback probe, or observation execution occurred.",
+            "App cast preview is a metadata-only target registry; no app stream, screen share, media transport, or viewer interaction is active.",
             "Raw stop tokens and direct loopback URLs are not emitted.",
             "VM, remote, and viewer-local providers are registered as read-only provider classes only.",
             "Launch, stop, diagnostics, patch, and rollback mutations keep their existing cockpit gates.",
