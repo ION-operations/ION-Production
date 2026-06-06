@@ -1,0 +1,44 @@
+{
+  "receipt_id": "HELIXION_PROJECTS_PREVIEW_REAL_ROUTE_TESTS_SLICE19_20260606T012948Z",
+  "created_at_utc": "2026-06-06T01:29:48Z",
+  "root": "/home/sev/ION - Production/ION_Developement",
+  "context_lane": "ION/05_context/current/helixion_joc_rebuild/.ion",
+  "workstream": "helixion_projects_preview_app_cast",
+  "slice": "app_cast_protected_route_real_model_tests_no_execution",
+  "bounded_write_confirmation": "ION_BOUNDED_WRITE_CONFIRMED",
+  "summary": [
+    "Added a focused public-route test for /cockpit/previews/model.json and /cockpit/projects/previews/model.json.",
+    "Verified unauthenticated requests return public_cockpit_login_required.",
+    "Verified query-token requests remain rejected and bearer-token requests serve the real project preview model.",
+    "Asserted served app-cast target counts, share-grant aggregate counts, target share-grant contracts, route-auth evidence, and no token/root leakage.",
+    "Kept the assertions candidate/read-only: no live route enforcement, no active grants, no stream, no media/capture, no viewer-control authority."
+  ],
+  "changed_files": [
+    "ION/tests/test_kernel_ion_project_preview_public_routes.py"
+  ],
+  "validation": [
+    {
+      "command": "PYTHONPATH=ION/04_packages pytest -q -p no:cacheprovider ION/tests/test_kernel_ion_project_preview_public_routes.py",
+      "result": "1 passed in 0.97s"
+    },
+    {
+      "command": "PYTHONPATH=ION/04_packages pytest -q -p no:cacheprovider ION/tests/test_kernel_ion_project_preview_sessions.py",
+      "result": "9 passed in 0.11s"
+    },
+    {
+      "command": "PYTHONPATH=ION/04_packages python3 -m py_compile ION/04_packages/kernel/ion_project_preview_sessions.py ION/04_packages/kernel/ion_chatgpt_browser_mcp_http_preview.py",
+      "result": "passed"
+    },
+    {
+      "command": "git diff --check -- ION/tests/test_kernel_ion_project_preview_public_routes.py",
+      "result": "passed"
+    }
+  ],
+  "non_claims": [
+    "No live Action or MCP mutation route was used.",
+    "No app stream, WebRTC, websocket, screenshot, DOM, console, accessibility, network, browser automation, media capture, loopback probe, or viewer-control channel was started.",
+    "No production deployment, service restart, git push, accepted-state claim, or destructive cleanup occurred.",
+    "No protected secret value was read or printed."
+  ],
+  "next_safe_step": "After the parallel collaboration route-registry lane is committed, reconcile app-cast route-auth evidence against the committed route registry and add route-vocabulary tests; still no live sharing."
+}
