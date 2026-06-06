@@ -24,10 +24,11 @@ recent_receipts:
   - ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_PREVIEW_PAIRING_MAP_SLICE8_20260605T233010Z.receipt.json
   - ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_PREVIEW_PEER_SURFACES_SLICE10_20260606T000738Z.receipt.json
   - ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_OBSERVE_DETAIL_UI_SLICE11_20260606T000923Z.receipt.json
+  - ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_GATED_CAPTURE_PLAN_SLICE13_20260606T001028Z.receipt.json
 current_objective:
   title: Helixion Projects App Preview Architecture
-  summary: PreviewSession model, durable launcher reconciliation, runtime ownership classification, comparison registration, route-surface proof, metadata-only AI observe targets, no-CSS pairing-map UI, resolved comparison peer surfaces, and observe detail rows are committed as candidate work.
-  next_slice: draft_gated_capture_plan_no_execution
+  summary: PreviewSession model, durable launcher reconciliation, runtime ownership classification, comparison registration, route-surface proof, metadata-only AI observe targets, no-CSS pairing-map UI, resolved comparison peer surfaces, observe detail rows, and draft-only gated capture plan are committed as candidate work.
+  next_slice: capture_plan_preview_model_no_execution
 scope:
   include:
     - ION/04_packages/kernel/ion_project_preview_sessions.py
@@ -63,5 +64,5 @@ boundaries:
   - Preview comparisons are registered read-only pairs; no DOM, console, network, accessibility, screenshot, or visual diff has occurred.
   - AI observe preview is metadata-only target registration; observe, capture, browser automation, loopback probe, and loopback mutation authority remain false.
   - UI preview pairing map and observe detail rows are display-only and grant no runtime authority.
-  - Next capture/DOM/console/network work must be a draft-only gated plan unless the operator explicitly authorizes live capture execution.
+  - Gated capture plan is draft-only. Next implementation may add a preview model, but capture/DOM/console/network execution still requires explicit operator authorization.
 receipt_lane: ION/05_context/current/helixion_joc_rebuild/.ion/receipts

@@ -2,7 +2,7 @@
 
 Status: active candidate folder-local package
 Created: 2026-06-05T20:53:57Z
-Updated: 2026-06-06T00:10:28Z
+Updated: 2026-06-06T00:13:18Z
 
 ## Objective
 
@@ -19,6 +19,7 @@ Committed candidate slices now cover:
 - No-CSS Preview Pairing Map in the Helixion app preview detail panel.
 - Sanitized comparison peer surfaces for baseline/candidate labels, providers, runner locations, and safe same-origin routes.
 - Read-only observe target and blocked-target detail rows in the app preview detail panel.
+- Draft-only gated capture plan for future screenshot, DOM, console, network, and accessibility observation.
 
 ## Authority
 
@@ -63,11 +64,12 @@ Current receipts:
 - `ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_PREVIEW_PAIRING_MAP_SLICE8_20260605T233010Z.receipt.json`
 - `ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_PREVIEW_PEER_SURFACES_SLICE10_20260606T000738Z.receipt.json`
 - `ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_OBSERVE_DETAIL_UI_SLICE11_20260606T000923Z.receipt.json`
+- `ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_GATED_CAPTURE_PLAN_SLICE13_20260606T001028Z.receipt.json`
 
 ## Next Safe Step
 
 Next bounded slice:
 
-- Draft, but do not execute, a gated capture plan for future screenshot/DOM/console/network observation with explicit approval, authority flags, same-origin restrictions, artifact lanes, and receipts.
+- Implement a capture-plan preview model only. It may project target eligibility, planned lanes, redaction rules, and required approval, but it must not execute browser automation, screenshot capture, DOM reads, console reads, network reads, loopback probes, or mutation.
 
 Do not start live VM, remote, viewer-local, browser automation, screenshot, or loopback probe work without a new explicit gated packet.
