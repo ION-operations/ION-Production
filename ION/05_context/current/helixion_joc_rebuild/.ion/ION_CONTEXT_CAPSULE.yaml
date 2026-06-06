@@ -26,10 +26,11 @@ recent_receipts:
   - ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_OBSERVE_DETAIL_UI_SLICE11_20260606T000923Z.receipt.json
   - ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_GATED_CAPTURE_PLAN_SLICE13_20260606T001028Z.receipt.json
   - ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_APP_CAST_PREVIEW_SLICE15_20260606T002520Z.receipt.json
+  - ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_APP_CAST_SHARE_GRANT_CONTRACT_SLICE17_20260606T010857Z.receipt.json
 current_objective:
   title: Helixion Projects App Preview Architecture
-  summary: PreviewSession model, durable launcher reconciliation, runtime ownership classification, comparison registration, route-surface proof, metadata-only AI observe targets, no-CSS pairing-map UI, resolved comparison peer surfaces, observe detail rows, draft-only gated capture plan, and metadata-only app-cast preview projection are committed as candidate work.
-  next_slice: app_cast_multi_user_grant_contract_no_execution
+  summary: PreviewSession model, durable launcher reconciliation, runtime ownership classification, comparison registration, route-surface proof, metadata-only AI observe targets, no-CSS pairing-map UI, resolved comparison peer surfaces, observe detail rows, draft-only gated capture plan, metadata-only app-cast preview projection, and read-only app-cast share-grant contract projection are committed as candidate work.
+  next_slice: app_cast_protected_route_real_model_tests_no_execution
 scope:
   include:
     - ION/04_packages/kernel/ion_project_preview_sessions.py
@@ -70,5 +71,6 @@ boundaries:
   - UI preview pairing map and observe detail rows are display-only and grant no runtime authority.
   - Gated capture plan is draft-only. Next implementation may add a preview model, but capture/DOM/console/network execution still requires explicit operator authorization.
   - App-cast preview is metadata-only target registration for future multi-user host/viewer sharing. It grants no stream, media transport, capture, desktop share, browser automation, loopback, viewer-control, live, production, accepted-state, or secrets authority.
-  - Next app-cast/multi-user work should model membership, object grants, public-vs-non-public viewer requirements, expiry, revocation, and audit evidence only.
+  - App-cast share-grant contract is read-only and grants no active share, pair, stream, media, capture, browser automation, loopback, viewer-control, live, production, accepted-state, or secrets authority.
+  - Next app-cast/multi-user work should test protected preview routes against the real model and reconcile route-auth evidence with the parallel collaboration route registry only after that lane is committed.
 receipt_lane: ION/05_context/current/helixion_joc_rebuild/.ion/receipts

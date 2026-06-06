@@ -1,0 +1,51 @@
+{
+  "schema_id": "ion.helixion_joc_rebuild.receipt.v0_1",
+  "receipt_id": "HELIXION_PROJECTS_APP_CAST_SHARE_GRANT_CONTEXT_REFRESH_SLICE18_20260606T010929Z",
+  "generated_at": "2026-06-06T01:09:29Z",
+  "status": "candidate_context_refreshed",
+  "domain": "helixion_projects_app_preview",
+  "slice": "slice18_app_cast_share_grant_context_refresh",
+  "summary": "Refreshed the folder-local Helixion Projects App Preview context after the app-cast share-grant contract projection so future carriers route toward protected preview route real-model tests and collaboration route-registry reconciliation, not live sharing execution.",
+  "authority": {
+    "candidate_only": true,
+    "production_authority": false,
+    "live_execution_authority": false,
+    "accepted_state_authority": false,
+    "secrets_authority": false,
+    "service_restart": false,
+    "git_push": false
+  },
+  "changed_files": [
+    "ION/05_context/current/helixion_joc_rebuild/.ion/ACTIVE_CONTEXT_PACKAGE.md",
+    "ION/05_context/current/helixion_joc_rebuild/.ion/ION_CONTEXT_CAPSULE.yaml"
+  ],
+  "receipt_files": [
+    "ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_APP_CAST_SHARE_GRANT_CONTEXT_REFRESH_SLICE18_20260606T010929Z.receipt.json"
+  ],
+  "validation": [
+    {
+      "command": "python3 -m json.tool app-cast share-grant context refresh receipt",
+      "result": "passed"
+    },
+    {
+      "command": "python3 yaml safe_load ION_CONTEXT_CAPSULE.yaml",
+      "result": "passed"
+    },
+    {
+      "command": "git diff --check -- folder-local app-cast share-grant context refresh files",
+      "result": "passed"
+    }
+  ],
+  "non_claims": [
+    "No share grant is active.",
+    "No host-viewer pair is active.",
+    "No app stream was started.",
+    "No WebRTC, websocket, snapshot, or media transport was opened.",
+    "No screenshot capture or browser automation occurred.",
+    "No loopback probe or mutation occurred.",
+    "No viewer-control or mutation channel was opened.",
+    "No production deployment.",
+    "No service restart.",
+    "No Git push."
+  ]
+}
