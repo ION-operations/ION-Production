@@ -1,0 +1,77 @@
+{
+  "schema_id": "ion.helixion_joc_rebuild.receipt.v0_1",
+  "receipt_id": "HELIXION_PROJECTS_APP_CAST_SHARE_GRANT_CONTRACT_SLICE17_20260606T010857Z",
+  "generated_at": "2026-06-06T01:08:57Z",
+  "status": "candidate_validated",
+  "domain": "helixion_projects_app_preview",
+  "slice": "slice17_app_cast_share_grant_contract",
+  "summary": "Added a read-only app-cast share-grant contract projection for host/viewer membership requirements, public-vs-object-grant viewer rules, expiry/revocation/audit placeholders, and route-auth evidence while leaving share grants inactive and stream, media, capture, browser automation, loopback, viewer-control, live, production, accepted-state, and secrets authority false.",
+  "authority": {
+    "candidate_only": true,
+    "production_authority": false,
+    "live_execution_authority": false,
+    "accepted_state_authority": false,
+    "secrets_authority": false,
+    "service_restart": false,
+    "git_push": false
+  },
+  "changed_files": [
+    "ION/04_packages/kernel/ion_project_preview_sessions.py",
+    "ION/tests/test_kernel_ion_project_preview_sessions.py",
+    "ION/08_ui/joc_cockpit_shell/HelixionAppsPreviewPanel.tsx"
+  ],
+  "receipt_files": [
+    "ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_APP_CAST_SHARE_GRANT_CONTRACT_SLICE17_20260606T010857Z.receipt.json"
+  ],
+  "validation": [
+    {
+      "command": "PYTHONPATH=ION/04_packages python3 -m py_compile ION/04_packages/kernel/ion_project_preview_sessions.py",
+      "result": "passed"
+    },
+    {
+      "command": "PYTHONPATH=ION/04_packages pytest -q -p no:cacheprovider ION/tests/test_kernel_ion_project_preview_sessions.py",
+      "result": "passed",
+      "evidence": "9 passed in 0.26s"
+    },
+    {
+      "command": "npm --prefix ION/08_ui/joc_cockpit_shell run build",
+      "result": "passed",
+      "evidence": "vite build completed; existing large chunk warning remains"
+    },
+    {
+      "command": "git diff --check -- app-cast share-grant slice files",
+      "result": "passed"
+    }
+  ],
+  "specialist_inputs": [
+    {
+      "agent": "Hubble",
+      "focus": "multi-user identity and authorization matrix",
+      "integrated": true,
+      "summary": "Pinned public_preview_read versus explicit object share grants, host preview_launch, local_control_request non-grant, and route-class/capability/sensitivity evidence."
+    },
+    {
+      "agent": "Leibniz",
+      "focus": "collab cockpit route vocabulary",
+      "integrated": true,
+      "summary": "Kept app-cast share_grant_contract aligned with object_grant_required/shareable_with_co_users vocabulary without taking ownership of the parallel untracked collab surface."
+    },
+    {
+      "agent": "Planck",
+      "focus": "passive UI wording",
+      "integrated": true,
+      "summary": "Changed app preview detail labels toward share-grant contract wording and avoided live-cast, active-share, or action wording."
+    }
+  ],
+  "non_claims": [
+    "No share grant is active.",
+    "No host-viewer pair is active.",
+    "No app stream was started.",
+    "No WebRTC, websocket, snapshot, or media transport was opened.",
+    "No screenshot, DOM, console, network, accessibility, or visual capture occurred.",
+    "No browser automation, loopback probe, loopback mutation, or viewer-control channel occurred.",
+    "No production deployment.",
+    "No service restart.",
+    "No Git push."
+  ]
+}

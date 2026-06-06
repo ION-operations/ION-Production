@@ -45,8 +45,18 @@ def test_preview_sessions_empty_projection_is_read_only(tmp_path: Path):
     assert model["app_cast_preview"]["cast_mode"] == "app_only_not_desktop_screen_share"
     assert model["app_cast_preview"]["target_count"] == 0
     assert model["app_cast_preview"]["blocked_target_count"] == 0
+    assert model["app_cast_preview"]["share_grant_contract_count"] == 0
+    assert model["app_cast_preview"]["share_grant_blocked_contract_count"] == 0
+    assert model["app_cast_preview"]["registered_route_target_count"] == 0
+    assert model["app_cast_preview"]["object_grant_required_target_count"] == 0
     assert model["app_cast_preview"]["targets"] == []
     assert model["app_cast_preview"]["blocked_targets"] == []
+    assert model["app_cast_preview"]["share_grant_contract"]["status"] == "candidate_contract_only_no_grants_active"
+    assert model["app_cast_preview"]["share_grant_contract"]["active_share_grant_count"] == 0
+    assert model["app_cast_preview"]["share_grant_contract"]["host_viewer_pairing_state"] == "not_paired"
+    assert model["app_cast_preview"]["share_grant_contract"]["expiry_policy"]["expires_at_required_for_active_grant"] is True
+    assert model["app_cast_preview"]["share_grant_contract"]["revocation_policy"]["revocable"] is True
+    assert model["app_cast_preview"]["share_grant_contract"]["audit_policy"]["audit_receipt_required"] is True
     assert model["app_cast_preview"]["authority"]["preview_read"] is True
     assert model["app_cast_preview"]["authority"]["app_cast_authority"] is False
     assert model["app_cast_preview"]["authority"]["stream_authority"] is False
@@ -277,6 +287,24 @@ def test_preview_sessions_registers_read_only_comparison_pair_without_capture_or
         assert cast["source_capture_state"] == source["capture_state"]
     assert model["summary"]["app_cast_target_count"] == model["app_cast_preview"]["target_count"]
     assert model["summary"]["app_cast_blocked_target_count"] == 0
+    assert model["app_cast_preview"]["share_grant_contract_count"] == model["app_cast_preview"]["target_count"]
+    assert model["app_cast_preview"]["share_grant_blocked_contract_count"] == 0
+    assert model["app_cast_preview"]["object_grant_required_target_count"] >= 1
+    public_session_cast = next(
+        target
+        for target in model["app_cast_preview"]["targets"]
+        if target["source_target_kind"] == "preview_session"
+        and target["preview_id"] == "project:demo:cockpit_internal_surface"
+    )
+    public_contract = public_session_cast["share_grant_contract"]
+    assert public_session_cast["viewer_grant_requirement"] == "public_preview_read"
+    assert public_session_cast["share_grant_state"] == "not_granted"
+    assert public_contract["viewer_object_grant_required"] is False
+    assert public_contract["viewer_membership_required"] is False
+    assert public_contract["viewer_membership_status"] == "public_preview_session_required_not_membership_grant"
+    assert public_contract["viewer_required_capability"] == "public_preview_read"
+    assert public_contract["route_auth_evidence"]["target_access_basis"] == "public_preview_read"
+    assert public_contract["route_auth_evidence"]["target_public_preview_allowed"] is True
     comparison_cast_targets = [
         target for target in model["app_cast_preview"]["targets"] if target["source_target_kind"] == "preview_comparison"
     ]
@@ -290,6 +318,7 @@ def test_preview_sessions_registers_read_only_comparison_pair_without_capture_or
     assert cast_target["viewer_scope"] == "local_operator"
     assert cast_target["public_preview_allowed"] is False
     assert cast_target["viewer_grant_requirement"] == "explicit_object_share_grant_required"
+    assert cast_target["share_grant_state"] == "not_granted"
     assert cast_target["cast_mode"] == "app_only_view"
     assert cast_target["stream_state"] == "not_streaming"
     assert cast_target["transport_state"] == "transport_deferred"
@@ -304,6 +333,48 @@ def test_preview_sessions_registers_read_only_comparison_pair_without_capture_or
     assert cast_target["authority"]["live_execution_authority"] is False
     assert cast_target["authority"]["production_authority"] is False
     assert cast_target["authority"]["secrets_authority"] is False
+    share_contract = cast_target["share_grant_contract"]
+    route_evidence = share_contract["route_auth_evidence"]
+    assert share_contract["schema_id"] == "ion.project_preview_app_cast_share_grant_contract.v0_1"
+    assert share_contract["status"] == "candidate_contract_only_no_grant"
+    assert share_contract["target_object_id"] == comparison["comparison_id"]
+    assert share_contract["target_object_type"] == "preview_comparison"
+    assert share_contract["host_membership_required"] is True
+    assert share_contract["host_membership_status"] == "required_not_evaluated"
+    assert share_contract["host_required_capability"] == "preview_launch"
+    assert share_contract["host_object_grant_required"] is True
+    assert share_contract["host_approval_required"] is True
+    assert share_contract["viewer_session_required"] is True
+    assert share_contract["viewer_session_status"] == "required_not_evaluated"
+    assert share_contract["viewer_membership_required"] is True
+    assert share_contract["viewer_membership_status"] == "required_not_evaluated"
+    assert share_contract["viewer_required_capability"] == "public_preview_read"
+    assert share_contract["viewer_object_grant_required"] is True
+    assert share_contract["viewer_object_grant_ref"] == ""
+    assert share_contract["object_share_grant_ref"] == ""
+    assert share_contract["share_grant_ref"] == ""
+    assert share_contract["pairing_state"] == "not_paired"
+    assert share_contract["host_viewer_pair_ref"] == ""
+    assert share_contract["expiry_policy"]["expires_at_required_for_active_grant"] is True
+    assert share_contract["expiry_policy"]["expires_at"] == ""
+    assert share_contract["revocation_policy"]["revocable"] is True
+    assert share_contract["revocation_policy"]["revoked_at"] == ""
+    assert share_contract["audit_policy"]["audit_receipt_required"] is True
+    assert share_contract["audit_policy"]["audit_receipt_refs"] == []
+    assert share_contract["audit_policy"]["audit_event_refs"] == []
+    assert "share_grant_requested" in share_contract["audit_policy"]["required_events"]
+    assert route_evidence["route"] == "/cockpit/projects/launch/proxy/demo-launch/"
+    assert route_evidence["route_class"] == "project_read"
+    assert route_evidence["capability"] == "public_preview_read"
+    assert route_evidence["sensitivity"] == "internal"
+    assert route_evidence["target_access_basis"] == "explicit_object_share_grant_required"
+    assert route_evidence["target_object_grant_required"] is True
+    assert route_evidence["candidate_enforcement_active"] is False
+    assert route_evidence["live_route_enforcement"] is False
+    assert share_contract["authorization_preview"]["status"] == "not_evaluated_no_viewer_principal"
+    assert share_contract["authorization_preview"]["rank_is_ceiling"] is True
+    assert share_contract["authorization_preview"]["requires_object_grant"] is True
+    assert share_contract["authorization_preview"]["authority"]["viewer_control_authority"] is False
 
 
 def test_preview_sessions_comparisons_do_not_pair_unrelated_same_version_ids(tmp_path: Path):
@@ -533,6 +604,12 @@ def test_preview_sessions_classifies_detached_manifest_without_managed_preview_u
     assert blocked_cast_target["blocked_reason"] == "runtime_state_stale_not_observable"
     assert blocked_cast_target["authority"]["stream_authority"] is False
     assert blocked_cast_target["authority"]["viewer_control_authority"] is False
+    blocked_share_contract = blocked_cast_target["share_grant_contract"]
+    assert blocked_cast_target["share_grant_state"] == "blocked_no_active_grant"
+    assert blocked_share_contract["share_grant_state"] == "blocked_no_active_grant"
+    assert blocked_share_contract["viewer_object_grant_required"] is True
+    assert blocked_share_contract["route_auth_evidence"]["status"] == "blocked_no_route"
+    assert blocked_share_contract["route_auth_evidence"]["route"] == ""
     assert "http://127.0.0.1:6321" not in payload
 
 

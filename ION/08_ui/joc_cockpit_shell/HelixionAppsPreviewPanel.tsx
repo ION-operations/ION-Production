@@ -794,6 +794,9 @@ function AppPreviewDetail({
   const openHref = sessionFromLaunch ? managedOpenHref : previewSession?.same_origin_embed_url ?? previewSession?.public_url ?? app.previewHref;
   const instrumentedHref = running ? previewSession?.same_origin_embed_url ?? record?.instrumented_open_href : undefined;
   const screenshot = diagnostics?.screenshot as Record<string, unknown> | undefined;
+  const appCastContract = recordValue((appCastTarget as Record<string, unknown> | undefined)?.share_grant_contract);
+  const appCastRouteAuth = recordValue(appCastContract?.route_auth_evidence);
+  const blockedAppCastContract = recordValue((blockedAppCastTarget as Record<string, unknown> | undefined)?.share_grant_contract);
   const detailTone = running ? 'running' : ['detached', 'orphaned', 'stale'].includes(runtimeClass) ? runtimeClass : app.launchable ? 'ready' : 'watch';
   return (
     <article className={`ion-app-preview-detail is-${safeClassToken(detailTone, 'watch')}`}>
@@ -833,10 +836,12 @@ function AppPreviewDetail({
       <PathRow label="observe target" value={joinParts(observeTarget?.target_kind, observeTarget?.capture_state)} />
       <PathRow label="observe route" value={joinParts(observeTarget?.route, observeTarget?.route_basis)} />
       <PathRow label="observe block" value={joinParts(blockedObserveTarget?.blocked_reason, blockedObserveTarget?.runtime_state_class)} />
-      <PathRow label="cast target" value={joinParts(appCastTarget?.source_target_kind, appCastTarget?.cast_mode, appCastTarget?.stream_state, appCastTarget?.viewer_interaction_state)} />
-      <PathRow label="cast route" value={joinParts(appCastTarget?.route, appCastTarget?.route_basis)} />
-      <PathRow label="cast viewer" value={joinParts(appCastTarget?.viewer_scope, appCastTarget?.auth_mode, appCastTarget?.viewer_grant_requirement)} />
-      <PathRow label="cast block" value={joinParts(blockedAppCastTarget?.blocked_reason, blockedAppCastTarget?.runtime_state_class, blockedAppCastTarget?.stream_state)} />
+      <PathRow label="share target" value={joinParts(appCastTarget?.source_target_kind, appCastTarget?.cast_mode, appCastTarget?.stream_state, appCastTarget?.viewer_interaction_state)} />
+      <PathRow label="share route" value={joinParts(appCastTarget?.route, appCastTarget?.route_basis)} />
+      <PathRow label="viewer contract" value={joinParts(appCastTarget?.viewer_scope, appCastTarget?.auth_mode, appCastTarget?.viewer_grant_requirement)} />
+      <PathRow label="grant state" value={joinParts(appCastContract?.share_grant_state, appCastContract?.pairing_state, appCastContract?.viewer_object_grant_required ? 'object grant required' : '')} />
+      <PathRow label="route auth" value={joinParts(appCastRouteAuth?.route_class, appCastRouteAuth?.capability, appCastRouteAuth?.sensitivity, appCastRouteAuth?.status)} />
+      <PathRow label="share block" value={joinParts(blockedAppCastTarget?.blocked_reason, blockedAppCastTarget?.runtime_state_class, blockedAppCastTarget?.stream_state, blockedAppCastContract?.share_grant_state)} />
       <PathRow label="active url" value={openHref ?? app.previewHref} />
       <PathRow label="launcher" value={app.launcherUrl} />
       <div className="ion-project-launch-actions">
@@ -1045,6 +1050,11 @@ function PathRow({ label, value }: { label: string; value: unknown }) {
 
 function joinParts(...values: unknown[]) {
   return values.map((value) => text(value, '')).filter(Boolean).join(' / ');
+}
+
+function recordValue(value: unknown): Record<string, unknown> | undefined {
+  if (value && typeof value === 'object' && !Array.isArray(value)) return value as Record<string, unknown>;
+  return undefined;
 }
 
 function comparisonSurfaceText(

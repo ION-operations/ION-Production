@@ -23,6 +23,7 @@ COMPARISON_SCHEMA_ID = "ion.project_preview_comparison.v0_1"
 SURFACE_MATRIX_SCHEMA_ID = "ion.project_preview_surface_matrix.v0_1"
 AI_OBSERVE_SUBSTRATE_SCHEMA_ID = "ion.project_preview_ai_observe_substrate.v0_1"
 APP_CAST_PREVIEW_SCHEMA_ID = "ion.project_preview_app_cast_preview.v0_1"
+APP_CAST_SHARE_GRANT_CONTRACT_SCHEMA_ID = "ion.project_preview_app_cast_share_grant_contract.v0_1"
 READY_VERDICT = "ION_PROJECT_PREVIEW_SESSIONS_READY"
 
 _SAFE_ID_RE = re.compile(r"[^a-z0-9]+")
@@ -907,11 +908,175 @@ def _build_ai_observe_preview_substrate(sessions: list[dict[str, Any]], comparis
     }
 
 
+def _collaboration_route_evidence(route: str) -> dict[str, Any]:
+    def fallback(status: str, finding: str) -> dict[str, Any]:
+        object_resolver = "project_launch" if route.startswith("/cockpit/projects/launch/proxy/") else "project_portfolio"
+        return {
+            "schema_id": "ion.project_preview_app_cast_route_auth_evidence.v0_1",
+            "status": status,
+            "route": route,
+            "method": "GET",
+            "registered_route": False,
+            "finding": finding,
+            "route_registry_model": "ion.helixion_collaboration_route_registry.v0_1",
+            "route_class": "project_read",
+            "capability": "public_preview_read",
+            "sensitivity": "internal",
+            "object_resolver": object_resolver,
+            "mutation": False,
+            "same_origin_required": True,
+            "localhost_context_required": False,
+            "object_grant_required": True,
+            "approval_required": False,
+            "receipt_required": True,
+            "shareable_with_co_users": True,
+            "candidate_enforcement_active": False,
+            "live_route_enforcement": False,
+            "authority": _app_cast_authority(),
+        }
+
+    try:
+        from .ion_helixion_collaboration_access import find_registered_route
+
+        row, finding = find_registered_route(route, method="GET")
+    except Exception as exc:  # pragma: no cover - defensive against optional collaboration slices.
+        return fallback("route_registry_unavailable_reference_inferred", f"route_registry_unavailable:{exc.__class__.__name__}")
+    if row is None:
+        return fallback("route_registry_reference_not_registered", finding or "ROUTE_NOT_REGISTERED")
+    route_row = row.to_dict()
+    return {
+        "schema_id": "ion.project_preview_app_cast_route_auth_evidence.v0_1",
+        "status": "registered_candidate_route",
+        "route": route,
+        "method": "GET",
+        "registered_route": True,
+        "route_registry_model": "ion.helixion_collaboration_route_registry.v0_1",
+        "route_id": compact(route_row.get("route_id")),
+        "path_template": compact(route_row.get("path_template")),
+        "route_class": compact(route_row.get("route_class")),
+        "capability": compact(route_row.get("capability")),
+        "sensitivity": compact(route_row.get("sensitivity")),
+        "object_resolver": compact(route_row.get("object_resolver")),
+        "mutation": bool(route_row.get("mutation")),
+        "same_origin_required": bool(route_row.get("same_origin_required")),
+        "localhost_context_required": bool(route_row.get("localhost_context_required")),
+        "object_grant_required": bool(route_row.get("object_grant_required")),
+        "approval_required": bool(route_row.get("approval_required")),
+        "receipt_required": bool(route_row.get("receipt_required")),
+        "shareable_with_co_users": bool(route_row.get("shareable_with_co_users")),
+        "candidate_enforcement_active": False,
+        "live_route_enforcement": False,
+        "authority": _app_cast_authority(),
+    }
+
+
+def _target_share_grant_contract(*, route: str, target: Mapping[str, Any], blocked: bool = False) -> dict[str, Any]:
+    public_preview_allowed = bool(target.get("public_preview_allowed"))
+    object_grant_required = blocked or not public_preview_allowed
+    route_auth_evidence = _collaboration_route_evidence(route) if route else {
+        "schema_id": "ion.project_preview_app_cast_route_auth_evidence.v0_1",
+        "status": "blocked_no_route",
+        "route": "",
+        "method": "GET",
+        "registered_route": False,
+        "finding": compact(target.get("blocked_reason"), "target_blocked"),
+        "candidate_enforcement_active": False,
+        "live_route_enforcement": False,
+    }
+    route_auth_evidence = dict(route_auth_evidence)
+    route_auth_evidence.update(
+        {
+            "target_access_basis": "public_preview_read" if public_preview_allowed else "explicit_object_share_grant_required",
+            "target_object_grant_required": object_grant_required,
+            "target_public_preview_allowed": public_preview_allowed,
+        }
+    )
+    source_target_kind = compact(target.get("target_kind"))
+    target_object_id = compact(target.get("comparison_id"), compact(target.get("preview_id"), compact(target.get("target_id"))))
+    return {
+        "schema_id": APP_CAST_SHARE_GRANT_CONTRACT_SCHEMA_ID,
+        "status": "candidate_contract_only_no_grant",
+        "share_target_id": f"share:{slug(target_object_id, 'target')}",
+        "target_object_id": target_object_id,
+        "target_object_type": source_target_kind,
+        "workspace_id": "wsp_local_operator",
+        "membership_model": "ion.helixion_workspace_membership.v0_1",
+        "route_registry_model": "ion.helixion_collaboration_route_registry.v0_1",
+        "candidate_enforcement_active": False,
+        "live_route_enforcement": False,
+        "host_membership_required": True,
+        "host_membership_status": "required_not_evaluated",
+        "host_required_rank_ceiling": "builder_contributor",
+        "host_required_capability": "preview_launch",
+        "host_object_grant_required": True,
+        "host_object_grant_ref": "",
+        "host_approval_required": True,
+        "viewer_session_required": True,
+        "viewer_session_status": "required_not_evaluated",
+        "viewer_membership_required": object_grant_required,
+        "viewer_membership_status": "required_not_evaluated" if object_grant_required else "public_preview_session_required_not_membership_grant",
+        "viewer_minimum_rank_ceiling": "viewer_client",
+        "viewer_required_capability": "public_preview_read",
+        "viewer_object_grant_required": object_grant_required,
+        "viewer_object_grant_ref": "",
+        "viewer_grant_requirement": "public_preview_read" if public_preview_allowed else "explicit_object_share_grant_required",
+        "viewer_interaction": "view_only",
+        "share_grant_state": "blocked_no_active_grant" if blocked else "not_granted",
+        "share_grant_ref": "",
+        "object_share_grant_ref": "",
+        "pairing_state": "not_paired",
+        "host_viewer_pair_ref": "",
+        "expiry_policy": {
+            "expires_at_required_for_active_grant": True,
+            "default_ttl_minutes": 60,
+            "expires_at": "",
+        },
+        "revocation_policy": {
+            "revocable": True,
+            "revocation_state": "revocable_no_active_grant",
+            "revoked_at": "",
+        },
+        "audit_policy": {
+            "audit_receipt_required": True,
+            "audit_receipt_refs": [],
+            "audit_event_refs": [],
+            "required_events": [
+                "share_grant_requested",
+                "share_grant_approved",
+                "viewer_joined",
+                "viewer_left",
+                "share_grant_revoked",
+                "share_grant_expired",
+            ],
+        },
+        "route_auth_evidence": route_auth_evidence,
+        "authorization_preview": {
+            "status": "not_evaluated_no_viewer_principal",
+            "route_class": compact(route_auth_evidence.get("route_class"), "project_read"),
+            "capability": compact(route_auth_evidence.get("capability"), "public_preview_read"),
+            "sensitivity": compact(route_auth_evidence.get("sensitivity"), "internal"),
+            "rank_is_permission": False,
+            "rank_is_ceiling": True,
+            "requires_object_grant": object_grant_required,
+            "requires_approval": False,
+            "path_authority_evaluated": False,
+            "authority": _app_cast_authority(),
+        },
+        "non_claims": [
+            "No share grant is active.",
+            "No host-viewer pair is active.",
+            "No stream, media, capture, browser automation, loopback, or viewer-control channel is active.",
+        ],
+        "authority": _app_cast_authority(),
+    }
+
+
 def _cast_target_from_observe_target(target: Mapping[str, Any]) -> dict[str, Any] | None:
     route = _same_origin_path(target.get("route"))
     if not route:
         return None
     source_target_id = compact(target.get("target_id"))
+    share_grant_contract = _target_share_grant_contract(route=route, target=target)
     return {
         "cast_target_id": f"cast:{slug(source_target_id, 'target')}",
         "target_kind": "app_cast_target",
@@ -926,7 +1091,7 @@ def _cast_target_from_observe_target(target: Mapping[str, Any]) -> dict[str, Any
         "auth_mode": compact(target.get("auth_mode")),
         "viewer_scope": compact(target.get("viewer_scope")),
         "public_preview_allowed": bool(target.get("public_preview_allowed")),
-        "viewer_grant_requirement": "public_preview_read" if bool(target.get("public_preview_allowed")) else "explicit_object_share_grant_required",
+        "viewer_grant_requirement": compact(share_grant_contract.get("viewer_grant_requirement")),
         "route": route,
         "route_basis": compact(target.get("route_basis")),
         "cast_mode": "app_only_view",
@@ -937,12 +1102,15 @@ def _cast_target_from_observe_target(target: Mapping[str, Any]) -> dict[str, Any
         "host_control_state": "not_granted",
         "app_only_boundary": "single_preview_route_only",
         "source_capture_state": compact(target.get("capture_state"), "not_captured"),
+        "share_grant_state": compact(share_grant_contract.get("share_grant_state")),
+        "share_grant_contract": share_grant_contract,
         "receipt_refs": [],
         "authority": _app_cast_authority(),
     }
 
 
 def _cast_blocked_target_from_observe_target(target: Mapping[str, Any]) -> dict[str, Any]:
+    share_grant_contract = _target_share_grant_contract(route="", target=target, blocked=True)
     return {
         "cast_target_id": f"blocked_cast:{slug(target.get('target_id'), 'target')}",
         "source_target_id": compact(target.get("target_id")),
@@ -966,6 +1134,8 @@ def _cast_blocked_target_from_observe_target(target: Mapping[str, Any]) -> dict[
         "viewer_interaction_state": "view_only",
         "host_control_state": "not_granted",
         "app_only_boundary": "single_preview_route_only",
+        "share_grant_state": compact(share_grant_contract.get("share_grant_state")),
+        "share_grant_contract": share_grant_contract,
         "authority": _app_cast_authority(),
     }
 
@@ -982,6 +1152,14 @@ def _build_app_cast_preview(ai_observe_preview: Mapping[str, Any]) -> dict[str, 
     for target in listify(ai_observe_preview.get("blocked_targets")):
         if isinstance(target, Mapping):
             blocked_targets.append(_cast_blocked_target_from_observe_target(target))
+    target_contracts = [target["share_grant_contract"] for target in targets if isinstance(target.get("share_grant_contract"), Mapping)]
+    blocked_contracts = [target["share_grant_contract"] for target in blocked_targets if isinstance(target.get("share_grant_contract"), Mapping)]
+    registered_route_target_count = sum(
+        1
+        for contract in target_contracts
+        if isinstance(contract.get("route_auth_evidence"), Mapping) and bool(contract["route_auth_evidence"].get("registered_route"))
+    )
+    object_grant_required_target_count = sum(1 for contract in target_contracts if bool(contract.get("viewer_object_grant_required")))
 
     return {
         "schema_id": APP_CAST_PREVIEW_SCHEMA_ID,
@@ -989,8 +1167,52 @@ def _build_app_cast_preview(ai_observe_preview: Mapping[str, Any]) -> dict[str, 
         "cast_mode": "app_only_not_desktop_screen_share",
         "target_count": len(targets),
         "blocked_target_count": len(blocked_targets),
+        "share_grant_contract_count": len(target_contracts),
+        "share_grant_blocked_contract_count": len(blocked_contracts),
+        "registered_route_target_count": registered_route_target_count,
+        "object_grant_required_target_count": object_grant_required_target_count,
         "targets": targets,
         "blocked_targets": blocked_targets,
+        "share_grant_contract": {
+            "schema_id": APP_CAST_SHARE_GRANT_CONTRACT_SCHEMA_ID,
+            "status": "candidate_contract_only_no_grants_active",
+            "contract_mode": "read_only_membership_and_object_grant_projection",
+            "membership_model": "ion.helixion_multi_user_identity.v0_1",
+            "route_registry_model": "ion.helixion_collaboration_route_registry.v0_1",
+            "candidate_enforcement_active": False,
+            "live_route_enforcement": False,
+            "target_contract_count": len(target_contracts),
+            "blocked_contract_count": len(blocked_contracts),
+            "active_share_grant_count": 0,
+            "registered_route_target_count": registered_route_target_count,
+            "object_grant_required_target_count": object_grant_required_target_count,
+            "host_viewer_pairing_state": "not_paired",
+            "grant_states": ["not_granted", "requested", "approved", "active", "revoked", "expired"],
+            "viewer_access_modes": {
+                "public_preview": "public_preview_read with active session",
+                "non_public_preview": "public_preview_read plus explicit object share grant",
+            },
+            "expiry_policy": {
+                "expires_at_required_for_active_grant": True,
+                "default_ttl_minutes": 60,
+            },
+            "revocation_policy": {
+                "revocable": True,
+                "revocation_receipt_required": True,
+            },
+            "audit_policy": {
+                "audit_receipt_required": True,
+                "required_events": [
+                    "share_grant_requested",
+                    "share_grant_approved",
+                    "viewer_joined",
+                    "viewer_left",
+                    "share_grant_revoked",
+                    "share_grant_expired",
+                ],
+            },
+            "authority": _app_cast_authority(),
+        },
         "roles": {
             "host_user": {
                 "role_id": "app_cast_host",
