@@ -62,6 +62,9 @@ def _assert_target_share_grant_contract(target: dict) -> None:
     _assert_no_live_authority(contract["authority"])
 
     assert route_evidence["schema_id"] == "ion.project_preview_app_cast_route_auth_evidence.v0_1"
+    assert route_evidence["status"] == "registered_candidate_route"
+    assert route_evidence["registered_route"] is True
+    assert route_evidence["path_template"]
     assert route_evidence["route"] == target["route"]
     assert route_evidence["method"] == "GET"
     assert route_evidence["route_class"] == "project_read"
@@ -140,7 +143,7 @@ def test_public_preview_routes_serve_real_model_with_app_cast_contract(monkeypat
             assert app_cast["share_grant_contract_count"] == len(app_cast["targets"])
             assert app_cast["share_grant_blocked_contract_count"] == len(app_cast["blocked_targets"])
             assert app_cast["object_grant_required_target_count"] >= 0
-            assert app_cast["registered_route_target_count"] >= 0
+            assert app_cast["registered_route_target_count"] == len(app_cast["targets"])
             _assert_no_live_authority(app_cast["authority"])
             assert share_contract["schema_id"] == "ion.project_preview_app_cast_share_grant_contract.v0_1"
             assert share_contract["status"] == "candidate_contract_only_no_grants_active"

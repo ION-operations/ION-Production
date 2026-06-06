@@ -23,12 +23,30 @@ def test_route_registry_is_candidate_deny_by_default():
 
 def test_registered_route_lookup_matches_path_and_method():
     route, finding = find_registered_route("/cockpit/chat/archive.json?session_id=abc", method="GET")
+    project_route, project_finding = find_registered_route("/projects/application-dev?view=apps", method="GET")
+    project_preview_route, project_preview_finding = find_registered_route("/projects/cosmos/preview/", method="GET")
+    proxy_route, proxy_finding = find_registered_route("/cockpit/projects/launch/proxy/demo-launch/", method="GET")
     wrong_method, wrong_finding = find_registered_route("/cockpit/chat/archive.json", method="POST")
     missing, missing_finding = find_registered_route("/cockpit/raw/filesystem/list", method="GET")
 
     assert finding is None
     assert route is not None
     assert route.route_id == "get_cockpit_chat_archive.json"
+    assert project_finding is None
+    assert project_route is not None
+    assert project_route.path_template == "/projects/{project_id}"
+    assert project_route.capability == "public_preview_read"
+    assert project_route.object_grant_required is False
+    assert project_preview_finding is None
+    assert project_preview_route is not None
+    assert project_preview_route.path_template == "/projects/{project_id}/preview"
+    assert project_preview_route.capability == "public_preview_read"
+    assert project_preview_route.object_grant_required is False
+    assert proxy_finding is None
+    assert proxy_route is not None
+    assert proxy_route.path_template == "/cockpit/projects/launch/proxy/{launch_id}"
+    assert proxy_route.object_grant_required is True
+    assert proxy_route.receipt_required is True
     assert wrong_method is None
     assert wrong_finding == "METHOD_NOT_REGISTERED_FOR_ROUTE"
     assert missing is None

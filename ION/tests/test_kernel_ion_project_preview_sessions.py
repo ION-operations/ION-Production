@@ -303,6 +303,9 @@ def test_preview_sessions_registers_read_only_comparison_pair_without_capture_or
     assert public_contract["viewer_membership_required"] is False
     assert public_contract["viewer_membership_status"] == "public_preview_session_required_not_membership_grant"
     assert public_contract["viewer_required_capability"] == "public_preview_read"
+    assert public_contract["route_auth_evidence"]["status"] == "registered_candidate_route"
+    assert public_contract["route_auth_evidence"]["registered_route"] is True
+    assert public_contract["route_auth_evidence"]["path_template"] == "/projects/{project_id}/preview"
     assert public_contract["route_auth_evidence"]["target_access_basis"] == "public_preview_read"
     assert public_contract["route_auth_evidence"]["target_public_preview_allowed"] is True
     comparison_cast_targets = [
@@ -364,9 +367,14 @@ def test_preview_sessions_registers_read_only_comparison_pair_without_capture_or
     assert share_contract["audit_policy"]["audit_event_refs"] == []
     assert "share_grant_requested" in share_contract["audit_policy"]["required_events"]
     assert route_evidence["route"] == "/cockpit/projects/launch/proxy/demo-launch/"
+    assert route_evidence["status"] == "registered_candidate_route"
+    assert route_evidence["registered_route"] is True
+    assert route_evidence["path_template"] == "/cockpit/projects/launch/proxy/{launch_id}"
     assert route_evidence["route_class"] == "project_read"
     assert route_evidence["capability"] == "public_preview_read"
     assert route_evidence["sensitivity"] == "internal"
+    assert route_evidence["object_grant_required"] is True
+    assert route_evidence["receipt_required"] is True
     assert route_evidence["target_access_basis"] == "explicit_object_share_grant_required"
     assert route_evidence["target_object_grant_required"] is True
     assert route_evidence["candidate_enforcement_active"] is False

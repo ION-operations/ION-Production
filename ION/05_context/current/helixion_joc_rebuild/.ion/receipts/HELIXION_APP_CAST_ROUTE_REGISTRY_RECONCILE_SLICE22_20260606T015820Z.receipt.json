@@ -1,0 +1,54 @@
+{
+  "receipt_id": "HELIXION_APP_CAST_ROUTE_REGISTRY_RECONCILE_SLICE22_20260606T015820Z",
+  "created_at_utc": "2026-06-06T01:58:20Z",
+  "root": "/home/sev/ION - Production/ION_Developement",
+  "context_lane": "ION/05_context/current/helixion_joc_rebuild/.ion",
+  "workstream": "helixion_projects_preview_app_cast",
+  "slice": "app_cast_route_registry_reconciliation_no_live_sharing",
+  "bounded_write_confirmation": "ION_BOUNDED_WRITE_CONFIRMED",
+  "summary": [
+    "Added candidate collaboration route-registry templates for public project app routes, public project preview routes, and same-origin launched-app proxy routes.",
+    "Reconciled app-cast share-grant route-auth evidence so public preview targets resolve as registered candidate routes.",
+    "Added route-vocabulary tests for dynamic public project routes and launch proxy routes.",
+    "Strengthened app-cast tests to require registered route evidence while keeping live route enforcement, active grants, streams, capture, and viewer control false."
+  ],
+  "changed_files": [
+    "ION/04_packages/kernel/ion_helixion_collaboration_access.py",
+    "ION/tests/test_kernel_ion_helixion_collaboration_access.py",
+    "ION/tests/test_kernel_ion_project_preview_sessions.py",
+    "ION/tests/test_kernel_ion_project_preview_public_routes.py"
+  ],
+  "validation": [
+    {
+      "command": "PYTHONPATH=ION/04_packages pytest -q -p no:cacheprovider ION/tests/test_kernel_ion_helixion_collaboration_access.py",
+      "result": "9 passed in 0.28s"
+    },
+    {
+      "command": "PYTHONPATH=ION/04_packages pytest -q -p no:cacheprovider ION/tests/test_kernel_ion_project_preview_sessions.py ION/tests/test_kernel_ion_project_preview_public_routes.py",
+      "result": "10 passed in 0.97s"
+    },
+    {
+      "command": "PYTHONPATH=ION/04_packages pytest -q -p no:cacheprovider ION/tests/test_kernel_ion_chatgpt_browser_mcp_http_preview.py -k 'session_access or collab_surface or devsecops_surface'",
+      "result": "4 passed, 44 deselected in 2.72s"
+    },
+    {
+      "command": "PYTHONPATH=ION/04_packages pytest -q -p no:cacheprovider ION/tests/test_kernel_ion_devsecops_cockpit.py ION/tests/test_kernel_ion_cockpit_view_model.py -k 'collab or devsecops or surface'",
+      "result": "8 passed, 17 deselected in 6.25s"
+    },
+    {
+      "command": "PYTHONPATH=ION/04_packages python3 -m py_compile ION/04_packages/kernel/ion_helixion_collaboration_access.py ION/04_packages/kernel/ion_project_preview_sessions.py",
+      "result": "passed"
+    },
+    {
+      "command": "git diff --check -- ION/04_packages/kernel/ion_helixion_collaboration_access.py ION/tests/test_kernel_ion_helixion_collaboration_access.py ION/tests/test_kernel_ion_project_preview_sessions.py ION/tests/test_kernel_ion_project_preview_public_routes.py",
+      "result": "passed"
+    }
+  ],
+  "non_claims": [
+    "No live route enforcement was enabled.",
+    "No active share grant, host-viewer pair, app stream, WebRTC, websocket, screenshot, DOM, console, accessibility, network, browser automation, media capture, loopback probe, or viewer-control channel was started.",
+    "No production deployment, service restart, git push, accepted-state claim, or destructive cleanup occurred.",
+    "No protected secret value was read or printed."
+  ],
+  "next_safe_step": "Design the next candidate layer for durable workspace membership/object grants and share-link lifecycle, still without live app sharing or route enforcement."
+}
