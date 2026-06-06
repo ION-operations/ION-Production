@@ -1,0 +1,103 @@
+{
+  "schema_id": "ion.helixion_projects.gated_capture_plan.v0_1",
+  "plan_id": "HELIXION_PROJECTS_GATED_CAPTURE_PLAN_20260606T001028Z",
+  "generated_at": "2026-06-06T00:10:28Z",
+  "status": "candidate_draft_only",
+  "domain": "helixion_projects_app_preview",
+  "authority": {
+    "production_authority": false,
+    "live_execution_authority": false,
+    "accepted_state_authority": false,
+    "secrets_authority": false,
+    "browser_automation_authority": false,
+    "capture_authority": false,
+    "loopback_probe": false,
+    "loopback_mutation": false
+  },
+  "target_sources": [
+    "preview_sessions.ai_observe_preview.targets",
+    "preview_sessions.comparisons[].baseline_surface",
+    "preview_sessions.comparisons[].candidate_surface"
+  ],
+  "eligible_route_policy": {
+    "route_kind": "same_origin_relative_paths_only",
+    "source_function": "ion_project_preview_sessions._same_origin_path",
+    "forbidden_route_classes": [
+      "protocol_relative",
+      "external",
+      "tokenized",
+      "direct_loopback",
+      "raw_local_file"
+    ]
+  },
+  "blocked_target_rules": [
+    "runtime_state_detached",
+    "runtime_state_stale",
+    "runtime_state_orphaned",
+    "empty_route",
+    "protocol_relative_route",
+    "external_route",
+    "tokenized_route",
+    "direct_loopback_route",
+    "requires_secrets",
+    "requires_service_restart",
+    "requires_deployment",
+    "requires_vm_launch",
+    "requires_remote_launch",
+    "requires_viewer_local_helper_mutation"
+  ],
+  "approval": {
+    "required_before_execution": true,
+    "draft_confirmation_token": "ION_PROJECT_PREVIEW_CAPTURE_CONFIRMED",
+    "preview_without_execution_allowed": true
+  },
+  "candidate_artifact_lanes": [
+    "ION/05_context/current/project_launcher/app_diagnostics/capture_previews/",
+    "ION/05_context/current/project_launcher/app_diagnostics/capture_runs/",
+    "ION/05_context/current/project_launcher/app_diagnostics/snapshots/",
+    "ION/05_context/current/project_launcher/app_diagnostics/receipts/"
+  ],
+  "capture_lanes_after_approval": [
+    "screenshot",
+    "dom_outline",
+    "console_summary",
+    "network_summary",
+    "accessibility_summary"
+  ],
+  "redaction_required": [
+    "cookies",
+    "authorization_headers",
+    "query_tokens",
+    "storage_values",
+    "request_bodies",
+    "response_bodies",
+    "local_paths",
+    "secret_like_strings"
+  ],
+  "future_preview_schema": {
+    "schema_id": "ion.project_preview_capture_plan_preview.v0_1",
+    "status": "preview_only_not_executed",
+    "authority": {
+      "capture_authority": false,
+      "browser_automation_authority": false,
+      "preview_mutation": false,
+      "accepted_state_authority": false,
+      "production_authority": false,
+      "live_execution_authority": false,
+      "secrets_authority": false
+    }
+  },
+  "required_future_tests": [
+    "reject_tokenized_protocol_relative_external_and_direct_loopback_routes",
+    "block_detached_stale_and_orphaned_targets",
+    "capture_preview_emits_no_secret_or_local_path_material",
+    "ui_displays_capture_preview_as_gated_plan_not_action_without_approval"
+  ],
+  "non_claims": [
+    "No screenshot capture occurred.",
+    "No DOM, console, network, accessibility, or visual capture occurred.",
+    "No browser automation occurred.",
+    "No route handler, service, tunnel, or live runner changed.",
+    "No production, live execution, secrets, or accepted-state authority is granted."
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "schema_id": "ion.helixion_joc_rebuild.receipt.v0_1",
+  "receipt_id": "HELIXION_PROJECTS_GATED_CAPTURE_PLAN_SLICE13_20260606T001028Z",
+  "generated_at": "2026-06-06T00:10:28Z",
+  "status": "candidate_validated",
+  "domain": "helixion_projects_app_preview",
+  "slice": "slice13_gated_capture_plan_draft",
+  "summary": "Drafted a documentation-only gated capture plan for future screenshot, DOM, console, network, and accessibility observation from existing PreviewSession observe targets, with explicit approval, same-origin route restrictions, artifact lanes, redaction rules, and false execution authority.",
+  "authority": {
+    "candidate_only": true,
+    "production_authority": false,
+    "live_execution_authority": false,
+    "accepted_state_authority": false,
+    "secrets_authority": false,
+    "service_restart": false,
+    "git_push": false
+  },
+  "changed_files": [
+    "ION/05_context/current/helixion_joc_rebuild/.ion/plans/HELIXION_PROJECTS_GATED_CAPTURE_PLAN_20260606T001028Z.candidate.md",
+    "ION/05_context/current/helixion_joc_rebuild/.ion/plans/HELIXION_PROJECTS_GATED_CAPTURE_PLAN_20260606T001028Z.candidate.json"
+  ],
+  "receipt_files": [
+    "ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_GATED_CAPTURE_PLAN_SLICE13_20260606T001028Z.receipt.json"
+  ],
+  "validation": [
+    {
+      "command": "python3 -m json.tool gated capture plan JSON and receipt JSON",
+      "result": "passed"
+    },
+    {
+      "command": "git diff --check -- gated capture plan slice files",
+      "result": "passed"
+    }
+  ],
+  "non_claims": [
+    "No screenshot capture.",
+    "No browser automation.",
+    "No route handler change.",
+    "No loopback probe or loopback mutation.",
+    "No production deployment.",
+    "No service restart.",
+    "No live Action/MCP mutation.",
+    "No accepted-state claim.",
+    "No Git push."
+  ]
+}
