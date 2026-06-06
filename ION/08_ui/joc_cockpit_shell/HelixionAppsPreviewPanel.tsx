@@ -6,6 +6,7 @@ import type {
   IonProjectPortfolioFamily,
   IonProjectPortfolioVersion,
   IonProjectPreviewComparison,
+  IonProjectPreviewObserveTarget,
   IonProjectPreviewSession,
 } from './ionRuntimeCockpitTypes';
 
@@ -114,6 +115,8 @@ export function HelixionAppsPreviewPanel({ runtime, onRuntimeRefresh }: { runtim
   const selectedRecord = launchRecordForApp(selectedApp, launchRecords);
   const selectedPreviewSession = previewSessionForApp(selectedApp, previewSessions, selectedRecord);
   const selectedComparison = comparisonForSession(selectedPreviewSession, previewComparisons);
+  const selectedObserveTarget = observeTargetForSelection(selectedPreviewSession, selectedComparison, previewSessionModel?.ai_observe_preview?.targets ?? []);
+  const selectedBlockedObserveTarget = blockedObserveTargetForSession(selectedPreviewSession, previewSessionModel?.ai_observe_preview?.blocked_targets ?? []);
   const runningCount = launchRecords.filter((record) => isManagedLaunchRunning(record)).length;
   const detachedCount = launchRecords.filter((record) => record.detached).length;
   const launchableCount = appRows.filter((app) => app.launchable || app.launcherUrl || app.previewHref).length;
@@ -391,6 +394,8 @@ export function HelixionAppsPreviewPanel({ runtime, onRuntimeRefresh }: { runtim
           onStop={() => stopLaunch(selectedRecord)}
           previewSession={selectedPreviewSession}
           comparison={selectedComparison}
+          observeTarget={selectedObserveTarget}
+          blockedObserveTarget={selectedBlockedObserveTarget}
           record={selectedRecord}
         />
       </div>
@@ -747,6 +752,8 @@ function AppPreviewDetail({
   busyKey,
   diagnostics,
   comparison,
+  blockedObserveTarget,
+  observeTarget,
   onCapture,
   onStart,
   onStop,
@@ -757,6 +764,8 @@ function AppPreviewDetail({
   busyKey: string;
   diagnostics?: Record<string, unknown>;
   comparison?: IonProjectPreviewComparison;
+  blockedObserveTarget?: IonProjectPreviewObserveTarget;
+  observeTarget?: IonProjectPreviewObserveTarget;
   onCapture: () => void;
   onStart: () => void;
   onStop: () => void;
@@ -811,6 +820,9 @@ function AppPreviewDetail({
       <PathRow label="baseline" value={comparisonSurfaceText(comparison?.baseline_surface, comparison?.baseline_provider_id, comparison?.baseline_runner_location, comparison?.baseline_route)} />
       <PathRow label="candidate" value={comparisonSurfaceText(comparison?.candidate_surface, comparison?.candidate_provider_id, comparison?.candidate_runner_location, comparison?.candidate_route)} />
       <PathRow label="route proof" value={joinParts(comparison?.route_source, comparison?.route_basis, comparison?.viewport)} />
+      <PathRow label="observe target" value={joinParts(observeTarget?.target_kind, observeTarget?.capture_state)} />
+      <PathRow label="observe route" value={joinParts(observeTarget?.route, observeTarget?.route_basis)} />
+      <PathRow label="observe block" value={joinParts(blockedObserveTarget?.blocked_reason, blockedObserveTarget?.runtime_state_class)} />
       <PathRow label="active url" value={running ? record?.url ?? app.previewHref : app.previewHref} />
       <PathRow label="launcher" value={app.launcherUrl} />
       <div className="ion-project-launch-actions">
@@ -925,6 +937,26 @@ function comparisonForSession(session: IonProjectPreviewSession | undefined, com
   const previewId = session?.preview_id;
   if (!previewId) return undefined;
   return comparisons.find((comparison) => comparison.baseline_preview_id === previewId || comparison.candidate_preview_id === previewId);
+}
+
+function observeTargetForSelection(
+  session: IonProjectPreviewSession | undefined,
+  comparison: IonProjectPreviewComparison | undefined,
+  targets: IonProjectPreviewObserveTarget[],
+) {
+  if (comparison?.comparison_id) {
+    const comparisonTarget = targets.find((target) => target.target_kind === 'preview_comparison' && target.comparison_id === comparison.comparison_id);
+    if (comparisonTarget) return comparisonTarget;
+  }
+  const previewId = session?.preview_id;
+  if (!previewId) return undefined;
+  return targets.find((target) => target.preview_id === previewId);
+}
+
+function blockedObserveTargetForSession(session: IonProjectPreviewSession | undefined, blockedTargets: IonProjectPreviewObserveTarget[]) {
+  const previewId = session?.preview_id;
+  if (!previewId) return undefined;
+  return blockedTargets.find((target) => target.preview_id === previewId);
 }
 
 function matchesLaunch(record: IonProjectLauncherRecord, path?: string, versionId?: string, projectId?: string) {

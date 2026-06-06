@@ -1,0 +1,47 @@
+{
+  "schema_id": "ion.helixion_joc_rebuild.receipt.v0_1",
+  "receipt_id": "HELIXION_PROJECTS_OBSERVE_DETAIL_UI_SLICE11_20260606T000923Z",
+  "generated_at": "2026-06-06T00:09:23Z",
+  "status": "candidate_validated",
+  "domain": "helixion_projects_app_preview",
+  "slice": "slice11_observe_detail_ui",
+  "summary": "Surfaced read-only AI observe target metadata in the Helixion app preview detail panel, matching selected preview sessions and comparison pairs to existing observe targets or blocked targets without adding capture, browser automation, loopback probing, or mutation controls.",
+  "authority": {
+    "candidate_only": true,
+    "production_authority": false,
+    "live_execution_authority": false,
+    "accepted_state_authority": false,
+    "secrets_authority": false,
+    "service_restart": false,
+    "git_push": false
+  },
+  "changed_files": [
+    "ION/08_ui/joc_cockpit_shell/HelixionAppsPreviewPanel.tsx"
+  ],
+  "receipt_files": [
+    "ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_OBSERVE_DETAIL_UI_SLICE11_20260606T000923Z.receipt.json"
+  ],
+  "ui_fields": [
+    "observe target",
+    "observe route",
+    "observe block"
+  ],
+  "validation": [
+    {
+      "command": "npm --prefix ION/08_ui/joc_cockpit_shell run build",
+      "result": "passed",
+      "note": "Vite emitted the existing large chunk warning only. No tracked dist artifacts changed."
+    }
+  ],
+  "non_claims": [
+    "No screenshot capture.",
+    "No browser automation.",
+    "No loopback probe or loopback mutation.",
+    "No new endpoint or route handler.",
+    "No production deployment.",
+    "No service restart.",
+    "No live Action/MCP mutation.",
+    "No accepted-state claim.",
+    "No Git push."
+  ]
+}
