@@ -1,0 +1,39 @@
+{
+  "schema_id": "ion.helixion_joc_rebuild.receipt.v0_1",
+  "receipt_id": "HELIXION_PROJECTS_CONTEXT_REFRESH_SLICE12_20260606T001028Z",
+  "generated_at": "2026-06-06T00:10:28Z",
+  "status": "candidate_validated",
+  "domain": "helixion_projects_app_preview",
+  "slice": "slice12_folder_local_context_refresh",
+  "summary": "Refreshed the Helixion folder-local context capsule and active context package after Slice 10 comparison peer surfaces and Slice 11 observe detail UI, setting the next safe step to a draft-only gated capture plan.",
+  "authority": {
+    "candidate_only": true,
+    "production_authority": false,
+    "live_execution_authority": false,
+    "accepted_state_authority": false,
+    "secrets_authority": false,
+    "service_restart": false,
+    "git_push": false
+  },
+  "changed_files": [
+    "ION/05_context/current/helixion_joc_rebuild/.ion/ION_CONTEXT_CAPSULE.yaml",
+    "ION/05_context/current/helixion_joc_rebuild/.ion/ACTIVE_CONTEXT_PACKAGE.md"
+  ],
+  "receipt_files": [
+    "ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_CONTEXT_REFRESH_SLICE12_20260606T001028Z.receipt.json"
+  ],
+  "validation": [
+    {
+      "command": "git diff --check -- folder-local context slice files",
+      "result": "passed"
+    }
+  ],
+  "non_claims": [
+    "No source runtime change.",
+    "No production deployment.",
+    "No service restart.",
+    "No live Action/MCP mutation.",
+    "No accepted-state claim.",
+    "No Git push."
+  ]
+}

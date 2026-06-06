@@ -2,7 +2,7 @@
 
 Status: active candidate folder-local package
 Created: 2026-06-05T20:53:57Z
-Updated: 2026-06-05T23:30:48Z
+Updated: 2026-06-06T00:10:28Z
 
 ## Objective
 
@@ -17,6 +17,8 @@ Committed candidate slices now cover:
 - Local and protected public route-surface tests proving `comparisons` and `surface_matrix` survive `/cockpit/previews/model.json`.
 - Metadata-only AI observe-preview substrate with capture, browser automation, loopback mutation, live execution, secrets, and accepted-state authority all false.
 - No-CSS Preview Pairing Map in the Helixion app preview detail panel.
+- Sanitized comparison peer surfaces for baseline/candidate labels, providers, runner locations, and safe same-origin routes.
+- Read-only observe target and blocked-target detail rows in the app preview detail panel.
 
 ## Authority
 
@@ -59,13 +61,13 @@ Current receipts:
 - `ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_PREVIEW_ROUTE_SURFACE_SLICE6_20260605T232114Z.receipt.json`
 - `ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_AI_OBSERVE_SUBSTRATE_SLICE7_20260605T232851Z.receipt.json`
 - `ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_PREVIEW_PAIRING_MAP_SLICE8_20260605T233010Z.receipt.json`
+- `ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_PREVIEW_PEER_SURFACES_SLICE10_20260606T000738Z.receipt.json`
+- `ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_OBSERVE_DETAIL_UI_SLICE11_20260606T000923Z.receipt.json`
 
 ## Next Safe Step
 
-Choose one bounded next slice:
+Next bounded slice:
 
-- Resolve peer session URL/label details directly inside comparison records so the UI can show a complete two-sided map without inferring from only the selected session.
-- Add a compact read-only AI observe-preview detail panel for target and blocked-target counts, still with no capture or browser automation.
-- Draft, but do not execute, a gated capture plan for future screenshot/DOM/console/network observation with explicit approval and receipts.
+- Draft, but do not execute, a gated capture plan for future screenshot/DOM/console/network observation with explicit approval, authority flags, same-origin restrictions, artifact lanes, and receipts.
 
 Do not start live VM, remote, viewer-local, browser automation, screenshot, or loopback probe work without a new explicit gated packet.
