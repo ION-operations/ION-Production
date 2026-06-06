@@ -1,0 +1,69 @@
+{
+  "schema_id": "ion.helixion_joc_rebuild.receipt.v0_1",
+  "receipt_id": "HELIXION_PROJECTS_PREVIEW_PEER_SURFACES_SLICE10_20260606T000738Z",
+  "generated_at": "2026-06-06T00:07:38Z",
+  "status": "candidate_validated",
+  "domain": "helixion_projects_app_preview",
+  "slice": "slice10_preview_comparison_peer_surfaces",
+  "summary": "Added sanitized baseline_surface and candidate_surface records to PreviewSession comparisons, then updated the Helixion app preview pairing map to display resolved peer labels, providers, runner locations, and safe same-origin routes from the comparison record itself.",
+  "authority": {
+    "candidate_only": true,
+    "production_authority": false,
+    "live_execution_authority": false,
+    "accepted_state_authority": false,
+    "secrets_authority": false,
+    "service_restart": false,
+    "git_push": false
+  },
+  "changed_files": [
+    "ION/04_packages/kernel/ion_project_preview_sessions.py",
+    "ION/tests/test_kernel_ion_project_preview_sessions.py",
+    "ION/08_ui/joc_cockpit_shell/ionRuntimeCockpitTypes.ts",
+    "ION/08_ui/joc_cockpit_shell/HelixionAppsPreviewPanel.tsx"
+  ],
+  "receipt_files": [
+    "ION/05_context/current/helixion_joc_rebuild/.ion/receipts/HELIXION_PROJECTS_PREVIEW_PEER_SURFACES_SLICE10_20260606T000738Z.receipt.json"
+  ],
+  "schema_fields": [
+    "comparisons[].baseline_surface.preview_id",
+    "comparisons[].baseline_surface.label",
+    "comparisons[].baseline_surface.provider_id",
+    "comparisons[].baseline_surface.runner_location",
+    "comparisons[].baseline_surface.route",
+    "comparisons[].baseline_surface.route_basis",
+    "comparisons[].candidate_surface.preview_id",
+    "comparisons[].candidate_surface.label",
+    "comparisons[].candidate_surface.provider_id",
+    "comparisons[].candidate_surface.runner_location",
+    "comparisons[].candidate_surface.route",
+    "comparisons[].candidate_surface.route_basis"
+  ],
+  "validation": [
+    {
+      "command": "PYTHONPATH=ION/04_packages python3 -m py_compile ION/04_packages/kernel/ion_project_preview_sessions.py",
+      "result": "passed"
+    },
+    {
+      "command": "PYTHONPATH=ION/04_packages pytest -q -p no:cacheprovider ION/tests/test_kernel_ion_project_preview_sessions.py",
+      "result": "passed",
+      "test_count": 8
+    },
+    {
+      "command": "npm --prefix ION/08_ui/joc_cockpit_shell run build",
+      "result": "passed",
+      "note": "Vite emitted the existing large chunk warning only."
+    }
+  ],
+  "non_claims": [
+    "No raw local paths or direct loopback URLs are emitted.",
+    "No tokenized, protocol-relative, or external routes are promoted.",
+    "No screenshot capture.",
+    "No browser automation.",
+    "No loopback probe or loopback mutation.",
+    "No production deployment.",
+    "No service restart.",
+    "No live Action/MCP mutation.",
+    "No accepted-state claim.",
+    "No Git push."
+  ]
+}

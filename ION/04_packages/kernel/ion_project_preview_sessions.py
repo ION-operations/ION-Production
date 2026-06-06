@@ -541,6 +541,26 @@ def _comparison_surface_route(session: Mapping[str, Any]) -> tuple[str, str]:
     return "", ""
 
 
+def _comparison_surface(session: Mapping[str, Any], *, route: str, route_basis: str) -> dict[str, Any]:
+    return {
+        "preview_id": compact(session.get("preview_id")),
+        "label": compact(session.get("label")),
+        "project_id": compact(session.get("project_id")),
+        "version_id": compact(session.get("version_id")),
+        "family_id": compact(session.get("family_id")),
+        "provider_id": compact(session.get("provider_id")),
+        "runner_location": compact(session.get("runner_location")),
+        "source_kind": compact(session.get("source_kind")),
+        "source_root_ref": compact(session.get("source_root_ref")),
+        "runtime_state_class": compact(session.get("runtime_state_class"), compact(session.get("lifecycle_state"))),
+        "route": route,
+        "route_basis": route_basis,
+        "viewer_scope": compact(session.get("viewer_scope")),
+        "auth_mode": compact(session.get("auth_mode")),
+        "public_preview_allowed": bool(session.get("public_preview_allowed")),
+    }
+
+
 def _comparison_from_pair(baseline: Mapping[str, Any], candidate: Mapping[str, Any], *, pair_basis: str) -> dict[str, Any]:
     left_id = compact(baseline.get("preview_id"))
     right_id = compact(candidate.get("preview_id"))
@@ -572,6 +592,8 @@ def _comparison_from_pair(baseline: Mapping[str, Any], candidate: Mapping[str, A
         "candidate_provider_id": compact(candidate.get("provider_id")),
         "baseline_runner_location": compact(baseline.get("runner_location")),
         "candidate_runner_location": compact(candidate.get("runner_location")),
+        "baseline_surface": _comparison_surface(baseline, route=baseline_route, route_basis=baseline_route_basis),
+        "candidate_surface": _comparison_surface(candidate, route=candidate_route, route_basis=candidate_route_basis),
         "surface_pair": f"{compact(baseline.get('runner_location'), 'unknown')}_to_{compact(candidate.get('runner_location'), 'unknown')}",
         "route": route,
         "route_source": route_source,

@@ -808,8 +808,8 @@ function AppPreviewDetail({
       <PathRow label="remote/public" value={joinParts(previewSession?.public_url, previewSession?.public_preview_allowed ? 'public allowed' : '')} />
       <PathRow label="runner map" value={joinParts(previewSession?.provider_id, previewSession?.runner_location, previewSession?.source_root_ref)} />
       <PathRow label="pair basis" value={joinParts(comparison?.pair_basis, comparison?.surface_pair)} />
-      <PathRow label="baseline" value={joinParts(comparison?.baseline_provider_id, comparison?.baseline_runner_location, comparison?.baseline_route)} />
-      <PathRow label="candidate" value={joinParts(comparison?.candidate_provider_id, comparison?.candidate_runner_location, comparison?.candidate_route)} />
+      <PathRow label="baseline" value={comparisonSurfaceText(comparison?.baseline_surface, comparison?.baseline_provider_id, comparison?.baseline_runner_location, comparison?.baseline_route)} />
+      <PathRow label="candidate" value={comparisonSurfaceText(comparison?.candidate_surface, comparison?.candidate_provider_id, comparison?.candidate_runner_location, comparison?.candidate_route)} />
       <PathRow label="route proof" value={joinParts(comparison?.route_source, comparison?.route_basis, comparison?.viewport)} />
       <PathRow label="active url" value={running ? record?.url ?? app.previewHref : app.previewHref} />
       <PathRow label="launcher" value={app.launcherUrl} />
@@ -979,6 +979,15 @@ function PathRow({ label, value }: { label: string; value: unknown }) {
 
 function joinParts(...values: unknown[]) {
   return values.map((value) => text(value, '')).filter(Boolean).join(' / ');
+}
+
+function comparisonSurfaceText(
+  surface: IonProjectPreviewComparison['baseline_surface'],
+  providerId?: string,
+  runnerLocation?: string,
+  route?: string,
+) {
+  return joinParts(surface?.label, surface?.provider_id ?? providerId, surface?.runner_location ?? runnerLocation, surface?.route ?? route);
 }
 
 function text(value: unknown, fallback = 'unknown') {

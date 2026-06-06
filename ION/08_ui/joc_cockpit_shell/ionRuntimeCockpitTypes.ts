@@ -654,6 +654,24 @@ export type IonProjectPreviewSession = {
   authority?: Record<string, boolean>;
 };
 
+export type IonProjectPreviewComparisonSurface = {
+  preview_id?: string;
+  label?: string;
+  project_id?: string;
+  version_id?: string;
+  family_id?: string;
+  provider_id?: string;
+  runner_location?: string;
+  source_kind?: string;
+  source_root_ref?: string;
+  runtime_state_class?: string;
+  route?: string;
+  route_basis?: string;
+  viewer_scope?: string;
+  auth_mode?: string;
+  public_preview_allowed?: boolean;
+};
+
 export type IonProjectPreviewComparison = {
   schema_id?: 'ion.project_preview_comparison.v0_1' | string;
   comparison_id?: string;
@@ -667,6 +685,8 @@ export type IonProjectPreviewComparison = {
   candidate_provider_id?: string;
   baseline_runner_location?: string;
   candidate_runner_location?: string;
+  baseline_surface?: IonProjectPreviewComparisonSurface;
+  candidate_surface?: IonProjectPreviewComparisonSurface;
   surface_pair?: string;
   route?: string;
   route_source?: string;

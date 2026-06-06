@@ -172,6 +172,42 @@ def test_preview_sessions_registers_read_only_comparison_pair_without_capture_or
     assert comparison["baseline_route_basis"] == "same_origin_embed_url"
     assert comparison["candidate_route"] == "/cockpit/projects/launch/proxy/demo-launch/"
     assert comparison["candidate_route_basis"] == "same_origin_embed_url"
+    assert comparison["baseline_surface"] == {
+        "preview_id": "project:demo:cockpit_internal_surface",
+        "label": "Demo Public Project",
+        "project_id": "demo",
+        "version_id": "",
+        "family_id": "",
+        "provider_id": "cockpit_internal_surface",
+        "runner_location": "local_host",
+        "source_kind": "project_row",
+        "source_root_ref": comparison["baseline_surface"]["source_root_ref"],
+        "runtime_state_class": "registered",
+        "route": "/projects/demo/preview/",
+        "route_basis": "same_origin_embed_url",
+        "viewer_scope": "same_origin_viewer",
+        "auth_mode": "read_only_same_origin",
+        "public_preview_allowed": True,
+    }
+    assert comparison["baseline_surface"]["source_root_ref"].startswith("local_path_sha256:")
+    assert comparison["candidate_surface"] == {
+        "preview_id": "launch:demo-launch",
+        "label": "Demo App",
+        "project_id": "demo",
+        "version_id": "v1",
+        "family_id": "",
+        "provider_id": "local_loopback_launcher",
+        "runner_location": "local_host",
+        "source_kind": "launcher_record",
+        "source_root_ref": comparison["candidate_surface"]["source_root_ref"],
+        "runtime_state_class": "running",
+        "route": "/cockpit/projects/launch/proxy/demo-launch/",
+        "route_basis": "same_origin_embed_url",
+        "viewer_scope": "local_operator",
+        "auth_mode": "cockpit_confirmation_or_internal_stop_token",
+        "public_preview_allowed": False,
+    }
+    assert comparison["candidate_surface"]["source_root_ref"].startswith("local_path_sha256:")
     assert comparison["verdict"] == "not_compared"
     assert comparison["status"] == "registered_read_only"
     assert comparison["capabilities"]["preview_read"] is True
@@ -288,6 +324,10 @@ def test_preview_sessions_scrubs_protocol_relative_and_tokenized_comparison_rout
     assert comparison["route_basis"] == ""
     assert comparison["baseline_route"] == ""
     assert comparison["candidate_route"] == ""
+    assert comparison["baseline_surface"]["route"] == ""
+    assert comparison["baseline_surface"]["route_basis"] == ""
+    assert comparison["candidate_surface"]["route"] == ""
+    assert comparison["candidate_surface"]["route_basis"] == ""
     assert model["ai_observe_preview"]["targets"] == []
     assert model["ai_observe_preview"]["target_count"] == 0
     assert "127.0.0.1:5173" not in payload
