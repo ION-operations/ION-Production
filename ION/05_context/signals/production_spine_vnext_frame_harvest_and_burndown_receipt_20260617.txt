@@ -1,0 +1,48 @@
+ION PRODUCTION-SPINE — vNEXT FRAME FULL HARVEST + READINESS BURN-DOWN RECEIPT
+schema: ion.production_spine.vnext_frame_harvest_and_burndown.v0_1_candidate
+generated_at: 2026-06-17T04:05:00Z (approx)
+generated_by: Opus (ION North Star / IONOLOGIST mount, lead orchestrator)
+posture: candidate_only
+
+WHAT
+  Completed the full vNext-frame durable harvest + the dual-kernel reconciliation probe, then
+  synthesized everything into an owned production readiness burn-down. Breadth + depth, in parallel,
+  via 10 Composer carriers (candidate-only, verify-not-trust).
+
+ARTIFACTS (durable, git-trackable; all verified)
+  PRODUCTION_SPINE_AUDIT/VNEXT_LANE_HARVEST/
+    LANE06..LANE15_*_GAP_RETURN.candidate.md      (10 lane gap-returns; 9/9 sections each; 16-24 KB)
+  PRODUCTION_SPINE_AUDIT/KERNEL_RECONCILIATION/
+    KERNEL_CONTROL_DIFF_MATRIX.candidate.md        (29-control diff + binding strategy)
+  PRODUCTION_SPINE_AUDIT/READINESS_BURNDOWN.candidate.md   (consolidated 8-gap register)
+  (lane 8 harvest + its receipt landed earlier this session)
+
+VERIFICATION (orchestrator; verify-not-trust)
+  - 10/10 harvest artifacts present, each with all 9 return-contract sections.
+  - Kernel matrix: 29 controls classified (3 identical / 6 diverged / 20 vNext-only / 0 monolith-only).
+  - Source-edit guard EMPTY: no .py under ION_VNEXT or ION/04_packages/kernel modified during the sweep.
+    All 10 workers honored one-write candidate posture.
+  - Independent corroboration: lane 15 (program's own nemesis overclaim audit) cleared the lane-8
+    harvest claims with no material overclaim (re-ran 176 tests; confirmed dual diverged trees +
+    unwired ion_core).
+
+HEADLINE (the production thesis, evidence-grounded)
+  ION's executable reality is LIVE + tested in the monolith (kernel 176, bridge 137, carriers 121).
+  The vNext frame is a canon/docs skeleton + a control SUPERSET (ion_core: 29 controls incl. 20
+  cutover harnesses absent from the monolith). Production = BINDING + DURABILITY + AUTHORITY, not
+  build-from-scratch. "Not production-ready" persisted because settled outputs were pruned as
+  run-exhaust before consolidation; the burn-down fixes that.
+
+CONSOLIDATED GAPS (see burn-down for owners + exit tests + next packets)
+  G1 dual-kernel runtime binding (CRIT) · G2 non-durable semantic fan-in (CRIT) ·
+  G3 production authority unset (HIGH) · G4 no enforceable lane gates (HIGH) ·
+  G5 currentness drift + broken Needs_Routed paths (HIGH) · G6 steward/M103D/M103F open (MED-HIGH) ·
+  G7 unmigrated product/source pools (MED) · G8 DW witness-vs-operational split (MED)
+
+SEQUENCING
+  Wave A: G1 + G2 (keystones) · Wave B: G4 + G5 · Wave C: G6 + G8 then G3 · Wave D: G7.
+  All source-changing packets: candidate plan + read-only diffs first; operator + nemesis gate before edits.
+
+NON-CLAIMS
+  Candidate; synthesis is not settlement; no authority set/claimed; operator ratifies any direction
+  change or source work. Recommended packets are candidates.

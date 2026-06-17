@@ -1,0 +1,42 @@
+ION SYSTEM DEFINITION — CONSOLIDATION RECEIPT (step 2: mount refresh)
+====================================================================
+receipt_id: ion-system-definition-consolidation-mount-refresh-20260616
+date: 2026-06-16 (mount generated_at 2026-06-17T00:28:00Z UTC)
+actor: Opus (North Star / IONOLOGIST mount)
+authorized_by: operator (this session)
+class: candidate mount regeneration — NO accepted-state, production, live-execution,
+       or secrets authority. Mount remains candidate_mount_only.
+
+action:
+  Re-materialized the single generated mount
+  role_ionologist__domain_ion_system_definition (after step-1 registry amendment)
+  so it binds the North Star lane and the single canonical continuity ledger.
+
+method:
+  - build_agent_control_plane_projection(root) -> role.ionologist agent row + domain.ion_system_definition domain row
+  - dry-run build_codex_agent_mount_candidate -> verified context_refs now include the 6 North Star lane refs (count 19 -> 25)
+  - materialize_codex_agent_mount(root, agent, domain, communication_directory=loaded) -> CODEX_AGENT_MOUNT_MATERIALIZED
+  - bounded helper: /tmp/refresh_ionologist_mount.py (dry-run-then-apply; aborts apply if lane refs absent)
+
+result:
+  - generated_at: 2026-06-17T00:28:00+00:00 (was manifest 2026-05-27; prior .ion/ACTIVE_CONTEXT_PACKAGE gated-refresh was 2026-06-04)
+  - comms_directory_loaded: true (address book / communications preserved)
+  - mount context_refs now include:
+      ion_system_definition/ (lane root), DOMAIN_SURFACE_MAP.md, ION_NORTH_STAR.candidate.md,
+      ION_DERIVED_ACCOUNT.candidate.md, .ion/ACTIVE_CONTEXT_PACKAGE.md (the single canonical ledger),
+      ION_SYSTEM_AUDIT_ATLAS/
+  - dual-working-capsule defect RESOLVED: the mount's .ion/ACTIVE_CONTEXT_PACKAGE.md is now a
+    compiled context-authority view (write_posture: none) that references the single canonical
+    continuity ledger at ion_system_definition/.ion/ACTIVE_CONTEXT_PACKAGE.md — it is no longer a
+    divergent hand-written 2026-06-04 narrative.
+
+verification:
+  - On a role.ionologist queue start, ion_domain_weaver_context_active_resolver now binds a mount
+    whose context_refs include the North Star lane (was: stale May/June snapshot with no North Star refs).
+
+non_claims:
+  - No worker started; no queue processing; no accepted state; no production/live authority.
+
+next:
+  - v4.1 Living Encyclopedia maintenance update (in progress); M105C atlas landing (in progress);
+    consolidation verification gate.

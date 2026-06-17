@@ -1,0 +1,42 @@
+ION PRODUCTION-SPINE — G1-A2 SCAFFOLD DRY-RUN: VERIFICATION RECEIPT
+schema: ion.production_spine.g1a2_scaffold_dryrun_verification.v0_1_candidate
+generated_at: 2026-06-17T04:35:00Z (approx)
+generated_by: Opus (ION North Star / IONOLOGIST mount, lead orchestrator)
+posture: candidate_only; READ-ONLY; carrier dry-run in /tmp; no real source edits
+carrier: Composer (role.mason) [agent ec72082b-1bf4-4623-8480-1c305e6c07dc]
+
+VERIFIED (orchestrator)
+  - Artifact present: KERNEL_RECONCILIATION/G1A2_NAMESPACE_SCAFFOLD_CANDIDATE_DIFF.candidate.md (26 KB).
+  - Real-repo source-edit guard EMPTY (no .py under ION_VNEXT or ION/04_packages/kernel modified;
+    carrier confined experiments to /tmp/g1a2_namespace_scaffold_*).
+  - ROOT CAUSE corroborated: discover_workspace_manifest ABSENT in monolith ion_path_authority.py;
+    PRESENT in ion_core ion_path_authority.py (line 121).
+  - Additive surface: the ONLY top-level def in ion_core path_authority missing from the monolith is
+    discover_workspace_manifest. Line counts: mono 287 / core 307 (Δ ~20). (Exact-diff confirmation that
+    shared functions are byte-unchanged is the G1-B carrier's job — "additive" is likely, not yet proven.)
+
+DRY-RUN RESULT (carrier, /tmp, monolith-first PYTHONPATH + extend_path)
+  - Scaffold mechanics CORRECT: 9/9 shared controls resolve from monolith; vNext-only harnesses resolve
+    from core via extend_path; monolith-only modules stay on monolith.
+  - NOT green standalone: 78 pass / 89 fail / 1 collection error (baseline ion_core-only = 176/176).
+    Blocker: monolith path_authority lacks discover_workspace_manifest -> collection error (9 path_authority
+    tests) + NotADirectoryError on manifest discovery across harnesses. 4 of 6 diverged controls' isolated
+    unit tests pass under monolith-first.
+
+CONCLUSION
+  Scaffold (G1-A2) is import-correct but COUPLED to G1-B (path_authority). G1-B is very likely a clean
+  ADDITIVE port of one function.
+
+CORRECTED EMPIRICAL SEQUENCE
+  G1-A1 identity proof ......... DONE
+  G1-B  path_authority port .... additive port of discover_workspace_manifest into monolith (diffs-first, gated; LIVE control)
+  G1-A2 scaffold ............... 2-line extend_path in monolith kernel/__init__.py (green once G1-B lands)
+  G1-A3 collapse .............. remove the 3 byte-identical ion_core duplicates (behavior-neutral)
+
+EXACT SCAFFOLD CHANGE (monolith kernel/__init__.py, after docstring)
+  from pkgutil import extend_path
+  __path__ = extend_path(__path__, __name__)
+
+NON-CLAIMS
+  Candidate; no real source edited; the combined bundle is not yet proven green (next carrier proves it in
+  /tmp); apply remains operator-gated + nemesis/security-auditable (path_authority is a security control).

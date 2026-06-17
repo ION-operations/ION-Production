@@ -1,0 +1,55 @@
+ION PRODUCTION-SPINE — G2 DURABLE FAN-IN PLAN RECEIPT
+schema: ion.production_spine.g2_durable_fanin_plan.v0_1_candidate
+generated_at: 2026-06-17T14:00:00Z (approx)
+generated_by: Composer carrier (role.architect) — read-only G2 design
+posture: candidate_only  (no production / live-execution / accepted-state / source-edit authority)
+
+WHAT
+  Full G2 durable fan-in DESIGN satisfying READINESS_BURNDOWN G2 exit test: settlement-time
+  harvest convention, semantic fan-in read path from durable bodies, intake vs semantic honesty
+  fix, exit-test harness, gated packet sequence G2-A→G2-G, risks + missing-lane handling.
+
+READ (targeted; verify-not-trust)
+  - ION/05_context/current/ion_system_definition/PRODUCTION_SPINE_AUDIT/DURABLE_FANIN/
+      G2_DURABLE_FANIN_MAP_AND_DIAGNOSIS.candidate.md (full — provenance)
+  - ION/05_context/current/ion_system_definition/PRODUCTION_SPINE_AUDIT/VNEXT_LANE_HARVEST/
+      LANE08_ION_VNEXT_KERNEL_CORE_GAP_RETURN.candidate.md (header + 9-section contract)
+  - ION/05_context/signals/production_spine_slice1_lane08_kernel_core_harvest_receipt_20260617.txt
+      (receipt format + verification discipline)
+  - ION/05_context/current/ion_system_definition/PRODUCTION_SPINE_AUDIT/READINESS_BURNDOWN.candidate.md
+      (G2 row exit test)
+  - ION/05_context/current/domain_weaver/swarm_evolution/DYNAMIC_SWARM_OPERATION_PLAN.candidate.json
+      (lane ordinals 1–15; missing harvest = lanes 1–5 topology)
+  - ION/04_packages/kernel/ion_domain_weaver.py — windowed reads only:
+      CODEX_QUEUE_RUNS_DIR :1007; run_records :9338-9373; reconciliation :9376-9557;
+      fanin template :9560-9593; fanin refs :9703-9764; lifecycle :10236-10257
+  - ION/04_packages/kernel/ion_codex_queue_runner.py :789-792, :4957-4974, :8494-8545, :5933
+  - ION/04_packages/kernel/ion_chatgpt_browser_mcp_connector_contract.py :5073-5095, :5101-5104
+  - /tmp/g2_exit_test_dryrun.sh (read-only dry-run; 10/15 legacy bodies, pre-wiring confirmed)
+
+PRODUCED
+  - ION/05_context/current/ion_system_definition/PRODUCTION_SPINE_AUDIT/DURABLE_FANIN/
+      G2_DURABLE_FANIN_PLAN.candidate.md
+  - ION/05_context/signals/production_spine_g2_durable_fanin_plan_receipt_20260617.txt (this file)
+
+0-SOURCE-EDIT GUARD (scoped git status --porcelain from ION_Developement)
+  Pre-existing orchestrator G1 edits ONLY in kernel (unchanged by this carrier):
+    M ION/04_packages/kernel/__init__.py
+    M ION/04_packages/kernel/ion_path_authority.py
+  New untracked candidate artifacts under ion_system_definition/ + signals/ (includes this sweep).
+  No other ION/04_packages or kernel source edits by this carrier.
+  Result: PASS (0 new source edits)
+
+HEADLINE DESIGN OUTCOMES
+  1. Smallest safe first packet: G2-A durable harvest capture at intake (additive hook at
+     connector :5073-5095 + queue runner :8534-8545).
+  2. Additive: G2-A, G2-B, G2-C, G2-D, G2-G. Behavior-changing: G2-E (nemesis gate),
+     G2-F (reconciliation honesty; feature-flag guarded).
+  3. Five missing lanes (1–5 topology): back-harvest via fresh carrier re-drive in G2-B;
+     pruned volatile bodies not recoverable.
+  4. Standing surface: PRODUCTION_SPINE_AUDIT/DURABLE_FANIN/ (lanes/ + MANIFEST.candidate.json).
+
+NON-CLAIMS
+  Candidate plan only; not settlement, not production promotion, no commit, no worker start.
+  Implementation awaits operator-gated packets. Diagnosis claims inherited from
+  G2_DURABLE_FANIN_MAP_AND_DIAGNOSIS.candidate.md (orchestrator-verified).

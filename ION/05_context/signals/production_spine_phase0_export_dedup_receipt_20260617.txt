@@ -1,0 +1,56 @@
+ION PRODUCTION-SPINE — PHASE 0 HYGIENE RECEIPT (move 2: export dedup + nested residue)
+=======================================================================================
+Date    : 2026-06-17
+Author  : ION North Star / IONOLOGIST (operator-authorized: "finish Phase 0 first")
+Class   : candidate / reversible hygiene / not-accepted-state. No product runtime files changed.
+Plan    : PRODUCTION_SPINE_AUDIT/PRODUCTION_SPINE_PLAN.candidate.md ; audit B §5D rank 2.
+
+GUARDS (verified before move)
+-----------------------------
+- ION_EXPORTS_LOCAL ROOT is runtime-bound (9 kernel export builders + ION_CLEAN_EXPORT_POLICY.md write there)
+  -> root + the canonical latest result are KEPT. Only OLD/duplicate result trees moved.
+- Specific old result timestamps 20260610T224933Z and 20260610T234707Z: NOT individually bound (grep clear).
+- No top-level pointer in codex_carrier_transfer references the old trees.
+- Nested ION/ION: REPO_AUTHORITY.md lines 85-99 declare it "not a second runnable root" / "embedded residue".
+
+ACTION (atomic rename, same device)
+-----------------------------------
+moved -> /home/sev/ION - Production/ION_ARCHIVE/2026-06-17_exhaust_candidate/ :
+  ION_EXPORTS_LOCAL/codex_carrier_transfer/ION_CODEX_CARRIER_TRANSFER_20260610T224933Z_RESULT  (187M)
+  ION_EXPORTS_LOCAL/codex_carrier_transfer/ION_CODEX_CARRIER_TRANSFER_20260610T234707Z_RESULT  (210M; also held a dup kernel overlay)
+  ION/ION  (548K nested residue) -> nested_residue/ION_ION
+
+KEPT (canonical / load-bearing)
+-------------------------------
+- ION_EXPORTS_LOCAL/codex_carrier_transfer/ (root) + ION_CODEX_CARRIER_TRANSFER_20260610T235034Z_RESULT (latest, 210M)
+
+SKIPPED — guard caught runtime binds (audit B misclassified these as exhaust; LEFT IN PLACE)
+-------------------------------------------------------------------------------------------
+- gemini_ion_sandboxes/ : bound by ion_workspace_root_registry.yaml, ion_action_mcp_branch_leader_registry.yaml,
+  ion_multi_root_workspace.py, ion_agent_observatory.py, ion_action_mcp_branch_leaders.py (registered root lane).
+- execution_cycles/ : bound by ion_cycle_runner.py, ion_context_lifecycle.py, ion_carrier_onboarding_packet.py,
+  ion_carrier_continue.py, context_lifecycle_policy.yaml (active cycle/context-lifecycle lane).
+
+RESULT
+------
+- ION_EXPORTS_LOCAL : 614M -> 217M  (~397M reclaimed)
+- nested ION/ION : removed from product tree
+- Cumulative Phase 0 reclaim (with move 1): ~5.1 GB
+
+POST-MOVE VERIFICATION
+----------------------
+- export root + canonical latest result present.
+- pytest ION/tests/test_kernel_ion_cursor_queue_runner.py = pass.
+- resolve_context_scope(ion_system_definition/.ion) still binds the lane.
+
+REVERSAL
+--------
+  mv "/home/sev/ION - Production/ION_ARCHIVE/2026-06-17_exhaust_candidate/ION_EXPORTS_LOCAL/codex_carrier_transfer/"*RESULT "ION_EXPORTS_LOCAL/codex_carrier_transfer/"
+  mv "/home/sev/ION - Production/ION_ARCHIVE/2026-06-17_exhaust_candidate/nested_residue/ION_ION" "ION/ION"
+
+NON-CLAIMS
+----------
+- No production-readiness claim. Hygiene/separation only; reversible.
+- Remaining Phase 0 (mixed in-product-tree lanes: live_carrier_binding non-ACTIVE rows, project_launcher,
+  codex_carrier, codex_cli, codex_capsule_chat, full_steam_push, portable_agent_domain_packages) deferred to a
+  per-lane verified manifest (keep ACTIVE_*/projection/promotion/registry-bound) before any move.

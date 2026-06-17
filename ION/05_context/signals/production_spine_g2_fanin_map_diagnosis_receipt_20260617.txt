@@ -1,0 +1,48 @@
+ION PRODUCTION-SPINE — G2 DURABLE FAN-IN MAP + DIAGNOSIS RECEIPT
+schema: ion.production_spine.g2_fanin_map_diagnosis.v0_1_candidate
+generated_at: 2026-06-17T12:00:00Z (approx)
+generated_by: Composer carrier (role.auditor) — read-only G2 gap analysis
+posture: candidate_only  (no production / live-execution / accepted-state / source-edit authority)
+
+WHAT
+  Engine fan-in map + G2 diagnosis for "Settled outputs non-durable; semantic fan-in blocked"
+  (READINESS_BURNDOWN.candidate.md G2 row). Map-only installment; full design/harness/packet
+  sequence deferred to follow-up packet.
+
+READ (targeted; verify-not-trust)
+  - ION/05_context/current/ion_system_definition/PRODUCTION_SPINE_AUDIT/READINESS_BURNDOWN.candidate.md (G2 row, lanes 14-15)
+  - ION/05_context/current/ion_system_definition/PRODUCTION_SPINE_AUDIT/VNEXT_LANE_HARVEST/LANE14_DYNAMIC_SWARM_FANIN_SETTLEMENT_GAP_RETURN.candidate.md (full)
+  - ION/05_context/current/ion_system_definition/PRODUCTION_SPINE_AUDIT/VNEXT_LANE_HARVEST/LANE08_ION_VNEXT_KERNEL_CORE_GAP_RETURN.candidate.md (header + section contract sample)
+  - ION/05_context/signals/production_spine_slice1_lane08_kernel_core_harvest_receipt_20260617.txt (receipt format)
+  - ION/04_packages/kernel/ion_domain_weaver.py — windowed reads only (~±60 lines):
+      CODEX_QUEUE_RUNS_DIR :1007; operation_plan :8837-8997; lane_role :9086-9098;
+      templates :9103-9179; run_records :9338-9373; fresh_context_reconciliation :9376-9557;
+      fanin_reissue_template :9560-9700; fanin_reissue_refs :9703-9764;
+      lifecycle_settlement :10236-10359; execute_domain_weaver_action dispatch :40720-41125
+  - ION/04_packages/kernel/ion_codex_queue_runner.py :59, :5711-5733, :8496
+  - ION/04_packages/kernel/ion_chatgpt_browser_mcp_connector_contract.py :5073, :5101-5104
+  - On-disk: ls/find codex_queue_runs (absent); task_return preview sample; harvest dir count
+  - Live recompute: reconciliation summary + fanin refs (PYTHONPATH=ION/04_packages)
+
+PRODUCED
+  - ION/05_context/current/ion_system_definition/PRODUCTION_SPINE_AUDIT/DURABLE_FANIN/
+      G2_DURABLE_FANIN_MAP_AND_DIAGNOSIS.candidate.md
+  - ION/05_context/signals/production_spine_g2_fanin_map_diagnosis_receipt_20260617.txt (this file)
+
+0-SOURCE-EDIT GUARD (scoped git status --porcelain from ION_Developement)
+  Pre-existing orchestrator G1 edits ONLY in kernel:
+    M ION/04_packages/kernel/__init__.py
+    M ION/04_packages/kernel/ion_path_authority.py
+  New untracked candidate artifacts under ion_system_definition/ (includes this sweep's 2 files).
+  No other ION/04_packages or kernel source edits by this carrier.
+
+HEADLINE FINDINGS
+  1. Bodies written to volatile codex_queue_runs/; directory pruned to 0; gate receipts + previews survive.
+  2. Reconciliation (L9376) advances on RETURN_RECORDED_PROOF_ACCEPTED status alone — 15/15 accepted, 0 bodies.
+  3. Semantic fan-in (_domain_weaver_latest_dynamic_swarm_fanin_reissue_refs L9703) reads task_return_body.md;
+     readiness_gate_ready=False with pruned bodies.
+  4. Intake explicitly carrier_intake_only (connector L5101-5104) — gap is missing durable semantic tier, not one bad line.
+
+NON-CLAIMS
+  Candidate map/diagnosis only; not settlement, not production promotion, no commit, no worker start.
+  Design stub in doc is directional for follow-up packet — not ratified implementation plan.

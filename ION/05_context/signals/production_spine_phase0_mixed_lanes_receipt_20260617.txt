@@ -1,0 +1,61 @@
+ION PRODUCTION-SPINE — PHASE 0 HYGIENE RECEIPT (move 3: mixed DW-adjacent lanes)
+================================================================================
+Date    : 2026-06-17
+Author  : ION North Star / IONOLOGIST (operator-authorized: "finish Phase 0 first")
+Class   : candidate / reversible hygiene / not-accepted-state. No product runtime files changed.
+Plan    : PRODUCTION_SPINE_AUDIT/PRODUCTION_SPINE_PLAN.candidate.md
+Manifest: PRODUCTION_SPINE_AUDIT/PHASE0_MIXED_LANE_RECLAIM_MANIFEST.candidate.md (Composer-produced; North Star re-guarded + executed)
+Archive : /home/sev/ION - Production/ION_ARCHIVE/2026-06-17_exhaust_candidate/phase0_mixed_lanes/
+
+STEP A — low-risk lanes (re-guarded CLEAR, then moved)
+------------------------------------------------------
+- domain_weaver/full_steam_push/        : whole dir archived (~22M; CLEAR, zero binds).
+- codex_cli/                            : 64M -> 892K. Archived 6 launch_variant_* dirs, bugcrowd_100_agent_hook_proof,
+  layout_proof, usage_limit_quarantine, codex_carrier_transfer, carrier_identity_timeline, 49 orchestration/cockpit MD,
+  and 2,837 of 2,857 identity session dirs (kept NEWEST 20). KEPT: latest_prompt.md, latest_return.md, mount_guard/,
+  operational_posture/, hooks/, sessions/.
+- codex_capsule_chat/                   : archived state.pre_playwright_smoke_prune backup + 31 old response_runs
+  (kept NEWEST 24). KEPT: state.json, archive_attachments/, ide_context_bridges/, raw_cli_runs/.
+- codex_carrier/                        : archived production_zip_prep_20260610T042913Z. KEPT commit_boundary/ (97M, kernel-bound).
+
+STEP B — HIGH-RISK lane: domain_weaver/live_carrier_binding (220M -> 2.1M)
+-------------------------------------------------------------------------
+- snapshots/ (8,037 files / 218M) staged to archive; restored KEEP set = 45 files =
+  25 DOMAIN_WEAVER_PROJECTION.json-cited (June 3-4) UNION 20 newest by mtime (June 12-17). restored 45/45, missing 0.
+- Archived (CLEAR): proof_row_candidates/ (14), proof_row_update_candidates/ (30), EXACT_ACTIVE_BINDING_EVIDENCE_REPAIR_MAP_*.{json,md}.
+- KEPT in place: all 16 ACTIVE_INVOKABLE_BINDING_* (+schemas), all 103 monolith-bound top-level constants, all .latest.json monitors.
+
+DEFERRED / NOT TOUCHED
+----------------------
+- project_launcher/diagnostic_smoke_apps/vite_react_r3f/node_modules (~126M): OPERATOR-GATED (regenerable via npm
+  install, but ion_project_launcher sets install_repair:True for vite_react_r3f). Left in place pending operator OK.
+- portable_agent_domain_packages/ (15M): DO NOT TOUCH (mount root + registry-cited ionologist package).
+- codex_carrier/commit_boundary/ (97M): load-bearing (ion_codex_commit_boundary_audit / ion_codex_carrier_os).
+- gemini_ion_sandboxes/, execution_cycles/: runtime-bound (left in place earlier; audit B misclassification).
+
+RESULT
+------
+- This round reclaimed ~305M (codex_cli ~63M + live_carrier_binding ~218M + full_steam_push ~22M + capsule ~2M).
+- Cumulative Phase 0 reclaim (moves 1-3): ~5.4 GB. Product tree: 6.7G -> 1.7G.
+
+DOMAIN WEAVER INTEGRITY VERIFICATION (post-move, all PASS)
+---------------------------------------------------------
+- ALL 92 projection-cited live_carrier_binding file refs resolve on disk: MISSING = 0.
+- ACTIVE_INVOKABLE_BINDING_PROOF_ROWS.candidate.json (+schema) present.
+- DW kernel spine imports OK: ion_domain_weaver, ion_agent_observatory, ion_domain_weaver_projection_refresh_candidate.
+- DOMAIN_WEAVER_PROJECTION.json loads (dict).
+- pytest ION/tests/test_kernel_ion_cursor_queue_runner.py = 3 passed.
+- resolve_context_scope binds the ion_system_definition lane (folder_local_context_capsule).
+
+REVERSAL (all reversible; staging dirs retain originals)
+-------------------------------------------------------
+- live_carrier_binding snapshots: mv "$ARCH/.../snapshots_EXHAUST_20260617"/* back into snapshots/ (or restore whole dir).
+- codex_cli identity: mv "$ARCH/codex_cli/identity_EXHAUST_20260617"/* back into codex_cli/identity/.
+- codex_capsule_chat: mv "$ARCH/codex_capsule_chat/response_runs_old"/* back into response_runs/.
+- whole-dir moves: mv each back from "$ARCH/phase0_mixed_lanes/...".
+  ($ARCH = /home/sev/ION - Production/ION_ARCHIVE/2026-06-17_exhaust_candidate/phase0_mixed_lanes)
+
+NON-CLAIMS
+----------
+- No production-readiness claim. Hygiene/separation only; fully reversible.
+- node_modules slice intentionally NOT executed (operator gate).

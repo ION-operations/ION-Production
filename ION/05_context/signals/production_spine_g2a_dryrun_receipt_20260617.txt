@@ -1,0 +1,39 @@
+production_spine_g2a_dryrun_receipt_20260617.txt
+schema_id: ion.production_spine.g2a_dryrun_receipt.v0_1_candidate
+generated_at: 2026-06-17T18:00:00Z (approx)
+generated_by: Composer carrier (role.mason) — G2-A dry-run
+posture: candidate_only
+
+WHAT WAS READ (minimal window — no monolith full reads)
+- G2_DURABLE_FANIN_PLAN.candidate.md §1 "Durable settlement-time harvest" (lines 50-154)
+- LANE08_ION_VNEXT_KERNEL_CORE_GAP_RETURN.candidate.md (full fixture — 9 sections + header)
+- ion_chatgpt_browser_mcp_connector_contract.py window :5048-5102 (hook site 1)
+- ion_codex_queue_runner.py window :5918-5947 (task_return_body_path), :8509-8562 (hook site 2)
+- ion_codex_queue_runner.py :789-792 (_has_required_return_sections logic reference only)
+
+WHAT WAS BUILT (/tmp only)
+- /tmp/g2a_durable_fanin_harvest.py — standalone _durable_fanin_harvest_lane_body helper
+- /tmp/test_g2a_durable_fanin_harvest.py — 5-case unit harness
+
+/TMP TEST RESULTS (python3 /tmp/test_g2a_durable_fanin_harvest.py)
+  fresh_harvest: PASS
+  idempotent_reharvest: PASS
+  hash_mismatch_supersede: PASS
+  missing_section_rejected: PASS
+  fail_soft_unwritable_dir: PASS
+TOTAL: 5 PASS / 0 FAIL
+
+0-REAL-SOURCE-EDIT GUARD
+- git status --porcelain from ION_Developement root after write
+- Pre-existing M on ion_chatgpt_browser_mcp_connector_contract.py and ion_codex_queue_runner.py (and other kernel .py) — NOT introduced by this carrier
+- This carrier added ONLY:
+  1. ION/05_context/current/ion_system_definition/PRODUCTION_SPINE_AUDIT/DURABLE_FANIN/G2A_DRYRUN.candidate.md
+  2. ION/05_context/signals/production_spine_g2a_dryrun_receipt_20260617.txt
+- No .py files created or modified by this carrier
+- No commit; no worker start
+
+NON-CLAIMS
+- Does not land helper into monolith
+- Does not change reconciliation or fan-in behavior
+- Does not ratify G2 exit test green
+- Synthesis is not settlement

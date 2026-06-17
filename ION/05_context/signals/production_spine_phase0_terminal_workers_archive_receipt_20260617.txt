@@ -1,0 +1,67 @@
+ION PRODUCTION-SPINE — PHASE 0 HYGIENE RECEIPT (move 1 of N: terminal_workers stale run)
+==========================================================================================
+Date         : 2026-06-17
+Author       : ION North Star / IONOLOGIST (operator-authorized: "Phase 0 hygiene now")
+Class        : candidate / reversible hygiene / not-accepted-state. No product files changed.
+               No production-readiness claim. Pure filesystem relocation (untracked data).
+Plan         : ION/05_context/current/ion_system_definition/PRODUCTION_SPINE_AUDIT/PRODUCTION_SPINE_PLAN.candidate.md
+Source audit : ION/05_context/current/ion_system_definition/PRODUCTION_SPINE_AUDIT/EXHAUST_AND_DUPLICATION_CATALOG.candidate.md (move §5D rank 1)
+
+GIT POSTURE (why this is low-risk)
+----------------------------------
+- git toplevel = /home/sev/ION - Production/ION_Developement
+- terminal_workers tracked files: 0 ; all of 05_context/current tracked: 30
+- => the archived data is UNTRACKED. Relocation has zero git-history impact.
+
+PRE-MOVE VERIFICATION (all passed before any move)
+--------------------------------------------------
+- LATEST_20_CODEX_CLI_TERMINAL_WORKERS.candidate.json:
+    run_id (active)   = terminal_20_codex_cli_mount_fresh_20260610T030545Z
+    previous_run_id   = terminal_20_codex_cli_20260610T021002Z   <-- the moved dir (explicitly previous)
+    resume_existing_threads_allowed = false
+- Runtime-bind scan for "terminal_20_codex_cli_20260610T021002Z" across
+  ION/04_packages, 03_registry, 02_architecture, 00_BOOTSTRAP, 01_doctrine,
+  REPO_AUTHORITY.md, ION_LIVING_ENCYCLOPEDIA_MANIFEST_V100.json, pyproject.toml = NONE.
+- Maintainer kernel (ion_domain_weaver_terminal_worker_maintainer.py) binds only LATEST_POINTER
+  (the json), not the run dir. Pointer kept in place.
+- Final guard: no load-bearing DW file (DOMAIN_WEAVER_PROJECTION.json, PROMOTION_REVIEW/GATE.json,
+  live_carrier_binding/ACTIVE_*.json) references the stale run. Guard clear.
+
+ACTION
+------
+moved (atomic rename, same ext4 device):
+  FROM ION/05_context/current/domain_weaver/terminal_workers/terminal_20_codex_cli_20260610T021002Z   (4.7G)
+  TO   /home/sev/ION - Production/ION_ARCHIVE/2026-06-17_exhaust_candidate/05_context/current/domain_weaver/terminal_workers/terminal_20_codex_cli_20260610T021002Z
+
+KEPT IN PLACE (load-bearing / active)
+-------------------------------------
+- LATEST_20_CODEX_CLI_TERMINAL_WORKERS.candidate.json   (maintainer pointer)
+- terminal_20_codex_cli_mount_fresh_20260610T030545Z/   (active run + LAUNCH_MANIFEST)
+- codex_cli_launch_variant_forensics/                   (kernel probe BASE_PROBE_DIR)
+- all small top-level *.candidate.{json,md} receipts
+
+RESULT
+------
+- terminal_workers : 4.7G -> 4.0M
+- ION product tree : 6.7G -> 2.0G   (one move, ~4.7G reclaimed from the product tree)
+
+POST-MOVE VERIFICATION (all passed)
+-----------------------------------
+- resolve_context_scope(cwd=ion_system_definition/.ion) -> resolves; classification + agents_md_path
+  + portable_active_context_package_md_path bound (continuity lane intact).
+- Present: DOMAIN_WEAVER_PROJECTION.json, LATEST pointer, active LAUNCH_MANIFEST, encyclopedia manifest.
+- pytest ION/tests/test_kernel_ion_cursor_queue_runner.py = 3 passed.
+
+REVERSAL (fully reversible)
+---------------------------
+  mv "/home/sev/ION - Production/ION_ARCHIVE/2026-06-17_exhaust_candidate/05_context/current/domain_weaver/terminal_workers/terminal_20_codex_cli_20260610T021002Z" \
+     "ION/05_context/current/domain_weaver/terminal_workers/"
+
+NON-CLAIMS
+----------
+- This does not certify any production readiness criterion. It is hygiene/separation only.
+- The previous_run_id string in the LATEST pointer now points to an archived (not deleted) dir;
+  left immutable per audit §5C (prefer archive-redirect note over receipt rewrites).
+- Remaining Phase 0 items (export-bundle dedup [needs operator choice of canonical tree],
+  execution_cycles, comms/history, nested ION/ION, gemini sandboxes, mixed DW lanes) are NOT in
+  this receipt and remain proposed.

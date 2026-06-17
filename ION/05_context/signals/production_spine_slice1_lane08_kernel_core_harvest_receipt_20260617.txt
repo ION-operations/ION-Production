@@ -1,0 +1,56 @@
+ION PRODUCTION-SPINE — SLICE 1 LANE-08 KERNEL-CORE DURABLE HARVEST + VERIFICATION RECEIPT
+schema: ion.production_spine.vnext_lane_harvest_verification.v0_1_candidate
+generated_at: 2026-06-17T03:50:00Z (approx)
+generated_by: Opus (ION North Star / IONOLOGIST mount, lead orchestrator)
+posture: candidate_only  (no production / live-execution / accepted-state / source-edit authority)
+
+WHAT
+  First DURABLE vNext-productization promotion: a fresh 9-section gap return for Domain
+  Weaver dynamic-swarm lane 8 (ion_vnext_kernel_core). Produced because the 2026-06-02
+  proof-accepted run bodies were pruned to exhaust (codex_queue_runs now empty; only
+  ~1200-char previews survive in task_returns/*.json).
+
+ARTIFACT (durable, in candidate space, not volatile run-exhaust)
+  ION/05_context/current/ion_system_definition/PRODUCTION_SPINE_AUDIT/VNEXT_LANE_HARVEST/
+    LANE08_ION_VNEXT_KERNEL_CORE_GAP_RETURN.candidate.md   (224 lines, 16529 bytes)
+  request_id:      codex_req_domain_weaver_dynamic_swarm_08_domain_ion_vnext_kernel_core_20260602_attempt_001
+  objective_sha256: cabc5120e9be509ee7534e43ec4a455105b7d16a6e2c6513bfd3e3bd93882597
+  produced_by:     Composer carrier (role.mason) fresh re-drive
+
+INDEPENDENT VERIFICATION (by orchestrator; verify-not-trust)
+  - 9/9 return-contract sections present (### CONTEXT PROOF ... ### ION OPERATIONAL POSTURE).
+  - tests/control re-run by orchestrator: 176 passed / 0 failed / 0 skipped, exit 0
+    (matches worker's claim).
+  - import kernel OK with PYTHONPATH=src; ModuleNotFoundError without it (reported as a gap,
+    not fixed).
+  - NO source edits: src/kernel + tests/control mtimes unchanged (newest May 23); only the
+    harvest .md was created (Jun 16 23:41 local). Subagent honored one-write candidate posture.
+
+HEADLINE FINDING (the real production seam)
+  TWO diverged `kernel` trees. Live runtime imports kernel.* from ION/04_packages/kernel
+  (the monolith); ION_VNEXT/02_kernel/ion_core/src/kernel is canon-registered for 29 controls
+  but UNWIRED into runtime, and the parallel copies have DIVERGED (e.g. ion_path_authority
+  307 vs 287 lines; ion_context_proof_gate 138 vs 180). So Domain Weaver "production-grade
+  integration" is plan-level for kernel core despite local 176/176 green.
+  Other gaps: no verified editable-install/CI binding; stale ion_core README/REPO_AUTHORITY/
+  capsules (describe an absent ION/ tree); M102 production authority unset; control tests
+  hardcode absolute operator paths (portability bar).
+
+RECOMMENDED NEXT PACKET (from the return; candidate)
+  PCKT-VNEXT-KERNEL-MONOLITH-RECONCILIATION-AND-RUNTIME-BINDING-20260617
+  diff all 29 shared controls -> choose one authoritative impl per control (nemesis-reviewed)
+  -> minimal re-export/shim so live imports + CONTROL_SURFACE_REGISTRY.yaml agree -> rebase
+  ion_core docs/capsules to the real layout -> add root pytest coverage. role.mason +
+  role.nemesis; candidate plan + read-only diffs in first pass; operator gate before any
+  source edit, live worker start, or production claim.
+
+SIGNIFICANCE
+  Proves the missing organ identified by the Slice-1a trace: HARVEST + DURABILITY. ION's
+  engine already drives these lanes to proof-accepted settlement; this is the first time a
+  settled gap-return has been captured durably instead of pruned. Template now ready to
+  harvest the remaining 7 vNext lanes (+ fanin / nemesis).
+
+NON-CLAIMS
+  Candidate findings; synthesis is not settlement. The prior RETURN_RECORDED_PROOF_ACCEPTED
+  on the 2026-06-02 request is a gate receipt, not production promotion. Operator ratifies
+  any direction change or source work.

@@ -1,0 +1,36 @@
+schema_id: ion.folder_local_context_capsule.v0_1
+context_id: ion_system_definition_north_star_context
+folder_role: ion_north_star_ionologist_context_workspace
+active_root: /home/sev/ION - Production/ION_Developement
+context_root: ION/05_context/current/ion_system_definition
+domain_id: domain.ion_system_definition
+anchored_role: IONOLOGIST
+focus: maintain_full_horizon_understanding_of_what_ion_is_and_keep_candidate_documentation_current
+working_capsule_source: folder_local_ion_context_capsule
+shared_codex_solo_is_working_capsule: false
+last_refreshed_at: '2026-06-16T23:13:05Z'
+materialization_ready: false
+current_blocker: none
+authority:
+  candidate_context_only: true
+  production_authority: false
+  live_execution_authority: false
+  accepted_state_authority: false
+  secrets_authority: false
+read_first:
+- AGENTS.md
+- .ion/ACTIVE_CONTEXT_PACKAGE.md
+- ION_NORTH_STAR.candidate.md
+- ION_DERIVED_ACCOUNT.candidate.md
+context_refs:
+- ION/05_context/current/ion_system_definition/ION_NORTH_STAR.candidate.md
+- ION/05_context/current/ion_system_definition/ION_DERIVED_ACCOUNT.candidate.md
+- ION/05_context/current/ion_system_definition/.ion/ACTIVE_CONTEXT_PACKAGE.md
+- ION/REPO_AUTHORITY.md
+latest_receipts: []
+policy:
+- This is the working context capsule for ION North Star / IONOLOGIST sessions launched in or routed to this lane.
+- The continuity ledger in .ion/ACTIVE_CONTEXT_PACKAGE.md is the source of truth for prior North Star work; read it on sign-in and append to it on sign-out.
+- ION/05_context/current/codex_solo is a shared lead/fallback witness only, not this lane's working capsule.
+- All North Star outputs are candidate-only; synthesis and explanation are not ratification or accepted state.
+- Where this lane disagrees with A1/A2 constitutional law or REPO_AUTHORITY, the law governs and this lane is corrected.

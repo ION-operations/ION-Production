@@ -1,0 +1,41 @@
+ION PRODUCTION-SPINE — G1 FOUNDATION APPLIED + VERIFIED 176/176 — RECEIPT (commit HELD)
+schema: ion.production_spine.g1_foundation_applied.v0_1_candidate
+generated_at: 2026-06-17T05:20:00Z (approx)
+generated_by: Opus (ION North Star / IONOLOGIST mount, lead orchestrator)
+posture: candidate_only; FIRST real source write of the production push; NOT committed
+
+APPLIED (working tree; additive; +28 / -0; 2 files)
+  ION/04_packages/kernel/__init__.py           +4  (from pkgutil import extend_path; __path__ = extend_path(__path__, __name__))
+  ION/04_packages/kernel/ion_path_authority.py +24 (import os; WORKSPACE_MANIFEST_NAME; additive discover_workspace_manifest())
+  No existing functions modified. load_workspace_authority unchanged => discover stays OPT-IN.
+
+VERIFIED IN THE REAL REPO (orchestrator, verify-not-trust)
+  1. Live import: `import kernel` OK; kernel.__path__ = [monolith kernel dir] ONLY when ion_core not on path
+     => extend_path is a CONFIRMED NO-OP for the live runtime (zero behavior change).
+  2. Live path_authority: load_workspace_authority() resolves the real manifest; decide_path_authority(...)
+     => authorized True / ION_CONTENT; discover_workspace_manifest() => real manifest. Control still functions.
+  3. MERGED control suite (PYTHONPATH=ION/04_packages:ION_VNEXT/02_kernel/ion_core/src, cwd=repo):
+     176/176 PASS (all dots to 100%, no failures, exit 0; two independent runs).
+  4. Broad monolith import sanity: 8 representative kernel submodules import cleanly; no regression.
+  5. git diff stat: exactly the 2 files; 28 insertions, 0 deletions.
+
+MEANING
+  G1 (the CRIT dual-kernel keystone) foundation is landed + proven: the full 29-control merge is green via a
+  2-line scaffold + a 25-line additive port. All 6 diverged controls reconcile to the monolith (5 natively;
+  path_authority via the additive function). This realizes G1's exit test ("unified pytest green from a
+  documented path" -> KERNEL_RECONCILIATION/G1_UNIFIED_PYTEST_GATE.md).
+
+COMMIT HELD (git law: no commit without explicit operator go)
+  Review:  git -C "/home/sev/ION - Production/ION_Developement" diff -- ION/04_packages/kernel/__init__.py ION/04_packages/kernel/ion_path_authority.py
+  Revert:  git -C "/home/sev/ION - Production/ION_Developement" checkout -- ION/04_packages/kernel/__init__.py ION/04_packages/kernel/ion_path_authority.py
+
+DEFERRED (separate gates)
+  - Runtime binding: wire ion_core/src onto the live Codex-mount PYTHONPATH (the actual cutover) + security-review harness exposure.
+  - G1-A3 collapse: remove the 3 byte-identical ion_core duplicates (behavior-neutral).
+  - Commit the foundation (operator go).
+
+SECURITY NOTE (standing)
+  discover_workspace_manifest is opt-in; wiring it into the live default would widen manifest trust => separate gated decision.
+
+NON-CLAIMS
+  Candidate; uncommitted; "176/176" is the control gate under the real manifest, not a production-authority promotion.

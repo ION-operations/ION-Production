@@ -1,0 +1,512 @@
+{
+  "posture": "LOCAL_SANDBOX_PARTIAL_MOUNT",
+  "schema_id": "ion.vnext.m105c_system_audit_taxonomy.v1_sandbox_candidate",
+  "system_count": 18,
+  "systems": [
+    {
+      "authority_status": "candidate/currentness-bound; source-pool presence is not authority",
+      "known_risks": [
+        "stale zips can look current",
+        "same logical root appears in several packages",
+        "donor roots can be mistaken for active implementation"
+      ],
+      "name": "Workspace Topology and Source Pools",
+      "next_audit": "build root-by-root lineage table with currentness rank and promotion status",
+      "primary_paths": [
+        "ION_WORKSPACE_MANIFEST.yaml",
+        "ION/REPO_AUTHORITY.md",
+        "ION_VNEXT/01_canon/WORKSPACE_CANON.yaml",
+        "ION_VNEXT/01_canon/FAMILY_REGISTRY.yaml",
+        "Needs_Routed/",
+        "ATLAS/",
+        "Cursor/",
+        "dAimon.zip"
+      ],
+      "proof_surfaces": [
+        "repo markers",
+        "workspace canon",
+        "package hashes",
+        "path-policy decisions"
+      ],
+      "purpose": "Classify the active root, source pools, archives, product projections, and donor/reference roots so agents do not infer authority from folder presence.",
+      "relationships": [
+        "feeds path authority",
+        "feeds Domain Weave source-pool audit",
+        "feeds JOC root selector"
+      ],
+      "system_id": "workspace_topology"
+    },
+    {
+      "authority_status": "A2 documentation context authority; not production ratification; must preserve prior body and add current-state supplements",
+      "known_risks": [
+        "side encyclopedias",
+        "chat-only correction without repo artifact",
+        "current-state statements going stale"
+      ],
+      "name": "Living Encyclopedia and Documentation Spine",
+      "next_audit": "merge v4.1 into live repo and generate v4.2 atlas supplement from this audit",
+      "primary_paths": [
+        "ION/docs/encyclopedia/ION_Production_Encyclopedia_v4_0_*.md",
+        "ION/docs/encyclopedia/ION_Production_Encyclopedia_v4_1_*.md",
+        "ION/02_architecture/ION_LIVING_ENCYCLOPEDIA_MAINTENANCE_PROTOCOL.md",
+        "ION/05_context/current/ION_LIVING_ENCYCLOPEDIA_MANIFEST_V*.json"
+      ],
+      "proof_surfaces": [
+        "manifest",
+        "maintenance receipt",
+        "source artifact hashes",
+        "FILES_ADDED list"
+      ],
+      "purpose": "Maintain ION's full-system explanation, doctrine history, current-state override, claim ledger, and next lawful maintenance path.",
+      "relationships": [
+        "read-first standard for agents",
+        "design-quality governor reference",
+        "context package route-deeper source"
+      ],
+      "system_id": "living_encyclopedia"
+    },
+    {
+      "authority_status": "mixed: active protocols plus historical/superseded doctrine; requires currentness classification",
+      "known_risks": [
+        "old branch line can override newer vNext unless explicitly superseded",
+        "doctrine can be mistaken for implementation"
+      ],
+      "name": "Core Law, Doctrine, and Authority Boundaries",
+      "next_audit": "classify every protocol as active, candidate, historical, superseded, or quarantine",
+      "primary_paths": [
+        "ION/01_doctrine/",
+        "ION/02_architecture/",
+        "ION_VNEXT/00_front_door/AUTHORITY_BOUNDARIES.md",
+        "ION_VNEXT/01_canon/STATE_LIFECYCLE.yaml"
+      ],
+      "proof_surfaces": [
+        "protocol files",
+        "bootstrap locks",
+        "state lifecycle canon",
+        "claim ledger"
+      ],
+      "purpose": "Define ION's state law, proof law, claim boundaries, agent authority, and production/non-production separation.",
+      "relationships": [
+        "governs every system",
+        "used by Design Governor",
+        "feeds Steward acceptance"
+      ],
+      "system_id": "core_law_and_doctrine"
+    },
+    {
+      "authority_status": "active/candidate mix; branch leader registry is draft_non_production",
+      "known_risks": [
+        "registry aliases can appear executable without broker support",
+        "schema presence can be mistaken for accepted state"
+      ],
+      "name": "Registries, Schemas, and Policies",
+      "next_audit": "map each registry to consuming kernel modules and tests",
+      "primary_paths": [
+        "ION/03_registry/",
+        "ION_VNEXT/01_canon/*.yaml",
+        "ION_VNEXT/06_context/domain_weave/schemas/"
+      ],
+      "proof_surfaces": [
+        "schema validation",
+        "registry hashes",
+        "path-policy gates"
+      ],
+      "purpose": "Machine-readable definitions for carriers, actions, branches, schemas, agents, receipts, policies, models, and routes.",
+      "relationships": [
+        "feeds kernel modules",
+        "feeds Action Branching",
+        "feeds domain agents",
+        "feeds JOC projections"
+      ],
+      "system_id": "registries_schemas_policies"
+    },
+    {
+      "authority_status": "active local implementation candidate; tests must be audited for correct law, not just pass/fail",
+      "known_risks": [
+        "tests can encode wrong design law",
+        "helpers can treat markdown as proof",
+        "large kernel surface has stale modules"
+      ],
+      "name": "ION Kernel Runtime Modules",
+      "next_audit": "module-by-module map: owner, status, tests, proof contract, prose-proof risk",
+      "primary_paths": [
+        "ION/04_packages/kernel/",
+        "ION/tests/"
+      ],
+      "proof_surfaces": [
+        "pytest",
+        "JSON/YAML outputs",
+        "receipts",
+        "runner state",
+        "hashes"
+      ],
+      "purpose": "Local Python kernel for packets, queues, agents, receipts, cockpit projections, context, carriers, and guarded execution.",
+      "relationships": [
+        "implements carriers, JOC, Codex, actions, context, receipts, release"
+      ],
+      "system_id": "kernel_runtime"
+    },
+    {
+      "authority_status": "partially implemented; target model requires domain-local context/config plus proof-native receipts",
+      "known_risks": [
+        "domain folder existence is not agent readiness",
+        "role metadata can be mistaken for executable broker role"
+      ],
+      "name": "Agents, Agent Roles, and Domain-Scoped Operating Environments",
+      "next_audit": "build agent/domain registry with executable role vs candidate steward metadata distinction",
+      "primary_paths": [
+        "ION/04_agents/",
+        "ION/.agents/",
+        "ION/03_registry/*agent*",
+        "ION/04_packages/kernel/ion_agent_*.py",
+        ".codex/",
+        ".cursor/agents",
+        ".cursor/rules",
+        ".cursor/skills"
+      ],
+      "proof_surfaces": [
+        "agent invocation packets",
+        "role registries",
+        "capsule context",
+        "worker receipts"
+      ],
+      "purpose": "Define role identities, carrier profiles, agent invocation, domain folder scoping, hooks, skills, and context packages.",
+      "relationships": [
+        "launched through JOC/Codex app",
+        "scoped by Domain Weave domains",
+        "governed by Steward and Relay"
+      ],
+      "system_id": "agents_and_agent_domains"
+    },
+    {
+      "authority_status": "active/candidate mix; context is input/custody, not proof or accepted state by itself",
+      "known_risks": [
+        "context capsule becomes magic memory if not versioned/receipted",
+        "current-state JSON can be mutated accidentally"
+      ],
+      "name": "Context Systems and Context Packages",
+      "next_audit": "separate active current context, archival context, generated context, and private context",
+      "primary_paths": [
+        "ION/05_context/",
+        "ION/04_packages/kernel/context_compiler.py",
+        "ION/04_packages/kernel/ion_context_*.py",
+        "ION/ION_CONTEXT_CAPSULE.yaml",
+        "ION_VNEXT/06_context/"
+      ],
+      "proof_surfaces": [
+        "context packages",
+        "context receipts",
+        "handoff manifests",
+        "current context JSON"
+      ],
+      "purpose": "Compile and route context for agents, carriers, domains, memory, long-horizon state, and handoffs.",
+      "relationships": [
+        "feeds agents",
+        "feeds Codex queue",
+        "feeds living encyclopedia",
+        "feeds JOC"
+      ],
+      "system_id": "context_systems"
+    },
+    {
+      "authority_status": "core candidate ION substrate; not paused; not accepted ION state; real mutation requires M103F real-use gate and proof-native receipts",
+      "known_risks": [
+        "worker-return proof-boundary defect can contaminate steward return settlements",
+        "some zips are stale relative to live repo"
+      ],
+      "name": "Domain Weave",
+      "next_audit": "separate pure Domain Weave kernel from worker-return lane and audit each M103/M104 result status",
+      "primary_paths": [
+        "ION_VNEXT/06_context/domain_weave/",
+        "ION_VNEXT/01_canon/DOMAIN_WEAVE_READ_FIRST_BINDING.yaml",
+        "ION_VNEXT/07_work/M103*",
+        "ION_VNEXT/07_work/M104*",
+        "Needs_Routed/ION_DOMAIN_WEAVE_*"
+      ],
+      "proof_surfaces": [
+        "M103/M104 result JSON",
+        "Domain Weave reports",
+        "settlement receipts",
+        "impact-check output"
+      ],
+      "purpose": "Graph-aware domain/steward substrate for ownership, impact checks, dry-run activation, parent synthesis, and recursive domain-agent organization.",
+      "relationships": [
+        "maps domains",
+        "routes steward review",
+        "feeds JOC agent domain graph",
+        "feeds encyclopedia currentness"
+      ],
+      "system_id": "domain_weave"
+    },
+    {
+      "authority_status": "draft_non_production; read routes plus confirmation-gated mutation routes",
+      "known_risks": [
+        "route presence can be mistaken for execution authority",
+        "mutation routes still require confirmation/approval"
+      ],
+      "name": "Action/MCP Branching",
+      "next_audit": "branch-by-branch route map with exact handler, authority, and receipt requirement",
+      "primary_paths": [
+        "ION/03_registry/ion_action_mcp_branch_leader_registry.yaml",
+        "ION/04_packages/kernel/ion_action_mcp_branch_leaders.py"
+      ],
+      "proof_surfaces": [
+        "branch registry",
+        "branch describe/list output",
+        "receipts"
+      ],
+      "purpose": "Expose bounded route capsules for branch/context/gateway/project/codex/agent/browser/supabase/worker/receipt surfaces without a giant flat tool list.",
+      "relationships": [
+        "used by ChatGPT Browser Actions",
+        "maps to project workbench, codex queue, agent swarm, supabase cockpit"
+      ],
+      "system_id": "action_branching"
+    },
+    {
+      "authority_status": "local-only cockpit candidate; must use broker/runner for Start, not raw shell",
+      "known_risks": [
+        "UI can imply authority not present",
+        "Start endpoint can become raw launcher if not brokered"
+      ],
+      "name": "JOC / Cockpit / Operator UI",
+      "next_audit": "map panels/endpoints to backend sources and authority boundaries",
+      "primary_paths": [
+        "ION/04_packages/kernel/ion_local_cockpit_app.py",
+        "ION/04_packages/kernel/ion_cockpit_view_model.py",
+        "ION/08_ui/joc_cockpit_shell/"
+      ],
+      "proof_surfaces": [
+        "view-model JSON",
+        "local app routes",
+        "UI panels",
+        "receipts and status projections"
+      ],
+      "purpose": "Operator-facing control surface for project state, queues, agents, events, services, receipts, and Domain Weave/JOC flows.",
+      "relationships": [
+        "front-end for Persona/Relay/Steward/agents",
+        "displays Codex queue and proof-native artifacts"
+      ],
+      "system_id": "joc_cockpit"
+    },
+    {
+      "authority_status": "active candidate local worker lane; proof-boundary defect exists in return acceptance",
+      "known_risks": [
+        "markdown return gates",
+        "broad queue processing",
+        "service_tier/model slug drift",
+        "sandbox writable-root materialization"
+      ],
+      "name": "Codex Queue, Worker Runner, and CLI Carrier",
+      "next_audit": "repair proof-native return intake and map runner lifecycle statuses",
+      "primary_paths": [
+        "ION/04_packages/kernel/ion_codex_queue_runner.py",
+        "ION/04_packages/kernel/ion_agent_invocation_broker.py",
+        "ION/05_context/current/chatgpt_connector/",
+        "ION/03_registry/codex_cli_model_move_policy.yaml",
+        ".codex/config.toml"
+      ],
+      "proof_surfaces": [
+        "work requests",
+        "run.json",
+        "task_return.json",
+        "latest_return.md",
+        "context receipts",
+        "queue state"
+      ],
+      "purpose": "Bounded local implementation/test worker lane for queued packets, prepared invocations, single-request runs, and returns.",
+      "relationships": [
+        "called by JOC/agent swarm/actions",
+        "runs domain reviews and patches",
+        "feeds Steward settlement"
+      ],
+      "system_id": "codex_queue_and_workers"
+    },
+    {
+      "authority_status": "mixed: receipt infrastructure exists, but prose-proof gates are confirmed defect",
+      "known_risks": [
+        "model prose accepted as proof",
+        "wrappers as normal repair",
+        "tests encoding wrong proof law"
+      ],
+      "name": "Receipts, Custody, Settlement, and Proof-Native Evidence",
+      "next_audit": "define REQUIRED_READ_EVIDENCE, TOUCHED_PATHS, RUN_POSTURE, RETURN_CONTRACT_STATUS schemas and patch gates",
+      "primary_paths": [
+        "ION/05_context/current/*receipt*",
+        "ION/04_packages/kernel/receipts.py",
+        "ION/04_packages/kernel/settlement.py",
+        "ION/04_packages/kernel/ion_context_proof_gate.py",
+        "ION/04_packages/kernel/ion_template_action_gate.py"
+      ],
+      "proof_surfaces": [
+        "JSON/YAML receipts",
+        "hash manifests",
+        "runtime run records",
+        "settlement receipts"
+      ],
+      "purpose": "Record machine evidence, hashes, runs, reads, touched paths, settlement, acceptance, and non-claims.",
+      "relationships": [
+        "core of ION state law",
+        "feeds living encyclopedia, Steward, JOC"
+      ],
+      "system_id": "proof_receipts_custody"
+    },
+    {
+      "authority_status": "candidate bridge; current tool surfaces show no production/live authority",
+      "known_risks": [
+        "tool visibility mistaken as authority",
+        "actions vs MCP architecture conflated"
+      ],
+      "name": "MCP / Actions / ChatGPT Browser Bridge",
+      "next_audit": "map each exposed tool to read/write authority and owner module",
+      "primary_paths": [
+        "ION/04_packages/kernel/ion_chatgpt_browser_mcp_connector_contract.py",
+        "ION/04_packages/kernel/ion_custom_gpt_action_gateway.py",
+        "ION/03_registry/ion_chatgpt_browser_mcp_tool_policy.yaml",
+        "ION/03_registry/ion_custom_gpt_action_gateway_policy.yaml"
+      ],
+      "proof_surfaces": [
+        "tool manifests",
+        "policy registries",
+        "receipts",
+        "branch gateway responses"
+      ],
+      "purpose": "Bounded bridge for ChatGPT Browser to read status/proof, queue work, and use branch/action routes without arbitrary shell or secrets.",
+      "relationships": [
+        "carrier for Browser GPT/Sev",
+        "fronts Action Branching and Codex queue",
+        "reads live local status"
+      ],
+      "system_id": "mcp_actions_chatgpt_bridge"
+    },
+    {
+      "authority_status": "mirror/read-model only; not chat authority or accepted state",
+      "known_risks": [
+        "Supabase write mistaken for ION state",
+        "secret/service role leakage"
+      ],
+      "name": "Supabase Mirror / Cockpit Read Model",
+      "next_audit": "map tables/RLS/contracts and edge/gateway boundaries",
+      "primary_paths": [
+        "supabase/",
+        "ION/04_packages/kernel/ion_supabase_event_mirror.py",
+        "ION_VNEXT/05_runtime/M86_ACTIONS_MCP_SUPABASE_BRIDGE.md"
+      ],
+      "proof_surfaces": [
+        "event records",
+        "service health records",
+        "carrier mount receipts"
+      ],
+      "purpose": "Coordination/persistence plane for events, health, carrier mounts, cockpit overviews, and selected refs/hashes.",
+      "relationships": [
+        "feeds cockpit",
+        "mirrors ION state but does not own it"
+      ],
+      "system_id": "supabase_mirror"
+    },
+    {
+      "authority_status": "doctrine and partial kernel support; live full chain requires currentness proof",
+      "known_risks": [
+        "Persona mistaken for all of ION",
+        "chat correction without artifact correction"
+      ],
+      "name": "Relay, Steward, Persona, Front-Stage Council",
+      "next_audit": "map actual implemented kernels/tests vs doctrine",
+      "primary_paths": [
+        "ION/02_architecture/FRONT_STAGE_COUNCIL_PROTOCOL.md",
+        "ION/04_packages/kernel/front_stage_council_receipt.py",
+        "ION/03_registry/front_stage_council_*",
+        "ION/docs/encyclopedia/"
+      ],
+      "proof_surfaces": [
+        "front-stage receipts",
+        "claim ledgers",
+        "repair receipts"
+      ],
+      "purpose": "Human-facing synthesis, grounding, classification, acceptance, repair, emission, and operator dialogue model.",
+      "relationships": [
+        "Persona speaks, Relay grounds, Steward classifies/accepts, JOC displays"
+      ],
+      "system_id": "relay_steward_persona"
+    },
+    {
+      "authority_status": "candidate proof surfaces only; no production authority and no live execution authority",
+      "known_risks": [
+        "dry-run/review surfaces mistaken for production approval",
+        "ordinary proceed language misread as production authority"
+      ],
+      "name": "Release, Rollback, and Production Authority",
+      "next_audit": "derive exact remaining production gates from M102 and v4.1 encyclopedia",
+      "primary_paths": [
+        "ION_VNEXT/08_releases/",
+        "ION_VNEXT/07_work/M90-M102*",
+        "ION_VNEXT/02_kernel/ion_core/src/kernel/ion_vnext_*"
+      ],
+      "proof_surfaces": [
+        "OPERATOR_FINAL bundles",
+        "result JSON",
+        "hash manifests",
+        "operator review packets"
+      ],
+      "purpose": "Candidate release/rollback bundles, cutover rehearsals, production authority decision packets, and non-claim gates.",
+      "relationships": [
+        "depends on canon, proof gates, operator/steward acceptance"
+      ],
+      "system_id": "release_rollback_production_authority"
+    },
+    {
+      "authority_status": "reference/source-pool unless promoted by proof-gated packet",
+      "known_risks": [
+        "bulk copy",
+        "stale root assumptions",
+        "private/secret material leakage"
+      ],
+      "name": "Legacy, Donor, Archive, and Reference Roots",
+      "next_audit": "source-pool admissibility and promotion-status table",
+      "primary_paths": [
+        "AIM-OS/",
+        "ATLAS/",
+        "wisdomNET/",
+        "Needs_Routed/",
+        "dAimon.zip",
+        "ION_VNEXT/90_archive/",
+        "ION_VNEXT/99_private/"
+      ],
+      "proof_surfaces": [
+        "source-pool audit packages",
+        "hashes",
+        "promotion wave manifests"
+      ],
+      "purpose": "Preserve AIM-OS, ATLAS, wisdomNET, old GPT packages, Needs_Routed, dAimon, and historical lines as evidence or source pools.",
+      "relationships": [
+        "feeds Domain Weave and vNext promotion, but not active state by default"
+      ],
+      "system_id": "legacy_donor_archive"
+    },
+    {
+      "authority_status": "active audit finding; not proof that all ION is invalid; enough to require repair before relying on affected lane",
+      "known_risks": [
+        "wrappers becoming normal",
+        "agents continuing without root-cause repair"
+      ],
+      "name": "Known Defects and Quarantine Index",
+      "next_audit": "expand confirmed/suspect/safe classification across all proof gates",
+      "primary_paths": [
+        "ION_PROOF_BOUNDARY_AUDIT_PHASE0_20260525.md",
+        "ION/04_packages/kernel/ion_context_proof_gate.py",
+        "ION/04_packages/kernel/ion_template_action_gate.py",
+        "ION/tests/test_kernel_ion_context_proof_gate.py"
+      ],
+      "proof_surfaces": [
+        "source hashes",
+        "test source",
+        "failed RETURN_TEMPLATE_INVALID sequence"
+      ],
+      "purpose": "Track confirmed design defects, stale/suspect lanes, and stop conditions so they are not normalized into current design.",
+      "relationships": [
+        "feeds Design Governor",
+        "blocks worker-return settlement until proof-native repair"
+      ],
+      "system_id": "known_defects_quarantines"
+    }
+  ]
+}

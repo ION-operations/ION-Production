@@ -1,0 +1,51 @@
+ION LIVING ENCYCLOPEDIA — v4.1 CURRENT-STATE MAINTENANCE UPDATE RECEIPT
+=======================================================================
+receipt_id: ion-living-encyclopedia-v4-1-context-systems-consolidation-carrier-proof-20260616
+date: 2026-06-16 (compiled artifact dated 2026-06-17 UTC)
+actor: Opus (North Star / IONOLOGIST mount) — drafted via Composer worker, orchestrator-reviewed
+authorized_by: operator (this session)
+maintenance_protocol: ION/02_architecture/ION_LIVING_ENCYCLOPEDIA_MAINTENANCE_PROTOCOL.md
+class: living encyclopedia current-state maintenance update (candidate). NOT production
+       ratification, NOT accepted-state, NOT live-execution, NOT full-suite verification.
+
+trigger (protocol §3): #10 a prior encyclopedia current-state statement became stale
+  (context-systems map certainty + IONOLOGIST consolidation + a second carrier proven
+  since the 2026-06-04 Domain Weaver supplement).
+
+compiled artifact (protocol §6.1):
+  path:   ION/docs/encyclopedia/ION_Production_Encyclopedia_v4_1_LIVE_V100_CONTEXT_SYSTEMS_CONSOLIDATION_AND_CARRIER_PROOF.md
+  sha256: 832a9344e1b2c1d781dfcb311a0c090e76083f7efc75bfa2c247c02839a535f1
+  bytes:  22510
+  required_sections_present (protocol §4): CURRENT_STATE_OVERRIDE, SOURCE_ARTIFACTS_AND_HASHES,
+    CLAIM_LEDGER, WHAT_REMAINS_TRUE_FROM_PRIOR_BODY, WHAT_IS_STALE_OR_HISTORICAL,
+    VERSION_AND_GATE_NAMESPACE_MAP, RUNTIME_PROOF_CLAIMS_AND_NON_CLAIMS, NEXT_LAWFUL_MAINTENANCE_MOVE
+  preserved_body: ION_Production_Encyclopedia_v4_0_LIVE_V96_V100_... (which preserves v3.1) — referenced, not rewritten
+
+source artifacts and hashes (protocol §6.3; as-compiled 2026-06-17):
+  d6f76b1bb48a5a850f96e1c669acea97a96c9bb561fc8efcdcde5dfb32786f26  514443  ION/docs/encyclopedia/ION_Production_Encyclopedia_v4_0_LIVE_V96_V100_CONTEXT_SYSTEM_AND_AUTONOMOUS_LOOP_RECOVERY.md
+  c8bca49a22da26c0dddee695af5010d203de4ef764f431617bba6664db769e7c    7620  ION/05_context/current/ION_LIVING_ENCYCLOPEDIA_MANIFEST_V100.json
+  9f2907f431852e2829ae7171228a753eb67dca2d0ab84b64e88fdb59f3b43936   23416  ION/05_context/current/ion_system_definition/ION_DERIVED_ACCOUNT.candidate.md
+  ba14d0fdcdbda9392f107bf52077e8284ec74bba806138416315526bcf3af907   20022  ION/05_context/current/ion_system_definition/ION_NORTH_STAR.candidate.md
+  23236a00daa8f8c069e6c0c2263020763f0a5f95fd39884ec04c0b2f0686deed    7423  ION/05_context/current/ion_system_definition/DOMAIN_SURFACE_MAP.md
+  1848aea7bd8cb6a3224a69e7546db7a0d6ac55ba94a393a7723f7d3150f11df5    2752  ION/05_context/signals/ion_system_definition_consolidation_registry_receipt_20260616.txt
+  b6e6cabb74b44fd91110781b254847365bdf61554a181ff7a89cfeb6e07e034e    2493  ION/05_context/signals/ion_system_definition_consolidation_mount_refresh_receipt_20260616.txt
+  NOTE: source hashes are as-compiled 2026-06-17. After compile, ION_NORTH_STAR.candidate.md
+  (-> v0.8) and DOMAIN_SURFACE_MAP.md received currentness edits marking consolidation
+  steps 1-4 enacted; the v4.1 SOURCE_ARTIFACTS table and the manifest record the
+  as-compiled provenance hashes above.
+
+manifest update (protocol §6.3): ION/05_context/current/ION_LIVING_ENCYCLOPEDIA_MANIFEST_V100.json
+  - updated -> 2026-06-16
+  - latest_current_state_supplement -> v4.1 (this artifact + this receipt)
+  - prior 2026-06-04 Domain Weaver supplement preserved under prior_current_state_supplements
+  - v4_1_source_artifacts + overlay_files appended
+
+FILES_ADDED (protocol §6.5): ION/docs/encyclopedia/FILES_ADDED_V4_1.txt
+
+non-claims (protocol §2/§7):
+  - NOT_PRODUCTION_READY; documentation coherence is not production readiness.
+  - No autonomous-loop implementation proof; no full project-root test-suite claim.
+  - V96 base + V97-V100 overlays UNCHANGED (no new runtime base or overlay accepted).
+  - M105B not applied; M105C has a candidate on-disk extract only (not applied to accepted state).
+  - Candidate maintenance; this update does not ratify accepted ION state and does not
+    override source files, manifests, receipts, or tests.

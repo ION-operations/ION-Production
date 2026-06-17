@@ -1,0 +1,51 @@
+ION PRODUCTION-SPINE — G1-B CORRECTED DRY RUN: 176/176 GREEN — VERIFICATION RECEIPT
+schema: ion.production_spine.g1b_corrected_dryrun_176green.v0_1_candidate
+generated_at: 2026-06-17T05:00:00Z (approx)
+generated_by: Opus (ION North Star / IONOLOGIST mount, lead orchestrator)
+posture: candidate_only; dry-run in /tmp; no real source edits
+carrier: Composer (role.mason) [agent ccdedc32-aa89-4228-a464-defb9dfd862d, resumed]
+
+RESULT
+  Corrected combined dry run = 176/176 GREEN under production-faithful resolution.
+  (Variant A copy = 174/2; Variant B symlink, which reproduces the real repo's module-relative DEFAULT,
+   = 176/0.) The original 78/176 was ENTIRELY a /tmp fixture gap: the bare temp tree had no repo-root
+   markers, so resolve_repo_root(__file__) fell through to the module file and DEFAULT_WORKSPACE_MANIFEST
+   became a degenerate (unmkdir-able) path -> NotADirectoryError on every load_workspace_authority call.
+
+GENUINE RESIDUAL FORKS: NONE
+  The 2 Variant-A residuals are second-order /tmp path-string artifacts (tests hardcode the real absolute
+  manifest_path); they clear under Variant B. The 3 module-level differences (DEFAULT computation, load
+  default, artifact policy) are DORMANT under the canonical manifest (require_artifacts_outside_active_repo
+  = true), with the monolith being the safer side.
+
+VERIFIED (orchestrator, verify-not-trust)
+  - Artifact appended: G1B_PATH_AUTHORITY_ADDITIVE_PORT_CANDIDATE.candidate.md (~30.6 KB), §"CORRECTED
+    COMBINED DRY RUN (manifest provisioned)" present; 176 cited throughout; corrected verdict = production-correct.
+  - Source-edit guard EMPTY (no real .py modified; experiments stayed in /tmp).
+  - Nothing applied: monolith ion_path_authority.py still lacks discover_workspace_manifest; monolith
+    kernel/__init__.py still has no extend_path.
+  - Independent code-level corroboration (orchestrator read both modules + tests + real manifest):
+    forks dormant under the real manifest; tests hardcode real abs paths; discover stays opt-in.
+  - Stale original verdict marked SUPERSEDED in the artifact (points to §10 corrected).
+
+CONCLUSION — G1 RECONCILIATION SOLVED-PENDING-APPLY
+  The FULL 29-control kernel merge requires only:
+    (1) 2-line extend_path scaffold in monolith kernel/__init__.py, and
+    (2) ~25-line additive discover_workspace_manifest port (+ import os, + WORKSPACE_MANIFEST_NAME) into
+        monolith ion_path_authority.py (no edits to existing monolith functions).
+  All 6 diverged controls reconcile to the monolith (5 natively; path_authority via the additive port).
+  Both changes are ADDITIVE and zero-impact on the live runtime (extend_path is a no-op until ion_core/src
+  is on sys.path; discover is unused by the live default).
+
+SECURITY NOTE (standing)
+  Keep discover_workspace_manifest OPT-IN. Wiring it into the monolith live default (load_workspace_authority(None))
+  would widen manifest trust (env-driven + upward walk + symlink-follow) and remains a separate, security-gated decision.
+
+NEXT
+  Operator APPLY gate — the first real source write of the production push. Recommended scope: the safe
+  foundation (additive port + scaffold + a documented unified-pytest gate), verified 176/176 in the real
+  repo immediately after; defer live-runtime PYTHONPATH binding + duplicate collapse (G1-A3) to follow-on gates.
+
+NON-CLAIMS
+  Candidate; no source edited; "production-correct" = the 176-control gate passes under the real manifest,
+  not a production-authority promotion; operator ratifies the apply.

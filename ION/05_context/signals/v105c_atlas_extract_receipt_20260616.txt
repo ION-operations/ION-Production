@@ -1,0 +1,48 @@
+ION M105C Full System Audit Atlas — Candidate Extract Receipt
+=============================================================
+date: 2026-06-16
+action: extract M105C atlas to candidate dir
+class: candidate / not-applied-to-accepted-state
+authorized-by: operator (this session)
+
+Authority boundary
+------------------
+No accepted-state, production, live-execution, deployment, git-push, secrets,
+service-restart, or Supabase-mutation claims. Candidate landing only.
+
+Source
+------
+outer_zip: ION/05_context/current/portable_agent_domain_packages/role_ionologist__domain_ion_system_definition/20260526T144122Z/role_ionologist__domain_ion_system_definition__drop_in.zip
+inner_zip_member: .ion/source_refs/Needs_Routed/M105C_FULL_SYSTEM_AUDIT_ATLAS_FOUNDATION_PACKAGE.zip
+inner_m105c_zip_sha256: e2026f29869387e70fc592881170ef07a245bc5cfa7da44a058407dd0cd858b4
+companion_witness_not_extracted: .ion/source_refs/Needs_Routed/M105B_LIVING_ENCYCLOPEDIA_READ_FIRST_POINTER_BINDING_PACKAGE.zip
+
+Destination
+-----------
+ION/05_context/current/ion_system_definition/ION_SYSTEM_AUDIT_ATLAS/
+README_CANDIDATE.md (written at destination root)
+
+Files landed (under M105C_FULL_SYSTEM_AUDIT_ATLAS_FOUNDATION/)
+---------------------------------------------------------------
+  582 bytes  README.md
+ 9270 bytes  ION_LIVING_ENCYCLOPEDIA_V4_2_FULL_SYSTEM_AUDIT_ATLAS_SUPPLEMENT.md
+20614 bytes  ION_SYSTEM_AUDIT_TAXONOMY_V105C.json  (18 systems)
+ 1928 bytes  ION_SYSTEM_RELATIONSHIP_MAP_V105C.md
+ 1964 bytes  ION_STALE_AND_QUARANTINE_INDEX_V105C.md
+26836 bytes  ION_FULL_SYSTEM_AUDIT_ATLAS_MANIFEST_V105C.json
+  382 bytes  VALIDATION_REPORT.json
+ 2089 bytes  m105c_full_system_audit_atlas_foundation_result_20260525.json
+
+Original M105C result flags (from extracted result JSON)
+--------------------------------------------------------
+status: settled_candidate
+worker_started: false
+accepted_state_claim: false
+queue_processing_started: false
+
+Discrepancies vs witness-index expected member list
+---------------------------------------------------
+Expected six core atlas artifacts plus README — all present.
+Additional package members also landed (not in the six-file witness list):
+  VALIDATION_REPORT.json
+  m105c_full_system_audit_atlas_foundation_result_20260525.json

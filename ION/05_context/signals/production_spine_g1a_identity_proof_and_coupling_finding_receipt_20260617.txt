@@ -1,0 +1,38 @@
+ION PRODUCTION-SPINE — G1-A IDENTITY PROOF + COUPLING FINDING RECEIPT
+schema: ion.production_spine.g1a_identity_proof_and_coupling.v0_1_candidate
+generated_at: 2026-06-17T04:20:00Z (approx)
+generated_by: Opus (ION North Star / IONOLOGIST mount, lead orchestrator)
+posture: candidate_only; READ-ONLY investigation; no source edits
+
+CONTEXT
+  Operator gated G1-A as a split (apply identical-unify now; hold the namespace scaffold for
+  diffs-first). Read-only investigation corrected the premise.
+
+PROVEN (full sha256, monolith == ion_core)
+  ion_ai_movement_gate                    06a4eb9e099d...356161  IDENTICAL
+  ion_codex_work_request_target_binding   21d98c067132...a5c9c6  IDENTICAL
+  ion_template_action_gate                bb1d1868db94...07a634  IDENTICAL
+  (6 diverged confirmed: agent_cwd_boundary, carrier_mount_receipt, context_proof_gate,
+   operator_artifact_hygiene_check, path_authority, workspace_root_registry)
+
+FINDING (premise correction)
+  The 3 identical ion_core modules are imported by KEPT ion_core harnesses
+  (ion_vnext_readiness_lock, ion_vnext_boot_dogfood_smoke), by the 176-test control suite, and
+  each is pinned in the canon CONTROL_SURFACE_REGISTRY. => Collapsing them BEFORE the namespace
+  scaffold would break ion_core. The collapse is COUPLED to (and must FOLLOW) the scaffold.
+
+CORRECTED ORDER
+  G1-A1 identity proof .................. DONE (this receipt + G1A_IDENTICAL_UNIFY_IDENTITY_PROOF.candidate.md)
+  G1-A2 namespace scaffold ............. candidate-diffs-first, gated (live kernel/__init__.py edit)
+                                         proven via temp-dir dry run (ion_core 176 + resolution + monolith smoke)
+  G1-A3 collapse 3 duplicates .......... after scaffold; behavior-neutral (identical bytes)
+
+OPEN EMPIRICAL QUESTION (for the G1-A2 dry run, reported not assumed)
+  monolith-first resolution routes ion_core's DIVERGED-control tests to monolith versions; if any
+  assert ion_core-specific behavior, the scaffold is not green-neutral until G1-B (diverged reconcile).
+
+ARTIFACT
+  PRODUCTION_SPINE_AUDIT/KERNEL_RECONCILIATION/G1A_IDENTICAL_UNIFY_IDENTITY_PROOF.candidate.md
+
+NON-CLAIMS
+  Candidate; no source edited; collapse justified but not executed; scaffold + diverged remain gated.

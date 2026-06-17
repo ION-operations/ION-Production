@@ -1,0 +1,46 @@
+ION PRODUCTION-SPINE — G1 KERNEL RECONCILIATION PLAN: VERIFICATION RECEIPT
+schema: ion.production_spine.g1_kernel_reconciliation_plan_verification.v0_1_candidate
+generated_at: 2026-06-17T04:10:00Z (approx)
+generated_by: Opus (ION North Star / IONOLOGIST mount, lead orchestrator)
+posture: candidate_only
+carrier: Composer (role.mason)  [agent 0a02433d-eaff-42b2-9a62-178ff1528d20]
+
+ARTIFACT (durable, git-trackable)
+  PRODUCTION_SPINE_AUDIT/KERNEL_RECONCILIATION/KERNEL_RECONCILIATION_PLAN.candidate.md
+  24096 bytes; 29-control decision table (117 table rows); 23 sections; candidate/read-only posture.
+
+VERIFICATION (orchestrator, verify-not-trust) — ALL GREEN
+  - Source-edit guard EMPTY: no .py under ION_VNEXT or ION/04_packages/kernel modified during the run.
+  - Class counts corroborated against ground truth on disk:
+      monolith kernel modules = 463 (plan said ~463) OK
+      ion_core kernel modules = 30 = 29 controls + __init__ (matches CONTROL_SURFACE_REGISTRY) OK
+      shared control true-names (both trees) = 9 = 3 IDENTICAL + 6 DIVERGED OK
+      vNext-only = 29 - 9 = 20 = 16 harnesses + 4 primitives OK
+      monolith-only = 0 OK
+  - monolith kernel/__init__.py EXISTS and does NOT yet use pkgutil.extend_path
+      => the proposed namespace scaffold is an additive change to the live import root (handle with care).
+  - The 9 shared on disk: ion_agent_cwd_boundary, ion_ai_movement_gate, ion_carrier_mount_receipt,
+      ion_codex_work_request_target_binding, ion_context_proof_gate, ion_operator_artifact_hygiene_check,
+      ion_path_authority, ion_template_action_gate, ion_workspace_root_registry.
+
+RECOMMENDATION (from plan, verified sound)
+  Monolith-primary namespace merge: monolith stays single on-disk authority for live-enforced controls +
+  4 promoted primitives; keep 16 M87-M102 harnesses in ion_core; pkgutil.extend_path in monolith
+  kernel/__init__.py + unified PYTHONPATH (monolith first); delete duplicate shared modules from ion_core
+  post-reconcile. Rejected: flipping authority to ion_core; a third shared package as the primary move.
+
+SEQUENCED GATED PACKETS (in plan)
+  G1-A PCKT-G1-IDENTICAL-UNIFY-NAMESPACE-MERGE-SCAFFOLD-20260617  (first; identical unify + scaffold + smoke tests)
+  G1-B PCKT-G1-DIVERGED-PROMOTE-MONOLITH-20260617
+  G1-C PCKT-G1-PRIMITIVES-PROMOTE-20260617
+  G1-D PCKT-G1-CUTOVER-HARNESS-BINDING-20260617
+  G1-E PCKT-G1-REGISTRY-RUNTIME-BINDING-20260617
+
+GATE
+  G1-A is the FIRST source-touching step of the entire production push. Identical-unify is provably safe
+  (byte-identical controls); the namespace scaffold edits the live kernel/__init__.py import root and
+  warrants candidate-diff-first review. Awaiting operator gate before any edit.
+
+NON-CLAIMS
+  Candidate plan; not executed; no authority set/claimed; operator ratifies. Plan will be re-verified
+  (and nemesis-audited) at execution time, packet by packet.
