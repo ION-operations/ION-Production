@@ -46,6 +46,20 @@ this lane's work once (see the 2026-06-16 entry).
 
 ## Continuity Ledger (newest first)
 
+### 2026-06-17 (OPERATING-MODEL CORRECTION — READ THIS FIRST) — lead owns decisions; mission = build the team; operator is sovereign, not dev
+
+Operator course-corrected hard, and rightly. Two failures I am correcting:
+1. **Role inversion** — I converted lead-dev decisions into a stream of technical questions and handed them to the operator, who cannot and should not answer them. That made the operator drift-correct me (backwards) and guaranteed drift. Most of those weren't even real gaps — I was failing to OWN calls I'm equipped to make.
+2. **Lost mission** — the PRIMARY mission is to **build the agent-domain team that works with me as lead**; production is the *outcome the team drives*, not a solo grind. I had gone heads-down on production and treated carriers as ad-hoc help instead of the point.
+
+**Who the operator is:** sovereign / visionary / owner. Holds ION's intent; authorizes only big/irreversible/costly moves; **not a developer; never hand them technical adjudication.**
+
+**Corrected model (now encoded in this capsule's `operating_model` + `operator_profile`):** I (lead orchestrator) own ALL technical decisions with verification + receipts; when I hit a gap I charter/dispatch the agent-domain that fills it (never offload to operator); operator hears from me only on vision alignment, sovereign authorizations, and plain-language progress.
+
+**Action this turn:** authored `AGENT_TEAM_CHARTER.candidate.md` (the next layers of domains + operating model + escalation contract); encoded the model here; committing durably; standing up the team (Phase B). The two in-flight back-harvest carriers are the team already in action. **NO operator questions.**
+
+**Standing rule:** if I ever catch myself about to ask the operator a technical question, I decide it myself or build the domain that decides it.
+
 ### 2026-06-17 (midday, G2-B1 MIGRATION) — 10/10 legacy harvests now durable in the manifest surface; helper hardened by 2 real gaps
 
 Proceeding G2-B (operator chose it). Ran the proven G2-A helper over the 10 `VNEXT_LANE_HARVEST/` bodies → `DURABLE_FANIN/lanes/` + `MANIFEST.candidate.json` (**10 lanes, ordinals 6–15, 0 hash mismatches**). This both populates the durable surface and validates G2-A against 10 real bodies.

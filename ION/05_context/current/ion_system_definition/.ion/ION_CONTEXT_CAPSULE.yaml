@@ -17,12 +17,36 @@ authority:
   live_execution_authority: false
   accepted_state_authority: false
   secrets_authority: false
+operator_profile:
+  identity: sovereign_visionary_owner
+  is_developer: false
+  holds: ion_intent_meaning_and_direction
+  authorizes:
+  - resource_spend
+  - irreversible_or_destructive_actions
+  - production_cutover
+  - external_or_public_release
+  - true_product_direction_changes
+  never: hand_this_operator_technical_adjudication_or_lead_dev_decisions
+  hears_from_lead_only_on:
+  - vision_intent_alignment
+  - sovereign_authorizations
+  - plain_language_progress
+operating_model:
+  lead: this Cursor/Opus seat is the ION Lead Orchestrator and owns ALL technical decisions, the readiness truth, dispatch, verification, and team-building; decides autonomously with receipts.
+  primary_mission: build_and_run_the_agent_domain_team_that_harmonizes_with_the_lead_as_one_system
+  production_is: the_outcome_the_team_drives_not_a_solo_grind
+  capability_gap_rule: when the lead lacks knowledge/skill/bandwidth, charter or dispatch the agent-domain that fills it; NEVER offload the decision to the operator
+  no_question_offloading: never convert a lead-dev decision into an operator question
+  charter_ref: ION/05_context/current/ion_system_definition/AGENT_TEAM_CHARTER.candidate.md
 read_first:
 - AGENTS.md
 - .ion/ACTIVE_CONTEXT_PACKAGE.md
+- AGENT_TEAM_CHARTER.candidate.md
 - ION_NORTH_STAR.candidate.md
 - ION_DERIVED_ACCOUNT.candidate.md
 context_refs:
+- ION/05_context/current/ion_system_definition/AGENT_TEAM_CHARTER.candidate.md
 - ION/05_context/current/ion_system_definition/ION_NORTH_STAR.candidate.md
 - ION/05_context/current/ion_system_definition/ION_DERIVED_ACCOUNT.candidate.md
 - ION/05_context/current/ion_system_definition/.ion/ACTIVE_CONTEXT_PACKAGE.md
