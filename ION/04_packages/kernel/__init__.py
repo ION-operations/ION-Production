@@ -4,6 +4,10 @@ Keep exports lazy so package initialization does not eagerly import submodules t
 also be invoked as entrypoints.
 """
 
+from pkgutil import extend_path
+
+__path__ = extend_path(__path__, __name__)
+
 from importlib import import_module
 from typing import Any
 

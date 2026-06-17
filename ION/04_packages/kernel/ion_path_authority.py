@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 from dataclasses import dataclass
 from pathlib import Path, PurePath
 from typing import Any, Mapping
@@ -13,6 +14,7 @@ from .ion_workspace_paths import resolve_repo_root
 
 SCHEMA_ID = "ion.path_authority_decision.v1"
 MANIFEST_SCHEMA_ID = "ion.workspace_manifest.v1"
+WORKSPACE_MANIFEST_NAME = "ION_WORKSPACE_MANIFEST.yaml"
 DEFAULT_WORKSPACE_MANIFEST = (resolve_repo_root(Path(__file__)) / "ION_WORKSPACE_MANIFEST.yaml").resolve(strict=False)
 
 CLASS_ACTIVE_REPO = "ACTIVE_REPO"
@@ -116,6 +118,28 @@ def _load_simple_yaml(path: Path) -> dict[str, Any]:
 
 def _resolve_path(value: str | Path) -> Path:
     return Path(value).expanduser().resolve(strict=False)
+
+
+def discover_workspace_manifest(start: str | Path | None = None) -> Path:
+    """Resolve the workspace manifest from explicit or marker-discovered context."""
+
+    env_path = os.environ.get("ION_WORKSPACE_MANIFEST")
+    if env_path:
+        path = _resolve_path(env_path)
+        if not path.is_file():
+            raise FileNotFoundError(f"ION_WORKSPACE_MANIFEST does not exist: {path}")
+        return path
+
+    start_path = _resolve_path(start or Path.cwd())
+    if start_path.is_file():
+        start_path = start_path.parent
+    for candidate_root in (start_path, *start_path.parents):
+        candidate = candidate_root / WORKSPACE_MANIFEST_NAME
+        if candidate.is_file():
+            return candidate.resolve(strict=False)
+    raise FileNotFoundError(
+        f"{WORKSPACE_MANIFEST_NAME} not found by upward marker discovery from {start_path}"
+    )
 
 
 def load_workspace_authority(manifest_path: str | Path | None = None) -> WorkspaceAuthority:
