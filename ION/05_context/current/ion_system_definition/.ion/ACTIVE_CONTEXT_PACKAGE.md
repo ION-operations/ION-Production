@@ -46,6 +46,22 @@ this lane's work once (see the 2026-06-16 entry).
 
 ## Continuity Ledger (newest first)
 
+### 2026-06-17 (midday, G2-B1 MIGRATION) — 10/10 legacy harvests now durable in the manifest surface; helper hardened by 2 real gaps
+
+Proceeding G2-B (operator chose it). Ran the proven G2-A helper over the 10 `VNEXT_LANE_HARVEST/` bodies → `DURABLE_FANIN/lanes/` + `MANIFEST.candidate.json` (**10 lanes, ordinals 6–15, 0 hash mismatches**). This both populates the durable surface and validates G2-A against 10 real bodies.
+- **The migration EXPOSED 2 real helper gaps (now fixed):** (1) lanes 14/15 carry the ordinal in a SEPARATE `lane_ordinal:` field, not inline `(ordinal N)` → added a fallback read; (2) LANE13's `lane_id` = `domain.ion_vnext_release_cutover` produced a dotted slug `LANE13_DOMAIN.ION_...` → replaced `_domain_slug` with a real sanitizer (non-alnum→`_`, strip `DOMAIN_` prefix). Re-ran clean: **10/10**; smoke still **5/5** (LANE08 sha unchanged `ef6244141d45`). This is exactly the coverage hardening G2-B is for — caught before it mattered.
+- **COMMITTED** the durable bodies + manifest + apply-gate doc + receipt + ledger/burndown (data + docs are durable). **HELD:** the helper source + 2 hooks (the G2-A *source* commit is still operator-gated).
+- **NEXT:** G2-B3 — back-harvest the 5 missing topology lanes (1–5) via Composer (pruned originals unrecoverable); then broaden live-capture (derive identity from the work-request when a body has no header).
+
+### 2026-06-17 (morning, CORPUS COMMITTED + G2-A APPLIED) — durability realized in git; second real source apply landed (held)
+
+Operator answered the apply gate: **apply G2-A (hold commit)** + **commit the corpus now**.
+- **CORPUS COMMITTED — `ddfdb219`** "docs: make production-spine + IONOLOGIST domain corpus durable" (62 files, +11,897): all 45 `ion_system_definition` docs (10 harvest bodies, burn-down, G1/G2 plans + dry-run reports, M105C atlas, North Star/derived/surface-map, **and the `.ion` continuity lane**) + 17 mandate receipts. **Scoped carefully** — `signals/` had **342** untracked (mostly unrelated historical ATLAS_/CODEX_/NEMESIS_/VIZIER_/cosmos); I added ONLY `production_spine_*` + 4 consolidation receipts. The production-spine work is now durable in git (not working-tree-only). G2's own durability thesis now applies to my own corpus.
+- **G2-A APPLIED (held)** — NEW module `kernel/ion_durable_fanin.py` + 2 guarded **fail-soft** hooks (connector `:5095`, runner `:8543`). **VERIFIED in the real repo:** import OK; live harvest smoke **5/5** (fresh writes body+manifest ordinal 8 + `intake_accepted`/`semantically_settled` honesty fields; idempotent; missing-section reject; fail-soft no-raise); merged **176/176** control suite still green; real `DURABLE_FANIN/` surface unpolluted (temp-root smoke); **engine `ion_domain_weaver.py` untouched**. Path proven correct (connector/runner `root` == `ION_Developement` → `DURABLE_FANIN_REL` resolves to the `ddfdb219`-committed surface). Doc `DURABLE_FANIN/G2A_APPLY_GATE.md` + receipt.
+- **COMMIT HELD** (G2-A source; operator go). Revert = `rm ion_durable_fanin.py` + delete the two `# G2-A` blocks.
+- **Scope honesty:** G2-A captures header-bearing dynamic-swarm bodies (the re-drive cohort); raw live bodies lacking the header fail-soft no-op → broadening coverage (request-derived identity + section resolver) is **G2-B**.
+- **NEXT (all gated):** (a) G2-A commit; (b) G2-B (migrate 10 legacy harvests + back-harvest lanes 1–5 + broaden capture); G1 runtime cutover + G1-A3 collapse still pending.
+
 ### 2026-06-17 (morning, G2-A DRY-RUN green + VERIFIED) — mechanism proven; durability nuance surfaced
 
 [G2-A durable-harvest dry-run](1b65b76b-3894-4fb2-ab82-94a3c00878c2) returned GREEN. Doc: `DURABLE_FANIN/G2A_DRYRUN.candidate.md` (full helper source + 2 hook diffs) + receipt.

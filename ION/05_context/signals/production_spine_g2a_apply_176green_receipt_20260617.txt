@@ -1,0 +1,34 @@
+schema_id: ion.production_spine.g2a_apply_receipt.v0_1_candidate
+generated_at: 2026-06-17 (orchestrator apply + verification)
+posture: candidate_only
+packet: PCKT-G2-DURABLE-HARVEST-CAPTURE-AT-INTAKE-20260617
+
+OPERATOR DECISION
+- G2-A: apply now -> verify -> HOLD commit (mirror G1 flow).
+- Durability: commit the production-spine corpus now; commit harvest bodies as they land.
+
+WHAT WAS APPLIED (working tree; commit HELD)
+- NEW: ION/04_packages/kernel/ion_durable_fanin.py (durable_fanin_harvest_lane_body; fail-soft; idempotent; supersede; 9-section validate; manifest upsert; additive metadata).
+- HOOK connector: ion_chatgpt_browser_mcp_connector_contract.py ~:5095 (after accepted _write_json) -- guarded `if accepted and text.strip():` + lazy import + outer try/except pass.
+- HOOK runner: ion_codex_queue_runner.py ~:8543 (in `if accepted:` finalization, before _write_run_packet) -- reads task_return_body_path via _read_rel_text_if_exists; lazy import; outer try/except pass.
+- Footprint: 1 new module + ~22 added lines per hook file (the 2 hook files were already pre-dirty; engine ion_domain_weaver.py UNTOUCHED).
+
+VERIFICATION (real repo)
+- Import sanity: IMPORT_OK (new module + connector + runner import as kernel.*).
+- Live harvest smoke (temp root, committed LANE08 fixture): SMOKE_OK -- fresh harvest (body+manifest, ordinal 8, intake_accepted=true/semantically_settled=false), idempotent re-harvest, missing-section reject, fail-soft (no raise).
+- Merged 176-control suite (G1 gate): 176/176 PASS (no regression).
+- Real DURABLE_FANIN/ surface unpolluted by smoke (temp root only): confirmed (only the 3 candidate docs; no lanes/, no MANIFEST).
+
+PATH CORRECTNESS
+- connector/runner root == ION_Developement (pyproject.toml + ION/REPO_AUTHORITY.md marker); DURABLE_FANIN_REL resolves to the surface committed in ddfdb219.
+
+GIT STATE
+- 9ac8b9b7 feat: reconcile dual kernel namespace via additive scaffold (G1 foundation; committed earlier).
+- ddfdb219 docs: make production-spine + IONOLOGIST domain corpus durable (62 files; HEAD).
+- G2-A source = UNCOMMITTED working tree (HELD). Not pushed.
+
+SCOPE / NON-CLAIMS
+- G2-A captures header-bearing dynamic-swarm bodies; raw live bodies lacking the header fail-soft no-op (broader coverage = G2-B).
+- No reconciliation/fan-in behavior change (G2-C/D); no honesty/nemesis behavior change (G2-E/F).
+- Candidate only; synthesis/apply is not settlement; no accepted-state move; no live worker start; no commit of source.
+- Revert: rm ion_durable_fanin.py + delete the two `# G2-A` blocks.
