@@ -23,6 +23,30 @@ def test_template_action_gate_rejects_missing_template_proof():
     assert "missing_template_action_proof_heading" in result["findings"]
 
 
+def test_template_action_gate_accepts_markdown_scalar_variants():
+    output = """### CONTEXT PROOF
+- path: ION/REPO_AUTHORITY.md
+  sha256: abc
+  line: L1
+  excerpt: authority
+
+### TEMPLATE ACTION PROOF
+- **template_id:** ion.template.patch_proposal.v1
+- **action_id:** cursor_queue_runner_process_once
+- **result:** designed
+touched_paths:
+  - ION/05_context/current/example.json
+
+### RESULT
+bounded cursor-cli proof run
+"""
+    result = evaluate_template_action_proof(worker_output=output)
+    assert result["accepted"] is True
+    assert result["template_id"] == "ion.template.patch_proposal.v1"
+    assert result["action_id"] == "cursor_queue_runner_process_once"
+    assert result["touched_paths"] == ["ION/05_context/current/example.json"]
+
+
 def test_template_action_gate_rejects_path_traversal():
     output = """### CONTEXT PROOF
 - proof

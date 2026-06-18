@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import argparse
 import html
+import inspect
 import json
 import mimetypes
 import os
@@ -31,6 +32,15 @@ from .ion_agent_comms import ack_agent_message, create_agent_message_branch, lis
 from .ion_agent_comms_runs import continue_agent_comms_run, pickup_agent_comms_run, start_agent_comms_run, start_agent_comms_run_worker
 from .ion_agent_comms_audit_actions import audit_agent_comms_run, maybe_audit_agent_comms_result
 from .ion_agent_spawn_templates import execute_agent_spawn_template
+from .ion_agent_visual_identity import execute_agent_visual_identity_action
+from .ion_asset_library import (
+    build_asset_library_model,
+    create_share_package,
+    index_local_folder,
+    resolve_asset_blob,
+    upload_asset_files,
+    upsert_cloud_connection,
+)
 from .ion_steward_dispatcher import pause_steward_dispatcher, route_steward_dispatcher, run_steward_dispatcher_runner, tick_steward_dispatcher
 from .ion_cockpit_view_model import (
     build_cockpit_view_model,
@@ -47,6 +57,7 @@ from .ion_browser_gpt_screen_automation import (
 from .ion_automation_control_plane import execute_automation_action
 from .ion_build_workspace_model import build_build_workspace_model
 from .ion_cockpit_service_manager import restart_service
+from .ion_codex_chat_identity import build_codex_chat_identity_model
 from .ion_codex_conversation_archive import attach_codex_conversation_to_chat, build_codex_conversation_archive
 from .ion_codex_context_timeline import build_codex_context_timeline_model
 from .ion_codex_git_rollback import (
@@ -57,6 +68,12 @@ from .ion_codex_git_rollback import (
 )
 from .ion_codex_ide_workbench import build_codex_ide_workbench_model
 from .ion_codex_queue_runner import stop_active_codex_queue_runner
+from .ion_cursor_carrier_chat import (
+    build_cursor_carrier_chat_model,
+    record_cursor_chat_turn,
+    render_cursor_carrier_console_html,
+    run_cursor_carrier_chat_turn,
+)
 from .ion_dual_codex_chat import (
     WRITE_CONFIRMATION_TOKEN,
     build_dual_codex_chat_model,
@@ -69,7 +86,21 @@ from .ion_dual_codex_chat import (
     resolve_chat_model_override,
 )
 from .ion_domain_weaver import execute_domain_weaver_action
-from .ion_local_cockpit_app import REACT_CSP, build_cockpit_html, build_react_cockpit_html, resolve_react_static_asset
+from .ion_domain_weaver_context_catalog import build_domain_weaver_context_catalog
+from .ion_orchestrator_actions import (
+    build_orchestrator_lightweight_model,
+    build_orchestrator_lightweight_status,
+    record_orchestrator_action_receipt,
+)
+from .ion_local_cockpit_app import (
+    REACT_CSP,
+    build_cockpit_html,
+    build_react_cockpit_html,
+    chat_workspace_file_content_type,
+    resolve_chat_image_artifact,
+    resolve_chat_workspace_file,
+    resolve_react_static_asset,
+)
 from .ion_system_diagnostics import (
     build_system_diagnostics_model,
     execute_system_diagnostic_action,
@@ -110,32 +141,54 @@ from .ion_project_workbench import (
     project_patch_revert,
     resolve_project,
 )
+from .ion_scope_cockpit import build_scope_cockpit_model
 from .ion_public_cockpit_auth import (
     ALLOWED_EMAILS_ENV,
     GOOGLE_CLIENT_ID_ENV,
+    GOOGLE_CLIENT_ID_FILE_ENV,
+    GOOGLE_CLIENT_JSON_FILE_ENV,
     GOOGLE_CLIENT_SECRET_ENV,
+    GOOGLE_CLIENT_SECRET_FILE_ENV,
     GOOGLE_REDIRECT_URI_ENV,
     INVITE_TOKENS_ENV,
     OAUTH_STATE_COOKIE,
     PUBLIC_COCKPIT_TOKEN_ENV,
     SESSION_COOKIE,
     SESSION_SECRET_ENV,
+    SESSION_SECRET_FILE_ENV,
     auth_status,
     authorize_google_user,
     build_google_authorization_url,
     clear_cookie_header,
     cockpit_session_secret,
     exchange_google_code_for_userinfo,
+    google_redirect_uri,
     google_oauth_configured,
+    hosted_cockpit_mode,
+    local_loopback_operator_principal,
     make_oauth_state_cookie,
     make_session_cookie,
+    operator_user_id,
     safe_next_path,
+    validate_operator_credentials,
     validate_oauth_state_cookie,
     validate_permission_token,
     validate_session_cookie,
 )
+from .ion_helixion_account_profile import build_helixion_account_profile_model
 
 PROJECT_LAUNCH_CSP = "default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src 'self'; img-src 'self' data:; frame-src http://127.0.0.1:* http://localhost:*; child-src http://127.0.0.1:* http://localhost:*; base-uri 'none'; frame-ancestors 'none'"
+PUBLIC_HTML_CSP = (
+    "default-src 'none'; "
+    "style-src 'unsafe-inline'; "
+    "script-src 'unsafe-inline' https://static.cloudflareinsights.com; "
+    "connect-src 'self' https://cloudflareinsights.com; "
+    "frame-src 'self'; "
+    "img-src 'self' data:; "
+    "form-action 'self' https:; "
+    "base-uri 'none'; "
+    "frame-ancestors 'none'"
+)
 
 SCHEMA_ID = "ion.chatgpt_browser_http_mcp_preview.v1"
 VERSION_LINE = "V121_CHATGPT_BROWSER_HTTP_MCP_PREVIEW"
@@ -156,22 +209,37 @@ OUTPUT_RELATIVE_PATH = Path("ION/05_context/current/CHATGPT_BROWSER_HTTP_MCP_PRE
 APP_PATHS = {"/", "/app", "/ion", "/projects"}
 COCKPIT_UI_PATHS = {
     "",
+    "account",
+    "agent-comms",
     "agents",
+    "apps",
+    "build",
     "chatgpt-dom-twin",
     "browser-gpt",
     "chat",
     "collab",
     "codex",
+    "databases",
     "devsecops",
     "docs",
+    "domain-weave",
     "extension",
     "gates",
+    "ide",
+    "indexing",
+    "integrations",
     "legacy",
     "projects",
     "queue",
     "receipts",
+    "sandbox",
+    "scope",
     "system",
+    "team-comms",
+    "ui-editor",
+    "weave",
     "worker",
+    "ai-editor",
 }
 HELIXION_SITE_NAV_ITEMS = (
     {"id": "home", "label": "Home", "href": "/", "icon": "home"},
@@ -179,6 +247,7 @@ HELIXION_SITE_NAV_ITEMS = (
     {"id": "cockpit", "label": "Cockpit", "href": "/cockpit", "icon": "grid"},
     {"id": "chat", "label": "Codex Chat", "href": "/cockpit/chat", "icon": "chat"},
     {"id": "worker", "label": "Worker", "href": "/cockpit/worker", "icon": "pulse"},
+    {"id": "cursor", "label": "Cursor CLI", "href": "/cockpit/cursor", "icon": "pulse"},
     {"id": "status", "label": "Status JSON", "href": "/app/status.json", "icon": "receipt"},
     {"id": "health", "label": "Health", "href": "/health", "icon": "check"},
     {"id": "login", "label": "Login", "href": "/cockpit/login", "icon": "key"},
@@ -292,6 +361,30 @@ def _payload_list(payload: Mapping[str, Any], key: str) -> list[str]:
 def _payload_mapping(payload: Mapping[str, Any], key: str) -> Mapping[str, Any] | None:
     value = payload.get(key)
     return value if isinstance(value, Mapping) else None
+
+
+def _selected_mount_chat_turn_kwargs(payload: Mapping[str, Any]) -> dict[str, Any]:
+    kwargs: dict[str, Any] = {}
+    selected_mount_id = str(payload.get("selected_mount_id") or "").strip()
+    selected_mount_path = str(payload.get("selected_mount_path") or "").strip()
+    selected_mount_manifest = payload.get("selected_mount_manifest")
+    if selected_mount_id:
+        kwargs["selected_mount_id"] = selected_mount_id
+    if selected_mount_path:
+        kwargs["selected_mount_path"] = selected_mount_path
+    if isinstance(selected_mount_manifest, Mapping):
+        kwargs["selected_mount_manifest"] = dict(selected_mount_manifest)
+    elif isinstance(selected_mount_manifest, str) and selected_mount_manifest.strip():
+        kwargs["selected_mount_manifest"] = selected_mount_manifest.strip()
+    return kwargs
+
+
+def _call_record_chat_turn(root: str | Path, **kwargs: Any) -> dict[str, Any]:
+    signature = inspect.signature(record_chat_turn)
+    if any(parameter.kind == inspect.Parameter.VAR_KEYWORD for parameter in signature.parameters.values()):
+        return record_chat_turn(root, **kwargs)
+    supported_kwargs = {key: value for key, value in kwargs.items() if key in signature.parameters}
+    return record_chat_turn(root, **supported_kwargs)
 
 
 def _payload_int(payload: Mapping[str, Any], key: str, default: int) -> int:
@@ -574,14 +667,30 @@ def _tool_schema(name: str) -> dict[str, Any]:
             "type": "object",
             "properties": {
                 "request_path": {"type": "string"},
+                "request_id": {"type": "string"},
+                "lane_id": {"type": "string"},
                 "start": {"type": "boolean"},
                 "max_runtime_seconds": {"type": "integer", "minimum": 30, "maximum": 7200},
                 "include_preview": {"type": "boolean"},
                 "preview_target": {"type": "string", "enum": ["result", "stdout", "stderr", "worker_stdout", "worker_stderr", "task_return_body"]},
                 "max_preview_bytes": {"type": "integer", "minimum": 1, "maximum": 2048},
+                "operator_present": {"type": "boolean"},
+                "idempotency_key": {"type": "string"},
+                "agent_id": {"type": "string"},
+                "write_intent_lease_id": {"type": "string"},
+                "write_intent": {"type": "object"},
                 "confirmation": {"type": "string"},
             },
-            "required": ["confirmation"],
+            "required": [
+                "request_path",
+                "request_id",
+                "lane_id",
+                "confirmation",
+                "idempotency_key",
+                "agent_id",
+                "write_intent_lease_id",
+                "operator_present",
+            ],
             "additionalProperties": False,
         }
     if name == "ion_agent_invoke":
@@ -593,13 +702,32 @@ def _tool_schema(name: str) -> dict[str, Any]:
                 "mode": {"type": "string"},
                 "queue": {"type": "boolean"},
                 "start": {"type": "boolean"},
+                "body": {"type": "string"},
                 "context_refs": {"type": "array", "items": {"type": "string"}},
                 "requested_by_carrier_id": {"type": "string"},
                 "requested_by_callsign": {"type": "string"},
                 "max_runtime_seconds": {"type": "integer", "minimum": 30, "maximum": 7200},
+                "work_class": {"type": "string"},
+                "risk_level": {"type": "string"},
+                "route_family": {"type": "string"},
+                "idempotency_key": {"type": "string"},
+                "target_root_id": {"type": "string"},
+                "ai_movement_target_root_id": {"type": "string"},
+                "movement_class": {"type": "string"},
+                "target_project_subpath": {"type": "string"},
+                "target_content_subpath": {"type": "string"},
+                "planned_writes": {"type": "array", "items": {"type": "string"}},
+                "planned_artifacts": {"type": "array", "items": {"type": "string"}},
+                "domain_id": {"type": "string"},
+                "lane_id": {"type": "string"},
+                "codex_mount_mode": {"type": "string", "enum": ["materialize", "reuse_existing", "disabled"]},
+                "use_codex_mount": {"type": "boolean"},
+                "agent_id": {"type": "string"},
+                "write_intent_lease_id": {"type": "string"},
+                "write_intent": {"type": "object"},
                 "confirmation": {"type": "string"},
             },
-            "required": ["agent", "objective", "confirmation"],
+            "required": ["agent", "objective", "confirmation", "idempotency_key", "agent_id", "write_intent_lease_id"],
             "additionalProperties": False,
         }
     if name == "ion_agent_cancel":
@@ -607,9 +735,13 @@ def _tool_schema(name: str) -> dict[str, Any]:
             "type": "object",
             "properties": {
                 "invocation_id": {"type": "string"},
+                "idempotency_key": {"type": "string"},
+                "agent_id": {"type": "string"},
+                "write_intent_lease_id": {"type": "string"},
+                "write_intent": {"type": "object"},
                 "confirmation": {"type": "string"},
             },
-            "required": ["invocation_id", "confirmation"],
+            "required": ["invocation_id", "confirmation", "idempotency_key", "agent_id", "write_intent_lease_id"],
             "additionalProperties": False,
         }
     if name == "ion_swarm_step_once":
@@ -619,9 +751,16 @@ def _tool_schema(name: str) -> dict[str, Any]:
                 "request_path": {"type": "string"},
                 "start": {"type": "boolean"},
                 "max_runtime_seconds": {"type": "integer", "minimum": 30, "maximum": 7200},
+                "allow_prepared_queue_start": {"type": "boolean"},
+                "operator_present": {"type": "boolean"},
+                "idempotency_key": {"type": "string"},
+                "agent_id": {"type": "string"},
+                "write_intent_lease_id": {"type": "string"},
+                "write_intent": {"type": "object"},
                 "confirmation": {"type": "string"},
+                "prepared_queue_start_confirmation": {"type": "string"},
             },
-            "required": ["confirmation"],
+            "required": ["confirmation", "idempotency_key", "agent_id", "write_intent_lease_id"],
             "additionalProperties": False,
         }
     if name == "ion_codex_runner_reconcile":
@@ -985,6 +1124,14 @@ def _tool_schema(name: str) -> dict[str, Any]:
                 "requested_model": {"type": "string"},
                 "requested_reasoning_effort": {"type": "string"},
                 "model_override_reason": {"type": "string"},
+                "codex_approval_policy": {
+                    "type": "string",
+                    "enum": ["untrusted", "on-request", "on-failure", "never"],
+                },
+                "codex_sandbox_mode": {
+                    "type": "string",
+                    "enum": ["read-only", "workspace-write", "danger-full-access"],
+                },
                 "project_hash": {"type": "string"},
                 "required_context_reads": {
                     "type": "array",
@@ -1267,6 +1414,40 @@ def audit_http_mcp_preview(root: str | Path | None = None) -> dict[str, Any]:
             properties = tool["inputSchema"].get("properties", {})
             if "agent_id" not in properties or "lease_id" not in properties:
                 findings.append(f"conditional_edit_tool_missing_lease_schema:{tool['name']}")
+        if tool["name"] in {"ion_agent_invoke", "ion_agent_cancel", "ion_swarm_step_once"}:
+            properties = tool["inputSchema"].get("properties", {})
+            required = set(tool["inputSchema"].get("required", []))
+            for field in ("idempotency_key", "agent_id", "write_intent_lease_id"):
+                if field not in properties:
+                    findings.append(f"agent_swarm_direct_tool_missing_write_intent_schema:{tool['name']}:{field}")
+            if not {"confirmation", "idempotency_key", "agent_id", "write_intent_lease_id"}.issubset(required):
+                findings.append(f"agent_swarm_direct_tool_missing_required_write_intent_fields:{tool['name']}")
+        if tool["name"] == "ion_codex_queue_process_once":
+            properties = tool["inputSchema"].get("properties", {})
+            required = set(tool["inputSchema"].get("required", []))
+            for field in (
+                "request_path",
+                "request_id",
+                "lane_id",
+                "operator_present",
+                "idempotency_key",
+                "agent_id",
+                "write_intent_lease_id",
+                "write_intent",
+            ):
+                if field not in properties:
+                    findings.append(f"codex_queue_process_tool_missing_write_intent_schema:{tool['name']}:{field}")
+            if not {
+                "request_path",
+                "request_id",
+                "lane_id",
+                "confirmation",
+                "idempotency_key",
+                "agent_id",
+                "write_intent_lease_id",
+                "operator_present",
+            }.issubset(required):
+                findings.append(f"codex_queue_process_tool_missing_required_write_intent_fields:{tool['name']}")
     if not contract.get("accepted"):
         findings.append("v120_connector_contract_not_ready")
     ready = not findings
@@ -1516,14 +1697,6 @@ def render_ion_connector_landing(
                 False,
             ),
             (
-                "Local JOC Cockpit",
-                "LOCAL NUMBER",
-                "http://127.0.0.1:8788/",
-                "127.0.0.1:8788",
-                "The local machine cockpit address. This only opens on the computer running ION.",
-                True,
-            ),
-            (
                 "ION MCP Preview",
                 "LOCAL + TUNNEL",
                 connector_hint,
@@ -1564,8 +1737,7 @@ def render_ion_connector_landing(
             route=_html_text(route),
         )
         for port, label, route, summary in [
-            ("8765", "ION site and MCP preview", "127.0.0.1:8765 / ion.helixion.net", "Root page, /app, /projects, /health, and /mcp."),
-            ("8788", "Local JOC cockpit", "127.0.0.1:8788", "Local-only React cockpit for ION/JOC service visibility."),
+            ("8765", "ION site, MCP preview, and cockpit", "127.0.0.1:8765 / ion.helixion.net", "Root page, /app, /projects, /cockpit, /health, and /mcp."),
             ("8777", "Action Gateway", "127.0.0.1:8777 / ion-actions.helixion.net", "Custom GPT Actions gateway and health route."),
             ("8767", "ChatOps daemon", "127.0.0.1:8767", "Local bridge health and routing visibility."),
             ("8795", "dAimon bridge", "127.0.0.1:8795", "Reserved local websocket bridge for the dAimon companion line."),
@@ -2932,6 +3104,17 @@ def _redact_local_preview_paths(value: Any) -> Any:
     return value
 
 
+def _redact_public_cockpit_local_root(value: Any, ion_root: str | Path) -> Any:
+    root_text = str(Path(ion_root).expanduser().resolve())
+    if isinstance(value, str):
+        return value.replace(root_text, "local_ion_root_redacted")
+    if isinstance(value, list):
+        return [_redact_public_cockpit_local_root(item, ion_root) for item in value]
+    if isinstance(value, dict):
+        return {key: _redact_public_cockpit_local_root(item, ion_root) for key, item in value.items()}
+    return value
+
+
 def _worker_log_cards(rows: list[dict[str, Any]]) -> str:
     if not rows:
         return "<article class=\"card\"><h3>Logs</h3><p>No logs available.</p></article>"
@@ -3339,97 +3522,1001 @@ def render_public_cockpit_login(
     next_path: str = "/cockpit/chat",
     finding: str | None = None,
     env: Mapping[str, str] | None = None,
+    public_base_url: str | None = None,
+    show_public_callback_url: bool = False,
+    account_profile: Mapping[str, Any] | None = None,
 ) -> str:
     status = auth_status(env)
-    google_enabled = bool(status.get("google_oauth_configured"))
+    google_oauth = bool(status.get("google_oauth_configured"))
+    google_ready = bool(status.get("google_sign_in_ready"))
+    session_ready = bool(status.get("session_secret_configured"))
+    hosted_mode = bool(status.get("hosted_mode"))
     token_enabled = bool(status.get("permission_token_configured"))
+    operator_id = operator_user_id(env)
     allowed_count = int(status.get("google_allowed_email_count") or 0)
+    operator_google_count = int(status.get("google_operator_email_count") or 0)
+    invite_count = int(status.get("invite_token_count") or 0)
+    missing_google = [str(item) for item in status.get("google_setup_missing") or []]
+    safe_next = safe_next_path(next_path)
+    public_base = str(public_base_url or "").rstrip("/")
+    google_callback_url = (
+        f"{public_base}/cockpit/auth/google/callback"
+        if show_public_callback_url and public_base
+        else "/cockpit/auth/google/callback"
+    )
+    google_callback_label = "Callback URL" if show_public_callback_url and public_base else "Callback path"
+    profile = account_profile if isinstance(account_profile, Mapping) and account_profile.get("authenticated") else None
+    account = profile.get("account") if isinstance(profile, Mapping) and isinstance(profile.get("account"), Mapping) else {}
+    rank = profile.get("rank") if isinstance(profile, Mapping) and isinstance(profile.get("rank"), Mapping) else {}
+    user_id = str(account.get("user_id") or account.get("subject_id") or "").strip()
+    display_name = str(account.get("display_name") or account.get("handle") or "Signed-in cockpit user").strip()
+    auth_method = str(account.get("auth_method") or "session").strip()
+    rank_label = str(rank.get("rank_label") or rank.get("rank_ceiling") or "rank ceiling projected").strip()
+    setup_rows = [
+        (
+            "Client ID",
+            f"{GOOGLE_CLIENT_ID_ENV} or {GOOGLE_CLIENT_ID_FILE_ENV} or {GOOGLE_CLIENT_JSON_FILE_ENV}",
+            bool(status.get("google_client_id_configured")),
+        ),
+        (
+            "Client secret",
+            f"{GOOGLE_CLIENT_SECRET_ENV} or {GOOGLE_CLIENT_SECRET_FILE_ENV} or {GOOGLE_CLIENT_JSON_FILE_ENV}",
+            bool(status.get("google_client_secret_configured")),
+        ),
+        ("Session signing", f"{SESSION_SECRET_ENV} or {SESSION_SECRET_FILE_ENV}", session_ready),
+        ("Allowed Gmail identities", ALLOWED_EMAILS_ENV, allowed_count > 0 or operator_google_count > 0 or invite_count > 0),
+    ]
+    setup_html = "\n".join(
+        (
+            '<div class="auth-check {state}">'
+            '<span>{label}</span><b>{verdict}</b><code>{env_name}</code>'
+            '</div>'
+        ).format(
+            state="is-ready" if ready else "is-missing",
+            label=_html_text(label),
+            verdict="READY" if ready else "NEEDED",
+            env_name=_html_text(env_name),
+        )
+        for label, env_name, ready in setup_rows
+    )
+    missing_html = ""
+    if missing_google:
+        missing_html = (
+            '<div class="auth-missing"><span>Google setup missing</span>'
+            + "".join(f"<code>{_html_text(item)}</code>" for item in missing_google)
+            + "</div>"
+        )
     google_status = (
-        f"Google OAuth is configured. Allowed Google emails: {allowed_count}."
-        if google_enabled
-        else f"Google OAuth still needs client ID and secret. Allowed Google emails already listed: {allowed_count}."
+        "Use the Google account bound to your ION operator profile. The session is signed server-side and scoped to the cockpit."
+        if google_ready
+        else f"Google OAuth setup is incomplete. Approved Google identities already listed: {allowed_count}. Operator bindings: {operator_google_count}. Invite tokens: {invite_count}."
+        if not google_oauth or not session_ready
+        else f"Google OAuth is configured but no approved Gmail identity source is ready. Approved Google identities: {allowed_count}. Operator bindings: {operator_google_count}. Invite tokens: {invite_count}."
     )
     finding_messages = {
-        "google_oauth_state_missing_or_invalid": "Google login is not enabled yet. Use the permission token for now.",
-        "google_oauth_not_configured": "Google login is not enabled yet. Use the permission token for now.",
-        "google_oauth_state_mismatch": "Google login expired. Start again from this page after Google setup is complete.",
+        "cockpit_session_secret_not_configured": "Google login needs a cockpit session signing secret before it can start.",
+        "google_email_not_allowed": "That Google account is not on the allowed cockpit list. Add the Gmail address or use an invite token.",
+        "google_email_not_verified": "Google did not mark that email as verified.",
+        "google_oauth_state_missing_or_invalid": "Google login expired or started in another browser. Start again from this page.",
+        "google_oauth_not_configured": "Google OAuth needs client ID, client secret, session signing, and an allowed Gmail identity source.",
+        "google_oauth_state_mismatch": "Google login expired. Start again from this page.",
+        "operator_password_invalid": "Operator password did not match the configured main login.",
+        "operator_user_id_invalid": "Operator user id did not match.",
+        "operator_user_id_required": "Enter the operator user id.",
         "permission_token_invalid": "Permission token did not match.",
         "permission_token_required": "Enter the permission token.",
     }
     finding_text = finding_messages.get(str(finding or ""), str(finding or ""))
-    finding_html = f"<p class=\"error\">{_html_text(finding_text)}</p>" if finding_text else ""
+    finding_html = f"<div class=\"auth-alert\" role=\"alert\">{_html_text(finding_text)}</div>" if finding_text else ""
     google_button = (
-        "<button type=\"submit\">Continue with Google</button>"
-        if google_enabled
-        else "<button type=\"submit\" disabled>Google OAuth setup needed</button>"
+        "<button class=\"auth-primary is-google\" type=\"submit\"><span class=\"auth-google-mark\" aria-hidden=\"true\">G</span><span>Continue with Google</span></button>"
+        if google_ready
+        else "<button class=\"auth-primary is-disabled\" type=\"submit\" disabled>Google OAuth setup needed</button>"
     )
     token_button = (
-        "<button type=\"submit\">Login with permission token</button>"
+        "<button class=\"auth-primary\" type=\"submit\">Login</button>"
         if token_enabled
-        else "<button type=\"submit\" disabled>Permission token not configured</button>"
+        else "<button class=\"auth-primary is-disabled\" type=\"submit\" disabled>Operator password not configured</button>"
+        if hosted_mode
+        else "<button class=\"auth-primary is-disabled\" type=\"submit\" disabled>Main login password not configured</button>"
     )
+    operator_login_text = (
+        "Use the configured ION operator user id and cockpit password if Google sign-in is blocked. This creates a signed cockpit session through the hosted login route."
+        if hosted_mode
+        else "Use the configured operator user id and cockpit password. The password is checked server-side against the configured login secret."
+    )
+    token_login_panel = f"""
+    <section class="auth-panel">
+      <div class="auth-panel-head">
+        <span>{_html_text("Operator Fallback" if hosted_mode else "Local Dev Access")}</span>
+        <b>Operator Password</b>
+      </div>
+      <p>{_html_text(operator_login_text)}</p>
+      <form method="post" action="/cockpit/auth/token">
+        <input type="hidden" name="next" value="{_html_text(safe_next)}">
+        <label for="username">User ID</label>
+        <input id="username" name="username" type="text" autocomplete="username" value="{_html_text(operator_id)}">
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" autocomplete="current-password">
+        {token_button}
+      </form>
+    </section>
+    """
+    hosted_password_note_panel = f"""
+    <section class="auth-panel">
+      <div class="auth-panel-head">
+        <span>Hosted Boundary</span>
+        <b>Password Offline</b>
+      </div>
+      <p>{_html_text(operator_login_text)}</p>
+      <div class="auth-note"><span>Operator password is not configured.</span><b>Use Continue with Google above.</b></div>
+    </section>
+    """
+    google_login_panel = f"""
+    <section class="auth-panel">
+      <div class="auth-panel-head">
+        <span>ION Operator Identity</span>
+        <b>Google Account</b>
+      </div>
+      <p>{_html_text(google_status)}</p>
+      <form method="post" action="/cockpit/auth/google/start">
+        <input type="hidden" name="next" value="{_html_text(safe_next)}">
+        <label for="invite_token">Invite token, optional</label>
+        <input id="invite_token" name="invite_token" type="password" autocomplete="one-time-code">
+        {google_button}
+      </form>
+      <div class="auth-proof-strip" aria-label="Google OAuth public callback">
+        <div><span>{_html_text(google_callback_label)}</span><code>{_html_text(google_callback_url)}</code></div>
+        <div><span>Allowed identities</span><b>{allowed_count}</b></div>
+        <div><span>Operator bindings</span><b>{operator_google_count}</b></div>
+      </div>
+    </section>
+    """
+    access_panels = (
+        google_login_panel + (token_login_panel if token_enabled else hosted_password_note_panel)
+        if hosted_mode
+        else token_login_panel + google_login_panel
+    )
+    signed_in_html = ""
+    if profile:
+        signed_in_html = f"""
+  <section class="auth-panel signed-in">
+      <div class="auth-panel-head">
+      <span>Current ION Session</span>
+      <b>Signed In</b>
+    </div>
+    <p>This browser already has a valid signed ION cockpit session. Identity is projected server-side and does not grant production authority.</p>
+    <div class="auth-session-grid">
+      <div><span>User ID</span><code>{_html_text(user_id or "user_id_pending")}</code></div>
+      <div><span>Name</span><b>{_html_text(display_name)}</b></div>
+      <div><span>Rank</span><b>{_html_text(rank_label)}</b></div>
+      <div><span>Auth</span><b>{_html_text(auth_method)}</b></div>
+    </div>
+    <div class="auth-actions">
+      <a class="auth-link-button" href="{_html_text(safe_next)}">Continue to cockpit</a>
+      <a class="auth-link-button is-secondary" href="/cockpit/logout">Log out</a>
+    </div>
+  </section>"""
+    login_css = """
+    :root {
+      color-scheme: dark;
+      --ion-bg:#050708;
+      --ion-surface:#0a0d0e;
+      --ion-panel:#0d1112;
+      --ion-panel-2:#111719;
+      --ion-line:#243034;
+      --ion-line-strong:#45636b;
+      --ion-gold:#d9b15d;
+      --ion-cyan:#8bd9ff;
+      --ion-green:#62e0aa;
+      --ion-red:#f06a6a;
+      --ion-text:#f2f7f5;
+      --ion-muted:#98aaa7;
+      --ion-soft:#647572;
+      --ion-shadow:0 26px 90px rgba(0,0,0,.5);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { min-height:100%; background:var(--ion-bg); }
+    body {
+      margin:0;
+      min-height:100vh;
+      overflow-x:hidden;
+      background:var(--ion-bg);
+      color:var(--ion-text);
+    }
+    h1,h2,h3,p { margin:0; letter-spacing:0; }
+    .ion-field {
+      position:fixed;
+      inset:0;
+      width:100%;
+      height:100%;
+      z-index:0;
+      background:#050708;
+    }
+    .ion-login-shell {
+      position:relative;
+      z-index:1;
+      min-height:100vh;
+      display:grid;
+      grid-template-rows:auto minmax(0, 1fr);
+      padding:24px;
+    }
+    .ion-login-top {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      min-width:0;
+    }
+    .ion-wordmark {
+      display:inline-grid;
+      place-items:center;
+      width:52px;
+      height:52px;
+      border:1px solid rgba(217,177,93,.66);
+      background:rgba(8,10,10,.82);
+      color:var(--ion-text);
+      font-size:20px;
+      font-weight:950;
+      text-decoration:none;
+      text-transform:uppercase;
+      box-shadow:0 0 0 1px rgba(217,177,93,.08), 0 18px 48px rgba(0,0,0,.36);
+    }
+    .ion-topline {
+      display:flex;
+      align-items:center;
+      justify-content:flex-end;
+      gap:8px;
+      min-width:0;
+      color:var(--ion-muted);
+      font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size:10px;
+      font-weight:900;
+      text-transform:uppercase;
+    }
+    .ion-topline::before {
+      content:"";
+      width:7px;
+      height:7px;
+      background:var(--ion-green);
+      box-shadow:0 0 18px rgba(98,224,170,.7);
+    }
+    .ion-login-main {
+      width:min(1220px, 100%);
+      margin:0 auto;
+      display:grid;
+      grid-template-columns:minmax(0, 1fr) minmax(360px, 440px);
+      gap:24px;
+      align-items:center;
+      padding:28px 0 44px;
+    }
+    .ion-hero {
+      min-width:0;
+      display:grid;
+      gap:30px;
+      align-content:center;
+      min-height:640px;
+      padding:4vh 0;
+    }
+    .ion-kicker {
+      display:inline-flex;
+      width:max-content;
+      max-width:100%;
+      align-items:center;
+      min-height:26px;
+      padding:0 9px;
+      border:1px solid rgba(139,217,255,.42);
+      background:rgba(5,7,8,.72);
+      color:var(--ion-cyan);
+      font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size:10px;
+      font-weight:950;
+      text-transform:uppercase;
+    }
+    .ion-hero-title {
+      display:grid;
+      gap:16px;
+    }
+    .ion-hero h1 {
+      max-width:760px;
+      color:#fff;
+      font-size:clamp(72px, 16vw, 188px);
+      font-weight:950;
+      line-height:.78;
+      text-transform:uppercase;
+      text-shadow:0 24px 80px rgba(0,0,0,.56);
+    }
+    .ion-hero h2 {
+      max-width:820px;
+      color:var(--ion-text);
+      font-size:clamp(26px, 4vw, 56px);
+      font-weight:850;
+      line-height:.98;
+      text-transform:uppercase;
+    }
+    .ion-hero-copy {
+      max-width:720px;
+      color:#b6c7c2;
+      font-size:16px;
+      line-height:1.58;
+    }
+    .ion-signal-grid {
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0, 1fr));
+      gap:1px;
+      width:min(720px, 100%);
+      border:1px solid rgba(69,99,107,.72);
+      background:rgba(69,99,107,.72);
+      box-shadow:var(--ion-shadow);
+    }
+    .ion-signal {
+      min-width:0;
+      min-height:82px;
+      display:grid;
+      align-content:space-between;
+      gap:10px;
+      padding:12px;
+      background:rgba(8,11,12,.88);
+    }
+    .ion-signal.is-hot {
+      background:rgba(31,24,12,.9);
+      box-shadow:inset 0 0 0 1px rgba(217,177,93,.28);
+    }
+    .ion-signal.is-ok {
+      background:rgba(9,22,17,.9);
+      box-shadow:inset 0 0 0 1px rgba(98,224,170,.24);
+    }
+    .ion-signal span,
+    .auth-panel-head span,
+    .auth-session-grid span,
+    label,
+    .auth-check span,
+    .auth-missing span,
+    .auth-proof-strip span,
+    .auth-note span {
+      min-width:0;
+      color:var(--ion-muted);
+      font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size:10px;
+      font-weight:950;
+      line-height:1.25;
+      text-transform:uppercase;
+    }
+    .ion-signal b {
+      min-width:0;
+      color:var(--ion-text);
+      font-size:14px;
+      line-height:1.22;
+      overflow-wrap:anywhere;
+    }
+    .auth-stack {
+      min-width:0;
+      display:grid;
+      gap:12px;
+      align-content:center;
+    }
+    .auth-panel {
+      min-width:0;
+      display:grid;
+      gap:13px;
+      padding:18px;
+      border:1px solid rgba(69,99,107,.82);
+      background:rgba(9,12,13,.86);
+      box-shadow:0 22px 70px rgba(0,0,0,.42);
+      backdrop-filter:blur(16px);
+    }
+    .auth-panel:first-of-type {
+      border-color:rgba(139,217,255,.48);
+    }
+    .auth-panel-head {
+      min-width:0;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+    }
+    .auth-panel-head b {
+      min-width:0;
+      color:var(--ion-text);
+      font-size:15px;
+      font-weight:900;
+      line-height:1.2;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      text-transform:uppercase;
+      white-space:nowrap;
+    }
+    .auth-panel p {
+      color:#aebfba;
+      font-size:13px;
+      line-height:1.5;
+    }
+    .auth-alert {
+      border:1px solid rgba(240,106,106,.55);
+      background:rgba(80,21,21,.76);
+      color:#ffd1d1;
+      padding:12px;
+      font-size:13px;
+      line-height:1.4;
+      box-shadow:0 18px 56px rgba(0,0,0,.34);
+    }
+    form {
+      display:grid;
+      gap:9px;
+    }
+    input {
+      width:100%;
+      min-width:0;
+      min-height:42px;
+      border:1px solid rgba(69,99,107,.82);
+      background:rgba(5,7,8,.94);
+      color:var(--ion-text);
+      padding:0 11px;
+      font:inherit;
+      font-size:13px;
+    }
+    input:focus-visible {
+      border-color:var(--ion-cyan);
+      outline:none;
+      box-shadow:0 0 0 1px rgba(139,217,255,.24), 0 0 30px rgba(139,217,255,.12);
+    }
+    .auth-primary,
+    .auth-link-button {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      justify-self:stretch;
+      gap:9px;
+      min-height:46px;
+      border:1px solid rgba(217,177,93,.68);
+      background:#21180c;
+      color:#fff;
+      padding:0 14px;
+      cursor:pointer;
+      font:inherit;
+      font-size:12px;
+      font-weight:950;
+      letter-spacing:0;
+      text-decoration:none;
+      text-transform:uppercase;
+      transition:border-color .16s ease, background .16s ease, box-shadow .16s ease, transform .16s ease;
+    }
+    .auth-primary.is-google {
+      border-color:rgba(139,217,255,.74);
+      background:#081a22;
+    }
+    .auth-google-mark {
+      display:inline-grid;
+      place-items:center;
+      width:22px;
+      height:22px;
+      border:1px solid rgba(255,255,255,.42);
+      color:#fff;
+      font-size:13px;
+      font-weight:950;
+      line-height:1;
+    }
+    .auth-primary:hover,
+    .auth-primary:focus-visible,
+    .auth-link-button:hover,
+    .auth-link-button:focus-visible {
+      border-color:#fff;
+      background:#102833;
+      outline:none;
+      transform:translateY(-1px);
+      box-shadow:0 0 0 1px rgba(139,217,255,.22), 0 18px 50px rgba(0,0,0,.35);
+    }
+    .auth-primary.is-disabled {
+      opacity:.58;
+      cursor:not-allowed;
+      transform:none;
+      box-shadow:none;
+    }
+    .auth-setup-grid,
+    .auth-session-grid,
+    .auth-proof-strip {
+      display:grid;
+      gap:8px;
+    }
+    .auth-proof-strip {
+      grid-template-columns:repeat(3, minmax(0, 1fr));
+    }
+    .auth-check,
+    .auth-session-grid div,
+    .auth-proof-strip div,
+    .auth-note {
+      min-width:0;
+      display:grid;
+      gap:5px;
+      padding:9px;
+      border:1px solid rgba(69,99,107,.66);
+      background:rgba(5,7,8,.74);
+    }
+    .auth-check.is-ready { border-left:2px solid var(--ion-green); }
+    .auth-check.is-missing { border-left:2px solid var(--ion-red); }
+    .auth-check b,
+    .auth-proof-strip b,
+    .auth-session-grid b,
+    .auth-note b {
+      min-width:0;
+      color:var(--ion-text);
+      font-size:12px;
+      overflow-wrap:anywhere;
+    }
+    .auth-missing {
+      display:flex;
+      flex-wrap:wrap;
+      gap:6px;
+      align-items:center;
+      border:1px solid rgba(240,106,106,.36);
+      background:rgba(80,21,21,.42);
+      padding:9px;
+    }
+    .auth-actions {
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0, 1fr));
+      gap:8px;
+    }
+    .auth-link-button.is-secondary {
+      border-color:rgba(69,99,107,.78);
+      background:#0b1011;
+      color:#b2c0bd;
+    }
+    .signed-in {
+      border-color:rgba(98,224,170,.52);
+      background:rgba(7,20,15,.9);
+    }
+    .auth-diagnostics {
+      min-width:0;
+      border:1px solid rgba(69,99,107,.62);
+      background:rgba(7,10,11,.82);
+      box-shadow:0 14px 44px rgba(0,0,0,.28);
+    }
+    .auth-diagnostics summary {
+      cursor:pointer;
+      padding:13px 16px;
+      color:#b9c8c4;
+      font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size:10px;
+      font-weight:950;
+      text-transform:uppercase;
+    }
+    .auth-diagnostics-body {
+      display:grid;
+      gap:10px;
+      padding:0 16px 16px;
+    }
+    code {
+      min-width:0;
+      color:#f5d6a5;
+      font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size:11px;
+      overflow-wrap:anywhere;
+    }
+    @media (max-width:980px) {
+      .ion-login-shell { padding:18px; }
+      .ion-login-main { grid-template-columns:1fr; align-items:start; }
+      .ion-hero { min-height:auto; padding:46px 0 8px; }
+      .ion-signal-grid { width:100%; }
+    }
+    @media (max-width:640px) {
+      .ion-login-shell { padding:14px; }
+      .ion-login-main { gap:18px; padding:18px 0 32px; }
+      .ion-login-top { align-items:flex-start; }
+      .ion-topline { justify-content:flex-start; text-align:right; }
+      .ion-hero { gap:14px; padding:18px 0 0; }
+      .ion-hero-title { gap:10px; }
+      .ion-kicker { min-height:24px; font-size:9px; }
+      .ion-hero h1 { font-size:66px; }
+      .ion-hero h2 { font-size:25px; line-height:1; }
+      .ion-hero-copy { font-size:14px; line-height:1.45; }
+      .ion-signal-grid { grid-template-columns:repeat(3, minmax(0, 1fr)); }
+      .ion-signal { min-height:58px; padding:8px; }
+      .ion-signal span { font-size:8px; }
+      .ion-signal b { font-size:11px; }
+      .auth-proof-strip,
+      .auth-actions { grid-template-columns:1fr; }
+      .auth-panel { padding:15px; }
+    }
+    """
+    ion_field_script = """
+    (() => {
+      const canvas = document.getElementById('ionField');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      if (!ctx) return;
+      const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const TAU = Math.PI * 2;
+      let width = 0;
+      let height = 0;
+      let dpr = 1;
+      let frame = 0;
+      const pointer = { x: 0.64, y: 0.36, active: false };
+      const domains = Array.from({ length: 18 }, (_, index) => ({
+        phase: index * TAU / 18,
+        lane: index % 3,
+        kind: index % 6 === 0 ? 'domain' : index % 3 === 0 ? 'agent' : 'api'
+      }));
+      const evolution = Array.from({ length: 28 }, (_, index) => ({
+        turn: index / 27,
+        phase: index * 0.74
+      }));
+
+      function resize() {
+        dpr = Math.min(window.devicePixelRatio || 1, 2);
+        width = Math.max(1, window.innerWidth);
+        height = Math.max(1, window.innerHeight);
+        canvas.width = Math.floor(width * dpr);
+        canvas.height = Math.floor(height * dpr);
+        canvas.style.width = `${width}px`;
+        canvas.style.height = `${height}px`;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+
+      function scene() {
+        const compact = width < 700;
+        return {
+          cx: compact ? width * 0.69 : width * 0.55,
+          cy: compact ? height * 0.30 : height * 0.46,
+          scale: Math.min(width, height) * (compact ? 0.31 : 0.38),
+          depth: compact ? 5.2 : 5.7
+        };
+      }
+
+      function rotate(point, tick) {
+        const px = (pointer.x - 0.5) * 0.45;
+        const py = (pointer.y - 0.5) * 0.38;
+        let { x, y, z } = point;
+        const ax = -0.76 + py;
+        const ay = 0.62 + tick * 0.22 + px;
+        const az = -0.18 + Math.sin(tick * 0.42) * 0.08;
+        let cy = Math.cos(ax), sy = Math.sin(ax);
+        let y1 = y * cy - z * sy;
+        let z1 = y * sy + z * cy;
+        y = y1; z = z1;
+        cy = Math.cos(ay); sy = Math.sin(ay);
+        let x1 = x * cy + z * sy;
+        z1 = -x * sy + z * cy;
+        x = x1; z = z1;
+        cy = Math.cos(az); sy = Math.sin(az);
+        x1 = x * cy - y * sy;
+        y1 = x * sy + y * cy;
+        return { x: x1, y: y1, z };
+      }
+
+      function project(point, tick = frame) {
+        const s = scene();
+        const rotated = rotate(point, tick);
+        const depth = s.depth - rotated.z;
+        const perspective = s.scale / Math.max(1.4, depth);
+        return {
+          x: s.cx + rotated.x * perspective,
+          y: s.cy + rotated.y * perspective,
+          z: rotated.z,
+          p: perspective / s.scale
+        };
+      }
+
+      function rgba(hex, alpha) {
+        const value = hex.replace('#', '');
+        const r = parseInt(value.slice(0, 2), 16);
+        const g = parseInt(value.slice(2, 4), 16);
+        const b = parseInt(value.slice(4, 6), 16);
+        return `rgba(${r},${g},${b},${Math.max(0, Math.min(1, alpha))})`;
+      }
+
+      function strokePath(points, color, alpha, widthPx = 1) {
+        if (points.length < 2) return;
+        ctx.beginPath();
+        points.forEach((point, index) => {
+          const p = project(point);
+          if (index === 0) ctx.moveTo(p.x, p.y);
+          else ctx.lineTo(p.x, p.y);
+        });
+        ctx.lineWidth = widthPx;
+        ctx.strokeStyle = rgba(color, alpha);
+        ctx.stroke();
+      }
+
+      function fillProjected(points, fill, stroke, alpha) {
+        if (points.length < 3) return;
+        const projected = points.map((point) => project(point));
+        ctx.beginPath();
+        projected.forEach((p, index) => {
+          if (index === 0) ctx.moveTo(p.x, p.y);
+          else ctx.lineTo(p.x, p.y);
+        });
+        ctx.closePath();
+        ctx.fillStyle = rgba(fill, alpha);
+        ctx.fill();
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = rgba(stroke, alpha * 1.45);
+        ctx.stroke();
+      }
+
+      function background() {
+        const radial = ctx.createRadialGradient(width * 0.62, height * 0.36, 20, width * 0.62, height * 0.36, Math.max(width, height) * 0.75);
+        radial.addColorStop(0, 'rgba(21,38,42,.88)');
+        radial.addColorStop(0.38, 'rgba(8,11,12,.92)');
+        radial.addColorStop(1, '#050708');
+        ctx.fillStyle = radial;
+        ctx.fillRect(0, 0, width, height);
+        ctx.lineWidth = 1;
+        const step = Math.max(54, Math.min(92, width / 15));
+        for (let x = -step * 2; x < width + step * 2; x += step) {
+          ctx.strokeStyle = 'rgba(139,217,255,.075)';
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x + height * 0.22, height);
+          ctx.stroke();
+        }
+        for (let y = -step; y < height + step; y += step) {
+          ctx.strokeStyle = 'rgba(217,177,93,.055)';
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(width, y - width * 0.06);
+          ctx.stroke();
+        }
+      }
+
+      function drawDOrbital() {
+        const shapes = [];
+        for (let lobe = 0; lobe < 4; lobe += 1) {
+          const angle = Math.PI / 4 + lobe * Math.PI / 2;
+          const cx = Math.cos(angle) * 1.36;
+          const cy = Math.sin(angle) * 1.08;
+          const cz = Math.sin(angle * 2) * 0.34;
+          const points = [];
+          for (let i = 0; i <= 54; i += 1) {
+            const t = i / 54 * TAU;
+            const rx = Math.cos(t) * 0.58;
+            const ry = Math.sin(t) * 0.31;
+            points.push({
+              x: cx + rx * Math.cos(angle) - ry * Math.sin(angle) * 0.55,
+              y: cy + rx * Math.sin(angle) + ry * Math.cos(angle) * 0.55,
+              z: cz + ry * 0.64
+            });
+          }
+          shapes.push({
+            z: cz,
+            points,
+            fill: lobe % 2 === 0 ? '#8bd9ff' : '#d9b15d',
+            stroke: lobe % 2 === 0 ? '#d2f2ff' : '#ffe0a0'
+          });
+        }
+        shapes.sort((a, b) => a.z - b.z).forEach((shape) => fillProjected(shape.points, shape.fill, shape.stroke, 0.105));
+        const waist = [];
+        for (let i = 0; i <= 128; i += 1) {
+          const t = i / 128 * TAU;
+          waist.push({ x: Math.cos(t) * 1.18, y: Math.sin(t) * 0.25, z: Math.sin(t) * 0.12 });
+        }
+        strokePath(waist, '#d9b15d', 0.22, 1);
+      }
+
+      function drawToroid() {
+        const major = 1.84;
+        const minor = 0.38;
+        for (let strand = 0; strand < 12; strand += 1) {
+          const phase = strand * TAU / 12 + frame * (0.42 + strand % 3 * 0.04);
+          const points = [];
+          for (let i = 0; i <= 170; i += 1) {
+            const t = i / 170 * TAU;
+            const phi = t + phase;
+            const theta = t * 3 + phase * 0.72;
+            points.push({
+              x: (major + minor * Math.cos(theta)) * Math.cos(phi),
+              y: minor * Math.sin(theta) * 0.92,
+              z: (major + minor * Math.cos(theta)) * Math.sin(phi)
+            });
+          }
+          strokePath(points, strand % 2 === 0 ? '#8bd9ff' : '#d9b15d', strand % 2 === 0 ? 0.19 : 0.24, strand % 4 === 0 ? 1.25 : 0.85);
+        }
+      }
+
+      function drawElectrons() {
+        const orbits = [
+          { tilt: 0.18, yaw: 0.0, radius: 1.05, color: '#8bd9ff' },
+          { tilt: 1.03, yaw: 1.24, radius: 1.56, color: '#62e0aa' },
+          { tilt: -0.74, yaw: 2.32, radius: 2.08, color: '#d9b15d' }
+        ];
+        orbits.forEach((orbit, orbitIndex) => {
+          const points = [];
+          for (let i = 0; i <= 150; i += 1) {
+            const t = i / 150 * TAU;
+            const x = Math.cos(t) * orbit.radius;
+            const z = Math.sin(t) * orbit.radius;
+            points.push({
+              x: x * Math.cos(orbit.yaw) - z * Math.sin(orbit.yaw),
+              y: Math.sin(t) * Math.sin(orbit.tilt) * orbit.radius * 0.48,
+              z: x * Math.sin(orbit.yaw) + z * Math.cos(orbit.yaw)
+            });
+          }
+          strokePath(points, orbit.color, 0.18, 1);
+          const t = (frame * (0.72 + orbitIndex * 0.21) + orbitIndex * 2.1) % TAU;
+          const x = Math.cos(t) * orbit.radius;
+          const z = Math.sin(t) * orbit.radius;
+          const p = project({
+            x: x * Math.cos(orbit.yaw) - z * Math.sin(orbit.yaw),
+            y: Math.sin(t) * Math.sin(orbit.tilt) * orbit.radius * 0.48,
+            z: x * Math.sin(orbit.yaw) + z * Math.cos(orbit.yaw)
+          });
+          ctx.fillStyle = rgba(orbit.color, 0.9);
+          ctx.shadowColor = rgba(orbit.color, 0.8);
+          ctx.shadowBlur = 12;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, 2.5 + p.p * 7, 0, TAU);
+          ctx.fill();
+          ctx.shadowBlur = 0;
+        });
+      }
+
+      function drawNucleus() {
+        const center = project({ x: 0, y: 0, z: 0 });
+        const radius = Math.max(13, scene().scale * 0.042);
+        const glow = ctx.createRadialGradient(center.x, center.y, 1, center.x, center.y, radius * 4.8);
+        glow.addColorStop(0, 'rgba(255,255,255,.95)');
+        glow.addColorStop(0.18, 'rgba(217,177,93,.72)');
+        glow.addColorStop(0.52, 'rgba(98,224,170,.16)');
+        glow.addColorStop(1, 'rgba(139,217,255,0)');
+        ctx.fillStyle = glow;
+        ctx.beginPath();
+        ctx.arc(center.x, center.y, radius * 4.8, 0, TAU);
+        ctx.fill();
+        for (let i = 0; i < 9; i += 1) {
+          const a = i * TAU / 9 + frame * 0.38;
+          const b = i * 1.73;
+          const p = project({ x: Math.cos(a) * 0.18, y: Math.sin(b) * 0.16, z: Math.sin(a) * 0.18 });
+          ctx.fillStyle = i % 2 ? 'rgba(139,217,255,.92)' : 'rgba(217,177,93,.92)';
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, radius * (0.34 + p.p * 3), 0, TAU);
+          ctx.fill();
+        }
+        ctx.fillStyle = 'rgba(255,255,255,.9)';
+        ctx.font = '900 12px ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace';
+        ctx.fillText('+', center.x + radius * 1.35, center.y - radius * 1.15);
+      }
+
+      function drawDomainGraph() {
+        const plotted = domains.map((node) => {
+          const ring = 2.55 + node.lane * 0.34;
+          const phase = node.phase + frame * (0.08 + node.lane * 0.012);
+          return {
+            ...node,
+            point: {
+              x: Math.cos(phase) * ring,
+              y: Math.sin(node.phase * 2 + frame * 0.32) * 0.82 + (node.lane - 1) * 0.34,
+              z: Math.sin(phase) * ring
+            }
+          };
+        }).map((node) => ({ ...node, screen: project(node.point) }));
+        plotted.forEach((a, index) => {
+          for (let j = index + 1; j < plotted.length; j += 1) {
+            const b = plotted[j];
+            const sameLane = a.lane === b.lane;
+            const adjacent = Math.abs(index - j) === 1 || Math.abs(index - j) === plotted.length - 1;
+            if (sameLane || adjacent) {
+              const alpha = sameLane ? 0.10 : 0.06;
+              ctx.strokeStyle = rgba(sameLane ? '#8bd9ff' : '#d9b15d', alpha);
+              ctx.lineWidth = sameLane ? 1 : 0.7;
+              ctx.beginPath();
+              ctx.moveTo(a.screen.x, a.screen.y);
+              ctx.lineTo(b.screen.x, b.screen.y);
+              ctx.stroke();
+            }
+          }
+        });
+        plotted.forEach((node) => {
+          const color = node.kind === 'domain' ? '#d9b15d' : node.kind === 'agent' ? '#62e0aa' : '#8bd9ff';
+          const size = node.kind === 'domain' ? 4.1 : 2.7;
+          ctx.fillStyle = rgba(color, 0.84);
+          ctx.beginPath();
+          ctx.rect(node.screen.x - size / 2, node.screen.y - size / 2, size, size);
+          ctx.fill();
+        });
+      }
+
+      function drawEvolutionSpiral() {
+        const points = evolution.map((node) => {
+          const turn = node.turn;
+          const angle = node.phase + frame * 0.28;
+          const radius = 0.42 + turn * 2.85;
+          return {
+            x: Math.cos(angle) * radius,
+            y: -1.24 + turn * 2.52,
+            z: Math.sin(angle) * radius
+          };
+        });
+        strokePath(points, '#62e0aa', 0.28, 1.15);
+        points.forEach((point, index) => {
+          if (index % 3 !== 0) return;
+          const p = project(point);
+          ctx.fillStyle = rgba(index % 2 ? '#8bd9ff' : '#62e0aa', 0.78);
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, 1.8 + p.p * 5, 0, TAU);
+          ctx.fill();
+        });
+      }
+
+      function draw() {
+        frame += reduceMotion ? 0 : 0.011;
+        background();
+        drawDOrbital();
+        drawToroid();
+        drawDomainGraph();
+        drawEvolutionSpiral();
+        drawElectrons();
+        drawNucleus();
+        if (!reduceMotion) window.requestAnimationFrame(draw);
+      }
+
+      window.addEventListener('resize', () => {
+        resize();
+        if (reduceMotion) draw();
+      });
+      window.addEventListener('pointermove', (event) => {
+        pointer.x = event.clientX / Math.max(1, width);
+        pointer.y = event.clientY / Math.max(1, height);
+        pointer.active = true;
+      }, { passive: true });
+      resize();
+      draw();
+    })();
+    """
     return f"""<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex,nofollow">
-  <title>ION Cockpit Login</title>
+  <title>ION Access</title>
   <style>
-    {HELIXION_SITE_CSS}
-    :root {{ color-scheme: dark; --bg:#090b0c; --panel:#121619; --line:#2b343a; --text:#edf2f4; --muted:#9aa7ad; --blue:#65a7e8; --red:#e15f5f; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }}
-    * {{ box-sizing: border-box; }}
-    body {{ margin:0; min-height:100vh; background:var(--bg); color:var(--text); }}
-    main {{ width:min(920px, calc(100vw - 32px)); display:grid; grid-template-columns:1fr 1fr; gap:14px; }}
-    .login-wrap {{ min-height:calc(100vh - 43px); display:grid; place-items:center; padding:24px 0; }}
-    header {{ grid-column:1 / -1; border-bottom:1px solid var(--line); padding-bottom:14px; }}
-    h1,h2,p {{ margin:0; letter-spacing:0; }}
-    h1 {{ font-size:32px; }}
-    h2 {{ font-size:16px; margin-bottom:8px; }}
-    p {{ color:var(--muted); line-height:1.4; }}
-    section {{ background:var(--panel); border:1px solid var(--line); border-radius:2px; padding:14px; }}
-    form {{ display:grid; gap:8px; margin-top:12px; }}
-    label {{ color:var(--muted); font-size:13px; }}
-    input {{ width:100%; border:1px solid var(--line); border-radius:2px; background:#0d1113; color:var(--text); padding:9px; font:inherit; }}
-    button {{ justify-self:start; border:1px solid var(--line); background:#18242b; color:var(--text); border-radius:2px; padding:8px 11px; font-weight:700; cursor:pointer; text-transform:uppercase; }}
-    button:disabled {{ opacity:.55; cursor:not-allowed; }}
-    .error {{ grid-column:1 / -1; color:var(--red); }}
-    code {{ color:#f5d0b4; overflow-wrap:anywhere; }}
-    @media (max-width:760px) {{ main {{ grid-template-columns:1fr; }} }}
+    {login_css}
   </style>
 </head>
 <body>
-{render_helixion_site_bar("login")}
-<div class="login-wrap">
-<main>
-  <header>
-    <h1>ION Cockpit Login</h1>
-    <p>Access is limited to signed cockpit sessions, permission tokens, or approved Google accounts. This login does not grant production authority.</p>
+<canvas class="ion-field" id="ionField" data-field="ion-quantum-domain-toroid" aria-hidden="true"></canvas>
+<div class="ion-login-shell">
+  <header class="ion-login-top">
+    <a class="ion-wordmark" href="/cockpit/login" aria-label="ION login">ION</a>
+    <div class="ion-topline">Protected Operator Gateway</div>
   </header>
-  {finding_html}
-  <section>
-    <h2>Permission Token</h2>
-    <p>Use the current ION cockpit permission token or an invited token.</p>
-    <form method="post" action="/cockpit/auth/token">
-      <input type="hidden" name="next" value="{_html_text(safe_next_path(next_path))}">
-      <label for="permission_token">Token</label>
-      <input id="permission_token" name="permission_token" type="password" autocomplete="current-password">
-      {token_button}
-    </form>
+  <main class="ion-login-main">
+  <section class="ion-hero" aria-label="ION cockpit access">
+    <div class="ion-hero-title">
+      <span class="ion-kicker">ION Cockpit Access</span>
+      <h1>ION</h1>
+      <h2>One operator surface for projects, APIs, agents, and live workbench systems.</h2>
+      <p class="ion-hero-copy">Sign in with the Google identity bound to your ION operator account. The gateway opens a charged work surface where agents, domains, APIs, and project systems evolve through gated authority.</p>
+    </div>
+    <div class="ion-signal-grid" aria-label="ION login posture">
+      <div class="ion-signal is-hot"><span>Charge</span><b>operator-bound</b></div>
+      <div class="ion-signal"><span>D-Orbital</span><b>l = 2 field</b></div>
+      <div class="ion-signal is-ok"><span>Toroidal Flow</span><b>recursive loop</b></div>
+      <div class="ion-signal"><span>Agents</span><b>active graph</b></div>
+      <div class="ion-signal is-hot"><span>Domains</span><b>project lattice</b></div>
+      <div class="ion-signal is-ok"><span>Evolution</span><b>version spiral</b></div>
+    </div>
   </section>
-  <section>
-    <h2>Google Account</h2>
-    <p>{_html_text(google_status)}</p>
-    <p>Allowed emails are controlled by <code>{ALLOWED_EMAILS_ENV}</code>. An invite token can permit an additional Google account.</p>
-    <form method="post" action="/cockpit/auth/google/start">
-      <input type="hidden" name="next" value="{_html_text(safe_next_path(next_path))}">
-      <label for="invite_token">Invite token, optional</label>
-      <input id="invite_token" name="invite_token" type="password" autocomplete="one-time-code">
-      {google_button}
-    </form>
-  </section>
+	  <div class="auth-stack">
+	    {finding_html}
+	    {signed_in_html}
+	    {access_panels}
+	    <details class="auth-diagnostics">
+      <summary>System readiness</summary>
+      <div class="auth-diagnostics-body">
+        <div class="auth-setup-grid">
+          {setup_html}
+        </div>
+        {missing_html}
+      </div>
+    </details>
+  </div>
 </main>
 </div>
+<script>
+{ion_field_script}
+</script>
 </body>
 </html>"""
 
@@ -3456,10 +4543,6 @@ class IonChatGPTPreviewHandler(BaseHTTPRequestHandler):
         self.send_header("Content-Type", "application/json")
         self.send_header("Content-Length", str(len(body)))
         self.send_header("Cache-Control", "no-store")
-        if self.path.split("?", 1)[0].startswith("/cockpit/browser-gpt-dom/"):
-            self.send_header("Access-Control-Allow-Origin", "*")
-            self.send_header("Access-Control-Allow-Headers", "Content-Type, Accept")
-            self.send_header("Access-Control-Allow-Methods", "POST, OPTIONS")
         self.end_headers()
         try:
             self.wfile.write(body)
@@ -3473,16 +4556,19 @@ class IonChatGPTPreviewHandler(BaseHTTPRequestHandler):
         self.send_header("Content-Length", str(len(body)))
         self.send_header("Cache-Control", "no-store")
         self.send_header("X-Content-Type-Options", "nosniff")
-        self.send_header("Content-Security-Policy", "default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; connect-src 'self'; frame-src 'self'; img-src 'self' data:; form-action 'self'; base-uri 'none'; frame-ancestors 'none'")
+        self.send_header("Content-Security-Policy", PUBLIC_HTML_CSP)
         self.end_headers()
         self.wfile.write(body)
 
     def _public_base_url(self) -> str:
-        host = self.headers.get("host") or ""
+        def first_header(value: str | None) -> str:
+            return (value or "").split(",", 1)[0].strip()
+
+        host = first_header(self.headers.get("x-forwarded-host")) or first_header(self.headers.get("host"))
         if not host:
             return ""
         local_host = host.startswith("127.0.0.1") or host.startswith("localhost")
-        proto = self.headers.get("x-forwarded-proto") or ("http" if local_host else "https")
+        proto = first_header(self.headers.get("x-forwarded-proto")) or ("http" if local_host else "https")
         return f"{proto}://{host}"
 
     def _secure_cookie(self) -> bool:
@@ -3516,7 +4602,13 @@ class IonChatGPTPreviewHandler(BaseHTTPRequestHandler):
             return (True, None) if self._same_origin_reference(referer) else (False, "referer_not_allowed")
         return False, "same_origin_required"
 
-    def _request_token(self, payload: Mapping[str, Any] | None = None, *, allow_query_token: bool = False) -> str:
+    def _request_token(
+        self,
+        payload: Mapping[str, Any] | None = None,
+        *,
+        allow_query_token: bool = False,
+        allow_body_public_token: bool = False,
+    ) -> str:
         auth = self.headers.get("authorization") or ""
         if auth.lower().startswith("bearer "):
             return auth.split(" ", 1)[1].strip()
@@ -3524,7 +4616,7 @@ class IonChatGPTPreviewHandler(BaseHTTPRequestHandler):
             query = parse_qs(urlparse(self.path).query)
             if query.get("token"):
                 return str(query["token"][-1])
-        if payload and payload.get("public_token"):
+        if allow_body_public_token and payload and payload.get("public_token"):
             return str(payload.get("public_token") or "")
         return ""
 
@@ -3533,8 +4625,13 @@ class IonChatGPTPreviewHandler(BaseHTTPRequestHandler):
         payload: Mapping[str, Any] | None = None,
         *,
         allow_query_token: bool = False,
+        allow_body_public_token: bool = False,
     ) -> tuple[bool, str | None, str | None]:
-        context = self._resolve_public_cockpit_access_context(payload, allow_query_token=allow_query_token)
+        context = self._resolve_public_cockpit_access_context(
+            payload,
+            allow_query_token=allow_query_token,
+            allow_body_public_token=allow_body_public_token,
+        )
         return bool(context.get("ok")), context.get("finding"), context.get("token")
 
     def _resolve_public_cockpit_access_context(
@@ -3542,6 +4639,7 @@ class IonChatGPTPreviewHandler(BaseHTTPRequestHandler):
         payload: Mapping[str, Any] | None = None,
         *,
         allow_query_token: bool = False,
+        allow_body_public_token: bool = False,
     ) -> dict[str, Any]:
         """Resolve auth once and preserve a redacted server-side principal."""
 
@@ -3562,16 +4660,21 @@ class IonChatGPTPreviewHandler(BaseHTTPRequestHandler):
                 "finding": None,
                 "token": None,
                 "auth_source": "local_loopback",
-                "principal": {
-                    "auth_method": "local_loopback",
-                    "subject": "local_operator",
-                    "token_label": "local_loopback",
-                    "rank_ceiling": "founder_root_steward",
-                    "production_authority": False,
-                    "live_execution_authority": False,
-                },
+                "principal": local_loopback_operator_principal(),
             }
-        supplied = self._request_token(payload, allow_query_token=allow_query_token)
+        if payload and payload.get("public_token") and not allow_body_public_token and hosted_cockpit_mode():
+            return {
+                "ok": False,
+                "finding": "public_token_not_allowed_in_hosted_mode",
+                "token": None,
+                "auth_source": "body_public_token",
+                "principal": {},
+            }
+        supplied = self._request_token(
+            payload,
+            allow_query_token=allow_query_token,
+            allow_body_public_token=allow_body_public_token,
+        )
         if supplied:
             token_result = validate_permission_token(supplied)
             if token_result.ok:
@@ -3605,8 +4708,13 @@ class IonChatGPTPreviewHandler(BaseHTTPRequestHandler):
             "principal": {},
         }
 
-    def _check_public_cockpit_mutation_access(self, payload: Mapping[str, Any] | None = None) -> tuple[bool, str | None, str | None]:
-        ok, finding, token = self._check_public_cockpit_access(payload)
+    def _check_public_cockpit_mutation_access(
+        self,
+        payload: Mapping[str, Any] | None = None,
+        *,
+        allow_body_public_token: bool = False,
+    ) -> tuple[bool, str | None, str | None]:
+        ok, finding, token = self._check_public_cockpit_access(payload, allow_body_public_token=allow_body_public_token)
         if not ok:
             return ok, finding, token
         origin_ok, origin_finding = self._check_mutation_origin()
@@ -3650,7 +4758,22 @@ class IonChatGPTPreviewHandler(BaseHTTPRequestHandler):
         )
 
     def _send_login(self, *, status: int = 200, next_path: str = "/cockpit/chat", finding: str | None = None) -> None:
-        self._send_html(status, render_public_cockpit_login(next_path=next_path, finding=finding))
+        account_profile: Mapping[str, Any] | None = None
+        secret = cockpit_session_secret()
+        if secret:
+            session_result = validate_session_cookie(self.headers.get("cookie"), secret=secret)
+            if session_result.ok and isinstance(session_result.principal, Mapping):
+                account_profile = build_helixion_account_profile_model(session_result.principal)
+        self._send_html(
+            status,
+            render_public_cockpit_login(
+                next_path=next_path,
+                finding=finding,
+                public_base_url=self._public_base_url(),
+                show_public_callback_url=True,
+                account_profile=account_profile,
+            ),
+        )
 
     def _redirect_with_headers(self, target: str, headers: Mapping[str, str]) -> None:
         self.send_response(303)
@@ -3693,12 +4816,7 @@ class IonChatGPTPreviewHandler(BaseHTTPRequestHandler):
     def do_OPTIONS(self) -> None:  # noqa: N802 - stdlib handler name
         path = self.path.split("?", 1)[0]
         if path.startswith("/cockpit/browser-gpt-dom/"):
-            self.send_response(204)
-            self.send_header("Access-Control-Allow-Origin", "*")
-            self.send_header("Access-Control-Allow-Headers", "Content-Type, Accept")
-            self.send_header("Access-Control-Allow-Methods", "POST, OPTIONS")
-            self.send_header("Cache-Control", "no-store")
-            self.end_headers()
+            self._send_json(403, {"ok": False, "finding": "public_cockpit_cors_preflight_not_allowed"})
             return
         self._send_json(404, {"ok": False, "error": "not_found"})
 
@@ -4020,7 +5138,7 @@ try {
             self.send_header("Set-Cookie", clear_cookie_header(OAUTH_STATE_COOKIE, secure=self._secure_cookie()))
             self.end_headers()
             return
-        if path in {"/cockpit", "/cockpit/", "/cockpit/apps", "/cockpit/apps/"}:
+        if path in {"/cockpit", "/cockpit/", "/cockpit/apps", "/cockpit/apps/", "/cockpit/ui-editor", "/cockpit/ui-editor/", "/cockpit/ai-editor", "/cockpit/ai-editor/"}:
             ok, finding, _token = self._check_public_cockpit_access()
             if not ok:
                 self._send_public_cockpit_blocked(str(finding), next_path="/cockpit")
@@ -4029,7 +5147,12 @@ try {
             if react_html:
                 self._send_bytes(200, react_html.encode("utf-8"), "text/html; charset=utf-8", csp=REACT_CSP)
                 return
-            html_text = build_cockpit_html(build_cockpit_view_model(self.server.ion_root))  # type: ignore[attr-defined]
+            html_text = build_cockpit_html(
+                build_cockpit_view_model(  # type: ignore[attr-defined]
+                    self.server.ion_root,
+                    hydrate_codex_archive=False,
+                )
+            )
             self._send_html(200, wrap_helixion_site_shell(html_text, "cockpit"))
             return
         if path in {"/cockpit/legacy", "/cockpit/legacy/"}:
@@ -4037,7 +5160,12 @@ try {
             if not ok:
                 self._send_public_cockpit_blocked(str(finding), next_path="/cockpit/legacy")
                 return
-            html_text = build_cockpit_html(build_cockpit_view_model(self.server.ion_root))  # type: ignore[attr-defined]
+            html_text = build_cockpit_html(
+                build_cockpit_view_model(  # type: ignore[attr-defined]
+                    self.server.ion_root,
+                    hydrate_codex_archive=False,
+                )
+            )
             self._send_html(200, wrap_helixion_site_shell(html_text, "cockpit"))
             return
         if path in {"/cockpit/chat", "/cockpit/chat/"}:
@@ -4054,9 +5182,9 @@ try {
             self._send_html(200, wrap_helixion_site_shell(chat_html, "chat"))
             return
         if path.startswith("/cockpit/projects/launch/open/"):
-            ok, finding, _token = self._check_public_cockpit_access()
-            if not ok:
-                self._send_public_cockpit_blocked(str(finding), next_path=path)
+            access_context = self._resolve_public_cockpit_access_context()
+            if not access_context.get("ok"):
+                self._send_public_cockpit_blocked(str(access_context.get("finding") or "public_cockpit_login_required"), next_path=path)
                 return
             launch_id = path.rsplit("/", 1)[-1]
             query = parse_qs(urlparse(self.path).query)
@@ -4119,12 +5247,57 @@ try {
                 render_codex_worker_live_status_html(self.server.ion_root),  # type: ignore[attr-defined]
             )
             return
-        if path == "/cockpit/model.json":
+        if path in {"/cockpit/cursor", "/cockpit/cursor/"}:
             ok, finding, _token = self._check_public_cockpit_access()
             if not ok:
+                self._send_public_cockpit_blocked(str(finding), next_path="/cockpit/cursor")
+                return
+            self._send_html(
+                200,
+                render_cursor_carrier_console_html(self.server.ion_root),  # type: ignore[attr-defined]
+            )
+            return
+        if path == "/cockpit/model.json":
+            access_context = self._resolve_public_cockpit_access_context()
+            if not access_context.get("ok"):
+                finding = access_context.get("finding")
                 self._send_public_cockpit_blocked(str(finding), next_path="/cockpit/model.json")
                 return
-            self._send_json(200, build_cockpit_view_model(self.server.ion_root))  # type: ignore[attr-defined]
+            self._send_json(
+                200,
+                build_cockpit_view_model(
+                    self.server.ion_root,  # type: ignore[attr-defined]
+                    principal=access_context.get("principal") if isinstance(access_context.get("principal"), Mapping) else {},
+                ),
+            )
+            return
+        if path == "/cockpit/orchestrator/status":
+            access_context = self._resolve_public_cockpit_access_context()
+            if not access_context.get("ok"):
+                self._send_public_cockpit_blocked(
+                    str(access_context.get("finding") or "public_cockpit_login_required"),
+                    next_path="/cockpit#orchestrator",
+                )
+                return
+            try:
+                result = build_orchestrator_lightweight_status(self.server.ion_root)  # type: ignore[attr-defined]
+            except Exception as exc:
+                result = {"ok": False, "finding": "orchestrator_status_failed", "error": exc.__class__.__name__}
+            self._send_json(200 if result.get("ok") else 409, result)
+            return
+        if path == "/cockpit/orchestrator/model.json":
+            access_context = self._resolve_public_cockpit_access_context()
+            if not access_context.get("ok"):
+                self._send_public_cockpit_blocked(
+                    str(access_context.get("finding") or "public_cockpit_login_required"),
+                    next_path="/cockpit#orchestrator",
+                )
+                return
+            try:
+                result = build_orchestrator_lightweight_model(self.server.ion_root)  # type: ignore[attr-defined]
+            except Exception as exc:
+                result = {"ok": False, "finding": "orchestrator_model_failed", "error": exc.__class__.__name__}
+            self._send_json(200 if result.get("schema_id") == "ion.cockpit_view_model.v1" else 409, result)
             return
         if path == "/cockpit/session/access.json":
             access_context = self._resolve_public_cockpit_access_context()
@@ -4141,6 +5314,7 @@ try {
                     "schema_id": "ion.helixion_cockpit_session_access_projection.v0_2",
                     "authenticated": True,
                     "auth_source": access_context.get("auth_source"),
+                    "account_profile": collab["account_profile"],
                     "principal_projection": collab["session_access"],
                     "route_registry": collab["route_registry"],
                     "candidate_enforcement_active": False,
@@ -4164,7 +5338,7 @@ try {
                 ),
             )
             return
-        if path == "/cockpit/devsecops/model.json":
+        if path in {"/cockpit/devsecops/model.json", "/cockpit/devops/model.json"}:
             access_context = self._resolve_public_cockpit_access_context()
             if not access_context.get("ok"):
                 self._send_public_cockpit_blocked(str(access_context.get("finding") or "public_cockpit_login_required"), next_path=path)
@@ -4186,15 +5360,45 @@ try {
             self._send_json(200, build_project_preview_sessions_model(self.server.ion_root))  # type: ignore[attr-defined]
             return
         if path == "/cockpit/system/model.json":
-            ok, finding, _token = self._check_public_cockpit_access()
-            if not ok:
+            access_context = self._resolve_public_cockpit_access_context()
+            if not access_context.get("ok"):
+                finding = access_context.get("finding")
                 self._send_public_cockpit_blocked(str(finding), next_path="/cockpit/system/model.json")
                 return
-            self._send_json(200, build_system_diagnostics_model(self.server.ion_root))  # type: ignore[attr-defined]
+            payload = dict(build_system_diagnostics_model(self.server.ion_root))  # type: ignore[attr-defined]
+            payload["account_profile"] = build_helixion_account_profile_model(
+                access_context.get("principal") if isinstance(access_context.get("principal"), Mapping) else {}
+            )
+            self._send_json(200, payload)
+            return
+        if path == "/cockpit/assets/model.json":
+            access_context = self._resolve_public_cockpit_access_context()
+            if not access_context.get("ok"):
+                self._send_public_cockpit_blocked(str(access_context.get("finding") or "public_cockpit_login_required"), next_path=path)
+                return
+            payload = build_asset_library_model(
+                self.server.ion_root,  # type: ignore[attr-defined]
+                principal=access_context.get("principal") if isinstance(access_context.get("principal"), Mapping) else {},
+            )
+            self._send_json(200, _redact_public_cockpit_local_root(payload, self.server.ion_root))  # type: ignore[attr-defined]
+            return
+        if path.startswith("/cockpit/assets/blob/"):
+            access_context = self._resolve_public_cockpit_access_context()
+            if not access_context.get("ok"):
+                self._send_public_cockpit_blocked(str(access_context.get("finding") or "public_cockpit_login_required"), next_path="/cockpit/assets/model.json")
+                return
+            asset_id = unquote(path.removeprefix("/cockpit/assets/blob/"))
+            target = resolve_asset_blob(self.server.ion_root, asset_id)  # type: ignore[attr-defined]
+            if target is None:
+                self._send_json(404, {"ok": False, "finding": "asset_blob_not_found"})
+                return
+            content_type = mimetypes.guess_type(target.name)[0] or "application/octet-stream"
+            self._send_bytes(200, target.read_bytes(), content_type, csp=REACT_CSP)
             return
         if path == "/cockpit/build/workspace.json":
-            ok, finding, _token = self._check_public_cockpit_access()
-            if not ok:
+            access_context = self._resolve_public_cockpit_access_context()
+            if not access_context.get("ok"):
+                finding = access_context.get("finding")
                 self._send_public_cockpit_blocked(str(finding), next_path=path)
                 return
             query = parse_qs(urlparse(self.path).query)
@@ -4216,29 +5420,88 @@ try {
             return
         if path in {
             "/cockpit/codex/model.json",
+            "/cockpit/operations-comms/model.json",
+            "/cockpit/team-comms/model.json",
+            "/cockpit/agent-comms/model.json",
+            "/cockpit/account/model.json",
             "/cockpit/browser-gpt/model.json",
             "/cockpit/projects/model.json",
             "/cockpit/apps/model.json",
+            "/cockpit/indexing/model.json",
+            "/cockpit/databases/model.json",
+            "/cockpit/sandbox/model.json",
+            "/cockpit/integrations/model.json",
             "/cockpit/build/model.json",
+            "/cockpit/ui-editor/model.json",
+            "/cockpit/ai-editor/model.json",
             "/cockpit/weave/model.json",
             "/cockpit/domain-weave/model.json",
         }:
-            ok, finding, _token = self._check_public_cockpit_access()
-            if not ok:
-                self._send_public_cockpit_blocked(str(finding), next_path=path)
+            access_context = self._resolve_public_cockpit_access_context()
+            if not access_context.get("ok"):
+                self._send_public_cockpit_blocked(str(access_context.get("finding") or "public_cockpit_login_required"), next_path=path)
                 return
             surface = (
-                "browser-gpt"
+                "account"
+                if path.startswith("/cockpit/account/")
+                else "operations-comms"
+                if path.startswith(("/cockpit/operations-comms/", "/cockpit/team-comms/", "/cockpit/agent-comms/"))
+                else "browser-gpt"
                 if path.startswith("/cockpit/browser-gpt/")
                 else "projects"
                 if path.startswith(("/cockpit/projects/", "/cockpit/apps/"))
+                else "indexing"
+                if path.startswith("/cockpit/indexing/")
+                else "databases"
+                if path.startswith("/cockpit/databases/")
+                else "sandbox"
+                if path.startswith("/cockpit/sandbox/")
+                else "integrations"
+                if path.startswith("/cockpit/integrations/")
                 else "build"
                 if path.startswith("/cockpit/build/")
+                else "ui-editor"
+                if path.startswith(("/cockpit/ui-editor/", "/cockpit/ai-editor/"))
                 else "weave"
                 if path.startswith(("/cockpit/weave/", "/cockpit/domain-weave/"))
                 else "codex"
             )
-            self._send_json(200, build_cockpit_surface_view_model(self.server.ion_root, surface=surface))  # type: ignore[attr-defined]
+            try:
+                payload = build_cockpit_surface_view_model(
+                    self.server.ion_root,  # type: ignore[attr-defined]
+                    surface=surface,
+                    principal=access_context.get("principal") if isinstance(access_context.get("principal"), Mapping) else {},
+                )
+                payload = _redact_public_cockpit_local_root(payload, self.server.ion_root)  # type: ignore[attr-defined]
+            except Exception as exc:
+                self._send_json(
+                    503,
+                    {
+                        "ok": False,
+                        "finding": "cockpit_surface_model_failed",
+                        "path": path,
+                        "surface": surface,
+                        "error_class": exc.__class__.__name__,
+                        "production_authority": False,
+                        "live_execution_authority": False,
+                        "accepted_state_authority": False,
+                        "secrets_authority": False,
+                    },
+                )
+                return
+            self._send_json(200, payload)
+            return
+        if path == "/cockpit/scope/model.json":
+            access_context = self._resolve_public_cockpit_access_context()
+            if not access_context.get("ok"):
+                self._send_public_cockpit_blocked(str(access_context.get("finding") or "public_cockpit_login_required"), next_path=path)
+                return
+            query = parse_qs(urlparse(self.path).query)
+            payload = build_scope_cockpit_model(
+                self.server.ion_root,  # type: ignore[attr-defined]
+                thread_id=(query.get("thread_id") or [""])[0] or None,
+            )
+            self._send_json(200, _redact_public_cockpit_local_root(payload, self.server.ion_root))  # type: ignore[attr-defined]
             return
         if path == "/cockpit/ide/model.json":
             ok, finding, _token = self._check_public_cockpit_access()
@@ -4253,6 +5516,13 @@ try {
                 self._send_public_cockpit_blocked(str(finding), next_path="/cockpit/chat/model.json")
                 return
             self._send_json(200, build_dual_codex_chat_model(self.server.ion_root))  # type: ignore[attr-defined]
+            return
+        if path == "/cockpit/chat/domain-weaver-contexts.json":
+            ok, finding, _token = self._check_public_cockpit_access()
+            if not ok:
+                self._send_public_cockpit_blocked(str(finding), next_path="/cockpit/chat/domain-weaver-contexts.json")
+                return
+            self._send_json(200, build_domain_weaver_context_catalog(self.server.ion_root))  # type: ignore[attr-defined]
             return
         if path == "/cockpit/chat/archive.json":
             ok, finding, _token = self._check_public_cockpit_access()
@@ -4272,6 +5542,33 @@ try {
                     selected_window_count=int(window_count) if window_count.isdigit() else 500,
                 ),
             )
+            return
+        if path == "/cockpit/chat/artifact":
+            ok, finding, _token = self._check_public_cockpit_access()
+            if not ok:
+                self._send_public_cockpit_blocked(str(finding), next_path="/cockpit/chat/artifact")
+                return
+            query = parse_qs(urlparse(self.path).query)
+            artifact_path = str((query.get("path") or [""])[-1] or "")
+            target = resolve_chat_image_artifact(self.server.ion_root, artifact_path)  # type: ignore[attr-defined]
+            if target is None:
+                self._send_json(404, {"ok": False, "finding": "chat_image_artifact_not_found"})
+                return
+            content_type = mimetypes.guess_type(target.name)[0] or "application/octet-stream"
+            self._send_bytes(200, target.read_bytes(), content_type, csp=REACT_CSP)
+            return
+        if path == "/cockpit/chat/file":
+            ok, finding, _token = self._check_public_cockpit_access()
+            if not ok:
+                self._send_public_cockpit_blocked(str(finding), next_path="/cockpit/chat/file")
+                return
+            query = parse_qs(urlparse(self.path).query)
+            file_path = str((query.get("path") or [""])[-1] or "")
+            target = resolve_chat_workspace_file(self.server.ion_root, file_path)  # type: ignore[attr-defined]
+            if target is None:
+                self._send_json(404, {"ok": False, "finding": "chat_workspace_file_not_found"})
+                return
+            self._send_bytes(200, target.read_bytes(), chat_workspace_file_content_type(target), csp=REACT_CSP)
             return
         if path in {"/cockpit/chat/diffs.json", "/cockpit/git/rollback/model.json"}:
             ok, finding, _token = self._check_public_cockpit_access()
@@ -4302,12 +5599,35 @@ try {
                 ),
             )
             return
+        if path in {"/cockpit/chat/identity.json", "/cockpit/chat/identity/timeline.json"}:
+            ok, finding, _token = self._check_public_cockpit_access()
+            if not ok:
+                self._send_public_cockpit_blocked(str(finding), next_path="/cockpit/chat/identity.json")
+                return
+            query = parse_qs(urlparse(self.path).query)
+            limit = str((query.get("limit") or [""])[-1] or "")
+            self._send_json(
+                200,
+                build_codex_chat_identity_model(
+                    self.server.ion_root,  # type: ignore[attr-defined]
+                    session_id=str((query.get("session_id") or [""])[-1] or "") or None,
+                    event_limit=int(limit) if limit.isdigit() else 50,
+                ),
+            )
+            return
         if path == "/cockpit/worker/model.json":
             ok, finding, _token = self._check_public_cockpit_access()
             if not ok:
                 self._send_public_cockpit_blocked(str(finding), next_path="/cockpit/worker/model.json")
                 return
             self._send_json(200, build_worker_cockpit_view_model(self.server.ion_root))  # type: ignore[attr-defined]
+            return
+        if path == "/cockpit/cursor/model.json":
+            ok, finding, _token = self._check_public_cockpit_access()
+            if not ok:
+                self._send_public_cockpit_blocked(str(finding), next_path="/cockpit/cursor/model.json")
+                return
+            self._send_json(200, build_cursor_carrier_chat_model(self.server.ion_root))  # type: ignore[attr-defined]
             return
         if path in APP_PATHS:
             self._send_html(
@@ -4370,9 +5690,38 @@ try {
 
     def do_POST(self) -> None:  # noqa: N802 - stdlib handler name
         path = self.path.split("?", 1)[0]
+        if path in {
+            "/cockpit/assets/upload",
+            "/cockpit/assets/local-folder",
+            "/cockpit/assets/cloud/connect",
+            "/cockpit/assets/share/create",
+        }:
+            payload = self._read_payload()
+            ok, finding, _token = self._check_public_cockpit_mutation_access(payload)
+            if not ok:
+                self._send_public_cockpit_blocked(str(finding), next_path="/cockpit#gallery")
+                return
+            try:
+                if path == "/cockpit/assets/upload":
+                    result = upload_asset_files(self.server.ion_root, payload)  # type: ignore[attr-defined]
+                elif path == "/cockpit/assets/local-folder":
+                    result = index_local_folder(self.server.ion_root, payload)  # type: ignore[attr-defined]
+                elif path == "/cockpit/assets/cloud/connect":
+                    result = upsert_cloud_connection(self.server.ion_root, payload)  # type: ignore[attr-defined]
+                else:
+                    result = create_share_package(self.server.ion_root, payload)  # type: ignore[attr-defined]
+            except Exception as exc:
+                result = {"ok": False, "finding": "asset_library_action_failed", "error": exc.__class__.__name__}
+            result = _redact_public_cockpit_local_root(result, self.server.ion_root)  # type: ignore[attr-defined]
+            self._send_json(200 if result.get("ok") else 409, result)
+            return
         if path == "/cockpit/browser-gpt-dom/probe-snapshot":
             try:
                 payload = self._read_payload()
+                ok, finding, _token = self._check_public_cockpit_mutation_access(payload)
+                if not ok:
+                    self._send_public_cockpit_blocked(str(finding), next_path="/cockpit#browser-gpt")
+                    return
                 result = record_browser_gpt_dom_probe_snapshot(self.server.ion_root, payload)  # type: ignore[attr-defined]
             except Exception as exc:
                 result = {"ok": False, "finding": "probe_snapshot_record_failed", "error": exc.__class__.__name__}
@@ -4660,7 +6009,9 @@ try {
             if not origin_ok:
                 self._send_public_cockpit_blocked(str(origin_finding), next_path=next_path)
                 return
-            token_result = validate_permission_token(str(payload.get("permission_token") or ""))
+            username = str(payload.get("username") or payload.get("user_id") or "").strip()
+            password = str(payload.get("password") or payload.get("permission_token") or "")
+            token_result = validate_operator_credentials(username, password) if username else validate_permission_token(password)
             if not token_result.ok:
                 self._send_login(status=401, next_path=next_path, finding=token_result.finding)
                 return
@@ -4816,6 +6167,37 @@ try {
             )
             self._send_json(200 if result.get("ok") else 400, result)
             return
+        if path == "/cockpit/cursor/turn":
+            try:
+                payload = self._read_payload()
+                ok, finding, _token = self._check_public_cockpit_mutation_access(payload)
+                if not ok:
+                    self._send_public_cockpit_blocked(str(finding), next_path="/cockpit/cursor/model.json")
+                    return
+                turn_result = run_cursor_carrier_chat_turn(
+                    self.server.ion_root,  # type: ignore[attr-defined]
+                    operator_message=str(payload.get("operator_message") or ""),
+                    role=str(payload.get("role") or ""),
+                    index=int(payload.get("index") or 0),
+                    model=str(payload.get("model") or "") or None,
+                )
+                output_rel = str(turn_result.get("output_path") or "")
+                assistant_text = ""
+                if output_rel:
+                    output_path = Path(self.server.ion_root) / output_rel  # type: ignore[attr-defined]
+                    if output_path.is_file():
+                        assistant_text = output_path.read_text(encoding="utf-8", errors="replace")
+                record_result = record_cursor_chat_turn(
+                    self.server.ion_root,  # type: ignore[attr-defined]
+                    operator_message=str(payload.get("operator_message") or ""),
+                    assistant_text=assistant_text,
+                    turn_result=turn_result,
+                )
+                result = {**turn_result, "record": record_result}
+            except Exception as exc:
+                result = {"ok": False, "finding": "request_failed", "error": exc.__class__.__name__}
+            self._send_json(200 if result.get("both_accepted") or result.get("ok") is not False else 400, result)
+            return
         if path in {"/cockpit/chat/turn", "/cockpit/chat/queue", "/cockpit/chat/memory"}:
             try:
                 payload = self._read_payload()
@@ -4824,7 +6206,7 @@ try {
                     self._send_public_cockpit_blocked(str(finding), next_path="/cockpit/chat")
                     return
                 if path == "/cockpit/chat/turn":
-                    result = record_chat_turn(
+                    result = _call_record_chat_turn(
                         self.server.ion_root,  # type: ignore[attr-defined]
                         lane_id=str(payload.get("lane_id") or ""),
                         message=str(payload.get("message") or ""),
@@ -4836,6 +6218,8 @@ try {
                             selected_model=payload.get("selected_model"),
                             thinking_mode=payload.get("thinking_mode"),
                         ),
+                        codex_approval_policy=str(payload.get("codex_approval_policy") or ""),
+                        codex_sandbox_mode=str(payload.get("codex_sandbox_mode") or ""),
                         raw_codex_cli_enabled=True,
                         client_id=str(payload.get("client_id") or ""),
                         target_session_id=str(payload.get("target_session_id") or ""),
@@ -4843,6 +6227,7 @@ try {
                         codex_session_transport=str(payload.get("codex_session_transport") or ""),
                         context_refs=_payload_list(payload, "context_refs"),
                         ide_context_bridge=_payload_mapping(payload, "ide_context_bridge"),
+                        **_selected_mount_chat_turn_kwargs(payload),
                     )
                 elif path == "/cockpit/chat/queue":
                     result = queue_chat_codex_work_packet(
@@ -4850,6 +6235,8 @@ try {
                         lane_id=str(payload.get("lane_id") or ""),
                         objective=str(payload.get("objective") or ""),
                         confirmation=str(payload.get("confirmation") or ""),
+                        codex_approval_policy=str(payload.get("codex_approval_policy") or ""),
+                        codex_sandbox_mode=str(payload.get("codex_sandbox_mode") or ""),
                         context_refs=_payload_list(payload, "context_refs"),
                     )
                 else:
@@ -4903,8 +6290,21 @@ try {
                 result = {"ok": False, "finding": "request_failed", "error": exc.__class__.__name__}
             self._send_json(200 if result.get("ok") else 409, result)
             return
+        if path == "/cockpit/orchestrator/action":
+            payload = self._read_payload()
+            ok, finding, _token = self._check_public_cockpit_mutation_access(payload)
+            if not ok:
+                self._send_public_cockpit_blocked(str(finding), next_path="/cockpit#orchestrator")
+                return
+            try:
+                result = record_orchestrator_action_receipt(self.server.ion_root, payload)  # type: ignore[attr-defined]
+            except Exception as exc:
+                result = {"ok": False, "finding": "request_failed", "error": exc.__class__.__name__}
+            self._send_json(200 if result.get("ok") else 409, result)
+            return
         if path in {
             "/cockpit/agents/spawn-template",
+            "/cockpit/agents/visual-identity",
             "/cockpit/agents/comms/send",
             "/cockpit/agents/comms/ack",
             "/cockpit/agents/comms/list",
@@ -4928,6 +6328,8 @@ try {
             try:
                 if path == "/cockpit/agents/spawn-template":
                     result = execute_agent_spawn_template(self.server.ion_root, payload)  # type: ignore[attr-defined]
+                elif path == "/cockpit/agents/visual-identity":
+                    result = execute_agent_visual_identity_action(self.server.ion_root, payload)  # type: ignore[attr-defined]
                 elif path == "/cockpit/agents/comms/send":
                     result = send_agent_message(self.server.ion_root, payload)  # type: ignore[attr-defined]
                 elif path == "/cockpit/agents/comms/ack":
@@ -5044,3 +6446,4 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+    "operations-comms",

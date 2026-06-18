@@ -1,0 +1,53 @@
+schema_id: ion.cursor_cli_carrier_profile.v1
+carrier_id: CURSOR_CLI_CARRIER
+host_family: cursor_cli
+base_profile: CURSOR_CARRIER
+default_level: L1_TOOL_ASSISTED
+bounded_execution_level: L2_BOUNDED_EXECUTION
+level_ceiling_without_bounded_prompt_and_return_capture: L1_TOOL_ASSISTED
+can_read_files: true
+can_edit_files: true
+can_run_shell_commands: true
+can_run_tests: true
+can_run_noninteractive_exec: true
+can_emit_jsonl_events: false
+can_capture_last_message: true
+can_spawn_carrier_slots: false
+can_spawn_host_subagents: false
+can_self_approve_upgrade: false
+must_state_mounted_ion_carrier_posture: true
+role_authority_requires_phase_proof: true
+context_proof_gate: kernel.ion_context_proof_gate
+template_action_gate: kernel.ion_template_action_gate
+return_intake_module: kernel.ion_carrier_task_return
+status_module: kernel.ion_cursor_queue_runner
+queue_runner_module: kernel.ion_cursor_queue_runner
+execution_packet_template: ION/07_templates/carriers/CURSOR_CLI_EXECUTION_PACKET.md
+sdk_carrier_script: Cursor/cursor_sdk/src/ion_cursor_sdk_carrier.ts
+default_model_env: ION_CURSOR_MODEL
+default_model_fallback: composer-2.5-fast
+default_mode_env: ION_CURSOR_AGENT_MODE
+execution_command_shape:
+  - cursor-agent
+  - --print
+  - --output-format
+  - text
+  - --force
+  - --trust
+  - --model
+  - "<model>"
+required_return_sections:
+  - "### CONTEXT PROOF"
+  - "### TEMPLATE ACTION PROOF"
+  - "### RESULT"
+authority_boundaries:
+  - STEWARD authority without role-phase proof
+  - RELAY authority without role-phase proof
+  - PERSONA authority without role-phase proof
+  - production authority
+  - git push without explicit human gate
+  - credential access
+  - unbounded filesystem access
+  - direct delete without explicit lifecycle transition receipt
+production_authority: false
+live_execution_authority: false

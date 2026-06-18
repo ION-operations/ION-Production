@@ -19,9 +19,11 @@ ACTIVE_PACKET_RELATIVE_PATH = Path("ION/05_context/current/ACTIVE_WORK_PACKET.js
 DEFAULT_TEMPLATE_PATH = "ION/docs/cursor/ION_CURSOR_WORK_CYCLE_PACKET.md"
 GPT_SANDBOX_TEMPLATE_PATH = "ION/07_templates/carriers/SINGLE_CARRIER_SEQUENTIAL_PACKET.md"
 CODEX_CLI_TEMPLATE_PATH = "ION/07_templates/carriers/CODEX_CLI_EXECUTION_PACKET.md"
+CURSOR_CLI_TEMPLATE_PATH = "ION/07_templates/carriers/CURSOR_CLI_EXECUTION_PACKET.md"
 DEFAULT_MODE = "MANUAL_TEMPLATE_BOUND_WORKFLOW"
 GPT_SANDBOX_MODE = "SINGLE_CARRIER_SEQUENTIAL_FRONT_DOOR_WORKFLOW"
 CODEX_CLI_MODE = "CODEX_CLI_BOUNDED_WORK_PACKET_WORKFLOW"
+CURSOR_CLI_MODE = "CURSOR_CLI_BOUNDED_WORK_PACKET_WORKFLOW"
 GPT_SANDBOX_ALIASES = {
     "gpt_sandbox",
     "gpt_sandbox_carrier",
@@ -32,12 +34,18 @@ CODEX_CLI_ALIASES = {
     "codex_cli",
     "codex_cli_carrier",
 }
+CURSOR_CLI_ALIASES = {
+    "cursor_cli",
+    "cursor_cli_carrier",
+}
 PROFILE_BY_CARRIER_ALIAS = {
     "codex": Path("ION/03_registry/codex_extension_carrier_profile.yaml"),
     "codex_extension": Path("ION/03_registry/codex_extension_carrier_profile.yaml"),
     "codex_cli": Path("ION/03_registry/codex_cli_carrier_profile.yaml"),
     "codex_cli_carrier": Path("ION/03_registry/codex_cli_carrier_profile.yaml"),
-    "cursor": Path("ION/03_registry/codex_extension_carrier_profile.yaml"),
+    "cursor": Path("ION/03_registry/cursor_cli_carrier_profile.yaml"),
+    "cursor_cli": Path("ION/03_registry/cursor_cli_carrier_profile.yaml"),
+    "cursor_cli_carrier": Path("ION/03_registry/cursor_cli_carrier_profile.yaml"),
     "chatgpt": Path("ION/03_registry/chatgpt_browser_carrier_profile.yaml"),
     "chatgpt_browser": Path("ION/03_registry/chatgpt_browser_carrier_profile.yaml"),
     "gpt_sandbox": Path("ION/03_registry/gpt_sandbox_carrier_profile.yaml"),
@@ -115,11 +123,17 @@ def _is_codex_cli_carrier(carrier: str) -> bool:
     return (carrier or "").lower().strip() in CODEX_CLI_ALIASES
 
 
+def _is_cursor_cli_carrier(carrier: str) -> bool:
+    return (carrier or "").lower().strip() in CURSOR_CLI_ALIASES
+
+
 def _template_path_for_carrier(carrier: str) -> str:
     if _is_gpt_sandbox_carrier(carrier):
         return GPT_SANDBOX_TEMPLATE_PATH
     if _is_codex_cli_carrier(carrier):
         return CODEX_CLI_TEMPLATE_PATH
+    if _is_cursor_cli_carrier(carrier):
+        return CURSOR_CLI_TEMPLATE_PATH
     return DEFAULT_TEMPLATE_PATH
 
 
@@ -128,6 +142,8 @@ def _mode_for_carrier(carrier: str) -> str:
         return GPT_SANDBOX_MODE
     if _is_codex_cli_carrier(carrier):
         return CODEX_CLI_MODE
+    if _is_cursor_cli_carrier(carrier):
+        return CURSOR_CLI_MODE
     return DEFAULT_MODE
 
 

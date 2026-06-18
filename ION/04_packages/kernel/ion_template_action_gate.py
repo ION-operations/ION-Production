@@ -23,10 +23,17 @@ def _section(text: str, heading: str) -> str:
     next_heading = body.find("\n### ")
     return body if next_heading < 0 else body[:next_heading]
 
+def _normalize_scalar_line(line: str) -> str:
+    stripped = line.strip()
+    if stripped.startswith("- "):
+        stripped = stripped[2:].strip()
+    return stripped.replace("**", "")
+
+
 def _scalar(section: str, key: str) -> str | None:
     prefix = f"{key}:"
     for line in section.splitlines():
-        stripped = line.strip()
+        stripped = _normalize_scalar_line(line)
         if stripped.startswith(prefix):
             value = stripped[len(prefix):].strip().strip("`\"'")
             return value or None
