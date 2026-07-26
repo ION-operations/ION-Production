@@ -1,0 +1,350 @@
+schema_id: ion.git_snapshot_precommit_gate.template.v0_1_candidate
+template_id: GIT_SNAPSHOT_PRECOMMIT_GATE
+owner_domain_id: domain.artifact_provenance_and_gate_legitimacy
+owner_role_id: role.nemesis
+status: candidate_reusable_template
+default_mode: witness
+hard_mode_requires: operator_ratification + gate_registry_promotion
+
+purpose: >-
+  Reusable gate chain for a narrow, manifest-bound Git snapshot copied into a
+  separate clean backup worktree. All gates are specification/checklist law until
+  ratified into GATE_REGISTRY with birth receipts and enforcement tooling.
+
+applies_when:
+  repository_class: monolithic_dirty_root_with_selective_snapshot
+  worktree_posture: separate_clean_backup_worktree
+  staging_posture: pathspec_from_manifest_only
+  authority_ladder_max_without_operator: L2_local_commit_on_backup_branch
+
+required_inputs:
+  snapshot_manifest:
+    schema_id: ion.git_snapshot_manifest.v0_1_candidate
+    required_fields:
+      - manifest_id
+      - packet_id
+      - manifest_sha256
+      - base_sha
+      - target_branch
+      - worktree_root
+      - path_entries[]
+    path_entry_required_fields:
+      - repo_relative_path
+      - tier
+      - owner_domain_id
+      - owner_role_id
+      - reason
+      - content_sha256
+      - size_bytes
+      - source_posture
+  repository_binding:
+    shell_root: required_absolute_path
+    git_toplevel_must_equal_shell_root: true
+    remote_name: origin
+    remote_url_binding: required
+  forensic_exclusions:
+    - provenance_hold_markers[]
+    - reconstructed_non_authoritative_paths[]
+
+tier_enum:
+  T0_committable_source: curated source, templates, registry, tests
+  T1_domain_owned_candidate: domain-scoped candidate artifacts with owner receipt
+  T2_generated_runtime_active: forbidden unless explicit carry_receipt
+  T3_operator_local_witness: forbidden unless explicit operator carry_receipt
+  T4_secrets_vault_adjacent: forbidden
+  T5_archives_quarantine_historical: forbidden unless explicit archive receipt
+  T6_deletion_incident: forbidden unless individually declared with nemesis review
+
+gate_chain_order:
+  - GATE-WORKTREE-ROOT
+  - GATE-MANIFEST-ALLOWLIST
+  - GATE-PROVENANCE-ENTRY
+  - GATE-SECRET-SCAN
+  - GATE-LARGE-FILE
+  - GATE-RUNTIME-STATE
+  - GATE-SYMLINK-DEVICE
+  - GATE-FORENSIC-HOLD
+  - GATE-DELETION-ZERO
+  - GATE-STAGING-EQUALITY
+  - GATE-COMMIT-BINDING
+  - GATE-TREE-HASH
+  - GATE-PUSH-AUTHORIZATION
+  - GATE-DRAFT-PR
+
+gates:
+
+  GATE-WORKTREE-ROOT:
+    gate_id: gate.git_snapshot.worktree_root
+    phase: pre_copy
+    owner: domain.context_graph_branch_fabric
+    mode: hard_when_ratified
+    pass_criteria:
+      - git rev-parse --show-toplevel equals manifest.repository_binding.shell_root
+      - backup worktree created with git worktree add --detach or -b at manifest.target_branch from manifest.base_sha
+      - worktree git status --porcelain=v1 -uall is empty before manifest copy begins
+      - parent dirty tree is never staged directly; only manifest-listed paths are copied in
+    fail_verdict: BLOCKED_WORKTREE_NOT_CLEAN_OR_WRONG_ROOT
+    evidence_outputs:
+      - worktree_creation_receipt.json
+      - pre_copy_status_porcelain_sha256
+
+  GATE-MANIFEST-ALLOWLIST:
+    gate_id: gate.git_snapshot.manifest_allowlist
+    phase: pre_stage
+    owner: domain.artifact_provenance_and_gate_legitimacy
+    mode: hard_when_ratified
+    pass_criteria:
+      - manifest.path_entries is non-empty and explicitly enumerated (no recursive discovery)
+      - copied tree file set equals manifest.path_entries repo_relative_path set exactly
+      - any file present in worktree but absent from manifest => FAIL
+      - any manifest path missing from worktree => FAIL
+      - total manifest path count equals worktree tracked+untracked file count under snapshot root
+      - forbidden staging commands rejected: git add ., git add -A, git add -u at repo root
+    fail_verdict: BLOCKED_MANIFEST_ALLOWLIST_MISMATCH
+    evidence_outputs:
+      - manifest_paths_sha256
+      - worktree_paths_sha256
+      - symmetric_diff_path_list.json
+
+  GATE-PROVENANCE-ENTRY:
+    gate_id: gate.git_snapshot.provenance_entry
+    phase: pre_stage
+    owner: domain.artifact_provenance_and_gate_legitimacy
+    mode: hard_when_ratified
+    pass_criteria:
+      - every path_entry has owner_domain_id, owner_role_id, reason (non-empty)
+      - every path_entry has content_sha256 and size_bytes measured at copy time
+      - manifest total_bytes equals sum(path_entry.size_bytes)
+      - manifest manifest_sha256 equals sha256(canonical_json(manifest without manifest_sha256 field))
+      - tier is one of tier_enum; T2/T3/T4/T5/T6 require matching carry_receipt or fail
+    fail_verdict: BLOCKED_PROVENANCE_INCOMPLETE
+    evidence_outputs:
+      - per_path_provenance_table.json
+      - manifest_integrity_receipt.json
+
+  GATE-SECRET-SCAN:
+    gate_id: gate.git_snapshot.secret_scan
+    phase: pre_stage
+    owner: domain.artifact_provenance_and_gate_legitimacy
+    mode: hard_when_ratified
+    scan_layers:
+      filename_and_path:
+        block_if_basename_or_path_matches:
+          - "(?i)(^|/|\\.)\\.env(\\.|$)"
+          - "(?i)(secret|credential|token|api[_-]?key|private[_-]?key|service[_-]?role)"
+          - "(?i)\\.pem$|\\.key$|\\.p12$|\\.pfx$|\\.token$|\\.secret$"
+          - "(?i)(^|/)ION_VAULT_LOCAL(/|$)"
+          - "(?i)(^|/)(\\.codex/|\\.cursor/mcp\\.json$|auth\\.json$)"
+          - "(?i)(^|/).*secret.*/"
+        allow_only_if:
+          - explicit false_positive_receipt with reviewer role.nemesis
+          - path classified T1 with redaction_proof receipt
+      content:
+        method: non_exposing_pattern_scan
+        engines: [gitleaks_detect_secrets_redacted, ripgrep_fixed_patterns_redacted]
+        blocked_patterns_classes:
+          - aws_access_key_like
+          - github_pat_like
+          - openai_sk_like
+          - jwt_compact_like
+          - private_pem_header
+          - bearer_token_assignment
+        output_law:
+          - report path + rule_id + line_number + redacted_fingerprint only
+          - never emit matched secret substring
+          - never paste secret contents into receipts or PR body
+    fail_verdict: BLOCKED_SECRET_RISK
+    evidence_outputs:
+      - secret_scan_summary.json
+      - blocked_paths_list.json
+
+  GATE-LARGE-FILE:
+    gate_id: gate.git_snapshot.large_file
+    phase: pre_stage
+    owner: domain.context_graph_branch_fabric
+    peer: domain.artifact_provenance_and_gate_legitimacy
+    mode: hard_when_ratified
+    thresholds:
+      warn_bytes: 1048576
+      block_without_lfs_receipt_bytes: 5242880
+      absolute_block_bytes: 104857600
+    archive_extensions_block:
+      - .zip
+      - .tar
+      - .tar.gz
+      - .tgz
+      - .7z
+      - .gz
+      - .bz2
+      - .xz
+      - .rar
+    archive_magic_sniff: true
+    git_lfs:
+      classify_over_warn_bytes: true
+      require_lfs_pointer_or_tracking_receipt_over_block_bytes: true
+      first_snapshot_default: block_all_archives_and_files_over_block_without_explicit_carry_receipt
+    fail_verdict: BLOCKED_LARGE_FILE_OR_ARCHIVE
+    evidence_outputs:
+      - large_file_inventory.json
+      - lfs_classification_table.json
+
+  GATE-RUNTIME-STATE:
+    gate_id: gate.git_snapshot.runtime_state
+    phase: pre_stage
+    owner: domain.artifact_provenance_and_gate_legitimacy
+    mode: hard_when_ratified
+    forbidden_path_patterns:
+      - "**/__pycache__/**"
+      - "**/*.py[cod]"
+      - "**/.pytest_cache/**"
+      - "**/.mypy_cache/**"
+      - "**/.ruff_cache/**"
+      - "**/node_modules/**"
+      - "**/tmp/**"
+      - "**/_tmp/**"
+      - "**/*.log"
+      - "**/*.pid"
+      - "ION/05_context/current/ACTIVE_*.json"
+      - "ION/05_context/current/ACTIVE_*.md"
+      - "ION/05_context/current/**/runtime/**"
+      - "ION/05_context/current/**/live_carrier_binding/**"
+      - "ION/05_context/runtime_state/**"
+      - ".ion_private/**"
+    forbidden_without_explicit_carry_receipt: true
+    fail_verdict: BLOCKED_RUNTIME_OR_GENERATED_STATE
+    evidence_outputs:
+      - runtime_state_hits.json
+
+  GATE-SYMLINK-DEVICE:
+    gate_id: gate.git_snapshot.symlink_device
+    phase: pre_stage
+    owner: domain.artifact_provenance_and_gate_legitimacy
+    mode: hard_when_ratified
+    pass_criteria:
+      - no symlinks whose target resolves outside git_toplevel
+      - no symlinks at all in first snapshot unless individually declared with reason and target receipt
+      - no block devices, char devices, sockets, or FIFOs in manifest
+    fail_verdict: BLOCKED_SPECIAL_FILE_OR_ESCAPING_SYMLINK
+    evidence_outputs:
+      - special_file_scan.json
+
+  GATE-FORENSIC-HOLD:
+    gate_id: gate.git_snapshot.forensic_hold
+    phase: pre_stage
+    owner: domain.artifact_provenance_and_gate_legitimacy
+    mode: hard_when_ratified
+    always_exclude_globs:
+      - "**/_build_rebase12_package.candidate.py"
+      - "**/_build_rebase12_package.candidate.py.PROVENANCE_HOLD.candidate.json"
+      - "**/PROVENANCE_HOLD.candidate.json"
+    block_while_open:
+      - blocker_id: BLK-REBASE12-FORENSIC
+        unless_verdict_in: [CLEARED, SUPERSEDED_BY_HASH_ATTESTED_BUILDER]
+    fail_verdict: BLOCKED_FORENSIC_HOLD_PATH
+    evidence_outputs:
+      - forensic_hold_scan.json
+
+  GATE-DELETION-ZERO:
+    gate_id: gate.git_snapshot.deletion_zero
+    phase: pre_stage
+    owner: domain.artifact_provenance_and_gate_legitimacy
+    mode: hard_when_ratified
+    pass_criteria:
+      - git diff --cached --name-status contains zero D entries
+      - git diff --cached --name-status contains zero R entries unless rename is identity-preserving within manifest and declared
+      - manifest.deletion_declarations is empty OR each deletion has nemesis_individual_review_receipt
+    first_snapshot_default: deletion_count_must_be_zero
+    fail_verdict: BLOCKED_UNDECLARED_DELETION
+    evidence_outputs:
+      - staged_name_status.json
+
+  GATE-STAGING-EQUALITY:
+    gate_id: gate.git_snapshot.staging_equality
+    phase: pre_commit
+    owner: domain.artifact_provenance_and_gate_legitimacy
+    mode: hard_when_ratified
+    pass_criteria:
+      - staging uses git add --pathspec-from-file=MANIFEST_PATHSPECS.txt only
+      - git diff --cached --name-only sorted equals manifest repo_relative_path sorted exactly
+      - no skip-worktree or assume-unchanged manipulation on staged paths
+    fail_verdict: BLOCKED_STAGED_SET_MISMATCH
+    evidence_outputs:
+      - staged_paths_sha256
+      - manifest_paths_sha256
+
+  GATE-COMMIT-BINDING:
+    gate_id: gate.git_snapshot.commit_binding
+    phase: commit
+    owner: domain.artifact_provenance_and_gate_legitimacy
+    mode: hard_when_ratified
+    required_bindings:
+      base_sha: manifest.base_sha
+      target_branch: manifest.target_branch
+      parent_commit: must_equal_base_sha_on_first_snapshot
+      remote_name: origin
+      remote_url: must_match repository_binding.remote_url
+      commit_message_template: "candidate(snapshot): {packet_id} manifest={manifest_sha256_prefix}"
+      author_posture:
+        name: ion-snapshot-bot-candidate
+        email: ion-snapshot-bot-candidate@local.invalid
+        note: bot author forbidden from implying operator acceptance; human author requires operator_authorization_receipt
+    fail_verdict: BLOCKED_COMMIT_BINDING_DRIFT
+    evidence_outputs:
+      - commit_plan_receipt.json
+
+  GATE-TREE-HASH:
+    gate_id: gate.git_snapshot.tree_hash
+    phase: post_commit_pre_push
+    owner: domain.artifact_provenance_and_gate_legitimacy
+    mode: hard_when_ratified
+    pass_criteria:
+      - commit_tree_sha256 recorded from git rev-parse HEAD^{tree}
+      - recomputed tree from manifest path sha256 set matches committed tree when materialized in fresh temp worktree
+      - staged_manifest_paths_sha256 before commit equals post_commit_tree_paths_sha256
+      - commit_sha256 recorded
+      - manifest snapshot_id bound in commit message or commit_receipt
+    fail_verdict: BLOCKED_TREE_HASH_MISMATCH
+    evidence_outputs:
+      - tree_hash_receipt.json
+      - commit_sha256
+
+  GATE-PUSH-AUTHORIZATION:
+    gate_id: gate.git_snapshot.push_authorization
+    phase: push
+    owner: operator_with_nemesis_non_block
+    mode: hard_when_ratified
+    separated_from_local_commit: true
+    pass_criteria:
+      - all gates through GATE-TREE-HASH passed
+      - operator_push_authorization_receipt present with explicit remote and refspec
+      - refspec must be HEAD:refs/heads/backup/* or manifest.target_branch exactly
+      - push forbidden to refs/heads/main and refs/heads/master
+      - post-push remote_sha256 equals local_commit_sha256
+    fail_verdict: BLOCKED_PUSH_UNAUTHORIZED_OR_MISMATCH
+    evidence_outputs:
+      - push_authorization_receipt.json
+      - push_result_receipt.json
+
+  GATE-DRAFT-PR:
+    gate_id: gate.git_snapshot.draft_pr
+    phase: draft_pr
+    owner: domain.github_repository_platform_governance
+    peer: domain.state_rank_and_receipt_truth
+    mode: witness_until_platform_templates_land
+    separated_from_push: true
+    pass_criteria:
+      - push gate passed
+      - PR targets default_branch with draft=true
+      - PR body cites manifest_id, manifest_sha256, commit_sha256, tree_sha256, packet_id
+      - PR body contains no secret scan raw output
+      - nemesis review return attached or linked
+      - steward_integration_queue not updated from draft PR alone
+    fail_verdict: BLOCKED_DRAFT_PR_INCOMPLETE
+    evidence_outputs:
+      - pr_review_receipt.json
+
+non_claims:
+  - candidate_only
+  - template_does_not_execute_git
+  - no_secret_content_in_gate_reports
+  - witness_mode_until_registry_ratification

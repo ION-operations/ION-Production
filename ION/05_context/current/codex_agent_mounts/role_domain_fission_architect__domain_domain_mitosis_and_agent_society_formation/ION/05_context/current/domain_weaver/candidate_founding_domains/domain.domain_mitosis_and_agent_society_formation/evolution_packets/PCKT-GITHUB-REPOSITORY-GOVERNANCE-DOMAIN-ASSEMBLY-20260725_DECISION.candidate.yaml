@@ -1,0 +1,162 @@
+schema_id: ion.domain.github_repository_governance_assembly_decision.v0_1_candidate
+packet_id: PCKT-GITHUB-REPOSITORY-GOVERNANCE-DOMAIN-ASSEMBLY-20260725
+parent_packet_id: PCKT-ION-LEAD-ORCHESTRATION-GITHUB-REPOSITORY-GOVERNANCE-DOMAIN-ASSEMBLY-20260725
+issued_by_role: role.domain_fission_architect
+issued_by_domain: domain.domain_mitosis_and_agent_society_formation
+issued_at: "2026-07-25T23:58:00Z"
+status: candidate_pending_review
+posture: proposal_and_bounded_discovery_only
+carrier: cursor_agent
+model: composer-2.5
+
+operator_need_summary: >-
+  Establish a correct GitHub governance domain for ION, define continuity templates
+  and relationships, and produce a safe first snapshot plan for the very large dirty
+  monolithic repository at ION_Developement without blanket staging, commit, push,
+  or remote mutation in this turn.
+
+local_repository_facts:
+  shell_root: /home/sev/ION - Production/ION_Developement
+  workspace_root: /home/sev/ION - Production
+  remote: https://github.com/ION-operations/ION-Production.git
+  branch: codex/ion-custom-gpt-front-door-carrier-v4
+  working_tree_class: very_large_preexisting_dirty_tree
+  immediate_blanket_commit_safe: false
+  rebase12_builder_git_tracked: false
+  rebase12_forensic_open: true
+
+decision_class: evolve_existing_domains_plus_one_narrow_platform_domain_no_monolithic_git_steward
+
+verdict: GITHUB_REPOSITORY_GOVERNANCE_DOMAIN_ASSEMBLY_PROPOSED
+
+primary_canonical_owner:
+  domain_id: domain.context_graph_branch_fabric
+  role_id: role.monolith_decomposition_cartographer
+  scope:
+    - repository_identity_and_remote_authority_registry
+    - branch_naming_upstream_merge_base_divergence_law
+    - monolith_path_ownership_cartography_for_selective_staging
+    - working_tree_topology_and_branch_fabric_orientation
+    - backup_branch_naming_and_local_snapshot_branch_policy
+  rationale: >-
+    Git branch graph, repository identity, merge topology, and monolith decomposition
+    cartography belong to branch-fabric law — not orchestration turn packets and not
+    artifact birth receipts alone.
+
+peer_owners:
+  change_inventory_and_commit_boundary:
+    domain_id: domain.artifact_provenance_and_gate_legitimacy
+    role_id: role.nemesis
+    scope:
+      - working_tree_tier_classification
+      - domain_scoped_change_set_ownership_manifests
+      - pre_commit_secret_credential_large_file_generated_artifact_gates
+      - destructive_deletion_quarantine_gates
+      - commit_boundary_manifest_and_staging_law
+  accepted_merge_and_rank_boundary:
+    domain_id: domain.state_rank_and_receipt_truth
+    scope:
+      - draft_pr_vs_accepted_merge_boundary
+      - fan_in_ledger_rank_before_remote_is_accepted_truth
+  continuity_templates_and_recovery_receipts:
+    domain_id: domain.context_systems
+    scope:
+      - repository_orientation_template
+      - change_inventory_template
+      - commit_plan_and_push_authorization_receipt_templates
+      - rollback_without_destructive_reset_receipts
+  github_platform_surface:
+    domain_id: domain.github_repository_platform_governance
+    status: new_candidate_subdomain
+    scope:
+      - github_repository_settings_read_model
+      - branch_protection_and_rulesets_policy
+      - actions_ci_workflow_relationship
+      - codeowners_issue_pr_template_policy
+      - release_and_tag_platform_operations
+    does_not_own:
+      - git_object_model
+      - selective_staging_manifest
+      - accepted_state_rank
+  release_tag_and_production_cutover:
+    domain_id: domain.release.release_readiness
+    status: deferred_until_registry_promotion_wave
+    scope:
+      - tag_release_and_production_cutover_gates_after_accepted_merge
+    note: use candidate release family from expansion graph; not active registry owner today
+  implementation_landing:
+    domain_id: domain.product_and_implementation_domain_formation
+    role_id: role.mason
+    scope:
+      - bounded_repo_patches_after_domain_scoped_commit_manifest_approved
+    relationship: executes_only_after_provenance_and_branch_fabric_manifests
+
+explicit_non_owner:
+  domain_id: domain.current_phase_orchestration_management
+  role_id: role.steward
+  retains:
+    - ACTIVE_CARRIER_TURN_PACKET_orchestration_truth
+    - steward_integration_queue_acceptance_gate
+  forbidden_duplicate:
+    - git_repository_owner
+    - github_settings_owner
+    - pre_commit_gate_owner
+    - branch_fabric_owner
+  relationship: read_only_consumer_of_repository_state_summary_and_commit_manifest_feed
+
+rejected:
+  - monolithic_git_steward_under_steward
+  - steward_evolution_in_place_as_git_owner
+  - immediate_blanket_git_add_of_dirty_root
+  - subrepository_split_before_first_classified_snapshot
+  - treating_MINI_CAPSULE_as_git_truth
+
+repository_shape_decision:
+  remain_monolithic: true
+  rationale: >-
+    Single shell root with pyproject.toml + ION/REPO_AUTHORITY.md is the lawful ION
+    carrier root. Splitting subrepos before tier classification would hide ownership
+    and amplify forensic risk on the dirty tree.
+  logical_partitions:
+    - committable_source_and_templates
+    - domain_owned_candidate_artifacts
+    - generated_runtime_active_state
+    - operator_local_witness_and_recovery
+    - secrets_and_vault_adjacent_paths
+    - archives_quarantine_and_historical_witness
+    - missing_symlink_and_deletion_incidents
+  generated_runtime_exclusion: >-
+    ACTIVE_* runtime JSON, live queues, metrics rollups, and mount hot state remain
+    witness or generated tiers until explicit gitignore/LFS policy receipts land —
+    never in first snapshot blanket.
+
+first_snapshot_blockers:
+  - id: BLK-REBASE12-FORENSIC
+    status: open
+    owner: domain.artifact_provenance_and_gate_legitimacy
+    packets:
+      - PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-BYTE-PROVENANCE-FORENSIC-20260725
+      - PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-RUNTIME-EQUIVALENCE-FORENSIC-20260725
+    gate: first_git_snapshot_forbidden_until_verdict_not_HOLD
+  - id: BLK-WORKING-TREE-UNCLASSIFIED
+    status: open
+    owner: domain.context_graph_branch_fabric
+    gate: tier_manifest_required_before_any_staging_wave
+  - id: BLK-OPERATOR-PUSH-AUTH
+    status: standing
+    owner: operator
+    gate: no_remote_push_without_explicit_operator_authorization_receipt
+
+authority_ladder:
+  local_git_save: domain.context_graph_branch_fabric + artifact_provenance manifest
+  remote_backup_branch: operator_authorized + pre_commit_gates_pass
+  draft_pr: github_platform_governance template + nemesis review
+  accepted_merge: state_rank_and_receipt_truth + steward_integration
+  production_release: release_readiness + operator_gate
+
+non_claims:
+  - candidate_only
+  - no_registry_promotion
+  - no_git_add_commit_push_in_this_turn
+  - no_accepted_state
+  - no_remote_or_repo_setting_mutation

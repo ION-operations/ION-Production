@@ -1,0 +1,222 @@
+schema_id: ion.commit_boundary_manifest.v0_1_candidate
+manifest_id: CBM-ION-GOVERNANCE-SNAPSHOT-WAVE0-20260725
+packet_id: PCKT-ION-LEAD-ORCHESTRATION-BRANCH-FABRIC-LIVE-INVENTORY-AND-SNAPSHOT-MANIFEST-20260725
+owner_domain_id: domain.context_graph_branch_fabric
+peer_domain_id: domain.artifact_provenance_and_gate_legitimacy
+materialized_at: "2026-07-26T00:16:00Z"
+status: candidate_proposal_only
+authority_level: L0_local_snapshot_plan
+terminal_verdict: LIVE_REPOSITORY_INVENTORY_AND_FIRST_SNAPSHOT_MANIFEST_READY
+
+objective: >-
+  Smallest coherent first governance snapshot: GitHub repository platform governance
+  charter, repository-governance evolution law, governing forensic receipts, and
+  rebase-12 provenance-hold witness surfaces — staged only from a separate clean
+  backup worktree at current HEAD, never from the dirty active worktree.
+
+base_commit:
+  sha: "60255b26a290276c465b937708f2552e400363f6"
+  branch_at_observation: codex/ion-custom-gpt-front-door-carrier-v4
+  merge_base_origin_main: "14b617e1c210c688e2bc9c380503ca756eed941e"
+
+clean_backup_worktree_posture:
+  model: separate_clean_backup_worktree_from_head
+  rationale: >-
+    Active worktree has 217151 porcelain entries including 18915 deletions and
+    197991 untracked paths; staging from dirty tree would absorb unrelated operator
+    changes. Wave-0 governance artifacts must be copied or checked out cleanly at
+    HEAD, then selectively added via manifest pathspecs only.
+  proposed_commands_operator_only:
+    - >-
+      git worktree add -B backup/ion-governance-snapshot-wave0-20260725
+      ../ION_Developement-backup-governance-wave0-20260725 60255b26a290276c465b937708f2552e400363f6
+    - >-
+      cd ../ION_Developement-backup-governance-wave0-20260725 && git add --pathspec-from-file=COMMIT_BOUNDARY_PATHSPECS.wave0.txt
+    - >-
+      git commit -F COMMIT_MESSAGE.wave0.txt
+    - >-
+      git push -u origin backup/ion-governance-snapshot-wave0-20260725
+  carrier_execution_this_turn: none
+  constraints_honored:
+    no_git_mutation: true
+    no_staging: true
+    no_commit: true
+    no_push: true
+    no_branch_or_worktree_creation: true
+
+proposed_backup_branch:
+  name: backup/ion-governance-snapshot-wave0-20260725
+  class: backup_snapshot_lane
+  remote_ref: refs/heads/backup/ion-governance-snapshot-wave0-20260725
+  tracks: none_until_operator_push
+
+proposed_commit:
+  boundary_id: CBM-ION-GOVERNANCE-SNAPSHOT-WAVE0-20260725
+  intended_message: |
+    candidate(governance): repository governance domain assembly wave-0 snapshot
+
+    Packet: PCKT-ION-LEAD-ORCHESTRATION-BRANCH-FABRIC-LIVE-INVENTORY-AND-SNAPSHOT-MANIFEST-20260725
+    Manifest: CBM-ION-GOVERNANCE-SNAPSHOT-WAVE0-20260725
+    Base: 60255b26a290276c465b937708f2552e400363f6
+    Scope: GitHub platform governance charter, repository-governance law packets,
+    provenance-hold witness surfaces, branch-fabric inventory manifests (candidate only).
+
+    Authority: proposal — operator L2 commit after BLK-REBASE12-FORENSIC closure.
+    No blanket add. No secrets. No reconstructed rebase-12 builder source.
+  message_must_cite:
+    - packet_id
+    - manifest_id
+    - manifest_sha256_at_commit_time
+
+draft_pr_posture:
+  base_branch: main
+  head_branch: backup/ion-governance-snapshot-wave0-20260725
+  title: "[candidate] ION repository governance wave-0 snapshot"
+  required_before_open:
+    - BLK-REBASE12-FORENSIC closed
+    - pre_commit_gates_pass
+    - nemesis_non_block
+    - operator_push_receipt_L3
+  github_settings_mutation: none
+
+pre_commit_gates_required:
+  - GATE-FORENSIC-HOLD
+  - GATE-SECRET-SCAN
+  - GATE-GENERATED-RUNTIME
+  - GATE-DESTRUCTIVE-DELETION
+  - GATE-LARGE-FILE
+
+blockers_before_L2_commit:
+  - id: BLK-REBASE12-FORENSIC
+    status: open
+    effect: GATE-FORENSIC-HOLD blocks any commit until forensic closure
+  - id: BLK-OPERATOR-PUSH-AUTH
+    status: standing
+    effect: remote backup requires explicit operator authorization receipt
+
+include_pathspecs:
+  - path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.github_repository_platform_governance/**
+    tier: T1_domain_candidate_artifacts
+    owner_domain_id: domain.github_repository_platform_governance
+    rationale: canonical GitHub platform governance domain charter
+  - path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.domain_mitosis_and_agent_society_formation/evolution_packets/PCKT-GITHUB-REPOSITORY-GOVERNANCE-DOMAIN-ASSEMBLY-20260725_DECISION.candidate.yaml
+    tier: T1
+    owner_domain_id: domain.domain_mitosis_and_agent_society_formation
+  - path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.domain_mitosis_and_agent_society_formation/evolution_packets/REPOSITORY_IDENTITY_AND_REMOTE_REGISTRY.candidate.yaml
+    tier: T1
+    owner_domain_id: domain.context_graph_branch_fabric
+  - path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.domain_mitosis_and_agent_society_formation/evolution_packets/WORKING_TREE_INVENTORY_TIERS.candidate.yaml
+    tier: T1
+    owner_domain_id: domain.artifact_provenance_and_gate_legitimacy
+  - path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.domain_mitosis_and_agent_society_formation/evolution_packets/COMMIT_BOUNDARY_AND_STAGING_LAW.candidate.yaml
+    tier: T1
+    owner_domain_id: domain.artifact_provenance_and_gate_legitimacy
+  - path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.domain_mitosis_and_agent_society_formation/evolution_packets/GITHUB_REPOSITORY_GOVERNANCE_METRICS.candidate.yaml
+    tier: T1
+    owner_domain_id: domain.github_repository_platform_governance
+  - path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.domain_mitosis_and_agent_society_formation/evolution_packets/PCKT-FIRST-SNAPSHOT-BOUNDARY-AFTER-REBASE12-CLOSURE-20260725.candidate.yaml
+    tier: T1
+    owner_domain_id: domain.domain_mitosis_and_agent_society_formation
+  - path: ION/05_context/current/repository_governance/GITHUB_PLATFORM_READMODEL.candidate.yaml
+    tier: T1
+    owner_domain_id: domain.github_repository_platform_governance
+  - path: ION/05_context/current/repository_governance/CODEOWNERS_PROPOSAL.candidate.md
+    tier: T1
+    owner_domain_id: domain.github_repository_platform_governance
+  - path: ION/05_context/current/codex_agent_mounts/role_domain_fission_architect__domain_domain_mitosis_and_agent_society_formation/.ion/outbox/20260725T235800Z_PCKT-ION-LEAD-ORCHESTRATION-GITHUB-REPOSITORY-GOVERNANCE-DOMAIN-ASSEMBLY-20260725_LEAD_ORCHESTRATION_RETURN.candidate.md
+    tier: T1
+    owner_domain_id: domain.domain_mitosis_and_agent_society_formation
+  - path: ION/05_context/current/codex_agent_mounts/role_domain_fission_architect__domain_domain_mitosis_and_agent_society_formation/.ion/receipts/20260725T235800Z_PCKT-ION-LEAD-ORCHESTRATION-GITHUB-REPOSITORY-GOVERNANCE-DOMAIN-ASSEMBLY-20260725_OWN_MOUNT_RECEIPT.candidate.json
+    tier: T1
+    owner_domain_id: domain.domain_mitosis_and_agent_society_formation
+  - path: ION/05_context/current/codex_agent_mounts/role_nemesis__domain_artifact_provenance_and_gate_legitimacy/.ion/forensic_evidence/PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-PROVENANCE-HOLD-MATERIALIZATION-20260725/**
+    tier: T1
+    owner_domain_id: domain.artifact_provenance_and_gate_legitimacy
+    rationale: rebase-12 provenance-hold witness (marker + deployment status; not builder source)
+    provenance_permits: true
+  - path: ION/05_context/current/codex_agent_mounts/role_nemesis__domain_artifact_provenance_and_gate_legitimacy/.ion/receipts/20260726T010400Z_PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-PROVENANCE-HOLD-MATERIALIZATION-20260725_OWN_MOUNT_RECEIPT.candidate.json
+    tier: T1
+    owner_domain_id: domain.artifact_provenance_and_gate_legitimacy
+  - path: ION/05_context/current/codex_agent_mounts/role_nemesis__domain_artifact_provenance_and_gate_legitimacy/.ion/receipts/20260726T005800Z_PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-BYTE-PROVENANCE-FORENSIC-20260725_OWN_MOUNT_RECEIPT.candidate.json
+    tier: T1
+    owner_domain_id: domain.artifact_provenance_and_gate_legitimacy
+  - path: ION/05_context/current/codex_agent_mounts/role_runtime_cartographer__domain_runtime_carrier_and_action_admission/.ion/receipts/20260726T005800Z_PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-RUNTIME-EQUIVALENCE-FORENSIC-20260725_OWN_MOUNT_RECEIPT.candidate.json
+    tier: T1
+    owner_domain_id: domain.runtime_carrier_and_action_admission
+  - path: ION/05_context/current/codex_agent_mounts/role_monolith_decomposition_cartographer__domain_context_graph_branch_fabric/REPOSITORY_IDENTITY_REGISTRY.candidate.json
+    tier: T1
+    owner_domain_id: domain.context_graph_branch_fabric
+  - path: ION/05_context/current/codex_agent_mounts/role_monolith_decomposition_cartographer__domain_context_graph_branch_fabric/REPOSITORY_STATE_SUMMARY.candidate.md
+    tier: T1
+    owner_domain_id: domain.context_graph_branch_fabric
+  - path: ION/05_context/current/codex_agent_mounts/role_monolith_decomposition_cartographer__domain_context_graph_branch_fabric/WORKING_TREE_INVENTORY.candidate.json
+    tier: T1
+    owner_domain_id: domain.context_graph_branch_fabric
+  - path: ION/05_context/current/codex_agent_mounts/role_monolith_decomposition_cartographer__domain_context_graph_branch_fabric/COMMIT_BOUNDARY_MANIFEST.candidate.yaml
+    tier: T1
+    owner_domain_id: domain.context_graph_branch_fabric
+
+explicit_excludes:
+  - path: ION/05_context/current/codex_agent_mounts/role_autonomous_loop_steward__domain_local_worker_scheduling_and_autonomous_loop/.ion/receipts/_build_rebase12_package.candidate.py
+    reason: reconstructed rebase-12 builder quarantined; hold marker only
+  - path_glob: ION/05_context/current/ACTIVE_*.json
+    reason: T2 generated runtime active state
+  - path_glob: ION/05_context/current/live_agent_runs/**
+    reason: T2 generated runtime
+  - path_prefix: projects/
+    reason: unrelated projects corpus
+  - path_prefix: ION_GPT_STATE/
+    reason: T5 archive witness lane
+  - path_prefix: quarentine/
+    reason: T5 archive quarantine
+  - path_prefix: ION_VAULT_LOCAL/
+    reason: T4 secrets vault adjacent
+  - path_glob: "**/.env"
+    reason: T4 secrets
+  - path_glob: "**/*credentials*"
+    reason: T4 secret-name-risk
+  - path_glob: "**/*.zip"
+    reason: binary/archive without LFS receipt
+  - path_glob: "**/*.tar"
+    reason: binary/archive without LFS receipt
+  - path_glob: ION/05_context/current/codex_agent_mounts/**/.ion/receipts/**
+    reason: broad receipt dumps excluded except explicitly listed governing receipts above
+  - porcelain_class: deleted
+    reason: T6 unrelated deletions — 18915 entries excluded from wave-0
+  - path_prefix: AIM-OS/
+    reason: operator witness recovery — out of governance wave scope
+
+pathspec_from_file_template: |
+  ION/05_context/current/domain_weaver/candidate_founding_domains/domain.github_repository_platform_governance/
+  ION/05_context/current/domain_weaver/candidate_founding_domains/domain.domain_mitosis_and_agent_society_formation/evolution_packets/PCKT-GITHUB-REPOSITORY-GOVERNANCE-DOMAIN-ASSEMBLY-20260725_DECISION.candidate.yaml
+  ION/05_context/current/domain_weaver/candidate_founding_domains/domain.domain_mitosis_and_agent_society_formation/evolution_packets/REPOSITORY_IDENTITY_AND_REMOTE_REGISTRY.candidate.yaml
+  ION/05_context/current/domain_weaver/candidate_founding_domains/domain.domain_mitosis_and_agent_society_formation/evolution_packets/WORKING_TREE_INVENTORY_TIERS.candidate.yaml
+  ION/05_context/current/domain_weaver/candidate_founding_domains/domain.domain_mitosis_and_agent_society_formation/evolution_packets/COMMIT_BOUNDARY_AND_STAGING_LAW.candidate.yaml
+  ION/05_context/current/domain_weaver/candidate_founding_domains/domain.domain_mitosis_and_agent_society_formation/evolution_packets/GITHUB_REPOSITORY_GOVERNANCE_METRICS.candidate.yaml
+  ION/05_context/current/domain_weaver/candidate_founding_domains/domain.domain_mitosis_and_agent_society_formation/evolution_packets/PCKT-FIRST-SNAPSHOT-BOUNDARY-AFTER-REBASE12-CLOSURE-20260725.candidate.yaml
+  ION/05_context/current/repository_governance/GITHUB_PLATFORM_READMODEL.candidate.yaml
+  ION/05_context/current/repository_governance/CODEOWNERS_PROPOSAL.candidate.md
+  ION/05_context/current/codex_agent_mounts/role_domain_fission_architect__domain_domain_mitosis_and_agent_society_formation/.ion/outbox/20260725T235800Z_PCKT-ION-LEAD-ORCHESTRATION-GITHUB-REPOSITORY-GOVERNANCE-DOMAIN-ASSEMBLY-20260725_LEAD_ORCHESTRATION_RETURN.candidate.md
+  ION/05_context/current/codex_agent_mounts/role_domain_fission_architect__domain_domain_mitosis_and_agent_society_formation/.ion/receipts/20260725T235800Z_PCKT-ION-LEAD-ORCHESTRATION-GITHUB-REPOSITORY-GOVERNANCE-DOMAIN-ASSEMBLY-20260725_OWN_MOUNT_RECEIPT.candidate.json
+  ION/05_context/current/codex_agent_mounts/role_nemesis__domain_artifact_provenance_and_gate_legitimacy/.ion/forensic_evidence/PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-PROVENANCE-HOLD-MATERIALIZATION-20260725/
+  ION/05_context/current/codex_agent_mounts/role_nemesis__domain_artifact_provenance_and_gate_legitimacy/.ion/receipts/20260726T010400Z_PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-PROVENANCE-HOLD-MATERIALIZATION-20260725_OWN_MOUNT_RECEIPT.candidate.json
+  ION/05_context/current/codex_agent_mounts/role_nemesis__domain_artifact_provenance_and_gate_legitimacy/.ion/receipts/20260726T005800Z_PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-BYTE-PROVENANCE-FORENSIC-20260725_OWN_MOUNT_RECEIPT.candidate.json
+  ION/05_context/current/codex_agent_mounts/role_runtime_cartographer__domain_runtime_carrier_and_action_admission/.ion/receipts/20260726T005800Z_PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-RUNTIME-EQUIVALENCE-FORENSIC-20260725_OWN_MOUNT_RECEIPT.candidate.json
+  ION/05_context/current/codex_agent_mounts/role_monolith_decomposition_cartographer__domain_context_graph_branch_fabric/REPOSITORY_IDENTITY_REGISTRY.candidate.json
+  ION/05_context/current/codex_agent_mounts/role_monolith_decomposition_cartographer__domain_context_graph_branch_fabric/REPOSITORY_STATE_SUMMARY.candidate.md
+  ION/05_context/current/codex_agent_mounts/role_monolith_decomposition_cartographer__domain_context_graph_branch_fabric/WORKING_TREE_INVENTORY.candidate.json
+  ION/05_context/current/codex_agent_mounts/role_monolith_decomposition_cartographer__domain_context_graph_branch_fabric/COMMIT_BOUNDARY_MANIFEST.candidate.yaml
+
+staging_law:
+  - never_git_add_dot_at_dirty_root
+  - one_commit_boundary_per_domain_scoped_manifest
+  - manifest_lists_exact_pathspecs_with_tier_and_owner_domain_id
+  - unrelated_paths_in_same_commit_boundary_forbidden
+  - commit_message_must_cite_packet_id_and_manifest_sha256
+
+non_claims:
+  - candidate_only
+  - proposal_only_no_git_mutation_this_turn
+  - no_accepted_state
+  - no_staging_executed
+  - no_push_authorization

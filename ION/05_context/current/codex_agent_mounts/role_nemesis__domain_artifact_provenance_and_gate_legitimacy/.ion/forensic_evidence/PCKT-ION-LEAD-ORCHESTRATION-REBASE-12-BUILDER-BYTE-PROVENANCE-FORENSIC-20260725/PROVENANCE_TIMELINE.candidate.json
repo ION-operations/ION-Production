@@ -1,0 +1,52 @@
+{
+  "schema_id": "ion.nemesis.byte_provenance_timeline.v0_1_candidate",
+  "packet_id": "PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-BYTE-PROVENANCE-FORENSIC-20260725",
+  "subject_path": "ION/05_context/current/codex_agent_mounts/role_autonomous_loop_steward__domain_local_worker_scheduling_and_autonomous_loop/.ion/receipts/_build_rebase12_package.candidate.py",
+  "generated_at": "2026-07-26T00:58:00Z",
+  "events": [
+    {
+      "observed_at": "2026-07-26T00:07:00Z",
+      "event_class": "builder_prepared_not_executed_claim",
+      "source": "ION/05_context/current/codex_agent_mounts/role_autonomous_loop_steward__domain_local_worker_scheduling_and_autonomous_loop/.ion/receipts/20260726T000700Z_PCKT-ION-LEAD-ORCHESTRATION-R7-GUARDED-PILOT-REBASE-12-CONSTRUCTION-20260725_OWN_MOUNT_RECEIPT.candidate.json",
+      "claim": "builder_executed_this_turn=false; final_package_exists=false",
+      "note": "Contradicts earlier successful promotion witness at 23:11:48Z; treat as later preparation receipt, not erasure of prior run."
+    },
+    {
+      "observed_at": "2026-07-25T23:11:48Z",
+      "event_class": "builder_successful_execution_and_promotion",
+      "sources": [
+        "ION/05_context/current/codex_agent_mounts/role_autonomous_loop_steward__domain_local_worker_scheduling_and_autonomous_loop/.ion/receipts/20260725T231148Z_PCKT-ION-LEAD-ORCHESTRATION-R7-GUARDED-PILOT-REBASE-12-CONSTRUCTION-20260725_OWN_MOUNT_RECEIPT.candidate.json",
+        "ION/05_context/current/autonomous_goals/detached_worker_candidate/execution_packages/PCKT-ION-AUTONOMOUS-DETACHED-WORKER-R7-GUARDED-PILOT-EXECUTION-REBASE-12-20260725/evidence/EXECUTION_REBASE_12_CONSTRUCTION_EVIDENCE_SUITE.candidate.json",
+        "ION/05_context/current/autonomous_goals/detached_worker_candidate/execution_packages/PCKT-ION-AUTONOMOUS-DETACHED-WORKER-R7-GUARDED-PILOT-EXECUTION-REBASE-12-20260725/EXECUTION_PACKAGE_MANIFEST.candidate.json"
+      ],
+      "claim": "Builder exit 0; staging promoted; manifest_raw_file_sha256=b30fc68d6390377743dd383c4232b8ac1c9c1d4063143b01bb85ce8b68dc7044; all 17 self_check_results true",
+      "builder_sha256_recorded": false
+    },
+    {
+      "observed_at": "2026-07-25T23:11:48Z",
+      "event_class": "post_manifest_partial_witness",
+      "source": "ION/05_context/current/autonomous_goals/detached_worker_candidate/execution_packages/post_manifest/PCKT-ION-AUTONOMOUS-DETACHED-WORKER-R7-GUARDED-PILOT-EXECUTION-REBASE-12-20260725/EXECUTION_REBASE_12_CONTENT_HASH_VALIDATION_WITNESS.candidate.json",
+      "claim": "External content-hash witness for package manifest binding"
+    },
+    {
+      "observed_at": "2026-07-26T00:33:00Z",
+      "event_class": "downstream_builder_reads_r12_template",
+      "source": "ION/05_context/current/codex_agent_mounts/role_autonomous_loop_steward__domain_local_worker_scheduling_and_autonomous_loop/.ion/receipts/_build_rebase13_package.candidate.py",
+      "claim": "compile_r13_builder_source() reads R12_BUILDER via read_text(); no persisted R12 hash"
+    },
+    {
+      "observed_at": "2026-07-26T00:33:00Z",
+      "event_class": "rebase14_materialization_overwrite",
+      "source": "ION/05_context/current/codex_agent_mounts/role_autonomous_loop_steward__domain_local_worker_scheduling_and_autonomous_loop/.ion/outbox/20260726T003300Z_PCKT-ION-LEAD-ORCHESTRATION-R7-GUARDED-PILOT-REBASE-14-STANDALONE-BUILDER-PREPARATION-20260725_LEAD_STEWARD_RETURN.candidate.md",
+      "claim": "Subject accidentally overwritten during rebase-14 materialization with R14 standalone content (~2325 lines per Cursor transcript 4e8bdbca); then reconstructed to spec-aligned R12 (~1773 lines)",
+      "cursor_transcript_witness": "home-sev-ION-Production-ION-Developement/agent-transcripts/4e8bdbca-3297-41e1-ae43-0dc0d71ac24b/4e8bdbca-3297-41e1-ae43-0dc0d71ac24b.jsonl"
+    },
+    {
+      "observed_at": "2026-07-26T00:58:00Z",
+      "event_class": "forensic_read_current_subject",
+      "claim": "Current on-disk subject presents rebase-12 markers (CONSTRUCTION_PACKET_ID, R12 paths, 1773 lines); sha256=4327b6a62effee717f7305409611b0e65154a7ff79155783313e02e0376e0d0a; size=80017 bytes per intake packet binding",
+      "live_recompute_performed": false,
+      "live_recompute_reason": "carrier shell rejected hash commands this session"
+    }
+  ]
+}

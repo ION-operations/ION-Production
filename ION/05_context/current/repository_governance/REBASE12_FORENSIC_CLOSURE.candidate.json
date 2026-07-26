@@ -1,0 +1,160 @@
+{
+  "schema_id": "ion.nemesis.rebase12_forensic_closure_repository_projection.v0_1_candidate",
+  "projection_id": "rebase12-forensic-closure-repository-projection-20260726t012100z",
+  "packet_id": "PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-FORENSIC-CLOSURE-REPOSITORY-PROJECTION-20260725",
+  "kind": "repository_safe_forensic_closure_projection",
+  "state": "candidate",
+  "generated_at": "2026-07-26T01:21:00Z",
+  "generated_by": {
+    "role_id": "role.nemesis",
+    "domain_id": "domain.artifact_provenance_and_gate_legitimacy",
+    "mount_id": "role_nemesis__domain_artifact_provenance_and_gate_legitimacy",
+    "carrier": "cursor_composer_2.5"
+  },
+  "terminal_verdict": "REBASE12_FORENSIC_BLOCKER_CLOSED_BY_QUARANTINE_FOR_GIT_SNAPSHOT",
+  "closure_posture": {
+    "blocker_id": "BLK-REBASE12-FORENSIC",
+    "prior_status": "open",
+    "closure_mode": "closed_by_quarantine",
+    "closure_scope": "git_snapshot_manifest_only",
+    "closure_gate_id": "GATE-FORENSIC-HOLD",
+    "closure_gate_template_ref": "ION/05_context/current/codex_agent_mounts/role_nemesis__domain_artifact_provenance_and_gate_legitimacy/.ion/candidate_deliverables/GIT_SNAPSHOT_PRECOMMIT_GATE.template.candidate.yaml",
+    "closure_condition": "reconstructed_builder_and_adjacent_runtime_marker_absent_from_snapshot_manifest",
+    "closure_effective_when": [
+      "FIRST_GIT_SNAPSHOT_MANIFEST.path_entries contains zero repo_relative_path matching quarantine_paths or always_exclude_globs",
+      "GATE-FORENSIC-HOLD pre_stage scan reports zero hits in backup worktree",
+      "manifest symmetric_diff for quarantine surfaces is empty"
+    ],
+    "does_not_close_or_claim": [
+      "R7_EXECUTION_PACKAGE_REPAIR_REQUIRED on promoted rebase-12 package",
+      "byte_exact_recovery_of_construction_time_builder",
+      "original_builder_restoration",
+      "live_execution_authority",
+      "accepted_state",
+      "BLK-WORKING-TREE-UNCLASSIFIED",
+      "BLK-OPERATOR-PUSH-AUTH"
+    ]
+  },
+  "incident_subject": {
+    "path": "ION/05_context/current/codex_agent_mounts/role_autonomous_loop_steward__domain_local_worker_scheduling_and_autonomous_loop/.ion/receipts/_build_rebase12_package.candidate.py",
+    "current_sha256_bound": "4327b6a62effee717f7305409611b0e65154a7ff79155783313e02e0376e0d0a",
+    "current_size_bytes_bound": 80017,
+    "classification": "reconstructed_non_authoritative",
+    "original_builder_sha256": null,
+    "original_builder_restored": false,
+    "original_builder_restoration_claim_forbidden": true,
+    "byte_exact_recovery": "unavailable",
+    "git_tracked": false,
+    "subject_mutated_by_closure_projection": false
+  },
+  "adjacent_runtime_marker": {
+    "path": "ION/05_context/current/codex_agent_mounts/role_autonomous_loop_steward__domain_local_worker_scheduling_and_autonomous_loop/.ion/receipts/_build_rebase12_package.candidate.py.PROVENANCE_HOLD.candidate.json",
+    "sha256_bound": "f2950017201469c95b39adeed2a4bffaf79dabf1123f208d8322dc6ac1c2da20",
+    "schema_id": "ion.artifact_provenance_hold_marker.v0_1_candidate",
+    "marker_id": "marker-rebase12-builder-provenance-hold-20260726t010400z",
+    "adjacent_to_subject": true,
+    "staged_marker_path": "ION/05_context/current/codex_agent_mounts/role_nemesis__domain_artifact_provenance_and_gate_legitimacy/.ion/forensic_evidence/PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-PROVENANCE-HOLD-MATERIALIZATION-20260725/ADJACENT_MARKER.candidate.json",
+    "on_disk_adjacent_at_closure": true,
+    "marker_mutated_by_closure_projection": false
+  },
+  "forensic_verdict_bindings": {
+    "byte_provenance": {
+      "verdict": "BYTE_EXACT_RECOVERY_UNAVAILABLE_RECONSTRUCTION_MUST_BE_QUARANTINED",
+      "packet_id": "PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-BYTE-PROVENANCE-FORENSIC-20260725",
+      "receipt": "ION/05_context/current/codex_agent_mounts/role_nemesis__domain_artifact_provenance_and_gate_legitimacy/.ion/receipts/20260726T005800Z_PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-BYTE-PROVENANCE-FORENSIC-20260725_OWN_MOUNT_RECEIPT.candidate.json",
+      "classification_artifact": "ION/05_context/current/codex_agent_mounts/role_nemesis__domain_artifact_provenance_and_gate_legitimacy/.ion/forensic_evidence/PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-BYTE-PROVENANCE-FORENSIC-20260725/SUBJECT_CLASSIFICATION.candidate.json"
+    },
+    "runtime_equivalence": {
+      "verdict": "RECONSTRUCTED_BUILDER_SEMANTICALLY_EQUIVALENT_NOT_BYTE_ATTESTED",
+      "packet_id": "PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-RUNTIME-EQUIVALENCE-FORENSIC-20260725",
+      "receipt": "ION/05_context/current/codex_agent_mounts/role_runtime_cartographer__domain_runtime_carrier_and_action_admission/.ion/receipts/20260726T005800Z_PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-RUNTIME-EQUIVALENCE-FORENSIC-20260725_OWN_MOUNT_RECEIPT.candidate.json"
+    },
+    "provenance_hold": {
+      "verdict": "REBASE12_RECONSTRUCTED_BUILDER_PROVENANCE_HOLD_ACTIVE",
+      "packet_id": "PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-PROVENANCE-HOLD-MATERIALIZATION-20260725",
+      "receipt": "ION/05_context/current/codex_agent_mounts/role_nemesis__domain_artifact_provenance_and_gate_legitimacy/.ion/receipts/20260726T010400Z_PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-PROVENANCE-HOLD-MATERIALIZATION-20260725_OWN_MOUNT_RECEIPT.candidate.json",
+      "deployment_status": "ION/05_context/current/codex_agent_mounts/role_nemesis__domain_artifact_provenance_and_gate_legitimacy/.ion/forensic_evidence/PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-PROVENANCE-HOLD-MATERIALIZATION-20260725/DEPLOYMENT_STATUS.candidate.json"
+    },
+    "incident_timeline": "ION/05_context/current/codex_agent_mounts/role_nemesis__domain_artifact_provenance_and_gate_legitimacy/.ion/forensic_evidence/PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-BYTE-PROVENANCE-FORENSIC-20260725/PROVENANCE_TIMELINE.candidate.json"
+  },
+  "original_hash_absence": {
+    "pre_overwrite_builder_sha256": null,
+    "recorded_anywhere_in_bounded_search": false,
+    "law": "No authoritative pre-overwrite SHA-256 exists; closure does not invent or restore one."
+  },
+  "promoted_rebase12_package_witness": {
+    "package_id": "PCKT-ION-AUTONOMOUS-DETACHED-WORKER-R7-GUARDED-PILOT-EXECUTION-REBASE-12-20260725",
+    "package_root": "ION/05_context/current/autonomous_goals/detached_worker_candidate/execution_packages/PCKT-ION-AUTONOMOUS-DETACHED-WORKER-R7-GUARDED-PILOT-EXECUTION-REBASE-12-20260725",
+    "manifest_raw_file_sha256": "b30fc68d6390377743dd383c4232b8ac1c9c1d4063143b01bb85ce8b68dc7044",
+    "remains_lawful_historical_review_blocked_witness": true,
+    "review_status": "R7_EXECUTION_PACKAGE_REPAIR_REQUIRED",
+    "package_evidence_mutated_by_closure_projection": false,
+    "package_not_invalidated_by_builder_quarantine": true,
+    "builder_not_represented_as_restored": true
+  },
+  "branch_fabric_snapshot_law": {
+    "owner_domain_id": "domain.context_graph_branch_fabric",
+    "manifest_schema_ref": "ion.git_snapshot_manifest.v0_1_candidate",
+    "gate_ref": "GATE-FORENSIC-HOLD",
+    "quarantine_tier": "T1_quarantined_forensic",
+    "always_exclude_exact_paths": [
+      "ION/05_context/current/codex_agent_mounts/role_autonomous_loop_steward__domain_local_worker_scheduling_and_autonomous_loop/.ion/receipts/_build_rebase12_package.candidate.py",
+      "ION/05_context/current/codex_agent_mounts/role_autonomous_loop_steward__domain_local_worker_scheduling_and_autonomous_loop/.ion/receipts/_build_rebase12_package.candidate.py.PROVENANCE_HOLD.candidate.json"
+    ],
+    "always_exclude_globs": [
+      "**/_build_rebase12_package.candidate.py",
+      "**/_build_rebase12_package.candidate.py.PROVENANCE_HOLD.candidate.json"
+    ],
+    "inclusion_law": {
+      "may_include_nemesis_forensic_evidence_folder": true,
+      "paths": [
+        "ION/05_context/current/codex_agent_mounts/role_nemesis__domain_artifact_provenance_and_gate_legitimacy/.ion/forensic_evidence/PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-BYTE-PROVENANCE-FORENSIC-20260725/",
+        "ION/05_context/current/codex_agent_mounts/role_nemesis__domain_artifact_provenance_and_gate_legitimacy/.ion/forensic_evidence/PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-PROVENANCE-HOLD-MATERIALIZATION-20260725/",
+        "ION/05_context/current/codex_agent_mounts/role_nemesis__domain_artifact_provenance_and_gate_legitimacy/.ion/candidate_deliverables/REBASE12_FORENSIC_CLOSURE.candidate.json"
+      ],
+      "note": "Forensic classification receipts and closure projection may enter manifest; reconstructed builder bytes and adjacent runtime hold marker must not."
+    },
+    "exclusion_law": {
+      "forbidden_in_manifest": [
+        "reconstructed builder source at subject path",
+        "adjacent PROVENANCE_HOLD runtime marker at subject-adjacent path",
+        "any path matching always_exclude_globs while BLK-REBASE12-FORENSIC closed_by_quarantine"
+      ],
+      "dirty_tree_retention": "Excluded paths may remain on disk in parent dirty tree; quarantine means absent from git snapshot worktree only.",
+      "manifest_verification": "Branch Fabric must fail GATE-FORENSIC-HOLD if any excluded path appears in manifest.path_entries or backup worktree file set."
+    },
+    "blocker_resolution_rule": {
+      "when": "manifest_and_worktree_contain_zero_quarantine_paths",
+      "then": "BLK-REBASE12-FORENSIC status may be recorded closed_by_quarantine for git snapshot gate chain",
+      "otherwise": "BLK-REBASE12-FORENSIC remains open; GATE-FORENSIC-HOLD fail_verdict BLOCKED_FORENSIC_HOLD_PATH"
+    }
+  },
+  "execution_and_template_selection_hold": {
+    "must_not_execute_reconstructed_builder": true,
+    "must_not_import_reconstructed_builder": true,
+    "must_not_select_reconstructed_builder_as_template": true,
+    "must_not_present_reconstructed_builder_as_original": true,
+    "hold_survives_git_snapshot_closure": true
+  },
+  "forbidden_projection_content": {
+    "builder_source_bytes": false,
+    "secret_material": false,
+    "terminal_transcript": false,
+    "runtime_active_state": false
+  },
+  "constraints_observed": {
+    "projection_only": true,
+    "no_subject_or_marker_mutation": true,
+    "no_git_mutation": true,
+    "no_package_evidence_mutation": true,
+    "no_secret_content": true
+  },
+  "non_claims": [
+    "candidate_only",
+    "no_accepted_state",
+    "no_live_execution",
+    "no_original_builder_restoration",
+    "no_byte_exact_historical_builder_attestation",
+    "closure_is_git_snapshot_scoped_not_system_wide_clearance"
+  ]
+}

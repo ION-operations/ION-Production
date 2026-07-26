@@ -1,0 +1,64 @@
+schema_id: "ion.portable_agent_domain_context_capsule.v0_1"
+generated_at: "2026-07-26T00:03:00+00:00"
+capsule_kind: "agent_domain_folder"
+folder_role: "codex_native_agent_domain_mount"
+active_ion_root: "/home/sev/ION - Production/ION_Developement"
+mount_id: "role_github_repository_platform_governance_steward__domain_github_repository_platform_governance"
+agent_role_id: "role.github_repository_platform_governance_steward"
+agent_display_name: "github_repository_platform_governance_steward"
+domain_id: "domain.github_repository_platform_governance"
+context_package_class: "mitosis_github_platform_governance"
+active_context_index:
+  path: ".ion/ACTIVE_CONTEXT_PACKAGE.json"
+  markdown_path: ".ion/ACTIVE_CONTEXT_PACKAGE.md"
+  dynamic_context_ref_authority: "active_context_package_json"
+  capsule_duplicates_dynamic_refs: false
+authority:
+  candidate_mount_only: true
+  production_authority: false
+  live_execution_authority: false
+  accepted_state_authority: false
+  secrets_authority: false
+codex_native_surfaces:
+  project_agents_md: true
+  project_codex_config: true
+  shared_ion_hooks: true
+  folder_local_context_capsule: true
+paths:
+  agents_md: "ION/05_context/current/codex_agent_mounts/role_github_repository_platform_governance_steward__domain_github_repository_platform_governance/AGENTS.md"
+  codex_config: "ION/05_context/current/codex_agent_mounts/role_github_repository_platform_governance_steward__domain_github_repository_platform_governance/.codex/config.toml"
+  domain_weaver_projection: "ION/05_context/current/domain_weaver/DOMAIN_WEAVER_PROJECTION.json"
+  domain_weaver_promotion_review: "ION/05_context/current/domain_weaver/PROMOTION_REVIEW.json"
+  manifest: "ION/05_context/current/codex_agent_mounts/role_github_repository_platform_governance_steward__domain_github_repository_platform_governance/ION_AGENT_MOUNT_MANIFEST.json"
+  portable_active_context_package: "ION/05_context/current/codex_agent_mounts/role_github_repository_platform_governance_steward__domain_github_repository_platform_governance/.ion/ACTIVE_CONTEXT_PACKAGE.json"
+  portable_active_context_package_md: "ION/05_context/current/codex_agent_mounts/role_github_repository_platform_governance_steward__domain_github_repository_platform_governance/.ion/ACTIVE_CONTEXT_PACKAGE.md"
+  portable_domain_charter: "ION/05_context/current/domain_weaver/candidate_founding_domains/domain.github_repository_platform_governance/domain.github_repository_platform_governance.domain.candidate.yaml"
+read_first:
+  - "AGENTS.md"
+  - ".ion/ION_CONTEXT_CAPSULE.yaml"
+  - ".ion/CONTEXT_IDENTITY.json"
+  - ".ion/HOT_CONTEXT.md"
+  - ".ion/ACTIVE_CONTEXT_PACKAGE.md"
+  - ".ion/AGENT.yaml"
+  - ".ion/DOMAIN.yaml"
+  - ".ion/RELATIONSHIPS.yaml"
+  - "ION/05_context/current/domain_weaver/candidate_founding_domains/domain.github_repository_platform_governance/domain.github_repository_platform_governance.domain.candidate.yaml"
+  - "ION/05_context/current/domain_weaver/candidate_founding_domains/domain.github_repository_platform_governance/OPERATING_CARD.candidate.md"
+  - "ION/05_context/current/domain_weaver/candidate_founding_domains/domain.github_repository_platform_governance/DOMAIN_RELATIONSHIPS.candidate.yaml"
+relationships:
+  dependency_policy: "folder-local capsule declares relationships; ION registries remain authority."
+  primary_domain: "domain.github_repository_platform_governance"
+  secondary_domains:
+    - "domain.context_graph_branch_fabric"
+    - "domain.artifact_provenance_and_gate_legitimacy"
+    - "domain.context_systems"
+    - "domain.state_rank_and_receipt_truth"
+    - "domain.release.release_readiness"
+  selected_mount_domain: "domain.github_repository_platform_governance"
+bootstrap_steps:
+  - "Start Codex CLI from this folder or pass it as -C."
+  - "Load AGENTS.md and .ion/ION_CONTEXT_CAPSULE.yaml before material work."
+  - "Load domain charter and continuity templates before platform read-model work."
+  - "Emit receipts under .ion/receipts for material work."
+  - "Treat every output as candidate until ION proof and settlement gates complete."
+  - "Never mutate Git or GitHub from this mount without operator gate and separate activation packet."

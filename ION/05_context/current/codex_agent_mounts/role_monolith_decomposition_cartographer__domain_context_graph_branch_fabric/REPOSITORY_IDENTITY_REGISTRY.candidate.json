@@ -1,0 +1,74 @@
+{
+  "schema_id": "ion.repository_identity_registry.v0_1_candidate",
+  "registry_path": "ION/05_context/current/codex_agent_mounts/role_monolith_decomposition_cartographer__domain_context_graph_branch_fabric/REPOSITORY_IDENTITY_REGISTRY.candidate.json",
+  "owner_domain_id": "domain.context_graph_branch_fabric",
+  "owner_role_id": "role.monolith_decomposition_cartographer",
+  "materialized_at": "2026-07-26T00:16:00Z",
+  "materialized_by_packet": "PCKT-ION-LEAD-ORCHESTRATION-BRANCH-FABRIC-LIVE-INVENTORY-AND-SNAPSHOT-MANIFEST-20260725",
+  "evidence_source": "live_parent_carrier_evidence",
+  "live_verification": {
+    "attempted": true,
+    "carrier_shell_git_read_blocked": true,
+    "note": "Read-only git subprocess rejected in carrier shell; identity fields bound from parent live_parent_carrier_evidence at packet issue time."
+  },
+  "accepted_state_authority": false,
+  "canonical_record": {
+    "repository_id": "ion-production-ion-developement",
+    "shell_root": "/home/sev/ION - Production/ION_Developement",
+    "workspace_root": "/home/sev/ION - Production",
+    "git_toplevel": "/home/sev/ION - Production/ION_Developement",
+    "authority_markers": [
+      "pyproject.toml",
+      "ION/REPO_AUTHORITY.md"
+    ],
+    "primary_remote": {
+      "name": "origin",
+      "url": "https://github.com/ION-operations/ION-Production.git",
+      "url_class": "https_no_credentials_in_record"
+    },
+    "active_branch": {
+      "name": "codex/ion-custom-gpt-front-door-carrier-v4",
+      "class": "feature_carrier_lane",
+      "head_sha256_prefix": "60255b26"
+    },
+    "upstream_tracking": {
+      "upstream_ref": "origin/codex/ion-custom-gpt-front-door-carrier-v4",
+      "ahead": 0,
+      "behind": 0,
+      "divergence_class": "aligned_with_upstream"
+    },
+    "protected_upstream": {
+      "branch": "main",
+      "merge_base_sha256_prefix": "14b617e1",
+      "divergence": {
+        "head_only_commits": 115,
+        "origin_main_only_commits": 0,
+        "divergence_class": "ahead_only"
+      }
+    },
+    "remote_branches_confirmed": [
+      "main",
+      "codex/ion-custom-gpt-front-door-carrier-v4"
+    ],
+    "relationship_to_workspace": "Workspace root is parent carrier surface; git toplevel is ION_Developement. Do not treat /home/sev/ION - Production/.cursor bridge or sibling trees as implicit git roots without explicit registry entry."
+  },
+  "governance_domain_bindings": {
+    "repository_identity_and_branch_fabric": "domain.context_graph_branch_fabric",
+    "change_inventory_and_commit_boundary": "domain.artifact_provenance_and_gate_legitimacy",
+    "github_platform_surface": "domain.github_repository_platform_governance",
+    "continuity_templates": "domain.context_systems",
+    "accepted_merge": "domain.state_rank_and_receipt_truth"
+  },
+  "resume_surfaces": {
+    "state_summary": "ION/05_context/current/codex_agent_mounts/role_monolith_decomposition_cartographer__domain_context_graph_branch_fabric/REPOSITORY_STATE_SUMMARY.candidate.md",
+    "working_tree_inventory": "ION/05_context/current/codex_agent_mounts/role_monolith_decomposition_cartographer__domain_context_graph_branch_fabric/WORKING_TREE_INVENTORY.candidate.json",
+    "commit_boundary_manifest": "ION/05_context/current/codex_agent_mounts/role_monolith_decomposition_cartographer__domain_context_graph_branch_fabric/COMMIT_BOUNDARY_MANIFEST.candidate.yaml"
+  },
+  "non_claims": [
+    "candidate_only",
+    "not_git_config_authority",
+    "no_credential_storage",
+    "no_accepted_state",
+    "no_remote_mutation"
+  ]
+}

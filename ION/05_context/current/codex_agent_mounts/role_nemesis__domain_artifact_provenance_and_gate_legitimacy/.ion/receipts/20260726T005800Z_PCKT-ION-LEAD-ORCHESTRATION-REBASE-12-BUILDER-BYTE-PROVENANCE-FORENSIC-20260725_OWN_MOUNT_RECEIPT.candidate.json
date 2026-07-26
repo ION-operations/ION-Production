@@ -1,0 +1,37 @@
+{
+  "schema_id": "ion.nemesis.own_mount_receipt.v0_1_candidate",
+  "receipt_id": "rcpt-nemesis-20260726t005800z-rebase12-builder-byte-provenance-forensic",
+  "packet_id": "PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-BYTE-PROVENANCE-FORENSIC-20260725",
+  "mount_id": "role_nemesis__domain_artifact_provenance_and_gate_legitimacy",
+  "observed_at": "2026-07-26T00:58:00Z",
+  "verdict": "BYTE_EXACT_RECOVERY_UNAVAILABLE_RECONSTRUCTION_MUST_BE_QUARANTINED",
+  "subject": {
+    "path": "ION/05_context/current/codex_agent_mounts/role_autonomous_loop_steward__domain_local_worker_scheduling_and_autonomous_loop/.ion/receipts/_build_rebase12_package.candidate.py",
+    "current_sha256_bound": "4327b6a62effee717f7305409611b0e65154a7ff79155783313e02e0376e0d0a",
+    "current_size_bytes_bound": 80017,
+    "classification": "reconstructed_non_authoritative"
+  },
+  "original_builder_sha256": null,
+  "recovered_candidate_path": null,
+  "forensic_evidence_dir": "ION/05_context/current/codex_agent_mounts/role_nemesis__domain_artifact_provenance_and_gate_legitimacy/.ion/forensic_evidence/PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-BYTE-PROVENANCE-FORENSIC-20260725",
+  "package_evidence_impact": {
+    "promoted_package_exists": true,
+    "manifest_raw_file_sha256": "b30fc68d6390377743dd383c4232b8ac1c9c1d4063143b01bb85ce8b68dc7044",
+    "package_validity_vs_builder_loss": "package_tree_and_manifest_witnesses_remain_separate_immutable_evidence; builder_script_byte_witness_lost; package_not_invalidated_by_builder_reconstruction_alone",
+    "dual_review_status": "R7_EXECUTION_PACKAGE_REPAIR_REQUIRED per prior Nemesis/Runtime rebase-12 review returns",
+    "live_digest_recompute_pending": true
+  },
+  "constraints_observed": {
+    "subject_read_only": true,
+    "no_builder_execution": true,
+    "no_git_restore": true,
+    "no_package_mutation": true,
+    "no_subject_edit": true
+  },
+  "non_claims": [
+    "candidate_only",
+    "no_accepted_state",
+    "no_live_execution",
+    "no_semantic_equivalence_claim_for_current_builder"
+  ]
+}

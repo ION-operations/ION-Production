@@ -1,0 +1,485 @@
+schema_id: ion.first_git_snapshot_exact_manifest_r2.v0_1_candidate
+manifest_id: FGSM-ION-GOVERNANCE-SNAPSHOT-WAVE0-R2-20260725
+packet_id: PCKT-ION-LEAD-ORCHESTRATION-FIRST-GIT-SNAPSHOT-EXACT-MANIFEST-R2-20260725
+supersedes_packet_id: PCKT-ION-LEAD-ORCHESTRATION-FIRST-GIT-SNAPSHOT-EXACT-MANIFEST-20260725
+materialized_at: "2026-07-26T00:50:58Z"
+materialized_by_role: role.monolith_decomposition_cartographer
+materialized_by_domain: domain.context_graph_branch_fabric
+terminal_verdict: FIRST_GIT_SNAPSHOT_EXACT_MANIFEST_R2_READY_FOR_PARENT_MATERIALIZATION
+self_attestation_posture: external_precommit_receipt_and_commit_message
+
+repository_binding:
+  root: /home/sev/ION - Production/ION_Developement
+  base_sha: "60255b26a290276c465b937708f2552e400363f6"
+  source_branch: codex/ion-custom-gpt-front-door-carrier-v4
+  target_branch: backup/codex-ion-carrier-v4-governance-snapshot-20260725
+  remote: origin
+  remote_url: https://github.com/ION-operations/ION-Production.git
+
+path_rollups:
+  content_path_count: 60
+  staged_path_count: 61
+  total_data_bytes: 245116
+  data_path_set_sha256: "afd429174f2fd93bf42c35bcb4ef0cd1e5f6f754f4b9ac545399f46fcff26172"
+
+control_file:
+  repo_relative_path: ION/05_context/current/repository_governance/FIRST_GIT_SNAPSHOT_MANIFEST.candidate.yaml
+  role: canonical_promoted_manifest
+  promotion_source: mount_local_r2_manifest
+  attestation: external_precommit_receipt_and_commit_message
+
+content_path_entries:
+  - repo_relative_path: ION/05_context/current/codex_agent_mounts/role_domain_fission_architect__domain_domain_mitosis_and_agent_society_formation/.ion/outbox/20260725T235800Z_PCKT-ION-LEAD-ORCHESTRATION-GITHUB-REPOSITORY-GOVERNANCE-DOMAIN-ASSEMBLY-20260725_LEAD_ORCHESTRATION_RETURN.candidate.md
+    tier: T1
+    owner_domain_id: domain.domain_mitosis_and_agent_society_formation
+    owner_role_id: role.domain_fission_architect
+    reason: Domain fission GitHub governance assembly lead return
+    content_sha256: "0ca2c03214cc4581951bc59e051e2fd1aa47cb59bbeb7943e0a3dc95fad7a68c"
+    size_bytes: 10339
+  - repo_relative_path: ION/05_context/current/codex_agent_mounts/role_domain_fission_architect__domain_domain_mitosis_and_agent_society_formation/.ion/outbox/20260726T000300Z_PCKT-ION-LEAD-ORCHESTRATION-GITHUB-PLATFORM-DOMAIN-CANDIDATE-ACTIVATION-20260725_LEAD_ORCHESTRATION_RETURN.candidate.md
+    tier: T1
+    owner_domain_id: domain.domain_mitosis_and_agent_society_formation
+    owner_role_id: role.domain_fission_architect
+    reason: GitHub platform domain candidate activation return
+    content_sha256: "67099970f32c882e4063281a5cb1070298e15f5f6a0d3d0800d9b59268b2ab05"
+    size_bytes: 4373
+  - repo_relative_path: ION/05_context/current/codex_agent_mounts/role_domain_fission_architect__domain_domain_mitosis_and_agent_society_formation/.ion/receipts/20260725T235800Z_PCKT-ION-LEAD-ORCHESTRATION-GITHUB-REPOSITORY-GOVERNANCE-DOMAIN-ASSEMBLY-20260725_OWN_MOUNT_RECEIPT.candidate.json
+    tier: T1
+    owner_domain_id: domain.domain_mitosis_and_agent_society_formation
+    owner_role_id: role.domain_fission_architect
+    reason: Domain fission GitHub governance assembly own-mount receipt
+    content_sha256: "786c343808fccec5a3fe27abe356b7b380e59d1ccf99b909857a3d76922397f0"
+    size_bytes: 4632
+  - repo_relative_path: ION/05_context/current/codex_agent_mounts/role_domain_fission_architect__domain_domain_mitosis_and_agent_society_formation/.ion/receipts/20260726T000300Z_PCKT-ION-LEAD-ORCHESTRATION-GITHUB-PLATFORM-DOMAIN-CANDIDATE-ACTIVATION-20260725_OWN_MOUNT_RECEIPT.candidate.json
+    tier: T1
+    owner_domain_id: domain.domain_mitosis_and_agent_society_formation
+    owner_role_id: role.domain_fission_architect
+    reason: GitHub platform domain candidate activation receipt
+    content_sha256: "35a5978f17d8ba4b9ce70ce70f9d5cc528044fc7c62cbd18d1dccce58ef74993"
+    size_bytes: 4783
+  - repo_relative_path: ION/05_context/current/codex_agent_mounts/role_domain_fission_architect__domain_domain_mitosis_and_agent_society_formation/ION/05_context/current/domain_weaver/candidate_founding_domains/domain.domain_mitosis_and_agent_society_formation/evolution_packets/PCKT-GITHUB-REPOSITORY-GOVERNANCE-DOMAIN-ASSEMBLY-20260725_DECISION.candidate.yaml
+    tier: T1
+    owner_domain_id: domain.domain_mitosis_and_agent_society_formation
+    owner_role_id: role.domain_fission_architect
+    reason: Domain fission GitHub governance assembly decision packet (nested mirror path)
+    content_sha256: "28e98c136bae598b73c00881f28164f637d992d7d6f37bb20d6a1db93dd08ab5"
+    size_bytes: 6728
+  - repo_relative_path: ION/05_context/current/codex_agent_mounts/role_github_repository_platform_governance_steward__domain_github_repository_platform_governance/.codex/config.toml
+    tier: T1
+    owner_domain_id: domain.github_repository_platform_governance
+    owner_role_id: role.github_repository_platform_governance_steward
+    reason: Steward carrier config surface
+    content_sha256: "1cb48c69991ca42c836a82edc4c9c013524bed4f2b4551c7d9dfe7b1a5bacffd"
+    size_bytes: 1934
+  - repo_relative_path: ION/05_context/current/codex_agent_mounts/role_github_repository_platform_governance_steward__domain_github_repository_platform_governance/.ion/ADDRESS_BOOK.json
+    tier: T1
+    owner_domain_id: domain.github_repository_platform_governance
+    owner_role_id: role.github_repository_platform_governance_steward
+    reason: Steward address book
+    content_sha256: "546b9f5f98dae9b105332f401831a80b9ae0b16c2db44c9a34e31f275b13d9df"
+    size_bytes: 1002
+  - repo_relative_path: ION/05_context/current/codex_agent_mounts/role_github_repository_platform_governance_steward__domain_github_repository_platform_governance/.ion/AGENT.yaml
+    tier: T1
+    owner_domain_id: domain.github_repository_platform_governance
+    owner_role_id: role.github_repository_platform_governance_steward
+    reason: Steward agent binding
+    content_sha256: "aeabebf71852ccb8ab938ad403000149ed77e0f2e4b8d799be1ae39a194cf2e6"
+    size_bytes: 1499
+  - repo_relative_path: ION/05_context/current/codex_agent_mounts/role_github_repository_platform_governance_steward__domain_github_repository_platform_governance/.ion/COMMUNICATIONS.json
+    tier: T1
+    owner_domain_id: domain.github_repository_platform_governance
+    owner_role_id: role.github_repository_platform_governance_steward
+    reason: Steward communications registry
+    content_sha256: "fff50888639c23f9aac0c46cd31efba119b7f46f0fe1048d0db0f12639dae38f"
+    size_bytes: 783
+  - repo_relative_path: ION/05_context/current/codex_agent_mounts/role_github_repository_platform_governance_steward__domain_github_repository_platform_governance/.ion/CONTEXT_IDENTITY.json
+    tier: T1
+    owner_domain_id: domain.github_repository_platform_governance
+    owner_role_id: role.github_repository_platform_governance_steward
+    reason: Steward capsule identity
+    content_sha256: "d2c1bd004e24b280ad824544827cad04ff3b863e93ca538d56042a6a97bb7cea"
+    size_bytes: 2332
+  - repo_relative_path: ION/05_context/current/codex_agent_mounts/role_github_repository_platform_governance_steward__domain_github_repository_platform_governance/.ion/DOMAIN.yaml
+    tier: T1
+    owner_domain_id: domain.github_repository_platform_governance
+    owner_role_id: role.github_repository_platform_governance_steward
+    reason: Steward domain binding
+    content_sha256: "63f61707e91a06a2b33465ae8f5090a3e6e21359e21506fff9d8c03d346765f7"
+    size_bytes: 1359
+  - repo_relative_path: ION/05_context/current/codex_agent_mounts/role_github_repository_platform_governance_steward__domain_github_repository_platform_governance/.ion/HOT_CONTEXT.md
+    tier: T1
+    owner_domain_id: domain.github_repository_platform_governance
+    owner_role_id: role.github_repository_platform_governance_steward
+    reason: Steward compact boot context
+    content_sha256: "7b01315de91a912c9d419a60e2f1d943fba4e32b8f8c7dfac93e5c323453fc35"
+    size_bytes: 1300
+  - repo_relative_path: ION/05_context/current/codex_agent_mounts/role_github_repository_platform_governance_steward__domain_github_repository_platform_governance/.ion/ION_CONTEXT_CAPSULE.yaml
+    tier: T1
+    owner_domain_id: domain.github_repository_platform_governance
+    owner_role_id: role.github_repository_platform_governance_steward
+    reason: Steward context capsule metadata
+    content_sha256: "3d30c84889a3c8c226cddcb97509228a82c81537c2a137c8e80b30f94c8fa6a7"
+    size_bytes: 4162
+  - repo_relative_path: ION/05_context/current/codex_agent_mounts/role_github_repository_platform_governance_steward__domain_github_repository_platform_governance/.ion/RELATIONSHIPS.yaml
+    tier: T1
+    owner_domain_id: domain.github_repository_platform_governance
+    owner_role_id: role.github_repository_platform_governance_steward
+    reason: Steward relationship graph
+    content_sha256: "d98e3b3cc1c964448bb2dfbb016dc5c43a46def38921db2828316f79de4c417f"
+    size_bytes: 1354
+  - repo_relative_path: ION/05_context/current/codex_agent_mounts/role_github_repository_platform_governance_steward__domain_github_repository_platform_governance/AGENTS.md
+    tier: T1
+    owner_domain_id: domain.github_repository_platform_governance
+    owner_role_id: role.github_repository_platform_governance_steward
+    reason: Steward mount operating instructions
+    content_sha256: "031dacbc500e3b4b49472edd39c398a9fd2f6f28de0529a2770ba784a78d3015"
+    size_bytes: 3111
+  - repo_relative_path: ION/05_context/current/codex_agent_mounts/role_github_repository_platform_governance_steward__domain_github_repository_platform_governance/AGENT_SYSTEM_CARD.md
+    tier: T1
+    owner_domain_id: domain.github_repository_platform_governance
+    owner_role_id: role.github_repository_platform_governance_steward
+    reason: Steward agent system card
+    content_sha256: "4b0d439a1ea861c614ced63c29c05eee299c00c9220ab4daed6de13f3345e631"
+    size_bytes: 556
+  - repo_relative_path: ION/05_context/current/codex_agent_mounts/role_github_repository_platform_governance_steward__domain_github_repository_platform_governance/DOMAIN_SYSTEM_CARD.md
+    tier: T1
+    owner_domain_id: domain.github_repository_platform_governance
+    owner_role_id: role.github_repository_platform_governance_steward
+    reason: Steward domain system card
+    content_sha256: "f04dd86ff30f102010e9eb52de92d2f0a4ccb7b461ccf23cfbc3d570d95aba90"
+    size_bytes: 884
+  - repo_relative_path: ION/05_context/current/codex_agent_mounts/role_github_repository_platform_governance_steward__domain_github_repository_platform_governance/ION_AGENT_MOUNT_MANIFEST.json
+    tier: T1
+    owner_domain_id: domain.github_repository_platform_governance
+    owner_role_id: role.github_repository_platform_governance_steward
+    reason: Steward mount manifest index
+    content_sha256: "1a9293425d4c7050801248827658977f10904d7bbed1a6385a935c14648d9dc0"
+    size_bytes: 1859
+  - repo_relative_path: ION/05_context/current/codex_agent_mounts/role_monolith_decomposition_cartographer__domain_context_graph_branch_fabric/.ion/outbox/20260726T001600Z_PCKT-ION-LEAD-ORCHESTRATION-BRANCH-FABRIC-LIVE-INVENTORY-AND-SNAPSHOT-MANIFEST-20260725_LEAD_ORCHESTRATION_RETURN.candidate.md
+    tier: T1
+    owner_domain_id: domain.context_graph_branch_fabric
+    owner_role_id: role.monolith_decomposition_cartographer
+    reason: Branch fabric live inventory and snapshot manifest return
+    content_sha256: "394845abf51eed8cf7fd7b117dbe29fc74ebc262fb9d546017aad93e49d2aa88"
+    size_bytes: 4787
+  - repo_relative_path: ION/05_context/current/codex_agent_mounts/role_monolith_decomposition_cartographer__domain_context_graph_branch_fabric/.ion/receipts/20260726T001600Z_PCKT-ION-LEAD-ORCHESTRATION-BRANCH-FABRIC-LIVE-INVENTORY-AND-SNAPSHOT-MANIFEST-20260725_OWN_MOUNT_RECEIPT.candidate.json
+    tier: T1
+    owner_domain_id: domain.context_graph_branch_fabric
+    owner_role_id: role.monolith_decomposition_cartographer
+    reason: Branch fabric inventory own-mount receipt
+    content_sha256: "f889923dae256607312055b9f7a1aa3c1c523f30a30550fd31c305a6a416adef"
+    size_bytes: 1647
+  - repo_relative_path: ION/05_context/current/codex_agent_mounts/role_monolith_decomposition_cartographer__domain_context_graph_branch_fabric/COMMIT_BOUNDARY_MANIFEST.candidate.yaml
+    tier: T1
+    owner_domain_id: domain.context_graph_branch_fabric
+    owner_role_id: role.monolith_decomposition_cartographer
+    reason: Prior recursive commit boundary proposal superseded by this exact manifest
+    content_sha256: "9bf93f3f111f433ea24addc5aad1222805d612645fa1711d82cc5c3fd7e5f8ea"
+    size_bytes: 14849
+  - repo_relative_path: ION/05_context/current/codex_agent_mounts/role_monolith_decomposition_cartographer__domain_context_graph_branch_fabric/REPOSITORY_IDENTITY_REGISTRY.candidate.json
+    tier: T1
+    owner_domain_id: domain.context_graph_branch_fabric
+    owner_role_id: role.monolith_decomposition_cartographer
+    reason: Repository identity registry for branch fabric inventory
+    content_sha256: "9baf45ea191ce1c8f988ea0ac0e2ba7617fe9eaf90ac2cfa517a5ed93d6ddb01"
+    size_bytes: 3526
+  - repo_relative_path: ION/05_context/current/codex_agent_mounts/role_monolith_decomposition_cartographer__domain_context_graph_branch_fabric/REPOSITORY_STATE_SUMMARY.candidate.md
+    tier: T1
+    owner_domain_id: domain.context_graph_branch_fabric
+    owner_role_id: role.monolith_decomposition_cartographer
+    reason: Repository state summary for branch fabric inventory
+    content_sha256: "7242335d6d2552ed43d0fb6f227353fcd86b9429672bf6ca8b6d956f552cac6f"
+    size_bytes: 3882
+  - repo_relative_path: ION/05_context/current/codex_agent_mounts/role_monolith_decomposition_cartographer__domain_context_graph_branch_fabric/WORKING_TREE_INVENTORY.candidate.json
+    tier: T1
+    owner_domain_id: domain.context_graph_branch_fabric
+    owner_role_id: role.monolith_decomposition_cartographer
+    reason: Working tree inventory tiers and porcelain rollup
+    content_sha256: "a8b3378ddf442c4fff319dbb6c78c95f0aed61e5429f7ca9a84dc56383357b33"
+    size_bytes: 6258
+  - repo_relative_path: ION/05_context/current/codex_agent_mounts/role_nemesis__domain_artifact_provenance_and_gate_legitimacy/.ion/forensic_evidence/PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-BYTE-PROVENANCE-FORENSIC-20260725/BOUNDED_SOURCES_SEARCHED.candidate.json
+    tier: T1
+    owner_domain_id: domain.artifact_provenance_and_gate_legitimacy
+    owner_role_id: role.nemesis
+    reason: Rebase-12 bounded sources searched forensic artifact
+    content_sha256: "7c7a5e9a21e455a560e1a703a9b291eb03857e235f54d31ce6520992c7921ffe"
+    size_bytes: 4782
+  - repo_relative_path: ION/05_context/current/codex_agent_mounts/role_nemesis__domain_artifact_provenance_and_gate_legitimacy/.ion/forensic_evidence/PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-BYTE-PROVENANCE-FORENSIC-20260725/PROVENANCE_TIMELINE.candidate.json
+    tier: T1
+    owner_domain_id: domain.artifact_provenance_and_gate_legitimacy
+    owner_role_id: role.nemesis
+    reason: Rebase-12 provenance timeline forensic artifact
+    content_sha256: "eb77643c9e81fc01d7a0eddb29814da67b5ff6fbb32e6f6d8574de7b7dd6b48f"
+    size_bytes: 4301
+  - repo_relative_path: ION/05_context/current/codex_agent_mounts/role_nemesis__domain_artifact_provenance_and_gate_legitimacy/.ion/forensic_evidence/PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-BYTE-PROVENANCE-FORENSIC-20260725/SUBJECT_CLASSIFICATION.candidate.json
+    tier: T1
+    owner_domain_id: domain.artifact_provenance_and_gate_legitimacy
+    owner_role_id: role.nemesis
+    reason: Rebase-12 subject classification forensic artifact
+    content_sha256: "b86b32d860db9c2c99976634ccc39f259fd878a5522929e4ed8e6d9922a7cb0b"
+    size_bytes: 1914
+  - repo_relative_path: ION/05_context/current/codex_agent_mounts/role_nemesis__domain_artifact_provenance_and_gate_legitimacy/.ion/forensic_evidence/PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-PROVENANCE-HOLD-MATERIALIZATION-20260725/ADJACENT_MARKER.candidate.json
+    tier: T1
+    owner_domain_id: domain.artifact_provenance_and_gate_legitimacy
+    owner_role_id: role.nemesis
+    reason: Rebase-12 provenance-hold adjacent marker witness (not builder source)
+    content_sha256: "f2950017201469c95b39adeed2a4bffaf79dabf1123f208d8322dc6ac1c2da20"
+    size_bytes: 3043
+  - repo_relative_path: ION/05_context/current/codex_agent_mounts/role_nemesis__domain_artifact_provenance_and_gate_legitimacy/.ion/forensic_evidence/PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-PROVENANCE-HOLD-MATERIALIZATION-20260725/DEPLOYMENT_STATUS.candidate.json
+    tier: T1
+    owner_domain_id: domain.artifact_provenance_and_gate_legitimacy
+    owner_role_id: role.nemesis
+    reason: Rebase-12 provenance-hold deployment status witness
+    content_sha256: "db3a5d2c3aa88bfc6a60b144eb2adfb47d2ae1ad1d452ff170e3170a4e1ddc0b"
+    size_bytes: 1611
+  - repo_relative_path: ION/05_context/current/codex_agent_mounts/role_nemesis__domain_artifact_provenance_and_gate_legitimacy/.ion/outbox/20260726T001600Z_PCKT-ION-LEAD-ORCHESTRATION-FIRST-GIT-SNAPSHOT-PRECOMMIT-GATE-SPEC-20260725_LEAD_STEWARD_RETURN.candidate.md
+    tier: T1
+    owner_domain_id: domain.artifact_provenance_and_gate_legitimacy
+    owner_role_id: role.nemesis
+    reason: Nemesis precommit gate specification return
+    content_sha256: "2b2b99c848926dde19ed4ad94f918b79c68207be8f29ea055527088185327060"
+    size_bytes: 6298
+  - repo_relative_path: ION/05_context/current/codex_agent_mounts/role_nemesis__domain_artifact_provenance_and_gate_legitimacy/.ion/receipts/20260726T001600Z_PCKT-ION-LEAD-ORCHESTRATION-FIRST-GIT-SNAPSHOT-PRECOMMIT-GATE-SPEC-20260725_OWN_MOUNT_RECEIPT.candidate.json
+    tier: T1
+    owner_domain_id: domain.artifact_provenance_and_gate_legitimacy
+    owner_role_id: role.nemesis
+    reason: Nemesis precommit gate specification receipt
+    content_sha256: "5c846aa7d77d658c13eaed22ffe375ff27b1c542a98f132e409e7fc0c0e7f2cd"
+    size_bytes: 1833
+  - repo_relative_path: ION/05_context/current/codex_agent_mounts/role_nemesis__domain_artifact_provenance_and_gate_legitimacy/.ion/receipts/20260726T005800Z_PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-BYTE-PROVENANCE-FORENSIC-20260725_OWN_MOUNT_RECEIPT.candidate.json
+    tier: T1
+    owner_domain_id: domain.artifact_provenance_and_gate_legitimacy
+    owner_role_id: role.nemesis
+    reason: Rebase-12 builder byte provenance forensic receipt
+    content_sha256: "3822b586ce9aef19086df43a3f7094079e0be45fa1c631053be9348a9a1d30eb"
+    size_bytes: 2039
+  - repo_relative_path: ION/05_context/current/codex_agent_mounts/role_nemesis__domain_artifact_provenance_and_gate_legitimacy/.ion/receipts/20260726T010400Z_PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-PROVENANCE-HOLD-MATERIALIZATION-20260725_OWN_MOUNT_RECEIPT.candidate.json
+    tier: T1
+    owner_domain_id: domain.artifact_provenance_and_gate_legitimacy
+    owner_role_id: role.nemesis
+    reason: Rebase-12 provenance-hold materialization receipt
+    content_sha256: "4559d90cf80ac370ea4c562bd1ceb9f90ba286269120df5c6eb668a88474362e"
+    size_bytes: 4464
+  - repo_relative_path: ION/05_context/current/codex_agent_mounts/role_nemesis__domain_artifact_provenance_and_gate_legitimacy/.ion/receipts/20260726T012100Z_PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-FORENSIC-CLOSURE-REPOSITORY-PROJECTION-20260725_OWN_MOUNT_RECEIPT.candidate.json
+    tier: T1
+    owner_domain_id: domain.artifact_provenance_and_gate_legitimacy
+    owner_role_id: role.nemesis
+    reason: Rebase-12 forensic closure repository projection receipt
+    content_sha256: "b60aa1919c4a40f22ac426cdaf4f8967a9cc3aefa469c448ef39b690b16b2aee"
+    size_bytes: 4327
+  - repo_relative_path: ION/05_context/current/codex_agent_mounts/role_runtime_cartographer__domain_runtime_carrier_and_action_admission/.ion/receipts/20260726T005800Z_PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-RUNTIME-EQUIVALENCE-FORENSIC-20260725_OWN_MOUNT_RECEIPT.candidate.json
+    tier: T1
+    owner_domain_id: domain.runtime_carrier_and_action_admission
+    owner_role_id: role.runtime_cartographer
+    reason: Rebase-12 builder runtime equivalence forensic receipt
+    content_sha256: "077fbd0378c3c505195a3cabf381e431d54485d777b90553dfdbba0858615cc6"
+    size_bytes: 8290
+  - repo_relative_path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.github_repository_platform_governance/CONTEXT_REQUIREMENTS.candidate.yaml
+    tier: T1
+    owner_domain_id: domain.github_repository_platform_governance
+    owner_role_id: role.github_repository_platform_governance_steward
+    reason: GitHub platform governance domain charter and continuity templates
+    content_sha256: "6ae865e21397bb06c2f43167d87705d527477eb2f516f7a0dc8d2c83351c3890"
+    size_bytes: 1484
+  - repo_relative_path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.github_repository_platform_governance/DOMAIN_RELATIONSHIPS.candidate.yaml
+    tier: T1
+    owner_domain_id: domain.github_repository_platform_governance
+    owner_role_id: role.github_repository_platform_governance_steward
+    reason: GitHub platform governance domain charter and continuity templates
+    content_sha256: "bfb70037a6e8ee65fc86c981e803cd0c43c522f6aa5eeb4b983ced278f8c149b"
+    size_bytes: 2676
+  - repo_relative_path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.github_repository_platform_governance/OPERATING_CARD.candidate.md
+    tier: T1
+    owner_domain_id: domain.github_repository_platform_governance
+    owner_role_id: role.github_repository_platform_governance_steward
+    reason: GitHub platform governance domain charter and continuity templates
+    content_sha256: "c02032fcb65dbfd72b172dff243dc7bb602ce87450bbf85c4ead4463c3fded8c"
+    size_bytes: 2540
+  - repo_relative_path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.github_repository_platform_governance/continuity_templates/ACTIONS_POLICY.candidate.yaml
+    tier: T1
+    owner_domain_id: domain.github_repository_platform_governance
+    owner_role_id: role.github_repository_platform_governance_steward
+    reason: GitHub platform governance domain charter and continuity templates
+    content_sha256: "3276ae3b628c8f40454f402e2ab565421f5f7243c28f259030a21f3ec9c46fc4"
+    size_bytes: 785
+  - repo_relative_path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.github_repository_platform_governance/continuity_templates/BRANCH_PROTECTION_PROPOSAL.candidate.yaml
+    tier: T1
+    owner_domain_id: domain.github_repository_platform_governance
+    owner_role_id: role.github_repository_platform_governance_steward
+    reason: GitHub platform governance domain charter and continuity templates
+    content_sha256: "147aa49c3887d7d13682a10b6c5a40f002e71444097d08291e51fc52b28013c0"
+    size_bytes: 1101
+  - repo_relative_path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.github_repository_platform_governance/continuity_templates/CODEOWNERS_POLICY.candidate.md
+    tier: T1
+    owner_domain_id: domain.github_repository_platform_governance
+    owner_role_id: role.github_repository_platform_governance_steward
+    reason: GitHub platform governance domain charter and continuity templates
+    content_sha256: "1995d926d9ffe99b00294ceb2993dde592df6064404b961f1bfe96461ded0537"
+    size_bytes: 1326
+  - repo_relative_path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.github_repository_platform_governance/continuity_templates/PLATFORM_CHANGE_RECEIPT.candidate.md
+    tier: T1
+    owner_domain_id: domain.github_repository_platform_governance
+    owner_role_id: role.github_repository_platform_governance_steward
+    reason: GitHub platform governance domain charter and continuity templates
+    content_sha256: "a65e102e8e718823c9380a0098fa23e059db7c8573fbe22acec99e186fe698af"
+    size_bytes: 1003
+  - repo_relative_path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.github_repository_platform_governance/continuity_templates/PLATFORM_READ_MODEL.candidate.yaml
+    tier: T1
+    owner_domain_id: domain.github_repository_platform_governance
+    owner_role_id: role.github_repository_platform_governance_steward
+    reason: GitHub platform governance domain charter and continuity templates
+    content_sha256: "8084c3c40366fed0b0cba41bc9f0b77f4b0e2531275d5d8f363557b1dc1d3077"
+    size_bytes: 1542
+  - repo_relative_path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.github_repository_platform_governance/continuity_templates/PR_GOVERNANCE.candidate.yaml
+    tier: T1
+    owner_domain_id: domain.github_repository_platform_governance
+    owner_role_id: role.github_repository_platform_governance_steward
+    reason: GitHub platform governance domain charter and continuity templates
+    content_sha256: "a20afc543a51b319d6b4ed4ff519e286a7f439d3d74f009e6eaffcd14c0a9c26"
+    size_bytes: 975
+  - repo_relative_path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.github_repository_platform_governance/continuity_templates/REPOSITORY_ORIENTATION.candidate.md
+    tier: T1
+    owner_domain_id: domain.github_repository_platform_governance
+    owner_role_id: role.github_repository_platform_governance_steward
+    reason: GitHub platform governance domain charter and continuity templates
+    content_sha256: "0d420cce9e7e9d3cb4e5f3a2244ef5c28d77dd98895d56edef002fe8b781870d"
+    size_bytes: 1289
+  - repo_relative_path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.github_repository_platform_governance/domain.github_repository_platform_governance.domain.candidate.yaml
+    tier: T1
+    owner_domain_id: domain.github_repository_platform_governance
+    owner_role_id: role.github_repository_platform_governance_steward
+    reason: GitHub platform governance domain charter and continuity templates
+    content_sha256: "fac8f0241deb4bf3d77963b871c623069fdc95277606ae0542af6132c89a2c5a"
+    size_bytes: 3704
+  - repo_relative_path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.github_repository_platform_governance/packets/PCKT-GITHUB-PLATFORM-READONLY-ORIENTATION-20260725.candidate.yaml
+    tier: T1
+    owner_domain_id: domain.github_repository_platform_governance
+    owner_role_id: role.github_repository_platform_governance_steward
+    reason: GitHub platform governance domain charter and continuity templates
+    content_sha256: "f117f8a2a6853219b75f1b8cf0718d4b5e29d83b5df48ad0170b669df63e9cde"
+    size_bytes: 2293
+  - repo_relative_path: ION/05_context/current/repository_governance/BRANCH_PROTECTION_PROPOSAL.candidate.yaml
+    tier: T1
+    owner_domain_id: domain.github_repository_platform_governance
+    owner_role_id: role.github_repository_platform_governance_steward
+    reason: Repository governance law packets and platform read-model proposals
+    content_sha256: "7f51d46dc44fb3b731f664cebced1a4c3913025b0c7902e22974c333420d97a6"
+    size_bytes: 2296
+  - repo_relative_path: ION/05_context/current/repository_governance/CANONICAL_PROMOTION_BUNDLE.candidate.yaml
+    tier: T1
+    owner_domain_id: domain.github_repository_platform_governance
+    owner_role_id: role.github_repository_platform_governance_steward
+    reason: Repository governance law packets and platform read-model proposals
+    content_sha256: "07463b8230afd4246941c6353276c8b4b0493e1fb7c40984b1b7a8b8e992b3da"
+    size_bytes: 2898
+  - repo_relative_path: ION/05_context/current/repository_governance/CODEOWNERS_PROPOSAL.candidate.md
+    tier: T1
+    owner_domain_id: domain.github_repository_platform_governance
+    owner_role_id: role.github_repository_platform_governance_steward
+    reason: Repository governance law packets and platform read-model proposals
+    content_sha256: "bae3504c14f19f7940c858f78779eb7cdf368ef67c02af12f086d515b3577e84"
+    size_bytes: 4326
+  - repo_relative_path: ION/05_context/current/repository_governance/COMMIT_BOUNDARY_MANIFEST.candidate.yaml
+    tier: T1
+    owner_domain_id: domain.github_repository_platform_governance
+    owner_role_id: role.github_repository_platform_governance_steward
+    reason: Repository governance law packets and platform read-model proposals
+    content_sha256: "9bf93f3f111f433ea24addc5aad1222805d612645fa1711d82cc5c3fd7e5f8ea"
+    size_bytes: 14849
+  - repo_relative_path: ION/05_context/current/repository_governance/GITHUB_PLATFORM_READMODEL.candidate.yaml
+    tier: T1
+    owner_domain_id: domain.github_repository_platform_governance
+    owner_role_id: role.github_repository_platform_governance_steward
+    reason: Repository governance law packets and platform read-model proposals
+    content_sha256: "bda8f587b2ae5df32bf639c07b045177c2311146386003ee4c02fa7c2d5bcd06"
+    size_bytes: 7374
+  - repo_relative_path: ION/05_context/current/repository_governance/GIT_SNAPSHOT_PRECOMMIT_GATE.template.candidate.yaml
+    tier: T1
+    owner_domain_id: domain.github_repository_platform_governance
+    owner_role_id: role.github_repository_platform_governance_steward
+    reason: Repository governance law packets and platform read-model proposals
+    content_sha256: "0f341b8e0cdfd6434ca56bb8acdb79750fae5bf84ee5bbf3062e6209bbfb69a5"
+    size_bytes: 13504
+  - repo_relative_path: ION/05_context/current/repository_governance/ION_FALLBACK_ENFORCEMENT_POLICY.candidate.yaml
+    tier: T1
+    owner_domain_id: domain.github_repository_platform_governance
+    owner_role_id: role.github_repository_platform_governance_steward
+    reason: Repository governance law packets and platform read-model proposals
+    content_sha256: "e49408a36eaa70044baa1b7192c0636fa25718f6d60711d71bd07f32d750cf40"
+    size_bytes: 5604
+  - repo_relative_path: ION/05_context/current/repository_governance/PCKT-ION-LEAD-ORCHESTRATION-FIRST-GIT-SNAPSHOT-PRECOMMIT-GATE-SPEC-20260725_GATE_PACKET.candidate.yaml
+    tier: T1
+    owner_domain_id: domain.github_repository_platform_governance
+    owner_role_id: role.github_repository_platform_governance_steward
+    reason: Repository governance law packets and platform read-model proposals
+    content_sha256: "5bce7bf135002c016a4c1e585b7aa644d4e5f7fb1ca248a736567747ebc83e7b"
+    size_bytes: 9078
+  - repo_relative_path: ION/05_context/current/repository_governance/REBASE12_FORENSIC_CLOSURE.candidate.json
+    tier: T1
+    owner_domain_id: domain.github_repository_platform_governance
+    owner_role_id: role.github_repository_platform_governance_steward
+    reason: Repository governance law packets and platform read-model proposals
+    content_sha256: "e001166e6766b4fe7f0bffe33619f3391aeac40b9f8cc29a49e3e7d7383d2b78"
+    size_bytes: 10478
+  - repo_relative_path: ION/05_context/current/repository_governance/REPOSITORY_IDENTITY_REGISTRY.candidate.json
+    tier: T1
+    owner_domain_id: domain.github_repository_platform_governance
+    owner_role_id: role.github_repository_platform_governance_steward
+    reason: Repository governance law packets and platform read-model proposals
+    content_sha256: "9baf45ea191ce1c8f988ea0ac0e2ba7617fe9eaf90ac2cfa517a5ed93d6ddb01"
+    size_bytes: 3526
+  - repo_relative_path: ION/05_context/current/repository_governance/REPOSITORY_STATE_SUMMARY.candidate.md
+    tier: T1
+    owner_domain_id: domain.github_repository_platform_governance
+    owner_role_id: role.github_repository_platform_governance_steward
+    reason: Repository governance law packets and platform read-model proposals
+    content_sha256: "7242335d6d2552ed43d0fb6f227353fcd86b9429672bf6ca8b6d956f552cac6f"
+    size_bytes: 3882
+  - repo_relative_path: ION/05_context/current/repository_governance/WORKING_TREE_INVENTORY.candidate.json
+    tier: T1
+    owner_domain_id: domain.github_repository_platform_governance
+    owner_role_id: role.github_repository_platform_governance_steward
+    reason: Repository governance law packets and platform read-model proposals
+    content_sha256: "a8b3378ddf442c4fff319dbb6c78c95f0aed61e5429f7ca9a84dc56383357b33"
+    size_bytes: 6258
+  - repo_relative_path: ION/REPO_AUTHORITY.md
+    tier: T0
+    owner_domain_id: domain.context_graph_branch_fabric
+    owner_role_id: role.monolith_decomposition_cartographer
+    reason: Repository authority anchor for ION shell root
+    content_sha256: "efd618a688dcb843a23baeeadc4f197389ce45d15d68dd07bd6985aec68748c7"
+    size_bytes: 9484
+
+explicit_excludes:
+  - repo_relative_path: ION/05_context/current/codex_agent_mounts/role_autonomous_loop_steward__domain_local_worker_scheduling_and_autonomous_loop/.ion/receipts/_build_rebase12_package.candidate.py
+    reason: reconstructed rebase-12 builder quarantined
+  - repo_relative_path: ION/05_context/current/codex_agent_mounts/role_autonomous_loop_steward__domain_local_worker_scheduling_and_autonomous_loop/.ion/receipts/_build_rebase12_package.candidate.py.PROVENANCE_HOLD.candidate.json
+    reason: adjacent runtime provenance-hold marker excluded
+
+blocker_updates:
+  - id: BLK-REBASE12-FORENSIC
+    status: closed
+    closure_mode: closed_by_quarantine
+  - id: BLK-WORKING-TREE-UNCLASSIFIED
+    status: candidate_closure_pending_nemesis_gate
+    closure_mode: proposed_exact_manifest_r2
+  - id: BLK-OPERATOR-PUSH-AUTH
+    status: standing
+    effect: push_remains_separately_gated
+
+repair_notes:
+  - repaired unclosed base_sha YAML quote from wave-0 manifest
+  - aligned commit message prefix with GATE-COMMIT-BINDING precommit gate spec
+  - added control_file for self-contained snapshot via canonical promotion
+  - removed circular self-attestation fields (manifest file sha256/size omitted)
+
+rehash_events:
+  - none
+
+non_claims:
+  - candidate_only
+  - no_git_mutation
+  - no_staging
+  - no_commit
+  - no_push
+  - no_secret_content_read_or_output

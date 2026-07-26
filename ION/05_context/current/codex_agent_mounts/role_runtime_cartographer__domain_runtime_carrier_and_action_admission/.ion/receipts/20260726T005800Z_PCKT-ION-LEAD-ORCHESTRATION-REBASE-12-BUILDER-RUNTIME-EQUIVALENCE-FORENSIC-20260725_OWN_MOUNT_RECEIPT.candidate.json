@@ -1,0 +1,122 @@
+{
+  "schema_id": "ion.runtime_cartographer.own_mount_receipt.v0_1_candidate",
+  "receipt_id": "rcpt-runtime-cartographer-20260726t005800z-rebase12-builder-runtime-equivalence-forensic",
+  "packet_id": "PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-RUNTIME-EQUIVALENCE-FORENSIC-20260725",
+  "execution_package_id": "PCKT-ION-AUTONOMOUS-DETACHED-WORKER-R7-GUARDED-PILOT-EXECUTION-REBASE-12-20260725",
+  "from_role": "role.runtime_cartographer",
+  "from_domain": "domain.runtime_carrier_and_action_admission",
+  "from_mount": "role_runtime_cartographer__domain_runtime_carrier_and_action_admission",
+  "verdict": "RECONSTRUCTED_BUILDER_SEMANTICALLY_EQUIVALENT_NOT_BYTE_ATTESTED",
+  "subject_path": "ION/05_context/current/codex_agent_mounts/role_autonomous_loop_steward__domain_local_worker_scheduling_and_autonomous_loop/.ion/receipts/_build_rebase12_package.candidate.py",
+  "subject_sha256_bound": "4327b6a62effee717f7305409611b0e65154a7ff79155783313e02e0376e0d0a",
+  "subject_size_bytes_bound": 80017,
+  "subject_line_count_observed": 1773,
+  "immutable_package_manifest_raw_sha256": "b30fc68d6390377743dd383c4232b8ac1c9c1d4063143b01bb85ce8b68dc7044",
+  "historical_builder_sha256": null,
+  "historical_builder_byte_attestation": "NOT_RECORDED_AT_SUCCESSFUL_RUN",
+  "comparison_basis": [
+    "static_read_reconstructed_builder_source_only",
+    "immutable_rebase12_package_manifest_and_artifacts",
+    "20260725T231148Z_construction_success_receipt_self_checks",
+    "20260725T231200Z_runtime_rebase12_review_NGUARD12_findings",
+    "20260725T232500Z_nemesis_rebase12_review_alignment",
+    "nemesis_PROVENANCE_TIMELINE_overwrite_and_reconstruction_witness",
+    "bounded_recovery_search_no_git_no_execution"
+  ],
+  "semantic_equivalence_classification": {
+    "terminal_verdict": "RECONSTRUCTED_BUILDER_SEMANTICALLY_EQUIVALENT_NOT_BYTE_ATTESTED",
+    "contract_alignment": "HIGH",
+    "byte_reproduction_alignment": "UNKNOWN_UNATTESTED",
+    "re_run_byte_divergence_risk": "MEDIUM_ON_STAGED_TRANSITION_YAML_IF_APPLY_REBIND_DIFFERS_FROM_23_11_BUILDER"
+  },
+  "exact_mismatch_inventory": [
+    {
+      "id": "MISMATCH-R12B-001",
+      "surface": "staged_transition/STAGED_ADMISSION_TRANSITION_MANIFEST.candidate.yaml",
+      "immutable_observed": "transition_id: R7-REBASE-8-STAGED-ADMISSION-TRANSITION-20260725",
+      "reconstructed_builder_contract": "apply_rebind_all_files + TRANSITION_REBIND_PAIRS rebind stale staged literal to R7-REBASE-12-STAGED-ADMISSION-TRANSITION-20260725",
+      "gate_blind_spot": "_transition_identity_ok uses scan_operational_artifacts which skips staged_transition/ prefix",
+      "would_change_bytes": true,
+      "maps_to_review_finding": "NGUARD12-R12-001"
+    },
+    {
+      "id": "MISMATCH-R12B-002",
+      "surface": "EXECUTION_PACKAGE_MANIFEST.candidate.json manifest_integrity.post_manifest_external_artifacts",
+      "immutable_observed": "still lists REBASE-8 post_manifest witness/envelope paths",
+      "reconstructed_builder_contract": "manifest seeded from R8 via json.loads + manifest.update without rewriting manifest_integrity block",
+      "would_change_bytes": true,
+      "maps_to_review_finding": "NGUARD12-R12-002"
+    },
+    {
+      "id": "MISMATCH-R12B-003",
+      "surface": "producers/pre_001, pre_002, staged_admission/staged_spawn_admission_evaluator.candidate.py",
+      "immutable_observed": "ROOT = Path(__file__).resolve().parents[8]",
+      "reconstructed_builder_contract": "patch_driver_rebase12 replaces parents[8] only in driver; auxiliary executables inherit R8 copy unchanged",
+      "would_change_bytes_if_patched": true,
+      "maps_to_review_finding": "NGUARD12-R12-003"
+    },
+    {
+      "id": "MISMATCH-R12B-004",
+      "surface": "builder_source_bytes",
+      "immutable_observed": "successful 20260725T23:11:48Z promotion with no recorded builder sha256",
+      "reconstructed_builder_observed": "post rebase-14 overwrite reconstruction; intake-bound sha256 4327b6a6… size 80017",
+      "would_change_bytes": true,
+      "note": "byte-exact historical helper unrecoverable from bounded local sources"
+    }
+  ],
+  "recovered_source_evidence": {
+    "byte_exact_copy_found": false,
+    "fragments_and_witnesses": [
+      {
+        "path": "ION/05_context/current/codex_agent_mounts/role_autonomous_loop_steward__domain_local_worker_scheduling_and_autonomous_loop/.ion/receipts/20260725T231148Z_PCKT-ION-LEAD-ORCHESTRATION-R7-GUARDED-PILOT-REBASE-12-CONSTRUCTION-20260725_OWN_MOUNT_RECEIPT.candidate.json",
+        "evidence_class": "successful_run_self_checks_and_manifest_hash"
+      },
+      {
+        "path": "ION/05_context/current/codex_agent_mounts/role_nemesis__domain_artifact_provenance_and_gate_legitimacy/.ion/forensic_evidence/PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-BYTE-PROVENANCE-FORENSIC-20260725/PROVENANCE_TIMELINE.candidate.json",
+        "evidence_class": "overwrite_reconstruction_timeline"
+      },
+      {
+        "path": "ION/05_context/current/codex_agent_mounts/role_autonomous_loop_steward__domain_local_worker_scheduling_and_autonomous_loop/.ion/outbox/20260726T003300Z_PCKT-ION-LEAD-ORCHESTRATION-R7-GUARDED-PILOT-REBASE-14-STANDALONE-BUILDER-PREPARATION-20260725_LEAD_STEWARD_RETURN.candidate.md",
+        "evidence_class": "accidental_overwrite_then_reconstruction_note"
+      },
+      {
+        "path": "ION/05_context/current/codex_agent_mounts/role_autonomous_loop_steward__domain_local_worker_scheduling_and_autonomous_loop/.ion/receipts/_build_rebase13_package.candidate.py",
+        "evidence_class": "downstream_template_read_of_R12_without_persisted_hash"
+      }
+    ],
+    "git_tracked_historical_builder": false,
+    "distinction": "historical_source_recovery_is_witness_only; creating_a_future_corrected_builder_is_separate_lane (rebase-14 standalone)"
+  },
+  "historical_package_validity": {
+    "immutable_rebase12_package_remains_valid_witness": true,
+    "manifest_raw_sha256_bound": "b30fc68d6390377743dd383c4232b8ac1c9c1d4063143b01bb85ce8b68dc7044",
+    "review_status": "R7_EXECUTION_PACKAGE_REPAIR_REQUIRED",
+    "valid_despite_helper_source_loss": true,
+    "reason": "package bytes, construction evidence suite, post_manifest partial witness, and dual-review findings are independent of current helper byte attestation"
+  },
+  "lawful_next_action": [
+    "Treat immutable rebase-12 package at manifest b30fc68d… as review-blocked historical witness; do not re-run reconstructed builder to reproduce it without new authorization.",
+    "Quarantine reconstructed helper from single-run reproduction claims until Nemesis byte-provenance forensic completes and/or parent records historical builder sha256 if recoverable from git or transcript exports.",
+    "Route forward repair through rebase-14 standalone builder lane or explicit manifest-bound repair packet; do not import/execute/restore subject file in this mount.",
+    "Parent carrier may live-recompute manifest + 20 artifact hashes to close NGUARD12-R12-004; unrelated to helper byte proof."
+  ],
+  "live_execution_performed": false,
+  "subject_executed": false,
+  "subject_imported": false,
+  "subject_edited": false,
+  "artifact_paths": {
+    "lead_steward_return": "codex_agent_mounts/role_runtime_cartographer__domain_runtime_carrier_and_action_admission/.ion/outbox/20260726T005800Z_PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-RUNTIME-EQUIVALENCE-FORENSIC-20260725_LEAD_STEWARD_RETURN.candidate.md",
+    "inbox_task": "codex_agent_mounts/role_runtime_cartographer__domain_runtime_carrier_and_action_admission/.ion/inbox/PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-RUNTIME-EQUIVALENCE-FORENSIC-20260725_TASK.candidate.yaml",
+    "subject_builder": "ION/05_context/current/codex_agent_mounts/role_autonomous_loop_steward__domain_local_worker_scheduling_and_autonomous_loop/.ion/receipts/_build_rebase12_package.candidate.py",
+    "immutable_package_root": "ION/05_context/current/autonomous_goals/detached_worker_candidate/execution_packages/PCKT-ION-AUTONOMOUS-DETACHED-WORKER-R7-GUARDED-PILOT-EXECUTION-REBASE-12-20260725"
+  },
+  "observed_at": "2026-07-26T00:58:00Z",
+  "non_claims": [
+    "candidate_only",
+    "no_live_execution",
+    "no_accepted_state",
+    "no_builder_execution",
+    "no_immutable_package_mutation",
+    "no_byte_exact_historical_builder_attestation"
+  ]
+}

@@ -1,0 +1,30 @@
+accepted_state_authority: false
+dependency_policy: "folder-local capsule declares relationships; ION registries remain authority."
+domain_paths:
+  - "ION/05_context/current/domain_weaver/candidate_founding_domains/domain.github_repository_platform_governance/"
+generated_at: "2026-07-26T00:03:00+00:00"
+live_execution_authority: false
+primary_domain: "domain.github_repository_platform_governance"
+production_authority: false
+schema_id: "ion.portable_agent_domain_relationships.v0_1"
+secondary_domains:
+  - domain_id: "domain.context_graph_branch_fabric"
+    edge: branch_fabric_identity_feed
+    direction: consumes
+  - domain_id: "domain.artifact_provenance_and_gate_legitimacy"
+    edge: provenance_commit_manifest_feed
+    direction: consumes
+  - domain_id: "domain.context_systems"
+    edge: context_systems_continuity_feed
+    direction: consumes
+  - domain_id: "domain.state_rank_and_receipt_truth"
+    edge: accepted_merge_rank_boundary
+    direction: feeds
+  - domain_id: "domain.release.release_readiness"
+    edge: release_platform_relationship
+    direction: feeds
+    status: deferred
+selected_mount_domain: "domain.github_repository_platform_governance"
+source_refs:
+  - "ION/05_context/current/domain_weaver/candidate_founding_domains/domain.github_repository_platform_governance/DOMAIN_RELATIONSHIPS.candidate.yaml"
+template_bindings: []

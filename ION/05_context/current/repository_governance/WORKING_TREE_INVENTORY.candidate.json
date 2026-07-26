@@ -1,0 +1,153 @@
+{
+  "schema_id": "ion.working_tree_inventory.v0_1_candidate",
+  "summary_path": "ION/05_context/current/codex_agent_mounts/role_monolith_decomposition_cartographer__domain_context_graph_branch_fabric/WORKING_TREE_INVENTORY.candidate.json",
+  "owner_domains": {
+    "path_cartography": "domain.context_graph_branch_fabric",
+    "tier_classification": "domain.artifact_provenance_and_gate_legitimacy"
+  },
+  "materialized_at": "2026-07-26T00:16:00Z",
+  "materialized_by_packet": "PCKT-ION-LEAD-ORCHESTRATION-BRANCH-FABRIC-LIVE-INVENTORY-AND-SNAPSHOT-MANIFEST-20260725",
+  "observed_at": "2026-07-25T23:58:00Z",
+  "evidence_binding": {
+    "primary_source": "live_parent_carrier_evidence",
+    "parent_packet": "PCKT-ION-LEAD-ORCHESTRATION-BRANCH-FABRIC-LIVE-INVENTORY-AND-SNAPSHOT-MANIFEST-20260725",
+    "carrier_shell_git_read_blocked": true,
+    "stale_witness_rejected": true,
+    "note": "Counts compiled from parent live porcelain snapshot at packet issue; not from MINI/CAPSULE or pre-20260725 witness files."
+  },
+  "repository_identity_ref": "ION/05_context/current/codex_agent_mounts/role_monolith_decomposition_cartographer__domain_context_graph_branch_fabric/REPOSITORY_IDENTITY_REGISTRY.candidate.json",
+  "git_head_at_observation": "60255b26a290276c465b937708f2552e400363f6",
+  "active_branch_at_observation": "codex/ion-custom-gpt-front-door-carrier-v4",
+  "porcelain_summary": {
+    "total_entries": 217151,
+    "untracked": 197991,
+    "deleted": 18915,
+    "modified": 245,
+    "added_staged": 0,
+    "renamed": 0,
+    "conflicted": 0,
+    "immediate_blanket_commit_safe": false
+  },
+  "top_level_rollup": [
+    {
+      "prefix": "projects/",
+      "porcelain_entries": 110643,
+      "default_tier": "T5_archive_quarantine_historical",
+      "first_snapshot_inclusion": "exclude"
+    },
+    {
+      "prefix": "ION/",
+      "porcelain_entries": 67808,
+      "default_tier": "mixed",
+      "first_snapshot_inclusion": "narrow_governance_subset_only"
+    },
+    {
+      "prefix": "ION_GPT_STATE/",
+      "porcelain_entries": 17950,
+      "default_tier": "T5_archive_quarantine_historical",
+      "first_snapshot_inclusion": "exclude"
+    },
+    {
+      "prefix": "AIM-OS/",
+      "porcelain_entries": 11846,
+      "default_tier": "T3_operator_witness_recovery",
+      "first_snapshot_inclusion": "exclude"
+    },
+    {
+      "prefix": "ION_Developement/",
+      "porcelain_entries": 6703,
+      "default_tier": "T6_deletion_and_missing_symlink_incidents",
+      "first_snapshot_inclusion": "exclude",
+      "note": "Nested path under git toplevel; likely deletion/missing-export incidents — not first-wave governance scope."
+    }
+  ],
+  "filename_risk_signals": {
+    "binary_or_archive_name_patterns": 9247,
+    "secret_name_risk_paths": 1714,
+    "content_reads_performed": false,
+    "staging_rule": "hard_forbid_without_gate_receipt"
+  },
+  "tier_heuristic_rollup": {
+    "T0_committable_source": {
+      "description": "Hand-authored source/templates in narrow governance wave only",
+      "estimated_paths_in_first_wave": 12,
+      "staging_rule": "domain_scoped_wave_only_after_manifest"
+    },
+    "T1_domain_candidate_artifacts": {
+      "description": "Governance domain charters, evolution packets, mount outbox returns, provenance-hold markers",
+      "estimated_paths_in_first_wave": 28,
+      "staging_rule": "require_packet_id_and_own_mount_receipt_per_change_set"
+    },
+    "T2_generated_runtime_active": {
+      "description": "ACTIVE_* JSON, live queues, hook state",
+      "porcelain_estimate": "high_within_ION_prefix",
+      "staging_rule": "default_exclude"
+    },
+    "T3_operator_witness_recovery": {
+      "description": "codex_solo, Needs_Routed, AIM-OS",
+      "porcelain_estimate": 11846,
+      "staging_rule": "operator_intent_receipt_required"
+    },
+    "T4_secrets_vault_adjacent": {
+      "description": "Vault, credentials, .env patterns",
+      "filename_risk_count": 1714,
+      "staging_rule": "hard_forbid"
+    },
+    "T5_archive_quarantine_historical": {
+      "description": "projects/, ION_GPT_STATE/, quarentine/",
+      "porcelain_estimate": 128593,
+      "staging_rule": "promotion_packet_required"
+    },
+    "T6_deletion_and_missing_symlink_incidents": {
+      "description": "Deleted tracked paths, missing exports",
+      "porcelain_deleted_count": 18915,
+      "staging_rule": "nemesis_deletion_gate_before_stage"
+    }
+  },
+  "ownership_risk_map": [
+    {
+      "concern": "rebase-12 reconstructed builder",
+      "path": "ION/05_context/current/codex_agent_mounts/role_autonomous_loop_steward__domain_local_worker_scheduling_and_autonomous_loop/.ion/receipts/_build_rebase12_package.candidate.py",
+      "git_tracked": false,
+      "tier": "T1_quarantined_forensic",
+      "first_snapshot": "exclude_subject_file",
+      "include_adjacent_hold_marker_only": true,
+      "blocker": "BLK-REBASE12-FORENSIC"
+    },
+    {
+      "concern": "runtime carrier state",
+      "path_glob": "ION/05_context/current/ACTIVE_*.json",
+      "tier": "T2_generated_runtime_active",
+      "first_snapshot": "exclude"
+    },
+    {
+      "concern": "projects corpus",
+      "path_prefix": "projects/",
+      "tier": "T5_archive_quarantine_historical",
+      "first_snapshot": "exclude"
+    },
+    {
+      "concern": "unrelated deletions",
+      "porcelain_class": "deleted",
+      "count": 18915,
+      "tier": "T6_deletion_and_missing_symlink_incidents",
+      "first_snapshot": "exclude"
+    }
+  ],
+  "lead_orchestration_packet_set_ownership": {
+    "classification": "T1_domain_candidate_artifacts",
+    "packets_this_turn": [
+      "PCKT-ION-LEAD-ORCHESTRATION-GITHUB-REPOSITORY-GOVERNANCE-DOMAIN-ASSEMBLY-20260725",
+      "PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-PROVENANCE-HOLD-MATERIALIZATION-20260725",
+      "PCKT-ION-LEAD-ORCHESTRATION-BRANCH-FABRIC-LIVE-INVENTORY-AND-SNAPSHOT-MANIFEST-20260725"
+    ],
+    "distinguish_from_preexisting": "Timestamps 20260725–20260726 and packet receipts permit separating lead-orchestration governance artifacts from unrelated dirty-tree bulk."
+  },
+  "non_claims": [
+    "candidate_only",
+    "inventory_not_staging_authorization",
+    "no_blanket_add",
+    "no_secret_content_reads",
+    "counts_from_parent_live_evidence_not_independent_git_rerun"
+  ]
+}

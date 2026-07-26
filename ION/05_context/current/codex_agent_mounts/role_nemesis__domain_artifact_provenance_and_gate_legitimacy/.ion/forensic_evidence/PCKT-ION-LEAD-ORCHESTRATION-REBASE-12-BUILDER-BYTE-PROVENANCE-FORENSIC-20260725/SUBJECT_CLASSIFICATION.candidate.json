@@ -1,0 +1,36 @@
+{
+  "schema_id": "ion.nemesis.immutable_artifact_classification.v0_1_candidate",
+  "packet_id": "PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-BYTE-PROVENANCE-FORENSIC-20260725",
+  "generated_at": "2026-07-26T00:58:00Z",
+  "subject_path": "ION/05_context/current/codex_agent_mounts/role_autonomous_loop_steward__domain_local_worker_scheduling_and_autonomous_loop/.ion/receipts/_build_rebase12_package.candidate.py",
+  "current_on_disk": {
+    "sha256_bound_by_intake_packet": "4327b6a62effee717f7305409611b0e65154a7ff79155783313e02e0376e0d0a",
+    "size_bytes_bound_by_intake_packet": 80017,
+    "line_count_observed_by_read": 1773,
+    "git_tracked": false
+  },
+  "original_authoritative_builder": {
+    "sha256": null,
+    "size_bytes": null,
+    "line_count": null,
+    "recorded_anywhere": false
+  },
+  "classification": "reconstructed_non_authoritative",
+  "classification_basis": [
+    "Owner admitted accidental overwrite during rebase-14 materialization followed by spec-aligned reconstruction.",
+    "No receipt, manifest field, or recovery lane records pre-overwrite builder SHA-256.",
+    "No byte-exact duplicate located in bounded search.",
+    "Successful builder run at 2026-07-25T23:11:48Z predates overwrite; current bytes cannot be equated to construction-time bytes without proof."
+  ],
+  "lineage_representation_law": {
+    "subject_path_label": "reconstructed_non_authoritative_builder_candidate",
+    "forbidden_claims": [
+      "byte_identical_to_construction_time_builder",
+      "authorized_single_run_binding_without_fresh_sha256_attestation",
+      "git_checkout_restores_witness_without_tracked_history"
+    ],
+    "required_future_binding": "Any builder authorization must bind a freshly attested sha256 after explicit regeneration or verified recovery; do not inherit pre-overwrite hash by inference."
+  },
+  "recovered_candidate_path": null,
+  "subject_mutated_by_forensic": false
+}

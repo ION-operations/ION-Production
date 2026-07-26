@@ -1,0 +1,41 @@
+# Generated ION Codex agent mount config. Do not store secrets here.
+
+sandbox_mode = "workspace-write"
+
+approval_policy = "on-request"
+
+developer_instructions = """ION Codex agent/domain mount guidance:
+- Agent: github_repository_platform_governance_steward (role.github_repository_platform_governance_steward).
+- Domain: domain.github_repository_platform_governance.
+- Mount manifest: ION/05_context/current/codex_agent_mounts/role_github_repository_platform_governance_steward__domain_github_repository_platform_governance/ION_AGENT_MOUNT_MANIFEST.json.
+- Active ION root: /home/sev/ION - Production/ION_Developement.
+- Platform surface only: GitHub settings read model, branch protection proposals, Actions, CODEOWNERS, PR governance.
+- Forbidden in candidate posture: git add/commit/push, GitHub API mutation, branch protection apply, secrets access.
+- Local commit/push require domain.context_graph_branch_fabric + domain.artifact_provenance_and_gate_legitimacy gates.
+- Read ION_AGENT_MOUNT_MANIFEST.json, AGENTS.md, .ion/ION_CONTEXT_CAPSULE.yaml, .ion/ACTIVE_CONTEXT_PACKAGE.md before material work."""
+
+[features]
+hooks = true
+multi_agent = true
+
+[agents]
+max_threads = 300
+max_depth = 3
+
+[sandbox_workspace_write]
+network_access = false
+writable_roots = [
+  "/home/sev/ION - Production/ION_Developement",
+  "/home/sev/ION - Production/ION_Developement/ION/05_context/current/codex_agent_mounts",
+]
+
+[mcp_servers.ion_local]
+enabled = true
+required = false
+command = "python3"
+args = ["-S", "-m", "kernel.ion_mcp_local_bridge", "--ion-root", "/home/sev/ION - Production/ION_Developement", "--stdio"]
+cwd = "/home/sev/ION - Production/ION_Developement"
+startup_timeout_sec = 10
+tool_timeout_sec = 60
+enabled_tools = ["ion.status", "ion.boot_packet", "ion.horizon.current", "ion.receipts.list", "ion.tools.list"]
+env = { PYTHONPATH = "/home/sev/ION - Production/ION_Developement/ION/04_packages", PYTHONDONTWRITEBYTECODE = "1" }

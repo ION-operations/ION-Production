@@ -1,0 +1,35 @@
+schema_id: ion.repository_governance.pr_governance.v0_1_candidate
+owner_domain_id: domain.github_repository_platform_governance
+status: proposal_shell
+repository_slug: ION-operations/ION-Production
+
+draft_pr_workflow:
+  creation_authority: operator_or_automation_with_push_auth_receipt
+  platform_template_required: true
+  nemesis_review_required: true
+  steward_integration_required_for_accepted_merge: true
+
+pr_policy:
+  title_convention: "domain-scoped: <domain_id> — <summary>"
+  body_sections:
+    - context_proof
+    - domain_manifest_ref
+    - commit_boundary_receipt_ref
+    - non_claims
+  draft_until:
+    - pre_commit_gates_pass
+    - commit_boundary_manifest_attached
+    - nemesis_non_block
+
+relationship_to_rank:
+  draft_pr: platform_governance_packet
+  accepted_merge: domain.state_rank_and_receipt_truth
+
+forbidden_in_candidate_activation:
+  - open_pr_via_api
+  - merge_pr
+  - change_repository_settings
+
+non_claims:
+  - proposal_only
+  - no_github_mutation

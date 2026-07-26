@@ -1,0 +1,45 @@
+{
+  "schema_id": "ion.artifact_provenance_hold_marker.v0_1_candidate",
+  "marker_id": "marker-rebase12-builder-provenance-hold-20260726t010400z",
+  "packet_id": "PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-PROVENANCE-HOLD-MATERIALIZATION-20260725",
+  "materialized_at": "2026-07-26T01:04:00Z",
+  "terminal_verdict": "REBASE12_RECONSTRUCTED_BUILDER_PROVENANCE_HOLD_ACTIVE",
+  "subject": {
+    "path": "ION/05_context/current/codex_agent_mounts/role_autonomous_loop_steward__domain_local_worker_scheduling_and_autonomous_loop/.ion/receipts/_build_rebase12_package.candidate.py",
+    "sha256": "4327b6a62effee717f7305409611b0e65154a7ff79155783313e02e0376e0d0a",
+    "size_bytes_bound": 80017,
+    "classification": "reconstructed_non_authoritative",
+    "original_builder_sha256": null
+  },
+  "adjacent_to_subject": true,
+  "forensic_bindings": {
+    "byte_provenance_verdict": "BYTE_EXACT_RECOVERY_UNAVAILABLE_RECONSTRUCTION_MUST_BE_QUARANTINED",
+    "byte_provenance_receipt": "ION/05_context/current/codex_agent_mounts/role_nemesis__domain_artifact_provenance_and_gate_legitimacy/.ion/receipts/20260726T005800Z_PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-BYTE-PROVENANCE-FORENSIC-20260725_OWN_MOUNT_RECEIPT.candidate.json",
+    "runtime_equivalence_verdict": "RECONSTRUCTED_BUILDER_SEMANTICALLY_EQUIVALENT_NOT_BYTE_ATTESTED",
+    "runtime_equivalence_receipt": "ION/05_context/current/codex_agent_mounts/role_runtime_cartographer__domain_runtime_carrier_and_action_admission/.ion/receipts/20260726T005800Z_PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-RUNTIME-EQUIVALENCE-FORENSIC-20260725_OWN_MOUNT_RECEIPT.candidate.json",
+    "incident_timeline": "ION/05_context/current/codex_agent_mounts/role_nemesis__domain_artifact_provenance_and_gate_legitimacy/.ion/forensic_evidence/PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-BYTE-PROVENANCE-FORENSIC-20260725/PROVENANCE_TIMELINE.candidate.json",
+    "materialization_receipt": "ION/05_context/current/codex_agent_mounts/role_nemesis__domain_artifact_provenance_and_gate_legitimacy/.ion/receipts/20260726T010400Z_PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-PROVENANCE-HOLD-MATERIALIZATION-20260725_OWN_MOUNT_RECEIPT.candidate.json"
+  },
+  "execution_and_template_selection_hold": {
+    "must_not_execute": true,
+    "must_not_import": true,
+    "must_not_select_as_template": true,
+    "must_not_present_as_original_builder": true
+  },
+  "historical_package_status": {
+    "promoted_package_id": "PCKT-ION-AUTONOMOUS-DETACHED-WORKER-R7-GUARDED-PILOT-EXECUTION-REBASE-12-20260725",
+    "manifest_raw_file_sha256": "b30fc68d6390377743dd383c4232b8ac1c9c1d4063143b01bb85ce8b68dc7044",
+    "remains_lawful_historical_witness": true,
+    "review_status": "R7_EXECUTION_PACKAGE_REPAIR_REQUIRED"
+  },
+  "future_generation_law": {
+    "requires_separately_hash_attested_builders": true,
+    "citation_role": "reconstructed_forensic_evidence_only"
+  },
+  "non_claims": [
+    "candidate_only",
+    "no_accepted_state",
+    "no_live_execution",
+    "no_byte_exact_historical_builder_attestation"
+  ]
+}
