@@ -1,0 +1,25 @@
+schema_id: ion.repository_governance.actions_policy.v0_1_candidate
+owner_domain_id: domain.github_repository_platform_governance
+status: proposal_shell
+repository_slug: ION-operations/ION-Production
+
+workflow_relationship:
+  local_workflow_roots:
+    - .github/workflows/
+  policy:
+    - actions_read_model_only_in_candidate_activation
+    - required_checks_must_map_to_observable_ci_not_chat_memory
+    - workflow_dispatch_and_secrets_remain_out_of_scope
+
+required_checks_proposal:
+  status: empty_until_ci_inventory_packet
+  candidates: []
+
+relationship_to_merge:
+  draft_pr_gate: nemesis_non_block_required_before_merge_rank
+  accepted_merge_owner: domain.state_rank_and_receipt_truth
+
+non_claims:
+  - proposal_only
+  - no_workflow_file_mutation_in_activation
+  - no_secrets_access

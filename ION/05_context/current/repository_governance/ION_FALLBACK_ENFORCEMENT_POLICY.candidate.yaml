@@ -1,0 +1,132 @@
+schema_id: ion.repository_governance.fallback_enforcement_policy.v0_1_candidate
+owner_domain_id: domain.github_repository_platform_governance
+status: candidate_ion_side_governance_law
+repository_slug: ION-operations/ION-Production
+materialized_at: "2026-07-26T00:16:00Z"
+materialized_by_packet: PCKT-GITHUB-PLATFORM-BRANCH-PROTECTION-READMODEL-20260725
+trigger_condition: branch_protection_capability_classification_plan_limited_unavailable
+canonical_promotion_target: ION/05_context/current/repository_governance/ION_FALLBACK_ENFORCEMENT_POLICY.candidate.yaml
+
+purpose: >-
+  When GitHub branch protection and rulesets cannot be read or applied due to plan
+  limits, ION-side governance law substitutes platform enforcement with bounded
+  carrier, branch-fabric, provenance, CI, draft-PR, CODEOWNERS-proposal, and
+  push-receipt gates. This policy does not grant merge authority or accepted-state rank.
+
+ion_governance_law:
+  no_direct_main:
+    rule: direct_commits_to_main_forbidden
+    enforcement_owner: domain.context_graph_branch_fabric
+    carrier_posture: feature_carrier_lane_only
+    evidence_required:
+      - repository_orientation_receipt
+      - active_branch_not_main
+    violation_class: BLK-DIRECT-MAIN-COMMIT
+
+  no_force_push:
+    rule: force_push_to_protected_refs_forbidden
+    protected_refs: [main, master, release/*]
+    enforcement_owner: domain.context_graph_branch_fabric
+    operator_exception: explicit_operator_gate_with_forensic_receipt
+    violation_class: BLK-FORCE-PUSH-PROTECTED-REF
+
+  required_ci:
+    rule: merge_rank_requires_observable_ci_pass
+    workflow_observed: ION kernel CI
+    workflow_path: .github/workflows/ion-kernel-ci.yml
+    enforcement_owner: domain.artifact_provenance_and_gate_legitimacy
+    draft_pr_gate: nemesis_non_block_required
+    note: required_checks_on_remote_unknown; ION treats local CI inventory as binding for draft PR
+    violation_class: BLK-CI-NOT-OBSERVED-PASS
+
+  required_review:
+    rule: draft_pr_requires_review_before_merge_rank
+    minimum_approving_reviews: 1
+    code_owner_review_when_codeowners_applied: true
+    enforcement_owner: domain.github_repository_platform_governance
+    rank_acceptance_owner: domain.state_rank_and_receipt_truth
+    review_receipt_template: ION/07_templates/repository_governance/pr_review_receipt
+    violation_class: BLK-REVIEW-NOT-RECEIPTED
+
+  backup_branch:
+    rule: remote_backup_before_material_push
+    naming_policy_owner: domain.context_graph_branch_fabric
+    trigger: operator_authorized_push_with_pre_commit_gates_pass
+    evidence_required:
+      - push_authorization_receipt
+      - backup_branch_ref_recorded
+    violation_class: BLK-BACKUP-BRANCH-MISSING
+
+  release_tag_posture:
+    rule: release_tags_operator_gated
+    enforcement_owner: domain.release.release_readiness
+    platform_relationship: deferred_until_registry_promotion_wave
+    requirements:
+      - accepted_merge_rank_from_state_domain
+      - operator_release_gate
+      - tag_provenance_receipt
+    forbidden_in_candidate: production_cutover_without_operator_gate
+
+gate_stack:
+  - gate_id: branch_fabric_orientation
+    owner: domain.context_graph_branch_fabric
+    scope: repository identity, active branch class, upstream tracking, merge-base
+    surfaces:
+      - ION/05_context/current/repository_governance/REPOSITORY_IDENTITY_REGISTRY.candidate.json
+      - ION/05_context/current/repository_governance/REPOSITORY_STATE_SUMMARY.candidate.md
+
+  - gate_id: provenance_and_pre_commit
+    owner: domain.artifact_provenance_and_gate_legitimacy
+    scope: working-tree tier, commit-boundary manifest, pre-commit gate verdict
+    blockers:
+      - BLK-WORKING-TREE-UNCLASSIFIED
+      - BLK-REBASE12-FORENSIC
+
+  - gate_id: draft_pr_platform
+    owner: domain.github_repository_platform_governance
+    scope: PR template sections, platform governance packet, CODEOWNERS proposal alignment
+    requires:
+      - context_proof
+      - domain_manifest_ref
+      - commit_boundary_receipt_ref
+      - non_claims
+
+  - gate_id: nemesis_review
+    owner: role.nemesis
+    scope: non-block review before merge rank consideration
+    binding: draft_pr_workflow.nemesis_review_required
+
+  - gate_id: push_receipt
+    owner: domain.context_systems
+    scope: push authorization receipt before remote write
+    template: ION/07_templates/repository_governance/push_authorization_receipt
+
+  - gate_id: codeowners_proposal_alignment
+    owner: domain.github_repository_platform_governance
+    scope: path-to-domain mapping for review routing only
+    note: CODEOWNERS proposal maps paths to ION domain ownership; does not grant merge authority
+
+authority_ladder:
+  local_git_save: domain.context_graph_branch_fabric + domain.artifact_provenance_and_gate_legitimacy
+  remote_backup_branch: operator_authorized + pre_commit_gates_pass
+  draft_pr: domain.github_repository_platform_governance + nemesis_review
+  accepted_merge: domain.state_rank_and_receipt_truth
+  production_release: domain.release.release_readiness + operator_gate
+
+relationship_to_github_protection:
+  when_plan_allows: apply BRANCH_PROTECTION_PROPOSAL.candidate.yaml via separate activation packet
+  until_then: this fallback policy is binding ION-side law
+  reclassification_trigger: successful branch protection API read on main
+
+blockers_before_relax:
+  - BLK-REBASE12-FORENSIC
+  - BLK-WORKING-TREE-UNCLASSIFIED
+  - operator_confirmation_github_plan_upgrade_or_public_repo_decision
+
+non_claims:
+  - candidate_only
+  - ion_side_law_not_github_platform_enforcement
+  - no_merge_authority
+  - no_accepted_state
+  - no_git_mutation
+  - no_github_mutation

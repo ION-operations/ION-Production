@@ -1,0 +1,244 @@
+schema_id: ion.git_snapshot_gate_packet.v0_1_candidate
+packet_id: PCKT-ION-LEAD-ORCHESTRATION-FIRST-GIT-SNAPSHOT-PRECOMMIT-GATE-SPEC-20260725
+kind: first_git_snapshot_precommit_gate_packet
+state: candidate
+issued_by: lead_orchestration_carrier
+specified_by_role: role.nemesis
+specified_by_domain: domain.artifact_provenance_and_gate_legitimacy
+template_ref: .ion/candidate_deliverables/GIT_SNAPSHOT_PRECOMMIT_GATE.template.candidate.yaml
+specified_at: "2026-07-26T00:16:00Z"
+carrier: cursor_agent
+model: composer-2.5
+terminal_verdict: FIRST_GIT_SNAPSHOT_PRECOMMIT_GATE_SPEC_READY
+
+repository_binding:
+  shell_root: /home/sev/ION - Production/ION_Developement
+  git_toplevel_must_equal: /home/sev/ION - Production/ION_Developement
+  workspace_root: /home/sev/ION - Production
+  remote_name: origin
+  remote_url: https://github.com/ION-operations/ION-Production.git
+  source_branch: codex/ion-custom-gpt-front-door-carrier-v4
+  base_sha: 60255b26a290276c465b937708f2552e400363f6
+  base_commit_subject: "feat: prove ION context system on Cursor CLI + IDE carrier-control surface"
+  proposed_snapshot_branch: backup/codex-ion-carrier-v4-governance-snapshot-20260725
+  worktree_posture: separate_clean_backup_worktree
+  parent_dirty_entries_outside_manifest: 217151
+
+snapshot_manifest:
+  manifest_id: FIRST-GIT-SNAPSHOT-MANIFEST-TBD
+  status: not_materialized
+  owner_domain_id: domain.context_graph_branch_fabric
+  peer_owner_domain_id: domain.artifact_provenance_and_gate_legitimacy
+  expected_path: ION/05_context/current/repository_governance/FIRST_GIT_SNAPSHOT_MANIFEST.candidate.yaml
+  law: manifest must be populated before any copy/stage/commit; empty manifest fails GATE-MANIFEST-ALLOWLIST
+  first_wave_scope_hint: governance_and_repository_orientation_lane_only
+  explicit_non_inclusions:
+    - parent_dirty_tree_bulk
+    - Cosmos/
+    - ION_VAULT_LOCAL/
+    - ION/05_context/current/ACTIVE_*
+    - ION/05_context/current/**/runtime/**
+    - ION/05_context/current/domain_weaver/live_carrier_binding/**
+    - quarentine/ bulk
+    - Needs_Routed/ bulk unless individually tiered T1 with receipt
+
+forensic_exclusions:
+  reconstructed_builder_must_be_excluded: true
+  provenance_hold_marker:
+    path: ION/05_context/current/codex_agent_mounts/role_autonomous_loop_steward__domain_local_worker_scheduling_and_autonomous_loop/.ion/receipts/_build_rebase12_package.candidate.py.PROVENANCE_HOLD.candidate.json
+    classification: reconstructed_non_authoritative
+    gate: GATE-FORENSIC-HOLD
+  rebase12_builder_classification: reconstructed_non_authoritative
+
+standing_blockers:
+  - id: BLK-REBASE12-FORENSIC
+    status: open
+    gate: GATE-FORENSIC-HOLD
+    effect: first_snapshot_may_proceed_only_if_builder_paths_absent_from_manifest
+  - id: BLK-WORKING-TREE-UNCLASSIFIED
+    status: open
+    owner: domain.context_graph_branch_fabric
+    gate: GATE-MANIFEST-ALLOWLIST
+    effect: manifest_not_populated_execution_forbidden
+  - id: BLK-OPERATOR-PUSH-AUTH
+    status: standing
+    gate: GATE-PUSH-AUTHORIZATION
+    effect: local_commit_may_pass_push_remains_forbidden_without_receipt
+
+gate_instances:
+
+  manifest:
+    gate_id: GATE-MANIFEST-ALLOWLIST
+    sequence: 10
+    hard_fail_conditions:
+      - manifest.path_entries empty
+      - worktree_files != manifest.path_entries (symmetric difference non-empty)
+      - manifest uses recursive glob discovery
+      - dirty parent tree staged directly
+    required_evidence:
+      manifest_paths_sha256: sha256(sorted newline-joined repo_relative_paths)
+      worktree_paths_sha256: sha256(sorted newline-joined worktree relative paths)
+      path_count: integer
+      total_bytes: sum of path_entry.size_bytes
+
+  secret:
+    gate_id: GATE-SECRET-SCAN
+    sequence: 20
+    filename_block_patterns:
+      - .env
+      - .env.*
+      - ION_VAULT_LOCAL/
+      - "*.pem"
+      - "*.key"
+      - "*secret*"
+      - "*credential*"
+      - "*token*"
+      - "*service_role*"
+      - "*service-role*"
+    path_prefix_block:
+      - ION/05_context/current/domain_weaver/full_steam_push/**/secret/
+    content_scan:
+      tool_preference: [gitleaks protect --redact --no-banner, detect-secrets scan with custom config]
+      fallback: ripgrep fixed patterns with --line-number only
+      output_contract:
+        allowed_fields: [path, rule_id, line, fingerprint, severity]
+        forbidden_fields: [match, secret, raw_line]
+    fail_on_any_hit: true
+
+  large_file:
+    gate_id: GATE-LARGE-FILE
+    sequence: 30
+    warn_bytes: 1048576
+    block_bytes: 5242880
+    absolute_block_bytes: 104857600
+    block_archive_extensions: [.zip, .tar, .tar.gz, .tgz, .7z]
+    first_snapshot_law: no_archives_no_files_over_block_bytes_without_individual_carry_receipt
+    lfs:
+      track_file: .gitattributes
+      first_snapshot_posture: classify_only_no_lfs_mutation_in_spec_turn
+      over_block_requires: lfs_carry_receipt_or_exclusion_from_manifest
+
+  runtime_state:
+    gate_id: GATE-RUNTIME-STATE
+    sequence: 40
+    forbidden_globs:
+      - "**/__pycache__/**"
+      - "**/*.pyc"
+      - "**/node_modules/**"
+      - "ION/05_context/current/ACTIVE_*.json"
+      - "ION/05_context/current/ACTIVE_*.md"
+      - "ION/05_context/current/**/runtime/**"
+      - "ION/05_context/current/**/live_carrier_binding/**"
+      - "ION/05_context/runtime_state/**"
+      - ".ion_private/**"
+      - "**/*.log"
+      - "**/*.pid"
+    active_runtime_json_md_zero_tolerance: true
+
+  provenance:
+    gate_id: GATE-PROVENANCE-ENTRY
+    sequence: 15
+    per_path_required:
+      - repo_relative_path
+      - tier
+      - owner_domain_id
+      - owner_role_id
+      - reason
+      - content_sha256
+      - size_bytes
+    manifest_required:
+      - manifest_id
+      - packet_id
+      - manifest_sha256
+      - total_bytes
+      - path_count
+      - provenance_owner: role.nemesis + domain.context_graph_branch_fabric co-sign on materialization
+
+  tree_hash:
+    gate_id: GATE-TREE-HASH
+    sequence: 80
+    timing: after_commit_before_push
+    checks:
+      - record commit_sha256
+      - record tree_sha256 from git rev-parse HEAD^{tree}
+      - staged_paths_sha256 equals tree_paths_sha256
+      - manifest_content_sha256_set matches tree blob hashes for included paths
+    mismatch_verdict: BLOCKED_TREE_HASH_MISMATCH
+
+  commit:
+    gate_id: GATE-COMMIT-BINDING
+    sequence: 70
+    bindings:
+      base_sha: 60255b26a290276c465b937708f2552e400363f6
+      target_branch: backup/codex-ion-carrier-v4-governance-snapshot-20260725
+      remote: origin
+      remote_url: https://github.com/ION-operations/ION-Production.git
+      commit_message_format: >-
+        candidate(snapshot): PCKT-ION-LEAD-ORCHESTRATION-FIRST-GIT-SNAPSHOT-20260725
+        manifest={manifest_sha256_prefix} paths={path_count} bytes={total_bytes}
+      author_posture:
+        default: ion-snapshot-bot-candidate <ion-snapshot-bot-candidate@local.invalid>
+        human_author_requires: operator_authorization_receipt
+    preconditions:
+      - GATE-STAGING-EQUALITY pass
+      - GATE-DELETION-ZERO pass
+      - GATE-SECRET-SCAN pass
+      - GATE-LARGE-FILE pass
+      - GATE-RUNTIME-STATE pass
+      - GATE-FORENSIC-HOLD pass
+
+  push:
+    gate_id: GATE-PUSH-AUTHORIZATION
+    sequence: 90
+    separated_from_commit: true
+    default_posture: forbidden
+    pass_requires:
+      - GATE-TREE-HASH pass
+      - operator_push_authorization_receipt
+      - refspec: HEAD:refs/heads/backup/codex-ion-carrier-v4-governance-snapshot-20260725
+    forbidden_refs:
+      - refs/heads/main
+      - refs/heads/master
+      - force_push_any_ref
+    post_push_check:
+      - remote_head_sha256 equals local_commit_sha256
+
+  draft_pr:
+    gate_id: GATE-DRAFT-PR
+    sequence: 100
+    separated_from_push: true
+    owner: domain.github_repository_platform_governance
+    pass_requires:
+      - GATE-PUSH-AUTHORIZATION pass
+      - draft PR against main
+      - PR template from ION_Developement/.github/PULL_REQUEST_TEMPLATE.md
+      - body includes manifest_id manifest_sha256 commit_sha256 tree_sha256 packet_id
+      - nemesis gate spec return linked
+      - no accepted_merge claim
+    template_refs:
+      - ION/07_templates/repository_governance/PR_REVIEW_RECEIPT.template.md
+      - ION/05_context/current/domain_weaver/candidate_founding_domains/domain.github_repository_platform_governance/continuity_templates/PR_GOVERNANCE.candidate.yaml
+
+execution_status:
+  specification_complete: true
+  manifest_materialized: false
+  worktree_created: false
+  git_mutations_performed: false
+  push_performed: false
+  secret_content_exposed: false
+  execution_verdict: SPEC_READY_EXECUTION_BLOCKED_PENDING_MANIFEST
+
+recommended_next_packets:
+  - owner: domain.context_graph_branch_fabric
+    packet: tier classification + FIRST_GIT_SNAPSHOT_MANIFEST materialization
+  - owner: domain.context_systems
+    packet: PCKT-CONTEXT-SYSTEMS-GIT-SNAPSHOT-RECEIPT-TEMPLATES-20260725
+  - owner: operator
+    packet: push authorization receipt after local commit gates pass
+
+non_claims:
+  - candidate_only
+  - specification_only_no_git_mutation
+  - no_secret_content_output
+  - no_accepted_state
+  - no_registry_promotion

@@ -1,0 +1,80 @@
+{
+  "schema_id": "ion.nemesis.bounded_recovery_sources.v0_1_candidate",
+  "packet_id": "PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-BYTE-PROVENANCE-FORENSIC-20260725",
+  "generated_at": "2026-07-26T00:58:00Z",
+  "sources": [
+    {
+      "lane": "mount_receipts_outbox",
+      "paths_searched": [
+        "ION/05_context/current/codex_agent_mounts/role_autonomous_loop_steward__domain_local_worker_scheduling_and_autonomous_loop/.ion/receipts/20260725T231148Z_PCKT-ION-LEAD-ORCHESTRATION-R7-GUARDED-PILOT-REBASE-12-CONSTRUCTION-20260725_OWN_MOUNT_RECEIPT.candidate.json",
+        "ION/05_context/current/codex_agent_mounts/role_autonomous_loop_steward__domain_local_worker_scheduling_and_autonomous_loop/.ion/receipts/20260726T000700Z_PCKT-ION-LEAD-ORCHESTRATION-R7-GUARDED-PILOT-REBASE-12-CONSTRUCTION-20260725_OWN_MOUNT_RECEIPT.candidate.json",
+        "ION/05_context/current/codex_agent_mounts/role_autonomous_loop_steward__domain_local_worker_scheduling_and_autonomous_loop/.ion/outbox/20260726T000700Z_PCKT-ION-LEAD-ORCHESTRATION-R7-GUARDED-PILOT-REBASE-12-CONSTRUCTION-20260725_LEAD_STEWARD_RETURN.candidate.md",
+        "ION/05_context/current/codex_agent_mounts/role_autonomous_loop_steward__domain_local_worker_scheduling_and_autonomous_loop/.ion/outbox/20260726T003300Z_PCKT-ION-LEAD-ORCHESTRATION-R7-GUARDED-PILOT-REBASE-14-STANDALONE-BUILDER-PREPARATION-20260725_LEAD_STEWARD_RETURN.candidate.md"
+      ],
+      "original_builder_sha256_found": false,
+      "byte_duplicate_found": false
+    },
+    {
+      "lane": "package_construction_evidence",
+      "paths_searched": [
+        "ION/05_context/current/autonomous_goals/detached_worker_candidate/execution_packages/PCKT-ION-AUTONOMOUS-DETACHED-WORKER-R7-GUARDED-PILOT-EXECUTION-REBASE-12-20260725/",
+        "ION/05_context/current/autonomous_goals/detached_worker_candidate/execution_packages/post_manifest/PCKT-ION-AUTONOMOUS-DETACHED-WORKER-R7-GUARDED-PILOT-EXECUTION-REBASE-12-20260725/"
+      ],
+      "package_exists": true,
+      "package_file_count": 21,
+      "manifest_raw_file_sha256": "b30fc68d6390377743dd383c4232b8ac1c9c1d4063143b01bb85ce8b68dc7044",
+      "builder_sha256_in_manifest": false,
+      "note": "Package evidence binds driver/pilot artifact and package artifacts, not mount-local builder script bytes."
+    },
+    {
+      "lane": "staging_snapshots",
+      "paths_searched": [
+        "ION/05_context/current/codex_agent_mounts/role_autonomous_loop_steward__domain_local_worker_scheduling_and_autonomous_loop/.ion/receipts/rebase12_package_staging/"
+      ],
+      "present": false,
+      "byte_duplicate_found": false
+    },
+    {
+      "lane": "filesystem_duplicate_search",
+      "pattern": "**/_build_rebase12_package*",
+      "root": "ION/05_context/current",
+      "matches": 1,
+      "byte_duplicate_found": false
+    },
+    {
+      "lane": "derived_builder_templates",
+      "paths_searched": [
+        "ION/05_context/current/codex_agent_mounts/role_autonomous_loop_steward__domain_local_worker_scheduling_and_autonomous_loop/.ion/receipts/_build_rebase13_package.candidate.py",
+        "ION/05_context/current/codex_agent_mounts/role_autonomous_loop_steward__domain_local_worker_scheduling_and_autonomous_loop/.ion/receipts/_build_rebase13_review_bound_package.candidate.py",
+        "ION/05_context/current/codex_agent_mounts/role_autonomous_loop_steward__domain_local_worker_scheduling_and_autonomous_loop/.ion/receipts/_gen_rebase14_standalone_once.py",
+        "ION/05_context/current/codex_agent_mounts/role_autonomous_loop_steward__domain_local_worker_scheduling_and_autonomous_loop/.ion/receipts/_build_rebase14_standalone_package.candidate.py"
+      ],
+      "note": "R13/R14 builders read or derive from R12 path at runtime; R14 standalone is distinct generation (~2334 lines) and is not an R12 byte duplicate.",
+      "byte_duplicate_found": false
+    },
+    {
+      "lane": "codex_session_artifacts",
+      "paths_searched": [
+        "/home/sev/.codex/sessions",
+        "/home/sev/.codex/history.jsonl"
+      ],
+      "matches_for_subject": 0,
+      "byte_duplicate_found": false
+    },
+    {
+      "lane": "cursor_editor_local_history",
+      "paths_searched": [
+        "/home/sev/.cursor/projects/home-sev-ION-Production-ION-Developement/agent-transcripts/4e8bdbca-3297-41e1-ae43-0dc0d71ac24b/4e8bdbca-3297-41e1-ae43-0dc0d71ac24b.jsonl"
+      ],
+      "overwrite_witness": true,
+      "full_pre_overwrite_bytes_recovered": false,
+      "note": "Transcript documents accidental R12→R14 overwrite and attempted manual restore; does not provide admissible isolated byte-exact copy in forensic store."
+    },
+    {
+      "lane": "git_history",
+      "subject_git_tracked": false,
+      "git_history_present": false,
+      "byte_duplicate_found": false
+    }
+  ]
+}

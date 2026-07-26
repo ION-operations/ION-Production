@@ -1,0 +1,58 @@
+schema_id: ion.repository_governance.canonical_promotion_bundle.v0_1_candidate
+owner_domain_id: domain.github_repository_platform_governance
+bundle_id: CANONICAL-PROMOTION-BUNDLE-PCKT-GITHUB-PLATFORM-BRANCH-PROTECTION-READMODEL-20260725
+materialized_at: "2026-07-26T00:16:00Z"
+materialized_by_packet: PCKT-GITHUB-PLATFORM-BRANCH-PROTECTION-READMODEL-20260725
+observer_role: role.github_repository_platform_governance_steward
+mount_id: role_github_repository_platform_governance_steward__domain_github_repository_platform_governance
+carrier: cursor_agent
+model: composer-2.5
+promotion_status: prepared_not_applied
+promotion_gate: operator_or_branch_fabric_steward_integration
+
+purpose: >-
+  Maps mount-local candidate deliverables to canonical repository_governance paths.
+  Promotion copies candidate content into ION/05_context/current/repository_governance/
+  without Git or GitHub mutation.
+
+canonical_root: ION/05_context/current/repository_governance/
+
+artifacts:
+  - artifact_id: platform_read_model
+    mount_source: .ion/candidate_deliverables/GITHUB_PLATFORM_READMODEL.candidate.yaml
+    canonical_target: ION/05_context/current/repository_governance/GITHUB_PLATFORM_READMODEL.candidate.yaml
+    promotion_action: overwrite_with_mount_candidate
+    sha256_mount: pending_at_promotion_time
+
+  - artifact_id: fallback_enforcement_policy
+    mount_source: .ion/candidate_deliverables/ION_FALLBACK_ENFORCEMENT_POLICY.candidate.yaml
+    canonical_target: ION/05_context/current/repository_governance/ION_FALLBACK_ENFORCEMENT_POLICY.candidate.yaml
+    promotion_action: copy_new
+    sha256_mount: pending_at_promotion_time
+
+  - artifact_id: branch_protection_proposal
+    mount_source: .ion/candidate_deliverables/BRANCH_PROTECTION_PROPOSAL.candidate.yaml
+    canonical_target: ION/05_context/current/repository_governance/BRANCH_PROTECTION_PROPOSAL.candidate.yaml
+    promotion_action: copy_new
+    sha256_mount: pending_at_promotion_time
+
+  - artifact_id: codeowners_proposal
+    mount_source: .ion/candidate_deliverables/CODEOWNERS_PROPOSAL.candidate.md
+    canonical_target: ION/05_context/current/repository_governance/CODEOWNERS_PROPOSAL.candidate.md
+    promotion_action: overwrite_with_mount_candidate
+    sha256_mount: pending_at_promotion_time
+
+receipts:
+  mount_receipt: .ion/receipts/20260726T001600Z_PCKT-GITHUB-PLATFORM-BRANCH-PROTECTION-READMODEL-20260725_STEWARD_RETURN.candidate.json
+  mount_outbox: .ion/outbox/20260726T001600Z_PCKT-GITHUB-PLATFORM-BRANCH-PROTECTION-READMODEL-20260725_STEWARD_RETURN.candidate.md
+
+validation_after_promotion:
+  - all canonical targets exist
+  - materialized_by_packet matches PCKT-GITHUB-PLATFORM-BRANCH-PROTECTION-READMODEL-20260725
+  - protection_capability_classification is plan_limited_unavailable
+  - no git or github mutation performed
+
+non_claims:
+  - candidate_only
+  - promotion_prepared_not_accepted_state
+  - no_registry_promotion

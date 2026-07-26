@@ -1,0 +1,51 @@
+packet_id: PCKT-GITHUB-PLATFORM-READONLY-ORIENTATION-20260725
+kind: domain_activation_packet
+state: candidate
+assigned_domain: domain.github_repository_platform_governance
+assigned_role: role.github_repository_platform_governance_steward
+parent_activation: PCKT-ION-LEAD-ORCHESTRATION-GITHUB-PLATFORM-DOMAIN-CANDIDATE-ACTIVATION-20260725
+parent_assembly: PCKT-GITHUB-REPOSITORY-GOVERNANCE-DOMAIN-ASSEMBLY-20260725
+carrier: cursor_agent
+model: composer-2.5
+phase: 0
+
+repository_binding:
+  slug: ION-operations/ION-Production
+  primary_remote_url: https://github.com/ION-operations/ION-Production.git
+  shell_root: /home/sev/ION - Production/ION_Developement
+  active_branch: codex/ion-custom-gpt-front-door-carrier-v4
+  branch_class: feature_carrier_lane
+
+objective: >-
+  Read-only GitHub platform orientation for ION-operations/ION-Production on the
+  current carrier branch. Populate platform read-model candidate shells and
+  continuity templates without GitHub API mutation, git mutation, or secrets access.
+
+required_reads:
+  - domain.github_repository_platform_governance.domain.candidate.yaml
+  - DOMAIN_RELATIONSHIPS.candidate.yaml
+  - continuity_templates/REPOSITORY_ORIENTATION.candidate.md
+  - continuity_templates/PLATFORM_READ_MODEL.candidate.yaml
+  - ../domain.domain_mitosis_and_agent_society_formation/evolution_packets/PCKT-GITHUB-REPOSITORY-GOVERNANCE-DOMAIN-ASSEMBLY-20260725_DECISION.candidate.yaml
+  - ../domain.domain_mitosis_and_agent_society_formation/evolution_packets/REPOSITORY_IDENTITY_AND_REMOTE_REGISTRY.candidate.yaml
+
+deliverables:
+  - ION/05_context/current/repository_governance/GITHUB_PLATFORM_READMODEL.candidate.yaml
+  - ION/05_context/current/repository_governance/CODEOWNERS_PROPOSAL.candidate.md
+  - continuity_templates populated references only
+
+constraints:
+  - read_only
+  - no_github_api_mutation
+  - no_git_mutation
+  - no_remote_setting_change
+  - no_branch_protection_change
+  - no_secrets_access
+  - no_accepted_state_claim
+
+local_commit_push_boundary: >-
+  Local git add, commit, and push are outside this domain. Require
+  domain.context_graph_branch_fabric + domain.artifact_provenance_and_gate_legitimacy
+  manifests, operator push authorization, and separate provenance gates.
+
+return_verdict: GITHUB_PLATFORM_READONLY_ORIENTATION_PROPOSED

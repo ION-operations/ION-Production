@@ -1,0 +1,157 @@
+schema_id: ion.repository_governance.platform_read_model.v0_1_candidate
+owner_domain_id: domain.github_repository_platform_governance
+status: candidate_read_only_remote_snapshot
+repository_slug: ION-operations/ION-Production
+primary_remote_url: https://github.com/ION-operations/ION-Production.git
+shell_root: /home/sev/ION - Production/ION_Developement
+workspace_root: /home/sev/ION - Production
+git_toplevel: /home/sev/ION - Production/ION_Developement
+active_branch: codex/ion-custom-gpt-front-door-carrier-v4
+branch_class: feature_carrier_lane
+materialized_at: "2026-07-26T00:16:00Z"
+materialized_by_packet: PCKT-GITHUB-PLATFORM-BRANCH-PROTECTION-READMODEL-20260725
+observer_role: role.github_repository_platform_governance_steward
+carrier: cursor_agent
+model: composer-2.5
+canonical_promotion_target: ION/05_context/current/repository_governance/GITHUB_PLATFORM_READMODEL.candidate.yaml
+
+read_model_status: populated_from_authenticated_remote_facts
+github_api_snapshot: observed_via_packet_remote_facts_20260725
+
+continuity_template_refs:
+  repository_orientation: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.github_repository_platform_governance/continuity_templates/REPOSITORY_ORIENTATION.candidate.md
+  platform_read_model_template: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.github_repository_platform_governance/continuity_templates/PLATFORM_READ_MODEL.candidate.yaml
+  branch_protection_proposal: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.github_repository_platform_governance/continuity_templates/BRANCH_PROTECTION_PROPOSAL.candidate.yaml
+  actions_policy: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.github_repository_platform_governance/continuity_templates/ACTIONS_POLICY.candidate.yaml
+  codeowners_policy: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.github_repository_platform_governance/continuity_templates/CODEOWNERS_POLICY.candidate.md
+  pr_governance: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.github_repository_platform_governance/continuity_templates/PR_GOVERNANCE.candidate.yaml
+  fallback_enforcement_policy: .ion/candidate_deliverables/ION_FALLBACK_ENFORCEMENT_POLICY.candidate.yaml
+
+remote_snapshot:
+  observed_at: "2026-07-26T00:16:00Z"
+  evidence_source: PCKT-GITHUB-PLATFORM-BRANCH-PROTECTION-READMODEL-20260725.remote_facts
+  visibility: private
+  default_branch: main
+  authenticated_permissions:
+    admin: true
+    maintain: true
+    pull: true
+    push: true
+  branches_observed:
+    - main
+    - codex/ion-custom-gpt-front-door-carrier-v4
+  active_feature_branch: codex/ion-custom-gpt-front-door-carrier-v4
+  active_feature_head_aligned_with_remote: true
+  active_feature_commits_ahead_of_origin_main: 115
+  active_feature_commits_behind_origin_main: 0
+  open_pull_requests: 0
+  open_issues: 0
+  codeowners_observed: false
+
+local_git_snapshot:
+  active_branch: codex/ion-custom-gpt-front-door-carrier-v4
+  head_sha: 60255b26a290276c465b937708f2552e400363f6
+  latest_commit_subject: "feat: prove ION context system on Cursor CLI + IDE carrier-control surface"
+  primary_remote:
+    name: origin
+    url: https://github.com/ION-operations/ION-Production.git
+    url_matches_registry: true
+  upstream_tracking:
+    active_branch_tracks: origin/codex/ion-custom-gpt-front-door-carrier-v4
+    active_branch_aligned_with_origin: true
+    vscode_merge_base: origin/main
+  protected_upstream_refs:
+    main:
+      local_sha: d739880242c34168337693826f0e83f99facf19b
+      origin_sha: 14b617e1c210c688e2bc9c380503ca756eed941e
+      local_origin_aligned: false
+      divergence_class: diverged
+
+sections:
+  repository_settings:
+    populated: true
+    visibility: private
+    visibility_evidence: remote_snapshot.visibility
+    default_branch: main
+    default_branch_evidence: remote_snapshot.default_branch
+    allow_merge_commit: unknown_not_in_packet
+    allow_squash_merge: unknown_not_in_packet
+    allow_rebase_merge: unknown_not_in_packet
+    delete_branch_on_merge: unknown_not_in_packet
+    workspace_git_topology_note: >-
+      git toplevel is ION_Developement; workspace root hosts .github/workflows/ion-kernel-ci.yml
+      outside the ION_Developement git root.
+
+  branch_protection:
+    populated: true
+    protected_branches: [main, master]
+    remote_rules_observed: false
+    protection_capability_classification: plan_limited_unavailable
+    protection_capability_note: >-
+      Branch protection API returned HTTP 403 for private repository without GitHub Pro.
+      This is plan-limited unavailability — NOT confirmed unprotected and NOT confirmed protected.
+    main:
+      origin_ref_exists: true
+      origin_sha: 14b617e1c210c688e2bc9c380503ca756eed941e
+      protection_api_result: "HTTP 403: Upgrade to GitHub Pro or make this repository public to enable this feature"
+      protection_rules: unavailable_plan_limited
+      confirmed_protected: unknown
+      confirmed_unprotected: unknown
+    active_feature_branch:
+      name: codex/ion-custom-gpt-front-door-carrier-v4
+      protection_api_result: "HTTP 403: Upgrade to GitHub Pro or make this repository public to enable this feature"
+      protection_expected: false
+      protection_rules: unavailable_plan_limited
+    rulesets:
+      read_status: unavailable
+      note: rulesets_read unavailable in remote snapshot
+    proposal_ref: .ion/candidate_deliverables/BRANCH_PROTECTION_PROPOSAL.candidate.yaml
+    fallback_policy_ref: .ion/candidate_deliverables/ION_FALLBACK_ENFORCEMENT_POLICY.candidate.yaml
+
+  actions:
+    populated: true
+    workflows_observed_remotely:
+      - name: ION kernel CI
+        path: .github/workflows/ion-kernel-ci.yml
+        state: active
+        relative_to_git_toplevel: outside_ion_developement_git_root
+    workflow_files_observed_locally:
+      - path: /home/sev/ION - Production/.github/workflows/ion-kernel-ci.yml
+        name: ION kernel CI
+        relative_to_git_toplevel: outside_ion_developement_git_root
+    git_toplevel_workflow_files_observed: []
+    required_checks_on_remote: unknown_plan_limited
+    policy_template_ref: continuity_templates/ACTIONS_POLICY.candidate.yaml
+
+  codeowners:
+    populated: true
+    tracked_file_present: false
+    remote_observed: false
+    proposal_path: .ion/candidate_deliverables/CODEOWNERS_PROPOSAL.candidate.md
+    policy_template_ref: continuity_templates/CODEOWNERS_POLICY.candidate.md
+
+  issues_and_prs:
+    populated: true
+    open_pull_requests: 0
+    open_issues: 0
+    issue_templates:
+      - ION_Developement/.github/ISSUE_TEMPLATE/ion_work_packet.yml
+      - ION_Developement/.github/ISSUE_TEMPLATE/public_bug_report.yml
+      - ION_Developement/.github/ISSUE_TEMPLATE/config.yml
+    pull_request_template: ION_Developement/.github/PULL_REQUEST_TEMPLATE.md
+    pr_governance_template_ref: continuity_templates/PR_GOVERNANCE.candidate.yaml
+
+discovery_gaps:
+  - merge_options_not_in_remote_snapshot
+  - rulesets_read_unavailable
+  - branch_protection_truth_unavailable_due_plan_limit
+  - required_status_checks_on_remote_unknown
+
+return_verdict: GITHUB_PLATFORM_PROTECTION_READMODEL_AND_FALLBACK_POLICY_READY
+
+non_claims:
+  - candidate_only
+  - protection_state_unknown_not_unprotected
+  - read_model_from_packet_remote_facts_not_live_re_query_this_session
+  - no_github_api_mutation
+  - no_git_mutation

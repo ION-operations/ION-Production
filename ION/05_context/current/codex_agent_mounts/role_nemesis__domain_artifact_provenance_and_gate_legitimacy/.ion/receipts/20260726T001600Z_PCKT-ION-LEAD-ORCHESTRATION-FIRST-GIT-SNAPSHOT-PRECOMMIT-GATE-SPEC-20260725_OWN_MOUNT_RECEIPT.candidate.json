@@ -1,0 +1,44 @@
+{
+  "schema_id": "ion.nemesis.task_return_receipt.v0_1_candidate",
+  "receipt_id": "receipt-first-git-snapshot-precommit-gate-spec-20260726t001600z",
+  "packet_id": "PCKT-ION-LEAD-ORCHESTRATION-FIRST-GIT-SNAPSHOT-PRECOMMIT-GATE-SPEC-20260725",
+  "role_id": "role.nemesis",
+  "domain_id": "domain.artifact_provenance_and_gate_legitimacy",
+  "mount_id": "role_nemesis__domain_artifact_provenance_and_gate_legitimacy",
+  "context_id": "wcaps_1275e0bc35a68bf0741b",
+  "observed_at": "2026-07-26T00:16:00Z",
+  "carrier": "cursor_agent",
+  "model": "composer-2.5",
+  "terminal_verdict": "FIRST_GIT_SNAPSHOT_PRECOMMIT_GATE_SPEC_READY",
+  "deliverables": [
+    ".ion/candidate_deliverables/GIT_SNAPSHOT_PRECOMMIT_GATE.template.candidate.yaml",
+    ".ion/candidate_deliverables/PCKT-ION-LEAD-ORCHESTRATION-FIRST-GIT-SNAPSHOT-PRECOMMIT-GATE-SPEC-20260725_GATE_PACKET.candidate.yaml",
+    ".ion/outbox/20260726T001600Z_PCKT-ION-LEAD-ORCHESTRATION-FIRST-GIT-SNAPSHOT-PRECOMMIT-GATE-SPEC-20260725_LEAD_STEWARD_RETURN.candidate.md"
+  ],
+  "gate_count": 14,
+  "repository_binding": {
+    "shell_root": "/home/sev/ION - Production/ION_Developement",
+    "base_sha": "60255b26a290276c465b937708f2552e400363f6",
+    "proposed_branch": "backup/codex-ion-carrier-v4-governance-snapshot-20260725",
+    "remote_url": "https://github.com/ION-operations/ION-Production.git"
+  },
+  "execution_attestation": {
+    "git_index_mutation": false,
+    "commit_performed": false,
+    "push_performed": false,
+    "secret_content_read": false,
+    "secret_content_output": false,
+    "worktree_created": false
+  },
+  "execution_blockers": [
+    "BLK-WORKING-TREE-UNCLASSIFIED",
+    "BLK-OPERATOR-PUSH-AUTH",
+    "BLK-REBASE12-FORENSIC"
+  ],
+  "non_claims": [
+    "candidate_only",
+    "specification_only",
+    "no_accepted_state",
+    "no_registry_promotion"
+  ]
+}

@@ -1,0 +1,61 @@
+schema_id: ion.repository_governance.branch_protection_proposal.v0_1_candidate
+owner_domain_id: domain.github_repository_platform_governance
+status: candidate_proposal_deferred_until_plan_allows
+repository_slug: ION-operations/ION-Production
+materialized_at: "2026-07-26T00:16:00Z"
+materialized_by_packet: PCKT-GITHUB-PLATFORM-BRANCH-PROTECTION-READMODEL-20260725
+canonical_promotion_target: ION/05_context/current/repository_governance/BRANCH_PROTECTION_PROPOSAL.candidate.yaml
+
+precondition:
+  protection_capability_classification: plan_limited_unavailable
+  current_remote_protection_state: unknown
+  apply_when: github_pro_plan_or_public_repo_enables_branch_protection_api
+
+protected_branch_targets:
+  - branch_pattern: main
+    proposal_status: ready_for_operator_gated_apply
+    current_protection_truth: unknown_plan_limited
+  - branch_pattern: master
+    proposal_status: ready_for_operator_gated_apply
+    current_protection_truth: unknown_plan_limited
+  - branch_pattern: "codex/*"
+    proposal_status: feature_lane_no_protection_apply
+    rationale: feature carrier lanes remain unprotected; ION fallback policy governs
+
+proposed_rules:
+  require_pull_request_before_merge: true
+  required_approving_review_count: 1
+  dismiss_stale_reviews: true
+  require_code_owner_reviews: true
+  require_status_checks: true
+  required_status_checks:
+    - ION kernel CI
+  enforce_admins: false
+  allow_force_pushes: false
+  allow_deletions: false
+  require_linear_history: false
+  require_conversation_resolution: true
+  lock_branch: false
+
+rulesets_proposal:
+  status: deferred_until_rulesets_read_available
+  note: rulesets_read unavailable in current remote snapshot
+
+relationship_to_ion_fallback:
+  until_applied: ION_FALLBACK_ENFORCEMENT_POLICY.candidate.yaml is binding
+  after_applied: re-read remote protection; reconcile required checks with observed CI
+
+blockers_before_apply:
+  - BLK-REBASE12-FORENSIC
+  - BLK-WORKING-TREE-UNCLASSIFIED
+  - plan_limited_unavailable
+  - operator_gate_plus_separate_activation_packet
+
+apply_authority: operator_gate_plus_separate_activation_packet
+apply_method: github_api_or_ui_no_automation_in_candidate
+
+non_claims:
+  - proposal_only
+  - no_branch_protection_change_in_this_turn
+  - no_github_api_mutation
+  - protection_state_not_confirmed_unprotected

@@ -1,0 +1,63 @@
+{
+  "schema_id": "ion.nemesis.own_mount_receipt.v0_1_candidate",
+  "receipt_id": "rcpt-nemesis-20260726t012100z-rebase12-forensic-closure-repository-projection",
+  "packet_id": "PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-FORENSIC-CLOSURE-REPOSITORY-PROJECTION-20260725",
+  "mount_id": "role_nemesis__domain_artifact_provenance_and_gate_legitimacy",
+  "agent_role_id": "role.nemesis",
+  "domain_id": "domain.artifact_provenance_and_gate_legitimacy",
+  "observed_at": "2026-07-26T01:21:00Z",
+  "carrier": "cursor_composer_2.5",
+  "verdict": "REBASE12_FORENSIC_BLOCKER_CLOSED_BY_QUARANTINE_FOR_GIT_SNAPSHOT",
+  "deliverable": {
+    "path": "ION/05_context/current/codex_agent_mounts/role_nemesis__domain_artifact_provenance_and_gate_legitimacy/.ion/candidate_deliverables/REBASE12_FORENSIC_CLOSURE.candidate.json",
+    "kind": "repository_safe_forensic_closure_projection"
+  },
+  "blocker_closure": {
+    "blocker_id": "BLK-REBASE12-FORENSIC",
+    "closure_mode": "closed_by_quarantine",
+    "closure_scope": "git_snapshot_manifest_only",
+    "closure_condition": "reconstructed_builder_and_adjacent_runtime_marker_absent_from_snapshot_manifest"
+  },
+  "subject": {
+    "path": "ION/05_context/current/codex_agent_mounts/role_autonomous_loop_steward__domain_local_worker_scheduling_and_autonomous_loop/.ion/receipts/_build_rebase12_package.candidate.py",
+    "current_sha256_bound": "4327b6a62effee717f7305409611b0e65154a7ff79155783313e02e0376e0d0a",
+    "classification": "reconstructed_non_authoritative",
+    "original_builder_sha256": null,
+    "original_builder_restored": false
+  },
+  "adjacent_marker": {
+    "path": "ION/05_context/current/codex_agent_mounts/role_autonomous_loop_steward__domain_local_worker_scheduling_and_autonomous_loop/.ion/receipts/_build_rebase12_package.candidate.py.PROVENANCE_HOLD.candidate.json",
+    "sha256_bound": "f2950017201469c95b39adeed2a4bffaf79dabf1123f208d8322dc6ac1c2da20"
+  },
+  "forensic_bindings": {
+    "byte_provenance_receipt": "ION/05_context/current/codex_agent_mounts/role_nemesis__domain_artifact_provenance_and_gate_legitimacy/.ion/receipts/20260726T005800Z_PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-BYTE-PROVENANCE-FORENSIC-20260725_OWN_MOUNT_RECEIPT.candidate.json",
+    "runtime_equivalence_receipt": "ION/05_context/current/codex_agent_mounts/role_runtime_cartographer__domain_runtime_carrier_and_action_admission/.ion/receipts/20260726T005800Z_PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-RUNTIME-EQUIVALENCE-FORENSIC-20260725_OWN_MOUNT_RECEIPT.candidate.json",
+    "provenance_hold_receipt": "ION/05_context/current/codex_agent_mounts/role_nemesis__domain_artifact_provenance_and_gate_legitimacy/.ion/receipts/20260726T010400Z_PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-BUILDER-PROVENANCE-HOLD-MATERIALIZATION-20260725_OWN_MOUNT_RECEIPT.candidate.json"
+  },
+  "promoted_package_witness": {
+    "package_id": "PCKT-ION-AUTONOMOUS-DETACHED-WORKER-R7-GUARDED-PILOT-EXECUTION-REBASE-12-20260725",
+    "manifest_raw_file_sha256": "b30fc68d6390377743dd383c4232b8ac1c9c1d4063143b01bb85ce8b68dc7044",
+    "remains_lawful_historical_review_blocked_witness": true,
+    "review_status": "R7_EXECUTION_PACKAGE_REPAIR_REQUIRED"
+  },
+  "constraints_observed": {
+    "projection_only": true,
+    "no_subject_or_marker_mutation": true,
+    "no_git_mutation": true,
+    "no_package_evidence_mutation": true,
+    "no_builder_execution": true,
+    "no_secret_content": true
+  },
+  "artifacts_written": [
+    "ION/05_context/current/codex_agent_mounts/role_nemesis__domain_artifact_provenance_and_gate_legitimacy/.ion/candidate_deliverables/REBASE12_FORENSIC_CLOSURE.candidate.json",
+    "ION/05_context/current/codex_agent_mounts/role_nemesis__domain_artifact_provenance_and_gate_legitimacy/.ion/receipts/20260726T012100Z_PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-FORENSIC-CLOSURE-REPOSITORY-PROJECTION-20260725_OWN_MOUNT_RECEIPT.candidate.json",
+    "ION/05_context/current/codex_agent_mounts/role_nemesis__domain_artifact_provenance_and_gate_legitimacy/.ion/outbox/20260726T012100Z_PCKT-ION-LEAD-ORCHESTRATION-REBASE-12-FORENSIC-CLOSURE-REPOSITORY-PROJECTION-20260725_LEAD_STEWARD_RETURN.candidate.md"
+  ],
+  "non_claims": [
+    "candidate_only",
+    "no_accepted_state",
+    "no_live_execution",
+    "no_original_builder_restoration",
+    "no_byte_exact_historical_builder_attestation"
+  ]
+}
