@@ -1,0 +1,130 @@
+schema_id: ion.commit_boundary_manifest.v0_1_candidate
+manifest_id: CBM-RECEIPTED-DELTA-20260808
+packet_id: PCKT-COMMIT-BOUNDARY-20260808-RECEIPTED-DELTA
+owner_domain_id: domain.artifact_provenance_and_gate_legitimacy
+peer_domain_ids:
+  - domain.github_repository_platform_governance
+  - domain.sos_state_machine_and_transition_law
+  - domain.state_rank_and_receipt_truth
+materialized_at: "2026-08-08T15:00:00Z"
+status: enacted_local_commit
+authority: candidate_only
+baseline_forward_posture: true
+commit_class: production_governance_commit
+receipt_witness:
+  - ION/06_intelligence/roundtable/live/log/20260808T141500Z__RELAY__first-non-human-promotion-complete-chain-receipted-end-to-end.md
+  - ION/06_intelligence/roundtable/live/log/20260808T123500Z__RELAY__loop-integrates-first-delta-gate-now-load-bearing-hardening-routed.md
+
+include_paths:
+  - path: ION/05_context/current/domain_promotions/20260808T132007Z_artifact.sos_human_gate_clear_retirement.promotion.json
+    tier: T1_domain_owned_candidate
+    owner_domain_id: domain.sos_state_machine_and_transition_law
+    reason: promotion chain complete receipt 20260808T132007Z per RELAY 141500Z
+  - path: ION/05_context/current/domain_promotions/20260808T142007Z_artifact.gate_settlement_transitions.promotion.json
+    tier: T1
+    owner_domain_id: domain.sos_state_machine_and_transition_law
+    reason: gate settlement transitions promotion finalized 20260808T142007Z
+  - path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.artifact_provenance_and_gate_legitimacy/receipts/GATE_LEGITIMACY_WITNESS_20260808T133507Z_HUMAN_GATE_CLEAR_RETIREMENT.candidate.json
+    tier: T1
+    owner_domain_id: domain.artifact_provenance_and_gate_legitimacy
+    reason: quorum witness step for human gate clear retirement chain
+  - path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.artifact_provenance_and_gate_legitimacy/receipts/GATE_LEGITIMACY_WITNESS_20260808T142100Z_GATE_SETTLEMENT_TRANSITIONS.candidate.json
+    tier: T1
+    owner_domain_id: domain.artifact_provenance_and_gate_legitimacy
+    reason: quorum witness for gate settlement transitions promotion
+  - path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.sos_state_machine_and_transition_law/receipts/CANDIDATE_TO_ACCEPTED_PROMOTION_CHAIN_EXECUTION_20260808.candidate.yaml
+    tier: T1
+    owner_domain_id: domain.sos_state_machine_and_transition_law
+    reason: chain execution receipt human gate clear retirement
+  - path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.sos_state_machine_and_transition_law/receipts/CANDIDATE_TO_ACCEPTED_PROMOTION_CHAIN_EXECUTION_GATE_SETTLEMENT_TRANSITIONS_20260808.candidate.yaml
+    tier: T1
+    owner_domain_id: domain.sos_state_machine_and_transition_law
+    reason: chain execution receipt gate settlement transitions
+  - path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.sos_state_machine_and_transition_law/receipts/accepted/HUMAN_GATE_CLEAR_CLAUSE_RETIREMENT_20260808.accepted.yaml
+    tier: T1
+    owner_domain_id: domain.sos_state_machine_and_transition_law
+    reason: first non-human accepted artifact copy per promotion 132007Z
+  - path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.sos_state_machine_and_transition_law/sub_charters/accepted/gate_settlement_transitions.accepted.yaml
+    tier: T1
+    owner_domain_id: domain.sos_state_machine_and_transition_law
+    reason: accepted sub_charter gate_settlement_transitions promotion 142007Z
+  - path: ION/05_context/current/steward_integrations/promotion_chain_human_gate_clear_retirement_20260808_step_04_steward_integration.json
+    tier: T1
+    owner_domain_id: domain.runtime_carrier_and_action_admission
+    reason: steward integration compact receipt step 04 human gate chain
+  - path: ION/05_context/current/steward_integrations/promotion_chain_gate_settlement_transitions_20260808_step_04_steward_integration.json
+    tier: T1
+    owner_domain_id: domain.runtime_carrier_and_action_admission
+    reason: steward integration compact receipt step 04 gate settlement chain
+  - path: ION/04_packages/kernel/ion_steward_integrate.py
+    tier: T0_committable_source
+    owner_domain_id: domain.kernel
+    reason: promotion chain integration mechanism per RELAY 141500Z
+  - path: ION/04_packages/kernel/ion_carrier_task_return.py
+    tier: T0_committable_source
+    owner_domain_id: domain.kernel
+    reason: prompt-spawn-run intake surface per RELAY 141500Z run fagiakq5
+  - path: ION/06_intelligence/roundtable/live/log/20260808T141500Z__RELAY__first-non-human-promotion-complete-chain-receipted-end-to-end.md
+    tier: T1
+    owner_domain_id: domain.relay_and_operator_comms
+    reason: roundtable milestone witness 20260808 promotion chain
+  - path: ION/06_intelligence/roundtable/live/log/20260808T123500Z__RELAY__loop-integrates-first-delta-gate-now-load-bearing-hardening-routed.md
+    tier: T1
+    owner_domain_id: domain.relay_and_operator_comms
+    reason: roundtable witness delta gate hardening 20260808
+  - path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.gnome_desktop_ion_operator_surface/GNOME_AGENT_OPERATIONS_SURFACE_PROPOSAL.candidate.md
+    tier: T1
+    owner_domain_id: domain.gnome_desktop_ion_operator_surface
+    reason: GNOME ops surface proposal delivered wave 20260808T053000Z RELAY
+  - path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.artifact_provenance_and_gate_legitimacy/commit_boundary/COMMIT_BOUNDARY_MANIFEST_20260808.candidate.yaml
+    tier: T1
+    owner_domain_id: domain.artifact_provenance_and_gate_legitimacy
+    reason: this commit-boundary manifest self-binding
+  - path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.artifact_provenance_and_gate_legitimacy/commit_boundary/tools/run_commit_boundary.candidate.sh
+    tier: T0_committable_source
+    owner_domain_id: domain.artifact_provenance_and_gate_legitimacy
+    reason: repeatable commit boundary procedure lane
+  - path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.artifact_provenance_and_gate_legitimacy/commit_boundary/tools/detect_receipted_uncommitted_delta_48h.candidate.py
+    tier: T0_committable_source
+    owner_domain_id: domain.artifact_provenance_and_gate_legitimacy
+    reason: absence detector receipted-but-uncommitted deltas older than 48h
+
+explicit_excludes:
+  - pattern: ION/05_context/current/ACTIVE_*.json
+    tier: T2_generated_runtime_active
+    reason: generated runtime active state excluded per VERSION_CONTROL_LAW commit_worthiness
+  - pattern: ION/05_context/current/sos_domain_spawn_receipts/**
+    tier: T2
+    reason: high-volume scheduler receipts; not in receipted promotion chain manifest
+  - pattern: ION/05_context/current/autonomous_loop/**
+    tier: T2
+    reason: loop runtime artifacts excluded from bounded governance commit
+  - pattern: quarentine/**
+    tier: T5_archives_quarantine_historical
+    reason: quarantine lane excluded unless explicit carry receipt
+  - pattern: "**/__pycache__/**"
+    tier: T2
+    reason: bytecode not committable
+  - pattern: porcelain_class:deleted
+    tier: T6_deletion_incident
+    reason: baseline-forward; no deletion staging per sovereign 2026-08-03 ruling
+  - pattern: ION_VAULT_LOCAL/**
+    tier: T4_secrets_vault_adjacent
+    reason: vault adjacent forbidden
+  - pattern: ION/05_context/current/runtime_carrier/receipts/20260808T*_absence_probe*.json
+    tier: T2
+    reason: absence probe churn excluded from first receipted-delta commit
+
+pre_commit_gates:
+  - gate_id: gate.git_snapshot.secret_scan
+    required_verdict: PASS
+  - gate_id: gate.commit_boundary.deletion_zero
+    required_verdict: PASS
+  - gate_id: gate.commit_boundary.manifest_allowlist
+    required_verdict: PASS
+
+non_claims:
+  - candidate_only
+  - no_push
+  - no_registry_promotion
+  - no_accepted_state_beyond_documented_promotion_chain

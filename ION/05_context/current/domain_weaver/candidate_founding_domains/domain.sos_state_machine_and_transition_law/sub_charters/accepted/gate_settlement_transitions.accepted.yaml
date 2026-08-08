@@ -1,0 +1,212 @@
+accepted_promotion_receipt: ION/05_context/current/domain_promotions/20260808T142007Z_artifact.gate_settlement_transitions.promotion.json
+accepted_at: "2026-08-08T14:22:34+00:00"
+schema_id: ion.domain.sub_charter.v0_1_candidate
+sub_charter_id: gate_settlement_transitions
+owner_domain: domain.sos_state_machine_and_transition_law
+owning_blocker: BLK-SS08
+posture: candidate_only
+updated_at: "2026-08-08T12:45:00+00:00"
+evolution_run_id: prompt_spawn_2026-08-02T220905+0000_domain_worker_jfouo1mw
+session_issue_ref: ISS-20260802-CONTINUOUS-OPERATION
+
+scope: >-
+  Every soft or hard gate must name a settlement_path transition. W10 owns transition
+  definitions; clearing a block is a state move, not an audit respawn.
+
+gate_registry_binding:
+  authoritative_path: ION/05_context/current/domain_weaver/gate_registry/GATE_REGISTRY.candidate.json
+  owner_domain: domain.artifact_provenance_and_gate_legitimacy
+  sos_owned_settlement_paths:
+    - context_proof_remediation
+    - template_action_remediation
+    - candidate_to_accepted_promotion
+
+mandates:
+  - Document settlement transitions referenced in GATE_REGISTRY settlement_path fields
+  - No hard gate without documented off-ramp
+  - Blocker ledger row closure must cite receipt path as state transition evidence
+  - Registrar-relevant settlement_path values must map to kernel surfaces and evidence fields
+
+settlement_transitions:
+  - from_state: OPEN
+    to_state: CLOSED
+    trigger: wave0_receipt_materialized
+    evidence_field: receipt
+    applies_to: BLOCKER_LEDGER blockers
+
+  - from_state: CLOSING
+    to_state: CLOSED
+    trigger: return_artifact_refreshed
+    evidence_field: DOMAIN_CURSOR_CLI_RETURN.candidate.yaml executed_at
+
+  - settlement_path_id: context_proof_remediation
+    gate_id: gate.context_proof_return
+    gate_registry_settlement_path: "domain.sos_state_machine_and_transition_law:transition:context_proof_remediation"
+    from_state: GATE_REJECTED
+    to_state: GATE_CLEARED
+    trigger: context_proof_return_gate_pass
+    kernel_surfaces:
+      - kernel.ion_context_proof_gate
+      - kernel.ion_carrier_task_return
+    evidence_fields:
+      - "### CONTEXT PROOF"
+      - context_load_receipt_path
+    remediation: rerun_spawn_with_same_context_package_and_fix_missing_proof_fields
+    applies_to: carrier_task_return_intake
+
+  - settlement_path_id: template_action_remediation
+    gate_id: gate.template_action_proof
+    gate_registry_settlement_path: "domain.sos_state_machine_and_transition_law:transition:template_action_remediation"
+    from_state: GATE_REJECTED
+    to_state: GATE_CLEARED
+    trigger: template_action_gate_pass
+    kernel_surfaces:
+      - kernel.ion_template_action_gate
+      - kernel.ion_carrier_task_return
+    evidence_fields:
+      - "### TEMPLATE ACTION PROOF"
+      - template_id
+      - action_id
+      - result
+      - touched_paths
+    remediation: rerun_spawn_with_valid_template_id_and_scalar_proof_lines
+    applies_to: carrier_task_return_intake
+
+  - settlement_path_id: candidate_to_accepted_promotion
+    settlement_path_aliases:
+      - autonomous_gate_clear
+    gate_id: gate.non_human_accepted_state_promotion
+    gate_registry_settlement_path: >-
+      domain.sos_state_machine_and_transition_law:transition:candidate_to_accepted_promotion
+    from_state: CANDIDATE_ARTIFACT
+    to_state: ACCEPTED_ARTIFACT
+    trigger: autonomous_promotion_chain_complete
+    operator_involvement: none_unless_named_evidence_bound_request_per_promotion_law
+    promotion_law_ref: >-
+      ION/05_context/current/domain_weaver/candidate_founding_domains/domain.true_name_symbol_and_semantic_dag_index/PROMOTION_LAW.candidate.yaml
+    promotion_law_chain_ref: autonomous_promotion_chain
+    applies_to:
+      - registry_yaml_candidate
+      - seated_candidate
+      - rank_boundary_promotions
+    kernel_surfaces:
+      - kernel.ion_carrier_task_return
+      - kernel.ion_context_proof_gate
+      - kernel.ion_template_action_gate
+    evidence_fields:
+      - receipts/REGISTRAR_READINESS_PROOF_<domain_id>_<timestamp>.candidate.json
+      - receipts/RECEIPT_TRUTH_VERIFICATION_<domain_id>_<timestamp>.candidate.json
+      - receipts/ADVERSARIAL_PRESSURE_<domain_id>_<timestamp>.candidate.json
+      - ACTIVE_STEWARD_INTEGRATION_QUEUE.json accepted return
+    co_owner_domains:
+      - domain.true_name_symbol_and_semantic_dag_index
+      - domain.state_rank_and_receipt_truth
+      - domain.honest_agency_validation
+      - domain.operator_sovereignty_and_directive_admission
+    directive_admission_check: >-
+      domain.operator_sovereignty_and_directive_admission verifies sovereign-escalation triggers
+      (fundamental removal, real money, beyond-ION capability) only; if any apply this path does
+      not fire and routes to bounded directive admission instead.
+    non_human_accepted_state_law_ref: >-
+      ION/05_context/current/domain_weaver/candidate_founding_domains/domain.operator_sovereignty_and_directive_admission/NON_HUMAN_ACCEPTED_STATE_TRANSITION_LAW.candidate.yaml
+    retirement_receipt: receipts/HUMAN_GATE_CLEAR_CLAUSE_RETIREMENT_20260808.candidate.yaml
+    remediation: execute_autonomous_promotion_chain_per_promotion_law_v0_2_then_rerun_task_return_intake
+    applies_to_carrier: candidate_to_accepted_promotion_intake
+    handoff_domain: domain.runtime_carrier_and_action_admission
+
+  - settlement_path_id: process_once_to_continuous_ingress
+    gate_id: gate.sos_continuous_ingress
+    gate_registry_settlement_path: "domain.sos_state_machine_and_transition_law:transition:process_once_to_continuous_ingress"
+    from_state: PROCESS_ONCE_CANARY_PROVEN
+    to_state: CONTINUOUS_INGRESS_ADMITTED
+    trigger: operator_message_auto_enqueued_on_carrier_continue
+    kernel_surfaces:
+      - kernel.ion_carrier_continue
+      - kernel.ion_prompt_spawn_executor
+    evidence_fields:
+      - ACTIVE_SOS_DOMAIN_SPAWN_QUEUE
+      - spawn_admission.json carrier_invocation_admitted
+    handoff_domain: domain.runtime_carrier_and_action_admission
+    ladder_ref: SOS_CONTINUOUS_OPERATION_STATE_LADDER.candidate.yaml
+
+  - settlement_path_id: stdout_to_chat_delivered
+    gate_id: gate.sos_chat_delivery_membrane
+    gate_registry_settlement_path: "domain.sos_state_machine_and_transition_law:transition:stdout_to_chat_delivered"
+    from_state: carrier_stdout_emitted
+    to_state: operator_chat_delivered
+    trigger: delivery_receipt_row_materialized
+    vocabulary_ref: domain.operator_language_and_semantic_interface/CHAT_DELIVERY_MEMBRANE_STATES.candidate.yaml
+    handoff_domain: domain.runtime_carrier_and_action_admission
+    evidence_fields:
+      - run_id
+      - task_output_sha256
+      - pasted_at_or_parent_message_ref
+
+  - settlement_path_id: detached_spawn_hold_to_allow_with_record
+    gate_id: gate.health_tick_spawn_admission_coherence
+    gate_registry_settlement_path: >-
+      domain.sos_state_machine_and_transition_law:transition:detached_spawn_hold_to_allow_with_record
+    from_state: detached_worker_spawn_hold_until_worker_shift
+    to_state: detached_worker_spawn_allow_with_valid_detached_scope_record
+    trigger: >-
+      AUTONOMOUS_GOAL_WAKEUP_SPAWN_ADMISSION detached_worker_spawn flips to allow while a
+      signed non-expired detached-scope activation record exists under detached_worker_candidate/
+    kernel_surfaces:
+      - kernel.ion_autonomous_goal_health_tick
+      - kernel.ion_autonomous_goal_wakeup
+    evidence_fields:
+      - spawn_admission_detached_worker_spawn_coherent check passed
+      - ACTIVATION_RECORD_GOAL_ION_SELF_OPERATING_DETACHED_* non-expired
+    unlawful_pattern: >-
+      Health tick guard that requires hold_until_worker_shift_and_lease_path as permanent truth
+      after lawful activation supersession (ACTIVATION_GATE_LEGITIMACY_RULING defect class P09)
+    handoff_domain: domain.runtime_carrier_and_action_admission
+    problem_id: P09
+
+  - settlement_path_id: substrate_ready_claim_gate
+    gate_id: gate.sos_end_to_end_readiness
+    gate_registry_settlement_path: "domain.sos_state_machine_and_transition_law:transition:substrate_ready_claim_gate"
+    from_state: substrate_ready
+    to_state: end_to_end_running_claim_allowed
+    trigger: all_BLK-SOS-repair_transitions_closed
+    blocking_blockers:
+      - BLK-SOS-CONTINUOUS-INGRESS
+      - BLK-SOS-CHAT-DELIVERY-MEMBRANE
+      - BLK-SOS-FALSE-READINESS-VOCAB
+    ladder_ref: SOS_CONTINUOUS_OPERATION_STATE_LADDER.candidate.yaml
+
+absorb_bindings:
+  legacy_id: domain.ion_system_definition
+  migration_receipt: receipts/absorb_migration_domain_ion_system_definition.candidate.yaml
+  migration_hold: Phase 1 self-audit pilot must complete before W10 absorb
+  execution_surface_materialized_at: "2026-07-22T18:45:46Z"
+  execution_surface_path: candidate_founding_domains/domain.ion_system_definition/
+  execution_surface_materialized_by: domain.domain_mitosis_and_agent_society_formation
+
+absorb_transitions:
+  - from_state: alias_only
+    to_state: execution_surface_materialized
+    trigger: founding_folder_and_operating_card_landed
+    evidence_field: candidate_founding_domains/domain.ion_system_definition/OPERATING_CARD.candidate.md materialized_at
+    session_issue: ISS-20260722-009
+    note: Constitution/20-pack binding index still routes through ion_system_definition surfaces; W10 absorb host must compile canon refs into transition law without claiming absorb complete.
+
+  - from_state: execution_surface_materialized
+    to_state: absorb_pending_phase1
+    trigger: phase1_self_audit_pilot_in_progress
+    evidence_field: domain_self_audit/returns/domain.ion_system_definition/PHASE1_SELF_AUDIT_REPORT.candidate.md
+    blocking: migration_hold
+
+  - from_state: absorb_pending_phase1
+    to_state: absorb_complete
+    trigger: operator_gate_clears_migration_hold
+    evidence_field: receipts/absorb_migration_domain_ion_system_definition.candidate.yaml migration_hold cleared
+    requires:
+      - Phase 1 self-audit pilot complete
+      - sos_bootloop_seed compiled into founding minimal_context_package
+      - struggle_9 registry reconciliation membrane from P0 owners
+
+non_claims:
+  - candidate_only
+  - no_registry_promotion
+  - absorb_complete_not_claimed

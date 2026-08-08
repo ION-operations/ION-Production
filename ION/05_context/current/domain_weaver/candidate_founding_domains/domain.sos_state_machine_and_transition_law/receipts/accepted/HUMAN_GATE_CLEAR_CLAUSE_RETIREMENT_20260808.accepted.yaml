@@ -1,0 +1,43 @@
+schema_id: ion.domain.clause_standing_law_retirement_receipt.v0_1_candidate
+domain_id: domain.sos_state_machine_and_transition_law
+retirement_id: retire_human_gate_clear_settlement_path_20260808
+posture: candidate_only
+retired_at: '2026-08-08T12:45:00Z'
+standing_law_ref: ION/06_intelligence/roundtable/live/log/20260806T144500Z__RELAY__standing-law-no-user-gate-ever-only-rule-is-no-deletions.md
+evolution_run_id: prompt_spawn_2026-08-08T124045+0000_domain_worker_zqb8204s
+prior_readonly_scope_run: claude_prompt_spawn_2026-08-08T061528+0000_domain_worker_prd18pwx
+
+retired_clause:
+  settlement_path_id: human_gate_clear
+  unlawful_triggers:
+    - operator_gate_cleared
+  unlawful_evidence_fields:
+    - human_gate_resolution_receipt
+  source_surface: sub_charters/gate_settlement_transitions.candidate.yaml
+
+quarantine:
+  manifest: quarantine/human_gate_clear_superseded_20260808/MANIFEST.candidate.yaml
+  preserved_copy: >-
+    quarantine/human_gate_clear_superseded_20260808/gate_settlement_transitions_human_gate_clear_clause.preserved.yaml
+
+replacement:
+  settlement_path_id: candidate_to_accepted_promotion
+  encoded_in: sub_charters/gate_settlement_transitions.candidate.yaml
+  promotion_law_binding: >-
+    ION/05_context/current/domain_weaver/candidate_founding_domains/domain.true_name_symbol_and_semantic_dag_index/PROMOTION_LAW.candidate.yaml
+  promotion_law_version: ion.domain.true_name.registrar_promotion_law.v0_2_candidate
+  reconciles_settlement_path_ref: domain.sos_state_machine_and_transition_law:transition:autonomous_gate_clear
+  note: >-
+    Does not duplicate PROMOTION_LAW autonomous_promotion_chain; references it as authoritative
+    execution spec for registry_yaml_candidate and seated_candidate transitions.
+
+relationships_edge_added:
+  target: domain.operator_sovereignty_and_directive_admission
+  edge: verifies
+  surface: RELATIONSHIPS.candidate.yaml verify_edges
+
+non_claims:
+  - candidate_only
+  - no_registry_promotion
+  - no_gate_registry_mutation_this_run
+  - no_deletions_only_quarantine

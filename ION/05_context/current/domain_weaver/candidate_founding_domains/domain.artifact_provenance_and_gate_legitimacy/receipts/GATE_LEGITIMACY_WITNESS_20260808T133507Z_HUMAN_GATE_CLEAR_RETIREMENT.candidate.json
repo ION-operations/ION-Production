@@ -1,0 +1,67 @@
+{
+  "schema_id": "ion.apgl.gate_legitimacy_witness.v0_1_candidate",
+  "domain_id": "domain.artifact_provenance_and_gate_legitimacy",
+  "witness_id": "gate_legitimacy_witness_human_gate_clear_retirement_20260808",
+  "witnessed_at": "2026-08-08T13:35:07Z",
+  "evolution_run_id": "prompt_spawn_2026-08-08T133507+0000_domain_worker_6mtjisk8",
+  "test_satisfied": "test_gate_legitimacy_witness_binds_artifact_sha256_for_candidate_to_accepted_promotion",
+  "posture": "candidate_only",
+  "never_a_global_ion_blocker": true,
+  "target_artifact": {
+    "path": "ION/05_context/current/domain_weaver/candidate_founding_domains/domain.sos_state_machine_and_transition_law/receipts/HUMAN_GATE_CLEAR_CLAUSE_RETIREMENT_20260808.candidate.yaml",
+    "sha256": "05aba5cc1378e61606405c652b4da7ac5a466fbbc5f2774d926f71f1f258a131",
+    "sha256_verification": "recomputed_on_disk_matches_chain_records"
+  },
+  "transition_class": {
+    "settlement_path_id": "candidate_to_accepted_promotion",
+    "settlement_path_aliases": ["autonomous_gate_clear"],
+    "gate_id": "gate.non_human_accepted_state_promotion",
+    "from_state": "CANDIDATE_ARTIFACT",
+    "to_state": "ACCEPTED_ARTIFACT",
+    "transition_law_ref": "ION/05_context/current/domain_weaver/candidate_founding_domains/domain.sos_state_machine_and_transition_law/sub_charters/gate_settlement_transitions.candidate.yaml",
+    "retirement_receipt_binding": "receipts/HUMAN_GATE_CLEAR_CLAUSE_RETIREMENT_20260808.candidate.yaml"
+  },
+  "corroborating_surfaces": [
+    {
+      "surface": "domain.sos_state_machine_and_transition_law",
+      "receipt": "receipts/CANDIDATE_TO_ACCEPTED_PROMOTION_CHAIN_EXECUTION_20260808.candidate.yaml",
+      "target_artifact_sha256": "05aba5cc1378e61606405c652b4da7ac5a466fbbc5f2774d926f71f1f258a131",
+      "hash_agrees": true
+    },
+    {
+      "surface": "domain.sos_state_machine_and_transition_law",
+      "receipt": "receipts/SOS_TRANSITION_RECORD_HUMAN_GATE_CLEAR_RETIREMENT_20260808.candidate.yaml",
+      "target_artifact_sha256": "05aba5cc1378e61606405c652b4da7ac5a466fbbc5f2774d926f71f1f258a131",
+      "hash_agrees": true
+    },
+    {
+      "surface": "domain.sos_state_machine_and_transition_law",
+      "receipt": "receipts/REGISTRAR_READINESS_PROOF_HUMAN_GATE_CLEAR_RETIREMENT_20260808.candidate.json",
+      "target_artifact_sha256": "05aba5cc1378e61606405c652b4da7ac5a466fbbc5f2774d926f71f1f258a131",
+      "hash_agrees": true
+    }
+  ],
+  "artifact_legitimacy_checks": {
+    "file_present": true,
+    "schema_id": "ion.domain.clause_standing_law_retirement_receipt.v0_1_candidate",
+    "quarantine_manifest_present": true,
+    "quarantine_manifest_path": "ION/05_context/current/domain_weaver/candidate_founding_domains/domain.sos_state_machine_and_transition_law/quarantine/human_gate_clear_superseded_20260808/MANIFEST.candidate.yaml",
+    "replacement_settlement_path_id": "candidate_to_accepted_promotion",
+    "non_claims_include_no_registry_promotion": true
+  },
+  "gate_registry_note": {
+    "gate_id": "gate.non_human_accepted_state_promotion",
+    "registered_in_local_gate_registry": false,
+    "registry_path_checked": "ION/05_context/current/domain_weaver/candidate_founding_domains/domain.artifact_provenance_and_gate_legitimacy/gate_registry/GATE_REGISTRY.candidate.json",
+    "posture": "witness_only_absence_logged_not_blocking"
+  },
+  "verdict": "GATE_LEGITIMACY_WITNESS_AGREE_ARTIFACT_HASH_AND_TRANSITION_CLASS",
+  "verdict_detail": "Target artifact sha256 binds consistently across promotion chain and SOS transition record; transition class matches candidate_to_accepted_promotion retirement_receipt in gate_settlement_transitions; gate registry entry absent — witness-only, does not block promotion chain continuation.",
+  "non_claims": [
+    "candidate_only",
+    "no_accepted_state_claim",
+    "no_registry_promotion",
+    "witness_does_not_complete_full_promotion_chain",
+    "receipt_truth_verification_still_pending_domain.state_rank_and_receipt_truth"
+  ]
+}
