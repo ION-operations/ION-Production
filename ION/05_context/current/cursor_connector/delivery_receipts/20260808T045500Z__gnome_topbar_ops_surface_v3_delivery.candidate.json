@@ -1,0 +1,37 @@
+{
+  "schema_id": "ion.delivery_receipt.v0_1_candidate",
+  "delivered_at": "2026-08-08T04:55:00Z",
+  "delivered_by": "relay_agent (membrane; no operator authority)",
+  "sovereign_request_verbatim": "we need an intergrated sytems in the gnome top bar , we alreayd have IONdrop down panel from the top bar of the desktop, but we need it for showing mroe info liek where I can turn on or off the que and see any important information liek gates or blockers, and see active agents etc perhaps abel to eevn open and close active cli terminals wihtout causing issues, all frmo the desktop topbar.",
+  "routed_to": "domain.user_interface_visualization_and_operator_experience (executing Phase B of child domain.gnome_desktop_ion_operator_surface proposal PCKT-GNOME-ION-AGENT-OPERATIONS-SURFACE-PROPOSAL-20260724)",
+  "worker_runs": [
+    {
+      "run_id": "prompt_spawn_2026-08-08T044153+0000_domain_worker_na737ur_",
+      "work_class": "code_implementation",
+      "model": "composer-2.5",
+      "scope": "control.py backend: status sections queue/agents/attention; strict actions queue-on|queue-off|loop-on|loop-off|open-latest-run-view; tests",
+      "gate": "accepted"
+    },
+    {
+      "run_id": "prompt_spawn_2026-08-08T044639+0000_domain_worker_jrdhyj2o",
+      "work_class": "code_implementation",
+      "model": "composer-2.5",
+      "scope": "extension.js popover sections + toggles + badge; stylesheet; metadata version 3",
+      "gate": "accepted"
+    }
+  ],
+  "membrane_verification": {
+    "tests": "python3 -m pytest desktop/gnome-shell/tests/test_ion_helixion_control.py -q -> 30 passed in 0.09s (run by membrane, not trusted from worker)",
+    "js_syntax": "node --check extension.js -> pass",
+    "live_status_probe": "control.py status returned live queue/agents/attention sections from ION state files",
+    "preexisting_uncommitted_delta_disclosed": "extension.js JOC-cockpit launcher change + README section dated 2026-08-05 predate these runs; included in install because they are the repo source of truth"
+  },
+  "install": {
+    "destination": "/home/sev/.local/share/gnome-shell/extensions/ion-helixion-control@helixion.net/",
+    "files": ["extension.js", "control.py", "metadata.json", "stylesheet.css", "README.md"],
+    "verified": "diff -q source vs installed extension.js -> identical; helper executes from installed path"
+  },
+  "activation_status": "PENDING_SHELL_RELOAD. GNOME Shell caches legacy extension JS; systemd unit org.gnome.Shell@x11.service refuses manual restart, DBus Eval disabled, and the harness permission layer denied sending SIGTERM to gnome-shell. Extension v3 loads on next shell restart (Alt+F2 'r' on X11) or next login.",
+  "no_change_claim": "The autonomous queue timers were NOT toggled by this delivery; queue drain and loop timers remain enabled exactly as found.",
+  "non_claims": ["candidate_only", "no_registry_promotion", "no_accepted_state", "no_git_push"]
+}

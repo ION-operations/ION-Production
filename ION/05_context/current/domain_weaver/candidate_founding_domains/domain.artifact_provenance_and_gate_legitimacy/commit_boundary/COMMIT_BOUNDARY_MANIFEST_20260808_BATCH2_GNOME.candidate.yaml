@@ -1,0 +1,84 @@
+schema_id: ion.commit_boundary_manifest.v0_1_candidate
+manifest_id: CBM-RECEIPTED-DELTA-20260808-BATCH2-GNOME
+packet_id: PCKT-COMMIT-BOUNDARY-20260808-BATCH2-GNOME
+owner_domain_id: domain.artifact_provenance_and_gate_legitimacy
+peer_domain_ids:
+- domain.github_repository_platform_governance
+materialized_at: '2026-08-08T15:10:00Z'
+status: candidate_ready
+authority: candidate_only
+baseline_forward_posture: true
+commit_class: production_governance_commit
+include_paths:
+- path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.artifact_provenance_and_gate_legitimacy/commit_boundary/COMMIT_BOUNDARY_MANIFEST_20260808_BATCH2_GNOME.candidate.yaml
+  tier: T1
+  owner_domain_id: domain.artifact_provenance_and_gate_legitimacy
+  reason: batch-2 gnome manifest self-binding
+- path: desktop/gnome-shell/ion-helixion-control@helixion.net/README.md
+  tier: T1
+  owner_domain_id: domain.gnome_desktop_ion_operator_surface
+  reason: gnome shell v3 surface runs na737ur_ jrdhyj2o delivery 20260808T045500Z
+- path: desktop/gnome-shell/ion-helixion-control@helixion.net/control.py
+  tier: T1
+  owner_domain_id: domain.gnome_desktop_ion_operator_surface
+  reason: gnome shell v3 surface runs na737ur_ jrdhyj2o delivery 20260808T045500Z
+- path: desktop/gnome-shell/ion-helixion-control@helixion.net/extension.js
+  tier: T1
+  owner_domain_id: domain.gnome_desktop_ion_operator_surface
+  reason: gnome shell v3 surface runs na737ur_ jrdhyj2o delivery 20260808T045500Z
+- path: desktop/gnome-shell/ion-helixion-control@helixion.net/metadata.json
+  tier: T1
+  owner_domain_id: domain.gnome_desktop_ion_operator_surface
+  reason: gnome shell v3 surface runs na737ur_ jrdhyj2o delivery 20260808T045500Z
+- path: desktop/gnome-shell/ion-helixion-control@helixion.net/stylesheet.css
+  tier: T1
+  owner_domain_id: domain.gnome_desktop_ion_operator_surface
+  reason: gnome shell v3 surface runs na737ur_ jrdhyj2o delivery 20260808T045500Z
+- path: desktop/gnome-shell/tests/test_ion_helixion_control.py
+  tier: T1
+  owner_domain_id: domain.gnome_desktop_ion_operator_surface
+  reason: gnome shell v3 surface runs na737ur_ jrdhyj2o delivery 20260808T045500Z
+- path: desktop/gnome-shell/install-ion-joc-cockpit-desktop.sh
+  tier: T1
+  owner_domain_id: domain.gnome_desktop_ion_operator_surface
+  reason: gnome shell v3 surface runs na737ur_ jrdhyj2o delivery 20260808T045500Z
+- path: desktop/gnome-shell/share/ion-open-joc-cockpit.sh
+  tier: T1
+  owner_domain_id: domain.gnome_desktop_ion_operator_surface
+  reason: gnome shell v3 surface runs na737ur_ jrdhyj2o delivery 20260808T045500Z
+- path: desktop/gnome-shell/share/applications/ion-joc-cockpit.desktop
+  tier: T1
+  owner_domain_id: domain.gnome_desktop_ion_operator_surface
+  reason: gnome shell v3 surface runs na737ur_ jrdhyj2o delivery 20260808T045500Z
+- path: ION/05_context/current/cursor_connector/delivery_receipts/20260808T045500Z__gnome_topbar_ops_surface_v3_delivery.candidate.json
+  tier: T1
+  owner_domain_id: domain.gnome_desktop_ion_operator_surface
+  reason: gnome shell v3 surface runs na737ur_ jrdhyj2o delivery 20260808T045500Z
+- path: ION/05_context/current/domain_weaver/domain_self_audit/returns/domain.user_interface_visualization_and_operator_experience/DOMAIN_LOCAL_DIAGNOSTIC_RETURN.candidate.yaml
+  tier: T1
+  owner_domain_id: domain.gnome_desktop_ion_operator_surface
+  reason: gnome shell v3 surface runs na737ur_ jrdhyj2o delivery 20260808T045500Z
+explicit_excludes:
+- pattern: ION/05_context/current/ACTIVE_*.json
+  tier: T2
+  reason: generated runtime active state
+- pattern: ION/05_context/current/autonomous_goals/wakeup_receipts/**
+  tier: T2
+  reason: scheduler churn excluded
+- pattern: ION/05_context/current/domain_weaver/triad/absence_alarms/**
+  tier: T2
+  reason: absence alarm churn not in receipted batch-2 touched_paths
+- pattern: porcelain_class:deleted
+  tier: T6
+  reason: no deletion staging
+pre_commit_gates:
+- gate_id: gate.git_snapshot.secret_scan
+  required_verdict: PASS
+- gate_id: gate.commit_boundary.deletion_zero
+  required_verdict: PASS
+- gate_id: gate.commit_boundary.manifest_allowlist
+  required_verdict: PASS
+non_claims:
+- candidate_only
+- no_push
+- no_registry_promotion

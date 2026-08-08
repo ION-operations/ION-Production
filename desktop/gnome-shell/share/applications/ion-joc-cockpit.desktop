@@ -1,0 +1,14 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=ION JOC Cockpit
+GenericName=ION Operator Cockpit
+Comment=Open local JOC cockpit on port 8765 when MCP preview is healthy
+Exec=REPO_ROOT/desktop/gnome-shell/share/ion-open-joc-cockpit.sh
+Icon=web-browser
+Terminal=false
+Categories=Development;System;
+Keywords=ION;Helixion;cockpit;operator;
+StartupNotify=true
+X-ION-Cockpit-URL=http://127.0.0.1:8765/cockpit#system
+X-ION-Health-Gate=http://127.0.0.1:8765/health
