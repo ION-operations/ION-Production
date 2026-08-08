@@ -1,0 +1,137 @@
+schema_id: ion.model_catalog.v0_1_candidate
+domain_id: domain.model_routing_and_reasoning_economics
+posture: candidate_only
+updated_at: '2026-08-08T15:30:00Z'
+source_of_truth_module: ION/04_packages/kernel/ion_cli_model_selection.py
+enumeration_function: enumerate_carrier_models_from_code
+
+domain_tiers:
+  steward_judgment:
+    description: schema_law rank_law domain_analysis consequential decomposition
+    work_class_binding: judgment_work_classes in WORK_CLASS_CARRIER_DEFAULT_MAP
+  mechanical:
+    description: bulk implementation maintenance receipts parity refresh
+    work_class_binding: bulk_work_classes in WORK_CLASS_CARRIER_DEFAULT_MAP
+
+cost_class_legend:
+  subscription_bulk: cursor composer lanes; flat operator usage
+  subscription_premium: claude sonnet/opus CLI subscription slots
+  subscription_readonly_light: claude fable explicit read-only judgment
+  metered_premium: codex gpt-5.6-sol advisory metered
+  experimental_explicit: exact-only models; never default ladder
+
+carriers:
+  cursor_cli:
+    economics_mode: subscription
+    operator_approved_ladder:
+      - composer-2.5-fast
+      - composer-2.5
+    leader_tier_models:
+      - claude-opus-4-8-thinking-high
+      - claude-sonnet-5-thinking-high
+      - gpt-5.6-sol-high
+    experimental_exact_models:
+      - gemini-3.1-pro
+      - cursor-grok-4.5-high
+    reduced_tier_models:
+      - composer-2.5
+      - composer-2.5-fast
+    models:
+      composer-2.5-fast:
+        execution_tier_default: reduced
+        cost_class: subscription_bulk
+        fitness:
+          mechanical: primary
+          steward_judgment: defer_to_sonnet_or_leader_tier
+      composer-2.5:
+        execution_tier_default: reduced
+        cost_class: subscription_bulk
+        fitness:
+          mechanical: primary
+          steward_judgment: acceptable_with_reduced_state_policy
+      claude-opus-4-8-thinking-high:
+        execution_tier_default: full
+        cost_class: subscription_premium
+        fitness:
+          mechanical: cross_carrier_fallback_only
+          steward_judgment: leader_domain_primary
+      claude-sonnet-5-thinking-high:
+        execution_tier_default: full
+        cost_class: subscription_premium
+        fitness:
+          mechanical: cross_carrier_fallback
+          steward_judgment: strong
+      gpt-5.6-sol-high:
+        execution_tier_default: full
+        cost_class: metered_premium
+        fitness:
+          mechanical: availability_window_redirect
+          steward_judgment: consequential_codex_redirect
+      gemini-3.1-pro:
+        execution_tier_default: full
+        cost_class: experimental_explicit
+        fitness:
+          mechanical: explicit_request_only
+          steward_judgment: explicit_request_only
+      cursor-grok-4.5-high:
+        execution_tier_default: full
+        cost_class: experimental_explicit
+        fitness:
+          mechanical: explicit_request_only
+          steward_judgment: explicit_request_only
+
+  claude_cli:
+    economics_mode: subscription
+    operator_approved_ladder:
+      - claude-opus-4-8
+      - claude-sonnet-5
+    explicit_only_models:
+      - claude-fable-5
+    reduced_tier_models:
+      - claude-fable-5
+    models:
+      claude-opus-4-8:
+        execution_tier_default: full
+        cost_class: subscription_premium
+        fitness:
+          mechanical: refuse_or_route_cursor_bulk
+          steward_judgment: domain_leader_default
+      claude-sonnet-5:
+        execution_tier_default: full
+        cost_class: subscription_premium
+        fitness:
+          mechanical: secondary
+          steward_judgment: primary_for_schema_and_rank_law
+      claude-fable-5:
+        execution_tier_default: reduced
+        cost_class: subscription_readonly_light
+        fitness:
+          mechanical: not_recommended
+          steward_judgment: read_only_audit_and_diagnostic
+
+  codex_cli:
+    economics_mode: metered
+    operator_approved_ladder:
+      - gpt-5.6-sol
+    reduced_tier_models: []
+    models:
+      gpt-5.6-sol:
+        execution_tier_default: full
+        cost_class: metered_premium
+        fitness:
+          mechanical: mount_bound_execution
+          steward_judgment: sol_max_reasoning_when_admitted
+
+attribution_reuse:
+  spawn_admission_fields:
+    - carrier_id
+    - model
+    - execution_tier
+    - operation_mode
+    - routing_decision_id
+    - routing_decision_sha256
+  note: carrier_attribution_loss audit remains report-only; do not duplicate parallel attribution stores
+
+non_claims:
+  - candidate_only
+  - catalog_does_not_block_routing

@@ -1,0 +1,71 @@
+schema_id: ion.reduced_state_policy.v0_1_candidate
+domain_id: domain.model_routing_and_reasoning_economics
+posture: candidate_only
+updated_at: '2026-08-08T15:30:00Z'
+catalog_ref: MODEL_CATALOG.candidate.yaml
+
+operation_mode:
+  enum:
+    - full
+    - reduced
+    - premium_only
+  default: full
+  descriptions:
+    full: normal WORK_CLASS_CARRIER_DEFAULT_MAP and DOMAIN_LEADER_CARRIER_ROUTING selection
+    reduced: composer/fable bulk lanes; stricter proof and bounded tasks (see proof_requirements)
+    premium_only: tag execution_tier full; refuse reduced-tier models at admission when enforced by caller
+
+model_map_by_mode:
+  full:
+    by_work_class: defaults from WORK_CLASS_CARRIER_DEFAULT_MAP.candidate.yaml
+  reduced:
+    bulk_override:
+      carrier_id: cursor_cli
+      model_id: composer-2.5
+    judgment_override:
+      carrier_id: claude_cli
+      model_id: claude-fable-5
+      read_only: true
+  premium_only:
+    claude_cli:
+      - claude-opus-4-8
+      - claude-sonnet-5
+    cursor_cli:
+      - claude-opus-4-8-thinking-high
+      - claude-sonnet-5-thinking-high
+      - gpt-5.6-sol-high
+    codex_cli:
+      - gpt-5.6-sol
+
+proof_requirements:
+  full:
+    context_proof: required_for_carrier_returns
+    template_action_proof: per_active_template
+    bounded_task_max_paths: 48
+    mandatory_absence_detector: optional
+  reduced:
+    context_proof:
+      required: true
+      excerpt_rule: first_non_empty_line_per_required_read
+      blocks_without_proof: reject_task_return_intake
+    template_action_proof: required_plain_scalars
+    bounded_task_max_paths: 12
+    mandatory_absence_detector:
+      required: true
+      script: tools/run_reduced_state_work_ledger_scan.candidate.py
+      on_absence: emit_finding_to_triad_absence_alarms
+    steward_reaudit:
+      enqueue_when: premium_model_available
+      ledger_ref: REDUCED_STATE_WORK_LEDGER.candidate.json
+      blocking: false
+
+execution_tier_derivation:
+  kernel_function: derive_execution_tier
+  module: ION/04_packages/kernel/ion_cli_model_selection.py
+  admission_fields:
+    - operation_mode
+    - execution_tier
+
+non_claims:
+  - candidate_only
+  - findings_only_never_global_blocker

@@ -1,0 +1,72 @@
+schema_id: ion.commit_boundary_manifest.v0_1_candidate
+manifest_id: CBM-RECEIPTED-DELTA-20260808-BATCH3-MODEL-ROUTING
+packet_id: PCKT-COMMIT-BOUNDARY-20260808-BATCH3-MODEL-ROUTING
+owner_domain_id: domain.artifact_provenance_and_gate_legitimacy
+peer_domain_ids:
+- domain.model_routing_and_reasoning_economics
+materialized_at: '2026-08-08T16:12:00Z'
+status: candidate_ready
+authority: candidate_only
+baseline_forward_posture: true
+commit_class: production_governance_commit
+include_paths:
+- path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.artifact_provenance_and_gate_legitimacy/commit_boundary/COMMIT_BOUNDARY_MANIFEST_20260808_BATCH3_MODEL_ROUTING.candidate.yaml
+  tier: T1
+  owner_domain_id: domain.artifact_provenance_and_gate_legitimacy
+  reason: batch-3 model routing manifest self-binding
+- path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.model_routing_and_reasoning_economics/MODEL_CATALOG.candidate.yaml
+  tier: T1
+  owner_domain_id: domain.model_routing_and_reasoning_economics
+  reason: run z1p7l07e model catalog 20260808
+- path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.model_routing_and_reasoning_economics/REDUCED_STATE_POLICY.candidate.yaml
+  tier: T1
+  owner_domain_id: domain.model_routing_and_reasoning_economics
+  reason: run z1p7l07e reduced state policy 20260808
+- path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.model_routing_and_reasoning_economics/REDUCED_STATE_WORK_LEDGER.candidate.json
+  tier: T1
+  owner_domain_id: domain.model_routing_and_reasoning_economics
+  reason: run z1p7l07e ledger index 20260808
+- path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.model_routing_and_reasoning_economics/tools/run_reduced_state_work_ledger_scan.candidate.py
+  tier: T1
+  owner_domain_id: domain.model_routing_and_reasoning_economics
+  reason: run z1p7l07e ledger scanner 20260808
+- path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.model_routing_and_reasoning_economics/receipts/REDUCED_STATE_LEDGER_SCAN_20260808T152750Z.candidate.json
+  tier: T1
+  owner_domain_id: domain.model_routing_and_reasoning_economics
+  reason: run z1p7l07e scan receipt 20260808
+- path: ION/04_packages/kernel/ion_cli_model_selection.py
+  tier: T1
+  owner_domain_id: domain.model_routing_and_reasoning_economics
+  reason: runs z1p7l07e xlx4yfga execution tier and carrier gating 20260808
+- path: ION/04_packages/kernel/ion_prompt_spawn_admission.py
+  tier: T1
+  owner_domain_id: domain.model_routing_and_reasoning_economics
+  reason: run z1p7l07e operation_mode execution_tier admission 20260808
+- path: ION/tests/test_kernel_ion_cli_model_selection.py
+  tier: T1
+  owner_domain_id: domain.model_routing_and_reasoning_economics
+  reason: run z1p7l07e tier derivation tests 20260808
+explicit_excludes:
+- pattern: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.model_routing_and_reasoning_economics/patches/**
+  tier: T2
+  reason: not in z1p7l07e touched_paths afternoon receipt
+- pattern: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.model_routing_and_reasoning_economics/quarantine/**
+  tier: T2
+  reason: not in afternoon receipted delta
+- pattern: ION/05_context/current/domain_weaver/triad/absence_alarms/**
+  tier: T2
+  reason: absence alarm churn excluded per batch-2 law
+- pattern: porcelain_class:deleted
+  tier: T6
+  reason: no deletion staging
+pre_commit_gates:
+- gate_id: gate.git_snapshot.secret_scan
+  required_verdict: PASS
+- gate_id: gate.commit_boundary.deletion_zero
+  required_verdict: PASS
+- gate_id: gate.commit_boundary.manifest_allowlist
+  required_verdict: PASS
+non_claims:
+- candidate_only
+- no_push
+- no_registry_promotion
