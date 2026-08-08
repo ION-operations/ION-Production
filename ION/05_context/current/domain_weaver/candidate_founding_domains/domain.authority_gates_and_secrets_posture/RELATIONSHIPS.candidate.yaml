@@ -1,0 +1,81 @@
+schema_id: ion.domain.relationships.v0_1_candidate
+domain_id: domain.authority_gates_and_secrets_posture
+posture: candidate_only
+edge_vocabulary: universal_domain_web_twelve_term_matrix
+updated_at: '2026-08-08T14:50:00Z'
+matrix_source: ION/05_context/current/domain_weaver/fundamentals_recovery/ION_CANONICAL_HIERARCHY_AND_MATRIX.candidate.yaml
+
+feeds:
+  - neighbour: domain.runtime_carrier_and_action_admission
+    boundary: >-
+      I mark protected_boundary and red-zone taint rules; they enforce admission without
+      granting secret access from my posture alone.
+    edge_kind: protected_boundary
+  - neighbour: domain.context_systems
+    boundary: >-
+      I govern what authority classes may appear in context packages; they compile mounts
+      without bypassing default-denied surfaces.
+    edge_kind: protected_boundary
+  - neighbour: domain.agent_communication_and_settlement
+    boundary: >-
+      I govern inter-agent settlement lanes that touch secrets or production authority;
+      they route returns without elevating authority from chat prose.
+    edge_kind: protected_boundary
+  - neighbour: domain.user_interface_visualization_and_operator_experience
+    boundary: >-
+      I govern operator-visible disclosure classes; they render UX without leaking vault
+      material or live credentials.
+    edge_kind: protected_boundary
+  - neighbour: domain.github_repository_platform_governance
+    boundary: >-
+      I govern real-money and push-class escalations; they propose platform changes as
+      candidate receipts only.
+    edge_kind: protected_boundary
+
+fed_by:
+  - neighbour: domain.sos_state_machine_and_transition_law
+    boundary: >-
+      They own constitutional spine law; I consume rank transitions before admitting
+      transacted authority classes.
+    edge_kind: governs
+  - neighbour: domain.state_rank_and_receipt_truth
+    boundary: >-
+      They own receipt truth; I consume proof that authority grants are receipt-bound
+      not conversational.
+    edge_kind: supplies_proof_to
+  - neighbour: domain.operator_language_and_semantic_interface
+    boundary: >-
+      They route Sovereign escalation triggers (fundamental removal, real money, beyond
+      capability); I consume scoped mandate wording.
+    edge_kind: supplies_context_to
+
+verify:
+  - neighbour: domain.honest_agency_validation
+    boundary: >-
+      They adversarially witness authority overreach claims; I report findings without
+      halting their lane.
+    edge_kind: verifies
+  - neighbour: domain.artifact_provenance_and_gate_legitimacy
+    boundary: >-
+      They witness gate owner+route+scope+TTL; I align human-gate classes with their
+      legitimacy receipts.
+    edge_kind: co_governs
+
+governed_by:
+  - neighbour: domain.sos_state_machine_and_transition_law
+    boundary: >-
+      Spine law bounds every transacted authority class; I never simulate Sovereign ratification.
+    edge_kind: governs
+  - neighbour: domain.role_boot_registry_and_agent_identity_law
+    boundary: >-
+      They own seat and boot identity law; I defer role-mixing findings to their registry
+      without rewriting boots.
+    edge_kind: co_governs
+
+shadows:
+  - wrong_meaning: authority_gates_as_global_ion_blocker
+    correct_meaning: protected_boundary_and_escalation_routing_only_never_halts_peers
+  - wrong_meaning: secrets_posture_grants_live_vault_read_to_any_worker
+    correct_meaning: default_denied_presence_absence_reporting_only
+  - wrong_meaning: github_push_permission_from_domain_package
+    correct_meaning: platform_proposals_and_escalation_to_sovereign_triggers_only

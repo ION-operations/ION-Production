@@ -1,0 +1,27 @@
+domain_id: domain.mount_auto_materialize_on_leader_spawn
+display_name: Mount Auto Materialize On Leader Spawn
+true_name_status: MITOSIS_CHILD_CANDIDATE
+status: CANDIDATE_MITOSIS_CHILD
+authority: A3_OPERATIONAL_CANDIDATE
+registry_promotion: false
+projection_mutation: false
+parent_domain_id: domain.swarm_scale_scheduling_and_workload_economics
+tier_id: tier.runtime_execution_and_economics
+tier_id_placement_source: ION/05_context/current/domain_weaver/fundamentals_recovery/ION_CANONICAL_HIERARCHY_AND_MATRIX.candidate.yaml
+fission_axis: mount_auto_materialize
+owning_blocker: BLK-007
+materialized_at: 2026-06-26T22:11:24Z
+priority: P0
+class: MITOSIS_CHILD
+mission: >-
+  Child domain mitosis from domain.swarm_scale_scheduling_and_workload_economics — mount_auto_materialize specialization.
+  Owns bounded scope until zero blockers; not a founding root until registry settled.
+prevents_struggles:
+  - 6
+  - 7
+source_spec: ION/05_context/current/domain_weaver/domain_gap_analysis/PROPOSED_MITOSIS_CHILD_DOMAINS.candidate.yaml
+parent_founding_domain: domain.swarm_scale_scheduling_and_workload_economics
+non_claims:
+  - candidate_only
+  - no_registry_promotion
+  - not_founding_root_until_settled

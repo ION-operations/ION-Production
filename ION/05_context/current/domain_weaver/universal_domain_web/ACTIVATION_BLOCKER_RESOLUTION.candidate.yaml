@@ -1,0 +1,231 @@
+schema_id: ion.activation_blocker_resolution.v0_1_candidate
+generated_at: '2026-08-04T13:30:00Z'
+producer_domain_id: domain.domain_field_and_diagnostic_coordinate
+carrier_id: cursor_cli
+posture: candidate_only
+authority: boundary_rulings_and_missing_artifact_inventory_only
+non_claims:
+  - no_registry_promotion
+  - no_accepted_state
+  - no_founding_settlement_mutation
+  - no_gate_manufacturing
+
+evidence_sources:
+  - ION/05_context/current/domain_weaver/universal_domain_web/SEAT_ARCHITECTURE_OPUS_ARM.candidate.yaml
+  - ION/05_context/current/domain_weaver/vestige_census/LANE3_OVERLAP_BOUNDARY_AUDIT.candidate.yaml
+  - ION/05_context/current/domain_weaver/vestige_census/DISPOSITION_LEDGER.candidate.yaml
+  - ION/05_context/current/domain_weaver/universal_domain_web/SEAT_GROWTH_LAW.candidate.yaml
+  - ION/05_context/current/domain_weaver/domain_gap_analysis/NEW_DOMAIN_ACTIVATION_REQUIREMENTS.candidate.yaml
+  - ION/05_context/current/domain_weaver/universal_domain_web/UNREGISTERED_PACKAGE_DISPOSITION.candidate.yaml
+  - ION/05_context/current/domain_weaver/rebuild/WAVE_MINUS_1_ACTIVATION_RECEIPT.candidate.yaml
+
+boundary_rulings:
+  - overlap_id: OV-017
+    prior_status: boundary_question_open
+    resolution_status: settled_candidate_rule
+    domains:
+      - domain.authority_gates_and_secrets_posture
+      - domain.artifact_provenance_and_gate_legitimacy
+    side_a:
+      domain_id: domain.authority_gates_and_secrets_posture
+      path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.authority_gates_and_secrets_posture/domain.authority_gates_and_secrets_posture.domain.candidate.yaml
+      field: mission
+      excerpt: >-
+        Own default-denied authority classes, human-gate escalation, secrets vault
+        posture, and red-zone routing law so carriers and action gateways cannot admit,
+        execute, or disclose beyond operator-granted authority surfaces.
+    side_b:
+      domain_id: domain.artifact_provenance_and_gate_legitimacy
+      path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.artifact_provenance_and_gate_legitimacy/MISSION.candidate.yaml
+      field: mission_statement
+      excerpt: >-
+        Sha-bound artifact provenance and lawful gate birth: register gates with birth receipts,
+        witness worker return envelopes (context proof and template action proof), quarantine fake
+        or unratified gates, and supply gate-legitimacy evidence for retirement — without holding
+        work or claiming accepted state.
+    boundary_rule_one_line: >-
+      authority_gates_and_secrets_posture owns F17 default-denied authority classes, secrets vault
+      posture, human-gate escalation, and red-zone routing; artifact_provenance_and_gate_legitimacy
+      owns gate birth receipts, GATE_REGISTRY legitimacy proofs, and retirement evidence for promoted
+      gates — not secrets policy or red-zone admission classes.
+    aligns_with_settled_split: >-
+      SEAT_ARCHITECTURE_OPUS_ARM settled_organ_splits_to_enforce_not_merge:
+      honest_agency = adversarial audit; artifact_provenance = gate legitimacy; state_rank = receipt truth
+      (authority_gates is the F17 secrets/authority-class slice adjacent to that triad).
+    disposition_ledger_update_intent:
+      rule_id: BR-OV-017
+      recommended_status: settled_candidate_rule
+      owner_domain: domain.domain_field_and_diagnostic_coordinate
+
+  - overlap_id: OV-010
+    prior_status: boundary_question_open
+    resolution_status: settled_candidate_rule
+    domains:
+      - domain.production_daemon_and_graph_event_runtime
+      - domain.runtime_carrier_and_action_admission
+      - domain.local_worker_scheduling_and_autonomous_loop
+    side_a:
+      domain_id: domain.production_daemon_and_graph_event_runtime
+      path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.production_daemon_and_graph_event_runtime/domain.production_daemon_and_graph_event_runtime.domain.candidate.yaml
+      field: mission
+      excerpt: >-
+        Own lawful production daemon loop, graph-event reactions, idempotent recovery,
+        and G6-class execution proof for sustained operation without orphan side effects.
+    side_b:
+      domain_id: domain.local_worker_scheduling_and_autonomous_loop
+      path: ION/05_context/current/domain_weaver/vestige_census/LANE3_OVERLAP_BOUNDARY_AUDIT.candidate.yaml
+      field: overlapping_language
+      excerpt: detached_background_workers
+    side_c:
+      domain_id: domain.runtime_carrier_and_action_admission
+      path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.runtime_carrier_and_action_admission/MISSION.candidate.yaml
+      field: mission_statement
+      excerpt: >-
+        Founding W1 P0 domain: single owner of runtime carrier spawn admission policy,
+        spawn_admission.json authority lexicon, spawn_queue membrane law, and witness-default
+        enforcement at admission — not context package authoring, not kernel implementation,
+    boundary_rule_one_line: >-
+      production_daemon_and_graph_event_runtime is the sole owner of the long-running production
+      daemon loop and graph-event reactor recovery; local_worker_scheduling_and_autonomous_loop owns
+      detached goal-wakeup scheduling and autonomous loop workers without a second production reactor;
+      runtime_carrier_and_action_admission owns spawn admission and lease claim/release at the membrane
+      only — not production daemon loop ownership (one-reactor law).
+    aligns_with_settled_split: >-
+      SEAT_ARCHITECTURE_OPUS_ARM spine: Context owns package/mount validation; Runtime keeps execution
+      admission; Swarm keeps scheduling policy; Runtime keeps lease claim/release and execution.
+    disposition_ledger_update_intent:
+      rule_id: BR-OV-010
+      recommended_status: settled_candidate_rule
+      owner_domain: domain.domain_field_and_diagnostic_coordinate
+    note: >-
+      production_daemon package declares parent_domain_id runtime_carrier for organizational lineage;
+      OV-010 settlement does not merge them — it separates daemon-loop ownership from admission membrane.
+
+sub_charter_invocability:
+  governance_silence_finding: >-
+    Prior corpus described pre-activation dotted children (SEAT_GROWTH_LAW section_3_parent_child_law
+    pre_activation_child_lifecycle) but named no parent admission artifact; UNREGISTERED_PACKAGE_DISPOSITION
+    and WAVE_MINUS_1 cited missing parent invocability without a file spec.
+  smallest_new_rule:
+    name: sub_charter_invocability_admission
+    schema_id: ion.subcharter_invocability_admission.v0_1_candidate
+    is_new: true
+    how_parent_admits: >-
+      The invocable parent domain emits a candidate-only admission receipt under its founding folder at
+      candidate_founding_domains/{parent_domain_id}/sub_charter_admissions/{child_domain_id}.candidate.yaml
+      after bounded work review, citing the child charter scope slice and SEAT_GROWTH_LAW section_3.
+    required_fields:
+      - parent_domain_id
+      - child_domain_id
+      - admitted_scope_slice
+      - parent_relinquish_or_coown_ref
+      - cited_necessity_evidence_paths
+      - admitted_at
+      - posture
+    settlement_behavior: >-
+      Child settlement still requires the FULL dotted domain_id string appended to
+      FOUNDING_DOMAIN_SETTLEMENT.candidate.json via supersession receipt; parent-only rows never
+      cover children (NEW_DOMAIN_ACTIVATION_REQUIREMENTS subdomain_dotted_id_support;
+      SEAT_GROWTH_LAW AP6_parent_only_settlement_rows).
+    post_settlement_operation: >-
+      After E1 artifacts exist and settlement lists the dotted id, the child is independently invocable
+      under its own --domain-id; it does not operate under the parent forever. Pre-activation routing
+      through parent lanes ends at admission receipt plus settlement append.
+    dotted_children_in_scope:
+      - domain.context_systems.package_compilation
+      - domain.runtime_carrier_and_action_admission.hooks_mcp_enactment
+      - domain.sos_state_machine_and_transition_law.constitution_ratification
+    parent_admission_required_before_settlement:
+      - domain.context_systems.package_compilation
+    hooks_mcp_note: >-
+      hooks_mcp may admit under the same receipt mechanism, but WAVE_MINUS_1 left_chartered because
+      struggle traffic still names the invocable parent; separate settlement membership is policy-optional
+      until dotted-id traffic rows exist — admission receipt alone does not force settlement append.
+
+e1_missing_artifacts:
+  source: NEW_DOMAIN_ACTIVATION_REQUIREMENTS.candidate.yaml per_domain_requirements
+  common_missing_for_all_six:
+    - FOUNDING_DOMAIN_SETTLEMENT.candidate.json domain_ids entry for exact domain_id
+    - domain_local_diagnostic_packets/{domain_id}/DOMAIN_LOCAL_DIAGNOSTIC_PACKET.candidate.yaml
+    - context_system_requirements/{domain_id}/CONTEXT_SYSTEM_REQUIREMENTS.candidate.yaml
+    - CONTEXT_REQUIREMENTS.candidate.yaml field step_5_context_system_requirements
+    - candidate_founding_domains/{domain_id}/.ion/ACTIVE_CONTEXT_PACKAGE.md
+    - candidate_founding_domains/{domain_id}/.ion/ION_CONTEXT_CAPSULE.yaml
+  per_domain:
+    - domain_id: domain.authority_gates_and_secrets_posture
+      fundamentals_gap: F17
+      extra_blockers:
+        - OV-017 settled here as candidate rule; settlement append still blocked on E1 materialization
+      activation_plan_ref: candidate_founding_domains/domain.authority_gates_and_secrets_posture/ACTIVATION_PLAN.candidate.yaml
+    - domain_id: domain.role_boot_registry_and_agent_identity_law
+      fundamentals_gap: F14
+      extra_blockers:
+        - no PAST_WEEK_STRUGGLE row naming this domain_id per WAVE_MINUS_1
+      activation_plan_ref: candidate_founding_domains/domain.role_boot_registry_and_agent_identity_law/ACTIVATION_PLAN.candidate.yaml
+    - domain_id: domain.production_daemon_and_graph_event_runtime
+      fundamentals_gap: F19a1
+      extra_blockers:
+        - OV-010 settled here as candidate rule; production_daemon parent_domain_id is organizational only
+      activation_plan_ref: candidate_founding_domains/domain.production_daemon_and_graph_event_runtime/ACTIVATION_PLAN.candidate.yaml
+    - domain_id: domain.runtime_carrier_and_action_admission.hooks_mcp_enactment
+      fundamentals_gap: F15
+      extra_blockers:
+        - parent invocable; dotted settlement optional until traffic/policy receipt
+      activation_plan_ref: candidate_founding_domains/domain.runtime_carrier_and_action_admission.hooks_mcp_enactment/ACTIVATION_PLAN.candidate.yaml
+    - domain_id: domain.context_systems.package_compilation
+      fundamentals_gap: F16
+      extra_blockers:
+        - parent sub_charter_invocability_admission receipt absent
+      activation_plan_ref: candidate_founding_domains/domain.context_systems.package_compilation/ACTIVATION_PLAN.candidate.yaml
+    - domain_id: domain.sos_state_machine_and_transition_law.constitution_ratification
+      fundamentals_gap: F20
+      extra_blockers:
+        - parent_domain_id lineage card wrong on disk (see lineage_card_verdict)
+      activation_plan_ref: candidate_founding_domains/domain.sos_state_machine_and_transition_law.constitution_ratification/ACTIVATION_PLAN.candidate.yaml
+
+lineage_card_verdict:
+  term_definition: >-
+    Lineage card means the parent linkage fields on a dotted child's domain.candidate.yaml
+    (parent_domain_id plus consistency with the dotted domain_id prefix), used for ORPHAN_RISK
+    reconciliation and F6 admission routing (WAVE_MINUS_1_ACTIVATION_RECEIPT per_domain_verdicts).
+  affected_domain_id: domain.sos_state_machine_and_transition_law.constitution_ratification
+  wrong_field_path: >-
+    ION/05_context/current/domain_weaver/candidate_founding_domains/domain.sos_state_machine_and_transition_law.constitution_ratification/domain.sos_state_machine_and_transition_law.constitution_ratification.domain.candidate.yaml
+  wrong_field: parent_domain_id
+  declared_value: domain.ion_system_definition
+  dotted_id_implied_parent: domain.sos_state_machine_and_transition_law
+  ruling: >-
+    parent_domain_id is wrong; correct value is domain.sos_state_machine_and_transition_law.
+    The dotted domain_id prefix is the naming law; sibling precedent
+    domain.sos_state_machine_and_transition_law.release_change_rollback declares
+    parent_domain_id domain.sos_state_machine_and_transition_law; UNREGISTERED_PACKAGE_DISPOSITION
+    parent_domain_id_mismatch_note routes correction toward SOS parent, not ion_system_definition apex.
+  ion_system_definition_role: >-
+    Canon index authorship and CANON_BINDING_INDEX operator_verdict remain ion_system_definition
+    supply surfaces; constitution ratification executes as SOS sub-charter under SOS parent lineage,
+    not as a child of ion_system_definition (OV-018/OV-021 apex split is separate and unsettled here).
+  not_edited_in_this_packet: true
+
+unsettled_or_deferred:
+  - id: OV-018_OV-021_apex_split
+    reason: >-
+      ion_system_definition vs sos_state_machine_and_transition_law shrink/absorb questions remain open;
+      lineage correction for constitution_ratification does not ratify W10 absorb.
+  - id: disposition_ledger_disk_status
+    reason: >-
+      BR-OV-010 and BR-OV-017 remain boundary_question_open in DISPOSITION_LEDGER until steward
+      integrates this resolution file; this packet does not mutate DISPOSITION_LEDGER.
+  - id: hooks_mcp_settlement_necessity
+    reason: >-
+      No ruling that hooks_mcp must enter settlement before parent can execute hooks work; only documents
+      optional policy path when dotted-id runner visibility is required.
+  - id: struggle_map_traffic_rows
+    reason: >-
+      PAST_WEEK_STRUGGLE_TO_DOMAIN_MAP still lacks per-id rows for the six chartered ids; boundary
+      resolution does not fabricate traffic evidence.
+
+next_lawful_actions:
+  - Parent domains emit sub_charter_invocability_admission receipts where required (context_systems first).
+  - Owning domains materialize E1 artifacts per NEW_DOMAIN_ACTIVATION_REQUIREMENTS without activating.
+  - Correct constitution_ratification parent_domain_id in owning SOS/ion_system_definition bounded packet.
+  - Re-ask mitosis activation one domain at a time with guard after each settlement +1.

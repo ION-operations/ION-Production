@@ -1,0 +1,30 @@
+domain_id: domain.vestige_enforcement_and_drift_routing
+display_name: Vestige Enforcement And Drift Routing
+true_name_status: MITOSIS_CHILD_CANDIDATE
+status: CANDIDATE_MITOSIS_CHILD
+authority: A3_OPERATIONAL_CANDIDATE
+registry_promotion: false
+projection_mutation: false
+parent_domain_id: domain.research_archaeology_and_past_system_intelligence
+tier_id: tier.verification_and_adversarial_witness
+tier_id_placement_source: ION/05_context/current/domain_weaver/fundamentals_recovery/ION_CANONICAL_HIERARCHY_AND_MATRIX.candidate.yaml
+fission_axis: vestige_role_bindings
+owning_blocker: BLK-RA10
+materialized_at: 2026-06-26T22:11:24Z
+priority: P1
+class: MITOSIS_CHILD
+mission: >-
+  Child domain mitosis from domain.research_archaeology_and_past_system_intelligence — vestige_role_bindings specialization.
+  Owns bounded scope until zero blockers; not a founding root until registry settled.
+prevents_struggles:
+  - 9
+source_spec: ION/05_context/current/domain_weaver/domain_gap_analysis/PROPOSED_MITOSIS_CHILD_DOMAINS.candidate.yaml
+parent_founding_domain: domain.research_archaeology_and_past_system_intelligence
+sub_charters:
+  - id: vestige_role_bindings
+    path: sub_charters/sub_charter_vestige_role_bindings.candidate.yaml
+    parent_sub_charter_ref: domain.research_archaeology_and_past_system_intelligence/sub_charters/vestige_role_bindings.candidate.yaml
+non_claims:
+  - candidate_only
+  - no_registry_promotion
+  - not_founding_root_until_settled

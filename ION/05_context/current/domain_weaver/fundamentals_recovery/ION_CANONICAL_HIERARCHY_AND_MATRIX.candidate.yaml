@@ -1,0 +1,2535 @@
+schema_id: ion.canonical_hierarchy_and_matrix.v0_1_candidate
+authored_by_domain: domain.ion_system_definition
+authored_by_seat: Opus-5 STEWARD
+authored_at: '2026-08-03T00:00:00Z'
+posture: candidate_only
+authority: >-
+  Candidate synthesis. Creates no gate, activates nothing, promotes nothing.
+  Verification REPORTS and ROUTES; it never halts.
+non_claims:
+  - no_registry_promotion
+  - no_accepted_state
+  - no_gate_created_or_proposed
+  - no_ratification_solicited
+  - no_file_touched_outside_this_one
+
+fundamentals_implementation_rescoring:
+  last_rescored_at_utc: '2026-08-08T14:25:07Z'
+  prior_score_anchor: '2026-08-05T23:35:10Z hierarchy.web_node_record_schema'
+  witness_path: ION/05_context/current/domain_weaver/fundamentals_recovery/FUNDAMENTALS_MATRIX_SCORING_WITNESS_20260808.candidate.yaml
+  cf_entries_evidence_refreshed: [CF-02, CF-08, CF-10, CF-20, CF-29, CF-30, CF-35, CF-37, CF-39]
+
+sovereign_instruction_verbatim: >-
+  WE NEED TO FINALLY BUILD THE ACTUAL FULL DIAGRAM OF THE HIERARCHY AND RELATIONSHIP MATRIX OF ION
+  ... SO IT NEVER CAN BE FORGOTTEN AGAIN. MAYBE EVEN THE LATEST CONSTITUTION DIDNT FULLY CAPTURE HOW
+  IMPORTANT TEMPLATES ARE, LIKELY BECAUSE I THOUGHT IT WAS CANON AT THIS POINT.
+
+measurement_recomputed_not_inherited:
+  note: >-
+    The mission brief stated 159 fundamentals / 19 implemented / 85 partial / 41 not / 6 unknown /
+    33 contradictions. Recomputed from the twelve sector files on disk; the brief's numbers are close
+    but not exact. These are the measured values.
+  method: 'python3 yaml.safe_load over ION/05_context/current/domain_weaver/fundamentals_recovery/S*.yaml'
+  raw_fundamentals_found_across_12_sectors: 170
+  per_sector:
+    S01_CONSTITUTION: 50
+    S02_ARCHITECTURE: 15
+    S03_SPECS: 8
+    S04_TEMPLATES: 11
+    S05_REGISTRY: 13
+    S06_KERNEL: 9
+    S07_GPTSTATE: 9
+    S08_VNEXT: 11
+    S09_DOCTRINE: 15
+    S10_DOMAINS: 10
+    S11_HISTORY: 9
+    S12_CONTEXT_LIVE: 10
+  implemented_field_raw_tally:
+    yes_true: 22
+    partially: 99
+    no_false: 42
+    unknown: 7
+  raw_entries_carrying_contradicted_by: 48
+  sector_level_contradiction_entries: 35
+  kind_tally: {law: 85, protocol: 25, invariant: 21, definition: 19, mechanism: 11, schema: 9}
+  after_deduplication:
+    canonical_fundamentals: 47
+    dedup_ratio: '170 raw citations collapse to 47 distinct fundamentals'
+    rank_1_count: 13
+    rank_1_implemented_yes: 1
+    rank_1_partial: 8
+    rank_1_no: 4
+
+independent_verification_performed_by_this_steward:
+  - claim: 'Files under ION/07_templates/'
+    command: 'find ION/07_templates -type f | wc -l'
+    result: 122
+  - claim: 'Kernel modules referencing ION/07_templates/'
+    command: 'grep -rl "07_templates" ION/04_packages/kernel/*.py | wc -l'
+    result: 43
+  - claim: 'Kernel modules that open a template file inline with the path literal'
+    command: 'grep -rn "07_templates" ION/04_packages/kernel/*.py | grep -cE "open\(|read_text\(|read_bytes\("'
+    result: 0
+    note: >-
+      The single opener is ION/04_packages/kernel/ion_context_authority_team_audit.py:63-69, which
+      reads paths from a REQUIRED_FILES constant and only lints the template's own wording. It never
+      compares a produced artifact to a template. Zero kernel modules validate an artifact against a
+      template. Confirmed by reading the file.
+  - claim: 'ion_template_action_gate performs membership test only'
+    path: ION/04_packages/kernel/ion_template_action_gate.py
+    lines: '15-22, 158-192'
+    result: >-
+      CONFIRMED. DEFAULT_ALLOWED_TEMPLATE_IDS is a hardcoded Python set of six strings. The check is
+      `elif template_id not in allowed`. No template file is loaded. production_authority and
+      live_external_execution_authority are hardcoded False in the returned dict.
+  - claim: 'ion_codex_queue_runner computes template and context from two unlinked sources'
+    path: ION/04_packages/kernel/ion_codex_queue_runner.py
+    lines: '5212-5218'
+    result: >-
+      CONFIRMED by reading the function _worker_spawn_contract_for_request. required_reads comes from
+      request.get("required_context_reads"); template_id comes from
+      WORKLOAD_TEMPLATE_BY_CLASS.get(workload_class, ...). Nothing derives one from the other. There
+      is no template_spec field in the emitted contract.
+  - claim: 'template_spec appears in kernel'
+    command: 'grep -rn "template_spec" ION/04_packages/kernel/*.py'
+    result: >-
+      Only ION/04_packages/kernel/context_compiler.py:219 renders
+      context_package.tiers.tier_1_doctrine.template_spec. context_compiler.py is not on the live
+      domain spawn path.
+  - claim: 'Live domain package cardinality'
+    path: ION/05_context/current/domain_weaver/domain_field_composition/LIVE_DOMAIN_COMPOSITION.candidate.json
+    result: 'disk_package_count 45, live_composition_cardinality 45, runner_invocable_count 37'
+
+# ===========================================================================
+# 1. FUNDAMENTALS - deduplicated canonical set (47)
+# ===========================================================================
+# load_bearing_rank: 1 = ION cannot function without it ... 5 = refinement.
+# Rank is assigned by what BREAKS WITHOUT IT, deliberately independent of how
+# much constitutional text the fundamental received. See section 6.
+fundamentals:
+
+  # ---- RANK 1 -------------------------------------------------------------
+  - id: CF-01
+    statement: >-
+      The model is a carrier; the organism is the structure. All continuity, identity, law, meaning,
+      and memory live in artifacts outside any model.
+    constitutional_name: 'F0 - Externalization (the root)'
+    citations:
+      - {source_path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/Constitution /ION_CONSTITUTION_FOUNDING_DOCUMENT_V0_10_CANDIDATE_20260710.md', lines: '207-211', sector: S01_CONSTITUTION}
+      - {source_path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/Constitution /ION_CONSTITUTION_FOUNDING_DOCUMENT_V0_10_CANDIDATE_20260710.md', lines: '207-211', sector: S06_KERNEL}
+      - {source_path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/Constitution /ION_CONSTITUTION_FOUNDING_DOCUMENT_V0_10_CANDIDATE_20260710.md', lines: '207-211', sector: S07_GPTSTATE}
+    dated: '2026-07-10'
+    kind: invariant
+    load_bearing_rank: 1
+    rank_justification: >-
+      Without it there is no ION. Every session would begin from nothing and the project would be a
+      sequence of unrelated chats. This is the axiom the other 46 stand on.
+    implemented: partial
+    implementation_evidence: >-
+      ION/04_packages/kernel/ion_carrier_continue.py refreshes file-backed ACTIVE_* packets;
+      ion_carrier_task_return.py captures CLI returns to ledger paths. No single module asserts F0 by
+      name. CONTINUITY_SYSTEM_TRUTH_AUDIT DIV-005 rates the entry-point split CRITICAL: only
+      CLAUDE.md:10 points at the working seat manifest, AGENTS.md:30-40 routes to a 53-day-stale
+      surface, and START_HERE_FOR_ANY_AGENT.md routes nowhere. Continuity is currently carrier-bound.
+    owning_domain: domain.externalized_cognition_continuity
+    tier: tier.truth_memory_and_context_substrate
+
+  - id: CF-02
+    statement: >-
+      Nothing is true because an AI said it. Accepted state is only what deterministically rebuilds
+      from an append-only, hash-chained receipt ledger. Output is proposal; memory is not state;
+      telemetry is witness.
+    constitutional_name: 'F1 - Receipted truth'
+    citations:
+      - {source_path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/Constitution /ION_CONSTITUTION_FOUNDING_DOCUMENT_V0_10_CANDIDATE_20260710.md', lines: '213-218', sector: S01_CONSTITUTION}
+      - {source_path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/Constitution /ION_CONSTITUTION_FOUNDING_DOCUMENT_V0_10_CANDIDATE_20260710.md', lines: '213-218', sector: S06_KERNEL}
+      - {source_path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/Constitution /ION_CONSTITUTION_FOUNDING_DOCUMENT_V0_10_CANDIDATE_20260710.md', lines: '213-218', sector: S07_GPTSTATE}
+      - {source_path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/Constitution /ION_COMPRESSED_CONSTITUTION_V0_1_CANDIDATE_20260704.md', lines: '41-48', sector: S01_CONSTITUTION, note: 'Articles 1 and 2, compressed instrument'}
+    dated: '2026-07-04 (compressed) / 2026-07-10 (founding)'
+    kind: law
+    load_bearing_rank: 1
+    rank_justification: >-
+      Without it ION cannot distinguish a claim from a fact. This is the precise mechanism by which
+      ION documented green over work that never ran; the seat law "Verify, don't trust" exists
+      because this fundamental is only partly built.
+    implemented: partial
+    implementation_evidence: >-
+      ion_carrier_task_return.py uses sha256 ledgers and ACTIVE_STEWARD_INTEGRATION_QUEUE (lines
+      31-33, 56-66); ion_context_proof_gate.py binds returns to context-load receipts (lines 68-79).
+      2026-08-08: steward integrate path accepts loop step returns after legacy write-disables removed
+      from ion_steward_integrate.py (ION/tests/test_kernel_ion_steward_integrate.py 6/6 pass;
+      mission attests 9/9 with subset module); LAST_ION_AUTONOMOUS_LOOP_RESULT.json status PASS
+      steps_integrated 1 with integration_receipt_path under steward_integrations/. First exercised
+      candidate_to_accepted_promotion chain: domain_promotions/20260808T132007Z_artifact.sos_human_gate_clear_retirement.promotion.json
+      verdict PROMOTION_CHAIN_COMPLETE (demonstration posture; non_claims deny registry promotion).
+      No single hash-chained organism ledger exists. Domain's own admission at
+      ION/03_registry/domains/domain.externalized_cognition_continuity.domain.yaml:39-41 - "continuity
+      ledgers record context_package_sha256 (input hash), not a post-write hash to resume from".
+    owning_domain: domain.state_rank_and_receipt_truth
+    tier: tier.sovereign_and_constitutional_spine
+
+  - id: CF-03
+    statement: >-
+      The organism's chief epistemic threat is its own past output. Every artifact re-entering
+      context - including ION's own prior work - is classified first: active truth, candidate
+      witness, historical witness, superseded, or unknown. Nothing re-enters as fact by default.
+    constitutional_name: 'F2 - Self-distrust'
+    citations:
+      - {source_path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/Constitution /ION_CONSTITUTION_FOUNDING_DOCUMENT_V0_10_CANDIDATE_20260710.md', lines: '220-232', sector: S01_CONSTITUTION}
+      - {source_path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/Constitution /ION_CONSTITUTION_FOUNDING_DOCUMENT_V0_10_CANDIDATE_20260710.md', lines: '220-232', sector: S06_KERNEL}
+      - {source_path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/Constitution /ION_CONSTITUTION_FOUNDING_DOCUMENT_V0_10_CANDIDATE_20260710.md', lines: '220-224', sector: S07_GPTSTATE}
+      - {source_path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/Constitution /ION_COMPRESSED_CONSTITUTION_V0_1_CANDIDATE_20260704.md', lines: '50-54', sector: S01_CONSTITUTION, note: 'Article 3'}
+    dated: '2026-07-10'
+    kind: protocol
+    load_bearing_rank: 1
+    rank_justification: >-
+      Without it every stale candidate artifact re-enters as canon. This is the recorded mechanism of
+      the lost year: a 53-day-stale codex_solo surface is still named THE continuity recovery rule by
+      AGENTS.md:30-40 while three other authorities demote it.
+    implemented: partial
+    implementation_evidence: >-
+      .candidate.* filename convention is near-universal; ion_gate_registry.demote_evaluation_to_witness
+      (lines 145-173) is a weak witness-vs-truth form. No machine classifier runs on context re-entry.
+      ion_stale_surface_audit.py detects stale POINTERS; it does not detect stale STATE.
+    owning_domain: domain.vestige_enforcement_and_drift_routing
+    tier: tier.verification_and_adversarial_witness
+
+  - id: CF-04
+    statement: >-
+      Cognition becomes state only through typed, gated transitions. A template defines each act:
+      what kind of act it is, what resolved intent it binds to, what context it requires, what paths
+      it may touch, what authority it exercises, what proof it owes, and how its result becomes
+      future context.
+    constitutional_name: 'F4 - Typed action'
+    citations:
+      - {source_path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/Constitution /ION_CONSTITUTION_FOUNDING_DOCUMENT_V0_10_CANDIDATE_20260710.md', lines: '265-274', sector: S01_CONSTITUTION}
+      - {source_path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/Constitution /ION_CONSTITUTION_FOUNDING_DOCUMENT_V0_10_CANDIDATE_20260710.md', lines: '265-274', sector: S06_KERNEL}
+      - {source_path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/Constitution /ION_CONSTITUTION_FOUNDING_DOCUMENT_V0_10_CANDIDATE_20260710.md', lines: '265-271', sector: S07_GPTSTATE}
+      - {source_path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/Constitution /ION_COMPRESSED_CONSTITUTION_V0_1_CANDIDATE_20260704.md', lines: '113-118', sector: S01_CONSTITUTION, note: 'Article 13'}
+      - {source_path: 'ION/01_doctrine/SOVEREIGN_CONSTITUTION.md', lines: '71-73', sector: S09_DOCTRINE, note: 'Article 9, template law, doctrine bridge'}
+    dated: '2026-07-10'
+    kind: schema
+    load_bearing_rank: 1
+    rank_justification: >-
+      This is the clause every single state transition in ION must pass through. Without it no act
+      has a declared shape, proof obligation, path boundary, or authority ceiling - which means every
+      write is unbounded and no return can be checked against anything. It is the narrowest neck in
+      the entire organism and it received 7.2 percent of the constitution's fundamentals text.
+    implemented: partial
+    implementation_note: 'FORM ONLY, NOT CONTRACT'
+    implementation_evidence: >-
+      ION/04_packages/kernel/ion_template_action_gate.py:15-22 hardcodes six allowed ids and
+      :158-192 performs a membership test plus a path-escape check. It never opens a template file.
+      CONTINUITY_SYSTEM_TRUTH_AUDIT DIV-001 (CRITICAL): "The gate enforces ZERO of the seven clauses
+      from a template." Two of the six approved ids name no template file anywhere in ION/07_templates/.
+      Verified by this steward: 43 kernel modules reference ION/07_templates/, 1 opens a file there
+      (to lint that template's own wording), 0 validate an artifact against a template.
+    owning_domain: domain.template_and_protocol_movement
+    tier: tier.formation_weaving_and_meta_evolution
+
+  - id: CF-05
+    statement: >-
+      A template is the unit of lawful ACTION, the context package the unit of lawful VISIBILITY; the
+      template spec ships in the never-dropped tier of the package.
+    also_stated_as: >-
+      ION was designed so that a template is the unit of lawful action and the context package is the
+      unit of lawful visibility, and these are not two systems but two faces of one typed transition.
+    citations:
+      - {source_path: 'ION/06_intelligence/specs/T03_ContextPackageSchema.spec.md', lines: 'cited in S06_KERNEL without line-open', sector: S06_KERNEL, provenance_caveat: 'S06 recorded the line range as speculation'}
+      - {source_path: 'ION/05_context/current/domain_weaver/rebuild/TEMPLATE_CONTEXT_DESIGN_ARCHAEOLOGY.candidate.yaml', lines: '670-683', note: 'reconstructed_design.one_paragraph'}
+      - {source_path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/Constitution /ION_CONSTITUTION_FOUNDING_DOCUMENT_V0_10_CANDIDATE_20260710.md', lines: '265-269', note: 'primary source; archaeology calls this the claim with the most exact verbatim support in the corpus'}
+      - {source_path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/Constitution /ION_CONSTITUTION_FOUNDING_DOCUMENT_V0_10_CANDIDATE_20260710.md', lines: '461-463', note: '"The template is where F4 lives - and the meta-template path is where F7 lives"'}
+    dated: '2026-04-03 (T03) / 2026-07-10 (constitution restatement)'
+    kind: invariant
+    load_bearing_rank: 1
+    rank_justification: >-
+      This is the join that makes CF-04 and CF-06 into one mechanism instead of two disconnected
+      ones. Without it an agent can hold context without holding its governing template, and hold a
+      template without the context it requires - which is exactly the live condition. Every artifact
+      ION produces can then RESEMBLE continuity without being RE-INSTANTIABLE.
+    implemented: 'no'
+    implementation_evidence: >-
+      TEMPLATE_CONTEXT_DESIGN_ARCHAEOLOGY headline (lines 56-62): the coupling "was NEVER ONCE
+      IMPLEMENTED AS A MACHINE FIELD". Its critical_qualification (lines 136-139): "The unity is real
+      in doctrine and in prose templates. It was never once implemented as a machine-readable field.
+      This is the central structural finding of the audit." Exact-key search for context_routes,
+      context_mounts, binds_context, preload_context, required_capsules as YAML keys returns ZERO
+      hits repo-wide (archaeology lines 140-145).
+      ION/03_registry/template_metadata_contract_registry.yaml:11-27 defines 17 required contract
+      fields and not one is context-related - the schema has no slot in which a template could
+      declare its context.
+    owning_domain: domain.template_and_protocol_movement
+    co_owning_domain: domain.context_systems
+    tier: tier.formation_weaving_and_meta_evolution
+
+  - id: CF-06
+    statement: >-
+      A ContextPackage is the ONLY thing an agent receives. It is a self-contained, versioned,
+      pre-compiled brief that contains everything the agent needs to execute one transition. Agents
+      do not read the filesystem directly - they consume their ContextPackage and produce output.
+    citations:
+      - {source_path: 'ION/06_intelligence/specs/T03_ContextPackageSchema.spec.md', lines: '23-26', sector: S02_ARCHITECTURE}
+      - {source_path: 'ION/06_intelligence/specs/T03_ContextPackageSchema.spec.md', lines: '23-26', sector: S03_SPECS}
+      - {source_path: 'ION/06_intelligence/specs/T03_ContextPackageSchema.spec.md', lines: '23-26', sector: S12_CONTEXT_LIVE}
+    dated: '2026-04-03'
+    kind: schema
+    load_bearing_rank: 1
+    rank_justification: >-
+      Without it context is whatever the agent happened to read, so no two runs of the same work have
+      the same inputs and no return is reproducible. This is why the Sovereign can be told a domain
+      "ran" and get nothing.
+    implemented: 'no'
+    implementation_evidence: >-
+      ION/04_packages/kernel/context_compiler.py implements the schema faithfully but is not on the
+      live domain spawn path. S12 automated scan of 233 live capsules: none contain tier_1_doctrine
+      or template_spec fields. Carriers receive a flat required_context_reads list and use Read tools
+      against repo paths. Self-contradicted by the spec itself at T03:155-165 (IDE/manual mode reads
+      files on session start).
+    owning_domain: domain.context_systems
+    subdomain: domain.context_systems.package_compilation
+    tier: tier.truth_memory_and_context_substrate
+
+  - id: CF-07
+    statement: >-
+      tier_1_doctrine.template_spec is REQUIRED - the bound template's full spec - and tier_1
+      doctrine and target are NEVER dropped under budget pressure.
+    citations:
+      - {source_path: 'ION/06_intelligence/specs/T03_ContextPackageSchema.spec.md', lines: '65-68', sector: S02_ARCHITECTURE}
+      - {source_path: 'ION/06_intelligence/specs/T03_ContextPackageSchema.spec.md', lines: '68', sector: S03_SPECS}
+      - {source_path: 'ION/06_intelligence/specs/T03_ContextPackageSchema.spec.md', lines: '68-69', sector: S04_TEMPLATES}
+      - {source_path: 'ION/06_intelligence/specs/T03_ContextPackageSchema.spec.md', lines: '65-68', sector: S12_CONTEXT_LIVE}
+      - {source_path: 'ION/06_intelligence/specs/T03_ContextPackageSchema.spec.md', lines: '34-35', sector: S03_SPECS, note: '"Doctrine and target are NEVER dropped."'}
+    dated: '2026-04-03'
+    kind: schema
+    load_bearing_rank: 1
+    rank_justification: >-
+      This single field is the entire physical mechanism of CF-05. It is the difference between the
+      template-context unity being law and being prose. The archaeology names its absence from the
+      contract schema as the reason "the coupling could never become machine-checkable no matter how
+      strongly doctrine restated it".
+    implemented: 'no'
+    implementation_evidence: >-
+      Verified by this steward - grep for template_spec across ION/04_packages/kernel/*.py returns a
+      single functional site, context_compiler.py:219, which renders the field into compiled packages.
+      The live worker path does not use it: ion_codex_queue_runner.py:5212-5218 emits template_id from
+      WORKLOAD_TEMPLATE_BY_CLASS and required_context_reads from the request, with no template_spec
+      field and no derivation of one from the other. 0 of 233 live capsules carry the field.
+    owning_domain: domain.context_systems.package_compilation
+    tier: tier.truth_memory_and_context_substrate
+
+  - id: CF-08
+    statement: >-
+      The organism is a lattice of bounded domains - every system lives in exactly one, with its own
+      charter, context, agents, and receipts. Growth happens by mitosis (governed splitting), never
+      by accretion - and by necessity pressure, never by quota.
+    constitutional_name: 'F6 - Domain organization'
+    citations:
+      - {source_path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/Constitution /ION_CONSTITUTION_FOUNDING_DOCUMENT_V0_10_CANDIDATE_20260710.md', lines: '293-308', sector: S01_CONSTITUTION}
+      - {source_path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/Constitution /ION_CONSTITUTION_FOUNDING_DOCUMENT_V0_10_CANDIDATE_20260710.md', lines: '293-308', sector: S06_KERNEL}
+      - {source_path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/Constitution /ION_CONSTITUTION_FOUNDING_DOCUMENT_V0_10_CANDIDATE_20260710.md', lines: '293-298', sector: S07_GPTSTATE}
+      - {source_path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/Constitution /ION_CONSTITUTION_FOUNDING_DOCUMENT_V0_10_CANDIDATE_20260710.md', lines: '293-308', sector: S10_DOMAINS}
+      - {source_path: 'ION/05_context/current/domain_weaver/candidate_founding_domains/domain.domain_weaver_living_self_model/MISSION.candidate.yaml', lines: '4-6', sector: S10_DOMAINS, note: 'completeness definition'}
+      - {source_path: 'CLAUDE.md', lines: '26-28', sector: S09_DOCTRINE, note: 'seat-law restatement: EVERYTHING IS A DOMAIN'}
+    dated: '2026-07-10'
+    kind: mechanism
+    load_bearing_rank: 1
+    rank_justification: >-
+      Without it ION is a monolith with a doctrine folder. This is the fundamental that makes the
+      hierarchy in section 2 of this file mean anything - it is what says ownership is total and
+      exclusive, so nothing is fixed by hand outside an owner.
+    implemented: partial
+    implementation_evidence: >-
+      45 materialized domain packages on disk (LIVE_DOMAIN_COMPOSITION.candidate.json), 37 invocable
+      by the runner, 38 registered. S10 measured 37 of 102 top-level folders carrying all seven F6
+      artifacts; 65 lack the full suite. The kernel does not enforce exactly-one-home at runtime.
+      2026-08-08: tier_id populated on 29/45 live packages (waves 1-2); matrix hierarchy live_domains
+      rows carry proposed_true_set_priority P0-P2 aligned to PROPOSED_TRUE_DOMAIN_SET.candidate.yaml.
+    owning_domain: domain.domain_mitosis_and_agent_society_formation
+    tier: tier.formation_weaving_and_meta_evolution
+
+  - id: CF-09
+    statement: >-
+      No actor self-certifies. Every carrier session begins at level zero with no assumed
+      capabilities; every capability claim requires current-session proof; every elevation requires a
+      decision artifact the carrier cannot author for itself.
+    constitutional_name: 'F5 - Earned agency'
+    citations:
+      - {source_path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/Constitution /ION_CONSTITUTION_FOUNDING_DOCUMENT_V0_10_CANDIDATE_20260710.md', lines: '276-291', sector: S01_CONSTITUTION}
+      - {source_path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/Constitution /ION_CONSTITUTION_FOUNDING_DOCUMENT_V0_10_CANDIDATE_20260710.md', lines: '276-280', sector: S06_KERNEL}
+      - {source_path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/Constitution /ION_COMPRESSED_CONSTITUTION_V0_1_CANDIDATE_20260704.md', lines: '86-90', sector: S01_CONSTITUTION, note: 'Article 9, CARRIER-L0'}
+      - {source_path: 'ION/05_context/current/domain_weaver/candidate_founding_domains/domain.context_proof_gate_enforcement/MACHINE_CONTEXT_PROOF_LAW.candidate.yaml', lines: '16-19', sector: S10_DOMAINS, note: 'the proposer is never the acceptor'}
+    dated: '2026-07-10'
+    kind: law
+    load_bearing_rank: 1
+    rank_justification: >-
+      Without it any agent can declare itself authorized and the whole authority model collapses to
+      self-report. It is the reason an agent may never convert the Sovereign's encouragement into
+      ratification.
+    implemented: partial
+    implementation_evidence: >-
+      ion_context_proof_gate.py requires a CONTEXT PROOF section matching receipt reads;
+      ion_prompt_spawn_admission.validate_directive_provenance_on_admission is fail-closed at spawn.
+      Countervailing: ion_gate_registry.demote_evaluation_to_witness can accept returns that failed
+      strict proof when the gate is not hard-ratified, producing dual behavior on one return.
+    owning_domain: domain.context_proof_gate_enforcement
+    tier: tier.truth_memory_and_context_substrate
+
+  - id: CF-10
+    statement: >-
+      Verification is not authority. Checks REPORT and ROUTE findings; they never halt work. Never a
+      global ION blocker.
+    citations:
+      - {source_path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/ION_Domain/_workbench/_team/DOMAIN_REGISTRY.md', lines: '46', sector: S07_GPTSTATE, dated: '2026-06-19'}
+      - {source_path: 'CLAUDE.md', lines: '29-31', sector: S09_DOCTRINE, dated: '2026-08-02/03'}
+      - {source_path: 'ION/05_context/current/domain_weaver/candidate_founding_domains/domain.testing_and_reproducible_evidence/OPERATING_CARD.candidate.md', lines: '18', sector: S10_DOMAINS}
+      - {source_path: 'ION/06_intelligence/roundtable/live/log/20260803T012208Z__AETHER_OPERATOR__retraction-no-gate-promotions-ever-verification-is-not-authority.md', lines: '31-37', sector: S11_HISTORY, dated: '2026-08-03T01:22:08Z'}
+      - {source_path: 'ION/06_intelligence/roundtable/live/log/20260803T211348Z__AETHER_OPERATOR__sovereign-alarm-there-may-be-no-continuity-system-at-all.md', lines: '77', sector: S11_HISTORY}
+    dated: '2026-06-19 earliest; restated 2026-08-03'
+    kind: law
+    load_bearing_rank: 1
+    rank_justification: >-
+      The founding failure of the project is an invented blocker. 875 domain runs executed under a
+      read-only default template, each declaring zero open blockers, none producing work. Any edge
+      that can stop a peer reproduces that. This is why there is no `blocks` edge in section 3.
+    implemented: partial
+    implementation_evidence: >-
+      Kernel side is real - see CF-11. 2026-08-08: steward integration on the autonomous loop tick no
+      longer blocked by legacy write-disables in ion_steward_integrate.py; LAST_ION_AUTONOMOUS_LOOP_RESULT.json
+      PASS with steps_integrated 1 and integration_accepted true on step 1. Practice side is not:
+      S07 records ION_CARRIER_WORKFLOW_BLOCKED still used as a parent stop signal, and S11 records
+      agents still treating checks as halts in carrier practice.
+    owning_domain: domain.claim_gate_and_witness_verification
+    escalation_note: 'Domain is designed, not materialized on disk.'
+    tier: tier.verification_and_adversarial_witness
+
+  - id: CF-11
+    statement: >-
+      Unratified or missing gates MUST NOT block carrier execution. Only gates with
+      ratification_status=operator_ratified and default_mode=hard may halt work.
+    citations:
+      - {source_path: 'ION/04_packages/kernel/ion_gate_registry.py', lines: '1-5', sector: S05_REGISTRY}
+      - {source_path: 'ION/04_packages/kernel/ion_gate_registry.py', lines: '1-5', sector: S06_KERNEL}
+      - {source_path: 'ION/05_context/current/domain_weaver/gate_registry/GATE_REGISTRY.candidate.json', lines: '6', sector: S05_REGISTRY, note: 'witness_by_default_block_on_operator_ratified_hard_only'}
+      - {source_path: 'ION/03_registry/domains/domain.artifact_provenance_and_gate_legitimacy.domain.yaml', lines: '39-40', sector: S05_REGISTRY, note: '0 of 9 registry gates hard-effective'}
+    dated: 'module present 2026-06+'
+    kind: mechanism
+    load_bearing_rank: 1
+    rank_justification: >-
+      This is the executable form of CF-10 and the only rank-1 fundamental that is fully implemented.
+      Without it the gate austerity program is prose and any agent can re-invent the blocker that
+      cost the year.
+    implemented: 'yes'
+    implementation_evidence: >-
+      kernel.ion_gate_registry.effective_enforcement_mode, gate_may_block,
+      demote_evaluation_to_witness, filter_spawn_stop_reasons. S05 verified by running
+      PYTHONPATH=ION/04_packages python3 import kernel.ion_gate_registry against
+      GATE_REGISTRY.candidate.json - 9 gates, 0 hard.
+    owning_domain: domain.artifact_provenance_and_gate_legitimacy
+    tier: tier.sovereign_and_constitutional_spine
+
+  - id: CF-12
+    statement: >-
+      Every operator directive carries a SCOPE and a SATISFACTION CONDITION. Encoding a directive as
+      a permanent default without recording its provenance, scope, and expiry is the defect. A
+      directive whose condition is satisfied must be retired with a receipt.
+    citations:
+      - {source_path: 'ION/06_intelligence/roundtable/live/log/20260803T023732Z__AETHER_OPERATOR__root-cause-found-the-write-block-was-the-sovereigns-expired-audit-order.md', lines: '54-57', sector: S11_HISTORY}
+      - {source_path: 'CLAUDE.md', lines: '36-40', note: 'seat law 3, same fundamental'}
+    dated: '2026-08-03T02:37:32Z'
+    kind: invariant
+    load_bearing_rank: 1
+    rank_justification: >-
+      This is the only fundamental in this file whose absence has a measured cost: roughly a year and
+      875 domain runs of nothing. A Sovereign audit-scoped read-only order became the silent kernel
+      default because no artifact recorded its scope or expiry. It is not in the constitution at all.
+    implemented: 'no'
+    implementation_evidence: >-
+      Root cause bound to ION/04_packages/kernel/ion_prompt_spawn_admission.py:390-406
+      DEFAULT_PROMPT_SPAWN_TEMPLATE_ID resolving to an audit_observation read-only default. The
+      owning domain, domain.sovereign_intent_and_mandate_ledger, is designed in the structural roster
+      and is NOT materialized on disk.
+    owning_domain: domain.sovereign_intent_and_mandate_ledger
+    owning_domain_status: designed_not_materialized
+    tier: tier.sovereign_and_constitutional_spine
+
+  - id: CF-13
+    statement: 'When source and projection disagree, source governs.'
+    citations:
+      - {source_path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/Constitution /ION_COMPRESSED_CONSTITUTION_V0_1_CANDIDATE_20260704.md', lines: '56-58', sector: S01_CONSTITUTION, note: 'Article 4'}
+      - {source_path: 'ION/01_doctrine/SOVEREIGN_KERNEL.md', lines: '61-62', sector: S09_DOCTRINE}
+      - {source_path: 'ION/01_doctrine/CANONICAL_WORKFLOW.md', lines: '62', sector: S09_DOCTRINE, note: 'Generated witness artifacts do not outrank kernel truth.'}
+    dated: '2026-04-03'
+    kind: law
+    load_bearing_rank: 1
+    rank_justification: >-
+      Without a precedence rule between what a file says and what the system does, every projection,
+      README, and status doc becomes a competing authority - which is the observed state. It is the
+      rule that makes "verify, don't trust" decidable rather than a mood.
+    implemented: partial
+    implementation_evidence: >-
+      Stated in three doctrine files, enforced by none. Directly contradicted in operation by
+      AGENTS.md:29-32, which routes arriving agents to MINI/CAPSULE/HOT_CONTEXT before
+      REPO_AUTHORITY workflow law. CONTINUITY_SYSTEM_TRUTH_AUDIT DIV-003 records the inversion in its
+      sharpest form: a policy file claims to own the allowed-template-id set while its own
+      provenance[0] points at the live gate that hardcodes it.
+    owning_domain: domain.ion_system_definition
+    tier: tier.sovereign_and_constitutional_spine
+
+  # ---- RANK 2 -------------------------------------------------------------
+  - id: CF-14
+    statement: >-
+      Governed meaning. Naming is load-bearing. No governed entity should be casually renamed in a
+      patch unless the packet explicitly concerns semantic identity, true-name review, or protocol
+      cleanup.
+    constitutional_name: 'F3 - Governed meaning'
+    citations:
+      - {source_path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/Constitution /ION_CONSTITUTION_FOUNDING_DOCUMENT_V0_10_CANDIDATE_20260710.md', lines: '234-263', sector: S01_CONSTITUTION}
+      - {source_path: 'ION/02_architecture/TRUE_NAME_AND_SEMANTIC_LAYER_PROTOCOL.md', lines: '71-74', sector: S02_ARCHITECTURE}
+    dated: '2026-04-07 / 2026-07-10'
+    kind: law
+    load_bearing_rank: 2
+    rank_justification: >-
+      Without it every id drifts and the domain web silently forks into aliases - the L-prefix tier
+      collision is a live instance. ION degrades rather than stops, which is why this is 2 and not 1.
+    implemented: partial
+    implementation_evidence: 'ION/03_registry/semantic_identities/ and name_lineage_registry.yaml exist; drift is common between architecture filenames and registry ids.'
+    owning_domain: domain.true_name_symbol_and_semantic_dag_index
+    tier: tier.truth_memory_and_context_substrate
+
+  - id: CF-15
+    statement: >-
+      The system improves itself only through the same law it applies to everything else. History is
+      a frozen, read-only quarry; candidate work happens in a workbench where messy thinking is
+      lawful; only proof-promoted work enters the clean tree, and nothing flows backward.
+    constitutional_name: 'F7 - Governed evolution'
+    citations:
+      - {source_path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/Constitution /ION_CONSTITUTION_FOUNDING_DOCUMENT_V0_10_CANDIDATE_20260710.md', lines: '310-320', sector: S01_CONSTITUTION}
+      - {source_path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/Constitution /ION_COMPRESSED_CONSTITUTION_V0_1_CANDIDATE_20260704.md', lines: '102-106', sector: S01_CONSTITUTION, note: 'Article 11'}
+    dated: '2026-07-10'
+    kind: protocol
+    load_bearing_rank: 2
+    rank_justification: >-
+      Without it superseded work flows back into the clean tree and the organism cannot tell its own
+      history from its own state. Rank 2 because the .candidate.* convention gives partial protection.
+    implemented: partial
+    implementation_evidence: 'quarentine/ and candidate_founding_domains/ implement the shape by convention; no machine enforces directionality.'
+    owning_domain: domain.research_archaeology_and_past_system_intelligence
+    tier: tier.truth_memory_and_context_substrate
+
+  - id: CF-16
+    statement: >-
+      Truthfulness is structural, not behavioral. Non-claims are machine-readable fields, not prose
+      disclaimers. Simulated work marks itself simulated inside the artifact. Spawn reality is
+      declared truthfully.
+    constitutional_name: 'F8 - Honesty as schema'
+    citations:
+      - {source_path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/Constitution /ION_CONSTITUTION_FOUNDING_DOCUMENT_V0_10_CANDIDATE_20260710.md', lines: '322-346', sector: S01_CONSTITUTION}
+      - {source_path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/Constitution /ION_CONSTITUTION_FOUNDING_DOCUMENT_V0_10_CANDIDATE_20260710.md', lines: '322-328', sector: S06_KERNEL}
+      - {source_path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/Constitution /ION_COMPRESSED_CONSTITUTION_V0_1_CANDIDATE_20260704.md', lines: '140-155', sector: S01_CONSTITUTION, note: 'Articles 17 and 19'}
+    dated: '2026-07-10'
+    kind: schema
+    load_bearing_rank: 2
+    rank_justification: >-
+      Without it disclaimers are prose an agent can drop. non_claims blocks are the reason a candidate
+      artifact cannot quietly read as accepted state.
+    implemented: partial
+    implementation_evidence: 'non_claims blocks are near-universal in candidate YAML; spawn_admission.json and authority_boundaries in ion_codex_queue_runner:5225-5237. Not all operator-facing surfaces emit them.'
+    owning_domain: domain.honest_agency_validation
+    tier: tier.verification_and_adversarial_witness
+
+  - id: CF-17
+    statement: >-
+      An agent that receives a ContextPackage with proper asymmetric visibility cannot drift into
+      cross-file synthesis it wasn't authorized for, because it literally cannot see the
+      implementation of files outside its scope.
+    short_name: 'Asymmetric visibility - scope enforced by construction, not by rule'
+    citations:
+      - {source_path: 'ION/06_intelligence/specs/T03_ContextPackageSchema.spec.md', lines: '140-153', note: 'cited via TEMPLATE_CONTEXT_DESIGN_ARCHAEOLOGY lines 644-652, 694-699'}
+    dated: '2026-04-03'
+    kind: invariant
+    load_bearing_rank: 2
+    rank_justification: >-
+      One of the five load-bearing inventions. Without it scope is a rule an agent is asked to
+      follow rather than a boundary it cannot cross - and every scope violation in ION's history is
+      an agent doing more than it was asked.
+    implemented: 'no'
+    implementation_evidence: 'Designed in T03. Not present in the live spawn path, which ships a flat required_reads list at full density.'
+    owning_domain: domain.context_systems.package_compilation
+    tier: tier.truth_memory_and_context_substrate
+
+  - id: CF-18
+    statement: >-
+      A step file is invalid when it merely says to read a chain of files. Paths are provenance
+      anchors and route affordances; they do not replace loaded context.
+    short_name: 'The anti-pointer law / one file per step'
+    citations:
+      - {source_path: 'ION/02_architecture/ION_AGENT_CONTEXT_SYSTEMS_PROTOCOL.md', lines: '43', sector: S03_SPECS}
+      - {source_path: 'ION/02_architecture/ION_AGENT_CONTEXT_SYSTEMS_PROTOCOL.md', lines: '41-43', sector: S12_CONTEXT_LIVE}
+      - {source_path: 'ION/02_architecture/ION_AGENT_CONTEXT_SYSTEMS_PROTOCOL.md', lines: '39-41', sector: S02_ARCHITECTURE, note: 'template-first, one primary template file per bounded step'}
+      - {source_path: 'ION/02_architecture/ION_CONTEXT_AUTHORITY_TEAM_PROTOCOL.md', lines: '27-29', sector: S02_ARCHITECTURE, note: 'nonconformance definition'}
+    dated: '2026-04-28'
+    kind: law
+    load_bearing_rank: 2
+    rank_justification: >-
+      Without it a context package degenerates into a reading list and the agent reconstructs
+      whatever it likes. This is the most frequently restated and most frequently violated context
+      law in the corpus.
+    implemented: partial
+    implementation_evidence: 'ion_context_proof_gate enforces read proof on returns; cursor_connector holds 2603 context_package.md spawn artifacts that embed required-reads lists rather than inlined content. Mount CAPSULE boot orders remain path-chain shaped.'
+    owning_domain: domain.context_systems
+    tier: tier.truth_memory_and_context_substrate
+
+  - id: CF-19
+    statement: >-
+      Load the smallest sufficient package, declare which size class you chose and what you
+      deliberately excluded, and carry a lawful affordance to fetch the rest.
+    short_name: 'Size class plus route-deeper'
+    citations:
+      - {source_path: 'ION/02_architecture/ION_AGENT_CONTEXT_DYNAMICS_AND_CONTEXT_WINDOW_PROTOCOL.md', lines: '82-98', note: 'via TEMPLATE_CONTEXT_DESIGN_ARCHAEOLOGY lines 700-706'}
+      - {source_path: 'ION/02_architecture/ION_AGENT_CONTEXT_SYSTEMS_PROTOCOL.md', lines: '72-87', note: 'the two failure poles: too small, too large'}
+    dated: '2026-04-29'
+    kind: mechanism
+    load_bearing_rank: 2
+    rank_justification: >-
+      Without it every package is either a pointer file the agent pretends to understand or
+      undifferentiated history in which the current task is lost. Both poles are documented.
+    implemented: partial
+    implementation_evidence: 'ion_agent_context_dynamics.py budget_for_depth implements it. The archaeology finds ION has FOUR independently built variable-density systems using different vocabulary, none aware of the others.'
+    owning_domain: domain.context_systems.package_compilation
+    tier: tier.truth_memory_and_context_substrate
+
+  - id: CF-20
+    statement: >-
+      Breadth of DESIGN is lawful; ACTIVATION requires necessity. Design the full web; activate on
+      evidence. Never conflate the two in either direction.
+    citations:
+      - {source_path: 'CLAUDE.md', lines: '43-44', sector: S09_DOCTRINE}
+      - {source_path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/Constitution /ION_CONSTITUTION_FOUNDING_DOCUMENT_V0_10_CANDIDATE_20260710.md', lines: '949-955', sector: S01_CONSTITUTION, note: 'Art 36 proposed: no fixed domain count, quota, or coverage target'}
+    dated: '2026-08-02/03'
+    kind: law
+    load_bearing_rank: 2
+    rank_justification: >-
+      Without it the organism either refuses to design past what runs today or activates 102 folders
+      it cannot staff. Both failures are on disk simultaneously.
+    implemented: partial
+    implementation_evidence: >-
+      102 domain folders on disk, 45 materialized, 37 runner-invocable, 38 registered - the ladder
+      exists but the state is not machine-declared per package. 2026-08-08: bounded activation
+      records renewed with expires_at through 2026-08-15 (e.g.
+      ION/05_context/current/autonomous_goals/ACTIVATION_RECORD_HEALTH_TICK_20260808.candidate.json;
+      domain.local_worker_scheduling_and_autonomous_loop DOMAIN_CURSOR_CLI_RETURN.candidate.yaml).
+    owning_domain: domain.domain_weaver_living_self_model
+    tier: tier.formation_weaving_and_meta_evolution
+
+  - id: CF-21
+    statement: >-
+      A domain's folder belongs where the thing it owns lives. The kernel's domain lives in the
+      kernel folder; a subsystem's domain lives with that subsystem. Location supplies context
+      automatically. candidate_founding_domains/ is the birth registry, not the permanent home.
+    citations:
+      - {source_path: 'CLAUDE.md', lines: '54-59', note: 'Sovereign instruction 2026-08-03'}
+      - {source_path: 'ION/05_context/current/domain_weaver/universal_domain_web/DOMAIN_LOCALITY_LAW.candidate.yaml', lines: 'whole file', note: 'candidate law package'}
+    dated: '2026-08-03'
+    kind: law
+    load_bearing_rank: 2
+    rank_justification: >-
+      Without it every domain must be handed its context explicitly and locality supplies nothing;
+      this is the cheapest available substitute for the unbuilt CF-06 and is why it ranks 2.
+    implemented: partial
+    implementation_evidence: 'DOMAIN_LOCALITY_LAW.candidate.yaml and LOCALITY_PILOT_RECEIPT.candidate.yaml exist; 45 packages still live under candidate_founding_domains/.'
+    owning_domain: domain.domain_weaver_living_self_model
+    tier: tier.formation_weaving_and_meta_evolution
+
+  - id: CF-22
+    statement: >-
+      The legacy MINI.md / CAPSULE.md pattern is preserved only as witness material and private
+      historical continuity. It is not sufficient for live onboarding. Live onboarding requires a
+      High-Detail Agent Context Package assembled for the role, mission, carrier, and authority
+      ceiling.
+    citations:
+      - {source_path: 'ION/02_architecture/ION_AGENT_CONTEXT_SYSTEMS_PROTOCOL.md', lines: '22-24', sector: S02_ARCHITECTURE}
+      - {source_path: 'ION/02_architecture/ION_AGENT_CONTEXT_SYSTEMS_PROTOCOL.md', lines: '22-24', sector: S03_SPECS}
+      - {source_path: 'ION/02_architecture/ION_AGENT_CONTEXT_SYSTEMS_PROTOCOL.md', lines: '22-24', sector: S12_CONTEXT_LIVE}
+      - {source_path: 'ION/03_registry/agent_context_system_registry.yaml', lines: '17-21', sector: S05_REGISTRY}
+      - {source_path: 'ION/03_registry/ion_context_authority_team_registry.yaml', lines: '14-19', sector: S05_REGISTRY}
+      - {source_path: 'ION/REPO_AUTHORITY.md', lines: '58', sector: S09_DOCTRINE}
+      - {source_path: 'ION/02_architecture/ION_MOUNT_CONTRACT.md', lines: '73-75', sector: S02_ARCHITECTURE}
+    dated: '2026-04-13 to 2026-04-28'
+    kind: law
+    load_bearing_rank: 2
+    rank_justification: >-
+      Stated in seven places across four sectors - the most-repeated law in the corpus - and violated
+      in operation every day. Without it the organism onboards from a 53-day-stale index.
+    implemented: partial
+    implementation_evidence: >-
+      Registry law present in three registries. Countervailing on disk: 190 MINI.md and 185 CAPSULE.md
+      instances; AGENTS.md:29-32 still lists codex_solo MINI/CAPSULE as first files to read;
+      agent_context_system_registry.yaml:29-30 STEWARD base_sources still list them. The continuity
+      audit calls this "the single sharpest live contradiction found."
+    owning_domain: domain.context_systems
+    tier: tier.truth_memory_and_context_substrate
+
+  - id: CF-23
+    statement: 'Each admitted act consumes exactly one valid, unconsumed route lease bound to the current receipt head.'
+    citations:
+      - {source_path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/Constitution /ION_COMPRESSED_CONSTITUTION_V0_1_CANDIDATE_20260704.md', lines: '75-78', sector: S01_CONSTITUTION, note: 'Article 7'}
+    dated: '2026-07-04'
+    kind: law
+    load_bearing_rank: 2
+    rank_justification: 'Without it the same authorization can be replayed and concurrency has no serialization point. No implementation of route leases was found in this pass.'
+    implemented: 'no'
+    implementation_evidence: 'No route-lease module located in ION/04_packages/kernel/. Recorded as not implemented.'
+    owning_domain: domain.runtime_carrier_and_action_admission
+    tier: tier.runtime_execution_and_economics
+
+  - id: CF-24
+    statement: "A carrier's declared operating root must match filesystem reality before writes are admitted."
+    citations:
+      - {source_path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/Constitution /ION_COMPRESSED_CONSTITUTION_V0_1_CANDIDATE_20260704.md', lines: '80-84', sector: S01_CONSTITUTION, note: 'Article 8'}
+      - {source_path: 'ION/02_architecture/ION_CURSOR_CANONICAL_WORKFLOW_UNIFICATION_PROTOCOL.md', lines: '18-25', sector: S02_ARCHITECTURE}
+      - {source_path: 'ION_VNEXT/01_canon/WORKSPACE_CANON.yaml', lines: '10-17', sector: S08_VNEXT}
+    dated: '2026-07-04'
+    kind: law
+    load_bearing_rank: 2
+    rank_justification: 'Location is authority in this system - CLAUDE.md opens by saying the folder is the seat. A carrier writing from the wrong root exercises an authority it does not hold.'
+    implemented: 'yes'
+    implementation_evidence: 'ion_path_authority.py plus test_kernel_ion_path_authority.py enforce cwd/root and escape blocking; kernel.ion_carrier_continue --ion-root. Shell root defined as the directory containing both pyproject.toml and ION/REPO_AUTHORITY.md.'
+    owning_domain: domain.durable_apply_and_substrate_custody
+    tier: tier.truth_memory_and_context_substrate
+
+  - id: CF-25
+    statement: >-
+      Settlement is a birth receipt of domains settled/materialized at settlement time. It is NOT the
+      current-count authority. The only current-count authority is the live measured cardinality.
+    citations:
+      - {source_path: 'ION/05_context/current/domain_weaver/FOUNDING_DOMAIN_SETTLEMENT.candidate.json', lines: '4-5', sector: S10_DOMAINS}
+      - {source_path: 'ION/05_context/current/domain_weaver/candidate_founding_domains/domain.domain_weaver_living_self_model/MEMORY.candidate.yaml', lines: '8-11', sector: S10_DOMAINS}
+    dated: '2026-08-03'
+    kind: law
+    load_bearing_rank: 2
+    rank_justification: 'A specific instance of CF-13. Without it a stale receipt becomes the count and the organism misreports its own size - which it currently does three different ways (38, 45, 37).'
+    implemented: 'yes'
+    implementation_evidence: 'LIVE_DOMAIN_COMPOSITION.candidate.json regenerated from live filesystem scan; kernel ion_domain_field_composition. Carries an explicit self_staleness_rule.'
+    owning_domain: domain.ion_system_definition.cardinality_truth
+    tier: tier.sovereign_and_constitutional_spine
+
+  - id: CF-26
+    statement: 'The default template IS the read-only template. Anything that falls through to the default is forbidden to write.'
+    citations:
+      - {source_path: 'ION/06_intelligence/roundtable/live/log/20260802T182738Z__FATHOM__root-cause-found-ions-default-work-class-is-not-in-the-template-map.md', lines: '23-24', sector: S11_HISTORY}
+    dated: '2026-08-02'
+    kind: mechanism
+    load_bearing_rank: 2
+    rank_justification: >-
+      Names the exact failure surface of CF-12. The template map is the place where an expired scope
+      became a permanent default; knowing that the fall-through is silently read-only is what makes
+      the 875-run failure legible instead of mysterious.
+    implemented: 'yes'
+    implementation_evidence: 'ION/04_packages/kernel/ion_prompt_spawn_admission.py READ_ONLY_PROMPT_SPAWN_TEMPLATE_IDS; work_class_unmapped now fails loud rather than silently defaulting.'
+    owning_domain: domain.carrier_spawn_execution_enforcement
+    tier: tier.runtime_execution_and_economics
+
+  - id: CF-27
+    statement: 'Build, audit, and ratification are separated roles held by separated mounts.'
+    citations:
+      - {source_path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/Constitution /ION_COMPRESSED_CONSTITUTION_V0_1_CANDIDATE_20260704.md', lines: '92-96', sector: S01_CONSTITUTION, note: 'Article 10'}
+      - {source_path: 'ION/05_context/current/domain_weaver/candidate_founding_domains/domain.context_proof_gate_enforcement/MACHINE_CONTEXT_PROOF_LAW.candidate.yaml', lines: '16-19', sector: S10_DOMAINS, note: 'no verification may depend on a party attesting to its own compliance'}
+    dated: '2026-07-04'
+    kind: law
+    load_bearing_rank: 2
+    rank_justification: 'The structural form of CF-09. Without separated mounts the builder grades its own homework, which is the failure mode every audit in this corpus had to correct for.'
+    implemented: partial
+    implementation_evidence: 'Steward/worker split is operational (CLAUDE.md). Ratification is correctly reserved to the Sovereign. Audit mounts are not separated from build mounts in the kernel.'
+    owning_domain: domain.role_boot_registry_and_agent_identity_law
+    tier: tier.sovereign_and_constitutional_spine
+
+  - id: CF-28
+    statement: 'No pretend subagents. If no real worker was invoked, the act is marked manual_phase.'
+    citations:
+      - {source_path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/Constitution /ION_COMPRESSED_CONSTITUTION_V0_1_CANDIDATE_20260704.md', lines: '131-134', sector: S01_CONSTITUTION, note: 'Article 16'}
+      - {source_path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/Constitution /ION_COMPRESSED_CONSTITUTION_V0_1_CANDIDATE_20260704.md', lines: '152-155', sector: S01_CONSTITUTION, note: 'Article 19, simulated work marks itself'}
+    dated: '2026-07-04'
+    kind: law
+    load_bearing_rank: 2
+    rank_justification: 'The specific dishonesty this system is most prone to. A narrated fleet that never spawned is indistinguishable from a real one unless the artifact says so.'
+    implemented: partial
+    implementation_evidence: 'spawn_admission.json declares spawn reality; no kernel check confirms a claimed worker actually ran.'
+    owning_domain: domain.honest_agency_validation
+    tier: tier.verification_and_adversarial_witness
+
+  - id: CF-29
+    statement: 'No artifact, role, or carrier may claim more authority than its provenance supports.'
+    citations:
+      - {source_path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/Constitution /ION_COMPRESSED_CONSTITUTION_V0_1_CANDIDATE_20260704.md', lines: '157-160', sector: S01_CONSTITUTION, note: 'Article 20'}
+      - {source_path: 'CLAUDE.md', lines: '45', sector: S09_DOCTRINE, note: 'Provenance or silence'}
+      - {source_path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/Constitution /ION_CONSTITUTION_FOUNDING_DOCUMENT_V0_10_CANDIDATE_20260710.md', lines: '967-975', sector: S01_CONSTITUTION, note: 'Art 38 proposed: blanket encouragement is continuation authorization, never ratification'}
+    dated: '2026-07-04'
+    kind: law
+    load_bearing_rank: 2
+    rank_justification: 'Without it an agent converts a Sovereign "go" into ratification of a six-item bundle - which happened on 2026-08-03 and had to be retracted the same night.'
+    implemented: partial
+    implementation_evidence: >-
+      authority_boundaries and settlement_posture fields in spawn contracts; retraction discipline is
+      carrier behavior, not kernel enforcement. 2026-08-08: kernel.ion_steward_integrate
+      reconcile_claimed_touched_paths and _gate_with_touched_paths_reconciliation live with scoped git
+      roots and capped undeclared-write findings (witness:
+      steward_integrations/v101_goal_ion_self_operating_autonomous_loop_activation_2026-08-08T134435z0000_step_01_steward_integration.json).
+    owning_domain: domain.artifact_provenance_and_gate_legitimacy
+    tier: tier.sovereign_and_constitutional_spine
+
+  # ---- RANK 3 -------------------------------------------------------------
+  - id: CF-30
+    statement: >-
+      ION has one workflow. Manual execution, IDE-native execution, daemon-assisted execution,
+      external/API execution, and later swarm execution are all lawful carriers of the same workflow.
+      They are not different processes.
+    citations:
+      - {source_path: 'ION/01_doctrine/CANONICAL_WORKFLOW.md', lines: '17-19', sector: S09_DOCTRINE}
+      - {source_path: 'ION/01_doctrine/CANONICAL_WORKFLOW.md', lines: '59', sector: S09_DOCTRINE}
+    dated: '2026-04-08'
+    kind: law
+    load_bearing_rank: 3
+    rank_justification: 'Without it each carrier grows its own dialect of ION and the laws stop transferring. Rank 3 because ION functions with the drift, expensively.'
+    implemented: partial
+    implementation_evidence: >-
+      ion_carrier_continue / ion_carrier_task_return unify Cursor and CLI carriers; 2026-08-08
+      record_prompt_spawn_run_task_return and --prompt-spawn-run intake bind isolated prompt_spawn
+      execution bundles to the same task-return ledger as carrier continue.
+    owning_domain: domain.runtime_carrier_and_action_admission
+    tier: tier.runtime_execution_and_economics
+
+  - id: CF-31
+    statement: >-
+      ION is a living context graph operated by lawful agents through templates. No agent is expected
+      to hold all of ION. The graph holds continuity. Agents hold bounded graph regions.
+    citations:
+      - {source_path: 'ION/02_architecture/CONTEXT_GRAPH_SUBSTRATE_PROTOCOL.md', lines: '17-19', sector: S02_ARCHITECTURE}
+      - {source_path: 'ION/02_architecture/CONTEXT_GRAPH_SUBSTRATE_PROTOCOL.md', lines: '37-39', sector: S02_ARCHITECTURE}
+    dated: '2026-04-24'
+    kind: invariant
+    load_bearing_rank: 3
+    rank_justification: 'The design rationale for bounded domains. Rank 3 not 1 because CF-08 carries the operative content; this states the reason.'
+    implemented: partial
+    implementation_evidence: 'Source file status is PROPOSED_RESTORATION_NOT_YET_RATIFIED while its text is treated as load-bearing.'
+    owning_domain: domain.context_systems
+    tier: tier.truth_memory_and_context_substrate
+
+  - id: CF-32
+    statement: >-
+      A carrier becomes a capable domain agent when the organism hands it a local world - never by
+      full-matrix exposure.
+    citations:
+      - {source_path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/Constitution /ION_CONSTITUTION_FOUNDING_DOCUMENT_V0_10_CANDIDATE_20260710.md', lines: '939-946', sector: S01_CONSTITUTION, note: 'Art 35 proposed, NOT_RATIFIED'}
+    dated: '2026-07-10'
+    kind: law
+    load_bearing_rank: 3
+    rank_justification: 'The proposed-amendment form of CF-17 and CF-21 together. Rank 3 because it is unratified and its content is carried by ratified fundamentals.'
+    implemented: 'no'
+    owning_domain: domain.domain_mitosis_and_agent_society_formation
+    tier: tier.formation_weaving_and_meta_evolution
+
+  - id: CF-33
+    statement: >-
+      Shared templates define common artifact law. Template bindings define how a particular role
+      must use that shared template. Boots still define role identity, continuity, lane law, and
+      authority ceilings. Bindings are not full replacement templates.
+    citations:
+      - {source_path: 'ION/02_architecture/TEMPLATE_BINDING_PROTOCOL.md', lines: '23-25', sector: S02_ARCHITECTURE}
+      - {source_path: 'ION/07_templates/bindings/README.md', lines: '14-21', sector: S04_TEMPLATES}
+    dated: '2026-04-03'
+    kind: definition
+    load_bearing_rank: 3
+    rank_justification: 'The layering rule that keeps one template usable by many roles. Without it every role forks its own template and the corpus fragments.'
+    implemented: 'no'
+    implementation_evidence: 'ION/07_templates/bindings/ exists; no kernel module validates a binding against its base_template or resolves bindings at spawn. Documentary only.'
+    owning_domain: domain.template_and_protocol_movement
+    tier: tier.formation_weaving_and_meta_evolution
+
+  - id: CF-34
+    statement: >-
+      Templates are not prose decoration. They define lawful packet shapes, proof shapes, and receipt
+      shapes.
+    citations:
+      - {source_path: 'ION/07_templates/README.md', lines: '12-13', sector: S04_TEMPLATES}
+      - {source_path: 'ION/01_doctrine/SOVEREIGN_CONSTITUTION.md', lines: '71-73', sector: S09_DOCTRINE, note: 'All meaningful work should bind itself to an explicit template; the active minimum template floor lives at ION/07_templates/'}
+    dated: 'V79 restoration / 2026-04-03'
+    kind: law
+    load_bearing_rank: 3
+    rank_justification: 'Rank 3 only because CF-04 and CF-05 carry the load-bearing statement; this is the estate-level restatement. Its non-implementation is nonetheless the single sharpest measured gap in ION.'
+    implemented: 'no'
+    implementation_evidence: '121 of 122 files under ION/07_templates/ have NO_CODE_READER (CONTINUITY_SYSTEM_TRUTH_AUDIT, severity CRITICAL). Verified independently: 43 kernel modules reference the directory, 1 opens a file in it, 0 validate an artifact against a template.'
+    owning_domain: domain.template_and_protocol_movement
+    tier: tier.formation_weaving_and_meta_evolution
+
+  - id: CF-35
+    statement: >-
+      The worker must begin with ### CONTEXT PROOF, one proof block per required file using path,
+      sha256, line and excerpt; then ### TEMPLATE ACTION PROOF with plain scalar lines only.
+    citations:
+      - {source_path: 'ION/07_templates/context/AGENT_CONTEXT_PACKAGE.md', lines: '49-75', sector: S04_TEMPLATES}
+      - {source_path: 'ION_VNEXT/01_canon/WORKSPACE_CANON.yaml', lines: '47', sector: S08_VNEXT, note: 'task_returns_must_pass_context_and_template_action_proof'}
+      - {source_path: 'ION/05_context/current/domain_weaver/context_system_requirements/domain.externalized_cognition_continuity/CONTEXT_SYSTEM_REQUIREMENTS.candidate.yaml', lines: '56-57', sector: S12_CONTEXT_LIVE}
+    dated: '2026-05-19 (vNext canon) and template file undated'
+    kind: schema
+    load_bearing_rank: 3
+    rank_justification: >-
+      The return contract that actually runs today. It is the one place where CF-04 has teeth - but
+      the teeth check form, not conformance, so it ranks 3 rather than 1.
+    implemented: 'yes'
+    implementation_evidence: >-
+      kernel.ion_template_action_gate.evaluate_template_action_proof and ion_context_proof_gate.evaluate_context_proof_return,
+      invoked from ion_carrier_task_return and the vNext dogfood smoke. 2026-08-08:
+      record_prompt_spawn_run_task_return loads spawn rows from prompt_spawn run bundles and records
+      returns through the same proof gates (ion_carrier_task_return.py load_prompt_spawn_row_from_run_bundle,
+      record_prompt_spawn_run_task_return).
+    owning_domain: domain.context_proof_gate_enforcement
+    tier: tier.verification_and_adversarial_witness
+
+  - id: CF-36
+    statement: >-
+      Scope pressure -> mitosis (subdomain/agent) or route to
+      domain.blocker_scope_and_mitosis_translation and
+      domain.domain_mitosis_and_agent_society_formation WITH evidence. Never a global ION blocker.
+    citations:
+      - {source_path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/ION_Domain/_workbench/_team/DOMAIN_REGISTRY.md', lines: '46', sector: S07_GPTSTATE}
+    dated: '2026-06-19'
+    kind: protocol
+    load_bearing_rank: 3
+    rank_justification: 'The operational route that makes CF-10 actionable: it says what to do INSTEAD of blocking. Without a named alternative, "never block" is an instruction with no next step.'
+    implemented: 'no'
+    implementation_evidence: 'Both named domains exist as packages; no runtime path converts scope pressure into a mitosis intake receipt.'
+    owning_domain: domain.blocker_scope_and_mitosis_translation
+    tier: tier.formation_weaving_and_meta_evolution
+
+  - id: CF-37
+    statement: >-
+      A domain record is current operational truth. An activation witness is supporting witness. They
+      must not be collapsed into one file.
+    citations:
+      - {source_path: 'ION/03_registry/domains/README.md', lines: '36-38', sector: S05_REGISTRY}
+    dated: '2026-07-18'
+    kind: protocol
+    load_bearing_rank: 3
+    rank_justification: 'A specific instance of CF-03 in the registry. Collapsing them makes a claim of activation indistinguishable from activation.'
+    implemented: 'yes'
+    implementation_evidence: >-
+      ION/03_registry/domains/*.domain.yaml kept separate from domains/activation_witness/. 2026-08-08:
+      bounded activation goal records renewed with expires_at through 2026-08-15 under
+      ION/05_context/current/autonomous_goals/ and
+      domain.local_worker_scheduling_and_autonomous_loop/DOMAIN_CURSOR_CLI_RETURN.candidate.yaml
+      (activation witness posture distinct from registry domain.yaml).
+    owning_domain: domain.artifact_provenance_and_gate_legitimacy
+    tier: tier.sovereign_and_constitutional_spine
+
+  - id: CF-38
+    statement: >-
+      Default posture for inferred graph structure is inferred_candidate; for package-declared graph
+      structure, declared_candidate. This lane does not create accepted_ion_state. Observed facts may
+      be used as evidence, but they still do not become accepted state by themselves.
+    citations:
+      - {source_path: 'ION_VNEXT/06_context/domain_weave/README.md', lines: '93-95', sector: S08_VNEXT}
+      - {source_path: 'ION_VNEXT/06_context/domain_weave/protocols/DOMAIN_WEAVE_FACT_POSTURE_PROTOCOL.md', lines: '31', sector: S08_VNEXT}
+      - {source_path: 'ION_VNEXT/00_front_door/AUTHORITY_BOUNDARIES.md', lines: '10', sector: S08_VNEXT, note: 'No accepted-state claim without validation and receipt'}
+    dated: '2026-05-23'
+    kind: protocol
+    load_bearing_rank: 3
+    rank_justification: 'The cleanest implementation of CF-02 anywhere in the corpus - and it lives in the tree that never cut over.'
+    implemented: 'yes'
+    implementation_evidence: 'DOMAIN_WEAVE_READ_FIRST_BINDING.yaml fact_posture_law; tools under ION_VNEXT/06_context/domain_weave/tools/ validated in the M103B report. Applies to vNext only.'
+    owning_domain: domain.state_rank_and_receipt_truth
+    tier: tier.sovereign_and_constitutional_spine
+
+  - id: CF-39
+    statement: >-
+      required_for_accepted_state: source_evidence, work_packet, path_policy_decision, validation,
+      receipt, operator_or_steward_acceptance.
+    citations:
+      - {source_path: 'ION_VNEXT/01_canon/STATE_LIFECYCLE.yaml', lines: '27-33', sector: S08_VNEXT}
+      - {source_path: 'ION_VNEXT/01_canon/WORKSPACE_CANON.yaml', lines: '32-33', sector: S08_VNEXT}
+    dated: '2026-05-19'
+    kind: law
+    load_bearing_rank: 3
+    rank_justification: 'The most explicit enumeration of what CF-02 requires. Rank 3 because it governs a tree that never cut over.'
+    implemented: partial
+    implementation_evidence: >-
+      vNext status fields repeatedly read candidate_m102_authority_decision_draft_ready_no_execution.
+      Cutover never happened. 2026-08-08: first main-tree candidate_to_accepted_promotion chain
+      exercised for domain.sos_state_machine_and_transition_law (domain_promotions/20260808T132007Z_artifact.sos_human_gate_clear_retirement.promotion.json
+      verdict PROMOTION_CHAIN_COMPLETE; promotion receipt non_claims: no registry_yaml promotion).
+    owning_domain: domain.sos_state_machine_and_transition_law
+    tier: tier.sovereign_and_constitutional_spine
+
+  - id: CF-40
+    statement: 'The filesystem is the public coordination bus. Tasks, signals, public intelligence artifacts, and explicit handoff surfaces carry inter-role coordination.'
+    citations:
+      - {source_path: 'ION/01_doctrine/SOVEREIGN_CONSTITUTION.md', lines: '41-43', sector: S09_DOCTRINE}
+    dated: '2026-04-03'
+    kind: protocol
+    load_bearing_rank: 3
+    rank_justification: 'The physical consequence of CF-01. Without it agents would need shared memory, which they do not have.'
+    implemented: partial
+    implementation_evidence: 'ION/05_context/signals/, inbox/, intelligence/ exist; completeness unmeasured.'
+    owning_domain: domain.ion_nervous_system_signal_routing
+    tier: tier.interface_membrane_and_communication
+
+  - id: CF-41
+    statement: >-
+      Operate ION's inter-domain signal fabric: classify and index signals, calibrate escalation
+      versus reflex versus mitosis thresholds, and audit routed signal outcomes - emitting findings
+      and routes without halting peer domains or the global carrier loop.
+    citations:
+      - {source_path: 'ION/05_context/current/domain_weaver/candidate_founding_domains/domain.ion_nervous_system_signal_routing/MISSION.candidate.yaml', lines: '5-10', sector: S10_DOMAINS}
+    dated: '2026-08-03'
+    kind: mechanism
+    load_bearing_rank: 3
+    rank_justification: 'The mechanism by which a finding travels without becoming a halt. It is what makes CF-10 survivable at scale.'
+    implemented: partial
+    owning_domain: domain.ion_nervous_system_signal_routing
+    tier: tier.interface_membrane_and_communication
+
+  - id: CF-42
+    statement: 'carrier_choice_is_authority_gate: false'
+    citations:
+      - {source_path: 'ION/03_registry/codex_cli_model_move_policy.yaml', lines: '31', sector: S05_REGISTRY}
+    dated: '2026-08-02T20:37:36+00:00'
+    kind: invariant
+    load_bearing_rank: 3
+    rank_justification: 'Prevents model selection from becoming a back-door authority ladder. The proposed Article 22 form is "authority is proportional to current proof, never to parameter count."'
+    implemented: partial
+    implementation_evidence: 'ion_high_level_carrier_policy.py loads the policy.'
+    owning_domain: domain.model_routing_and_reasoning_economics
+    tier: tier.runtime_execution_and_economics
+
+  - id: CF-43
+    statement: >-
+      forbidden_reactions: direct_graph_mutation, direct_registry_update. Template completion events
+      may not mutate the graph or registry directly.
+    citations:
+      - {source_path: 'ION/03_registry/template_metadata_contract_registry.yaml', lines: '100-104', sector: S05_REGISTRY}
+    dated: '2026-04-24'
+    kind: mechanism
+    load_bearing_rank: 3
+    rank_justification: 'The safety rail on evented templates. Without it a template completion could silently rewrite the domain graph - observation becoming authority.'
+    implemented: partial
+    implementation_evidence: 'kernel.contract_bound_event_runtime and template_metadata_contracts.validate_template_metadata_contract. Governs four template ids that no worker ever fills.'
+    owning_domain: domain.production_daemon_and_graph_event_runtime
+    tier: tier.runtime_execution_and_economics
+
+  # ---- RANK 4 -------------------------------------------------------------
+  - id: CF-44
+    statement: 'does_not_inherit: hidden_memory, personal_identity, private_experience, production_authority, self_ratification_power.'
+    citations:
+      - {source_path: 'ION/03_registry/gpt55_agent_succession_policy.yaml', lines: '13-18', sector: S05_REGISTRY}
+    dated: unknown
+    kind: protocol
+    load_bearing_rank: 4
+    rank_justification: 'Succession hygiene - a successor agent must not inherit authority by adjacency. Rank 4 because CF-09 already forbids the outcome.'
+    implemented: partial
+    implementation_evidence: 'agent_succession_packet.schema.json requires production_authority const false. The continuity audit rates the succession packets NO_READER_ANYWHERE, CRITICAL - 14 packets written, none ever read. "Continuity theatre."'
+    owning_domain: domain.role_boot_registry_and_agent_identity_law
+    tier: tier.sovereign_and_constitutional_spine
+
+  - id: CF-45
+    statement: >-
+      forbidden_current_claims: HOSTED_BETA, PRODUCTION_CANDIDATE, LIVE_EXECUTION_READY,
+      KUBERNETES_REQUIRED_NOW, PROVIDER_DISPATCH_AUTHORIZED. current_gate: PROTOCOLIZED.
+    citations:
+      - {source_path: 'ION/03_registry/ion_operational_readiness_gate_policy.yaml', lines: '43-50', sector: S05_REGISTRY}
+    dated: V63_PROTOCOLIZATION
+    kind: law
+    load_bearing_rank: 4
+    rank_justification: 'A named list of the specific overclaims this project makes. Useful, narrow, and downstream of CF-29.'
+    implemented: partial
+    owning_domain: domain.artifact_provenance_and_gate_legitimacy
+    tier: tier.sovereign_and_constitutional_spine
+
+  - id: CF-46
+    statement: >-
+      copy_not_move_until_cutover: true; bulk_copy_forbidden: true;
+      runtime_json_bulk_copy_forbidden: true.
+    citations:
+      - {source_path: 'ION_VNEXT/01_canon/MIGRATION_RULES.yaml', lines: '37-39', sector: S08_VNEXT}
+    dated: '2026-05-19'
+    kind: mechanism
+    load_bearing_rank: 4
+    rank_justification: 'Migration hygiene for a migration that never ran. Recorded because its non-execution is why two parallel trees exist.'
+    implemented: 'no'
+    implementation_evidence: 'vNext never completed cutover (M102 draft only); the legacy tree grew in parallel.'
+    owning_domain: domain.durable_apply_and_substrate_custody
+    tier: tier.truth_memory_and_context_substrate
+
+  # ---- RANK 5 -------------------------------------------------------------
+  - id: CF-47
+    statement: 'ION turns collaboration itself into infrastructure.'
+    citations:
+      - {source_path: 'ION/01_doctrine/MAINTAINED_WORK_SURFACE_CANON.md', lines: '50', sector: S09_DOCTRINE}
+    dated: unknown
+    kind: definition
+    load_bearing_rank: 5
+    rank_justification: 'A thesis statement, not a mechanism. Nothing breaks without it; it explains why the rest matters.'
+    implemented: 'no'
+    owning_domain: domain.ion_system_definition
+    tier: tier.sovereign_and_constitutional_spine
+
+fundamentals_deduplication_ledger:
+  method: >-
+    Merged by semantic identity of the STATEMENT, not by id. The same fundamental restated in the
+    compressed instrument, the founding document, a kernel module docstring, and a sector report is
+    ONE entry carrying all citations.
+  largest_merges:
+    - {canonical: CF-22, raw_citations: 7, note: 'MINI/CAPSULE demotion - the most-restated law in the corpus'}
+    - {canonical: CF-10, raw_citations: 5, note: 'verification is not authority / never a global ION blocker'}
+    - {canonical: CF-07, raw_citations: 5, note: 'template_spec REQUIRED in never-dropped tier'}
+    - {canonical: CF-08, raw_citations: 6, note: 'F6 domain organization'}
+    - {canonical: CF-04, raw_citations: 5, note: 'F4 typed action'}
+  raw_entries_not_promoted_to_canonical:
+    count: 23
+    reason: >-
+      Entries whose statement was a file STATUS line rather than a fundamental (for example
+      "status: PROPOSED_RESTORATION_NOT_YET_RATIFIED", "status: ACTIVE_OPERATIONAL_LAW",
+      "template_id: ion.template.single_carrier_sequential_runtime.v1", "doctrine root:
+      ION/01_doctrine/"). These are recorded in section 5 as contradiction evidence rather than as
+      fundamentals, because a status field is a fact about an artifact, not a law of the organism.
+    also_excluded:
+      - 'Coverage-matrix arithmetic ("5/19 fundamentals are COVERED") - a measurement, not a fundamental.'
+      - 'Operator verdicts ("ION was never assembled") - judgement, not law.'
+      - 'The 21 proposed-but-NOT_RATIFIED Articles 21-41 were reviewed individually; those carrying content not already held by a ratified fundamental were promoted (CF-29, CF-32, CF-42 partially). The remainder are cited inline rather than given their own canonical entries, and are listed in section 5 unresolved.'
+
+# ===========================================================================
+# 2. HIERARCHY - tiers -> domains -> subdomains
+# ===========================================================================
+hierarchy:
+  web_node_record_schema:
+    schema_id: ion.hierarchy_web_node_record.v0_1_candidate
+    authored_by_domain: domain.ion_system_definition
+    authored_at_utc: '2026-08-05T23:35:10Z'
+    source_plan_ref: ION/05_context/current/domain_weaver/triad/DOMAIN_WEB_TEAM_AND_PLAN.candidate.yaml
+    intra_domain_align_ref: ION/05_context/current/domain_weaver/triad/INTRA_DOMAIN_RANK_TEMPLATE.candidate.yaml
+    posture: candidate_only
+    non_claims:
+      - no_registry_promotion
+      - no_activation_from_schema_alone
+    design_vs_activation:
+      field_name: f6_posture
+      type: enum
+      enum_values:
+        - design_only
+        - traffic_shaped_active
+        - retired_candidate
+      law_ref: Constitution F6 — design breadth lawful; activation requires traffic-shaped necessity
+      value_semantics:
+        design_only: >-
+          Node is designed or rostered only; confers zero invocability. Applies to designed_not_materialized
+          rows and lawful breadth under tier.knowledge_specialty_frontier without live package.
+        traffic_shaped_active: >-
+          Node has a live domain package on the measured surface and/or admitted drain with necessity
+          evidence; not a ratification or accepted-state claim.
+        retired_candidate: >-
+          Merge target, demotion alias, or supersession candidate; no new activation without lifecycle receipt.
+    node_record_required_fields:
+      - id
+      - f6_posture
+      - disposition
+      - charter
+    node_record_optional_fields:
+      - owns_fundamentals
+      - subdomains
+      - parent
+      - merge_into
+      - placement_note
+      - severity
+      - note
+      - proposed_true_set_priority
+      - proposed_true_set_class
+    applies_to_hierarchy_blocks:
+      - live_domains
+      - designed_not_materialized
+      - subdomain_detail
+      - materialized_but_not_on_the_live_45
+    default_inference_hints:
+      designed_not_materialized: design_only
+      disposition_retire_or_merge: retired_candidate
+      live_domains_missing_f6_posture: >-
+        Absence — backfill via DOMAIN_WEB_TEAM f6_marks batches; do not infer traffic_shaped_active from
+        presence in live_domains alone without explicit mark.
+    detects_absence:
+      detects_absence: true
+      probe_id: hierarchy_web_node_f6_posture_missing
+      invoke_hint: >-
+        For each node in applies_to_hierarchy_blocks, assert key f6_posture present and member of enum_values;
+        emit finding when missing (blocking false).
+      expected_artifact_path: null
+
+  proposed_true_set_rank_alignment:
+    schema_id: ion.hierarchy_proposed_true_set_rank_alignment.v0_1_candidate
+    authored_by_domain: domain.core_law_source_of_truth_hierarchy
+    authored_at_utc: '2026-08-08T05:30:30Z'
+    source_ref: ION/05_context/current/domain_weaver/domain_gap_analysis/PROPOSED_TRUE_DOMAIN_SET.candidate.yaml
+    batch_artifact: ION/05_context/current/domain_weaver/triad/HIERARCHY_RANK_BATCH_01.candidate.yaml
+    batch_id: HIERARCHY_RANK_BATCH_01
+    scope: p0_shortlist
+    nodes_aligned_count: 8
+    detects_absence:
+      detects_absence: true
+      probe_id: hierarchy_web_node_proposed_true_set_priority_missing_p0
+      invoke_hint: >-
+        For each domain_id in PROPOSED_TRUE_DOMAIN_SET p0_shortlist, assert matching hierarchy
+        live_domains row carries proposed_true_set_priority P0 and proposed_true_set_class; emit
+        finding when missing or mismatched (blocking false).
+      expected_artifact_path: ION/05_context/current/domain_weaver/triad/HIERARCHY_RANK_BATCH_01.candidate.yaml
+
+  proposed_true_set_rank_alignment_p1_batch_02:
+    schema_id: ion.hierarchy_proposed_true_set_rank_alignment.v0_1_candidate
+    authored_by_domain: domain.core_law_source_of_truth_hierarchy
+    authored_at_utc: '2026-08-08T12:30:29Z'
+    source_ref: ION/05_context/current/domain_weaver/domain_gap_analysis/PROPOSED_TRUE_DOMAIN_SET.candidate.yaml
+    batch_artifact: ION/05_context/current/domain_weaver/triad/HIERARCHY_RANK_BATCH_02.candidate.yaml
+    batch_id: HIERARCHY_RANK_BATCH_02
+    scope: p1_proposed_true_set_domains
+    nodes_aligned_count: 7
+    detects_absence:
+      detects_absence: true
+      probe_id: hierarchy_web_node_proposed_true_set_priority_missing_p1
+      invoke_hint: >-
+        For each domain_id in PROPOSED_TRUE_DOMAIN_SET with priority P1 (domains list, not
+        P1-P3 remainder wave), assert matching hierarchy live_domains row carries
+        proposed_true_set_priority P1 and proposed_true_set_class; emit finding when missing or
+        mismatched (blocking false).
+      expected_artifact_path: ION/05_context/current/domain_weaver/triad/HIERARCHY_RANK_BATCH_02.candidate.yaml
+
+  proposed_true_set_rank_alignment_p2_batch_03:
+    schema_id: ion.hierarchy_proposed_true_set_rank_alignment.v0_1_candidate
+    authored_by_domain: domain.core_law_source_of_truth_hierarchy
+    authored_at_utc: '2026-08-08T13:10:07Z'
+    source_ref: ION/05_context/current/domain_weaver/domain_gap_analysis/PROPOSED_TRUE_DOMAIN_SET.candidate.yaml
+    batch_artifact: ION/05_context/current/domain_weaver/triad/HIERARCHY_RANK_BATCH_03.candidate.yaml
+    batch_id: HIERARCHY_RANK_BATCH_03
+    scope: p2_proposed_true_set_domains
+    nodes_aligned_count: 6
+    detects_absence:
+      detects_absence: true
+      probe_id: hierarchy_web_node_proposed_true_set_priority_missing_p2
+      invoke_hint: >-
+        For each domain_id in PROPOSED_TRUE_DOMAIN_SET with priority P2 (domains list),
+        assert matching hierarchy live_domains row carries proposed_true_set_priority P2 and
+        proposed_true_set_class; emit finding when missing or mismatched (blocking false).
+      expected_artifact_path: ION/05_context/current/domain_weaver/triad/HIERARCHY_RANK_BATCH_03.candidate.yaml
+
+  proposed_true_set_rank_alignment_p3_batch_04:
+    schema_id: ion.hierarchy_proposed_true_set_rank_alignment.v0_1_candidate
+    authored_by_domain: domain.core_law_source_of_truth_hierarchy
+    authored_at_utc: '2026-08-08T14:10:07Z'
+    source_ref: ION/05_context/current/domain_weaver/domain_gap_analysis/PROPOSED_TRUE_DOMAIN_SET.candidate.yaml
+    batch_artifact: ION/05_context/current/domain_weaver/triad/HIERARCHY_RANK_BATCH_04.candidate.yaml
+    batch_id: HIERARCHY_RANK_BATCH_04
+    scope: p3_proposed_true_set_domains
+    nodes_aligned_count: 3
+    rank_alignment_program_complete: true
+    rank_alignment_program_witness: >-
+      All 24 PROPOSED_TRUE_DOMAIN_SET domains list rows now carry proposed_true_set_priority and
+      proposed_true_set_class on matching hierarchy.tiers live_domains rows (batches 01-04).
+    detects_absence:
+      detects_absence: true
+      probe_id: hierarchy_web_node_proposed_true_set_priority_missing_p3
+      invoke_hint: >-
+        For each domain_id in PROPOSED_TRUE_DOMAIN_SET with priority P3 (domains list),
+        assert matching hierarchy live_domains row carries proposed_true_set_priority P3 and
+        proposed_true_set_class; emit finding when missing or mismatched (blocking false).
+      expected_artifact_path: ION/05_context/current/domain_weaver/triad/HIERARCHY_RANK_BATCH_04.candidate.yaml
+
+  governing_tier_model:
+    source: ION/05_context/current/domain_weaver/universal_domain_web/TIER_MODEL_RULING.candidate.yaml
+    lines: '61-116'
+    name: seven_strata_tier_dot_name
+    canonical_tier_id_pattern: 'tier.<snake_case_functional_name>'
+    forbidden: >-
+      L<n> prefixes as tier ids. TIER_MODEL_RULING lines 44-52 record a DECISIVE_COLLISION: the
+      domain-web L0-L6 strata collide with ION's L00-L11 fundamentals authority codes, where L03 is
+      Protocols and Templates and L05 is Authority, Gates and Posture. L0-L6 survive only as retired
+      aliases. This file uses tier.<name> throughout.
+    tier_ordering_semantics: >-
+      Dependency-ish, not authority rank. tier.sovereign_and_constitutional_spine governs law inputs;
+      verification witnesses all tiers including the spine; formation may re-charter via spine
+      receipts.
+    asymmetries:
+      - 'The spine governs all tiers; only the Sovereign governs the spine.'
+      - 'Verification witnesses all tiers including the spine; it never blocks work.'
+      - 'Formation may re-charter via receipted formation through spine law.'
+      - 'The knowledge frontier is generative and unbounded in members; the other six are enumerable at any moment.'
+
+  placement_source_of_truth:
+    live_packages: ION/05_context/current/domain_weaver/domain_field_composition/LIVE_DOMAIN_COMPOSITION.candidate.json
+    live_package_count: 45
+    roster: ION/05_context/current/domain_weaver/universal_domain_web/UNIVERSAL_DOMAIN_WEB.candidate.yaml
+    roster_block: structural_roster
+    reconciliation: >-
+      42 of the 45 live packages carry a structural_roster row and are placed by it. 3 carry no
+      roster row of their own but are dotted subdomains of a rostered parent, and are placed under
+      that parent. 8 roster rows are designed and NOT materialized on disk. Placement is therefore
+      total: 45 of 45 live packages placed, 0 unplaced.
+
+  tiers:
+
+    - tier_id: tier.sovereign_and_constitutional_spine
+      retired_alias: L0
+      charter: 'Law, identity, receipts, provenance, authority. Governs all other tiers.'
+      refinement_clusters: [tier.canon_and_self_definition, tier.governance_and_authority]
+      live_domains:
+        - {id: domain.sos_state_machine_and_transition_law, disposition: evolve, charter: 'State-machine transition law; every rank move is a lawful transition.', subdomains: [domain.sos_state_machine_and_transition_law.constitution_ratification], proposed_true_set_priority: P2, proposed_true_set_class: ABSORBS}
+        - {id: domain.state_rank_and_receipt_truth, disposition: evolve, charter: 'Receipts are the only truth; rank/accepted boundary.', owns_fundamentals: [CF-02, CF-38], proposed_true_set_priority: P0, proposed_true_set_class: NEW}
+        - {id: domain.artifact_provenance_and_gate_legitimacy, disposition: evolve, charter: 'Sha-bound provenance; gate owner, route, scope and TTL; blocks claims only.', owns_fundamentals: [CF-11, CF-29, CF-37, CF-45], proposed_true_set_priority: P0, proposed_true_set_class: NEW}
+        - {id: domain.authority_gates_and_secrets_posture, disposition: evolve, charter: 'Transacted authority; secrets custody; the real-money escalation boundary.'}
+        - {id: domain.role_boot_registry_and_agent_identity_law, disposition: evolve, charter: 'Seat and identity law; boot registry.', owns_fundamentals: [CF-27, CF-44]}
+        - {id: domain.github_repository_platform_governance, disposition: evolve, charter: 'GitHub platform governance for the ION substrate.'}
+        - {id: domain.ion_system_definition, disposition: merge, charter: 'Identity web; the definition-of-ION layer. Joint but distinct from SOS law-motion - not absorbed silently.', owns_fundamentals: [CF-13, CF-47], subdomains: [domain.ion_system_definition.cardinality_truth]}
+      designed_not_materialized:
+        - {id: domain.sovereign_intent_and_mandate_ledger, disposition: new, charter: 'Receipted ledger of Sovereign mandates with stable ids.', owns_fundamentals: [CF-12], severity: 'This is the owner of the one rank-1 fundamental whose absence has a measured cost.'}
+        - {id: domain.quorum_and_distributed_transparency, disposition: new, charter: 'Multi-instance quorum witness for acceptance.'}
+
+    - tier_id: tier.truth_memory_and_context_substrate
+      retired_alias: L1
+      charter: 'Context, memory, meaning, custody. What an agent is allowed to see and how it resumes.'
+      refinement_clusters: [tier.semantic_and_naming_substrate, tier.context_and_memory]
+      live_domains:
+        - {id: domain.context_systems, disposition: evolve, charter: 'Authoritative map of live context surfaces; MINI/CAPSULE witness only.', owns_fundamentals: [CF-06, CF-18, CF-22, CF-31], subdomains: [domain.context_systems.package_compilation], proposed_true_set_priority: P0, proposed_true_set_class: NEW}
+        - {id: domain.context_mount_freshness_and_resolver, disposition: evolve, charter: '48h freshness gate; active mount selection.'}
+        - {id: domain.context_proof_gate_enforcement, disposition: evolve, charter: 'CONTEXT PROOF claim gate on task returns.', owns_fundamentals: [CF-09, CF-35]}
+        - {id: domain.externalized_cognition_continuity, disposition: evolve, charter: 'F0 - resume from disk receipts.', owns_fundamentals: [CF-01], proposed_true_set_priority: P2, proposed_true_set_class: ABSORBS}
+        - {id: domain.true_name_symbol_and_semantic_dag_index, disposition: evolve, charter: 'F3 governed meaning; semantic DAG.', owns_fundamentals: [CF-14], proposed_true_set_priority: P0, proposed_true_set_class: NEW}
+        - {id: domain.wisdomnet_universal_context_template_commons, disposition: evolve, charter: 'Cross-domain template commons; knowledge-frontier federation parent.', proposed_true_set_priority: P3, proposed_true_set_class: NEW}
+        - {id: domain.research_archaeology_and_past_system_intelligence, disposition: evolve, charter: 'Past-system evidence; find-before-build.', owns_fundamentals: [CF-15], proposed_true_set_priority: P2, proposed_true_set_class: ABSORBS}
+        - {id: domain.durable_apply_and_substrate_custody, disposition: evolve, charter: 'Durable apply and filesystem custody.', owns_fundamentals: [CF-24, CF-46]}
+      subdomain_detail:
+        - {id: domain.context_systems.package_compilation, parent: domain.context_systems, owns_fundamentals: [CF-07, CF-17, CF-19], note: 'Owns the three unbuilt context-compilation fundamentals. No roster row of its own.'}
+
+    - tier_id: tier.runtime_execution_and_economics
+      retired_alias: L2
+      charter: 'Admission, spawn, scheduling, budget. Where cognition becomes an act.'
+      refinement_clusters: [tier.runtime_and_action, tier.economics_and_scheduling]
+      live_domains:
+        - {id: domain.runtime_carrier_and_action_admission, disposition: evolve, charter: 'Single admission-policy owner; carriers are chassis.', owns_fundamentals: [CF-23, CF-30], subdomains: [domain.runtime_carrier_and_action_admission.hooks_mcp_enactment], proposed_true_set_priority: P0, proposed_true_set_class: ABSORBS}
+        - {id: domain.carrier_spawn_execution_enforcement, disposition: evolve, charter: 'Admitted carrier and budget enforcement; no silent substitution.', owns_fundamentals: [CF-26]}
+        - {id: domain.kernel_ownership_runtime_carrier_slice, disposition: evolve, charter: 'Kernel module ownership map for the carrier slice.'}
+        - {id: domain.local_worker_scheduling_and_autonomous_loop, disposition: evolve, charter: 'Bounded local autonomous loop; one reactor law.'}
+        - {id: domain.cli_carrier_selection_and_usage_fallback, disposition: evolve, charter: 'Carrier seat selection; not admission policy.'}
+        - {id: domain.production_daemon_and_graph_event_runtime, disposition: evolve, charter: 'Persistent graph reactor; idempotent recovery.', owns_fundamentals: [CF-43]}
+        - {id: domain.carrier_quota_and_config_health, disposition: evolve, charter: 'Quota, config and resource sentinel telemetry.'}
+        - {id: domain.swarm_scale_scheduling_and_workload_economics, disposition: evolve, charter: 'Swarm scheduling and workload economics.', proposed_true_set_priority: P0, proposed_true_set_class: NEW}
+        - {id: domain.model_routing_and_reasoning_economics, disposition: evolve, charter: 'Per-spawn model and budget routing receipts.', owns_fundamentals: [CF-42]}
+        - {id: domain.codex_queue_lane_economics, disposition: merge, merge_into: domain.swarm_scale_scheduling_and_workload_economics, charter: 'Fold into swarm_scale as a subdomain.'}
+        - {id: domain.mount_auto_materialize_on_leader_spawn, disposition: demote, parent: domain.context_mount_freshness_and_resolver, charter: 'Freshness-resolver execution path.', placement_note: 'Materialized at top level but rostered as a demote-to-subdomain of an L1 parent. Its tier of record follows the parent once demoted.'}
+      designed_not_materialized:
+        - {id: domain.temporal_rhythm_and_scheduling_law, disposition: new, charter: 'Shared cadence and staleness clock across heartbeat and daemon.'}
+        - {id: domain.delivery_membrane_and_operator_visibility, disposition: new, charter: 'Message -> spawn -> return -> delivery receipt visible to the Sovereign.'}
+      subdomain_detail:
+        - {id: domain.runtime_carrier_and_action_admission.hooks_mcp_enactment, parent: domain.runtime_carrier_and_action_admission, note: 'No roster row of its own.'}
+
+    - tier_id: tier.verification_and_adversarial_witness
+      retired_alias: L3
+      charter: >-
+        Witnesses every tier including the spine. Reports and routes. Never halts. This tier has no
+        outgoing edge that can stop a peer - see section 3.
+      note_on_naming: >-
+        Must never be labeled L3 in a tier_id. In ION's fundamentals hierarchy L03 is Protocols and
+        Templates, which is a different thing entirely.
+      live_domains:
+        - {id: domain.honest_agency_validation, disposition: evolve, charter: 'F8 honesty-as-schema; adversarial witness.', owns_fundamentals: [CF-16, CF-28], subdomains: [domain.honest_agency_validation.contradiction_ledger, domain.honest_agency_validation.telemetry_repair], proposed_true_set_priority: P1, proposed_true_set_class: ABSORBS}
+        - {id: domain.vestige_enforcement_and_drift_routing, disposition: evolve, charter: 'Stale surface detection and drift routing.', owns_fundamentals: [CF-03]}
+        - {id: domain.domain_field_and_diagnostic_coordinate, disposition: evolve, charter: 'Sole diagnostic fan-in coordinate.', proposed_true_set_priority: P0, proposed_true_set_class: NEW}
+        - {id: domain.ragtag_domain_heartbeat_and_active_web, disposition: evolve, charter: 'Per-domain liveness witness.', proposed_true_set_priority: P1, proposed_true_set_class: NEW}
+      designed_not_materialized:
+        - {id: domain.claim_gate_and_witness_verification, disposition: new, charter: 'Owns the claim-gate versus work-gate distinction registry.', owns_fundamentals: [CF-10], severity: 'Owner of a rank-1 fundamental, not materialized.'}
+        - {id: domain.testing_and_reproducible_evidence, disposition: new, charter: 'Tests as reproducible receipts.', note: 'A folder exists under candidate_founding_domains but lacks MISSION.candidate.yaml and the full F6 suite as of the 2026-08-03 scan; it is not on the live 45 list.'}
+
+    - tier_id: tier.interface_membrane_and_communication
+      retired_alias: L4
+      charter: 'The membrane between the organism and the Sovereign, and between domains.'
+      refinement_clusters: [tier.interface_and_operator]
+      live_domains:
+        - {id: domain.operator_language_and_semantic_interface, disposition: evolve, charter: 'Governed operator meaning; no persona cosplay.', subdomains: [domain.operator_language_and_semantic_interface.operator_semantic_lexicon], proposed_true_set_priority: P1, proposed_true_set_class: ABSORBS}
+        - {id: domain.user_interface_visualization_and_operator_experience, disposition: evolve, charter: 'Operator-visible surfaces and UX.', proposed_true_set_priority: P3, proposed_true_set_class: NEW}
+        - {id: domain.gnome_desktop_ion_operator_surface, disposition: demote, parent: domain.user_interface_visualization_and_operator_experience, charter: 'Desktop surface instance.'}
+        - {id: domain.ion_nervous_system_signal_routing, disposition: evolve, charter: 'Inter-domain signal fabric.', owns_fundamentals: [CF-40, CF-41], proposed_true_set_priority: P1, proposed_true_set_class: NEW}
+        - {id: domain.agent_communication_and_settlement, disposition: evolve, charter: 'Inter-agent threads and return settlement.', proposed_true_set_priority: P1, proposed_true_set_class: ABSORBS}
+      designed_not_materialized:
+        - {id: domain.external_ai_network_interface, disposition: new, charter: 'Lawful ingress and egress to external AI networks.'}
+        - {id: domain.inter_system_federation_and_trust, disposition: merge, merge_into: domain.external_ai_network_interface, charter: 'Federation trust schema.'}
+
+    - tier_id: tier.formation_weaving_and_meta_evolution
+      retired_alias: L5
+      charter: >-
+        How the organism changes itself: domains, templates, protocols, and the living self-model.
+        May re-charter other tiers only through receipted formation under spine law.
+      refinement_clusters: [tier.formation_and_evolution, tier.product_formation_cluster]
+      live_domains:
+        - {id: domain.domain_weaver_living_self_model, disposition: evolve, charter: 'Living domain graph, projections, queue currentness. Reports topology pressure; may never mutate topology because it noticed pressure.', owns_fundamentals: [CF-20, CF-21], subdomains: [domain.domain_weaver_living_self_model.mount_auto_materialize], proposed_true_set_priority: P0, proposed_true_set_class: ABSORBS}
+        - {id: domain.domain_mitosis_and_agent_society_formation, disposition: evolve, charter: 'Mitosis under necessity; society formation.', owns_fundamentals: [CF-08, CF-32], proposed_true_set_priority: P2, proposed_true_set_class: NEW}
+        - {id: domain.blocker_scope_and_mitosis_translation, disposition: evolve, charter: 'Converts blockers into gap receipts for mitosis intake.', owns_fundamentals: [CF-36], proposed_true_set_priority: P2, proposed_true_set_class: NEW}
+        - {id: domain.product_and_implementation_domain_formation, disposition: evolve, charter: 'Forms product and implementation webs; charters knowledge-frontier members.', proposed_true_set_priority: P1, proposed_true_set_class: ABSORBS}
+        - {id: domain.template_and_protocol_movement, disposition: evolve, charter: 'Typed-action templates and protocol movement.', owns_fundamentals: [CF-04, CF-05, CF-33, CF-34], severity: 'Owns two rank-1 fundamentals, one of which is entirely unimplemented.', proposed_true_set_priority: P1, proposed_true_set_class: NEW}
+        - {id: domain.lateral_reasoning_and_template_evolution, disposition: evolve, charter: 'Invents new template shapes.', proposed_true_set_priority: P3, proposed_true_set_class: NEW}
+        - {id: domain.cognitive_project_estimation_and_agency_planning, disposition: evolve, charter: 'Estimation and earned-agency planning.', proposed_true_set_priority: P2, proposed_true_set_class: NEW}
+
+    - tier_id: tier.knowledge_specialty_frontier
+      retired_alias: L6
+      charter: >-
+        Generative and unbounded in members. Governs the domain.knowledge.* address space. Members
+        are chartered on demand by tier.formation_weaving_and_meta_evolution.
+      refinement_clusters: [tier.knowledge_and_research]
+      live_domains: []
+      materialized_but_not_on_the_live_45:
+        note: >-
+          Fourteen domain.knowledge.* folders exist under candidate_founding_domains/ (data-ontology-and-graph,
+          economics-value-and-planning, evaluation-and-verification-craft, external-system-interop,
+          formal-sciences, human-interface-communication-and-pedagogy, knowledge-management-and-reference,
+          llm-and-reasoning-systems, media-and-creative-production, natural-and-applied-sciences,
+          operations-and-infrastructure (+ .deployment), research-methodology-and-discovery,
+          software-engineering, wisdomnet-federation-and-commons) plus domain.knowledge_and_atlas.
+          None carry a domain.candidate.yaml on the primary measurement surface, so none appear in the
+          live 45. This is lawful under CF-20: designed breadth without activation.
+        roster_authority: 'UNIVERSAL_DOMAIN_WEB knowledge_L6_roster governs this address space (14 branches).'
+
+  orphans:
+    strict_orphans_unplaceable: 0
+    statement: >-
+      There are no unplaceable orphans among the 45 live packages. Every one lands in a tier either
+      by its own roster row (42) or by its rostered parent (3).
+    three_packages_without_a_roster_row_of_their_own:
+      - {id: domain.context_systems.package_compilation, parent: domain.context_systems, tier: tier.truth_memory_and_context_substrate}
+      - {id: domain.runtime_carrier_and_action_admission.hooks_mcp_enactment, parent: domain.runtime_carrier_and_action_admission, tier: tier.runtime_execution_and_economics}
+      - {id: domain.sos_state_machine_and_transition_law.constitution_ratification, parent: domain.sos_state_machine_and_transition_law, tier: tier.sovereign_and_constitutional_spine}
+    finding: >-
+      The absence of roster rows for dotted subdomains is a roster gap, not a domain gap. The roster
+      enumerates roots; ION has begun materializing subdomains faster than the roster records them.
+      Routed as an observation to domain.domain_weaver_living_self_model.
+    designed_but_never_materialized:
+      count: 8
+      ids:
+        - domain.sovereign_intent_and_mandate_ledger
+        - domain.quorum_and_distributed_transparency
+        - domain.temporal_rhythm_and_scheduling_law
+        - domain.delivery_membrane_and_operator_visibility
+        - domain.claim_gate_and_witness_verification
+        - domain.testing_and_reproducible_evidence
+        - domain.external_ai_network_interface
+        - domain.inter_system_federation_and_trust
+      finding: >-
+        Two of these eight own rank-1 fundamentals: domain.sovereign_intent_and_mandate_ledger owns
+        CF-12 (directive scope and expiry - the 875-run root cause) and
+        domain.claim_gate_and_witness_verification owns CF-10 (verification is not authority). The two
+        fundamentals whose violation cost ION the most have no materialized owner.
+
+  cardinality_disagreement_recorded:
+    note: 'Four different counts of "how many domains" are simultaneously on disk. Per CF-25 the live measured number governs.'
+    values:
+      - {count: 102, surface: 'top-level domain.* folders under candidate_founding_domains/', authority: 'filesystem enumeration, not a domain count'}
+      - {count: 45, surface: 'LIVE_DOMAIN_COMPOSITION.candidate.json disk_package_count and live_composition_cardinality', authority: 'CURRENT-COUNT AUTHORITY per CF-25'}
+      - {count: 38, surface: 'FOUNDING_DOMAIN_SETTLEMENT.candidate.json founding_domain_count', authority: 'birth receipt only, explicitly NOT a counter'}
+      - {count: 37, surface: 'ion_domain_cursor_runner --list-domains', authority: 'runner-invocable count; never collapse with disk count'}
+
+# ===========================================================================
+# 3. RELATIONSHIP MATRIX
+# ===========================================================================
+relationship_matrix:
+  edge_vocabulary:
+    provenance: ION/05_context/current/domain_weaver/root_domain_canon/ROOT_DOMAIN_RELATIONSHIP_MATRIX_20260607.candidate.json
+    adopted_via: 'ION/05_context/current/domain_weaver/universal_domain_web/SEAT_ARCHITECTURE_OPUS_ARM.candidate.yaml lines 731-748'
+    reason_for_adopting_rather_than_inventing: >-
+      ION already has a nine-term directed vocabulary with a full matrix behind it. Inventing a
+      parallel vocabulary would create exactly the alias drift domain.true_name exists to prevent.
+    terms:
+      owns: 'reflexive - every domain owns itself'
+      governs: 'source sets the law the target operates under'
+      supplies_context_to: 'source must be mounted before target can work truthfully'
+      supplies_proof_to: 'source produces receipts the target consumes as evidence'
+      supplies_routes_to: 'source defines the action routes the target invokes'
+      verifies: 'source witnesses target output; reports and routes only'
+      co_governs: 'both must be represented in route/context/proof records before state moves'
+      forms: 'source charters, splits, or retires the target'
+      protected_boundary: 'pair needs secret-capability rules; grants no secret access'
+      escalation_target: 'where a finding is routed when the owner cannot resolve it'
+      depends_on: 'proof dependency - not accepted state, not command'
+      no_direct_relation: 'explicit, so silence is never mistaken for an unmapped edge'
+
+  no_halting_edge:
+    law: 'Verification reports and routes findings; it never halts work on claimed authority.'
+    consequence: >-
+      There is NO `blocks` edge in this matrix. The prior-era identity protocol
+      TRUE_NAME_RANK_PROTOCOL_20260603 does define one; it is deliberately not imported. Even there
+      it is evidence-bearing rather than executive, and authority_transfer: false is mandatory on
+      every edge.
+    replacement: >-
+      A domain that finds a problem emits a finding along supplies_proof_to and, if it cannot resolve
+      it, routes along escalation_target. Work continues.
+    why: >-
+      The invented blocker is the founding failure. 875 domain runs under a read-only default
+      template, each declaring zero OPEN blockers, none producing work. Any edge that can stop a peer
+      reproduces that.
+    justifying_fundamentals: [CF-10, CF-11, CF-12, CF-36]
+    open_question_recorded: >-
+      SEAT_ARCHITECTURE_OPUS_ARM line 897 asks whether escalation_target is sufficient without any
+      halting edge. This file does not resolve that question and does not need to: the answer under
+      current law is yes, because CF-11 is the only implemented rank-1 fundamental and it exists
+      precisely to guarantee it.
+
+  tier_level_edges:
+    - {from: tier.sovereign_and_constitutional_spine, to: ALL_TIERS, type: governs, justified_by: 'CF-02, CF-13; UNIVERSAL_DOMAIN_WEB unified_tier_model.tier_asymmetries[0] - "L0 governs all tiers; only Sovereign governs L0"'}
+    - {from: tier.verification_and_adversarial_witness, to: ALL_TIERS, type: verifies, justified_by: 'CF-10; tier_asymmetries[1] - "L3 witnesses all tiers including L0; never blocks work". Includes the spine itself.'}
+    - {from: tier.truth_memory_and_context_substrate, to: ALL_TIERS, type: supplies_context_to, justified_by: 'CF-06 - a ContextPackage is the only thing an agent receives, so every tier draws its visibility from this one.'}
+    - {from: tier.formation_weaving_and_meta_evolution, to: ALL_TIERS, type: forms, justified_by: 'CF-08 mitosis under necessity; tier_asymmetries[2] - formation may re-charter via receipted formation through spine law.'}
+    - {from: tier.runtime_execution_and_economics, to: tier.sovereign_and_constitutional_spine, type: supplies_proof_to, justified_by: 'CF-02 - execution emits the receipts from which accepted state rebuilds. The runtime does not govern the spine; it feeds it evidence.'}
+    - {from: tier.interface_membrane_and_communication, to: tier.sovereign_and_constitutional_spine, type: supplies_context_to, justified_by: 'CF-12 - operator directives enter here and must reach the mandate ledger carrying scope and expiry.'}
+    - {from: tier.formation_weaving_and_meta_evolution, to: tier.knowledge_specialty_frontier, type: forms, justified_by: 'TIER_MODEL_RULING lines 108-111 - the knowledge branch roster governs the address space; formation charters members on demand.'}
+    - {from: tier.knowledge_specialty_frontier, to: tier.formation_weaving_and_meta_evolution, type: supplies_context_to, justified_by: 'Foreign reference material must pass atlas promotion before it can become a template (SEAT_ARCHITECTURE_OPUS_ARM line 775).'}
+
+  domain_level_edges:
+    note: >-
+      Principal edges only. A full N x N matrix over 45 live packages is 2025 cells and is the
+      natural next artifact, not this one. Every edge below names the fundamental or the mechanism
+      that justifies it.
+
+    edges:
+      - {from: domain.ion_system_definition, to: ALL, type: supplies_context_to, justified_by: 'CF-13, CF-47. Prior-era matrix has it supplying context to 8 of 10 peers and co-governing proof and knowledge. It is the definition-of-ION layer.'}
+      - {from: domain.state_rank_and_receipt_truth, to: ALL, type: supplies_proof_to, justified_by: 'CF-02, CF-38. The prior-era matrix made the proof root the most connected node - co_governs with 6 of 10 peers.'}
+      - {from: domain.true_name_symbol_and_semantic_dag_index, to: ALL, type: supplies_context_to, justified_by: 'CF-14. Every domain id, alias, and coordinate resolves through here. The L-prefix tier collision is what happens when this edge is not honored.'}
+      - {from: domain.context_systems, to: [domain.runtime_carrier_and_action_admission, ALL_WORKERS], type: supplies_context_to, justified_by: 'CF-06, CF-18. Settled split - Context owns package and mount validation, Runtime owns execution admission.'}
+      - {from: domain.context_systems.package_compilation, to: domain.template_and_protocol_movement, type: co_governs, justified_by: 'CF-05, CF-07. THE LOAD-BEARING EDGE OF THE ORGANISM. The template spec must ship inside the never-dropped tier of the package, so neither domain can move state alone. This edge is designed and NOT IMPLEMENTED - it is the single missing machine field.'}
+      - {from: domain.template_and_protocol_movement, to: ALL_WORKERS, type: supplies_routes_to, justified_by: 'CF-04. A template defines what kind of act it is, what paths it may touch, and what proof it owes. Currently enforced as form only - the gate never opens a template file.'}
+      - {from: domain.sos_state_machine_and_transition_law, to: domain.domain_weaver_living_self_model, type: co_governs, justified_by: 'SEAT_ARCHITECTURE_OPUS_ARM line 765 - SOS owns the canon apex, the Weaver owns the live domain graph only. Recorded there as the one real conflict in the corpus.'}
+      - {from: domain.domain_weaver_living_self_model, to: ALL, type: co_governs, justified_by: 'CF-08. The self-model observes the whole web. Observation is not authority - the constitution says it may report topology pressure and may never mutate topology because it noticed pressure.'}
+      - {from: domain.honest_agency_validation, to: ALL, type: supplies_proof_to, escalation_target: domain.operator_language_and_semantic_interface, justified_by: 'CF-16, CF-28, CF-10. Adversarial findings are reported to the operator surface, not enforced against peers. This is the canonical shape of a finding that cannot halt.'}
+      - {from: domain.vestige_enforcement_and_drift_routing, to: ALL, type: verifies, justified_by: 'CF-03. Stale surface detection. Detects stale pointers today; detection of stale STATE does not exist.'}
+      - {from: domain.artifact_provenance_and_gate_legitimacy, to: domain.blocker_scope_and_mitosis_translation, type: supplies_proof_to, justified_by: 'CF-11, CF-36. Gate-legitimacy evidence feeds gate retirement and scope translation. SEAT_ARCHITECTURE_OPUS_ARM line 771 calls this pair the anti-refusal circuit.'}
+      - {from: domain.blocker_scope_and_mitosis_translation, to: domain.domain_mitosis_and_agent_society_formation, type: supplies_proof_to, justified_by: 'CF-36. Scope pressure converts to a gap receipt and enters mitosis intake WITH evidence. This is the lawful alternative to blocking.'}
+      - {from: domain.domain_mitosis_and_agent_society_formation, to: ALL, type: forms, justified_by: 'CF-08. Growth by governed splitting under necessity pressure, never by quota.'}
+      - {from: domain.swarm_scale_scheduling_and_workload_economics, to: domain.runtime_carrier_and_action_admission, type: supplies_routes_to, justified_by: 'BUDGET_TO_ADMISSION_CONSULT - policy advises the admission membrane, never halts it. A budget domain that could halt admission would be a blocker by another name.'}
+      - {from: domain.context_proof_gate_enforcement, to: domain.runtime_carrier_and_action_admission, type: supplies_proof_to, justified_by: 'CF-09, CF-35. The CONTEXT PROOF return is the evidence admission consumes. Note it supplies proof, not permission.'}
+      - {from: domain.research_archaeology_and_past_system_intelligence, to: domain.domain_weaver_living_self_model, type: supplies_context_to, justified_by: 'CF-15. Research before building - re-invention is the corpus recorded lead cause of stale work.'}
+      - {from: domain.externalized_cognition_continuity, to: ALL, type: supplies_context_to, justified_by: 'CF-01. Resume-from-disk is what makes any next session possible.'}
+      - {from: domain.operator_language_and_semantic_interface, to: domain.runtime_carrier_and_action_admission, type: supplies_routes_to, justified_by: 'CF-12. Operator directive provenance must reach the admission membrane, or admission refuses its own operator again - which is precisely what happened for 875 runs.'}
+      - {from: domain.sovereign_intent_and_mandate_ledger, to: domain.operator_language_and_semantic_interface, type: supplies_context_to, justified_by: 'CF-12. Scope and satisfaction condition must be recorded before a directive can be interpreted. EDGE IS DESIGNED; SOURCE DOMAIN IS NOT MATERIALIZED.', status: designed_not_live}
+      - {from: domain.ion_nervous_system_signal_routing, to: ALL, type: supplies_routes_to, justified_by: 'CF-40, CF-41. The fabric along which a finding travels without becoming a halt.'}
+      - {from: domain.agent_communication_and_settlement, to: domain.state_rank_and_receipt_truth, type: supplies_proof_to, justified_by: 'CF-02. Return settlement is where a worker output becomes a receipt candidate.'}
+      - {from: domain.authority_gates_and_secrets_posture, to: [domain.runtime_carrier_and_action_admission, domain.context_systems, domain.agent_communication_and_settlement, domain.user_interface_visualization_and_operator_experience, domain.github_repository_platform_governance], type: protected_boundary, justified_by: 'Prior-era matrix set protected_boundary toward 6 peers. Marks where redaction and taint rules apply; grants nothing. Real money is a Sovereign escalation trigger, so this boundary is also an escalation edge.'}
+      - {from: domain.claim_gate_and_witness_verification, to: ALL, type: verifies, justified_by: 'CF-10. Owns the claim-gate versus work-gate distinction. EDGE IS DESIGNED; SOURCE DOMAIN IS NOT MATERIALIZED.', status: designed_not_live}
+      - {from: domain.durable_apply_and_substrate_custody, to: ALL, type: governs, justified_by: 'CF-24. A carrier declared root must match filesystem reality before writes are admitted. Location is authority in this system.'}
+      - {from: domain.wisdomnet_universal_context_template_commons, to: domain.template_and_protocol_movement, type: supplies_context_to, justified_by: 'Cross-domain template commons; a template shape proven in one domain becomes available to all through the commons rather than by copy.'}
+      - {from: domain.lateral_reasoning_and_template_evolution, to: domain.template_and_protocol_movement, type: forms, justified_by: 'CF-04, CF-33. New template shapes are invented here and enter movement there. Making a new template is itself a templated act - which is where CF-15 governed evolution lives.'}
+      - {from: domain.model_routing_and_reasoning_economics, to: domain.carrier_spawn_execution_enforcement, type: supplies_routes_to, justified_by: 'CF-42. carrier_choice_is_authority_gate is false - routing selects a chassis, never an authority level.'}
+
+  escalation_edges:
+    note: 'Where a finding goes when the owner cannot resolve it. These replace the blocks edge entirely.'
+    edges:
+      - {from: ANY_DOMAIN, to: domain.blocker_scope_and_mitosis_translation, type: escalation_target, justified_by: 'CF-36 - scope pressure routes to mitosis translation WITH evidence.'}
+      - {from: domain.honest_agency_validation, to: domain.operator_language_and_semantic_interface, type: escalation_target, justified_by: 'CF-16 - adversarial findings surface to the operator, not enforced against peers.'}
+      - {from: domain.operator_language_and_semantic_interface, to: THE_SOVEREIGN, type: escalation_target, justified_by: 'The closed set of Sovereign escalation triggers: removing a fundamental he designed, real money, or beyond ION capability. Nothing else escalates.'}
+      - {from: ANY_DOMAIN, to: domain.domain_field_and_diagnostic_coordinate, type: escalation_target, justified_by: 'Sole diagnostic fan-in coordinate - one place findings converge so they are not lost in per-domain logs.'}
+
+  no_direct_relation_declared:
+    note: 'Recorded explicitly so silence is never mistaken for an unmapped edge.'
+    edges:
+      - {a: domain.gnome_desktop_ion_operator_surface, b: domain.state_rank_and_receipt_truth, reason: 'A desktop surface instance has no proof relationship with the receipt root; it reaches it only through its parent UI domain.'}
+      - {a: domain.github_repository_platform_governance, b: domain.context_systems.package_compilation, reason: 'Platform governance and package compilation share no artifact. Routed through the spine if ever needed.'}
+      - {a: domain.knowledge_specialty_frontier_members, b: domain.runtime_carrier_and_action_admission, reason: 'Knowledge members supply reference material, never admission policy. Any apparent edge is a promotion path through formation.'}
+
+  matrix_completeness:
+    tier_edges_enumerated: 8
+    domain_edges_enumerated: 27
+    escalation_edges_enumerated: 4
+    no_direct_relation_enumerated: 3
+    total: 42
+    honest_limit: >-
+      This is the principal-edge set, not the complete matrix. 45 live packages admit 2025 ordered
+      pairs. UNIVERSAL_DOMAIN_WEB records 36 enumerated edge statements from the prior seat; this file
+      carries 42 and reconciles them to fundamentals. A complete N x N matrix is the natural next
+      artifact and is explicitly NOT claimed here.
+    edges_that_are_designed_but_not_live: 2
+
+# ===========================================================================
+# 4. THE SPINE - the 18 fundamentals that must never be forgotten
+# ===========================================================================
+the_spine:
+  definition: 'All load_bearing_rank 1 and the rank-2 fundamentals without which a rank-1 cannot be honored.'
+  ordering: 'Dependency order. Each rung assumes the ones above it.'
+  headline_number: >-
+    13 fundamentals are rank 1. ONE of them is implemented (CF-11). Eight are partial, four are not
+    implemented at all. Re-scored 2026-08-08: rank-1 implemented counts unchanged; receipt and
+    carrier-integration evidence strengthened for CF-02 and CF-10 without closing ledger or
+    template-context gaps.
+
+  rungs:
+
+    - order: 1
+      id: CF-01
+      name: 'F0 - Externalization'
+      rank: 1
+      what_breaks_without_it: >-
+        There is no ION. Every session starts from nothing; the project is a sequence of unrelated
+        chats with a folder attached.
+      implemented: partial
+      honest_note: >-
+        Continuity is currently carrier-bound. Three entry points disagree about where a new agent
+        starts: CLAUDE.md:10 points at the working seat manifest, AGENTS.md:30-40 points at a
+        53-day-stale surface, and START_HERE_FOR_ANY_AGENT.md points nowhere.
+
+    - order: 2
+      id: CF-02
+      name: 'F1 - Receipted truth'
+      rank: 1
+      what_breaks_without_it: >-
+        ION cannot tell a claim from a fact. Documents claim green over work that never ran. This is
+        the reason the seat law is "verify, don't trust" rather than "read the status file".
+      implemented: partial
+      honest_note: >-
+        Receipt machinery exists in pieces. 2026-08-08: autonomous loop steward integration and first
+        candidate_to_accepted_promotion chain exercised on disk (see CF-02 evidence). No single
+        hash-chained organism ledger. The owning domain's own record admits continuity ledgers store
+        the INPUT hash, not a post-write hash to resume from - so you cannot rebuild from them.
+
+    - order: 3
+      id: CF-03
+      name: 'F2 - Self-distrust'
+      rank: 1
+      what_breaks_without_it: >-
+        ION's own stale output re-enters as canon. This is the documented mechanism of the lost year.
+      implemented: partial
+      honest_note: >-
+        The .candidate.* convention is the working half. The missing half is machine classification on
+        re-entry: stale POINTERS are detected, stale STATE is not.
+
+    - order: 4
+      id: CF-12
+      name: 'Directive scope and satisfaction condition'
+      rank: 1
+      what_breaks_without_it: >-
+        A temporary instruction becomes a permanent default and nobody can find out why. Measured
+        cost: a Sovereign audit-scoped read-only order silently became the kernel default and
+        produced roughly 875 domain runs of nothing over about a year.
+      implemented: 'no'
+      honest_note: >-
+        NOT IMPLEMENTED, and its owning domain, domain.sovereign_intent_and_mandate_ledger, is
+        designed but not materialized. This fundamental appears NOWHERE in the constitution. It is
+        the clearest single case of a rank-1 fundamental that received zero constitutional text.
+
+    - order: 5
+      id: CF-09
+      name: 'F5 - Earned agency'
+      rank: 1
+      what_breaks_without_it: >-
+        Any agent can declare itself authorized. Authority collapses to self-report and an agent
+        converts encouragement into ratification.
+      implemented: partial
+      honest_note: >-
+        Proof gates are real at spawn and at return. The countervailing path is real too: witness
+        demotion can accept a return that failed strict proof, so the same return has two possible
+        fates depending on gate ratification state.
+
+    - order: 6
+      id: CF-10
+      name: 'Verification is not authority - never a global ION blocker'
+      rank: 1
+      what_breaks_without_it: >-
+        Checks become halts and the organism stops itself. The founding failure of the project.
+      implemented: partial
+      honest_note: >-
+        Law is stated in five places across four sectors. Kernel enforcement exists (CF-11). 2026-08-08:
+        steward integrate on scheduled autonomous loop tick accepts integration (steps_integrated 1).
+        Practice does not match: a carrier-workflow blocked signal is still used as a parent stop
+        signal, and the owning domain is not materialized.
+
+    - order: 7
+      id: CF-11
+      name: 'Unratified gates must not block'
+      rank: 1
+      what_breaks_without_it: >-
+        Gate austerity is prose and any agent can re-invent the blocker that cost the year.
+      implemented: 'yes'
+      honest_note: >-
+        THE ONLY FULLY IMPLEMENTED RANK-1 FUNDAMENTAL. Verified by execution: 9 gates in the
+        registry, 0 hard-effective. kernel.ion_gate_registry.gate_may_block and
+        demote_evaluation_to_witness are live code with a passing check behind them.
+
+    - order: 8
+      id: CF-04
+      name: 'F4 - Typed action (the template fundamental)'
+      rank: 1
+      what_breaks_without_it: >-
+        No act has a declared shape, proof obligation, path boundary, or authority ceiling. Every
+        write is unbounded and no return can be checked against anything. Untyped cognition - the
+        free-form narration that quietly becomes canon in every chat-based workflow - becomes state.
+      implemented: 'partial - FORM ONLY, NOT CONTRACT'
+      honest_note: >-
+        This is the most important honest finding in this file. Templates are NOT lost, abandoned, or
+        disconnected. They are wired in and heavily used - as PROMPT GENERATORS. 5463 artifacts carry
+        a package class derived from the agent context package template. What was never built is the
+        enforcement half. template_id is a membership token in a hardcoded Python set of six strings,
+        decoupled from the template corpus entirely. Two of those six ids name no template file
+        anywhere. Verified independently by this steward: 122 files under ION/07_templates/, 43
+        kernel modules reference them, 1 opens one (only to lint that template's own wording), and
+        ZERO validate a produced artifact against a template. The gate enforces zero of the seven
+        clauses F4 names.
+
+    - order: 9
+      id: CF-05
+      name: 'Template and context are ONE typed transition'
+      rank: 1
+      what_breaks_without_it: >-
+        An agent can hold context without its governing template, and a template without the context
+        it requires. Artifacts then RESEMBLE continuity without being RE-INSTANTIABLE - which is
+        exactly the condition the Sovereign named when he said there may be no continuity system at
+        all.
+      implemented: 'no'
+      honest_note: >-
+        Placed at rank 1 by evidence, not by wish. The evidence for the rank: the constitution states
+        it almost word for word at F4, the archaeology calls it the claim with the most exact verbatim
+        support anywhere in the corpus, and every downstream context failure traces to it. The
+        evidence for "not implemented": the coupling was NEVER ONCE implemented as a machine field.
+        An exact-key search across all of ION/ and ION_VNEXT/ for context_routes, context_mounts,
+        binds_context, preload_context and required_capsules returns ZERO hits repo-wide. The
+        template contract schema defines 17 required fields and not one is context-related - there is
+        no slot in which a template could declare its context. Between 2026-04-24 and 2026-06-21 the
+        responsibility for declaring context migrated from the template to the domain; the arrow
+        reversed. Today the work class selects the template and a separate per-domain file declares
+        the context, and neither file references the other.
+
+    - order: 10
+      id: CF-06
+      name: 'The ContextPackage is the only thing an agent receives'
+      rank: 1
+      what_breaks_without_it: >-
+        Context is whatever the agent happened to read. No two runs of the same work have the same
+        inputs; no return is reproducible; a domain can be told to run and produce nothing while
+        reporting success.
+      implemented: 'no'
+      honest_note: >-
+        context_compiler.py implements the schema faithfully and is not on the live domain spawn
+        path. 0 of 233 live capsules carry tier_1_doctrine or template_spec. The remedy recorded by
+        the archaeology is "rewire, do not rebuild".
+
+    - order: 11
+      id: CF-07
+      name: 'template_spec REQUIRED in the never-dropped tier'
+      rank: 1
+      what_breaks_without_it: >-
+        CF-05 stays prose forever. This one field IS the coupling; without it no amount of doctrinal
+        restatement can make the unity machine-checkable.
+      implemented: 'no'
+      honest_note: >-
+        Verified: one functional occurrence in the whole kernel, context_compiler.py:219, on a path
+        the live domain spawn does not take. The closest ION ever came to implementing the coupling
+        is eight template_spec YAML files under ai_assistant_work/template_specs/ from 2026-05-08, all
+        left at "candidate machine-checkable template spec, not accepted canon". None were promoted.
+
+    - order: 12
+      id: CF-08
+      name: 'F6 - Domain organization and mitosis under necessity'
+      rank: 1
+      what_breaks_without_it: >-
+        ION is a monolith with a doctrine folder. Nothing has an exclusive owner, so everything is
+        fixed by hand - which the seat law names as the thing an agent must never do.
+      implemented: partial
+      honest_note: >-
+        45 packages materialized, 37 runner-invocable, 38 registered, 102 folders on disk. 37 of 102
+        folders carry all seven artifacts F6 requires for completeness. The kernel does not enforce
+        exactly-one-home at runtime.
+
+    - order: 13
+      id: CF-13
+      name: 'Source governs over projection'
+      rank: 1
+      what_breaks_without_it: >-
+        Every README, status file, and projection becomes a competing authority and there is no rule
+        for which wins. "Verify, don't trust" becomes a mood rather than a decidable procedure.
+      implemented: partial
+      honest_note: >-
+        Stated in three doctrine files, enforced by none, and inverted in practice: a policy file
+        claims to own the allowed-template-id set while its own provenance field points at the code
+        that hardcodes it. The audit calls this pattern the house pattern, not a one-off.
+
+    - order: 14
+      id: CF-22
+      name: 'MINI/CAPSULE are witness, not primary context authority'
+      rank: 2
+      what_breaks_without_it: >-
+        The organism onboards every new agent from a stale index and CF-03 is violated on every
+        session start.
+      implemented: partial
+      honest_note: >-
+        The most-restated law in the entire corpus - seven citations across four sectors - and among
+        the most violated. 190 MINI.md and 185 CAPSULE.md files on disk; AGENTS.md still lists them
+        as first files to read; the codex_solo surface named as THE continuity recovery rule was last
+        written 2026-06-11 and was 53 days stale at audit. Called the single sharpest live
+        contradiction found.
+
+    - order: 15
+      id: CF-18
+      name: 'The anti-pointer law - one file per step'
+      rank: 2
+      what_breaks_without_it: >-
+        A context package degenerates into a reading list and the agent reconstructs whatever it
+        likes. This is the failure CF-06 exists to prevent, restated at the step level.
+      implemented: partial
+      honest_note: >-
+        Return-side proof is enforced. Package-side inlining is not: 2603 spawn artifacts embed
+        required-reads lists rather than loaded content.
+
+    - order: 16
+      id: CF-17
+      name: 'Asymmetric visibility'
+      rank: 2
+      what_breaks_without_it: >-
+        Scope becomes a rule the agent is asked to follow rather than a boundary it cannot cross.
+        Every scope violation in ION's history is an agent doing more than it was asked because it
+        could see more than it needed.
+      implemented: 'no'
+      honest_note: 'Designed in T03. Absent from the live path, which ships a flat list at full density.'
+
+    - order: 17
+      id: CF-14
+      name: 'F3 - Governed meaning / naming is load-bearing'
+      rank: 2
+      what_breaks_without_it: >-
+        Ids drift and the domain web silently forks into aliases. The L-prefix tier collision this
+        file had to route around is a live instance.
+      implemented: partial
+      honest_note: >-
+        Received the LARGEST share of constitutional text of any fundamental (23.4 percent) and is
+        implemented about as well as fundamentals that received a twentieth of that. Text volume did
+        not buy implementation.
+
+    - order: 18
+      id: CF-16
+      name: 'F8 - Honesty as schema'
+      rank: 2
+      what_breaks_without_it: >-
+        Disclaimers become prose an agent can drop, and a candidate artifact reads as accepted state.
+      implemented: partial
+      honest_note: 'non_claims blocks are near-universal in candidate YAML - one of the genuinely successful fundamentals - but absent from operator-facing surfaces.'
+
+  spine_scorecard:
+    rank_1_total: 13
+    rank_1_implemented_yes: 1
+    rank_1_partial: 8
+    rank_1_not_implemented: 4
+    rank_1_not_implemented_ids: [CF-05, CF-06, CF-07, CF-12]
+    spine_total_18: {implemented_yes: 1, partial: 13, not_implemented: 4}
+    the_number_stated_plainly: >-
+      Of the 13 fundamentals ION cannot function without, 1 is implemented. The four that are not
+      implemented at all are: the template-context unity, the context package as sole input, the
+      template_spec field that would join them, and the directive scope-and-expiry rule. Three of
+      those four are one mechanism.
+
+  the_templates_verdict:
+    question: 'Where does the evidence put templates and the template-context unity?'
+    answer: >-
+      Rank 1, both of them. CF-04 and CF-05 are placed at rank 1 because every state transition in
+      ION must pass through them and because their failure mode is the one the Sovereign independently
+      diagnosed. This is not deference to his framing - the archaeology, the continuity audit, and
+      this steward's own greps agree, and the constitution's own text supports it almost word for
+      word at F4 lines 265-274.
+    but_honestly: >-
+      Templates are not missing. They are the most-used and least-enforced object in ION. The corpus
+      holds 122 template files, 93 of them markdown; 5463 artifacts carry a class derived from one of
+      them. The design is alive in the template estate and dead in the runtime. What is missing is
+      one comparison step and one schema field - not a rebuild.
+    the_single_cheapest_repair_identified_by_evidence: >-
+      Add a context field to the template contract schema at
+      ION/03_registry/template_metadata_contract_registry.yaml. The archaeology states plainly:
+      "This single missing field is why the template-context coupling could never become
+      machine-checkable. Every other repair is downstream of it." This file NAMES that repair and
+      does not perform it - it belongs to domain.template_and_protocol_movement and
+      domain.context_systems.package_compilation jointly, per the co_governs edge in section 3.
+
+# ===========================================================================
+# 5. CONTRADICTIONS
+# ===========================================================================
+contradictions:
+  counting_note: >-
+    35 contradiction entries appear in the twelve sectors' own contradictions blocks; 48 of the 170
+    raw fundamentals additionally carry a contradicted_by field, with heavy overlap. Deduplicated and
+    merged with the divergences recorded by the two rebuild audits, 40 distinct contradictions are
+    enumerated below. Where two sectors found the same conflict it is ONE entry.
+  judgement_rule_applied: >-
+    Later dated artifact governs over earlier only when it explicitly corrects; otherwise source
+    governs projection (CF-13), kernel behavior governs documentation of kernel behavior, and a
+    ratified instrument governs a candidate one. Where none of these decide it, the entry says so.
+
+  entries:
+
+    - id: C-01
+      topic: 'Constitutional precedence - three-layer stack'
+      side_a: {claim: 'Compressed instrument governs law where conflicts exist; this document governs explanation.', path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/Constitution /ION_CONSTITUTION_FOUNDING_DOCUMENT_V0_10_CANDIDATE_20260710.md', lines: '67-69'}
+      side_b: {claim: 'Provisional doctrine bridge making the current operating constitution explicit.', path: 'ION/01_doctrine/SOVEREIGN_CONSTITUTION.md', lines: '16-20'}
+      authoritative: side_a
+      why: >-
+        Side A states its own precedence rule explicitly and side B self-describes as provisional and
+        NOT_RATIFIED. Both are candidates, so this is precedence among candidates, not settled law.
+      severity: high
+
+    - id: C-02
+      topic: 'Constitution corpus not bound into spawn contexts'
+      side_a: {claim: 'F6 - every system lives in exactly one domain, necessity pressure not quota.', path: 'ION_GPT_STATE/.../ION_CONSTITUTION_FOUNDING_DOCUMENT_V0_10_CANDIDATE_20260710.md', lines: '293-308'}
+      side_b: {claim: 'As of 2026-07-22 the constitution corpus and the 20-pack domain web are NOT bound into founding-domain spawn contexts.', path: 'ION/05_context/current/ion_system_definition/CANON_BINDING_INDEX.candidate.yaml', lines: '10-17'}
+      authoritative: side_b
+      why: 'Side B is a measurement of what spawn contexts actually contain. Under CF-13 the observed source governs the aspiration. Side A is the law that side B reports as unreachable.'
+      severity: critical
+      note: 'Found independently by S09 and S10. One contradiction, two discoveries.'
+
+    - id: C-03
+      topic: 'Who owns constitution F0-F8'
+      side_a: {claim: 'F0-F8 not bound into founding-domain spawn contexts.', path: 'ION/05_context/current/ion_system_definition/CANON_BINDING_INDEX.candidate.yaml', lines: '10-17'}
+      side_b: {claim: 'They own constitution F0-F8 and CANON_BINDING_INDEX.', path: 'ION/05_context/current/domain_weaver/candidate_founding_domains/domain.true_name_symbol_and_semantic_dag_index/RELATIONSHIPS.candidate.yaml', lines: '32-34'}
+      authoritative: side_a
+      why: >-
+        Not a real conflict on inspection: ownership and binding are different claims. A domain can
+        own a corpus that is not yet wired into spawn. Recorded because two sectors read it as a
+        contradiction, and the ambiguity itself is the defect - "owns" is doing two jobs.
+      severity: low
+
+    - id: C-04
+      topic: 'Agents must not read the filesystem directly'
+      side_a: {claim: 'A ContextPackage is the ONLY thing an agent receives. Agents do not read the filesystem directly.', path: 'ION/06_intelligence/specs/T03_ContextPackageSchema.spec.md', lines: '23-26'}
+      side_b: {claim: 'IDE/manual mode: files are read on session start; Cursor spawn contracts require ordered Read tools.', path: 'ION/06_intelligence/specs/T03_ContextPackageSchema.spec.md', lines: '155-165'}
+      authoritative: undecidable_as_written
+      why: >-
+        The spec contradicts itself internally, 130 lines apart. Neither side can govern because both
+        are the same instrument. This must be resolved by the owning domain, not adjudicated here.
+        The practical reality is side B: every carrier reads files.
+      severity: critical
+      routed_to: domain.context_systems.package_compilation
+
+    - id: C-05
+      topic: 'Context package versus context authority protocol'
+      side_a: {claim: 'T03 forbids direct filesystem reads.', path: 'ION/06_intelligence/specs/T03_ContextPackageSchema.spec.md', lines: '23-26'}
+      side_b: {claim: 'A context package is nonconformant when it only says read these files; paths are provenance anchors but the package must contain distilled content.', path: 'ION/02_architecture/ION_CONTEXT_AUTHORITY_TEAM_PROTOCOL.md', lines: '27-29'}
+      authoritative: side_b
+      why: >-
+        These agree on the goal and differ on the mechanism. Side B is achievable and dated later
+        (2026-04-28 vs 2026-04-03); it keeps paths as provenance while requiring loaded content. Side
+        A's absolutism is what made it unimplementable.
+      severity: medium
+
+    - id: C-06
+      topic: 'Ratification status of the two core context laws'
+      side_a: {claim: 'status: PROPOSED_RESTORATION_NOT_YET_RATIFIED', path: 'ION/02_architecture/CONTEXT_GRAPH_SUBSTRATE_PROTOCOL.md', lines: '1-5'}
+      side_b: {claim: 'status: ACTIVE_OPERATIONAL_LAW', path: 'ION/02_architecture/ION_AGENT_CONTEXT_SYSTEMS_PROTOCOL.md', lines: '1-4'}
+      authoritative: side_b
+      why: 'Both define core context law; only one claims operational status. The proposed file is load-bearing in practice, which is the defect - unratified text is being relied on.'
+      severity: high
+
+    - id: C-07
+      topic: 'RELAY-then-STEWARD trilogy required or suppressed'
+      side_a: {claim: 'RELAY phase first, then STEWARD route decision.', path: 'ION/02_architecture/ION_MOUNT_CONTRACT.md', lines: '54-62'}
+      side_b: {claim: 'Parent chat is carrier-control executing kernel continuation without embodying those roles.', path: 'ION/02_architecture/ION_CURSOR_CANONICAL_WORKFLOW_UNIFICATION_PROTOCOL.md', lines: '54-68'}
+      authoritative: side_b
+      why: 'Operator corrections explicitly suppress the trilogy for domain fleet work. A live operator correction outranks an undated mount contract clause.'
+      severity: medium
+
+    - id: C-08
+      topic: 'template_spec required versus template_id from a class map'
+      side_a: {claim: 'template_spec: string # REQUIRED - the bound template full spec', path: 'ION/06_intelligence/specs/T03_ContextPackageSchema.spec.md', lines: '65-68'}
+      side_b: {claim: 'template_id set from WORKLOAD_TEMPLATE_BY_CLASS with no template_spec field.', path: 'ION/04_packages/kernel/ion_codex_queue_runner.py', lines: '5212-5218'}
+      authoritative: side_a_as_law_side_b_as_fact
+      why: >-
+        Side A is the design and side B is what runs. This is not a conflict of authority but a
+        measured gap between them, and it is the most-cited single defect in the entire corpus -
+        found independently by S02, S03, S04, S06, S07 and S12. Verified by this steward by reading
+        the function.
+      severity: critical
+      note: 'The archaeology: "If one artifact in this audit should be shown to the Sovereign, it is these eight lines."'
+
+    - id: C-09
+      topic: 'MINI.md ROUTE section is or is not the tier reference list'
+      side_a: {claim: 'MINI/CAPSULE are witness inputs, not primary authority.', path: 'ION/02_architecture/ION_AGENT_CONTEXT_SYSTEMS_PROTOCOL.md', lines: '64-66'}
+      side_b: {claim: 'The MINI.md ROUTE section IS the tier_2/tier_5 reference list.', path: 'ION/06_intelligence/specs/T03_ContextPackageSchema.spec.md', lines: '160-161'}
+      authoritative: side_a
+      why: 'Side A is dated later (2026-04-28 vs 2026-04-03) and is echoed by three registries. Side B is a 2026-04-03 spec that predates the demotion.'
+      severity: high
+
+    - id: C-10
+      topic: 'Protocol claims ACTIVE while its own acceptance criteria are unmet'
+      side_a: {claim: 'status ACTIVE_OPERATIONAL_LAW', path: 'ION/02_architecture/ION_AGENT_CONTEXT_SYSTEMS_PROTOCOL.md', lines: '3'}
+      side_b: {claim: 'Acceptance requires every live agent to have a context-system card and templates for one-file-per-step builds - completeness not verified.', path: 'ION/02_architecture/ION_AGENT_CONTEXT_SYSTEMS_PROTOCOL.md', lines: '91-97'}
+      authoritative: side_b
+      why: 'A file cannot declare itself active over its own unmet acceptance section. Self-certification is exactly what CF-09 forbids.'
+      severity: medium
+
+    - id: C-11
+      topic: 'Templates define lawful shapes versus the gate checks no shape'
+      side_a: {claim: 'Templates define lawful packet shapes, proof shapes, and receipt shapes.', path: 'ION/07_templates/README.md', lines: '12-13'}
+      side_b: {claim: 'template_id not in allowed -> unapproved_template_id finding; no file content check.', path: 'ION/04_packages/kernel/ion_template_action_gate.py', lines: '157-164'}
+      authoritative: side_a_as_law_side_b_as_fact
+      why: >-
+        Side A is the law CF-34 states. Side B is the measured enforcement. Verified independently:
+        0 kernel modules validate an artifact against a template. The law is not wrong; it is unbuilt.
+      severity: critical
+
+    - id: C-12
+      topic: 'Template id namespace versus schema id namespace inside one file'
+      side_a: {claim: 'template_id: ion.template.single_carrier_sequence_receipt.v1', path: 'ION/07_templates/receipts/SINGLE_CARRIER_SEQUENCE_RECEIPT.md', lines: '3'}
+      side_b: {claim: 'schema_id: ion.single_carrier_sequence_receipt.v1', path: 'ION/07_templates/receipts/SINGLE_CARRIER_SEQUENCE_RECEIPT.md', lines: '16'}
+      authoritative: neither_it_is_a_naming_defect
+      why: 'Two namespaces 13 lines apart in one file. Not a conflict of law - a true-name violation under CF-14. Routed to domain.true_name_symbol_and_semantic_dag_index.'
+      severity: low
+
+    - id: C-13
+      topic: 'Two disjoint template identifier namespaces'
+      side_a: {claim: 'Four contract-bearing ids in the registry (events.template_completion_event, events.template_reaction_selection_witness, doctrine.evolution_packet, demo.summary_refresh_request).', path: 'ION/03_registry/template_metadata_contract_registry.yaml', lines: '11-27'}
+      side_b: {claim: 'Six flat allowlist ids with no contract, no required fields, no context binding.', path: 'ION/04_packages/kernel/ion_template_action_gate.py', lines: '15-22'}
+      authoritative: undecidable_both_are_live
+      why: >-
+        ZERO overlap between the namespaces. Nothing reconciles them. The registry has the good design
+        and governs four templates no worker ever fills; the gate has the used ids and no contract
+        behind any of them. Neither can govern the other because they describe disjoint sets. This is
+        the structural symptom underneath C-08 and C-11.
+      severity: critical
+      routed_to: domain.template_and_protocol_movement
+
+    - id: C-14
+      topic: 'MINI/CAPSULE superseded versus still listed as base sources'
+      side_a: {claim: 'supersedes_primary_context_surfaces includes ION/MINI.md and ION/CAPSULE.md', path: 'ION/03_registry/ion_context_authority_team_registry.yaml', lines: '14-19'}
+      side_b: {claim: 'STEWARD base_sources still list ION/agents/steward/MINI.md and CAPSULE.md', path: 'ION/03_registry/agent_context_system_registry.yaml', lines: '26-30'}
+      authoritative: side_a
+      why: 'Same date (2026-04-28), same registry tier. Side A states the supersession explicitly; side B is an unupdated list. A supersession beats an omission to update.'
+      severity: high
+
+    - id: C-15
+      topic: 'Gate registry birth_receipt shape'
+      side_a: {claim: 'gates[] with birth_receipt mapping objects', path: 'ION/05_context/current/domain_weaver/gate_registry/GATE_REGISTRY.candidate.json', lines: '14-33'}
+      side_b: {claim: 'entries[] with bare string birth_receipt values - same gate ids, different shape', path: 'ION/05_context/current/domain_weaver/candidate_founding_domains/domain.artifact_provenance_and_gate_legitimacy/gate_registry/GATE_REGISTRY.candidate.json', lines: '7-17'}
+      authoritative: side_a
+      why: 'Only the domain_weaver path is kernel-loaded. Under CF-13 the surface the code reads is the source. Side B would conflict with kernel birth_receipt object law if ever promoted to hard.'
+      severity: medium
+
+    - id: C-16
+      topic: 'Domain README enumeration is stale against its own directory'
+      side_a: {claim: 'A domain record is current operational truth.', path: 'ION/03_registry/domains/README.md', lines: '36-38'}
+      side_b: {claim: 'First-pass domain list omits many W4-W5 founding domains promoted 2026-08-02 that exist as files in the same directory.', path: 'ION/03_registry/domains/README.md', lines: '20-32'}
+      authoritative: side_a
+      why: 'The record files govern; the README list is a projection of them and is stale. Textbook CF-13.'
+      severity: low
+
+    - id: C-17
+      topic: 'Proof gate may reject while intake demotion may accept the same return'
+      side_a: {claim: 'Unratified gates must not block carrier execution.', path: 'ION/04_packages/kernel/ion_gate_registry.py', lines: '1-5'}
+      side_b: {claim: 'Task worker not onboarded without context proof.', path: 'ION/04_packages/kernel/ion_context_proof_gate.py', lines: '1-7'}
+      authoritative: side_a
+      why: >-
+        Both are live kernel code and produce dual behavior on one return: the proof gate may reject
+        at evaluate time while demotion at task-return intake accepts anyway. Side A governs because
+        CF-10 and CF-11 are the higher law and because the Sovereign's standing correction is that
+        nothing halts. The dual behavior is nonetheless a real defect and should be made explicit
+        rather than emergent.
+      severity: high
+
+    - id: C-18
+      topic: 'Two work-class to template maps that must stay manually aligned'
+      side_a: {claim: 'work_class code_implementation -> ion.template.patch_proposal.v1', path: 'ION/04_packages/kernel/ion_prompt_spawn_admission.py', lines: '392-404'}
+      side_b: {claim: 'workload class code_patch -> patch_proposal via WORKLOAD_TEMPLATE_BY_CLASS', path: 'ION/04_packages/kernel/ion_codex_queue_runner.py', lines: '348-354'}
+      authoritative: neither_no_single_source_exists
+      why: 'Two maps, no single source of truth module found. They currently agree; nothing keeps them agreeing. This is the mechanism by which an expired scope became a silent default (CF-12).'
+      severity: high
+
+    - id: C-19
+      topic: 'Which enumeration IS the fundamentals'
+      side_a: {claim: 'Nine fundamentals F0-F8 in a dependency hierarchy.', path: 'ION_GPT_STATE/.../ION_CONSTITUTION_FOUNDING_DOCUMENT_V0_10_CANDIDATE_20260710.md', lines: '194-348'}
+      side_b: {claim: 'Nineteen operational fundamentals F01-F19 with COVERED/PARTIAL/GAP verdicts.', path: 'ION_GPT_STATE/.../FUNDAMENTALS_COVERAGE/FUNDAMENTALS_COVERAGE_MATRIX.md', lines: '20-43'}
+      authoritative: side_a
+      why: >-
+        Side A is the constitutional enumeration; side B is an operational coverage facet list. They
+        are different objects sharing a word, which is a CF-14 naming failure rather than a logical
+        contradiction. This file uses neither numbering, adopting CF-nn precisely to avoid inheriting
+        the collision.
+      severity: medium
+
+    - id: C-20
+      topic: 'Where doctrine lives'
+      side_a: {claim: 'doctrine root: ION/01_doctrine/', path: 'ION/REPO_AUTHORITY.md', lines: '25'}
+      side_b: {claim: 'F0-F8 exist only under ION_GPT_STATE/OPERATOR_20PACK_REBUILT/...; ION/01_doctrine contains none of them.', path: 'ION/05_context/current/ion_system_definition/CANON_BINDING_INDEX.candidate.yaml', lines: '30-58'}
+      authoritative: side_b
+      why: >-
+        Side B is a measurement. The declared doctrine root does not contain the fundamentals. ION's
+        constitution physically lives in an archived GPT-state export, which is why every sector had
+        to reach outside the active tree to cite it.
+      severity: critical
+
+    - id: C-21
+      topic: 'First files an arriving agent reads'
+      side_a: {claim: 'ION/07_templates/ is the template substrate; MINI/CAPSULE are not the primary carrier context authority.', path: 'ION/REPO_AUTHORITY.md', lines: '58'}
+      side_b: {claim: 'First files to read include codex_solo MINI.md and CAPSULE.md.', path: 'AGENTS.md', lines: '29-32'}
+      authoritative: side_a
+      why: >-
+        REPO_AUTHORITY is the named authority file and is corroborated by three registries and the
+        architecture protocol. AGENTS.md is the single dissenting surface and points at a file last
+        written 2026-06-11.
+      severity: critical
+
+    - id: C-22
+      topic: 'Scope of the domain lattice'
+      side_a: {claim: 'EVERYTHING IS A DOMAIN.', path: 'CLAUDE.md', lines: '26-28'}
+      side_b: {claim: 'First-pass active domains - Construction/Routing and Continuity/Context only (Article 11).', path: 'ION/01_doctrine/SOVEREIGN_CONSTITUTION.md', lines: '83-86'}
+      authoritative: side_a
+      why: >-
+        Side B describes a first pass in a file that self-describes as a provisional bridge; side A is
+        current seat law dated 2026-08-02/03 and matches F6. Side B is not wrong, it is superseded by
+        elapsed time and 45 materialized domains.
+      severity: low
+
+    - id: C-23
+      topic: 'CLAUDE.md cites "ION own constitution" without a path'
+      side_a: {claim: 'SOVEREIGN_CONSTITUTION ratification NOT_RATIFIED provisional bridge.', path: 'ION/01_doctrine/SOVEREIGN_CONSTITUTION.md', lines: '5-6'}
+      side_b: {claim: 'CLAUDE.md cites ION own constitution for anti-gate law without path or ratification status.', path: 'CLAUDE.md', lines: '29-31'}
+      authoritative: side_a
+      why: >-
+        The uncited claim cannot outrank the cited status. Recorded against this file's own law of
+        provenance-or-silence: the anti-gate law is real (CF-10, five citations) but CLAUDE.md does
+        not carry them. A citation gap in the seat law itself.
+      severity: medium
+
+    - id: C-24
+      topic: 'Domain count authority - settlement versus live'
+      side_a: {claim: 'founding_domain_count 38', path: 'ION/05_context/current/domain_weaver/FOUNDING_DOMAIN_SETTLEMENT.candidate.json', lines: '7-8'}
+      side_b: {claim: 'observed_count 45 on the materialized surface', path: 'ION/05_context/current/domain_weaver/domain_field_composition/LIVE_DOMAIN_COMPOSITION.candidate.json', lines: '11-61'}
+      authoritative: side_b
+      why: 'CF-25 settles this explicitly: settlement is a birth receipt, not the current-count authority. The live measured cardinality governs.'
+      severity: medium
+
+    - id: C-25
+      topic: 'Settlement file disagrees with itself'
+      side_a: {claim: 'founding_domain_count 38', path: 'ION/05_context/current/domain_weaver/FOUNDING_DOMAIN_SETTLEMENT.candidate.json', lines: '7-8'}
+      side_b: {claim: 'live_composition_cardinality 37; settlement_ahead_pending_live_refresh', path: 'ION/05_context/current/domain_weaver/FOUNDING_DOMAIN_SETTLEMENT.candidate.json', lines: '95-99'}
+      authoritative: side_b
+      why: 'The file flags its own drift, which is correct behavior. Both numbers are now stale against the live 45; the live surface governs per CF-25.'
+      severity: low
+
+    - id: C-26
+      topic: 'Folder count versus declared domain count'
+      side_a: {claim: '102 top-level domain.* directories under candidate_founding_domains.', path: 'filesystem enumeration', lines: 'verified by this steward 2026-08-03'}
+      side_b: {claim: 'declared_count 45 domain.candidate.yaml artifacts on the primary surface.', path: 'ION/05_context/current/domain_weaver/domain_field_composition/LIVE_DOMAIN_COMPOSITION.candidate.json', lines: '11-12'}
+      authoritative: side_b
+      why: 'A folder is not a domain. CF-08 requires charter, context, agents and receipts; F6 completeness requires seven artifacts. 57 folders are birth-registry residue, lawful under CF-20 as design without activation.'
+      severity: medium
+
+    - id: C-27
+      topic: 'F6 self-build mandated versus package lacking its own mission artifact'
+      side_a: {claim: 'Self-build to Constitution F6 completeness.', path: 'ION/05_context/current/domain_weaver/candidate_founding_domains/domain.testing_and_reproducible_evidence/OPERATING_CARD.candidate.md', lines: '12-13'}
+      side_b: {claim: 'The same package has no MISSION.candidate.yaml on disk at scan time.', path: 'sector enumeration 2026-08-03', lines: 'S10_DOMAINS'}
+      authoritative: side_b
+      why: 'Disk governs. The mandate is real and unexecuted - which is the honest state of most of the 102 folders.'
+      severity: low
+
+    - id: C-28
+      topic: 'Codex CLI primary carrier versus current carrier binding'
+      side_a: {claim: 'Codex CLI is the primary dogfood implementation and validation carrier.', path: 'ION_VNEXT/01_canon/WORKSPACE_CANON.yaml', lines: '18-19'}
+      side_b: {claim: 'Operator correction binds the Cursor parent to Composer plus Grok budget.', path: 'ION/05_context/current/cursor_connector/prompt_spawn_runs/... context_package.md', lines: 'spawn context, not a vNext file'}
+      authoritative: side_b
+      why: 'A live operator correction (2026-08-03) outranks a 2026-05-19 canon file governing a tree that never cut over. vNext canon is stale, not wrong-at-the-time.'
+      severity: low
+
+    - id: C-29
+      topic: 'vNext forbids runtime JSON bulk copy while production writes it continuously'
+      side_a: {claim: 'runtime_json_bulk_copy_forbidden: true', path: 'ION_VNEXT/01_canon/MIGRATION_RULES.yaml', lines: '37-39'}
+      side_b: {claim: 'Production writes ACTIVE_* runtime JSON as normal carrier operation.', path: 'ION/05_context/current/ACTIVE_CARRIER_TURN_PACKET.json', lines: '1'}
+      authoritative: side_b
+      why: >-
+        Side A governs a migration that never executed. This is parallel evolution rather than
+        violation - the rule was written for a cutover that did not happen, so it never acquired
+        jurisdiction over the production tree.
+      severity: low
+
+    - id: C-30
+      topic: 'Gate promotions ratified then void'
+      side_a: {claim: '"go" ratifies a six-item bundle including gate promotions to operator_ratified and hard.', path: 'ION/06_intelligence/roundtable/live/log/20260803T000424Z__AETHER_OPERATOR__sovereign-go-ratification-receipt-e-ladder-started.md', lines: '21-29'}
+      side_b: {claim: 'Items 2-4 void; no gate promoted; the Sovereign struck down approval inflation.', path: 'ION/06_intelligence/roundtable/live/log/20260803T012208Z__AETHER_OPERATOR__retraction-no-gate-promotions-ever-verification-is-not-authority.md', lines: '23-26'}
+      authoritative: side_b
+      why: 'The later post explicitly corrects the earlier via a corrects front-matter field, and the Sovereign is the only ratification authority. Side A is a textbook instance of CF-29 violated - borrowed authority with extra steps.'
+      severity: high
+
+    - id: C-31
+      topic: 'Were the gates hallucinated or was the first blocker real'
+      side_a: {claim: 'Essentially every gate hallucinated by prior AI.', path: 'ION/06_intelligence/roundtable/live/log/20260803T012208Z__AETHER_OPERATOR__retraction-no-gate-promotions-ever-verification-is-not-authority.md', lines: '22-24'}
+      side_b: {claim: 'The first blocker was real, lawful, and the Sovereign own audit write-block.', path: 'ION/06_intelligence/roundtable/live/log/20260803T023732Z__AETHER_OPERATOR__root-cause-found-the-write-block-was-the-sovereigns-expired-audit-order.md', lines: '22-28'}
+      authoritative: side_b
+      why: >-
+        The later post explicitly corrects the earlier as incomplete. This correction matters more
+        than most: it converts the story from "AI invented a blocker" to "a lawful directive outlived
+        its scope", which is why CF-12 exists and ranks 1.
+      severity: high
+
+    - id: C-32
+      topic: 'Never a global ION blocker versus a live parent stop signal'
+      side_a: {claim: 'Never a global ION blocker.', path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/ION_Domain/_workbench/_team/DOMAIN_REGISTRY.md', lines: '46'}
+      side_b: {claim: 'ION_CARRIER_WORKFLOW_BLOCKED still used as a parent stop signal (hook session 2026-08-03).', path: 'ION/05_context/current/ACTIVE_CARRIER_TURN_PACKET.json', lines: 'speculation - S07 did not open the line'}
+      authoritative: side_a
+      why: 'CF-10 and CF-11 are settled law with kernel enforcement behind them. Side B is a live violation to be routed, not a competing authority. Its line citation is unverified - flagged as such by the sector.'
+      severity: high
+
+    - id: C-33
+      topic: 'High-detail package required versus capsule is the minimum working context'
+      side_a: {claim: 'High-Detail Agent Context Package required for live onboarding.', path: 'ION/02_architecture/ION_AGENT_CONTEXT_SYSTEMS_PROTOCOL.md', lines: '22-24'}
+      side_b: {claim: 'Capsule is the minimum working context.', path: 'ION/05_context/current/codex_agent_mounts/role_ionologist__domain_externalized_cognition_continuity/.ion/CAPSULE.md', lines: '1-4'}
+      authoritative: side_a
+      why: 'Side B is a generated mount artifact; a generated file cannot restate the law that governs its own generation. CF-22 with seven citations settles it.'
+      severity: high
+
+    - id: C-34
+      topic: 'codex_solo fallback-only versus codex_solo routing carrier continuity'
+      side_a: {claim: 'shared_codex_solo_is_fallback_only: true', path: 'ION/05_context/current/domain_weaver/candidate_founding_domains/domain.externalized_cognition_continuity/CONTEXT_REQUIREMENTS.candidate.yaml', lines: '8'}
+      side_b: {claim: 'codex_solo MINI still routes ACTIVE_CAPSULE for Domain Weaver carrier continuity.', path: 'ION/05_context/current/codex_solo/MINI.md', lines: '4-10'}
+      authoritative: side_a
+      why: 'The owning domain declares the posture; the witness file is the thing being demoted and cannot declare its own promotion. Side B was last written 2026-06-11 and was 53 days stale at audit.'
+      severity: critical
+      note: 'The continuity audit calls this cluster the single sharpest live contradiction in the repo, at severity block in the stale-surface audit.'
+
+    - id: C-35
+      topic: 'no_mini_capsule_primary_authority versus mounts binding portable capsule paths'
+      side_a: {claim: 'no_mini_capsule_primary_authority: true', path: 'ION/05_context/current/domain_weaver/candidate_founding_domains/domain.externalized_cognition_continuity/CONTEXT_REQUIREMENTS.candidate.yaml', lines: '11-12'}
+      side_b: {claim: 'paths.portable_capsule and paths.portable_mini explicitly bound.', path: 'ION/05_context/current/codex_agent_mounts/role_ionologist__domain_externalized_cognition_continuity/.ion/ION_CONTEXT_CAPSULE.yaml', lines: '38-45'}
+      authoritative: side_a
+      why: 'Same reasoning as C-34. The generator still emits what the requirement forbids - a real defect in the mount materializer, routed to domain.context_mount_freshness_and_resolver.'
+      severity: high
+
+    - id: C-36
+      topic: 'Mount capsule schema versus T03 ContextPackage schema'
+      side_a: {claim: 'schema_id: ion.portable_agent_domain_context_capsule.v0_1', path: 'ION/05_context/current/codex_agent_mounts/.../ION_CONTEXT_CAPSULE.yaml', lines: '1-10'}
+      side_b: {claim: 'ContextPackageSchema 1.0 with different identity and fields.', path: 'ION/06_intelligence/specs/T03_ContextPackageSchema.spec.md', lines: '40-46'}
+      authoritative: side_b_as_design_side_a_as_reality
+      why: >-
+        Two unrelated schemas both called a context capsule. The mount schema is what exists and runs;
+        the T03 schema is what was designed and does not. Recorded as the concrete face of CF-06 being
+        unimplemented rather than as a precedence question.
+      severity: high
+
+    - id: C-37
+      topic: 'Policy file claims ownership of a set the code hardcodes'
+      side_a: {claim: 'template_action_allowed_ids.json declares itself owner and forbids silent expansion of defaults; its declared runtime_loader exists only inside the archived export.', path: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/.../ion/_policy/template_action_allowed_ids.json', lines: 'per CONTINUITY_SYSTEM_TRUTH_AUDIT lines 230-241'}
+      side_b: {claim: 'DEFAULT_ALLOWED_TEMPLATE_IDS is a hardcoded Python set.', path: 'ION/04_packages/kernel/ion_template_action_gate.py', lines: '15-22'}
+      authoritative: side_b
+      why: >-
+        Side B is what executes; verified by this steward. The inversion is the finding: the policy
+        documents the code instead of governing it, and its own provenance field points AT the live
+        gate. The audit records the same inversion elsewhere and names it the house pattern.
+      severity: high
+
+    - id: C-38
+      topic: 'The separation of template and context ratified three days before the constitution restated their unity'
+      side_a: {claim: 'L03 does not own context-package binding depth; context authority is adjacent to but distinct from action templates.', path: 'ION/05_context/current/ion_system_definition/ION_FUNDAMENTALS_SWARM/L03_PROTOCOLS_TEMPLATES.candidate.md', lines: '14, 344, 350', dated: '2026-07-07'}
+      side_b: {claim: 'F4 - a template defines what context it requires.', path: 'ION_GPT_STATE/.../ION_CONSTITUTION_FOUNDING_DOCUMENT_V0_10_CANDIDATE_20260710.md', lines: '265-269', dated: '2026-07-10'}
+      authoritative: side_b
+      why: >-
+        Side B is dated three days later and is constitutional; side A is a fundamentals-swarm working
+        document. Under normal precedence the constitution governs. The archaeology calls this the
+        most important single finding for the Sovereign, and it is: the moment the split stopped being
+        drift and became design, immediately followed by the constitution restating the unity as if
+        the split had not happened. Both statements are current and they disagree.
+      severity: critical
+      routed_to: domain.ion_system_definition
+
+    - id: C-39
+      topic: 'One template file contains both the unity and its repudiation, 40 lines apart'
+      side_a: {claim: 'A Required Context Reads section - the template declaring its own context.', path: 'ION/07_templates/carriers/CURSOR_CLI_EXECUTION_PACKET.md', lines: '26-34'}
+      side_b: {claim: 'Template structure and context proof are separate gates.', path: 'ION/07_templates/carriers/CURSOR_CLI_EXECUTION_PACKET.md', lines: '74-77'}
+      authoritative: side_a
+      why: >-
+        Side A is the design working in production today, enforced only by an agent reading it. Side B
+        is the ratified separation restated inside the very file that disproves it. Under CF-05 the
+        unity governs. Recorded because it is the clearest miniature of the whole problem.
+      severity: high
+
+    - id: C-40
+      topic: 'Deprecating the only working density ladder'
+      side_a: {claim: 'The MINI/CAPSULE/LONG_HORIZON ladder is a working variable-density system with a 309x span between rungs.', path: 'ION/04_packages/kernel/ion_codex_solo_context.py', lines: '790-866'}
+      side_b: {claim: 'The MINI/CAPSULE pattern is witness material only, not sufficient for live onboarding.', path: 'ION/02_architecture/ION_AGENT_CONTEXT_SYSTEMS_PROTOCOL.md', lines: '12-13, 24, 66'}
+      authoritative: side_b_on_authority_side_a_on_mechanism
+      why: >-
+        Side B is correct that these files must not be the primary context authority (CF-22, seven
+        citations). Side A is correct that the mechanism inside them is the density ladder CF-19
+        describes and that ION otherwise lacks. ION deprecated the working instance of the thing it
+        was trying to build. Both sides should be honored: retire the authority, keep the mechanism.
+      severity: high
+      caveat: >-
+        At ION/05_context/current/domain_weaver/.ion the MINI file is LARGER than the CAPSULE file,
+        which inverts the ladder entirely - so even the working instance is not uniformly working.
+
+  contradictions_i_could_not_judge:
+    - {id: C-04, reason: 'A specification contradicts itself internally. No external rule can decide which half of one instrument governs. Must be resolved by the owning domain.'}
+    - {id: C-13, reason: 'Two live template namespaces with zero overlap. Neither can govern the other because they describe disjoint sets; a merge decision is required, not an adjudication.'}
+    - {id: C-18, reason: 'Two work-class maps that currently agree with nothing keeping them in agreement. There is no single source of truth to declare authoritative.'}
+  additional_uncertainty:
+    - 'C-32 side B carries an unverified line citation; the sector flagged it as speculation and this file preserves that flag rather than resolving it.'
+    - 'Whether the branch these audits ran against (quarantine/pre-clean-room-snapshot-2026-08-03) reflects live ION was recorded by the continuity audit as NOT DETERMINED and MATERIAL. Every finding inherited from that audit carries this caveat.'
+
+# ===========================================================================
+# 6. WHAT THE CONSTITUTION UNDERWEIGHTED
+# ===========================================================================
+what_the_constitution_underweighted:
+  the_sovereign_hypothesis: >-
+    "MAYBE EVEN THE LATEST CONSTITUTION DIDNT FULLY CAPTURE HOW IMPORTANT TEMPLATES ARE, LIKELY
+    BECAUSE I THOUGHT IT WAS CANON AT THIS POINT."
+  restated_as_a_testable_claim: >-
+    The constitution's emphasis tracks recency of argument rather than load-bearing importance.
+    Things the author considered obviously canon received the least text.
+  verdict: CONFIRMED_BY_MEASUREMENT
+  confidence: high
+  measurement_target: 'ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/Constitution /ION_CONSTITUTION_FOUNDING_DOCUMENT_V0_10_CANDIDATE_20260710.md (1116 lines, 9682 words)'
+  method: >-
+    Word count of each F-section from its heading to the next heading, measured directly. Ranks were
+    assigned in section 1 before this measurement was taken, by what breaks without each fundamental.
+
+  evidence_1_text_per_fundamental:
+    unit: words in the F0-F8 block (1270 words total)
+    rows:
+      - {fundamental: F0, canonical: CF-01, name: Externalization,      lines: '207-212', words: 51,  pct: 4.0,  rank: 1}
+      - {fundamental: F1, canonical: CF-02, name: 'Receipted truth',    lines: '213-219', words: 51,  pct: 4.0,  rank: 1}
+      - {fundamental: F2, canonical: CF-03, name: 'Self-distrust',      lines: '220-233', words: 130, pct: 10.2, rank: 1}
+      - {fundamental: F3, canonical: CF-14, name: 'Governed meaning',   lines: '234-264', words: 297, pct: 23.4, rank: 2}
+      - {fundamental: F4, canonical: CF-04, name: 'Typed action',       lines: '265-275', words: 91,  pct: 7.2,  rank: 1}
+      - {fundamental: F5, canonical: CF-09, name: 'Earned agency',      lines: '276-292', words: 150, pct: 11.8, rank: 1}
+      - {fundamental: F6, canonical: CF-08, name: 'Domain organization',lines: '293-309', words: 164, pct: 12.9, rank: 1}
+      - {fundamental: F7, canonical: CF-15, name: 'Governed evolution', lines: '310-321', words: 115, pct: 9.1,  rank: 2}
+      - {fundamental: F8, canonical: CF-16, name: 'Honesty as schema',  lines: '322-346', words: 221, pct: 17.4, rank: 2}
+
+  evidence_2_the_inversion:
+    rank_1_fundamentals_in_the_F_block: {count: 6, ids: [F0, F1, F2, F4, F5, F6], total_words: 637, mean_words: 106.2}
+    rank_2_fundamentals_in_the_F_block: {count: 3, ids: [F3, F7, F8], total_words: 633, mean_words: 211.0}
+    ratio: 1.99
+    finding: >-
+      The three rank-2 fundamentals received almost exactly as many words as the six rank-1
+      fundamentals - a mean of 211 words each against 106. The constitution spent DOUBLE the text per
+      fundamental on the ones ION degrades without, compared to the ones ION cannot run without. The
+      inversion is not marginal; it is a factor of two.
+    largest_single_inversion: >-
+      F3 Governed meaning (rank 2) received 297 words, 23.4 percent of the entire fundamentals block -
+      the largest share of any fundamental. F0 Externalization and F1 Receipted truth (both rank 1,
+      both axioms everything else stands on) received 51 words each, 4.0 percent - the smallest.
+      F3 received 5.8 times the text of the two fundamentals that make ION possible at all.
+
+  evidence_3_templates_specifically:
+    f4_share_of_the_fundamentals_block: '7.2 percent - second-smallest of the nine, ahead of only F0 and F1'
+    f4_rank: 1
+    whole_document_term_frequency:
+      note: 'Counts across all 9682 words of the constitution, case-insensitive.'
+      receipt: 92
+      carrier: 86
+      domain: 54
+      gate: 50
+      truename: 15
+      template: 16
+      mitosis: 6
+      blocker: 2
+      'context package (any casing or spelling)': 0
+      template_spec: 0
+    the_finding_stated_plainly: >-
+      The constitution says "receipt" 92 times and "template" 16 times. It says "context package"
+      ZERO times - the phrase does not occur anywhere in the document in any casing or spelling. The
+      object that F4 declares to be the carrier of every lawful act is named 16 times; the object
+      that F4 says must accompany it is never named once.
+    why_this_matters_more_than_the_word_count: >-
+      The Sovereign's instinct was right and slightly understated. It is not only that templates got
+      too little text. It is that the OTHER HALF of the same mechanism - the context package that
+      makes a template enforceable - was never written into the constitution at all. That absence is
+      the precise reason the coupling could drift for two months without any document registering a
+      violation: there was no constitutional sentence for the drift to contradict.
+
+  evidence_4_the_rank_1_fundamentals_the_constitution_never_states:
+    note: 'These are rank 1 by what breaks without them, and receive zero constitutional text.'
+    rows:
+      - id: CF-05
+        name: 'Template and context are ONE typed transition'
+        constitutional_words: 0
+        nearest_constitutional_text: 'Implied inside F4 lines 265-274 - "what context it requires" - 5 words of a 91-word section.'
+        measured_cost_of_absence: 'The coupling was never implemented as a machine field. Every artifact ION produces can resemble continuity without being re-instantiable.'
+      - id: CF-06
+        name: 'The ContextPackage is the only thing an agent receives'
+        constitutional_words: 0
+        nearest_constitutional_text: 'None. The phrase does not appear in the constitution. It lives only in a DRAFT spec dated 2026-04-03.'
+        measured_cost_of_absence: '0 of 233 live capsules implement the schema. No two runs of the same work have the same inputs.'
+      - id: CF-07
+        name: 'template_spec REQUIRED in the never-dropped tier'
+        constitutional_words: 0
+        nearest_constitutional_text: 'None. The token template_spec appears 0 times.'
+        measured_cost_of_absence: 'One functional occurrence in the entire kernel, on a path the live spawn does not take.'
+      - id: CF-12
+        name: 'Every directive carries a scope and a satisfaction condition'
+        constitutional_words: 0
+        nearest_constitutional_text: 'None. "expiry" appears 0 times; "satisfaction condition" appears 0 times; "scope" appears 7 times, never about directives.'
+        measured_cost_of_absence: 'Roughly 875 domain runs of nothing over about a year. The largest measured cost of any single gap in this file.'
+      - id: CF-10
+        name: 'Verification is not authority - never a global ION blocker'
+        constitutional_words: 0
+        nearest_constitutional_text: '"blocker" appears twice in 9682 words; the phrase "never a global ION blocker" appears 0 times. It is stated in a workbench DOMAIN_REGISTRY.md, in CLAUDE.md, and in roundtable logs - never in the constitution.'
+        measured_cost_of_absence: 'The founding failure of the project. Its executable form CF-11 is the single implemented rank-1 fundamental, and it was written in the kernel rather than in the constitution.'
+    subtotal: >-
+      5 of the 13 rank-1 fundamentals receive ZERO constitutional text. Together they account for all
+      four of the completely unimplemented rank-1 fundamentals, plus the anti-blocker law whose
+      violation cost the year.
+
+  the_answer_to_the_sovereign:
+    confirmed: >-
+      Yes. The measurement supports the hypothesis and extends it. Constitutional text volume is
+      inversely related to load-bearing rank by a factor of two among the fundamentals that were
+      written down, and the five most consequential mechanisms were not written down at all.
+    the_sharper_version_of_his_insight: >-
+      He said the constitution may not have captured how important templates are, because he thought
+      it was canon. The measurement says something more specific: F4 IS in the constitution, stated
+      well, in 91 words. What is missing is not the template. It is the OTHER HALF - the context
+      package, the template_spec field, and the sentence that binds them into one transition. He was
+      right that something was assumed rather than argued, and the thing assumed was the join.
+    why_the_assumed_things_were_written_least:
+      mechanism: >-
+        A constitution is written to settle live arguments. F3 Governed meaning received 23.4 percent
+        of the text because true-naming was contested at the time of writing. F0 and F1 received 4.0
+        percent each because nobody was arguing with them. Nothing in the drafting process
+        distinguished "settled because obvious" from "settled because unimportant", so both got
+        short sections. Load-bearing rank was never an input to the document's structure.
+      corroborating_evidence_from_the_corpus: >-
+        The archaeology finds the template contract schema was defined on 2026-04-24 with 17 required
+        fields and zero context fields - "which is why the coupling could never become machine-checkable
+        no matter how strongly doctrine restated it". Four days later the arrow reversed: the context
+        system acquired a primary_templates list, and no template anywhere acquired a corresponding
+        primary_context field. The drift happened in schemas, silently, while the doctrine kept
+        restating the unity. Nobody was arguing about it, so nobody wrote it down, so no schema had a
+        slot for it.
+      the_structural_lesson: >-
+        This artifact ranks by consequence rather than by how much was said, which is the only
+        correction that prevents the same loss. A future constitution should carry the rank field
+        beside each fundamental, and the rank should be derived from what breaks, not from what was
+        recently argued.
+    what_would_have_prevented_the_year: >-
+      CF-12. A single required field recording the scope and satisfaction condition of every operator
+      directive. It is not in the constitution, it is not implemented, and its owning domain is not
+      materialized. Of everything in this file, that is the cheapest unbuilt thing with the largest
+      measured cost.
+
+# ===========================================================================
+# 7. DIAGRAM SOURCE
+# ===========================================================================
+diagram_source:
+  format: mermaid
+  renders: 'Seven-strata tier hierarchy, principal edges, rank-1 fundamentals with implementation state.'
+  legend:
+    solid_arrow: 'implemented or partially implemented relationship'
+    dashed_arrow: 'designed, not implemented'
+    class_broken: 'rank-1 fundamental that is NOT implemented'
+    class_partial: 'rank-1 fundamental partially implemented'
+    class_ok: 'rank-1 fundamental fully implemented'
+  note: 'There is no blocks edge anywhere in this graph, by law. Findings route; nothing halts.'
+  graph: |
+    graph TD
+      classDef broken fill:#3b0d0d,stroke:#ff4d4d,stroke-width:3px,color:#ffd6d6
+      classDef partial fill:#3a2f0b,stroke:#e0a800,stroke-width:2px,color:#ffeaa7
+      classDef ok fill:#0d2e14,stroke:#3fb950,stroke-width:2px,color:#c8f7d0
+      classDef tier fill:#12182b,stroke:#7c8bb0,stroke-width:2px,color:#dbe4ff
+      classDef ghost fill:#1a1a1a,stroke:#666,stroke-width:1px,stroke-dasharray:4 3,color:#999
+
+      SOV["THE SOVEREIGN<br/>only ratification authority"]:::tier
+
+      subgraph T0["tier.sovereign_and_constitutional_spine"]
+        D_SOS["sos_state_machine_and_transition_law"]
+        D_RANK["state_rank_and_receipt_truth<br/>CF-02 receipted truth"]:::partial
+        D_PROV["artifact_provenance_and_gate_legitimacy<br/>CF-11 unratified gates cannot block"]:::ok
+        D_IDENT["role_boot_registry_and_agent_identity_law"]
+        D_ISD["ion_system_definition<br/>CF-13 source governs projection"]:::partial
+        D_MANDATE["sovereign_intent_and_mandate_ledger<br/>CF-12 directive scope and expiry<br/>NOT MATERIALIZED"]:::broken
+      end
+
+      subgraph T1["tier.truth_memory_and_context_substrate"]
+        D_CTX["context_systems<br/>CF-06 package is the only input"]:::broken
+        D_PKG["context_systems.package_compilation<br/>CF-07 template_spec never dropped"]:::broken
+        D_ECC["externalized_cognition_continuity<br/>CF-01 externalization"]:::partial
+        D_PROOF["context_proof_gate_enforcement<br/>CF-09 earned agency"]:::partial
+        D_NAME["true_name_symbol_and_semantic_dag_index"]
+        D_ARCH["research_archaeology_and_past_system_intelligence"]
+      end
+
+      subgraph T2["tier.runtime_execution_and_economics"]
+        D_ADMIT["runtime_carrier_and_action_admission"]
+        D_SPAWN["carrier_spawn_execution_enforcement"]
+        D_SWARM["swarm_scale_scheduling_and_workload_economics"]
+        D_DAEMON["production_daemon_and_graph_event_runtime"]
+      end
+
+      subgraph T3["tier.verification_and_adversarial_witness"]
+        D_HONEST["honest_agency_validation"]
+        D_VEST["vestige_enforcement_and_drift_routing<br/>CF-03 self-distrust"]:::partial
+        D_DIAG["domain_field_and_diagnostic_coordinate"]
+        D_CLAIM["claim_gate_and_witness_verification<br/>CF-10 verification is not authority<br/>NOT MATERIALIZED"]:::broken
+      end
+
+      subgraph T4["tier.interface_membrane_and_communication"]
+        D_OPLANG["operator_language_and_semantic_interface"]
+        D_SIGNAL["ion_nervous_system_signal_routing"]
+        D_COMMS["agent_communication_and_settlement"]
+        D_UI["user_interface_visualization_and_operator_experience"]
+      end
+
+      subgraph T5["tier.formation_weaving_and_meta_evolution"]
+        D_TMPL["template_and_protocol_movement<br/>CF-04 typed action FORM ONLY<br/>CF-05 template+context unity"]:::broken
+        D_WEAVER["domain_weaver_living_self_model"]
+        D_MITOSIS["domain_mitosis_and_agent_society_formation<br/>CF-08 domain organization"]:::partial
+        D_BLOCK["blocker_scope_and_mitosis_translation"]
+        D_LATERAL["lateral_reasoning_and_template_evolution"]
+      end
+
+      subgraph T6["tier.knowledge_specialty_frontier"]
+        D_KNOW["domain.knowledge.* — 14 branches<br/>designed, none activated"]:::ghost
+      end
+
+      SOV -->|governs| T0
+      T0 -->|governs| T1
+      T0 -->|governs| T2
+      T0 -->|governs| T4
+      T0 -->|governs| T5
+      T3 -.->|verifies, never halts| T0
+      T3 -->|verifies| T1
+      T3 -->|verifies| T2
+      T3 -->|verifies| T5
+      T1 -->|supplies_context_to| T2
+      T2 -->|supplies_proof_to| T0
+      T4 -->|supplies_context_to| T0
+      T5 -->|forms| T6
+      T6 -->|supplies_context_to| T5
+
+      D_PKG -.->|co_governs — THE MISSING FIELD| D_TMPL
+      D_TMPL -->|supplies_routes_to| D_ADMIT
+      D_CTX -->|supplies_context_to| D_ADMIT
+      D_RANK -->|supplies_proof_to| D_PROV
+      D_PROOF -->|supplies_proof_to| D_ADMIT
+      D_NAME -->|supplies_context_to| D_ISD
+      D_ARCH -->|supplies_context_to| D_WEAVER
+      D_HONEST -->|supplies_proof_to| D_OPLANG
+      D_VEST -->|verifies| D_CTX
+      D_PROV -->|supplies_proof_to| D_BLOCK
+      D_BLOCK -->|supplies_proof_to| D_MITOSIS
+      D_SWARM -->|supplies_routes_to| D_ADMIT
+      D_LATERAL -->|forms| D_TMPL
+      D_SIGNAL -->|supplies_routes_to| D_DIAG
+      D_MANDATE -.->|supplies_context_to| D_OPLANG
+      D_OPLANG -->|supplies_routes_to| D_ADMIT
+      D_OPLANG -->|escalation_target| SOV
+      D_CLAIM -.->|verifies| D_PROV
+      D_ECC -->|supplies_context_to| D_CTX
+      D_SPAWN -->|supplies_proof_to| D_RANK
+      D_COMMS -->|supplies_proof_to| D_RANK
+      D_DAEMON -->|supplies_proof_to| D_RANK
+      D_WEAVER -->|co_governs| D_SOS
+      D_UI -->|supplies_context_to| D_OPLANG
+      D_MITOSIS -->|forms| T6
+
+# ===========================================================================
+# CLOSING
+# ===========================================================================
+what_i_could_not_determine:
+  - 'Whether the branch the two rebuild audits ran against (quarantine/pre-clean-room-snapshot-2026-08-03, commit 019e7c893b9f454e93cbe48000e0307c09409e18) reflects live ION. The continuity audit recorded this as NOT DETERMINED and MATERIAL. Findings inherited from those audits carry the caveat; findings I verified myself on the working tree do not.'
+  - 'Whether CF-23 (route leases) was ever implemented. No route-lease module was located in ION/04_packages/kernel/. Recorded as not implemented rather than as absent-from-search, but the search was not exhaustive.'
+  - 'Why the template contract registry froze after seeding four ids. No decision record, superseded marker, or receipt was found. The archaeology records the freeze as silent and this file does not improve on that.'
+  - 'The exact tier placement of the eight designed-not-materialized domains is inherited from the structural roster and was not re-derived from first principles.'
+  - 'Whether the 21 proposed Articles 21-41 in the founding document are intended to be ratified. Their frontmatter says NOT_RATIFIED; no ratification path artifact was located. They are cited but not treated as law here.'
+  - 'C-04, C-13 and C-18 are recorded as unjudgeable and are routed rather than decided. See contradictions_i_could_not_judge.'
+
+non_claims_restated:
+  - 'This file promotes nothing to the registry and creates no accepted state.'
+  - 'This file creates, proposes, and activates NO gate. There is no blocks edge in section 3 by design.'
+  - 'The relationship matrix is the principal-edge set, not a complete N x N matrix over 45 domains.'
+  - 'Ranks are this steward judgement, argued from what breaks. They are candidate, not ratified.'
+  - 'No file outside this one was modified.'

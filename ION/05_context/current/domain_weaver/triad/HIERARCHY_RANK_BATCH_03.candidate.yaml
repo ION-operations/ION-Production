@@ -1,0 +1,80 @@
+schema_id: ion.core_law.hierarchy_rank_batch.v0_1_candidate
+batch_id: HIERARCHY_RANK_BATCH_03
+authored_by_domain: domain.core_law_source_of_truth_hierarchy
+authored_at_utc: '2026-08-08T13:10:07Z'
+posture: candidate_only
+authority: >-
+  Candidate alignment of hierarchy web-node proposed_true_set_priority/class fields to
+  PROPOSED_TRUE_DOMAIN_SET P2 domain rows. No registry promotion, no settlement mutation.
+non_claims:
+  - no_registry_promotion
+  - no_accepted_state
+  - no_gate_created
+
+provenance:
+  team_plan_path: ION/05_context/current/domain_weaver/triad/DOMAIN_WEB_TEAM_AND_PLAN.candidate.yaml
+  proposed_true_set_path: ION/05_context/current/domain_weaver/domain_gap_analysis/PROPOSED_TRUE_DOMAIN_SET.candidate.yaml
+  hierarchy_matrix_path: ION/05_context/current/domain_weaver/fundamentals_recovery/ION_CANONICAL_HIERARCHY_AND_MATRIX.candidate.yaml
+  selection_rule: PROPOSED_TRUE_DOMAIN_SET domains with priority P2 only (batch 3 scope; max 12)
+  node_count: 6
+  prior_batch: HIERARCHY_RANK_BATCH_02
+
+detects_absence:
+  detects_absence: true
+  probe_id: hierarchy_rank_batch_03_p2_priority_missing_on_live_node
+  invoke_hint: >-
+    For each row in nodes below, locate id in hierarchy.tiers live_domains; assert
+    proposed_true_set_priority matches priority and proposed_true_set_class matches class;
+    emit finding when field missing or mismatched (blocking false).
+  expected_artifact_path: >-
+    ION/05_context/current/domain_weaver/fundamentals_recovery/ION_CANONICAL_HIERARCHY_AND_MATRIX.candidate.yaml
+
+nodes:
+  - domain_id: domain.sos_state_machine_and_transition_law
+    priority: P2
+    class: ABSORBS
+    hierarchy_tier_id: tier.sovereign_and_constitutional_spine
+    prior_hierarchy_rank_field: absent
+    aligned_fields:
+      - proposed_true_set_priority
+      - proposed_true_set_class
+  - domain_id: domain.externalized_cognition_continuity
+    priority: P2
+    class: ABSORBS
+    hierarchy_tier_id: tier.truth_memory_and_context_substrate
+    prior_hierarchy_rank_field: absent
+    aligned_fields:
+      - proposed_true_set_priority
+      - proposed_true_set_class
+  - domain_id: domain.research_archaeology_and_past_system_intelligence
+    priority: P2
+    class: ABSORBS
+    hierarchy_tier_id: tier.truth_memory_and_context_substrate
+    prior_hierarchy_rank_field: absent
+    aligned_fields:
+      - proposed_true_set_priority
+      - proposed_true_set_class
+  - domain_id: domain.blocker_scope_and_mitosis_translation
+    priority: P2
+    class: NEW
+    hierarchy_tier_id: tier.formation_weaving_and_meta_evolution
+    prior_hierarchy_rank_field: absent
+    aligned_fields:
+      - proposed_true_set_priority
+      - proposed_true_set_class
+  - domain_id: domain.domain_mitosis_and_agent_society_formation
+    priority: P2
+    class: NEW
+    hierarchy_tier_id: tier.formation_weaving_and_meta_evolution
+    prior_hierarchy_rank_field: absent
+    aligned_fields:
+      - proposed_true_set_priority
+      - proposed_true_set_class
+  - domain_id: domain.cognitive_project_estimation_and_agency_planning
+    priority: P2
+    class: NEW
+    hierarchy_tier_id: tier.formation_weaving_and_meta_evolution
+    prior_hierarchy_rank_field: absent
+    aligned_fields:
+      - proposed_true_set_priority
+      - proposed_true_set_class

@@ -1,0 +1,35 @@
+schema_id: ion.template.patch_proposal.v1
+domain_id: domain.core_law_source_of_truth_hierarchy
+problem_id: HIERARCHY-RANK-BATCH-04-20260808
+posture: candidate_only
+at: '2026-08-08T14:10:07Z'
+spawn_run_id: prompt_spawn_2026-08-08T141007+0000_domain_worker_b11zrj1i
+title: Apply HIERARCHY_RANK_BATCH_04 P3 alignment into canonical hierarchy matrix
+
+intent: >-
+  Align proposed_true_set_priority and proposed_true_set_class on three PROPOSED_TRUE_DOMAIN_SET
+  P3 live_domains nodes in ION_CANONICAL_HIERARCHY_AND_MATRIX; register batch witness; declare
+  rank-alignment program complete for founding-24 proposal.
+
+source_batch: ION/05_context/current/domain_weaver/triad/HIERARCHY_RANK_BATCH_04.candidate.yaml
+target_matrix: ION/05_context/current/domain_weaver/fundamentals_recovery/ION_CANONICAL_HIERARCHY_AND_MATRIX.candidate.yaml
+
+apply_summary:
+  nodes_aligned: 3
+  batch_scope: p3_proposed_true_set_domains
+  rank_alignment_program_complete: true
+  optional_fields_added:
+    - proposed_true_set_priority
+    - proposed_true_set_class
+
+proposed_patches:
+  - patch_id: hierarchy_rank_batch_04_applied
+    target_path: ION/05_context/current/domain_weaver/fundamentals_recovery/ION_CANONICAL_HIERARCHY_AND_MATRIX.candidate.yaml
+    behavior: >-
+      Added proposed_true_set_rank_alignment_p3_batch_04 block, HIERARCHY_RANK_BATCH_04 witness,
+      P3/class on three live_domains rows, and rank_alignment_program_complete witness.
+
+non_claims:
+  - candidate_only
+  - no_registry_promotion
+  - no_settlement_mutation

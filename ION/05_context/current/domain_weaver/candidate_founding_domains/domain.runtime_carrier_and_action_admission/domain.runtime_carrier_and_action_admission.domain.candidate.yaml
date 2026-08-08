@@ -1,0 +1,56 @@
+domain_id: domain.runtime_carrier_and_action_admission
+display_name: Runtime Carrier And Action Admission
+true_name_status: PROVISIONAL_W1_CANDIDATE
+status: CANDIDATE_W1_EMERGENCY_STEP2
+authority: A3_OPERATIONAL_CANDIDATE
+registry_promotion: False
+projection_mutation: False
+parent_domain_id: null
+tier_id: tier.runtime_and_action
+tier_id_placement_source: ION/05_context/current/domain_weaver/fundamentals_recovery/ION_CANONICAL_HIERARCHY_AND_MATRIX.candidate.yaml
+packet_id: pckt-20260621t195710-emergency-step-2-materialize-24-domains
+materialized_at: 2026-06-21T20:00:23Z
+wave: W1
+priority: P0
+class: ABSORBS
+mission: >-
+  Founding
+  domain
+  Runtime
+  Carrier
+  And
+  Action
+  Admission
+  —
+  candidate
+  context
+  materialized
+  under
+  emergency
+  step
+  2.
+absorbs:
+  - domain.codex_carrier_sync
+  - domain.browser_dom_perception
+retained_legacy_registry_ids:
+  - domain.codex_carrier_sync
+  - domain.browser_dom_perception
+retained_posture: alias_until_registry_settled
+sub_charters:
+  -
+    id: spawn_admission_membrane
+    path: sub_charters/spawn_admission_membrane.candidate.yaml
+    scope: carrier slot spawn admission and can_spawn_carrier_slots membrane
+  -
+    id: autonomous_loop.spawn_and_local_worker_scheduling
+    scope: folded from rejected 25th root; spawn authority slice
+  -
+    id: witness_default_spawn_enforcement
+    path: sub_charters/witness_default_spawn_enforcement.candidate.yaml
+    scope: witness-default at spawn membrane; operator stop/hold always enforces
+prevents_struggles:
+  - 1
+  - 3
+  - 11
+source_spec: >-
+  ION/05_context/current/domain_weaver/domain_gap_analysis/PROPOSED_TRUE_DOMAIN_SET.candidate.yaml

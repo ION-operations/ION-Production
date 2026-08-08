@@ -1,0 +1,55 @@
+schema_id: ion.domain.relationships.v0_1_candidate
+domain_id: domain.production_daemon_and_graph_event_runtime
+posture: candidate_only
+edge_vocabulary: universal_domain_web_twelve_term_matrix
+updated_at: '2026-08-08T14:50:00Z'
+matrix_source: ION/05_context/current/domain_weaver/fundamentals_recovery/ION_CANONICAL_HIERARCHY_AND_MATRIX.candidate.yaml
+
+feeds:
+  - neighbour: domain.swarm_scale_scheduling_and_workload_economics
+    boundary: >-
+      I emit graph-event and daemon-loop proof; they schedule swarm workloads without
+      halting admission.
+    edge_kind: supplies_proof_to
+  - neighbour: domain.state_rank_and_receipt_truth
+    boundary: >-
+      I supply G6-class execution receipts for sustained operation; they own accepted-state rebuild.
+    edge_kind: supplies_proof_to
+
+fed_by:
+  - neighbour: domain.runtime_carrier_and_action_admission
+    boundary: >-
+      Parent owns admission policy; I consume admitted execution surfaces for persistent reactor loops.
+    edge_kind: supplies_routes_to
+  - neighbour: domain.local_worker_scheduling_and_autonomous_loop
+    boundary: >-
+      They own bounded autonomous loop law; I extend to graph-event idempotent recovery under parent routing.
+    edge_kind: supplies_routes_to
+  - neighbour: domain.ion_nervous_system_signal_routing
+    boundary: >-
+      They route inter-domain signals; I react to graph events without becoming a halt edge.
+    edge_kind: supplies_routes_to
+
+verify:
+  - neighbour: domain.honest_agency_validation
+    boundary: >-
+      They witness orphan side-effect claims; I report idempotent recovery findings only.
+    edge_kind: verifies
+
+governed_by:
+  - neighbour: domain.sos_state_machine_and_transition_law
+    boundary: >-
+      No production cutover without spine receipts; candidate daemon posture only.
+    edge_kind: governs
+  - neighbour: domain.durable_apply_and_substrate_custody
+    boundary: >-
+      Filesystem custody before durable writes from daemon paths.
+    edge_kind: governs
+
+shadows:
+  - wrong_meaning: production_daemon_means_live_production_deployment_authority
+    correct_meaning: lawful_reactor_loop_and_recovery_proof_candidate_only
+  - wrong_meaning: graph_event_runtime_halts_peers_on_incident
+    correct_meaning: reports_and_routes_per_cf10_never_global_blocker
+  - wrong_meaning: bypass_runtime_carrier_admission_for_background_jobs
+    correct_meaning: invocability_may_require_parent_routing

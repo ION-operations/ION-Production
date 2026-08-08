@@ -1,0 +1,70 @@
+schema_id: ion.tier_id_population_wave_batch_witness.v0_1_candidate
+wave_id: TIER_ID_POPULATION_WAVE_01
+authored_at_utc: '2026-08-08T12:50:00Z'
+authored_by_carrier: cursor_cli
+authored_by_domain: domain.ion_system_definition
+posture: candidate_only
+placement_authority: ION/05_context/current/domain_weaver/fundamentals_recovery/ION_CANONICAL_HIERARCHY_AND_MATRIX.candidate.yaml
+tier_id_pattern_authority: ION/05_context/current/domain_weaver/universal_domain_web/TIER_MODEL_RULING.candidate.yaml
+vocabulary_ref: ION/03_registry/tier_vocabulary.candidate.yaml
+package_count: 13
+selection:
+  spine_promotion_p0_domains: 8
+  relationship_hub_domains_added: 5
+  relationship_hub_criterion: principal domain_level_edges with to ALL or ALL_WORKERS in hierarchy section 3
+invented_tier_id_mappings:
+  - prior_invented_tier_id: tier.foundation
+    domain_id: domain.context_systems
+    canonical_tier_id: tier.context_and_memory
+    note: Witness-only; COPY_FORWARD_LEDGER ion_next claim not deleted.
+  - prior_invented_tier_id: tier.rank_receipt_membrane
+    domain_id: domain.state_rank_and_receipt_truth
+    canonical_tier_id: tier.sovereign_and_constitutional_spine
+    note: Witness-only; COPY_FORWARD_LEDGER ion_next claim not deleted.
+per_file_receipts:
+  - domain_id: domain.state_rank_and_receipt_truth
+    path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.state_rank_and_receipt_truth/domain.state_rank_and_receipt_truth.domain.candidate.yaml
+    tier_id_written: tier.sovereign_and_constitutional_spine
+    invented_claim_mapping: tier.rank_receipt_membrane
+  - domain_id: domain.artifact_provenance_and_gate_legitimacy
+    path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.artifact_provenance_and_gate_legitimacy/domain.artifact_provenance_and_gate_legitimacy.domain.candidate.yaml
+    tier_id_written: tier.governance_and_authority
+  - domain_id: domain.context_systems
+    path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.context_systems/domain.context_systems.domain.candidate.yaml
+    tier_id_written: tier.context_and_memory
+    invented_claim_mapping: tier.foundation
+  - domain_id: domain.true_name_symbol_and_semantic_dag_index
+    path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.true_name_symbol_and_semantic_dag_index/domain.true_name_symbol_and_semantic_dag_index.domain.candidate.yaml
+    tier_id_written: tier.semantic_and_naming_substrate
+  - domain_id: domain.runtime_carrier_and_action_admission
+    path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.runtime_carrier_and_action_admission/domain.runtime_carrier_and_action_admission.domain.candidate.yaml
+    tier_id_written: tier.runtime_and_action
+  - domain_id: domain.swarm_scale_scheduling_and_workload_economics
+    path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.swarm_scale_scheduling_and_workload_economics/domain.swarm_scale_scheduling_and_workload_economics.domain.candidate.yaml
+    tier_id_written: tier.economics_and_scheduling
+  - domain_id: domain.domain_field_and_diagnostic_coordinate
+    path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.domain_field_and_diagnostic_coordinate/domain.domain_field_and_diagnostic_coordinate.domain.candidate.yaml
+    tier_id_written: tier.verification_and_adversarial_witness
+  - domain_id: domain.domain_weaver_living_self_model
+    path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.domain_weaver_living_self_model/domain.domain_weaver_living_self_model.domain.candidate.yaml
+    tier_id_written: tier.formation_and_evolution
+  - domain_id: domain.ion_system_definition
+    path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.ion_system_definition/domain.ion_system_definition.domain.candidate.yaml
+    tier_id_written: tier.canon_and_self_definition
+  - domain_id: domain.template_and_protocol_movement
+    path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.template_and_protocol_movement/domain.template_and_protocol_movement.domain.candidate.yaml
+    tier_id_written: tier.formation_weaving_and_meta_evolution
+  - domain_id: domain.vestige_enforcement_and_drift_routing
+    path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.vestige_enforcement_and_drift_routing/domain.vestige_enforcement_and_drift_routing.domain.candidate.yaml
+    tier_id_written: tier.verification_and_adversarial_witness
+  - domain_id: domain.externalized_cognition_continuity
+    path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.externalized_cognition_continuity/domain.externalized_cognition_continuity.domain.candidate.yaml
+    tier_id_written: tier.context_and_memory
+  - domain_id: domain.domain_mitosis_and_agent_society_formation
+    path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.domain_mitosis_and_agent_society_formation/domain.domain_mitosis_and_agent_society_formation.domain.candidate.yaml
+    tier_id_written: tier.formation_and_evolution
+non_claims:
+  - candidate_only
+  - no_registry_promotion
+  - no_accepted_state
+  - remaining_packages_32_still_missing_tier_id_on_main_tree

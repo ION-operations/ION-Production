@@ -1,0 +1,46 @@
+schema_id: ion.domain.candidate.v0_2
+domain_id: domain.durable_apply_and_substrate_custody
+display_name: Durable Apply And Substrate Custody
+true_name_status: MITOSIS_CHILD_CANDIDATE
+status: CANDIDATE_MITOSIS_CHILD
+authority: A3_OPERATIONAL_CANDIDATE
+registry_promotion: false
+projection_mutation: false
+parent_domain_id: domain.runtime_carrier_and_action_admission
+tier_id: tier.truth_memory_and_context_substrate
+tier_id_placement_source: ION/05_context/current/domain_weaver/fundamentals_recovery/ION_CANONICAL_HIERARCHY_AND_MATRIX.candidate.yaml
+parent_founding_domain: domain.runtime_carrier_and_action_admission
+fission_axis: durable_apply_substrate_custody
+owning_blocker: BLK-DASC-001
+materialized_at: "2026-07-18T02:03:09Z"
+priority: P0
+class: MITOSIS_CHILD
+mission: >-
+  Own the physical-commit boundary for durable apply: exact-byte transaction
+  binding, apply-time strict lease and OS custody, compare-and-swap immediately
+  before replace, fsync-ordered journal durability, and fail-closed recovery.
+owned_kernel_surfaces:
+  - ION/04_packages/kernel/ion_durable_cohort_transaction.py
+  - ION/04_packages/kernel/ion_generated_mount_freshness_transaction.py
+  - ION/04_packages/kernel/ion_generated_mount_freshness_transaction_lease_issuer.py
+  - ION/04_packages/kernel/ion_generated_mount_reader_lifetime_custody.py
+  - ION/04_packages/kernel/ion_generated_mount_reader_quiescence.py
+  - ION/04_packages/kernel/ion_live_reader_observation.py
+  - ION/04_packages/kernel/ion_worker_shift_board_transaction.py
+  - ION/04_packages/kernel/ion_worker_shift_presence.py
+sub_charters:
+  - id: physical_commit_custody_law
+    path: sub_charters/physical_commit_custody_law.candidate.yaml
+source_evidence:
+  - ION/05_context/current/context_starter_capsule/PCKT_ION_GENERATED_MOUNT_FRESHNESS_TRANSACTIONAL_APPLY_001/.ion/ACTIVE_CONTEXT_PACKAGE.md
+  - ION/05_context/current/claude_connector/claude_prompt_spawn_runs/claude_prompt_spawn_2026-07-18T015019+0000_opus_34_domain_durable_custody_boundary_reconciler/output.md
+  - ION/05_context/current/claude_connector/claude_prompt_spawn_runs/claude_prompt_spawn_2026-07-18T015636+0000_sonnet_34_domain_durable_child_falsifier/output.md
+non_claims:
+  - candidate_only
+  - no_registry_promotion
+  - no_accepted_state
+  - no_real_root_apply
+  - no_mount_apply_authority
+  - no_lease_claim_authority
+  - no_os_custody_claim
+  - no_production_authority

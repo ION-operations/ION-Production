@@ -1,0 +1,69 @@
+domain_id: domain.domain_weaver_living_self_model
+display_name: Domain Weaver Living Self Model
+true_name_status: PROVISIONAL_W2_CANDIDATE
+status: CANDIDATE_W2_EMERGENCY_STEP2
+authority: A3_OPERATIONAL_CANDIDATE
+registry_promotion: False
+projection_mutation: False
+parent_domain_id: null
+tier_id: tier.formation_and_evolution
+tier_id_placement_source: ION/05_context/current/domain_weaver/fundamentals_recovery/ION_CANONICAL_HIERARCHY_AND_MATRIX.candidate.yaml
+packet_id: pckt-20260621t195710-emergency-step-2-materialize-24-domains
+materialized_at: 2026-06-21T20:00:23Z
+wave: W2
+priority: P0
+class: ABSORBS
+mission: >-
+  Maintain the candidate living model of ION domain identity, settlement,
+  objective deduplication, and projection drift while keeping registry,
+  accepted-state, and projection mutation behind their explicit gates.
+absorbs:
+  - domain.current_phase_orchestration_management
+retained_legacy_registry_ids:
+  - domain.current_phase_orchestration_management
+retained_posture: alias_until_registry_settled
+sub_charters:
+  -
+    id: objective_fingerprint_dedup
+    path: sub_charters/sub_charter_objective_fingerprint_dedup.candidate.yaml
+    scope: cycle dedup gate; objective fingerprint for execution bundles
+  - id: leader_mount_materialization
+    path: sub_charters/sub_charter_leader_mount_materialization.candidate.yaml
+    scope: current mount binding for the domain leader
+  - id: queue_currentness_reconciliation
+    path: sub_charters/sub_charter_queue_currentness_reconciliation.candidate.yaml
+    scope: reconcile waiting work with invocable domain workers
+  - id: return_surface_completion
+    path: sub_charters/sub_charter_return_surface_completion.candidate.yaml
+    scope: complete outward diagnostic and context-system returns
+  - id: legacy_alias_fan_in
+    path: sub_charters/sub_charter_legacy_alias_fan_in.candidate.yaml
+    scope: fan in the absorbed orchestration-management alias
+  - id: domain_autonomous_run_loop
+    path: sub_charters/sub_charter_domain_autonomous_run_loop.candidate.yaml
+    scope: candidate per-domain context-worker-return-requeue cycle
+  - id: projection_rebase
+    path: sub_charters/sub_charter_projection_rebase.candidate.yaml
+    scope: dry-run candidate projection rebaseline without live mutation
+  - id: mount_registry_sync
+    path: sub_charters/sub_charter_mount_registry_sync.candidate.yaml
+    scope: reconcile mount resolution against the current candidate domain set
+prevents_struggles:
+  - 4
+  - 5
+  - 6
+source_spec: >-
+  ION/05_context/current/domain_weaver/domain_gap_analysis/PROPOSED_TRUE_DOMAIN_SET.candidate.yaml
+current_count_authority: >-
+  ION/05_context/current/domain_weaver/domain_field_composition/LIVE_DOMAIN_COMPOSITION.candidate.json
+current_count_authority_note: >-
+  Live measured cardinality (candidate_founding_domains_materialized) is the only
+  authority for current domain count. Settlement receipts are birth history, not counters.
+domain_set_birth_history:
+  current_receipt: >-
+    ION/05_context/current/domain_weaver/FOUNDING_DOMAIN_SETTLEMENT.candidate.json
+  retained_snapshots:
+    - ION/05_context/current/domain_weaver/FOUNDING_35_DOMAIN_SETTLEMENT.candidate.json
+    - ION/05_context/current/domain_weaver/FOUNDING_34_DOMAIN_SETTLEMENT.candidate.json
+  posture: consumed_as_birth_history_never_as_current_count
+updated_at: '2026-07-22T21:05:00Z'

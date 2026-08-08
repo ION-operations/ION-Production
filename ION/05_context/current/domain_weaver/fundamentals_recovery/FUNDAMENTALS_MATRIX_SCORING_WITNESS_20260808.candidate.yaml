@@ -1,0 +1,53 @@
+schema_id: ion.fundamentals_matrix_scoring_witness.v0_1_candidate
+authored_at_utc: '2026-08-08T14:25:07Z'
+authored_by_carrier: cursor_cli_domain_worker
+posture: candidate_only
+non_claims:
+  - no_registry_promotion
+  - no_accepted_state
+  - no_ratification_solicited
+matrix_path: ION/05_context/current/domain_weaver/fundamentals_recovery/ION_CANONICAL_HIERARCHY_AND_MATRIX.candidate.yaml
+prior_score_anchor: '2026-08-05 hierarchy.web_node_record_schema authored_at_utc in matrix section 2'
+evidence_receipts:
+  - ION/05_context/current/LAST_ION_AUTONOMOUS_LOOP_RESULT.json
+  - ION/05_context/current/steward_integrations/v101_goal_ion_self_operating_autonomous_loop_activation_2026-08-08T134435z0000_step_01_steward_integration.json
+  - ION/05_context/current/domain_promotions/20260808T132007Z_artifact.sos_human_gate_clear_retirement.promotion.json
+  - ION/04_packages/kernel/ion_steward_integrate.py
+  - ION/04_packages/kernel/ion_carrier_task_return.py
+  - ION/05_context/current/autonomous_goals/ACTIVATION_RECORD_HEALTH_TICK_20260808.candidate.json
+counts_before:
+  canonical_fundamentals: 47
+  implemented_yes: 7
+  implemented_partial: 28
+  implemented_no: 12
+  rank_1_total: 13
+  rank_1_implemented_yes: 1
+  rank_1_partial: 8
+  rank_1_not_implemented: 4
+counts_after:
+  canonical_fundamentals: 47
+  implemented_yes: 7
+  implemented_partial: 28
+  implemented_no: 12
+  rank_1_total: 13
+  rank_1_implemented_yes: 1
+  rank_1_partial: 8
+  rank_1_not_implemented: 4
+implemented_field_changes: []
+cf_entries_evidence_refreshed:
+  - CF-02
+  - CF-08
+  - CF-10
+  - CF-20
+  - CF-29
+  - CF-30
+  - CF-35
+  - CF-37
+  - CF-39
+touched_paths:
+  - ION/05_context/current/domain_weaver/fundamentals_recovery/ION_CANONICAL_HIERARCHY_AND_MATRIX.candidate.yaml
+  - ION/05_context/current/domain_weaver/fundamentals_recovery/FUNDAMENTALS_MATRIX_SCORING_WITNESS_20260808.candidate.yaml
+note: >-
+  Re-score moved implementation_evidence and the_spine honest_notes only; no CF implemented enum
+  changed because evidence strengthens partial/yes postures without closing known gaps (no organism
+  ledger, no full STATE_LIFECYCLE cutover, rank-1 template-context unity still absent).

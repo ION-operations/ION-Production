@@ -1,0 +1,443 @@
+schema_id: ion.domain_locality_law.v0_1_candidate
+posture: candidate_only
+authority: design_and_anchor_map_only
+non_claims:
+  - no_filesystem_moves_in_this_receipt
+  - no_kernel_changes_in_this_receipt
+  - no_registry_promotion
+  - no_accepted_state
+sovereign_mandate_date: 2026-08-03
+sovereign_mandate_summary: >-
+  Domain folders belong at the material they own; location is context (seat pattern).
+
+# ---------------------------------------------------------------------------
+# 1. THE LAW
+# ---------------------------------------------------------------------------
+law:
+  principle: >-
+    When a domain governs durable filesystem material inside the ION shell root, its
+    canonical working context SHOULD be co-located with that material (folder-local
+    `.ion/` capsule and/or opening cwd under the owned tree), while the birth package
+    MAY remain in candidate_founding_domains until migration receipts settle.
+  applies_when:
+    - domain owns one or more bounded paths under shell root (ION/, ION_Developement/, workspace)
+    - agents routinely edit, audit, or compile that material
+    - seat pattern applies (compare CLAUDE.md at ION_Developement/, relay seat at ION_Relay/)
+  does_not_apply_when:
+    - domain is pure coordination or witness with no durable owned tree (owns_no_territory)
+    - owned material lives outside the git/shell tree (territory_outside_ION_tree)
+    - domain owns several disjoint trees (multi_anchor; birth registry stays index, anchors listed)
+  birth_registry_role: >-
+    ION/05_context/current/domain_weaver/candidate_founding_domains/ remains the
+    runner discovery surface until a receipted migration changes resolver law.
+  mitosis_children: >-
+    Child packages (e.g. domain.context_systems.package_compilation) follow parent
+    tier locality; child birth folder may stay flat while anchor points at owned slice.
+
+# ---------------------------------------------------------------------------
+# 2. MECHANISM (runner-grounded; design only)
+# ---------------------------------------------------------------------------
+runner_constraints:
+  shell_root: directory containing pyproject.toml and ION/REPO_AUTHORITY.md
+  constants:
+    FOUNDING_DOMAINS_REL: ION/05_context/current/domain_weaver/candidate_founding_domains
+    DIAGNOSTIC_PACKETS_REL: ION/05_context/current/domain_weaver/domain_local_diagnostic_packets
+    SETTLEMENT_REL: ION/05_context/current/domain_weaver/FOUNDING_DOMAIN_SETTLEMENT.candidate.json
+  functions_read:
+    - name: _normalize_domain_id
+      file: ION/04_packages/kernel/ion_domain_cursor_runner.py
+      lines: 116-122
+      behavior: Ensures domain_id prefix domain.
+    - name: list_runnable_domain_ids
+      file: ION/04_packages/kernel/ion_domain_cursor_runner.py
+      lines: 125-166
+      behavior: >-
+        Reads settlement/manifest domain_ids; keeps ids only if diagnostic packet dir
+        OR founding package dir exists under fixed REL paths (151-154, 155-166).
+    - name: _founding_domain_dir
+      file: ION/04_packages/kernel/ion_domain_cursor_runner.py
+      lines: 179-181
+      behavior: >-
+        Single hard-coded path shell_root / FOUNDING_DOMAINS_REL / domain_id — no
+        alternate search roots today.
+    - name: resolve_domain_execution_bundle
+      file: ION/04_packages/kernel/ion_domain_cursor_runner.py
+      lines: 275-390
+      behavior: >-
+        Resolves diagnostic + founding_dir; merges CONTEXT_REQUIREMENTS required_reads;
+        does not consult owned-location anchors unless listed in those reads.
+
+mechanism_options_evaluated:
+  option_a_move_package_and_multi_root_resolver:
+    summary: Physically move each domain package to its owned path; extend _founding_domain_dir.
+    code_changes:
+      - _founding_domain_dir: search ordered list [co-located domain.<id>/, FOUNDING_DOMAINS_REL/id]
+      - list_runnable_domain_ids: same discovery roots
+      - FOUNDING_DOMAIN_SETTLEMENT birth_evidence.materialized_folder paths
+      - all receipts citing candidate_founding_domains/<id>/
+    kernel_edit: required (ion_domain_cursor_runner.py)
+    migration_risk: high — repeats prior domain-web migration failures if done wholesale
+  option_b_flat_package_plus_colocated_ion:
+    summary: Keep birth package; place .ion/ ACTIVE_CONTEXT_PACKAGE at owned anchor.
+    code_changes:
+      - none for discovery; CONTEXT_REQUIREMENTS per domain must list .ion paths (partial today)
+      - agents inherit context only if cwd or reads include anchor (no automatic resolver)
+    kernel_edit: none strictly required; inconsistent without central manifest
+  option_c_anchor_manifest_at_spawn:
+    summary: >-
+      This file's anchor_map is read at spawn; inject owned paths + .ion into required_reads.
+    code_changes:
+      - new helper _append_locality_anchor_reads(shell_root, domain_id, required_reads)
+      - call from resolve_domain_execution_bundle after _shared_domain_weaver_reads (~363)
+      - constant DOMAIN_LOCALITY_LAW_REL under domain_weaver/universal_domain_web/
+    kernel_edit: required (small, additive); no moves
+
+chosen_mechanism: option_c_anchor_manifest_at_spawn
+chosen_rationale: >-
+  Preserves _founding_domain_dir (179-181) and settlement discovery unchanged for W0
+  safety; centralizes the 45-package spine in one candidate law file; enables phased
+  co-located .ion materialization (option_b) via manifest rows without moving birth
+  packages. Option (a) deferred until per-domain migration receipts and resolver
+  multi-root are proven on one pilot (domain.ion_system_definition or kernel slice).
+
+# ---------------------------------------------------------------------------
+# 3. ANCHOR MAP (45 materialized packages under candidate_founding_domains)
+# ---------------------------------------------------------------------------
+anchor_map:
+  domain.agent_communication_and_settlement:
+    disposition: multi_anchor
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.agent_communication_and_settlement/
+    owned_paths:
+      - ION/05_context/current/agent_comms/
+      - ION/06_intelligence/relay/relay/
+  domain.artifact_provenance_and_gate_legitimacy:
+    disposition: multi_anchor
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.artifact_provenance_and_gate_legitimacy/
+    owned_paths:
+      - ION/04_packages/kernel/ion_gate_registry.py
+      - ION/04_packages/kernel/ion_context_proof_gate.py
+      - ION/05_context/current/gates/
+  domain.authority_gates_and_secrets_posture:
+    disposition: multi_anchor
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.authority_gates_and_secrets_posture/
+    owned_paths:
+      - ION/02_architecture/
+      - ION_VAULT_LOCAL/
+    notes: vault path outside git; red-zone routing law
+  domain.blocker_scope_and_mitosis_translation:
+    disposition: owns_no_territory
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.blocker_scope_and_mitosis_translation/
+    owned_paths: []
+    notes: translates blocker rows to mitosis intake; material owned by weaver and target domains
+  domain.carrier_quota_and_config_health:
+    disposition: anchored
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.carrier_quota_and_config_health/
+    owned_paths:
+      - ION/04_packages/kernel/ion_carrier_quota_health.py
+      - ION/05_context/current/carrier_quota/
+  domain.carrier_spawn_execution_enforcement:
+    disposition: anchored
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.carrier_spawn_execution_enforcement/
+    owned_paths:
+      - ION/05_context/current/cursor_connector/prompt_spawn_runs/
+      - ION/04_packages/kernel/ion_prompt_spawn_admission.py
+  domain.cli_carrier_selection_and_usage_fallback:
+    disposition: anchored
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.cli_carrier_selection_and_usage_fallback/
+    owned_paths:
+      - ION/05_context/current/cursor_connector/
+      - ION/04_packages/kernel/ion_cursor_autopilot_packet.py
+  domain.codex_queue_lane_economics:
+    disposition: anchored
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.codex_queue_lane_economics/
+    owned_paths:
+      - ION/05_context/current/codex_solo/
+      - ION/05_context/current/domain_weaver/queue_governor_dogfood/
+  domain.cognitive_project_estimation_and_agency_planning:
+    disposition: owns_no_territory
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.cognitive_project_estimation_and_agency_planning/
+    owned_paths: []
+  domain.context_mount_freshness_and_resolver:
+    disposition: anchored
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.context_mount_freshness_and_resolver/
+    owned_paths:
+      - ION/05_context/current/codex_agent_mounts/
+      - ION/04_packages/kernel/ion_domain_weaver_context_active_resolver.py
+  domain.context_proof_gate_enforcement:
+    disposition: anchored
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.context_proof_gate_enforcement/
+    owned_paths:
+      - ION/04_packages/kernel/ion_context_proof_gate.py
+  domain.context_systems:
+    disposition: multi_anchor
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.context_systems/
+    owned_paths:
+      - ION/05_context/
+      - ION/07_templates/context/
+      - ION/05_context/current/ion_system_definition/CANON_BINDING_INDEX.candidate.yaml
+  domain.context_systems.package_compilation:
+    disposition: anchored
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.context_systems.package_compilation/
+    owned_paths:
+      - ION/04_packages/ion/
+      - ION/04_packages/kernel/sos_loop_context_gate.py
+  domain.domain_field_and_diagnostic_coordinate:
+    disposition: anchored
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.domain_field_and_diagnostic_coordinate/
+    owned_paths:
+      - ION/05_context/current/domain_weaver/domain_local_diagnostic_packets/
+      - ION/05_context/current/domain_weaver/domain_field_composition/
+      - ION/05_context/current/domain_weaver/domain_self_audit/
+  domain.domain_mitosis_and_agent_society_formation:
+    disposition: anchored
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.domain_mitosis_and_agent_society_formation/
+    owned_paths:
+      - ION/05_context/current/domain_weaver/mitosis_packets/
+      - ION/05_context/current/domain_weaver/candidate_founding_domains/MITOSIS_CHILD_DOMAINS_MANIFEST.candidate.json
+  domain.domain_weaver_living_self_model:
+    disposition: anchored
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.domain_weaver_living_self_model/
+    owned_paths:
+      - ION/05_context/current/domain_weaver/
+    colocated_ion_target: ION/05_context/current/domain_weaver/.ion/
+  domain.durable_apply_and_substrate_custody:
+    disposition: anchored
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.durable_apply_and_substrate_custody/
+    owned_paths:
+      - ION/04_packages/kernel/ion_durable_apply.py
+  domain.externalized_cognition_continuity:
+    disposition: anchored
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.externalized_cognition_continuity/
+    owned_paths:
+      - ION/05_context/current/codex_solo/
+      - ION/05_context/handoff/
+  domain.github_repository_platform_governance:
+    disposition: anchored
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.github_repository_platform_governance/
+    owned_paths:
+      - ION/05_context/current/repository_governance/
+      - .github/
+    notes: .github at workspace parent /home/sev/ION - Production when present
+  domain.gnome_desktop_ion_operator_surface:
+    disposition: territory_outside_ION_tree
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.gnome_desktop_ion_operator_surface/
+    owned_paths:
+      - ION_Developement/desktop/gnome-shell/ion-helixion-control@helixion.net/
+    outside_tree:
+      - /home/sev/.local/share/gnome-shell/extensions/ (deployment target; unverified layout)
+  domain.honest_agency_validation:
+    disposition: multi_anchor
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.honest_agency_validation/
+    owned_paths:
+      - ION/05_context/current/nemesis/
+      - ION/03_registry/boots/NEMESIS.boot.md
+  domain.ion_nervous_system_signal_routing:
+    disposition: anchored
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.ion_nervous_system_signal_routing/
+    owned_paths:
+      - ION/05_context/signals/
+      - ION/05_context/handoff/
+  domain.ion_system_definition:
+    disposition: anchored
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.ion_system_definition/
+    owned_paths:
+      - ION/05_context/current/ion_system_definition/
+      - ION/03_registry/domains/domain.ion_system_definition.domain.yaml
+    colocated_ion_target: ION/05_context/current/ion_system_definition/.ion/
+  domain.kernel_ownership_runtime_carrier_slice:
+    disposition: anchored
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.kernel_ownership_runtime_carrier_slice/
+    owned_paths:
+      - ION/04_packages/kernel/
+    notes: ownership map over kernel modules; does not own all kernel code operationally
+  domain.lateral_reasoning_and_template_evolution:
+    disposition: anchored
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.lateral_reasoning_and_template_evolution/
+    owned_paths:
+      - ION/07_templates/
+      - ION/05_context/current/domain_weaver/template_evolution/
+  domain.local_worker_scheduling_and_autonomous_loop:
+    disposition: anchored
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.local_worker_scheduling_and_autonomous_loop/
+    owned_paths:
+      - ION/04_packages/kernel/ion_local_worker_loop.py
+      - ION/05_context/current/local_worker/
+  domain.model_routing_and_reasoning_economics:
+    disposition: anchored
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.model_routing_and_reasoning_economics/
+    owned_paths:
+      - ION/05_context/current/cursor_connector/model_routing/
+      - ION/04_packages/kernel/ion_model_routing.py
+  domain.mount_auto_materialize_on_leader_spawn:
+    disposition: anchored
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.mount_auto_materialize_on_leader_spawn/
+    owned_paths:
+      - ION/04_packages/kernel/ion_domain_weaver_context_active_resolver.py
+      - ION/05_context/current/codex_agent_mounts/
+  domain.operator_language_and_semantic_interface:
+    disposition: anchored
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.operator_language_and_semantic_interface/
+    owned_paths:
+      - ION/05_context/current/operator_language/
+      - ION/03_registry/boots/PERSONA_INTERFACE.boot.md
+  domain.product_and_implementation_domain_formation:
+    disposition: owns_no_territory
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.product_and_implementation_domain_formation/
+    owned_paths: []
+    notes: forms product domains; material lives in formed children and workspaces
+  domain.production_daemon_and_graph_event_runtime:
+    disposition: anchored
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.production_daemon_and_graph_event_runtime/
+    owned_paths:
+      - ION/04_packages/kernel/ion_production_daemon.py
+      - ION/04_packages/kernel/ion_graph_event_runtime.py
+  domain.ragtag_domain_heartbeat_and_active_web:
+    disposition: anchored
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.ragtag_domain_heartbeat_and_active_web/
+    owned_paths:
+      - ION/05_context/current/domain_weaver/domain_field_composition/
+      - ION/05_context/current/domain_weaver/universal_domain_web/
+  domain.research_archaeology_and_past_system_intelligence:
+    disposition: multi_anchor
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.research_archaeology_and_past_system_intelligence/
+    owned_paths:
+      - quarentine/
+      - ION_GPT_STATE/
+      - Needs_Routed/
+  domain.role_boot_registry_and_agent_identity_law:
+    disposition: anchored
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.role_boot_registry_and_agent_identity_law/
+    owned_paths:
+      - ION/03_registry/boots/
+      - ION/03_registry/ion_context_authority_team_registry.yaml
+  domain.runtime_carrier_and_action_admission:
+    disposition: multi_anchor
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.runtime_carrier_and_action_admission/
+    owned_paths:
+      - ION/02_architecture/ION_CURSOR_CANONICAL_WORKFLOW_UNIFICATION_PROTOCOL.md
+      - ION/02_architecture/ION_MOUNT_CONTRACT.md
+      - ION/04_packages/kernel/ion_carrier_continue.py
+    territory_outside_ION_tree:
+      - ion.helixion.net
+      - ion-actions.helixion.net
+      - chatops helixion service host bindings per HELIXION_CHAT_INFRA_SURVEY.candidate.yaml
+  domain.runtime_carrier_and_action_admission.hooks_mcp_enactment:
+    disposition: anchored
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.runtime_carrier_and_action_admission.hooks_mcp_enactment/
+    owned_paths:
+      - ION_Developement/.cursor/
+      - mcp/
+      - ION/04_packages/kernel/ion_mcp_control_bridge.py
+  domain.sos_state_machine_and_transition_law:
+    disposition: anchored
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.sos_state_machine_and_transition_law/
+    owned_paths:
+      - ION/02_architecture/
+      - ION/04_packages/kernel/ion_sos_state_machine.py
+  domain.sos_state_machine_and_transition_law.constitution_ratification:
+    disposition: anchored
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.sos_state_machine_and_transition_law.constitution_ratification/
+    owned_paths:
+      - ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/
+  domain.state_rank_and_receipt_truth:
+    disposition: multi_anchor
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.state_rank_and_receipt_truth/
+    owned_paths:
+      - ION/05_context/current/receipts/
+      - ION/04_packages/kernel/ion_receipt_truth.py
+  domain.swarm_scale_scheduling_and_workload_economics:
+    disposition: anchored
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.swarm_scale_scheduling_and_workload_economics/
+    owned_paths:
+      - ION/04_packages/kernel/ion_swarm_scheduler.py
+      - ION/05_context/current/domain_weaver/queue_governor_dogfood/
+  domain.template_and_protocol_movement:
+    disposition: anchored
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.template_and_protocol_movement/
+    owned_paths:
+      - ION/07_templates/
+      - ION/04_packages/kernel/ion_template_registry.py
+  domain.true_name_symbol_and_semantic_dag_index:
+    disposition: anchored
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.true_name_symbol_and_semantic_dag_index/
+    owned_paths:
+      - ION/05_context/current/true_name/
+      - ION/03_registry/true_names/
+  domain.user_interface_visualization_and_operator_experience:
+    disposition: anchored
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.user_interface_visualization_and_operator_experience/
+    owned_paths:
+      - ION/08_ui/
+      - ION/05_context/current/operator_experience/
+  domain.vestige_enforcement_and_drift_routing:
+    disposition: anchored
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.vestige_enforcement_and_drift_routing/
+    owned_paths:
+      - ION/05_context/current/vestige/
+      - ION/04_packages/kernel/ion_vestige_enforcement.py
+      - ION/04_packages/kernel/ion_seat_path_write_entitlement_audit.py
+  domain.wisdomnet_universal_context_template_commons:
+    disposition: anchored
+    canonical_birth_package: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.wisdomnet_universal_context_template_commons/
+    owned_paths:
+      - ION/07_templates/context/
+      - ION/05_context/current/wisdomnet_commons/
+
+anchor_map_counts:
+  packages_mapped: 45
+  disposition_anchored_or_multi_anchor: 40
+  owns_no_territory: 3
+  territory_outside_ION_tree_primary: 1
+  packages_with_outside_tree_rows: 2
+  settlement_domain_ids: 37
+  packages_not_in_settlement: 8
+  packages_not_in_settlement_ids:
+    - domain.authority_gates_and_secrets_posture
+    - domain.context_systems.package_compilation
+    - domain.github_repository_platform_governance
+    - domain.gnome_desktop_ion_operator_surface
+    - domain.production_daemon_and_graph_event_runtime
+    - domain.role_boot_registry_and_agent_identity_law
+    - domain.runtime_carrier_and_action_admission.hooks_mcp_enactment
+    - domain.sos_state_machine_and_transition_law.constitution_ratification
+
+# ---------------------------------------------------------------------------
+# 4. MIGRATION SAFETY
+# ---------------------------------------------------------------------------
+migration_safety:
+  prior_failure_pattern: >-
+    Three prior domain webs died when topology moved without resolver + receipt chain
+    staying dual-readable; flat candidate_founding_domains became stale pointers.
+  phase_0_this_receipt: anchor map only; zero moves
+  verify_after_any_future_move:
+    - PYTHONPATH=ION/04_packages python3 -c "from pathlib import Path; from kernel.ion_domain_cursor_runner import list_runnable_domain_ids, resolve_domain_execution_bundle; r=Path('.'); ids=list_runnable_domain_ids(r); assert len(ids)>=37; [resolve_domain_execution_bundle(r,domain_id=i) for i in ids]"
+    - compare LIVE_DOMAIN_COMPOSITION.candidate.json observed_count to settlement
+    - run ion_domain_field_composition measurement
+    - per-domain dry-run ion_domain_cursor_runner --dry-run for moved pilot ids
+  rollback_story: >-
+    Git revert of move commits; restore candidate_founding_domains paths cited in
+    FOUNDING_DOMAIN_SETTLEMENT birth_evidence; keep DOMAIN_LOCALITY_LAW anchor_map
+    birth_package pointers until a superseding settlement receipt rewrites them.
+  dual_read_window: >-
+    During pilot, resolver must find package in old OR new path; manifest anchor_map
+    lists both canonical_birth_package and future colocated_package_path when set.
+
+# ---------------------------------------------------------------------------
+# 5. WHAT BREAKS
+# ---------------------------------------------------------------------------
+what_breaks_on_locality_migration:
+  - FOUNDING_DOMAIN_SETTLEMENT.candidate.json birth_evidence.materialized_folder paths
+  - LIVE_DOMAIN_COMPOSITION measurement if it counts only flat founding folders
+  - prompt_spawn run receipts referencing context_package paths under flat founding dirs
+  - CONTEXT_REQUIREMENTS relative paths using candidate_founding_domains/<id>/
+  - domain_self_audit returns and diagnostic packet cross-links
+  - MITOSIS_CHILD_DOMAINS_MANIFEST and ALL_24 manifest paths
+  - hard-coded paths in .cursor/rules and AGENTS.md (seat paths are separate)
+  - activation_plane binding_contracts candidate_boot_path if ever pointed at founding dir
+  - historical git grep evidence citing old flat paths (witness only; not blockers)
+
+undetermined_without_deeper_audit:
+  - exact kernel module ownership per file for kernel_ownership_runtime_carrier_slice
+  - full module list for production_daemon vs graph_event split on disk
+  - whether ION_VAULT_LOCAL path is uniform across operator machines
+  - live helixion systemd unit paths on host (survey cites modules not unit files)

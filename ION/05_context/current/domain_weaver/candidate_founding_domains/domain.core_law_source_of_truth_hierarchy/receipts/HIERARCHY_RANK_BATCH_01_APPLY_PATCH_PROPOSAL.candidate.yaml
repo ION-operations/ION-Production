@@ -1,0 +1,34 @@
+schema_id: ion.template.patch_proposal.v1
+domain_id: domain.core_law_source_of_truth_hierarchy
+problem_id: HIERARCHY-RANK-BATCH-01-20260808
+posture: candidate_only
+at: '2026-08-08T05:30:30Z'
+spawn_run_id: prompt_spawn_2026-08-08T053030+0000_domain_worker_08xy_x2w
+title: Apply HIERARCHY_RANK_BATCH_01 P0 alignment into canonical hierarchy matrix
+
+intent: >-
+  Align proposed_true_set_priority and proposed_true_set_class on eight p0_shortlist live_domains
+  nodes in ION_CANONICAL_HIERARCHY_AND_MATRIX with PROPOSED_TRUE_DOMAIN_SET; register optional
+  web-node fields and absence probe for P0 priority drift.
+
+source_batch: ION/05_context/current/domain_weaver/triad/HIERARCHY_RANK_BATCH_01.candidate.yaml
+target_matrix: ION/05_context/current/domain_weaver/fundamentals_recovery/ION_CANONICAL_HIERARCHY_AND_MATRIX.candidate.yaml
+
+apply_summary:
+  nodes_aligned: 8
+  batch_scope: p0_shortlist
+  optional_fields_added:
+    - proposed_true_set_priority
+    - proposed_true_set_class
+
+proposed_patches:
+  - patch_id: hierarchy_rank_batch_01_applied
+    target_path: ION/05_context/current/domain_weaver/fundamentals_recovery/ION_CANONICAL_HIERARCHY_AND_MATRIX.candidate.yaml
+    behavior: >-
+      Added proposed_true_set_rank_alignment block, optional node fields, and P0/class on eight
+      live_domains rows per HIERARCHY_RANK_BATCH_01.
+
+non_claims:
+  - candidate_only
+  - no_registry_promotion
+  - no_settlement_mutation

@@ -1,0 +1,63 @@
+schema_id: ion.core_law.hierarchy_rank_batch.v0_1_candidate
+batch_id: HIERARCHY_RANK_BATCH_04
+authored_by_domain: domain.core_law_source_of_truth_hierarchy
+authored_at_utc: '2026-08-08T14:10:07Z'
+posture: candidate_only
+authority: >-
+  Candidate alignment of hierarchy web-node proposed_true_set_priority/class fields to
+  PROPOSED_TRUE_DOMAIN_SET P3 domain rows. No registry promotion, no settlement mutation.
+non_claims:
+  - no_registry_promotion
+  - no_accepted_state
+  - no_gate_created
+
+provenance:
+  team_plan_path: ION/05_context/current/domain_weaver/triad/DOMAIN_WEB_TEAM_AND_PLAN.candidate.yaml
+  proposed_true_set_path: ION/05_context/current/domain_weaver/domain_gap_analysis/PROPOSED_TRUE_DOMAIN_SET.candidate.yaml
+  hierarchy_matrix_path: ION/05_context/current/domain_weaver/fundamentals_recovery/ION_CANONICAL_HIERARCHY_AND_MATRIX.candidate.yaml
+  selection_rule: PROPOSED_TRUE_DOMAIN_SET domains with priority P3 only (batch 4 scope; final P3 remainder)
+  node_count: 3
+  prior_batch: HIERARCHY_RANK_BATCH_03
+
+rank_alignment_program:
+  complete: true
+  witness: >-
+    All 24 PROPOSED_TRUE_DOMAIN_SET domains list rows are aligned to hierarchy.tiers live_domains
+    via batches HIERARCHY_RANK_BATCH_01 through HIERARCHY_RANK_BATCH_04 (P0, P1, P2, P3). No
+    further priority-batch alignment remains for the founding-24 proposal.
+
+detects_absence:
+  detects_absence: true
+  probe_id: hierarchy_rank_batch_04_p3_priority_missing_on_live_node
+  invoke_hint: >-
+    For each row in nodes below, locate id in hierarchy.tiers live_domains; assert
+    proposed_true_set_priority matches priority and proposed_true_set_class matches class;
+    emit finding when field missing or mismatched (blocking false).
+  expected_artifact_path: >-
+    ION/05_context/current/domain_weaver/fundamentals_recovery/ION_CANONICAL_HIERARCHY_AND_MATRIX.candidate.yaml
+
+nodes:
+  - domain_id: domain.lateral_reasoning_and_template_evolution
+    priority: P3
+    class: NEW
+    hierarchy_tier_id: tier.formation_weaving_and_meta_evolution
+    prior_hierarchy_rank_field: absent
+    aligned_fields:
+      - proposed_true_set_priority
+      - proposed_true_set_class
+  - domain_id: domain.wisdomnet_universal_context_template_commons
+    priority: P3
+    class: NEW
+    hierarchy_tier_id: tier.truth_memory_and_context_substrate
+    prior_hierarchy_rank_field: absent
+    aligned_fields:
+      - proposed_true_set_priority
+      - proposed_true_set_class
+  - domain_id: domain.user_interface_visualization_and_operator_experience
+    priority: P3
+    class: NEW
+    hierarchy_tier_id: tier.interface_membrane_and_communication
+    prior_hierarchy_rank_field: absent
+    aligned_fields:
+      - proposed_true_set_priority
+      - proposed_true_set_class

@@ -1,0 +1,27 @@
+domain_id: domain.cli_carrier_selection_and_usage_fallback
+display_name: Cli Carrier Selection And Usage Fallback
+true_name_status: MITOSIS_CHILD_CANDIDATE
+status: CANDIDATE_MITOSIS_CHILD
+authority: A3_OPERATIONAL_CANDIDATE
+registry_promotion: false
+projection_mutation: false
+parent_domain_id: domain.runtime_carrier_and_action_admission
+tier_id: tier.runtime_execution_and_economics
+tier_id_placement_source: ION/05_context/current/domain_weaver/fundamentals_recovery/ION_CANONICAL_HIERARCHY_AND_MATRIX.candidate.yaml
+fission_axis: cli_carrier_fallback
+owning_blocker: BLK-RC-MITOSIS-002
+materialized_at: 2026-06-26T22:11:24Z
+priority: P0
+class: MITOSIS_CHILD
+mission: >-
+  Child domain mitosis from domain.runtime_carrier_and_action_admission — cli_carrier_fallback specialization.
+  Owns bounded scope until zero blockers; not a founding root until registry settled.
+prevents_struggles:
+  - 5
+  - 6
+source_spec: ION/05_context/current/domain_weaver/domain_gap_analysis/PROPOSED_MITOSIS_CHILD_DOMAINS.candidate.yaml
+parent_founding_domain: domain.runtime_carrier_and_action_admission
+non_claims:
+  - candidate_only
+  - no_registry_promotion
+  - not_founding_root_until_settled

@@ -1,0 +1,53 @@
+domain_id: domain.user_interface_visualization_and_operator_experience
+display_name: User Interface Visualization And Operator Experience
+true_name_status: PROVISIONAL_W0_CANDIDATE
+status: CANDIDATE_W0_EMERGENCY_STEP2
+authority: A3_OPERATIONAL_CANDIDATE
+registry_promotion: False
+projection_mutation: False
+parent_domain_id: null
+tier_id: tier.interface_and_operator
+tier_id_placement_source: ION/05_context/current/domain_weaver/fundamentals_recovery/ION_CANONICAL_HIERARCHY_AND_MATRIX.candidate.yaml
+packet_id: pckt-20260621t195710-emergency-step-2-materialize-24-domains
+materialized_at: 2026-06-21T20:00:23Z
+updated_at: 2026-06-26T21:32:07+00:00
+wave: W0
+priority: P3
+class: NEW
+mission: >-
+  Founding domain User Interface Visualization And Operator Experience —
+  candidate context materialized under emergency step 2.
+  Owns ION/08_ui/joc_cockpit_shell/ operator visualization surfaces and
+  ui_development currentness gates as candidate-only surfaces.
+absorbs: []
+retained_legacy_registry_ids: []
+retained_posture: new_founding_domain
+owned_surfaces:
+  - ION/08_ui/joc_cockpit_shell/JocCockpitShell.tsx
+  - ION/08_ui/joc_cockpit_shell/DomainWeaverCockpitPanel.tsx
+  - ION/08_ui/joc_cockpit_shell/AgentControlPlanePanel.tsx
+  - ION/08_ui/joc_cockpit_shell/CodexWorkbenchShell.tsx
+  - ION/08_ui/joc_cockpit_shell/ScopeCockpitPanel.tsx
+sub_charters:
+  - id: sub_charter_blk_ui02
+    path: sub_charters/sub_charter_blk_ui02.candidate.yaml
+    scope: codex_agent_mount currentness for domain worker binding
+  - id: sub_charter_blk_ui04
+    path: sub_charters/sub_charter_blk_ui04.candidate.yaml
+    scope: context_proof_return_gate intake on domain returns
+  - id: sub_charter_blk_ui05
+    path: sub_charters/sub_charter_blk_ui05.candidate.yaml
+    scope: template action scalar proof contract (local witness; primary owner domain.template_and_protocol_movement)
+  - id: sub_charter_blk_ui08
+    path: sub_charters/sub_charter_blk_ui08.candidate.yaml
+    scope: ui_development currentness gate vs ACTIVE_COCKPIT_VIEW_MODEL.json
+  - id: sub_charter_blk_ui09
+    path: sub_charters/sub_charter_blk_ui09.candidate.yaml
+    scope: folder-local .ion/ capsule binding 08_ui inventory
+  - id: sub_charter_blk_ui10
+    path: sub_charters/sub_charter_blk_ui10.candidate.yaml
+    scope: joc_cockpit_shell surface ownership declaration
+prevents_struggles:
+  - 6
+source_spec: >-
+  ION/05_context/current/domain_weaver/domain_gap_analysis/PROPOSED_TRUE_DOMAIN_SET.candidate.yaml

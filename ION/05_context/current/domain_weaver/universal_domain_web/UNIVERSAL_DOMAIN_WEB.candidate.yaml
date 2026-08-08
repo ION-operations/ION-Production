@@ -1,0 +1,335 @@
+schema_id: ion.universal_domain_web.v0_1_candidate
+synthesis_seat: domain.domain_weaver_living_self_model
+merged_from:
+  - ION/05_context/current/domain_weaver/universal_domain_web/SEAT_ARCHITECTURE.candidate.yaml
+  - ION/05_context/current/domain_weaver/universal_domain_web/SEAT_STRUCTURAL_SPINE.candidate.yaml
+  - ION/05_context/current/domain_weaver/universal_domain_web/SEAT_GROWTH_LAW.candidate.yaml
+  - ION/05_context/current/domain_weaver/universal_domain_web/SEAT_KNOWLEDGE_COMMONS.candidate.yaml
+convened_by: Sovereign (Braden) — universal domain web assembly 2026-08-03
+receipted_by: AETHER_OPERATOR
+posture: design_space_assembly_only
+authority: candidate_only
+non_claims: [no_founding, no_activation, no_registry_promotion, no_accepted_state, no_blocking_gates_designed]
+
+provenance_legend:
+  keep: unchanged invocable charter
+  evolve: deepen charter; same id
+  merge: absorb into named successor
+  demote: root becomes subdomain
+  retire_alias: historical id; successor named
+  new: design-space addition without prior root
+  knowledge_L6: L6 branch; addressable namespace; member-on-demand
+
+# ---------------------------------------------------------------------------
+# 1. UNIFIED TIER MODEL (L0–L6 spine + cluster placement)
+# ---------------------------------------------------------------------------
+unified_tier_model:
+  spine: seven_tiers_L0_through_L6
+  structural_spine_cluster_map:
+    governance: L0_sovereign_and_constitutional_spine
+    memory_context: L1_truth_memory_and_context_substrate
+    runtime: L2_runtime_execution_and_economics
+    verification: L3_verification_and_adversarial_witness
+    interface: L4_interface_membrane_and_communication
+    formation_weaving: L5_formation_weaving_and_meta_evolution
+  L6_rule: >-
+    KNOWLEDGE branches use domain.knowledge.<kebab-branch> ids. They are
+    addressable-namespace roots in design space only: no pre-founded member count.
+    Activation follows growth-law lazy founding (traffic + dependency evidence).
+    Structural specialty families in the architect seat (domain.specialty.*) are
+    superseded for synthesis by the commons seat's fourteen domain.knowledge.* branches.
+  tier_asymmetries:
+    - L0 governs all tiers; only Sovereign governs L0
+    - L3 witnesses all tiers including L0; never blocks work (SL-1)
+    - L5 may re-charter via receipted formation through L0 law
+    - L6 is generative and unbounded in members; L0–L5 enumerable at any moment
+
+# ---------------------------------------------------------------------------
+# 2. GOVERNING LAWS (deduplicated once)
+# ---------------------------------------------------------------------------
+governing_laws:
+  SL-1_verification_is_not_authority:
+    law: >-
+      No structural domain may erect a blocking gate on WORK. Verification is witness.
+      Claim gates may refuse a sentence as satisfied; they never refuse execution.
+      Unratified gates default to witness (rs0q2oku precedent).
+  SL-2_no_solicited_ratification:
+    law: Agents never solicit ratification, approval, or blessing from the human.
+  SL-3_escalation_triggers_closed_set:
+    law: >-
+      Human escalation only for (a) removing Sovereign-designed fundamentals,
+      (b) real money, (c) beyond ION capability. All else self-routes.
+  design_vs_activation:
+    law: >-
+      Full web may be DESIGNED in breadth; FOUNDED when quartet exists on disk;
+      ACTIVATED only via E1 seven-step path under F6 necessity pressure.
+      Design confers zero invocability. Necessity never forbids design.
+    state_ladder: [DESIGNED, FOUNDED, ACTIVATED, PROMOTED]
+  F6_mitosis_under_necessity:
+    law: >-
+      Growth by mitosis under necessity pressure, never by quota. Topology pressure
+      may be reported; topology mutation requires lifecycle receipts.
+  commons_context_template_law:
+    law: >-
+      Every knowledge branch instantiates AGENT_CONTEXT_PACKAGE skeleton; commons
+      owns SHAPE/SHARING; template_and_protocol_movement owns CHANGE;
+      context_systems owns COMPILE/MOUNT; promotion pipeline is witness-only.
+  anti_patterns: [AP1_speculative_mass_founding, AP2_gate_manufacturing, AP3_borrowed_authority, AP4_fishing_for_growth, AP5_design_activation_conflation, AP6_parent_only_settlement_rows]
+  claim_vs_work_gate:
+    law: >-
+      Work gates unlawful. Claim gates lawful on sentences only. Domain
+      claim_gate_and_witness_verification owns classification of all registered gates.
+
+# ---------------------------------------------------------------------------
+# 3. STRUCTURAL ROOT ROSTER (L0–L5) — deduplicated
+# ---------------------------------------------------------------------------
+structural_roster:
+  L0:
+    - {id: domain.sos_state_machine_and_transition_law, disposition: evolve, charter: "State-machine transition law; every rank move is a lawful transition.", provenance: qwen_era_cite}
+    - {id: domain.state_rank_and_receipt_truth, disposition: evolve, charter: "Receipts are the only truth; rank/accepted boundary.", provenance: constitution_cite}
+    - {id: domain.artifact_provenance_and_gate_legitimacy, disposition: evolve, charter: "Sha-bound provenance; gate owner+route+scope+TTL; blocks claims only.", provenance: constitution_cite}
+    - {id: domain.authority_gates_and_secrets_posture, disposition: evolve, charter: "Transacted authority; secrets custody; SL-3(b) money boundary.", provenance: constitution_cite}
+    - {id: domain.role_boot_registry_and_agent_identity_law, disposition: evolve, charter: "Seat/identity law; boot registry; harness memory witness until mirrored.", provenance: constitution_cite}
+    - {id: domain.github_repository_platform_governance, disposition: evolve, charter: "GitHub platform governance for ION substrate.", provenance: constitution_cite}
+    - {id: domain.ion_system_definition, disposition: merge, charter: "Identity web (six layers); joint distinct from SOS law-motion — not absorbed silently.", merge_note: "W10 absorb deferred; joint-seat pattern from structural spine.", provenance: constitution_cite}
+    - {id: domain.sovereign_intent_and_mandate_ledger, disposition: new, charter: "Receipted ledger of Sovereign mandates with stable ids.", provenance: new_need}
+    - {id: domain.quorum_and_distributed_transparency, disposition: new, charter: "Multi-instance quorum witness for acceptance.", provenance: qwen_era_cite}
+  L1:
+    - {id: domain.context_systems, disposition: evolve, charter: "Authoritative map of live context surfaces; MINI/CAPSULE witness only.", provenance: constitution_cite}
+    - {id: domain.context_mount_freshness_and_resolver, disposition: evolve, charter: "48h freshness gate; active mount selection.", provenance: constitution_cite}
+    - {id: domain.context_proof_gate_enforcement, disposition: evolve, charter: "CONTEXT PROOF claim gate on task returns.", provenance: constitution_cite}
+    - {id: domain.externalized_cognition_continuity, disposition: evolve, charter: "F0 — resume from disk receipts.", provenance: constitution_cite}
+    - {id: domain.true_name_symbol_and_semantic_dag_index, disposition: evolve, charter: "F3 governed meaning; semantic DAG.", provenance: constitution_cite}
+    - {id: domain.wisdomnet_universal_context_template_commons, disposition: evolve, charter: "Cross-domain template commons; L6 federation parent.", provenance: constitution_cite}
+    - {id: domain.research_archaeology_and_past_system_intelligence, disposition: evolve, charter: "Past-system evidence; find-before-build.", provenance: constitution_cite}
+    - {id: domain.durable_apply_and_substrate_custody, disposition: evolve, charter: "Durable apply and filesystem custody.", provenance: constitution_cite}
+  L2:
+    - {id: domain.runtime_carrier_and_action_admission, disposition: evolve, charter: "Single admission-policy owner; carriers are chassis.", provenance: constitution_cite}
+    - {id: domain.carrier_spawn_execution_enforcement, disposition: evolve, charter: "Admitted carrier/budget enforcement; no silent substitution.", provenance: constitution_cite}
+    - {id: domain.kernel_ownership_runtime_carrier_slice, disposition: evolve, charter: "Kernel module ownership map for carrier slice.", provenance: constitution_cite}
+    - {id: domain.local_worker_scheduling_and_autonomous_loop, disposition: evolve, charter: "Bounded local autonomous loop; one reactor law.", provenance: constitution_cite}
+    - {id: domain.cli_carrier_selection_and_usage_fallback, disposition: evolve, charter: "Carrier seat selection; not admission policy.", provenance: constitution_cite}
+    - {id: domain.production_daemon_and_graph_event_runtime, disposition: evolve, charter: "Persistent graph reactor; idempotent recovery.", provenance: constitution_cite}
+    - {id: domain.carrier_quota_and_config_health, disposition: evolve, charter: "Quota/config/resource sentinel telemetry.", provenance: constitution_cite}
+    - {id: domain.swarm_scale_scheduling_and_workload_economics, disposition: evolve, charter: "Swarm scheduling and workload economics.", provenance: constitution_cite}
+    - {id: domain.model_routing_and_reasoning_economics, disposition: evolve, charter: "Per-spawn model/budget routing receipts.", provenance: constitution_cite}
+    - {id: domain.codex_queue_lane_economics, disposition: merge, charter: "Fold into swarm_scale as subdomain.", merge_into: domain.swarm_scale_scheduling_and_workload_economics, provenance: qwen_era_cite}
+    - {id: domain.mount_auto_materialize_on_leader_spawn, disposition: demote, charter: "Freshness-resolver execution path.", parent: domain.context_mount_freshness_and_resolver, provenance: new_need}
+    - {id: domain.temporal_rhythm_and_scheduling_law, disposition: new, charter: "Shared cadence/staleness clock law across heartbeat and daemon.", provenance: new_need}
+    - {id: domain.delivery_membrane_and_operator_visibility, disposition: new, charter: "Message→spawn→return→delivery receipt visible to Sovereign.", provenance: new_need}
+  L3:
+    - {id: domain.honest_agency_validation, disposition: evolve, charter: "F8 honesty-as-schema; Nemesis witness.", provenance: constitution_cite}
+    - {id: domain.vestige_enforcement_and_drift_routing, disposition: evolve, charter: "Stale surface detection and drift routing.", provenance: constitution_cite}
+    - {id: domain.domain_field_and_diagnostic_coordinate, disposition: evolve, charter: "Sole diagnostic fan-in coordinate.", provenance: constitution_cite}
+    - {id: domain.ragtag_domain_heartbeat_and_active_web, disposition: evolve, charter: "Per-domain liveness witness.", provenance: constitution_cite}
+    - {id: domain.claim_gate_and_witness_verification, disposition: new, charter: "Own claim/work gate distinction registry.", provenance: new_need}
+    - {id: domain.testing_and_reproducible_evidence, disposition: new, charter: "Tests as reproducible receipts.", provenance: new_need}
+  L4:
+    - {id: domain.operator_language_and_semantic_interface, disposition: evolve, charter: "Governed operator meaning; no persona cosplay.", provenance: constitution_cite}
+    - {id: domain.user_interface_visualization_and_operator_experience, disposition: evolve, charter: "Operator-visible surfaces and UX.", provenance: constitution_cite}
+    - {id: domain.gnome_desktop_ion_operator_surface, disposition: demote, charter: "Desktop surface instance.", parent: domain.user_interface_visualization_and_operator_experience, provenance: constitution_cite}
+    - {id: domain.ion_nervous_system_signal_routing, disposition: evolve, charter: "Inter-domain signal fabric.", provenance: constitution_cite}
+    - {id: domain.agent_communication_and_settlement, disposition: evolve, charter: "Inter-agent threads and return settlement.", provenance: constitution_cite}
+    - {id: domain.external_ai_network_interface, disposition: new, charter: "Lawful ingress/egress to external AI networks.", provenance: new_need}
+    - {id: domain.inter_system_federation_and_trust, disposition: merge, charter: "Federation trust schema.", merge_into: domain.external_ai_network_interface, provenance: new_need}
+  L5:
+    - {id: domain.domain_weaver_living_self_model, disposition: evolve, charter: "Living domain graph, projections, queue currentness.", provenance: qwen_era_cite}
+    - {id: domain.domain_mitosis_and_agent_society_formation, disposition: evolve, charter: "Mitosis under necessity; society formation.", provenance: qwen_era_cite}
+    - {id: domain.blocker_scope_and_mitosis_translation, disposition: evolve, charter: "Blockers to gap receipts for mitosis intake.", provenance: qwen_era_cite}
+    - {id: domain.product_and_implementation_domain_formation, disposition: evolve, charter: "Form product/implementation webs; charters L6 members.", provenance: qwen_era_cite}
+    - {id: domain.template_and_protocol_movement, disposition: evolve, charter: "Typed-action templates and protocol movement.", provenance: qwen_era_cite}
+    - {id: domain.lateral_reasoning_and_template_evolution, disposition: evolve, charter: "Invent new template shapes.", provenance: qwen_era_cite}
+    - {id: domain.cognitive_project_estimation_and_agency_planning, disposition: evolve, charter: "Estimation and earned-agency planning.", provenance: qwen_era_cite}
+
+# ---------------------------------------------------------------------------
+# 4. KNOWLEDGE BRANCH ROSTER (L6) — fourteen branches, 112 subdomains
+# ---------------------------------------------------------------------------
+knowledge_L6_roster:
+  member_on_demand_rule: >-
+    Branches are design roots only. Members activate lazily per growth-law admission
+    function; content may live under commons parent until founding.
+  branches:
+    - domain.knowledge.software-engineering
+    - domain.knowledge.formal-sciences
+    - domain.knowledge.natural-and-applied-sciences
+    - domain.knowledge.knowledge-management-and-reference
+    - domain.knowledge.llm-and-reasoning-systems
+    - domain.knowledge.data-ontology-and-graph
+    - domain.knowledge.media-and-creative-production
+    - domain.knowledge.external-system-interop
+    - domain.knowledge.research-methodology-and-discovery
+    - domain.knowledge.evaluation-and-verification-craft
+    - domain.knowledge.economics-value-and-planning
+    - domain.knowledge.human-interface-communication-and-pedagogy
+    - domain.knowledge.operations-and-infrastructure
+    - domain.knowledge.wisdomnet-federation-and-commons
+  subdomain_count: 112
+  subdomain_detail_source: SEAT_KNOWLEDGE_COMMONS.candidate.yaml
+
+# ---------------------------------------------------------------------------
+# 5. WEB RELATIONSHIPS (spine — 36+ edges; see architect seat for enumeration)
+# ---------------------------------------------------------------------------
+web_relationships_summary:
+  edge_types: [governs, feeds, verifies, forms]
+  enumerated_edge_statements: 36
+  source_seat: SEAT_ARCHITECTURE.candidate.yaml
+  synthesis_note: >-
+    Structural-spine delivery_membrane and external_ai_network_interface edges attach
+    to L2 admission and L4 settlement respectively; no edge type changes under SL-1.
+
+# ---------------------------------------------------------------------------
+# 6. CROSS-SEAT SEAM RESOLUTIONS
+# ---------------------------------------------------------------------------
+seam_resolutions:
+  - topic: F16_apex_canon_overlap
+    resolution: sovereign_touch_optional
+    note: >-
+      Three-way split retained: SOS owns transition law, Weaver owns operational graph,
+      ion_system_definition owns identity canon — W10 full absorb rejected in synthesis.
+      Sovereign ruling optional if fundamentals collision is asserted (SL-3a).
+    owning_domain: domain.sos_state_machine_and_transition_law
+  - topic: runtime_carrier_four_way_slice
+    resolution: resolved
+    note: >-
+      domain.runtime_carrier_and_action_admission governs policy; spawn enforcement,
+      kernel slice, and CLI selection remain separate roots with boundary cards until
+      merge evidence — not four equal governors.
+    owning_domain: domain.runtime_carrier_and_action_admission
+  - topic: SWE_craft_vs_execution_seam
+    resolution: resolved
+    note: >-
+      Three-way boundary retained (mirrors runtime_carrier_four_way_slice posture): craft
+      and SWE practice → domain.knowledge.software-engineering (founding package on disk);
+      carrier spawn and action admission → domain.runtime_carrier_and_action_admission
+      (P0 W1 OPERATING_CARD sub-charters); user-world deployment/CI surfaces →
+      domain.knowledge.operations-and-infrastructure deployment subdomain in hierarchy matrix.
+      No merge until boundary-card evidence — not one governor.
+    owning_domain: domain.knowledge.software-engineering
+    provenance:
+      - ION/05_context/current/domain_weaver/candidate_founding_domains/domain.knowledge.software-engineering/OPERATING_CARD.candidate.md
+      - ION/05_context/current/domain_weaver/candidate_founding_domains/domain.runtime_carrier_and_action_admission/OPERATING_CARD.candidate.md
+      - ION/05_context/current/domain_weaver/fundamentals_recovery/ION_CANONICAL_HIERARCHY_AND_MATRIX.candidate.yaml
+    adjudicated_at: '2026-08-08T15:00:00Z'
+    adjudication_witness: ION/05_context/current/domain_weaver/universal_domain_web/SEAM_ADJUDICATION_20260808.candidate.yaml
+  - topic: media_forge_harvest
+    resolution: >-
+      CHECKABLE: receipts/FORGE_HARVEST_K7_SEED.candidate.yaml exists under
+      candidate_founding_domains/domain.knowledge.media-and-creative-production/ with
+      lucidengine_forge_paths_verified=true and k7_subdomain_seed_rows count >= 1
+      sourced from live DEV/projects/Application_Dev/LucidEngine/assets inventory
+    note: >-
+      Forge lineage remains disk-real per SEAT_KNOWLEDGE_COMMONS; K7 subdomain seeding
+      still requires a bounded harvest receipt — no activation claims without it.
+    owning_domain: domain.knowledge.media-and-creative-production
+    provenance:
+      - ION/05_context/current/domain_weaver/universal_domain_web/SEAT_KNOWLEDGE_COMMONS.candidate.yaml
+      - ION/05_context/current/domain_weaver/candidate_founding_domains/domain.knowledge.media-and-creative-production/domain.knowledge.media-and-creative-production.domain.candidate.yaml
+    adjudicated_at: '2026-08-08T15:00:00Z'
+    adjudication_witness: ION/05_context/current/domain_weaver/universal_domain_web/SEAM_ADJUDICATION_20260808.candidate.yaml
+  - topic: commons_movement_evolution_precedence
+    resolution: resolved
+    note: >-
+      Order: lateral_reasoning_and_template_evolution invents →
+      template_and_protocol_movement mutates typed actions →
+      wisdomnet_universal_context_template_commons promotes reusable shapes to commons.
+    owning_domain: domain.wisdomnet_universal_context_template_commons
+  - topic: sciences_owned_vs_delegated
+    resolution: resolved
+    note: >-
+      Design-layer ownership: orchestration blueprints and L6 branch address space in
+      UNIVERSAL_DOMAIN_WEB + SEAT_KNOWLEDGE_COMMONS; federation parent
+      domain.wisdomnet_universal_context_template_commons (commons_movement_evolution
+      precedence resolved). Execution-layer delegation: general model answers until F6
+      necessity receipts force branch activation — domain.knowledge.formal-sciences founding
+      package on disk; no default world-knowledge specialization without traffic receipts.
+    owning_domain: domain.wisdomnet_universal_context_template_commons
+    provenance:
+      - ION/05_context/current/domain_weaver/universal_domain_web/UNIVERSAL_DOMAIN_WEB.candidate.yaml
+      - seam_resolutions.commons_movement_evolution_precedence
+      - ION/05_context/current/domain_weaver/candidate_founding_domains/domain.knowledge.formal-sciences/domain.knowledge.formal-sciences.domain.candidate.yaml
+      - ION/05_context/current/domain_weaver/fundamentals_recovery/ION_CANONICAL_HIERARCHY_AND_MATRIX.candidate.yaml#proposed_true_set_rank_alignment_p3_batch_04
+    adjudicated_at: '2026-08-08T15:00:00Z'
+    adjudication_witness: ION/05_context/current/domain_weaver/universal_domain_web/SEAM_ADJUDICATION_20260808.candidate.yaml
+  - topic: L6_dormant_charter_vs_address_space
+    resolution: resolved
+    note: >-
+      L6 branches are address-space-only in design; no pre-founded dormant roots.
+      Aligns architect, growth-law lazy founding, and commons anti_explosion_guard on activation.
+    owning_domain: domain.product_and_implementation_domain_formation
+  - topic: sovereign_intent_ledger_L0_vs_L4
+    resolution: resolved
+    note: Mandates are law inputs at L0, not operator membrane traffic at L4.
+    owning_domain: domain.sovereign_intent_and_mandate_ledger
+  - topic: cardinality_truth_four_authorities
+    resolution: resolved
+    note: >-
+      Four-way authority collapse rejected. Ground truth is rank-ordered in
+      DOMAIN_SET_AUTHORITY_PRECEDENCE (settlement rank 1, runner enumeration rank 2,
+      live composition rank 3, ALL_24 fallback rank 4, PROPOSED_TRUE_DOMAIN_SET design-only
+      rank 5). Measured 2026-08-08: disk_package_count 104, runner_invocable_count 41 with
+      per-row exclusion reasons in RUNNABLE_SETTLEMENT_LINEAGE; cardinality_truth subdomain
+      maintains drift witnesses — not a fifth competing headline count.
+    owning_domain: domain.ion_system_definition.cardinality_truth
+    provenance:
+      - ION/05_context/current/domain_weaver/universal_domain_web/DOMAIN_SET_AUTHORITY_PRECEDENCE.candidate.yaml
+      - ION/05_context/current/domain_weaver/domain_field_composition/RUNNABLE_SETTLEMENT_LINEAGE.candidate.json
+      - ION/05_context/current/domain_weaver/candidate_founding_domains/domain.domain_weaver_living_self_model/receipts/RUNNABLE_SURFACE_REFRESH_20260808.candidate.yaml
+      - ION/05_context/current/domain_promotions/20260808T132007Z_artifact.sos_human_gate_clear_retirement.promotion.json
+    adjudicated_at: '2026-08-08T15:00:00Z'
+    adjudication_witness: ION/05_context/current/domain_weaver/universal_domain_web/SEAM_ADJUDICATION_20260808.candidate.yaml
+
+seam_resolution_counts:
+  resolved: 7
+  pending_checkable: 1
+  sovereign_touch_optional: 1
+  unresolved_needs_domain_work: 0
+
+# ---------------------------------------------------------------------------
+# 7. COUNTS
+# ---------------------------------------------------------------------------
+counts:
+  structural_roots_L0_L5: 50
+  structural_roots_breakdown:
+    L0: 9
+    L1: 8
+    L2: 13
+    L3: 6
+    L4: 7
+    L5: 7
+  structural_roster_rows_include_merge_pending_ids: true
+  knowledge_branches_L6: 14
+  knowledge_subdomains_L6: 112
+  named_structural_subdomains: 25
+  total_subdomains_design: 137
+  provenance_breakdown:
+    constitution_cite: 28
+    qwen_era_cite: 6
+    new_need: 9
+    merge_demote_retire: 6
+  delta_vs_today:
+    invocable_settled_today: 37
+    chartered_packages_today: 43
+    designed_structural_roster_rows: 50
+    deduplicated_active_structural_roots_estimate: 43
+    net_new_structural_design_ids: 8
+    note: >-
+      Eight net-new design roots (sovereign ledger, temporal law, quorum, delivery membrane,
+      claim-gate owner, testing evidence, external AI interface, plus L6 address space not
+      counted as invocable roots). Merges/demotions offset duplicate surface area.
+
+# ---------------------------------------------------------------------------
+# 8. COMPLETENESS NOTE (honest gaps)
+# ---------------------------------------------------------------------------
+completeness_note:
+  not_yet_covered:
+    - BIOME 24 governance peer territory (human law/economics as ION-self domains) — handoff only
+    - Full 336-domain BIOME_UNIVERSE operational biomes 1–10 (owned by structural peers, not re-listed)
+    - Era-dating pass for constitution zip corpus (archaeology subdomain charter)
+    - Settlement supersession receipt owner (growth-law open question)
+    - Eight unregistered candidate dirs registration law (claim vs work gate)
+    - Per-branch L6 member charters (only branch-level design; members on demand)
+    - Orphan qwen-era ids beyond ten retire-alias rows (vestige census remainder as witness)
+  parked_seams:
+    - F-number ladder collision F6 domain org vs F06 runtime carrier in coverage matrix
+    - Merge cli_carrier_selection with carrier_quota_and_config_health (consolidation candidate)
+    - Wave admission quantification thresholds vs judgment-only (growth seat)

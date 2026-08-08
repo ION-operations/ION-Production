@@ -1,0 +1,42 @@
+domain_id: domain.honest_agency_validation
+display_name: Honest Agency Validation
+true_name_status: PROVISIONAL_W7_CANDIDATE
+status: CANDIDATE_W7_EMERGENCY_STEP2
+authority: A3_OPERATIONAL_CANDIDATE
+registry_promotion: False
+projection_mutation: False
+parent_domain_id: null
+tier_id: tier.verification_and_adversarial_witness
+tier_id_placement_source: ION/05_context/current/domain_weaver/fundamentals_recovery/ION_CANONICAL_HIERARCHY_AND_MATRIX.candidate.yaml
+packet_id: pckt-20260621t195710-emergency-step-2-materialize-24-domains
+materialized_at: 2026-06-21T20:00:23Z
+wave: W7
+priority: P1
+class: ABSORBS
+mission: >-
+  Founding
+  domain
+  Honest
+  Agency
+  Validation
+  —
+  candidate
+  context
+  materialized
+  under
+  emergency
+  step
+  2.
+absorbs:
+  - domain.confidence_drift_review
+retained_legacy_registry_ids:
+  - domain.confidence_drift_review
+retained_posture: alias_until_registry_settled
+sub_charters:
+  -
+    id: gate_ratification_honesty_audit
+    scope: Audit agent gate ratification claims vs registry witness/unratified truth
+prevents_struggles:
+  - 7
+source_spec: >-
+  ION/05_context/current/domain_weaver/domain_gap_analysis/PROPOSED_TRUE_DOMAIN_SET.candidate.yaml

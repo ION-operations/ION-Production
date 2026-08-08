@@ -1,0 +1,55 @@
+schema_id: ion.domain.relationships.v0_1_candidate
+domain_id: domain.runtime_carrier_and_action_admission.hooks_mcp_enactment
+posture: candidate_only
+edge_vocabulary: universal_domain_web_twelve_term_matrix
+updated_at: '2026-08-08T14:50:00Z'
+matrix_source: ION/05_context/current/domain_weaver/fundamentals_recovery/ION_CANONICAL_HIERARCHY_AND_MATRIX.candidate.yaml
+
+feeds:
+  - neighbour: domain.runtime_carrier_and_action_admission
+    boundary: >-
+      I enact Cursor hooks and MCP control-bridge surfaces; parent owns admission policy
+      and spawn_queue law only.
+    edge_kind: supplies_routes_to
+  - neighbour: domain.kernel_ownership_runtime_carrier_slice
+    boundary: >-
+      I route enactment findings to kernel ownership map; they own module landing not hand edits.
+    edge_kind: supplies_proof_to
+
+fed_by:
+  - neighbour: domain.runtime_carrier_and_action_admission
+    boundary: >-
+      Parent admission membrane; I am dotted child without separate structural roster row.
+    edge_kind: governs
+  - neighbour: domain.context_systems
+    boundary: >-
+      They supply context packages and mount validation; I bind hook injects to generated packets.
+    edge_kind: supplies_context_to
+  - neighbour: domain.cli_carrier_selection_and_usage_fallback
+    boundary: >-
+      They own carrier seat selection; I enact sessionStart carrier_continue without substituting seats.
+    edge_kind: supplies_routes_to
+
+verify:
+  - neighbour: domain.context_proof_gate_enforcement
+    boundary: >-
+      They witness CONTEXT PROOF on task returns; I verify hook-injected spawn rows match proof gate.
+    edge_kind: verifies
+
+governed_by:
+  - neighbour: domain.sos_state_machine_and_transition_law
+    boundary: >-
+      Hooks refresh candidate packets only; no accepted-state or production authority via MCP bridge.
+    edge_kind: governs
+  - neighbour: domain.authority_gates_and_secrets_posture
+    boundary: >-
+      MCP tools are bounded; no arbitrary shell or credential exposure through enactment slice.
+    edge_kind: protected_boundary
+
+shadows:
+  - wrong_meaning: hooks_mcp_slice_is_the_parent_admission_owner
+    correct_meaning: enactment_child_parent_retains_single_admission_policy
+  - wrong_meaning: ion_control_mcp_as_steWARD_integration_authority
+    correct_meaning: carrier_control_surface_routes_proof_gated_returns_only
+  - wrong_meaning: session_start_hook_spawns_all_roles_by_habit
+    correct_meaning: spawn_true_rows_from_active_carrier_turn_packet_only

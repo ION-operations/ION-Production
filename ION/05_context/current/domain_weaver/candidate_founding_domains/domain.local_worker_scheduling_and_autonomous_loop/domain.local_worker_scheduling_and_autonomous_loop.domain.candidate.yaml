@@ -1,0 +1,44 @@
+domain_id: domain.local_worker_scheduling_and_autonomous_loop
+display_name: Local Worker Scheduling And Autonomous Loop
+true_name_status: MITOSIS_CHILD_CANDIDATE
+status: CANDIDATE_MITOSIS_CHILD
+authority: A3_OPERATIONAL_CANDIDATE
+registry_promotion: false
+projection_mutation: false
+parent_domain_id: domain.swarm_scale_scheduling_and_workload_economics
+tier_id: tier.runtime_execution_and_economics
+tier_id_placement_source: ION/05_context/current/domain_weaver/fundamentals_recovery/ION_CANONICAL_HIERARCHY_AND_MATRIX.candidate.yaml
+fission_axis: rejected_25th_child_mitosis
+owning_blocker: BLK-SS-MITOSIS-001
+materialized_at: 2026-06-26T22:11:24Z
+priority: P0
+class: MITOSIS_CHILD
+mission: >-
+  Child domain mitosis from domain.swarm_scale_scheduling_and_workload_economics — rejected_25th_child_mitosis specialization.
+  Owns persistent autonomous goals, wakeup scheduling, detached workers, and terminal-optional
+  observer attach. Goals survive process lifetime; operator re-prompting is not required for continuity.
+candidate_scope:
+  - autonomous_goal_registry
+  - event_queue_dependency_message_wakeups
+  - scheduled_health_and_stale_goal_wakeups
+  - detached_background_workers
+  - bounded_concurrency_and_no_idle_token_burn
+  - lease_receipt_retry_backoff_crash_recovery
+  - folder_local_mount_and_session_resume
+mechanisms:
+  autonomous_goal_wakeup:
+    status: candidate
+    membrane_path: AUTONOMOUS_GOAL_WAKEUP_MEMBRANE.candidate.yaml
+    implementation_packet: evolution_packets/PCKT-ION-AUTONOMOUS-GOAL-WAKEUP-IMPLEMENTATION-20260724.candidate.yaml
+    proposed_activation_role: role.autonomous_loop_steward
+    proposed_mount: role_autonomous_loop_steward__domain_local_worker_scheduling_and_autonomous_loop
+    leader_binding_decision: UNRESOLVED_NO_EXPLICIT_IDENTITY
+prevents_struggles:
+  - 5
+  - 6
+source_spec: ION/05_context/current/domain_weaver/domain_gap_analysis/PROPOSED_MITOSIS_CHILD_DOMAINS.candidate.yaml
+parent_founding_domain: domain.swarm_scale_scheduling_and_workload_economics
+non_claims:
+  - candidate_only
+  - no_registry_promotion
+  - not_founding_root_until_settled

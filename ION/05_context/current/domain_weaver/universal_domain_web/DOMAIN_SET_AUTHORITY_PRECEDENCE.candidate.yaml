@@ -1,0 +1,156 @@
+schema_id: ion.universal_domain_web.domain_set_authority_precedence.v0_1_candidate
+packet_id: PKT-T1
+owner_domain_id: domain.state_rank_and_receipt_truth
+posture: candidate_only
+authority: witness_and_route_only
+generated_at: '2026-08-03T04:45:00Z'
+non_claims:
+  - no_blocking_gate
+  - no_registry_promotion
+  - no_settlement_mutation_by_this_file
+  - no_accepted_state
+  - declares_precedence_only
+
+cardinality_separation_law: >-
+  disk_package_count counts domain.* founding packages ON DISK under
+  candidate_founding_domains (includes dotted child packages and dark roots not in
+  settlement). runner_invocable_count counts domain_ids returned by
+  kernel.ion_domain_cursor_runner --list-domains when settlement is admissible.
+  These two cardinalities must never be collapsed into one headline number.
+
+disk_package_count: 104
+runner_invocable_count: 41
+disk_count_provenance: >-
+  ION/05_context/current/domain_weaver/domain_field_composition/LIVE_DOMAIN_COMPOSITION.candidate.json
+  field disk_package_count (2026-08-08 kernel ion_domain_field_composition --write).
+runner_count_provenance: >-
+  PYTHONPATH=ION/04_packages python3 -m kernel.ion_domain_cursor_runner --ion-root ION
+  --list-domains (count 41); parity with FOUNDING_DOMAIN_SETTLEMENT founding_domain_count
+  per verify_settlement_consistency.py SETTLEMENT_ADMISSIBLE=True RUNNER_PARITY=True.
+
+authority_precedence:
+  - rank: 1
+    path: ION/05_context/current/domain_weaver/FOUNDING_DOMAIN_SETTLEMENT.candidate.json
+    surface_id: founding_domain_settlement
+    authoritative_for: >-
+      Declared W0 candidate settlement membership (domain_ids), founding_domain_count,
+      and settlement admissibility inputs read by ion_domain_cursor_runner when status is
+      W0_CANDIDATE_SETTLED and count invariants hold.
+  - rank: 2
+    path: kernel.ion_domain_cursor_runner --list-domains
+    surface_id: runner_invocable_enumeration
+    authoritative_for: >-
+      Operational invocable domain_id set the kernel runner enumerates today (spawn/dry-run
+      substrate); must match founding_domain_count when RUNNER_PARITY=True.
+  - rank: 3
+    path: ION/05_context/current/domain_weaver/domain_field_composition/LIVE_DOMAIN_COMPOSITION.candidate.json
+    surface_id: live_domain_composition
+    authoritative_for: >-
+      Filesystem package census (disk_package_count), published runner_invocable_count field,
+      per-surface drift witnesses, and the law separating disk vs runner counts.
+  - rank: 4
+    path: ION/05_context/current/domain_weaver/candidate_founding_domains/ALL_24_CANDIDATE_DOMAINS_MANIFEST.candidate.json
+    surface_id: all_24_candidate_manifest
+    authoritative_for: >-
+      Emergency-step-2 materialization witness for the historical 24-root list and runner
+      fallback enumeration when settlement is not admissible (fall-through to 24 per
+      SETTLEMENT_CONSISTENCY_LAW proven_silent_regression_experiments).
+  - rank: 5
+    path: ION/05_context/current/domain_weaver/domain_gap_analysis/PROPOSED_TRUE_DOMAIN_SET.candidate.yaml
+    surface_id: proposed_true_domain_set
+    authoritative_for: >-
+      Historical founding-24 design proposal, registry migration waves, mitosis-child
+      registry slices, and gap-analysis narrative; superseded_for_current_domain_count per
+      file header — not current invocable or disk census authority.
+
+reporting_domain_citations:
+  - domain_id: domain.carrier_spawn_execution_enforcement
+    citation: >-
+      PROPOSED_TRUE_DOMAIN_SET.candidate.yaml — Mitosis child not in 24-root list;
+      coordinate in PROPOSED_MITOSIS_CHILD_DOMAINS only.
+    resolves_to_authority: proposed_true_domain_set
+    resolves_to_rank: 5
+  - domain_id: domain.codex_queue_lane_economics
+    citation: >-
+      UNIVERSAL_DOMAIN_WEB.candidate.yaml — merge disposition vs FOUNDING_DOMAIN_SETTLEMENT
+      and mitosis child unsettled.
+    resolves_to_authority: founding_domain_settlement
+    resolves_to_rank: 1
+  - domain_id: domain.cognitive_project_estimation_and_agency_planning
+    citation: >-
+      PROPOSED_TRUE_DOMAIN_SET.candidate.yaml — sub_charters [] vs materialized package
+      sub_charters.
+    resolves_to_authority: proposed_true_domain_set
+    resolves_to_rank: 5
+  - domain_id: domain.domain_field_and_diagnostic_coordinate
+    citation: >-
+      DIAGNOSTIC_PLANE_STATUS 36 domains vs LIVE_DOMAIN_COMPOSITION; CONFLICT-CENSUS-WITNESSES
+      cites ALL_24 manifest and census_drift_witness.
+    resolves_to_authority: live_domain_composition
+    resolves_to_rank: 3
+  - domain_id: domain.domain_mitosis_and_agent_society_formation
+    citation: >-
+      FOUNDING_DOMAIN_SETTLEMENT.candidate.json vs PROPOSED_TRUE_DOMAIN_SET.candidate.yaml
+      dual founding inputs.
+    resolves_to_authority: founding_domain_settlement
+    resolves_to_rank: 1
+  - domain_id: domain.domain_weaver_living_self_model
+    citation: >-
+      CONTEXT_REQUIREMENTS authority_precedence names FOUNDING_DOMAIN_SETTLEMENT while
+      OPERATING_CARD names LIVE_DOMAIN_COMPOSITION for live count.
+    resolves_to_authority: live_domain_composition
+    resolves_to_rank: 3
+  - domain_id: domain.ion_system_definition
+    citation: >-
+      CONFLICT-DOMAIN-COUNT-AUTHORITIES — absent from 35-settlement list; runner vs
+      settlement drift in SEAT_ARCHITECTURE.
+    resolves_to_authority: runner_invocable_enumeration
+    resolves_to_rank: 2
+  - domain_id: domain.kernel_ownership_runtime_carrier_slice
+    citation: >-
+      PROPOSED_TRUE_DOMAIN_SET.candidate.yaml — mitosis child not in 24-root list.
+    resolves_to_authority: proposed_true_domain_set
+    resolves_to_rank: 5
+  - domain_id: domain.ragtag_domain_heartbeat_and_active_web
+    citation: >-
+      CONFLICT-SETTLEMENT-VS-ALL24 — FOUNDING_DOMAIN_SETTLEMENT vs
+      ALL_24_CANDIDATE_DOMAINS_MANIFEST cardinality witnesses.
+    resolves_to_authority: founding_domain_settlement
+    resolves_to_rank: 1
+  - domain_id: domain.runtime_carrier_and_action_admission
+    citation: >-
+      Legacy absorb returns separate until registry settlement; routed_to_settlement_witness
+      FOUNDING_DOMAIN_SETTLEMENT.
+    resolves_to_authority: founding_domain_settlement
+    resolves_to_rank: 1
+  - domain_id: domain.swarm_scale_scheduling_and_workload_economics
+    citation: >-
+      UNIVERSAL_DOMAIN_WEB merge_into not fully absorbed; routed_to FOUNDING_DOMAIN_SETTLEMENT
+      witness.
+    resolves_to_authority: founding_domain_settlement
+    resolves_to_rank: 1
+  - domain_id: domain.wisdomnet_universal_context_template_commons
+    citation: >-
+      PROPOSED_TRUE_DOMAIN_SET prevents_struggles [] vs domain.candidate.yaml charter.
+    resolves_to_authority: proposed_true_domain_set
+    resolves_to_rank: 5
+
+precedence_hold_predicate:
+  description: >-
+    Machine-checkable checks that settlement admissibility, runner parity, precedence
+    artifact shape, and disk/runner cardinality separation still hold.
+  commands:
+    - >-
+      cd "/home/sev/ION - Production/ION_Developement" && PYTHONPATH=ION/04_packages python3
+      ION/05_context/current/domain_weaver/scripts/verify_settlement_consistency.py --ion-root ION
+    - >-
+      cd "/home/sev/ION - Production/ION_Developement" && python3 -c "import yaml; d=yaml.safe_load(open('ION/05_context/current/domain_weaver/universal_domain_web/DOMAIN_SET_AUTHORITY_PRECEDENCE.candidate.yaml')); a=d['authority_precedence']; assert len(a)==5; assert d['disk_package_count']==45 and d['runner_invocable_count']==37; assert len(d['reporting_domain_citations'])==12; ranks=sorted(x['rank'] for x in a); assert ranks==[1,2,3,4,5]; print('PRECEDENCE_TOTAL=True authorities=',len(a))"
+  expected_stdout_substrings:
+    - SETTLEMENT_ADMISSIBLE=True
+    - RUNNER_PARITY=True
+    - PRECEDENCE_TOTAL=True authorities=5
+
+provenance:
+  triage: ION/05_context/current/domain_weaver/universal_domain_web/SELF_BUILD_FINDINGS_TRIAGE.candidate.yaml
+  cluster: C03
+  settlement_law: ION/05_context/current/domain_weaver/universal_domain_web/SETTLEMENT_CONSISTENCY_LAW.candidate.yaml

@@ -1,0 +1,26 @@
+domain_id: domain.carrier_spawn_execution_enforcement
+display_name: Carrier Spawn Execution Enforcement
+true_name_status: MITOSIS_CHILD_CANDIDATE
+status: CANDIDATE_MITOSIS_CHILD
+authority: A3_OPERATIONAL_CANDIDATE
+registry_promotion: false
+projection_mutation: false
+parent_domain_id: domain.runtime_carrier_and_action_admission
+tier_id: tier.runtime_and_action
+tier_id_placement_source: ION/05_context/current/domain_weaver/fundamentals_recovery/ION_CANONICAL_HIERARCHY_AND_MATRIX.candidate.yaml
+fission_axis: spawn_gate_enforcement
+owning_blocker: BLK-005
+materialized_at: 2026-06-26T22:11:24Z
+priority: P0
+class: MITOSIS_CHILD
+mission: >-
+  Child domain mitosis from domain.runtime_carrier_and_action_admission — spawn_gate_enforcement specialization.
+  Owns bounded scope until zero blockers; not a founding root until registry settled.
+prevents_struggles:
+  - 5
+source_spec: ION/05_context/current/domain_weaver/domain_gap_analysis/PROPOSED_MITOSIS_CHILD_DOMAINS.candidate.yaml
+parent_founding_domain: domain.runtime_carrier_and_action_admission
+non_claims:
+  - candidate_only
+  - no_registry_promotion
+  - not_founding_root_until_settled

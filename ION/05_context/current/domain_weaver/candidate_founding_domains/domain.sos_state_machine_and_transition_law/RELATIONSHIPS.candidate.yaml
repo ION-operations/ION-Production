@@ -1,0 +1,88 @@
+schema_id: ion.domain.relationships.v0_1_candidate
+domain_id: domain.sos_state_machine_and_transition_law
+posture: candidate_only
+updated_at: "2026-08-08T12:45:00+00:00"
+edge_vocabulary_ref: >-
+  ION/05_context/current/domain_weaver/universal_domain_web/UNIVERSAL_DOMAIN_WEB.candidate.yaml
+  edge_types: [governs, feeds, verifies, forms]
+
+outbound_feeds:
+  - target: domain.runtime_carrier_and_action_admission
+    edge: feeds
+    boundary: >-
+      They own spawn admission and continuous ingress enactment; I own
+      settlement_path_ids and lawful from/to states for SOS repair ladder.
+  - target: domain.operator_language_and_semantic_interface
+    edge: feeds
+    boundary: >-
+      They own delivery membrane vocabulary; I own stdout_to_chat_delivered
+      transition definition and evidence field names.
+  - target: domain.artifact_provenance_and_gate_legitimacy
+    edge: feeds
+    boundary: >-
+      They own GATE_REGISTRY rows and gate legitimacy; I own settlement_path
+      transition semantics bound in gate_registry settlement_path fields.
+  - target: domain.state_rank_and_receipt_truth
+    edge: feeds
+    boundary: >-
+      They own rank/accepted boundary truth; I own transition receipts that
+      must cite sha-bound evidence before rank claims.
+
+inbound_feeds:
+  - source: domain.sovereign_intent_and_mandate_ledger
+    edge: feeds
+    boundary: >-
+      They own mandate ids and expiry; I compile mandates into scoped transition
+      triggers without encoding temporary directives as permanent defaults.
+  - source: domain.domain_weaver_living_self_model
+    edge: governs
+    boundary: >-
+      They own founding domain set settlement posture; I materialize W10
+      candidate context under their packet law.
+
+verify_edges:
+  - peer: domain.context_proof_gate_enforcement
+    edge: verifies
+    boundary: >-
+      They verify CONTEXT PROOF on returns; I define context_proof_remediation
+      settlement transition off-ramp.
+  - peer: domain.operator_sovereignty_and_directive_admission
+    edge: verifies
+    boundary: >-
+      They own directive admission and non-human accepted-state transition law; I bind
+      candidate_to_accepted_promotion to verify sovereign-escalation triggers only
+      (fundamental removal, real money, beyond-ION capability) before promotion path fires.
+  - peer: domain.state_rank_and_receipt_truth
+    edge: verifies
+    boundary: >-
+      They verify receipt truth; I verify transition tables name evidence_fields
+      that receipts must carry.
+
+absorb_joint_seat:
+  - legacy_id: domain.ion_system_definition
+    disposition: merge_deferred
+    boundary: >-
+      They own identity web six-layer canon binding index surfaces; I own
+      state-machine motion law and absorb transition states until operator
+      clears migration_hold.
+
+shadows:
+  - wrong_meaning: global_workflow_orchestrator
+    reject: >-
+      I do not dispatch carriers or choose spawn rows; runtime_carrier owns
+      admission enactment.
+  - wrong_meaning: audit_only_stop_gate
+    reject: >-
+      Verification routes findings; I never halt ION or peer domains globally.
+  - wrong_meaning: registry_promotion_authority
+    reject: >-
+      I do not write ION/03_registry/domains/*.domain.yaml or mutate
+      DOMAIN_WEAVER_PROJECTION.json.
+  - wrong_meaning: absorbed_ion_system_definition
+    reject: >-
+      Absorb is not complete; constitution/20-pack paths still witness through
+      ion_system_definition until phase1 gate clears.
+
+non_claims:
+  - candidate_only
+  - no_registry_promotion

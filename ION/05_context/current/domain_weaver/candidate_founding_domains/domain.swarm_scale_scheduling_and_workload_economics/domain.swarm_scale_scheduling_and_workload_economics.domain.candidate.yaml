@@ -1,0 +1,63 @@
+domain_id: domain.swarm_scale_scheduling_and_workload_economics
+display_name: Swarm Scale Scheduling And Workload Economics
+true_name_status: PROVISIONAL_W5_CANDIDATE
+status: CANDIDATE_W5_EMERGENCY_STEP2
+authority: A3_OPERATIONAL_CANDIDATE
+registry_promotion: False
+projection_mutation: False
+parent_domain_id: null
+tier_id: tier.economics_and_scheduling
+tier_id_placement_source: ION/05_context/current/domain_weaver/fundamentals_recovery/ION_CANONICAL_HIERARCHY_AND_MATRIX.candidate.yaml
+packet_id: pckt-20260621t195710-emergency-step-2-materialize-24-domains
+materialized_at: 2026-06-21T20:00:23Z
+wave: W5
+priority: P0
+class: NEW
+mission: >-
+  Founding
+  domain
+  Swarm
+  Scale
+  Scheduling
+  And
+  Workload
+  Economics
+  —
+  candidate
+  context
+  materialized
+  under
+  emergency
+  step
+  2.
+absorbs:
+retained_legacy_registry_ids:
+retained_posture: new_founding_domain
+sub_charters:
+  - id: local_worker_scheduling
+    scope: queue-runner vs carrier spawn scheduling economics
+    path: sub_charters/sub_charter_local_worker_scheduling.candidate.yaml
+  - id: mount_auto_materialize_on_leader_spawn
+    scope: auto-materialize codex_agent_mount on domain leader spawn
+    path: sub_charters/sub_charter_mount_auto_materialize_on_leader_spawn.candidate.yaml
+  - id: meta_swarm_parallel_spawn_plane
+    scope: parallel P0 spawn via meta_swarm lanes
+    path: sub_charters/sub_charter_meta_swarm_parallel_spawn_plane.candidate.yaml
+  - id: team_visibility_surface
+    scope: operator team state aggregation
+    path: sub_charters/sub_charter_team_visibility_surface.candidate.yaml
+  - id: spawn_row_limit_admission
+    scope: bind spawn_row_limit to admission membrane
+    path: sub_charters/sub_charter_spawn_row_limit_admission.candidate.yaml
+  - id: queue_runner_lane_economics
+    scope: queue-runner lane lock and backlog reconciliation
+    path: sub_charters/sub_charter_queue_runner_lane_economics.candidate.yaml
+  - id: return_surface_completion
+    scope: step 3 and step 5 outward returns
+    path: sub_charters/sub_charter_return_surface_completion.candidate.yaml
+prevents_struggles:
+  - 5
+  - 6
+  - 7
+source_spec: >-
+  ION/05_context/current/domain_weaver/domain_gap_analysis/PROPOSED_TRUE_DOMAIN_SET.candidate.yaml

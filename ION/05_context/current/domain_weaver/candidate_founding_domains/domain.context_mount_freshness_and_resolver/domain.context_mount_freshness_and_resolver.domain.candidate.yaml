@@ -1,0 +1,30 @@
+domain_id: domain.context_mount_freshness_and_resolver
+display_name: Context Mount Freshness And Resolver
+true_name_status: MITOSIS_CHILD_CANDIDATE
+status: CANDIDATE_MITOSIS_CHILD
+authority: A3_OPERATIONAL_CANDIDATE
+registry_promotion: false
+projection_mutation: false
+parent_domain_id: domain.context_systems
+tier_id: tier.context_and_memory
+tier_id_placement_source: ION/05_context/current/domain_weaver/fundamentals_recovery/ION_CANONICAL_HIERARCHY_AND_MATRIX.candidate.yaml
+fission_axis: mount_freshness_resolver
+owning_blocker: BLK-001
+materialized_at: 2026-06-26T22:11:24Z
+priority: P0
+class: MITOSIS_CHILD
+mission: >-
+  Child domain mitosis from domain.context_systems — mount_freshness_resolver specialization.
+  Owns bounded scope until zero blockers; not a founding root until registry settled.
+prevents_struggles:
+  - 8
+  - 10
+source_spec: ION/05_context/current/domain_weaver/domain_gap_analysis/PROPOSED_MITOSIS_CHILD_DOMAINS.candidate.yaml
+parent_founding_domain: domain.context_systems
+sub_charters:
+  - id: mount_freshness_resolver
+    path: sub_charters/sub_charter_mount_freshness_resolver.candidate.yaml
+non_claims:
+  - candidate_only
+  - no_registry_promotion
+  - not_founding_root_until_settled

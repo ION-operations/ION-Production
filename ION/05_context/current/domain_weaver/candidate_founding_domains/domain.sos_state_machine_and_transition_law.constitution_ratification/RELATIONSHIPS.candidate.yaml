@@ -1,0 +1,55 @@
+schema_id: ion.domain.relationships.v0_1_candidate
+domain_id: domain.sos_state_machine_and_transition_law.constitution_ratification
+posture: candidate_only
+edge_vocabulary: universal_domain_web_twelve_term_matrix
+updated_at: '2026-08-08T14:50:00Z'
+matrix_source: ION/05_context/current/domain_weaver/fundamentals_recovery/ION_CANONICAL_HIERARCHY_AND_MATRIX.candidate.yaml
+
+feeds:
+  - neighbour: domain.sos_state_machine_and_transition_law
+    boundary: >-
+      I own constitution ratification receipts; parent owns general rank transition law
+      across the spine.
+    edge_kind: supplies_proof_to
+  - neighbour: domain.ion_system_definition
+    boundary: >-
+      I ratify constitutional text binding; they own definition-of-ION identity web without silent merge.
+    edge_kind: co_governs
+
+fed_by:
+  - neighbour: domain.sos_state_machine_and_transition_law
+    boundary: >-
+      Parent spine domain; I am dotted subdomain without separate structural roster row.
+    edge_kind: governs
+  - neighbour: domain.state_rank_and_receipt_truth
+    boundary: >-
+      They own receipt truth; I consume ratification proof shapes before rank moves claim acceptance.
+    edge_kind: supplies_proof_to
+  - neighbour: domain.operator_language_and_semantic_interface
+    boundary: >-
+      Sovereign wording for constitutional changes routes through operator membrane first.
+    edge_kind: supplies_context_to
+
+verify:
+  - neighbour: domain.honest_agency_validation
+    boundary: >-
+      They witness ratification overclaim; I report candidate-only posture.
+    edge_kind: verifies
+
+governed_by:
+  - neighbour: domain.sos_state_machine_and_transition_law
+    boundary: >-
+      Every ratification move is a lawful transition under parent state machine.
+    edge_kind: governs
+  - neighbour: domain.artifact_provenance_and_gate_legitimacy
+    boundary: >-
+      Gate owner route scope TTL on constitutional change packets.
+    edge_kind: co_governs
+
+shadows:
+  - wrong_meaning: constitution_ratification_from_agent_self_declare
+    correct_meaning: sovereign_ratification_receipt_required
+  - wrong_meaning: subdomain_replaces_parent_sos_law_owner
+    correct_meaning: specialized_ratification_lane_under_spine_parent
+  - wrong_meaning: ratification_promotes_registry_without_receipt_chain
+    correct_meaning: candidate_proof_shapes_until_state_rank_fan_in

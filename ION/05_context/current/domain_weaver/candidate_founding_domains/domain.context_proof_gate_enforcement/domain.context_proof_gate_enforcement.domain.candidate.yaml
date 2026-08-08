@@ -1,0 +1,31 @@
+domain_id: domain.context_proof_gate_enforcement
+display_name: Context Proof Gate Enforcement
+true_name_status: MITOSIS_CHILD_CANDIDATE
+status: CANDIDATE_MITOSIS_CHILD
+authority: A3_OPERATIONAL_CANDIDATE
+registry_promotion: false
+projection_mutation: false
+parent_domain_id: domain.context_systems
+tier_id: tier.verification_and_adversarial_witness
+tier_id_placement_source: ION/05_context/current/domain_weaver/fundamentals_recovery/ION_CANONICAL_HIERARCHY_AND_MATRIX.candidate.yaml
+fission_axis: proof_gate_intake
+owning_blocker: BLK-004
+materialized_at: 2026-06-26T22:11:24Z
+priority: P1
+class: MITOSIS_CHILD
+mission: >-
+  Child domain mitosis from domain.context_systems — proof_gate_intake specialization.
+  Owns bounded scope until zero blockers; not a founding root until registry settled.
+prevents_struggles:
+  - 8
+  - 10
+source_spec: ION/05_context/current/domain_weaver/domain_gap_analysis/PROPOSED_MITOSIS_CHILD_DOMAINS.candidate.yaml
+parent_founding_domain: domain.context_systems
+sub_charters:
+  - id: proof_gate_intake
+    path: sub_charters/sub_charter_proof_gate_intake.candidate.yaml
+    parent_sub_charter_ref: domain.context_systems/sub_charters/sub_charter_context_proof_gate_enforcement.candidate.yaml
+non_claims:
+  - candidate_only
+  - no_registry_promotion
+  - not_founding_root_until_settled

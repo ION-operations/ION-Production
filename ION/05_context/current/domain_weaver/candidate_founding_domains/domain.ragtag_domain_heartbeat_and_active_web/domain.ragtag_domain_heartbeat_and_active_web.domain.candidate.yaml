@@ -1,0 +1,41 @@
+domain_id: domain.ragtag_domain_heartbeat_and_active_web
+display_name: Ragtag Domain Heartbeat And Active Web
+true_name_status: PROVISIONAL_W0_CANDIDATE
+status: CANDIDATE_W0_EMERGENCY_STEP2
+authority: A3_OPERATIONAL_CANDIDATE
+registry_promotion: False
+projection_mutation: False
+parent_domain_id: null
+tier_id: tier.verification_and_adversarial_witness
+tier_id_placement_source: ION/05_context/current/domain_weaver/fundamentals_recovery/ION_CANONICAL_HIERARCHY_AND_MATRIX.candidate.yaml
+packet_id: pckt-20260621t195710-emergency-step-2-materialize-24-domains
+materialized_at: 2026-06-21T20:00:23Z
+wave: W0
+priority: P1
+class: NEW
+mission: >-
+  Charter: MISSION.candidate.yaml (updated 2026-08-03). Maintain per-domain liveness witness,
+  active-domain-web synthesis, and bounded heartbeat memos; fan in self-assessments and emit
+  true_name_dag_input adapters toward domain.true_name_symbol_and_semantic_dag_index — not
+  superseded. Emergency W0 placeholder text retired by this patch.
+mission_ref: MISSION.candidate.yaml
+absorbs:
+retained_legacy_registry_ids:
+retained_posture: new_founding_domain
+sub_charters:
+  - id: heartbeat_memo_dispatch
+    scope: repeatable heartbeat memo drafts and dispatch from bounded inputs
+  - id: domain_candidate_selection
+    scope: candidate domain selection from active-web signals
+  - id: domain_self_assessment_fanin
+    scope: self-assessment fan-in across the current candidate domain set named by FOUNDING_DOMAIN_SETTLEMENT.candidate.json
+  - id: active_domain_web_synthesis
+    scope: cross-domain web state and revision pressure synthesis
+  - id: heartbeat_legacy_crosswalk
+    scope: integrate pre-step-2 heartbeat fabric under founding governance
+  - id: return_surface_completion
+    scope: outward diagnostic and context-system returns plus proof gate intake
+prevents_struggles:
+  - 4
+source_spec: >-
+  ION/05_context/current/domain_weaver/domain_gap_analysis/PROPOSED_TRUE_DOMAIN_SET.candidate.yaml
