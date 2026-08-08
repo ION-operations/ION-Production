@@ -58,10 +58,12 @@ fi
 
 PACKET_ID="$(python3 -c "import yaml;from pathlib import Path;d=yaml.safe_load(Path('$ROOT/$MANIFEST').read_text());print(d['packet_id'])")"
 MANIFEST_SHA="$(sha256sum "$ROOT/$MANIFEST" | awk '{print $1}')"
-git -C "$ROOT" commit -m "candidate(commit-boundary): ${PACKET_ID}
+git -C "$ROOT" commit -F - <<EOF
+candidate(commit-boundary): ${PACKET_ID}
 
 Manifest: $(basename "$MANIFEST") sha256=${MANIFEST_SHA}
 Gate: gate.git_snapshot.secret_scan PASS
-Authority: candidate-only; no push."
+Authority: candidate-only; no push.
+EOF
 
 echo "Committed. Write COMMIT_BOUNDARY_RECEIPT with: git -C $ROOT rev-parse HEAD"
