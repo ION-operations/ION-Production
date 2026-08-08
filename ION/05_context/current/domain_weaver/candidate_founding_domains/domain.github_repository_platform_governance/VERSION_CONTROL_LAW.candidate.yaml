@@ -6,7 +6,7 @@ authority: A3_OPERATIONAL_CANDIDATE
 ratified_by: null
 sovereign_anchor_date: "2026-08-03"
 materialized_at: "2026-08-03T13:30:00Z"
-law_revision: "2026-08-03T14:00:00Z"
+law_revision: "2026-08-08T18:45:00Z"
 non_claims:
   - candidate_only
   - no_registry_promotion
@@ -259,3 +259,20 @@ first_workpacks_when_permitted:
     would_commit: only manifest-listed governance artifacts; every staged path carries owner_domain_id + reason
     why_worth_keeping: >-
       First remote publish that asserts judgment ("what we keep") rather than accidental full-tree chaos.
+
+amendments:
+  - amendment_id: VCTL-AMD-20260808-QUARANTINE-LOCAL-CURATED-PUBLISH
+    sovereign_ruling_date: "2026-08-08"
+    sovereign_ruling_verbatim: "you shouldnt be commiting qaurenine"
+    enactment: >-
+      Quarantine snapshot commit 019e7c893 and branches whose published ancestry would include that
+      snapshot (for example quarantine/pre-clean-room-snapshot-2026-08-03) are LOCAL restore points
+      only — never push them as published history and never stack new commit-boundary commits atop
+      that snapshot line. Receipted commit-boundary deltas publish only from curated branches cut
+      from origin-known base 60255b26a (for example curated/receipted-work-20260808) via clean
+      cherry-pick of receipted SHAs or an explicitly receipted alternate replay strategy; stop on
+      conflict without improvised resolution.
+    receipt_path: >-
+      ION/05_context/current/operator_decision_queue/receipts/20260808T184500Z_curated_branch_push_push-authorization-20260808.candidate.json
+    amendment_receipt_path: >-
+      ION/05_context/current/domain_weaver/candidate_founding_domains/domain.github_repository_platform_governance/receipts/VERSION_CONTROL_LAW_AMENDMENT_20260808_QUARANTINE_LOCAL.candidate.json
