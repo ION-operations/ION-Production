@@ -1,0 +1,31 @@
+{
+  "schema_id": "ion.commit_boundary_receipt.v0_1_candidate",
+  "receipt_id": "COMMIT_BOUNDARY_RECEIPT_20260808T161307Z",
+  "packet_id": "PCKT-COMMIT-BOUNDARY-20260808-BATCH3-MODEL-ROUTING",
+  "manifest_id": "CBM-RECEIPTED-DELTA-20260808-BATCH3-MODEL-ROUTING",
+  "manifest_path": "ION/05_context/current/domain_weaver/candidate_founding_domains/domain.artifact_provenance_and_gate_legitimacy/commit_boundary/COMMIT_BOUNDARY_MANIFEST_20260808_BATCH3_MODEL_ROUTING.candidate.yaml",
+  "manifest_sha256": "bdb18e95f9a3f1cc0d9650f50b07f29ae5631a80a19357aebf835821a3980b3a",
+  "commit_sha": "bb8d9c6694598d06587c1c050faa578a6e57d7ac",
+  "branch": "quarantine/pre-clean-room-snapshot-2026-08-03",
+  "committed_at": "2026-08-08T16:13:23Z",
+  "owner_domain_id": "domain.artifact_provenance_and_gate_legitimacy",
+  "paths_committed_count": 9,
+  "push_performed": false,
+  "gate_verdicts": {
+    "gate.git_snapshot.secret_scan": {
+      "verdict": "PASS",
+      "evidence_path": "ION/05_context/current/domain_weaver/candidate_founding_domains/domain.artifact_provenance_and_gate_legitimacy/commit_boundary/secret_scan_runs/gate_git_snapshot_secret_scan_20260808T161307Z/secret_scan_summary.json"
+    },
+    "gate.commit_boundary.deletion_zero": {
+      "verdict": "PASS",
+      "staged_file_deletions": 0
+    },
+    "gate.commit_boundary.manifest_allowlist": {
+      "verdict": "PASS"
+    }
+  },
+  "non_claims": [
+    "candidate_only",
+    "no_push"
+  ]
+}

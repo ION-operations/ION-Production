@@ -43,7 +43,8 @@ if [[ "$BLOCKED" -ne 0 ]]; then
   exit 1
 fi
 
-printf '%s\n' "{\"gate_id\":\"gate.git_snapshot.secret_scan\",\"verdict\":\"PASS\",\"scan_name\":\"gate_git_snapshot_secret_scan_${STAMP}\",\"pathspec_file\":\"${PATHSPEC_FILE#"$ROOT/"}"}" > "$SUMMARY"
+PATHSPEC_REL="${PATHSPEC_FILE#"$ROOT/"}"
+printf '%s\n' "{\"gate_id\":\"gate.git_snapshot.secret_scan\",\"verdict\":\"PASS\",\"scan_name\":\"gate_git_snapshot_secret_scan_${STAMP}\",\"pathspec_file\":\"${PATHSPEC_REL}\"}" > "$SUMMARY"
 
 while IFS= read -r p; do
   git -C "$ROOT" add -- "$p"
@@ -56,7 +57,13 @@ if [[ "$DELETIONS" -gt 0 ]]; then
   exit 1
 fi
 
-PACKET_ID="$(python3 -c "import yaml;from pathlib import Path;d=yaml.safe_load(Path('$ROOT/$MANIFEST').read_text());print(d['packet_id'])")"
+PACKET_ID="$(python3 - "$ROOT" "$MANIFEST" <<'PY'
+import sys, yaml
+from pathlib import Path
+root, manifest_rel = sys.argv[1:3]
+print(yaml.safe_load((Path(root) / manifest_rel).read_text(encoding="utf-8"))["packet_id"])
+PY
+)"
 MANIFEST_SHA="$(sha256sum "$ROOT/$MANIFEST" | awk '{print $1}')"
 git -C "$ROOT" commit -F - <<EOF
 candidate(commit-boundary): ${PACKET_ID}
