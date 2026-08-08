@@ -1,0 +1,75 @@
+schema_id: ion.domain.github_repository_platform_governance.relationships.v0_1_candidate
+domain_id: domain.github_repository_platform_governance
+materialized_at: "2026-07-26T00:03:00Z"
+posture: candidate_only
+
+upstream_peers:
+  - edge_id: branch_fabric_identity_feed
+    peer_domain_id: domain.context_graph_branch_fabric
+    direction: consumes
+    scope:
+      - repository_identity_registry
+      - active_branch_and_upstream_tracking
+      - merge_base_with_protected_branches
+      - backup_branch_naming_policy
+    resume_surfaces:
+      - ION/05_context/current/repository_governance/REPOSITORY_IDENTITY_REGISTRY.candidate.json
+      - ION/05_context/current/repository_governance/REPOSITORY_STATE_SUMMARY.candidate.md
+
+  - edge_id: provenance_commit_manifest_feed
+    peer_domain_id: domain.artifact_provenance_and_gate_legitimacy
+    direction: consumes
+    scope:
+      - commit_boundary_manifest
+      - pre_commit_gate_verdict
+      - domain_scoped_change_set_ownership
+    gate: draft_pr_requires_nemesis_non_block
+
+  - edge_id: context_systems_continuity_feed
+    peer_domain_id: domain.context_systems
+    direction: consumes
+    scope:
+      - repository_orientation_receipt_template
+      - push_authorization_receipt_template
+      - pr_review_receipt_template
+    template_root: ION/07_templates/repository_governance/
+
+downstream_peers:
+  - edge_id: accepted_merge_rank_boundary
+    peer_domain_id: domain.state_rank_and_receipt_truth
+    direction: feeds
+    scope:
+      - draft_pr_platform_governance_packet
+      - merge_rank_before_accepted_truth
+    note: platform proposes; rank domain accepts
+
+  - edge_id: release_platform_relationship
+    peer_domain_id: domain.release.release_readiness
+    direction: feeds
+    scope:
+      - tag_and_release_platform_policy
+      - production_cutover_gates
+    status: deferred_until_registry_promotion_wave
+
+read_only_consumers:
+  - domain_id: domain.current_phase_orchestration_management
+    role_id: role.steward
+    scope:
+      - repository_state_summary_read_only
+      - draft_pr_status_summary
+    forbidden_duplicate:
+      - github_settings_owner
+      - branch_protection_owner
+
+authority_ladder_binding:
+  local_git_save: domain.context_graph_branch_fabric + domain.artifact_provenance_and_gate_legitimacy
+  remote_backup_branch: operator_authorized + pre_commit_gates_pass
+  draft_pr: domain.github_repository_platform_governance + nemesis_review
+  accepted_merge: domain.state_rank_and_receipt_truth
+  production_release: domain.release.release_readiness + operator_gate
+
+non_claims:
+  - candidate_only
+  - no_registry_promotion
+  - no_accepted_state
+  - edges_are_candidate_not_registry_writes

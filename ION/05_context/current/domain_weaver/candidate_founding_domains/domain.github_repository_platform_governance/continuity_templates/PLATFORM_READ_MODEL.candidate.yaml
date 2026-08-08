@@ -1,0 +1,43 @@
+schema_id: ion.repository_governance.platform_read_model.v0_1_candidate
+owner_domain_id: domain.github_repository_platform_governance
+status: candidate_shell
+repository_slug: ION-operations/ION-Production
+active_branch: codex/ion-custom-gpt-front-door-carrier-v4
+materialized_at: "2026-07-26T00:03:00Z"
+
+read_model_sections:
+  repository_settings:
+    visibility: unknown_read_required
+    default_branch: unknown_read_required
+    allow_merge_commit: unknown_read_required
+    allow_squash_merge: unknown_read_required
+    allow_rebase_merge: unknown_read_required
+    delete_branch_on_merge: unknown_read_required
+  branch_protection:
+    protected_branches: [main, master]
+    rulesets: []
+    required_status_checks: []
+    required_pull_request_reviews: unknown_read_required
+  actions:
+    enabled: unknown_read_required
+    workflow_files_observed_locally: []
+    required_checks_for_merge: []
+  codeowners:
+    path: unknown_read_required
+    proposal_path: ION/05_context/current/repository_governance/CODEOWNERS_PROPOSAL.candidate.md
+  issues_and_prs:
+    issue_templates: []
+    pull_request_template: unknown_read_required
+    draft_pr_policy: proposal_only
+
+update_law:
+  - read_model_only_no_api_mutation_in_candidate_activation
+  - populate_via_read_only_github_or_local_manifest_packets
+  - sync_with_branch_fabric_identity_registry
+
+output_path: ION/05_context/current/repository_governance/GITHUB_PLATFORM_READMODEL.candidate.yaml
+
+non_claims:
+  - candidate_only
+  - not_accepted_platform_truth
+  - no_remote_setting_change

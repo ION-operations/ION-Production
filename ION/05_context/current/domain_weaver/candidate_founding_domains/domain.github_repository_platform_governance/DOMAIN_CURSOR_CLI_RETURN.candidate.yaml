@@ -1,0 +1,47 @@
+schema_id: ion.domain.cursor_cli_return.v0_1_candidate
+domain_id: domain.github_repository_platform_governance
+carrier_id: cursor_cli
+carrier_model: composer-2.5
+spawn_admission_id: spawn_admission_38d2275a425bc3aaaa261269
+admission_path: ION/05_context/current/cursor_connector/prompt_spawn_runs/prompt_spawn_2026-08-03T135525+0000_domain_worker_4422er4g/spawn_admission.json
+template_id: ion.template.patch_proposal.v1
+posture: candidate_only
+completed_at: "2026-08-03T14:10:00Z"
+
+secret_scan:
+  scan_name: gate_git_snapshot_secret_scan_20260803T140000Z
+  gate_id: gate.git_snapshot.secret_scan
+  verdict: PASS
+  summary_path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.github_repository_platform_governance/secret_scan_runs/gate_git_snapshot_secret_scan_20260803T140000Z/secret_scan_summary.json
+
+quarantine_snapshot:
+  branch: quarantine/pre-clean-room-snapshot-2026-08-03
+  commit_class: quarantine_snapshot_commit
+  staged_file_entries: 214350
+  push_performed: false
+  push_reason_not_done: >-
+    Sovereign packet requires local restore point only; remote publish is separate decision
+    requiring push authorization receipt per VERSION_CONTROL_LAW secrets_precondition.push_law.
+
+refused_to_stage:
+  - path: ION_GPT_STATE/OPERATOR_20PACK_REBUILT/ION_Domain_Constitution/ION_Domain/
+    reason: nested git repository without commit checked out (git add fatal)
+
+what_broke: >-
+  Full-tree git add previously failed on nested ION_Domain .git; resolved by path exclude for
+  that subtree only. Mass index deletions are Sovereign-known folder moves, not audited.
+
+context_lacks: >-
+  Steward candidate intake of law revision and snapshot; gitleaks binary not installed (detect-secrets
+  + rg used). Full-repo detect-secrets --all-files not completed (bounded sample used).
+
+repair_recommends:
+  - Treat quarantine/pre-clean-room-snapshot-2026-08-03 as read-only position witness; production
+    work on successor mainline per PCKT-VCTL-02
+  - If ION_Domain nested tree must be in git, fix nested .git or submodule policy in follow-on packet
+  - Push only with explicit push authorization receipt after full gate stack
+
+did_not_do:
+  - no git push, force, reset, rebase, or history rewrite
+  - no operations in /home/sev repo
+  - no parent STEWARD integration or registry promotion

@@ -1,0 +1,261 @@
+schema_id: ion.version_control_law.v0_1_candidate
+domain_id: domain.github_repository_platform_governance
+status: candidate_only
+registry_promotion: false
+authority: A3_OPERATIONAL_CANDIDATE
+ratified_by: null
+sovereign_anchor_date: "2026-08-03"
+materialized_at: "2026-08-03T13:30:00Z"
+law_revision: "2026-08-03T14:00:00Z"
+non_claims:
+  - candidate_only
+  - no_registry_promotion
+  - no_accepted_state
+  - no_git_mutation_by_this_artifact_alone
+  - recommendations_not_enactment
+
+sovereign_founding_constraint: >-
+  A commit is not a backup and git path churn is not truth. Committing the current
+  ION_Developement working tree without judgment would have frozen stale era material
+  (875-runs-of-nothing, hallucinated gates, dead Codex lanes, doubled trees) into
+  permanent history as if chosen.
+
+git_index_stale_witness_law:
+  law: >-
+    Git's index is a STALE WITNESS, never a state authority. ION has not been committed
+    in a long time; the index describes a much older ION. Auditing today's disk against
+    it manufactures false findings (for example mass "deletions" from the Sovereign's
+    deliberate folder moves). Same failure class as trusting LIVE_DOMAIN_COMPOSITION
+    frozen at an old date while disk has moved on.
+  must_not:
+    - treat git status deletion counts as file-loss totals or sovereignty violations
+    - reconcile working tree against index to "prove" historical deltas
+    - archaeologize renames, cross-root moves, or unaccounted paths against old index state
+  must:
+    - treat Sovereign backups as the safety layer; git is for forward "worth keeping" claims
+    - begin version control at a fresh baseline with bounded manifests, not reconstruction
+
+baseline_forward_posture:
+  sovereign_ruling_date: "2026-08-03"
+  sovereign_ruling_verbatim: >-
+    im the one telling you there is nothing to worry about. because i am the one who moved the
+    folders. I am the one who backed it all up. And you would be checking against a much much much
+    older state of ION as i havnt saved it to git in a long time, youd be checking on an old version
+    of ION anyways. there isnt any point its a waste of time and tokens. because if anything is
+    gone, it simply doesnt even matter, its not retrievable and likely not important.
+  enactment: >-
+    Version control begins at a fresh baseline. Never reconcile or archaeologize history.
+    No manifest of historical deltas, no unaccounted-for hunts, no rename reconstruction.
+
+relationship_owners:
+  commit_boundary_execution:
+    owner_domain_id: domain.artifact_provenance_and_gate_legitimacy
+    scope: tier classification, exact manifest, pre-commit gate verdict receipts
+  repository_identity_and_branch_fabric:
+    owner_domain_id: domain.github_repository_platform_governance
+    future_dedicated_fabric_activation_route:
+      owner_domain_id: domain.domain_mitosis_and_agent_society_formation
+      phantom_id_do_not_invoke: domain.context_graph_branch_fabric
+      activation_when: >-
+        Necessity evidence only: ratified multi-root repo registry, enforced branch naming
+        consumed by automation, merge-base receipts blocking commits — then bounded domain
+        birth packet, not workpack execution against a non-invocable id.
+    scope: canonical repo root registry, branch naming, successor branch read models, archive tag intent
+  accepted_merge_and_remote_truth:
+    owner_domain_id: domain.state_rank_and_receipt_truth
+    scope: when remote HEAD becomes accepted truth
+  platform_surface:
+    owner_domain_id: domain.github_repository_platform_governance
+    scope: this law, GitHub read models, branch protection proposals, publish posture
+
+commit_worthiness_law:
+  definition: >-
+    A git commit is a public claim that the staged delta is worth keeping: owned,
+    verified, bounded, and intentional — not merely present on disk.
+  may_commit_when_all:
+    - bounded_workpack_or_packet_id names the commit intent and rollback path
+    - every staged path has owner_domain_id and reason in a commit-boundary manifest
+    - working-tree tier classification excludes T5/T6 stale-or-quarantine unless explicit carry receipt
+    - domain.artifact_provenance_and_gate_legitimacy pre-commit gate stack passes (see secrets_precondition)
+    - baseline-forward posture: commit asserts chosen forward state, not reconciliation with stale index
+    - no mass snapshot of unreviewed tree state (forbidden default)
+  must_not_commit_when_any:
+    - material is stale, unowned, unverified, or candidate-only without explicit carry decision
+    - change is only git index noise from cross-root moves without forward baseline intent
+    - intent is backup, fear-of-loss, or "sync everything" without manifest
+    - intent is historical reconciliation, reorg archaeology, or index-vs-disk delta hunting
+    - secrets scan not complete or BLOCKED_SECRET_RISK
+    - sovereign has not escalated when commit would assert production or registry promotion
+
+commit_classes:
+  sovereign_ruling_date: "2026-08-03"
+  sovereign_ruling_verbatim: >-
+    we may indeed need to get the project saved to git state for safety during work, but with
+    understanding the git is only a quarantine branch not production branch and that its there to be
+    cleaned and organized from.
+  classes:
+    production_governance_commit:
+      claim: WORTH
+      definition: >-
+        A public claim that the staged delta is worth keeping: owned, verified, bounded, and
+        intentional. All rules under commit_worthiness_law apply unchanged.
+      requirements:
+        - every staged path has owner_domain_id and reason in a commit-boundary manifest
+        - bounded manifest (first governance commit ≤30 paths per PCKT-VCTL-03)
+        - gate.git_snapshot.secret_scan pass before git add
+        - baseline-forward posture; not a reconciliation or archaeology commit
+      branch_posture: >-
+        Successor mainline branches (for example aether/ion-development-mainline-2026-08) carry
+        production/governance commits only.
+    quarantine_snapshot_commit:
+      claim: POSITION
+      definition: >-
+        A public claim of where the tree stood before a move or clean-up — explicitly NOT a
+        quality, ownership, or endorsement claim. Same doctrine as kernel retrieval quarantine
+        (ION/05_context/current/kernel_production/KERNEL_RETRIEVAL_AND_QUARANTINE_DOCTRINE.candidate.yaml):
+        non-destructive preservation to clean FROM.
+      requirements:
+        - sovereign or bounded workpack explicitly authorizes snapshot intent (restore point)
+        - gate.git_snapshot.secret_scan pass before git add; credential-like paths refused
+        - branch name MUST begin with quarantine/ and include date or packet id at a glance
+        - commit message MUST state uncurated pre-work snapshot; MUST NOT be read as endorsement
+        - may contain unowned, stale, and candidate-only material by design
+        - local commit default; push requires separate push authorization receipt
+      forbidden_uses:
+        - base for production work or merge-base implying worth inheritance
+        - registry promotion or accepted-state claims
+        - substitute for Sovereign backups
+      enforcement_and_witness:
+        - branch prefix quarantine/ blocks mistaken mainline merges via naming + OPERATING_CARD review
+        - production successor branches documented in branch_posture must not list quarantine/* as parent
+        - merge-base receipts (PCKT-VCTL-02) must record cutover from quarantine read-only, not descent
+        - commit message template includes literal QUARANTINE SNAPSHOT and not-endorsement clause
+        - remote branch protection proposals (platform_surface) may deny push from quarantine/* without receipt
+      relationship_to_commit_worthiness_law: >-
+        quarantine_snapshot_commit is the sole exception to must_not_commit mass snapshot and
+        unowned-material rules when sovereign-authorized restore-point intent is recorded.
+
+sovereign_never_touches_git:
+  law: >-
+    Git operations (status interpretation, staging, commit, branch, merge, push, remote
+    repair) are agent/domain work under this governance stack — never the Sovereign's job.
+  defect_definition: >-
+    Any workflow, UI, or instruction that asks Braden to resolve merge conflicts, pick
+    branches, run add/commit/push, or interpret mass deletions is a defect in
+    domain.github_repository_platform_governance and its peer domains — route to a bounded
+    workpack with a delivery receipt instead.
+  operator_surface: >-
+    The Sovereign may approve or refuse packets; he does not execute git.
+
+repo_boundary_ruling:
+  canonical_ion_development_root:
+    path: /home/sev/ION - Production/ION_Developement
+    evidence:
+      - pyproject.toml and ION/REPO_AUTHORITY.md co-located (ION shell root law)
+      - git rev-parse toplevel matches this path (verified 2026-08-03)
+    remote: https://github.com/ION-operations/ION-Production.git
+  parent_workspace_root:
+    path: /home/sev/ION - Production
+    role: >-
+      Cursor workspace host; may hold sibling artifacts (.github/workflows) that moved
+      UP out of ION_Developement. Not a substitute git identity without explicit registry entry.
+  home_sev_repo:
+    path: /home/sev
+    status: overlapping_accidental_repo
+    gitignore_line_4: "*"
+    ruling: >-
+      AGENTS.md forbids using /home/sev as project git root. Treat as safety-blocked
+      witness repo: do not stage ION work through it. Recommend (not enact): archive or
+      detach .git at /home/sev after branch-fabric documents where historical commits live.
+  spanning_two_directories:
+    handling: >-
+      When live tree spans ION_Developement + parent ION - Production (and worktrees under
+      .ion_worktrees/), git in ION_Developement alone cannot see out-of-repo destinations.
+      Do not reconcile historical cross-root moves against git index. Forward commits use
+      bounded manifests of paths intentionally kept in-repo only.
+
+index_witness_note:
+  symptom: >-
+    git may report mass deletions when folders moved outside the repo or to sibling roots;
+    sample witnesses include workflows relocated to parent .github and AIM-OS under worktrees.
+  interpretation_law: >-
+    Under git_index_stale_witness_law these counts are stale index witnesses, not deletion
+    truth or loss totals. Do not block forward baseline work on completing historical reorg maps.
+  metrics_witness_2026_08_03:
+    short_status_lines: 20644
+    deleted_lines: 18915
+    untracked: 1479
+    modified: 250
+    note: counts are git path index witnesses only; superseded reorg-manifest workpack killed by Sovereign 2026-08-03
+
+branch_posture:
+  current_branch: codex/ion-custom-gpt-front-door-carrier-v4
+  era: CODEX-era carrier branch; Codex seats retired per operator_seat law
+  recommend_successor:
+    name: aether/ion-development-mainline-2026-08
+    basis: post-Sovereign AETHER_OPERATOR seat; Domain Fleet / composer+grok budget era
+  history_preservation:
+    - keep codex/ion-custom-gpt-front-door-carrier-v4 read-only on remote until cutover packet
+    - document merge-base and successor cutover in PCKT-VCTL-02 (domain.github_repository_platform_governance)
+    - tag remote pointer codex-era-archive-2026-08 for optional archaeology (domain.research_archaeology_and_past_system_intelligence)
+  enactment: none in this artifact — branch-fabric workpack only
+
+secrets_precondition:
+  gate_id: gate.git_snapshot.secret_scan
+  spec_reference: ION/05_context/current/repository_governance/GIT_SNAPSHOT_PRECOMMIT_GATE.template.candidate.yaml
+  owner_execution: domain.artifact_provenance_and_gate_legitimacy
+  required_before: [git add, git commit, git push]
+  engines:
+    - gitleaks protect --redact --no-banner
+    - detect-secrets scan with custom config
+    - filename_and_path block rules (ION_VAULT_LOCAL, .env, credential-like basenames)
+  fail_verdict: BLOCKED_SECRET_RISK
+  push_law: >-
+    Remote https://github.com/ION-operations/ION-Production.git is publishing; push equals
+    public distribution. Push requires secret scan pass plus push authorization receipt —
+    never automatic.
+
+superseded_workpacks:
+  - workpack_id: PCKT-VCTL-01-REPO-BOUNDARY-AND-REORG-MANIFEST
+    status: superseded_by_sovereign_ruling
+    sovereign_ruling_date: "2026-08-03"
+    sovereign_ruling_verbatim: >-
+      im the one telling you there is nothing to worry about. because i am the one who moved the
+      folders. I am the one who backed it all up. And you would be checking against a much much much
+      older state of ION as i havnt saved it to git in a long time, youd be checking on an old version
+      of ION anyways. there isnt any point its a waste of time and tokens. because if anything is
+      gone, it simply doesnt even matter, its not retrievable and likely not important.
+    do_not_reconstruct: true
+    replacement_posture: baseline_forward_posture and git_index_stale_witness_law
+
+first_workpacks_when_permitted:
+  - workpack_id: PCKT-VCTL-02-BRANCH-FABRIC-SUCCESSOR-PROPOSAL
+    order: 1
+    owner: domain.github_repository_platform_governance
+    route_resolution: PCKT-VCTL-02-WP2-ROUTE_RESOLUTION.candidate.md
+    peers:
+      - domain.research_archaeology_and_past_system_intelligence
+      - domain.state_rank_and_receipt_truth
+    mitosis_escalation_if_dedicated_branch_fabric_needed: domain.domain_mitosis_and_agent_society_formation
+    bounded_scope: >-
+      Document merge-base, successor branch name, archive tag plan; no checkout forced on operator.
+      First lawful action after baseline-forward ruling — no historical reorg manifest.
+    reversible: candidate docs only
+    would_commit: >-
+      Single commit on successor branch once gates pass: branch-fabric orientation YAML +
+      VERSION_CONTROL_LAW.candidate.yaml sibling — records chosen identity without staging
+      mass index-noise paths.
+    why_worth_keeping: >-
+      Future agents get one lawful branch name and archive pointer instead of Codex-era confusion.
+  - workpack_id: PCKT-VCTL-03-FIRST-BOUNDED-GOVERNANCE-COMMIT
+    order: 2
+    owner: domain.artifact_provenance_and_gate_legitimacy
+    peers: [domain.github_repository_platform_governance, domain.state_rank_and_receipt_truth]
+    bounded_scope: >-
+      Exact manifest ≤30 paths: VERSION_CONTROL_LAW, DOMAIN_CURSOR_CLI_RETURN, repository_governance
+      read models — after GATE-SECRET-SCAN and provenance manifest integrity. No reorg manifest
+      prerequisite.
+    reversible: revert commit or reset branch per rollback receipt template
+    would_commit: only manifest-listed governance artifacts; every staged path carries owner_domain_id + reason
+    why_worth_keeping: >-
+      First remote publish that asserts judgment ("what we keep") rather than accidental full-tree chaos.

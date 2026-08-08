@@ -1,0 +1,134 @@
+schema_id: ion.reorganization_manifest.v0_1_candidate
+domain_id: domain.github_repository_platform_governance
+workpack_id: PCKT-VCTL-01-REPO-BOUNDARY-AND-REORG-MANIFEST
+status: candidate_only
+materialized_at: "2026-08-03T13:15:00Z"
+repo_root: /home/sev/ION - Production/ION_Developement
+branch_witness: codex/ion-custom-gpt-front-door-carrier-v4
+remote_witness: https://github.com/ION-operations/ION-Production.git
+git_status_witness:
+  short_status_lines: 20644
+  deleted_paths: 18915
+  untracked_paths: 1479
+  modified_paths: 250
+inspection_law: read_only; no git mutation; unlocated paths marked unaccounted_for only
+
+sovereign_summary: >-
+  Of 18,915 git "deletions", 18,727 paths were verified as moves (content found at a
+  documented destination). 188 paths are unaccounted_for on disk (157 under Needs_Routed/,
+  14 stale ION_Developement/ continuation+codex_cli bundles, 8 quarentine/, 9 misc including
+  corrupted index quoting and one missing .codex hook). Nothing in the verified-move set
+  appears lost; risk is committing without this manifest would freeze 188 paths as intentional
+  deletions and erase Needs_Routed intake material from the working tree narrative.
+
+headline_counts:
+  verified_moves: 18727
+  unaccounted_for: 188
+  genuinely_gone_assumed: 0
+  at_risk_if_committed_without_manifest: 188
+
+move_groups:
+  - group_id: aim_os_governance_snapshot_worktree
+    verdict: moved_outside_repo
+    source_prefix: AIM-OS/
+    path_count: 11844
+    destination_absolute: /home/sev/ION - Production/.ion_worktrees/governance-snapshot-wave0-20260725/AIM-OS
+    verification:
+      command: test -d DESTINATION && find DESTINATION -type f | wc -l
+      exit_ok: true
+      destination_file_count: 11846
+      sample: test -f DESTINATION/.agent/AIMOS_MASTER_SYSTEM_INDEX.md
+    disposition: moved_outside_repo
+    unaccounted_within_group: 0
+
+  - group_id: ion_gpt_governance_snapshot_worktree
+    verdict: moved_outside_repo
+    source_prefix: ION_GPT/
+    path_count: 193
+    destination_absolute: /home/sev/ION - Production/.ion_worktrees/governance-snapshot-wave0-20260725/ION_GPT
+    verification:
+      command: test -f DESTINATION/.ionignore
+      exit_ok: true
+      sample: test -f DESTINATION/01_GPT_BUILDER_INPUTS/README.md
+    disposition: moved_outside_repo
+    unaccounted_within_group: 0
+
+  - group_id: ion_developement_nested_prefix_strip
+    verdict: moved
+    source_prefix: ION_Developement/
+    path_count: 6703
+    destination_note: >-
+      Historical index tracked ION_Developement/* inside the repo whose toplevel is now
+      ION_Developement; content lives at repo-relative paths with prefix stripped.
+    destination_repo_root: /home/sev/ION - Production/ION_Developement
+    verification:
+      command: test -e REPO_ROOT/${path#ION_Developement/}
+      sample_verified: 6689
+      sample_unaccounted: 14
+    disposition: renamed_in_repo
+    unaccounted_within_group: 14
+    unaccounted_sample_paths:
+      - ION_Developement/ION/05_context/continuation_bundles/GPT55_SELF_MOUNT_V34_SUCCESSOR_HANDOFF.md
+      - ION_Developement/ION/05_context/continuation_bundles/bootstrap_vm_continuation/00_source_packet.md
+      - ION_Developement/ION/05_context/current/codex_cli/CODEX_CAPSULE_CHAT_APP_UI_ORCHESTRATION_20260507.md
+
+  - group_id: parent_github_workflow_lift
+    verdict: moved_outside_repo
+    source_paths:
+      - .github/workflows/ion-kernel-ci.yml
+    path_count: 1
+    destination_absolute: /home/sev/ION - Production/.github/workflows/ion-kernel-ci.yml
+    verification:
+      command: test -f DESTINATION
+      exit_ok: true
+    disposition: moved_outside_repo
+    unaccounted_within_group: 0
+
+  - group_id: needs_routed_lane
+    verdict: unaccounted_for
+    source_prefix: Needs_Routed/
+    path_count: 157
+    destination_checked:
+      - /home/sev/ION - Production/ION_Developement/Needs_Routed
+    verification:
+      command: test -f REPO_ROOT/$path per deleted path
+      exit_ok: false
+      note: Needs_Routed directory exists but listed files absent from working tree
+    disposition: unaccounted_for
+    unaccounted_within_group: 157
+    recovery_hint: git history or backup; do not assume moved without receipt
+
+  - group_id: quarentine_lane
+    verdict: unaccounted_for
+    source_prefix: quarentine/
+    path_count: 8
+    verification:
+      command: test -e REPO_ROOT/$path
+      exit_ok: false
+    disposition: unaccounted_for
+    unaccounted_within_group: 8
+
+  - group_id: misc_legacy_index
+    verdict: mixed
+    path_count: 9
+    entries:
+      - path: .codex/hooks/ion_parent_session_start_context.py
+        verdict: unaccounted_for
+        note: not present at repo root; not located in governance worktrees
+      - path: '"AIM-OS/docs/THE SOVEREIGN CONTEXT MAPPER.txt"'
+        verdict: moved_outside_repo
+        note: git index quoting artifact; content at AIM-OS worktree docs/THE SOVEREIGN CONTEXT MAPPER.txt
+        destination_absolute: /home/sev/ION - Production/.ion_worktrees/governance-snapshot-wave0-20260725/AIM-OS/docs/THE SOVEREIGN CONTEXT MAPPER.txt
+      - path: browser_extension/EXTENSION.zip
+        verdict: unaccounted_for
+    unaccounted_within_group: 6
+
+wp2_route_resolution_ref: >-
+  PCKT-VCTL-02-BRANCH-FABRIC-SUCCESSOR-PROPOSAL owner corrected in
+  PCKT-VCTL-02-WP2-ROUTE_RESOLUTION.candidate.md and VERSION_CONTROL_LAW.candidate.yaml
+  (domain.context_graph_branch_fabric is not invocable per --list-domains 2026-08-03).
+
+non_claims:
+  - candidate_only
+  - no_git_writes
+  - no_registry_promotion

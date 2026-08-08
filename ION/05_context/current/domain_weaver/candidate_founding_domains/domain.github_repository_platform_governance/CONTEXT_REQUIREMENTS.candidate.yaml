@@ -1,0 +1,28 @@
+schema_id: ion.domain.context_requirements.v0_2_candidate
+domain_id: domain.github_repository_platform_governance
+packet_id: PCKT-ION-LEAD-ORCHESTRATION-GITHUB-PLATFORM-DOMAIN-CANDIDATE-ACTIVATION-20260725
+posture: candidate_only
+materialized_at: "2026-07-26T00:03:00Z"
+folder_local_capsule_required: true
+active_context_package_required: true
+shared_codex_solo_is_fallback_only: true
+mount_currentness_check_required: true
+stale_or_missing_context_blocks_worker_credit: true
+context_proof_return_gate_required: true
+no_mini_capsule_primary_authority: true
+
+required_reads:
+  - candidate_founding_domains/domain.github_repository_platform_governance/domain.github_repository_platform_governance.domain.candidate.yaml
+  - candidate_founding_domains/domain.github_repository_platform_governance/OPERATING_CARD.candidate.md
+  - candidate_founding_domains/domain.github_repository_platform_governance/DOMAIN_RELATIONSHIPS.candidate.yaml
+  - candidate_founding_domains/domain.github_repository_platform_governance/CONTEXT_REQUIREMENTS.candidate.yaml
+  - candidate_founding_domains/domain.domain_mitosis_and_agent_society_formation/evolution_packets/PCKT-GITHUB-REPOSITORY-GOVERNANCE-DOMAIN-ASSEMBLY-20260725_DECISION.candidate.yaml
+
+return_surface: ION/05_context/current/domain_weaver/domain_self_audit/returns/domain.github_repository_platform_governance/
+
+non_claims:
+  - no_registry_promotion
+  - no_accepted_state
+  - no_projection_mutation
+  - no_git_mutation
+  - no_github_mutation
