@@ -63,6 +63,7 @@ from .ion_carrier_failure_signal_classification import (
 )
 from .ion_cli_model_selection import (
     execution_models_for_carrier,
+    execution_tier_fields_for_admission,
     is_experimental_model,
     is_operator_approved_model,
     is_usage_limit_failure,
@@ -1976,6 +1977,13 @@ def _build_prompt_spawn_admission(
         "operator_routing_override_attested": operator_routing_override_attested,
         "advisory_economics_governed": economics_governed,
         "explicit_premium_model": bool(intent.get("explicit_premium_model")),
+        **execution_tier_fields_for_admission(
+            carrier_id,
+            model,
+            shell_root=ion_root,
+            operation_mode=str(intent.get("operation_mode") or "").strip() or None,
+            work_class=work_class or None,
+        ),
         "advisory_economics_binding_sha256": None,
         "economics_database_path": (
             str(intent.get("economics_database_path") or "").strip() or None
@@ -3312,6 +3320,18 @@ def _execute_prompt_spawn_once_impl(
         work_class=str(intent.get("work_class") or "") or None,
     )
     carrier_id = str(carrier_resolution.get("carrier_id") or "cursor_cli")
+    if carrier_resolution.get("carrier_settings_pause"):
+        return {
+            "schema_id": SCHEMA_ID,
+            "ok": True,
+            "result": "PENDING",
+            "finding": carrier_resolution.get("carrier_settings_finding")
+            or "all_carriers_unavailable_by_operator_settings",
+            "carrier_resolution": carrier_resolution,
+            "artifact_writes": False,
+            "production_authority": False,
+            "live_execution_authority": False,
+        }
     if carrier_resolution.get("policy_blocked"):
         return {
             "schema_id": SCHEMA_ID,

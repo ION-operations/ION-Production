@@ -1255,6 +1255,9 @@ def run_absence_probe(
     unattended_premium_sos = probe_unattended_premium_sos_spawn_absence(shell)
     sovereign_spawn_models = probe_spawn_model_outside_sovereign_allowlist(shell)
     judgment_admission_streak = probe_judgment_work_class_spawn_admission_streak(shell)
+    from kernel.ion_cli_carrier_settings import probe_carrier_settings_absence
+
+    carrier_settings_absence = probe_carrier_settings_absence(shell, write=write)
 
     checks = {
         "systemd_user_unit_failed": systemd,
@@ -1273,6 +1276,7 @@ def run_absence_probe(
         "unattended_premium_sos_spawn_economics": unattended_premium_sos,
         "judgment_work_class_spawn_admission_streak": judgment_admission_streak,
         "spawn_model_outside_sovereign_allowlist": sovereign_spawn_models,
+        "carrier_settings_surface": carrier_settings_absence,
         "absence_surface_freshness_prior": meta_before,
     }
 

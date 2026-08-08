@@ -1,0 +1,55 @@
+schema_id: ion.commit_boundary_manifest.v0_1_candidate
+manifest_id: CBM-RECEIPTED-DELTA-20260808-BATCH3-CARRIER-SETTINGS
+packet_id: PCKT-COMMIT-BOUNDARY-20260808-BATCH3-CARRIER-SETTINGS
+owner_domain_id: domain.artifact_provenance_and_gate_legitimacy
+peer_domain_ids:
+- domain.runtime_carrier_and_action_admission
+materialized_at: '2026-08-08T16:12:00Z'
+status: candidate_ready
+authority: candidate_only
+baseline_forward_posture: true
+commit_class: production_governance_commit
+include_paths:
+- path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.artifact_provenance_and_gate_legitimacy/commit_boundary/COMMIT_BOUNDARY_MANIFEST_20260808_BATCH3_CARRIER_SETTINGS.candidate.yaml
+  tier: T1
+  owner_domain_id: domain.artifact_provenance_and_gate_legitimacy
+  reason: batch-3 carrier settings manifest self-binding
+- path: ION/05_context/current/carrier_settings/CARRIER_SETTINGS.candidate.json
+  tier: T1
+  owner_domain_id: domain.runtime_carrier_and_action_admission
+  reason: run xlx4yfga carrier settings surface 20260808
+- path: ION/04_packages/kernel/ion_cli_carrier_settings.py
+  tier: T1
+  owner_domain_id: domain.runtime_carrier_and_action_admission
+  reason: run xlx4yfga read write API 20260808
+- path: ION/04_packages/kernel/ion_prompt_spawn_carrier_routing.py
+  tier: T1
+  owner_domain_id: domain.runtime_carrier_and_action_admission
+  reason: run xlx4yfga selection gating 20260808
+- path: ION/04_packages/kernel/ion_prompt_spawn_executor.py
+  tier: T1
+  owner_domain_id: domain.runtime_carrier_and_action_admission
+  reason: runs xlx4yfga z1p7l07e shared executor integration 20260808
+- path: ION/04_packages/kernel/ion_runtime_absence_probe.py
+  tier: T1
+  owner_domain_id: domain.runtime_carrier_and_action_admission
+  reason: run xlx4yfga carrier settings absence hook 20260808
+- path: ION/tests/test_kernel_ion_cli_carrier_settings.py
+  tier: T1
+  owner_domain_id: domain.runtime_carrier_and_action_admission
+  reason: run xlx4yfga five unit tests 20260808
+explicit_excludes:
+- pattern: porcelain_class:deleted
+  tier: T6
+  reason: no deletion staging
+pre_commit_gates:
+- gate_id: gate.git_snapshot.secret_scan
+  required_verdict: PASS
+- gate_id: gate.commit_boundary.deletion_zero
+  required_verdict: PASS
+- gate_id: gate.commit_boundary.manifest_allowlist
+  required_verdict: PASS
+non_claims:
+- candidate_only
+- no_push
+- no_registry_promotion
