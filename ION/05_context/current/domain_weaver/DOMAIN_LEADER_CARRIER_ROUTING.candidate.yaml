@@ -1,0 +1,333 @@
+schema_id: ion.domain_leader_carrier_routing.v0_7_candidate
+posture: candidate_only
+updated_at: '2026-07-23T03:25:00Z'
+operator_note: Model tiers decouple from CLI subscription limits. Any carrier offering
+  an equivalent model may serve a tier; cursor_cli is the universal-access lane for
+  leader-tier equivalents (rules/skills/hooks matched with ION). Carrier choice between
+  CLIs offering the same model uses infrastructure fit and health, not exclusive CLI
+  availability. Cross-carrier tier equivalents precede composer quality downgrade.
+  Codex CLI uses GPT-5.6 Sol with max reasoning for consequential lead work; Claude
+  CLI uses Opus 4.8 and Sonnet 5; Cursor CLI defaults remain Composer 2.5 and Composer
+  2.5 Fast. Sparse non-leader experiment roster (gemini, grok) stays explicit-request-only.
+  Ordinary in-chat Codex/GPT subagents are forbidden; execution uses bounded ION CLI
+  carriers.
+operator_law_verbatim: but codex/claude cli usage are irrelavent. cursor cli has all
+  of those models and more available. There should not be a claude usage it is a claude
+  CLI suage limit but there are other emans of access those same models. the only
+  things is insuring the CLI and their unique infastructure like rules/skills etc
+  are correctly matched with ION.
+model_access_law:
+  decouple_subscription_from_model_tier: true
+  cursor_cli_universal_access_lane: true
+  cross_carrier_equivalent_before_quality_downgrade: true
+  carrier_selection_basis:
+  - infrastructure_fit
+  - health
+  - availability
+  infrastructure_fit:
+    cursor_cli:
+    - cursor_rules
+    - cursor_skills
+    - cursor_hooks
+    - ion_carrier_mount
+    claude_cli:
+    - claude_cli_runner
+    - ion_mount
+    codex_cli:
+    - codex_agent_mount
+    - ion_mount
+default_carrier: cursor_cli
+leader_carrier: claude_cli
+universal_access_carrier: cursor_cli
+leader_domains:
+- domain.runtime_carrier_and_action_admission
+- domain.model_routing_and_reasoning_economics
+- domain.domain_weaver_living_self_model
+- domain.swarm_scale_scheduling_and_workload_economics
+- domain.context_systems
+- domain.durable_apply_and_substrate_custody
+- domain.state_rank_and_receipt_truth
+- domain.artifact_provenance_and_gate_legitimacy
+- domain.agent_communication_and_settlement
+- domain.honest_agency_validation
+selection_dynamics:
+  default_posture: availability_first
+  postures:
+    balanced:
+      weights:
+        quality: 0.4
+        speed: 0.3
+        cost: 0.2
+        availability: 0.1
+    speed_first:
+      weights:
+        quality: 0.2
+        speed: 0.5
+        cost: 0.1
+        availability: 0.2
+    cost_first:
+      weights:
+        quality: 0.2
+        speed: 0.2
+        cost: 0.5
+        availability: 0.1
+    availability_first:
+      weights:
+        quality: 0.2
+        speed: 0.2
+        cost: 0.1
+        availability: 0.5
+carrier_fallback_order:
+- claude_cli
+- cursor_cli
+- codex_cli
+cross_carrier_model_equivalents:
+  claude-opus-4-8:
+    cursor_cli: claude-opus-4-8-thinking-high
+  claude-sonnet-5:
+    cursor_cli: claude-sonnet-5-thinking-high
+  gpt-5.6-sol:
+    cursor_cli: gpt-5.6-sol-high
+leader_tier_cursor_models:
+  cursor_cli:
+    models:
+    - claude-opus-4-8-thinking-high
+    - claude-sonnet-5-thinking-high
+    - gpt-5.6-sol-high
+    fallback_eligible: true
+    read_only: false
+    explicit_only: false
+    routine_leader_work: true
+    infrastructure_fit_required: true
+model_downgrade_ladders:
+  claude_cli:
+  - claude-opus-4-8
+  - claude-sonnet-5
+  cursor_cli:
+  - composer-2.5-fast
+  - composer-2.5
+  codex_cli:
+  - gpt-5.6-sol
+  codex_app_server:
+  - gpt-5.6-sol
+experimental_exact_models:
+  cursor_cli:
+    explicit_only: true
+    explicit_work_class_required: true
+    default_routing: false
+    fallback_eligible: false
+    concurrency_limit: 1
+    read_only: true
+    cursor_mode: ask
+    models:
+    - gemini-3.1-pro
+    - cursor-grok-4.5-high
+  privacy_restricted:
+    models:
+    - claude-fable-5-thinking-high
+    reason: cursor_catalog_marks_no_zdr
+    required_future_lane: public_or_synthetic_data_only
+model_tiers:
+  codex_sol_max:
+    tier_id: codex_sol_max
+    carrier: codex_cli
+    model: gpt-5.6-sol
+    reasoning_effort: max
+    model_label: gpt-5.6-sol-consequential-lead
+    model_env: ION_CODEX_MODEL
+    cross_carrier_equivalents:
+      cursor_cli: gpt-5.6-sol-high
+    work_classes:
+    - consequential_lead
+    - architecture_design
+    - claim_audit
+    - adversarial_review
+    - high_risk_code_review
+    - production_readiness_validation
+    - state_machine_law
+    - model_routing
+    - domain_conflict_resolution
+    - important_review
+    - settlement_review
+    - red_alert
+    - action_native_mount
+    - authority_security
+    - authority
+    - security
+    - gpt_builder
+    - settlement
+    - branch_gateway_mount_equivalence
+    - operator_release_packaging
+    allowed_carriers:
+    - codex_cli
+    - claude_cli
+    - cursor_cli
+    domains:
+    - domain.runtime_carrier_and_action_admission
+    - domain.model_routing_and_reasoning_economics
+    - domain.domain_weaver_living_self_model
+    - domain.swarm_scale_scheduling_and_workload_economics
+    - domain.context_systems
+    - domain.durable_apply_and_substrate_custody
+    - domain.state_rank_and_receipt_truth
+    - domain.artifact_provenance_and_gate_legitimacy
+    - domain.agent_communication_and_settlement
+    - domain.honest_agency_validation
+  orchestration_opus:
+    tier_id: orchestration_opus
+    carrier: claude_cli
+    model: claude-opus-4-8
+    model_label: claude-opus-4.8-orchestration
+    model_env: ION_CLAUDE_ORCHESTRATION_MODEL
+    cross_carrier_equivalents:
+      cursor_cli: claude-opus-4-8-thinking-high
+    allowed_carriers:
+    - claude_cli
+    - cursor_cli
+    domains:
+    - domain.domain_weaver_living_self_model
+    - domain.swarm_scale_scheduling_and_workload_economics
+    - domain.context_systems
+  leader_sonnet:
+    tier_id: leader_sonnet
+    carrier: claude_cli
+    model: claude-sonnet-5
+    model_label: claude-sonnet-5-leaders
+    model_env: ION_CLAUDE_LEADER_MODEL
+    cross_carrier_equivalents:
+      cursor_cli: claude-sonnet-5-thinking-high
+    allowed_carriers:
+    - claude_cli
+    - cursor_cli
+    domains:
+    - domain.agent_communication_and_settlement
+    - domain.honest_agency_validation
+  general_composer:
+    tier_id: general_composer
+    carrier: cursor_cli
+    model: composer-2.5-fast
+    model_label: composer-2.5-fast-general-speed
+    model_env: ION_CURSOR_MODEL
+    allowed_carriers:
+    - cursor_cli
+    - claude_cli
+    default: true
+codex_cli:
+  binary: codex
+  model_env: ION_CODEX_MODEL
+  default_model: gpt-5.6-sol
+  default_reasoning_effort: max
+  timeout_seconds: 3600
+cursor_cli:
+  binary: cursor-agent
+  model_env: ION_CURSOR_MODEL
+  default_model: composer-2.5-fast
+claude_cli:
+  binary: claude
+  model_env: ION_CLAUDE_MODEL
+  default_model: claude-sonnet-5
+  orchestration_model: claude-opus-4-8
+  timeout_seconds: 3600
+  skip_permissions: false
+availability_windows:
+- window_id: PCKT-CURSOR-CLAUDE-BLACKOUT-CODEX-SOL-WINDOW-20260722
+  active: true
+  expires_at: '2026-07-24T22:00:00-04:00'
+  packet_ref: PCKT-CURSOR-CLAUDE-BLACKOUT-CODEX-SOL-WINDOW-20260722
+  reason: Cursor premium Claude models unavailable; Claude CLI weekly quota exhausted
+    until ~Jul 24 10pm America/Toronto. Auto parent relay-only; Composer-only on cursor_cli
+    for mechanical work.
+  blocked_model_patterns:
+    cursor_cli:
+    - claude-*
+  leader_tier_codex_redirect:
+    carrier: codex_cli
+    model: gpt-5.6-sol
+    reasoning_effort: max
+    when_leader_domain: true
+    composer_non_leader_only: true
+    applies_to_tiers:
+    - orchestration_opus
+    - leader_sonnet
+    - codex_sol_max
+    when_work_class_in:
+    - consequential_lead
+    - architecture_design
+    - claim_audit
+    - adversarial_review
+    - high_risk_code_review
+    - production_readiness_validation
+    - state_machine_law
+    - model_routing
+    - domain_conflict_resolution
+    - important_review
+    - settlement_review
+    - red_alert
+    - action_native_mount
+    - authority_security
+    - authority
+    - security
+    - gpt_builder
+    - settlement
+    - branch_gateway_mount_equivalence
+    - operator_release_packaging
+non_claims:
+- candidate_only
+- no_registry_promotion
+- no_accepted_state
+claude_cli_explicit_model_contract_r3:
+  status: candidate_explicit_opt_in_only
+  explicit_only_model_ids:
+  - claude-opus-5
+  - claude-fable-5
+  existing_defaults_and_automatic_ladders_unchanged:
+  - claude-sonnet-5
+  - claude-opus-4-8
+  forbidden_aliases:
+  - opus
+  - fable
+  - sonnet
+  - haiku
+  - opus-5
+  - fable-5
+  - claude-opus
+  - claude-fable
+  alias_rejection: alias_forbidden_requires_explicit_model_id
+  positive_max_budget_usd_required: true
+  budget_cap_mode: provider_posthoc
+  fail_closed_on_provider_reported_overrun: true
+  automatic_route_eligibility: false
+  production_authority: false
+  live_execution_authority: false
+  accepted_state_authority: false
+claude_cli_runtime_safety_contract_r4:
+  status: candidate_repair_unvalidated
+  finite_positive_budget_required: true
+  budget_cap_mode: provider_posthoc
+  pre_spend_hard_cap_enforced: false
+  top_level_model_usage_required: true
+  multi_model_provider_evidence_preserved: true
+  singular_resolution_requires_unique_provider_evidence: true
+  provider_error_fail_closed: true
+  missing_provider_cost_fail_closed_for_explicit_high_end: true
+  missing_provider_identity_fail_closed_for_explicit_high_end: true
+  output_persistence_requires_all_gates_pass: true
+  cumulative_ledger_implemented: false
+  atomic_budget_reservation_implemented: false
+  automatic_route_eligibility: false
+  tests_executed: false
+  production_authority: false
+  live_execution_authority: false
+  accepted_state_authority: false
+claude_cli_explicit_roster_separation_r5:
+  status: candidate_repair_unvalidated
+  explicit_model_ids:
+  - claude-opus-5
+  - claude-fable-5
+  included_in_general_approved_roster: false
+  eligible_for_automatic_ladders: false
+  alias_rejection_scope: global_pre_routing_fallback
+  tests_executed: false
+  production_authority: false
+  live_execution_authority: false
+  accepted_state_authority: false
