@@ -1,0 +1,124 @@
+schema_id: ion.commit_boundary_manifest.v0_1_candidate
+manifest_id: CBM-RECEIPTED-DELTA-20260808-BATCH2-KERNEL
+packet_id: PCKT-COMMIT-BOUNDARY-20260808-BATCH2-KERNEL
+owner_domain_id: domain.artifact_provenance_and_gate_legitimacy
+peer_domain_ids:
+- domain.github_repository_platform_governance
+materialized_at: '2026-08-08T15:10:00Z'
+status: candidate_ready
+authority: candidate_only
+baseline_forward_posture: true
+commit_class: production_governance_commit
+include_paths:
+- path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.artifact_provenance_and_gate_legitimacy/commit_boundary/COMMIT_BOUNDARY_MANIFEST_20260808_BATCH2_KERNEL.candidate.yaml
+  tier: T1
+  owner_domain_id: domain.artifact_provenance_and_gate_legitimacy
+  reason: batch-2 kernel manifest self-binding
+- path: ION/04_packages/kernel/ion_autonomous_loop.py
+  tier: T1
+  owner_domain_id: domain.kernel
+  reason: kernel loop CF12 steward reconciliation receipted 20260808 runs
+- path: ION/04_packages/kernel/ion_prompt_spawn_executor.py
+  tier: T1
+  owner_domain_id: domain.kernel
+  reason: kernel loop CF12 steward reconciliation receipted 20260808 runs
+- path: ION/04_packages/kernel/ion_cf12_directive_scope_expiry_admission_hook.py
+  tier: T1
+  owner_domain_id: domain.kernel
+  reason: kernel loop CF12 steward reconciliation receipted 20260808 runs
+- path: ION/04_packages/kernel/ion_sos_domain_spawn_queue_executor.py
+  tier: T1
+  owner_domain_id: domain.kernel
+  reason: kernel loop CF12 steward reconciliation receipted 20260808 runs
+- path: ION/04_packages/kernel/ion_steward_integrate.py
+  tier: T1
+  owner_domain_id: domain.kernel
+  reason: kernel loop CF12 steward reconciliation receipted 20260808 runs
+- path: ION/04_packages/kernel/ion_runtime_absence_probe.py
+  tier: T1
+  owner_domain_id: domain.kernel
+  reason: kernel loop CF12 steward reconciliation receipted 20260808 runs
+- path: ION/tests/test_kernel_ion_autonomous_loop.py
+  tier: T1
+  owner_domain_id: domain.kernel
+  reason: kernel loop CF12 steward reconciliation receipted 20260808 runs
+- path: ION/tests/test_kernel_ion_steward_integrate.py
+  tier: T1
+  owner_domain_id: domain.kernel
+  reason: kernel loop CF12 steward reconciliation receipted 20260808 runs
+- path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.local_worker_scheduling_and_autonomous_loop/tools/run_local_worker_absence_witness.candidate.py
+  tier: T1
+  owner_domain_id: domain.kernel
+  reason: kernel loop CF12 steward reconciliation receipted 20260808 runs
+- path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.local_worker_scheduling_and_autonomous_loop/DOMAIN_CURSOR_CLI_RETURN.candidate.yaml
+  tier: T1
+  owner_domain_id: domain.kernel
+  reason: kernel loop CF12 steward reconciliation receipted 20260808 runs
+- path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.operator_sovereignty_and_directive_admission/runtime/ion_cf12_directive_scope_expiry_admission_findings.candidate.py
+  tier: T1
+  owner_domain_id: domain.kernel
+  reason: kernel loop CF12 steward reconciliation receipted 20260808 runs
+- path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.operator_sovereignty_and_directive_admission/CF12_DIRECTIVE_SCOPE_EXPIRY_ABSENCE_DETECTOR.candidate.yaml
+  tier: T1
+  owner_domain_id: domain.kernel
+  reason: kernel loop CF12 steward reconciliation receipted 20260808 runs
+- path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.operator_sovereignty_and_directive_admission/fixtures/directive_scoped_fixture.candidate.json
+  tier: T1
+  owner_domain_id: domain.kernel
+  reason: kernel loop CF12 steward reconciliation receipted 20260808 runs
+- path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.operator_sovereignty_and_directive_admission/fixtures/directive_unscoped_fixture.candidate.json
+  tier: T1
+  owner_domain_id: domain.kernel
+  reason: kernel loop CF12 steward reconciliation receipted 20260808 runs
+- path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.operator_sovereignty_and_directive_admission/tests/test_cf12_directive_scope_expiry_admission_findings.candidate.py
+  tier: T1
+  owner_domain_id: domain.kernel
+  reason: kernel loop CF12 steward reconciliation receipted 20260808 runs
+- path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.operator_sovereignty_and_directive_admission/receipts/CF12_FINDINGS_ONLY_ADMISSION_CHECK_20260808.candidate.yaml
+  tier: T1
+  owner_domain_id: domain.kernel
+  reason: kernel loop CF12 steward reconciliation receipted 20260808 runs
+- path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.operator_sovereignty_and_directive_admission/CF12_DIRECTIVE_SCOPE_EXPIRY_LAST_SUMMARY.candidate.json
+  tier: T1
+  owner_domain_id: domain.kernel
+  reason: kernel loop CF12 steward reconciliation receipted 20260808 runs
+- path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.operator_sovereignty_and_directive_admission/CF12_DIRECTIVE_SCOPE_EXPIRY_FINDINGS_LEDGER.candidate.jsonl
+  tier: T1
+  owner_domain_id: domain.kernel
+  reason: kernel loop CF12 steward reconciliation receipted 20260808 runs
+- path: quarentine/witness/steward_integration_oversized_receipt_20260808T134537Z/QUARANTINE_WITNESS_MANIFEST.candidate.yaml
+  tier: T1
+  owner_domain_id: domain.kernel
+  reason: kernel loop CF12 steward reconciliation receipted 20260808 runs
+- path: quarentine/witness/steward_integration_oversized_receipt_20260808T134537Z/promotion_chain_human_gate_clear_retirement_20260808_step_04_steward_integration.full.json
+  tier: T1
+  owner_domain_id: domain.kernel
+  reason: kernel loop CF12 steward reconciliation receipted 20260808 runs
+- path: ION/05_context/current/steward_integrations/promotion_chain_human_gate_clear_retirement_20260808_step_04_steward_integration.json
+  tier: T1
+  owner_domain_id: domain.kernel
+  reason: kernel loop CF12 steward reconciliation receipted 20260808 runs
+explicit_excludes:
+- pattern: ION/05_context/current/ACTIVE_*.json
+  tier: T2
+  reason: generated runtime active state
+- pattern: ION/05_context/current/autonomous_goals/wakeup_receipts/**
+  tier: T2
+  reason: scheduler churn excluded
+- pattern: ION/05_context/current/domain_weaver/triad/absence_alarms/**
+  tier: T2
+  reason: absence alarm churn not in receipted batch-2 touched_paths
+- pattern: porcelain_class:deleted
+  tier: T6
+  reason: no deletion staging
+pre_commit_gates:
+- gate_id: gate.git_snapshot.secret_scan
+  required_verdict: PASS
+- gate_id: gate.commit_boundary.deletion_zero
+  required_verdict: PASS
+- gate_id: gate.commit_boundary.manifest_allowlist
+  required_verdict: PASS
+non_claims:
+- candidate_only
+- no_push
+- no_registry_promotion

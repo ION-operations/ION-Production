@@ -1,0 +1,36 @@
+domain_id: domain.local_worker_scheduling_and_autonomous_loop
+carrier_id: cursor_cli
+carrier_model: composer-2.5
+what_broke: >-
+  steward_integrate_return(write=True) unconditionally rejected every loop integration
+  (legacy_return_write_disabled_use_proof_bound_exact_subset_api); three activation
+  records were within 7-day expiry without successors on disk.
+context_lacks: >-
+  Proof-bound exact-subset steward path for non-local-worker carrier returns remains
+  separate; detached pilot completion evidence for expiry_satisfaction_condition (2) still absent.
+repair_recommends: >-
+  Run kernel.ion_autonomous_loop --write after deploy; keep ion_runtime_absence_probe
+  activation_successor_missing findings and local_worker absence witness loop-write probe green;
+  route detached pilot completion to domain.runtime_carrier_and_action_admission when ready.
+successor_activation_records:
+  - path: ION/05_context/current/autonomous_goals/ACTIVATION_RECORD_HEALTH_TICK_20260808.candidate.json
+    expires_at: "2026-08-15T15:30:00Z"
+  - path: ION/05_context/current/autonomous_goals/detached_worker_candidate/ACTIVATION_RECORD_GOAL_ION_SELF_OPERATING_DETACHED_20260808.candidate.json
+    expires_at: "2026-08-15T19:35:00Z"
+  - path: ION/05_context/current/autonomous_goals/ACTIVATION_RECORD_ABSENCE_SIGNAL.candidate.json
+    expires_at: "2026-08-15T15:30:00Z"
+loop_proof:
+  status: PASS
+  steps_integrated: 1
+  cycle_id: v101_ion_self_operating_autonomous_loop_activation_2026-08-08T122015z0000
+kernel_changes:
+  - ION/04_packages/kernel/ion_steward_integrate.py
+  - ION/04_packages/kernel/ion_runtime_absence_probe.py
+absence_detector:
+  - ION/04_packages/kernel/ion_runtime_absence_probe.py activation_successor_missing
+  - domain tools/run_local_worker_absence_witness.candidate.py local_autonomous_loop_steward_write_path probe
+non_claims:
+  - candidate_only
+  - no_registry_promotion
+  - no_accepted_state
+  - no_git_push

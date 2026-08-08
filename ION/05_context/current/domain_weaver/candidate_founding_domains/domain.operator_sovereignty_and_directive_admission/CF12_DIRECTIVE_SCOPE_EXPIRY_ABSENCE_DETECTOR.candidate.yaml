@@ -1,0 +1,38 @@
+schema_id: ion.cf12_directive_scope_expiry_absence_detector.v0_1_candidate
+domain_id: domain.operator_sovereignty_and_directive_admission
+fundamental_id: CF-12
+status: candidate_only
+created_at: '2026-08-08T14:45:00Z'
+
+probe_id: P_CF12_DIRECTIVE_SCOPE_EXPIRY_ADMISSION_FINDINGS_STALE
+verdict_class: absence_present_when_summary_stale
+
+summary_artifact: >-
+  ION/05_context/current/domain_weaver/candidate_founding_domains/
+  domain.operator_sovereignty_and_directive_admission/
+  CF12_DIRECTIVE_SCOPE_EXPIRY_LAST_SUMMARY.candidate.json
+
+ledger_artifact: >-
+  ION/05_context/current/domain_weaver/candidate_founding_domains/
+  domain.operator_sovereignty_and_directive_admission/
+  CF12_DIRECTIVE_SCOPE_EXPIRY_FINDINGS_LEDGER.candidate.jsonl
+
+witness_module: >-
+  candidate_founding_domains/domain.operator_sovereignty_and_directive_admission/
+  runtime/ion_cf12_directive_scope_expiry_admission_findings.candidate.py
+
+admission_surfaces:
+  - prompt_spawn_intent via kernel.ion_prompt_spawn_executor
+  - durable_queue_row via kernel.ion_sos_domain_spawn_queue_executor
+
+cadence: on_each_admission_assessment_and_periodic_absence_read
+
+max_staleness_seconds: 172800
+
+on_absence_present:
+  - emit_finding_rows_to_ledger
+  - set_summary_absence_present_true
+  - route_to_domain.operator_sovereignty_and_directive_admission
+
+non_blocking: true
+never_global_blocker: true
