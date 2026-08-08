@@ -1,0 +1,60 @@
+schema_id: ion.commit_boundary_manifest.v0_1_candidate
+manifest_id: CBM-RECEIPTED-DELTA-20260808-BATCH2-ACTIVATION
+packet_id: PCKT-COMMIT-BOUNDARY-20260808-BATCH2-ACTIVATION
+owner_domain_id: domain.artifact_provenance_and_gate_legitimacy
+peer_domain_ids:
+- domain.github_repository_platform_governance
+materialized_at: '2026-08-08T15:10:00Z'
+status: candidate_ready
+authority: candidate_only
+baseline_forward_posture: true
+commit_class: production_governance_commit
+include_paths:
+- path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.artifact_provenance_and_gate_legitimacy/commit_boundary/COMMIT_BOUNDARY_MANIFEST_20260808_BATCH2_ACTIVATION.candidate.yaml
+  tier: T1
+  owner_domain_id: domain.artifact_provenance_and_gate_legitimacy
+  reason: batch-2 activation manifest self-binding
+- path: ION/05_context/current/autonomous_goals/ACTIVATION_RECORD_HEALTH_TICK_20260808.candidate.json
+  tier: T1
+  owner_domain_id: domain.local_worker_scheduling_and_autonomous_loop
+  reason: activation records 20260808 run 1h9o5qr3 supersession chain
+- path: ION/05_context/current/autonomous_goals/detached_worker_candidate/ACTIVATION_RECORD_GOAL_ION_SELF_OPERATING_DETACHED_20260808.candidate.json
+  tier: T1
+  owner_domain_id: domain.local_worker_scheduling_and_autonomous_loop
+  reason: activation records 20260808 run 1h9o5qr3 supersession chain
+- path: ION/05_context/current/autonomous_goals/ACTIVATION_RECORD_HEALTH_TICK_20260804.candidate.json
+  tier: T1
+  owner_domain_id: domain.local_worker_scheduling_and_autonomous_loop
+  reason: activation records 20260808 run 1h9o5qr3 supersession chain
+- path: ION/05_context/current/autonomous_goals/detached_worker_candidate/ACTIVATION_RECORD_GOAL_ION_SELF_OPERATING_DETACHED_20260804.candidate.json
+  tier: T1
+  owner_domain_id: domain.local_worker_scheduling_and_autonomous_loop
+  reason: activation records 20260808 run 1h9o5qr3 supersession chain
+- path: ION/05_context/current/autonomous_goals/ACTIVATION_RECORD_ABSENCE_SIGNAL.candidate.json
+  tier: T1
+  owner_domain_id: domain.local_worker_scheduling_and_autonomous_loop
+  reason: activation records 20260808 run 1h9o5qr3 supersession chain
+explicit_excludes:
+- pattern: ION/05_context/current/ACTIVE_*.json
+  tier: T2
+  reason: generated runtime active state
+- pattern: ION/05_context/current/autonomous_goals/wakeup_receipts/**
+  tier: T2
+  reason: scheduler churn excluded
+- pattern: ION/05_context/current/domain_weaver/triad/absence_alarms/**
+  tier: T2
+  reason: absence alarm churn not in receipted batch-2 touched_paths
+- pattern: porcelain_class:deleted
+  tier: T6
+  reason: no deletion staging
+pre_commit_gates:
+- gate_id: gate.git_snapshot.secret_scan
+  required_verdict: PASS
+- gate_id: gate.commit_boundary.deletion_zero
+  required_verdict: PASS
+- gate_id: gate.commit_boundary.manifest_allowlist
+  required_verdict: PASS
+non_claims:
+- candidate_only
+- no_push
+- no_registry_promotion

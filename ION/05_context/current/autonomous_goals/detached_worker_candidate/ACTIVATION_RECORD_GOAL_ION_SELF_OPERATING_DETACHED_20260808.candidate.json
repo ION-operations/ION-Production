@@ -1,0 +1,61 @@
+{
+  "schema_id": "ion.autonomous_goals.activation_record.v0_1_candidate",
+  "activation_record_id": "ACTIVATION-ION-SELF-OPERATING-DETACHED-WAKEUP-20260808",
+  "packet_id": "PCKT-ION-SOVEREIGN-FINAL-DETACHED-SCOPE-ACTIVATION-RECORD-20260808",
+  "parent_review_packet_id": "PCKT-ION-AUTONOMOUS-GOAL-WAKEUP-ACTIVATION-REVIEW-20260724",
+  "supersedes_activation_record_id": "ACTIVATION-ION-SELF-OPERATING-DETACHED-WAKEUP-20260804",
+  "supersedes_path": "ION/05_context/current/autonomous_goals/detached_worker_candidate/ACTIVATION_RECORD_GOAL_ION_SELF_OPERATING_DETACHED_20260804.candidate.json",
+  "created_at": "2026-08-08T12:30:00Z",
+  "expires_at": "2026-08-15T19:35:00Z",
+  "expiry_satisfaction_condition": "Before expires_at: (1) kernel.ion_autonomous_goal_wakeup evaluate_wakeup_activation_gate reports ION_AUTONOMOUS_GOAL_WAKEUP_ACTIVATION_ALLOWED with empty blockers at least once witnessed in wakeup_receipts or scheduler last_tick; (2) at least one bounded detached worker pilot completes with return intake via kernel.ion_autonomous_goal_detached_worker or prompt_spawn domain queue without operator prompt; (3) max_detached_workers remains 1 and no persistent_daemon units enabled; (4) successor authored before 20260804 record expires_at. If (1) not met by expires_at, disable detached spawn in AUTONOMOUS_GOAL_WAKEUP_SPAWN_ADMISSION and revert spawn_admission_verdict_runtime_carrier to allow_health_tick_only.",
+  "activation_scope": "detached_wakeup_goal_ion_self_operating",
+  "goal_id": "GOAL-ION-SELF-OPERATING-AUTONOMOUS-LOOP-ACTIVATION",
+  "authorization": {
+    "operator_confirmation_status": "domain_successor_not_operator",
+    "operator_instruction": "Successor detached-scope record; max_detached_workers 1; bounded 7-day expiry",
+    "signed_by": "domain.local_worker_scheduling_and_autonomous_loop",
+    "recorded_by": "cursor_cli.carrier_slot",
+    "signature_type": "domain_spawn_admission_membrane_candidate_not_cryptographic",
+    "ruling_path": "ION/05_context/current/cursor_connector/prompt_spawn_runs/prompt_spawn_2026-08-08T121816+0000_domain_worker_1h9o5qr3/context_package.md"
+  },
+  "authority": {
+    "live_execution_authority": true,
+    "live_execution_scope": "detached_wakeup_goal_ion_self_operating_max_one_worker",
+    "accepted_state_authority": false,
+    "production_authority": false,
+    "secrets_authority": false,
+    "destructive_authority": false,
+    "detached_worker_spawn_authority": true
+  },
+  "spawn_admission_verdict_runtime_carrier": "allow",
+  "permitted_goal_ids": [
+    "GOAL-ION-SELF-OPERATING-AUTONOMOUS-LOOP-ACTIVATION"
+  ],
+  "max_detached_workers": 1,
+  "min_tick_interval_seconds": 300,
+  "shell_root": "/home/sev/ION - Production/ION_Developement",
+  "paired_spawn_admission_path": "ION/05_context/current/domain_weaver/candidate_founding_domains/domain.runtime_carrier_and_action_admission/AUTONOMOUS_GOAL_WAKEUP_SPAWN_ADMISSION.candidate.yaml",
+  "rollback_command": "Revert AUTONOMOUS_GOAL_WAKEUP_SPAWN_ADMISSION to allow_health_tick_only and mark this activation record superseded; systemctl --user disable --now ion-autonomous-goal-wakeup-health.timer if health tick must stop",
+  "review_returns": [
+    {
+      "owner": "domain.runtime_carrier_and_action_admission",
+      "verdict": "ALLOW_WITH_CONSTRAINTS",
+      "note": "successor detached record co-issue with bounded expiry"
+    }
+  ],
+  "required_runtime_enforcement": [
+    "validate_activation_record_present_each_wakeup_prepare",
+    "validate_not_expired_each_wakeup_prepare",
+    "refuse_more_than_one_detached_worker",
+    "refuse_persistent_daemon",
+    "require_goal_id_match"
+  ],
+  "non_claims": [
+    "candidate_only",
+    "no_accepted_state",
+    "no_production_authority",
+    "no_unbounded_expiry",
+    "max_detached_workers_1_only",
+    "successor_not_registry_promotion"
+  ]
+}

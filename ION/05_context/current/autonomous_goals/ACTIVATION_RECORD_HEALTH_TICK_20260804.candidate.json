@@ -1,0 +1,71 @@
+{
+  "schema_id": "ion.autonomous_goals.activation_record.v0_1_candidate",
+  "activation_record_id": "ACTIVATION-ION-AUTONOMOUS-GOAL-WAKEUP-HEALTH-TICK-20260804",
+  "packet_id": "PCKT-ION-AUTONOMOUS-GOAL-WAKEUP-HEALTH-TICK-RENEWAL-20260804",
+  "parent_review_packet_id": "PCKT-ION-AUTONOMOUS-GOAL-WAKEUP-ACTIVATION-REVIEW-20260724",
+  "supersedes_activation_record_id": "ACTIVATION-ION-AUTONOMOUS-GOAL-WAKEUP-HEALTH-TICK-20260724",
+  "supersedes_path": "ION/05_context/current/autonomous_goals/ACTIVATION_RECORD_HEALTH_TICK_20260724.candidate.json",
+  "created_at": "2026-08-04T15:30:00Z",
+  "expires_at": "2026-08-11T15:30:00Z",
+  "status": "superseded",
+  "superseded_by": "ION/05_context/current/autonomous_goals/ACTIVATION_RECORD_HEALTH_TICK_20260808.candidate.json",
+  "expiry_satisfaction_condition": "Before expires_at: (1) ION/05_context/current/runtime_carrier/ION_RUNTIME_ABSENCE_SURFACE.candidate.json must exist with schema_id ion.runtime_carrier.absence_surface.v0_1_candidate and freshness evaluated_at within 7200s of wall clock; (2) ion-autonomous-runtime-absence-probe.timer enabled and last_success_within_s lte 7200; (3) at least two successful health ticks since this record created_at witnessed in wakeup_receipts or scheduler last_tick; (4) detached_worker_spawn remains hold. If (1)-(2) not satisfied by expires_at, do not renew again until absence probe lands — disable health timer and route domain.runtime_carrier_and_action_admission.",
+  "activation_scope": "health_tick_only",
+  "authorization": {
+    "operator_confirmation_status": "domain_renewal_not_operator",
+    "operator_instruction": "Sovereign 2026-08-04 last push: repair via domains; relay seat authority revoked for this lane",
+    "signed_by": "domain.runtime_carrier_and_action_admission",
+    "recorded_by": "cursor_cli.carrier_slot",
+    "signature_type": "domain_ruling_candidate_not_cryptographic",
+    "ruling_path": "ION/05_context/current/domain_weaver/triad/AUTONOMOUS_ACTIVATION_RULING.candidate.md"
+  },
+  "authority": {
+    "live_execution_authority": true,
+    "live_execution_scope": "local_user_health_tick_only",
+    "accepted_state_authority": false,
+    "production_authority": false,
+    "secrets_authority": false,
+    "destructive_authority": false,
+    "detached_worker_spawn_authority": false
+  },
+  "spawn_admission_verdict_runtime_carrier": "allow_health_tick_only",
+  "permitted_goal_ids": [
+    "GOAL-ION-SELF-OPERATING-AUTONOMOUS-LOOP-ACTIVATION"
+  ],
+  "max_detached_workers": 0,
+  "min_tick_interval_seconds": 300,
+  "timer_unit_name": "ion-autonomous-goal-wakeup-health.timer",
+  "service_unit_name": "ion-autonomous-goal-wakeup-health.service",
+  "shell_root": "/home/sev/ION - Production/ION_Developement",
+  "rollback_command": "systemctl --user disable --now ion-autonomous-goal-wakeup-health.timer && systemctl --user stop ion-autonomous-goal-wakeup-health.service",
+  "review_returns": [
+    {
+      "owner": "domain.runtime_carrier_and_action_admission",
+      "verdict": "ALLOW_WITH_CONSTRAINTS",
+      "sha256": "90b0d2270fd4a9dbd67ee54beb7c01fa0b64e9964599cc8efdd1f1d6cfdca70a",
+      "note": "original 20260724 review; renewal extends same scoped constraints"
+    },
+    {
+      "owner": "domain.artifact_provenance_and_gate_legitimacy",
+      "verdict": "ALLOW_WITH_CONSTRAINTS",
+      "sha256": "1756a7f15539688d5512108ecfe4be91e9df6d40da3820a33d133b775128c045",
+      "note": "original 20260724 review; renewal extends same scoped constraints"
+    }
+  ],
+  "required_runtime_enforcement": [
+    "validate_activation_record_present_each_tick",
+    "validate_not_expired_each_tick",
+    "validate_activation_scope_health_tick_only",
+    "refuse_detached_worker_spawn",
+    "oneshot_only",
+    "OnUnitInactiveSec_gte_300"
+  ],
+  "non_claims": [
+    "candidate_only",
+    "no_accepted_state",
+    "no_production_authority",
+    "no_detached_worker_spawn",
+    "no_leader_identity_settlement",
+    "renewal_not_registry_promotion"
+  ]
+}
