@@ -1,0 +1,75 @@
+schema_id: ion.commit_boundary_manifest.v0_1_candidate
+manifest_id: CBM-RECEIPTED-DELTA-20260808-BATCH3-OPERATOR-UI
+packet_id: PCKT-COMMIT-BOUNDARY-20260808-BATCH3-OPERATOR-UI
+owner_domain_id: domain.artifact_provenance_and_gate_legitimacy
+peer_domain_ids:
+- domain.user_interface_visualization_and_operator_experience
+- domain.gnome_desktop_ion_operator_surface
+materialized_at: '2026-08-08T16:12:00Z'
+status: candidate_ready
+authority: candidate_only
+baseline_forward_posture: true
+commit_class: production_governance_commit
+include_paths:
+- path: ION/05_context/current/domain_weaver/candidate_founding_domains/domain.artifact_provenance_and_gate_legitimacy/commit_boundary/COMMIT_BOUNDARY_MANIFEST_20260808_BATCH3_OPERATOR_UI.candidate.yaml
+  tier: T1
+  owner_domain_id: domain.artifact_provenance_and_gate_legitimacy
+  reason: batch-3 operator UI manifest self-binding
+- path: desktop/gnome-shell/ion-helixion-control@helixion.net/control.py
+  tier: T1
+  owner_domain_id: domain.user_interface_visualization_and_operator_experience
+  reason: runs 5g0rm9x8 zv8wqwp6 qni9970d xw3czdlo afternoon 20260808 operator decision queue v4 v5
+- path: desktop/gnome-shell/ion-helixion-control@helixion.net/extension.js
+  tier: T1
+  owner_domain_id: domain.user_interface_visualization_and_operator_experience
+  reason: runs zv8wqwp6 qni9970d v4 tabbed panel 20260808
+- path: desktop/gnome-shell/ion-helixion-control@helixion.net/stylesheet.css
+  tier: T1
+  owner_domain_id: domain.user_interface_visualization_and_operator_experience
+  reason: runs zv8wqwp6 qni9970d v4 v5 styling 20260808
+- path: desktop/gnome-shell/ion-helixion-control@helixion.net/metadata.json
+  tier: T1
+  owner_domain_id: domain.user_interface_visualization_and_operator_experience
+  reason: shell metadata v4 v5 bump 20260808
+- path: desktop/gnome-shell/ion-helixion-control@helixion.net/output.md
+  tier: T1
+  owner_domain_id: domain.user_interface_visualization_and_operator_experience
+  reason: worker evidence bundle zv8wqwp6 qni9970d 20260808
+- path: desktop/gnome-shell/tests/test_ion_helixion_control.py
+  tier: T1
+  owner_domain_id: domain.user_interface_visualization_and_operator_experience
+  reason: decision queue and ledger shape tests 5g0rm9x8 xw3czdlo 20260808
+- path: ION/05_context/current/operator_decision_queue/OPERATOR_DECISION_QUEUE.json
+  tier: T1
+  owner_domain_id: domain.user_interface_visualization_and_operator_experience
+  reason: operator decision queue backend 5g0rm9x8 20260808
+- path: ION/05_context/current/operator_decision_queue/receipts/20260808T153759347893Z_era-material-binding-20260808.json
+  tier: T1
+  owner_domain_id: domain.user_interface_visualization_and_operator_experience
+  reason: seeded decision receipts 5g0rm9x8 20260808
+- path: ION/05_context/current/operator_decision_queue/receipts/20260808T153801991214Z_push-authorization-20260808.json
+  tier: T1
+  owner_domain_id: domain.user_interface_visualization_and_operator_experience
+  reason: seeded decision receipts 5g0rm9x8 20260808
+- path: ION/05_context/current/domain_weaver/domain_self_audit/returns/domain.user_interface_visualization_and_operator_experience/DOMAIN_LOCAL_DIAGNOSTIC_RETURN.candidate.yaml
+  tier: T1
+  owner_domain_id: domain.user_interface_visualization_and_operator_experience
+  reason: diagnostic return updates zv8wqwp6 qni9970d 20260808
+explicit_excludes:
+- pattern: ION/05_context/current/cursor_connector/prompt_spawn_runs/**
+  tier: T2
+  reason: spawn run bundles not receipted governance artifacts
+- pattern: porcelain_class:deleted
+  tier: T6
+  reason: no deletion staging
+pre_commit_gates:
+- gate_id: gate.git_snapshot.secret_scan
+  required_verdict: PASS
+- gate_id: gate.commit_boundary.deletion_zero
+  required_verdict: PASS
+- gate_id: gate.commit_boundary.manifest_allowlist
+  required_verdict: PASS
+non_claims:
+- candidate_only
+- no_push
+- no_registry_promotion

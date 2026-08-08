@@ -15,11 +15,12 @@ import os
 import re
 import shutil
 import subprocess
+import sys
 import time
 import urllib.error
 import urllib.request
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Any, Callable, Iterable
 
@@ -36,6 +37,19 @@ ACTION_LOCAL_UNIT = "ion-action-gateway.service"
 ACTION_TUNNEL_UNIT = "ion-action-tunnel.service"
 CHATOPS_UNIT = "ion-chatops.service"
 ION_ROOT = Path("/home/sev/ION - Production/ION_Developement")
+_PACKAGES = ION_ROOT / "ION/04_packages"
+if str(_PACKAGES) not in sys.path:
+    sys.path.insert(0, str(_PACKAGES))
+
+from kernel import ion_cli_carrier_settings as _carrier_settings  # noqa: E402
+
+REDUCED_STATE_WORK_LEDGER_PATH = (
+    ION_ROOT
+    / "ION/05_context/current/domain_weaver/candidate_founding_domains/"
+    "domain.model_routing_and_reasoning_economics/REDUCED_STATE_WORK_LEDGER.candidate.json"
+)
+CARRIER_CLI_IDS = _carrier_settings.KNOWN_CARRIERS
+CARRIER_OPERATION_MODES = _carrier_settings.OPERATION_MODES
 DRAIN_TIMER_UNIT = "ion-durable-sos-spawn-queue-drain.timer"
 LOOP_TIMER_UNIT = "ion-autonomous-loop-local-worker.timer"
 DURABLE_SPAWN_QUEUE_PATH = (
@@ -48,6 +62,30 @@ LAST_DURABLE_DRAIN_TICK_PATH = (
 PROMPT_SPAWN_RUNS_DIR = ION_ROOT / "ION/05_context/current/cursor_connector/prompt_spawn_runs"
 WORKER_SHIFT_BOARD_PATH = ION_ROOT / "ION/05_context/current/worker_shift/ACTIVE_WORKER_SHIFT_BOARD.json"
 HUMAN_GATE_QUEUE_PATH = ION_ROOT / "ION/05_context/current/ACTIVE_HUMAN_GATE_QUEUE.json"
+OPERATOR_DECISION_QUEUE_PATH = (
+    ION_ROOT / "ION/05_context/current/operator_decision_queue/OPERATOR_DECISION_QUEUE.json"
+)
+OPERATOR_DECISION_QUEUE_SCHEMA_ID = "ion.operator_decision_queue.v0_1_candidate"
+OPERATOR_DECISION_RECEIPT_SCHEMA_ID = "ion.operator_decision_receipt.v0_1_candidate"
+OPERATOR_PUSH_RECEIPT_SCHEMA_ID = "ion.operator_decision_push_receipt.v0_1_candidate"
+DECISION_CATEGORIES = frozenset(
+    {
+        "push_authorization",
+        "resource_spend",
+        "product_direction",
+        "external_release",
+        "info",
+    }
+)
+DEFAULT_DECISION_OPTIONS: tuple[dict[str, str], ...] = (
+    {"key": "accept", "label": "Accept"},
+    {"key": "deny", "label": "Deny"},
+)
+MAX_DECISION_QUESTION_CHARS = 1500
+MAX_DECISION_REPLY_CHARS = 2000
+MAX_DECISION_CONTEXT_PATHS = 8
+DEFAULT_DECISION_EXPIRY_DAYS = 7
+DECISION_ID_PATTERN = re.compile(r"^[a-z0-9][a-z0-9_-]{0,127}$")
 RUNTIME_ABSENCE_SURFACE_PATH = (
     ION_ROOT / "ION/05_context/current/runtime_carrier/ION_RUNTIME_ABSENCE_SURFACE.candidate.json"
 )
@@ -449,8 +487,511 @@ def _build_attention_section() -> dict[str, Any]:
     return attention
 
 
+def _operator_decision_receipts_dir() -> Path:
+    return OPERATOR_DECISION_QUEUE_PATH.parent / "receipts"
+
+
+def _parse_utc_timestamp(value: str | None) -> datetime | None:
+    if not value or not isinstance(value, str):
+        return None
+    try:
+        if value.endswith("Z"):
+            return datetime.fromisoformat(value.replace("Z", "+00:00"))
+        return datetime.fromisoformat(value)
+    except ValueError:
+        return None
+
+
+def _sanitize_decision_reply_text(text: str | None) -> str:
+    if not text:
+        return ""
+    cleaned = re.sub(r"[\x00-\x08\x0b-\x0c\x0e-\x1f\x7f]", "", text)
+    return cleaned[:MAX_DECISION_REPLY_CHARS]
+
+
+def _atomic_write_json(path: Path, payload: dict[str, Any] | list[Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp_path = path.with_suffix(path.suffix + ".tmp")
+    tmp_path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    tmp_path.replace(path)
+
+
+def _empty_operator_decision_queue() -> dict[str, Any]:
+    return {"schema_id": OPERATOR_DECISION_QUEUE_SCHEMA_ID, "entries": []}
+
+
+def _load_operator_decision_queue(*, ensure_seeds: bool = True) -> dict[str, Any]:
+    path = OPERATOR_DECISION_QUEUE_PATH
+    payload, error = _read_json_file(path)
+    if error == "file_not_found":
+        payload = _empty_operator_decision_queue()
+        _atomic_write_json(path, payload)
+    elif error or not isinstance(payload, dict):
+        return _empty_operator_decision_queue() | {"error": error or "unexpected_shape"}
+    entries = payload.get("entries")
+    if not isinstance(entries, list):
+        payload = _empty_operator_decision_queue()
+        _atomic_write_json(path, payload)
+    if ensure_seeds:
+        if _ensure_operator_decision_seeds(payload):
+            _atomic_write_json(path, payload)
+    return payload
+
+
+def _ensure_operator_decision_seeds(queue: dict[str, Any]) -> bool:
+    entries = queue.setdefault("entries", [])
+    if not isinstance(entries, list):
+        queue["entries"] = entries = []
+    existing = {row.get("id") for row in entries if isinstance(row, dict)}
+    changed = False
+    seeds = (
+        {
+            "id": "push-authorization-20260808",
+            "from": "relay_agent",
+            "category": "push_authorization",
+            "question": (
+                "Authorize pushing today's commit-boundary commits (af6af5e03 + batch 2) to origin? "
+                "Nothing has left this machine."
+            ),
+            "context_paths": [
+                "ION/05_context/current/domain_weaver/candidate_founding_domains/"
+                "domain.artifact_provenance_and_gate_legitimacy/commit_boundary/"
+                "COMMIT_BOUNDARY_RECEIPT_20260808T145740Z.candidate.json",
+                "ION/05_context/current/domain_weaver/candidate_founding_domains/"
+                "domain.artifact_provenance_and_gate_legitimacy/commit_boundary/"
+                "COMMIT_BOUNDARY_RECEIPT_20260808T150348Z.candidate.json",
+            ],
+        },
+        {
+            "id": "era-material-binding-20260808",
+            "from": "relay_agent",
+            "category": "product_direction",
+            "question": (
+                "Should domains continue owner-binding the remaining ~237 pre-2026-08-08 modified files "
+                "into commit batches? (More queue rows, more tokens.)"
+            ),
+            "context_paths": [],
+        },
+    )
+    now = _utc_now()
+    expires = (datetime.now(timezone.utc) + timedelta(days=DEFAULT_DECISION_EXPIRY_DAYS)).replace(
+        microsecond=0
+    ).isoformat()
+    for seed in seeds:
+        if seed["id"] in existing:
+            continue
+        entries.append(
+            {
+                "id": seed["id"],
+                "created_at": now,
+                "from": seed["from"],
+                "category": seed["category"],
+                "question": seed["question"][:MAX_DECISION_QUESTION_CHARS],
+                "context_paths": list(seed["context_paths"])[:MAX_DECISION_CONTEXT_PATHS],
+                "options": [dict(option) for option in DEFAULT_DECISION_OPTIONS],
+                "state": "pending",
+                "decision": {
+                    "choice": None,
+                    "reply_text": None,
+                    "decided_at": None,
+                    "decided_via": None,
+                },
+                "expires_at": expires,
+            }
+        )
+        changed = True
+    return changed
+
+
+def append_decision(
+    *,
+    decision_id: str,
+    from_agent: str,
+    category: str,
+    question: str,
+    context_paths: Iterable[str] | None = None,
+    options: Iterable[dict[str, str]] | None = None,
+    expires_at: str | None = None,
+) -> dict[str, Any]:
+    if category == "technical" or category not in DECISION_CATEGORIES:
+        return {
+            "ok": False,
+            "refused": True,
+            "reason": "category_not_allowed",
+            "finding": "technical_category_routed_refusal" if category == "technical" else "invalid_category",
+        }
+    if not DECISION_ID_PATTERN.match(decision_id):
+        return {"ok": False, "reason": "invalid_decision_id"}
+    queue = _load_operator_decision_queue(ensure_seeds=False)
+    entries = queue.setdefault("entries", [])
+    if any(isinstance(row, dict) and row.get("id") == decision_id for row in entries):
+        return {"ok": False, "reason": "duplicate_decision_id"}
+    bounded_question = (question or "").strip()[:MAX_DECISION_QUESTION_CHARS]
+    if not bounded_question:
+        return {"ok": False, "reason": "question_required"}
+    paths = [str(path).strip() for path in (context_paths or []) if str(path).strip()][
+        :MAX_DECISION_CONTEXT_PATHS
+    ]
+    option_rows = (
+        [{"key": str(row["key"]), "label": str(row["label"])} for row in options]
+        if options
+        else [dict(option) for option in DEFAULT_DECISION_OPTIONS]
+    )
+    if not option_rows:
+        return {"ok": False, "reason": "options_required"}
+    if expires_at:
+        expiry = expires_at
+    else:
+        expiry = (datetime.now(timezone.utc) + timedelta(days=DEFAULT_DECISION_EXPIRY_DAYS)).replace(
+            microsecond=0
+        ).isoformat()
+    entry = {
+        "id": decision_id,
+        "created_at": _utc_now(),
+        "from": _bounded(from_agent) or "unknown",
+        "category": category,
+        "question": bounded_question,
+        "context_paths": paths,
+        "options": option_rows,
+        "state": "pending",
+        "decision": {"choice": None, "reply_text": None, "decided_at": None, "decided_via": None},
+        "expires_at": expiry,
+    }
+    entries.append(entry)
+    _atomic_write_json(OPERATOR_DECISION_QUEUE_PATH, queue)
+    return {"ok": True, "id": decision_id, "state": "pending"}
+
+
+def list_decisions(state: str | None = None) -> list[dict[str, Any]]:
+    queue = _load_operator_decision_queue(ensure_seeds=False)
+    entries = queue.get("entries", [])
+    if not isinstance(entries, list):
+        return []
+    now = datetime.now(timezone.utc)
+    rows: list[dict[str, Any]] = []
+    for row in entries:
+        if not isinstance(row, dict):
+            continue
+        entry = dict(row)
+        expires = _parse_utc_timestamp(entry.get("expires_at"))
+        if entry.get("state") == "pending" and expires and expires < now:
+            entry["state"] = "expired"
+        if state is None or entry.get("state") == state:
+            rows.append(entry)
+    return rows
+
+
+def _write_operator_decision_receipt(
+    *,
+    decision_id: str,
+    choice: str,
+    reply_text: str | None,
+) -> str:
+    receipt_dir = _operator_decision_receipts_dir()
+    receipt_dir.mkdir(parents=True, exist_ok=True, mode=0o700)
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
+    receipt_path = receipt_dir / f"{stamp}_{decision_id}.json"
+    payload = {
+        "schema_id": OPERATOR_DECISION_RECEIPT_SCHEMA_ID,
+        "created_at": _utc_now(),
+        "decision_id": decision_id,
+        "choice": choice,
+        "reply_text": _sanitize_decision_reply_text(reply_text) or None,
+        "decided_via": "gnome_panel",
+    }
+    receipt_path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    receipt_path.chmod(0o600)
+    return str(receipt_path)
+
+
+def decide(
+    decision_id: str,
+    choice: str,
+    *,
+    reply_text: str | None = None,
+) -> dict[str, Any]:
+    queue = _load_operator_decision_queue(ensure_seeds=False)
+    entries = queue.get("entries", [])
+    if not isinstance(entries, list):
+        return {"ok": False, "reason": "queue_unreadable"}
+    target: dict[str, Any] | None = None
+    for row in entries:
+        if isinstance(row, dict) and row.get("id") == decision_id:
+            target = row
+            break
+    if target is None:
+        return {"ok": False, "reason": "decision_not_found"}
+    if target.get("state") != "pending":
+        return {"ok": False, "reason": "decision_not_pending", "state": target.get("state")}
+    expires = _parse_utc_timestamp(target.get("expires_at"))
+    if expires and expires < datetime.now(timezone.utc):
+        target["state"] = "expired"
+        _atomic_write_json(OPERATOR_DECISION_QUEUE_PATH, queue)
+        return {"ok": False, "reason": "decision_expired"}
+    normalized_choice = (choice or "").strip().lower()
+    if normalized_choice == "accept":
+        new_state = "accepted"
+    elif normalized_choice == "deny":
+        new_state = "denied"
+    elif normalized_choice in {"reply", "replied"}:
+        new_state = "replied"
+        normalized_choice = "reply"
+    else:
+        return {"ok": False, "reason": "invalid_choice"}
+    allowed_keys = {
+        str(option.get("key"))
+        for option in target.get("options", [])
+        if isinstance(option, dict) and option.get("key")
+    }
+    sanitized_reply = _sanitize_decision_reply_text(reply_text)
+    if normalized_choice == "reply":
+        if not sanitized_reply:
+            return {"ok": False, "reason": "reply_text_required"}
+    elif normalized_choice not in allowed_keys and allowed_keys:
+        return {"ok": False, "reason": "choice_not_in_options"}
+    target["state"] = new_state
+    target["decision"] = {
+        "choice": normalized_choice,
+        "reply_text": sanitized_reply or None,
+        "decided_at": _utc_now(),
+        "decided_via": "gnome_panel",
+    }
+    _atomic_write_json(OPERATOR_DECISION_QUEUE_PATH, queue)
+    receipt_path = _write_operator_decision_receipt(
+        decision_id=decision_id,
+        choice=normalized_choice,
+        reply_text=sanitized_reply,
+    )
+    return {
+        "ok": True,
+        "id": decision_id,
+        "state": new_state,
+        "choice": normalized_choice,
+        "receipt_path": receipt_path,
+    }
+
+
+def _count_reduced_ledger_rows() -> tuple[int | None, str | None]:
+    payload, error = _read_json_file(REDUCED_STATE_WORK_LEDGER_PATH)
+    if error:
+        return None, error
+    if isinstance(payload, list):
+        return len(payload), None
+    if isinstance(payload, dict):
+        entries = payload.get("entries")
+        if isinstance(entries, list):
+            entry_count = payload.get("entry_count")
+            if isinstance(entry_count, int) and not isinstance(entry_count, bool):
+                return entry_count, None
+            return len(entries), None
+        rows = payload.get("rows")
+        if isinstance(rows, list):
+            return len(rows), None
+    return None, "unexpected_shape"
+
+
+def _build_carriers_status_section() -> dict[str, Any]:
+    section: dict[str, Any] = {}
+    try:
+        settings = _carrier_settings.read_settings(ION_ROOT)
+    except Exception as exc:
+        section["error"] = _bounded(exc.__class__.__name__)
+        return section
+    usage = settings.get("usage_today")
+    if not isinstance(usage, dict):
+        usage = {}
+    carriers_out: dict[str, Any] = {}
+    for carrier_id in CARRIER_CLI_IDS:
+        row = settings.get("carriers", {}).get(carrier_id)
+        if not isinstance(row, dict):
+            carriers_out[carrier_id] = {"error": "row_missing"}
+            continue
+        try:
+            limit = int(row.get("daily_run_limit", 0))
+        except (TypeError, ValueError):
+            limit = 0
+            carriers_out[carrier_id] = {
+                "enabled": bool(row.get("enabled", True)),
+                "daily_run_limit": limit,
+                "operation_mode": _bounded(
+                    row.get("operation_mode") if isinstance(row.get("operation_mode"), str) else None
+                )
+                or "full",
+                "runs_today": int(usage.get(carrier_id) or 0),
+                "daily_run_limit_error": "invalid_limit",
+            }
+            continue
+        carriers_out[carrier_id] = {
+            "enabled": bool(row.get("enabled", True)),
+            "daily_run_limit": limit,
+            "operation_mode": _bounded(
+                row.get("operation_mode") if isinstance(row.get("operation_mode"), str) else None
+            )
+            or "full",
+            "runs_today": int(usage.get(carrier_id) or 0),
+        }
+    section["carriers"] = carriers_out
+    ledger_rows, ledger_error = _count_reduced_ledger_rows()
+    reduced: dict[str, Any] = {
+        "policy_ref": _bounded(settings.get("reduced_state_policy_ref")),
+    }
+    if ledger_error:
+        reduced["ledger_rows_error"] = ledger_error
+    else:
+        reduced["ledger_rows"] = ledger_rows
+    section["reduced_state"] = reduced
+    return section
+
+
+def _carrier_attention_lines(carriers_section: dict[str, Any]) -> list[str]:
+    lines: list[str] = []
+    carriers = carriers_section.get("carriers")
+    if not isinstance(carriers, dict):
+        return lines
+    short = {"cursor_cli": "cursor", "claude_cli": "claude", "codex_cli": "codex"}
+    for carrier_id, row in carriers.items():
+        if not isinstance(row, dict) or row.get("error"):
+            continue
+        name = short.get(carrier_id, carrier_id)
+        if not row.get("enabled", True):
+            lines.append(f"carrier {name} off")
+            continue
+        try:
+            limit = int(row.get("daily_run_limit", 0))
+            runs = int(row.get("runs_today", 0))
+        except (TypeError, ValueError):
+            continue
+        if limit >= 0 and runs >= limit:
+            lines.append(f"carrier {name} at limit")
+    return lines
+
+
+def apply_carrier_mutation(
+    *,
+    carrier_id: str,
+    field: str,
+    value: Any,
+) -> dict[str, Any]:
+    carrier = str(carrier_id or "").strip()
+    if carrier not in CARRIER_CLI_IDS:
+        return {"ok": False, "reason": "unknown_carrier", "status": build_status()}
+    try:
+        _carrier_settings.write_setting(ION_ROOT, carrier_id=carrier, field=field, value=value)
+    except ValueError as exc:
+        return {
+            "ok": False,
+            "reason": _bounded(str(exc)),
+            "status": build_status(),
+        }
+    status = build_status()
+    return {"ok": True, "carrier_id": carrier, "field": field, "status": status}
+
+
+def apply_carrier_enable(carrier_id: str, *, enabled: bool) -> dict[str, Any]:
+    return apply_carrier_mutation(carrier_id=carrier_id, field="enabled", value=enabled)
+
+
+def apply_carrier_limit(carrier_id: str, limit: int) -> dict[str, Any]:
+    try:
+        limit_value = int(limit)
+    except (TypeError, ValueError):
+        return {"ok": False, "reason": "invalid_limit", "status": build_status()}
+    if (
+        limit_value < _carrier_settings.DAILY_RUN_LIMIT_MIN
+        or limit_value > _carrier_settings.DAILY_RUN_LIMIT_MAX
+    ):
+        return {"ok": False, "reason": "daily_run_limit_out_of_bounds", "status": build_status()}
+    return apply_carrier_mutation(carrier_id=carrier_id, field="daily_run_limit", value=limit_value)
+
+
+def apply_carrier_mode(carrier_id: str, mode: str) -> dict[str, Any]:
+    normalized = str(mode or "").strip()
+    if normalized not in CARRIER_OPERATION_MODES:
+        return {"ok": False, "reason": "unknown_mode", "status": build_status()}
+    return apply_carrier_mutation(carrier_id=carrier_id, field="operation_mode", value=normalized)
+
+
+def _build_decisions_section() -> dict[str, Any]:
+    _load_operator_decision_queue(ensure_seeds=True)
+    pending_rows = list_decisions("pending")
+    summarized = [
+        {
+            "id": row.get("id"),
+            "from": row.get("from"),
+            "category": row.get("category"),
+            "question": row.get("question"),
+            "options": row.get("options"),
+            "expires_at": row.get("expires_at"),
+        }
+        for row in pending_rows[:10]
+        if isinstance(row, dict)
+    ]
+    return {"pending_count": len(pending_rows), "pending": summarized}
+
+
+def _find_active_push_authorization() -> dict[str, Any] | None:
+    queue = _load_operator_decision_queue(ensure_seeds=False)
+    entries = queue.get("entries", [])
+    if not isinstance(entries, list):
+        return None
+    now = datetime.now(timezone.utc)
+    accepted: list[tuple[datetime, dict[str, Any]]] = []
+    denials: list[tuple[datetime, str]] = []
+    for row in entries:
+        if not isinstance(row, dict) or row.get("category") != "push_authorization":
+            continue
+        expires = _parse_utc_timestamp(row.get("expires_at"))
+        if expires and expires < now:
+            continue
+        decision = row.get("decision") if isinstance(row.get("decision"), dict) else {}
+        decided_at = _parse_utc_timestamp(decision.get("decided_at"))
+        if row.get("state") == "accepted" and decided_at:
+            accepted.append((decided_at, row))
+        elif row.get("state") == "denied" and decided_at:
+            denials.append((decided_at, str(row.get("id") or "")))
+    if not accepted:
+        return None
+    accepted.sort(key=lambda item: item[0], reverse=True)
+    for decided_at, row in accepted:
+        decision_id = str(row.get("id") or "")
+        later_denial = any(
+            denial_at > decided_at and denial_id == decision_id for denial_at, denial_id in denials
+        )
+        if not later_denial:
+            return row
+    return None
+
+
+def push_receipted() -> dict[str, Any]:
+    auth = _find_active_push_authorization()
+    if auth is None:
+        return {"ok": False, "reason": "no_accepted_push_authorization"}
+    argv = ["git", "-C", str(ION_ROOT), "push", "origin", "HEAD"]
+    result = _run(argv, timeout=120.0)
+    receipt_dir = _operator_decision_receipts_dir()
+    receipt_dir.mkdir(parents=True, exist_ok=True, mode=0o700)
+    stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
+    receipt_path = receipt_dir / f"{stamp}_push_{auth.get('id')}.json"
+    payload = {
+        "schema_id": OPERATOR_PUSH_RECEIPT_SCHEMA_ID,
+        "created_at": _utc_now(),
+        "decision_id": auth.get("id"),
+        "argv": argv,
+        "ok": result.get("ok"),
+        "returncode": result.get("returncode"),
+        "stdout_stderr_bounded": result.get("diagnostic", ""),
+    }
+    receipt_path.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    receipt_path.chmod(0o600)
+    return {
+        "ok": bool(result.get("ok")),
+        "decision_id": auth.get("id"),
+        "receipt_path": str(receipt_path),
+        "finding": result.get("finding"),
+    }
+
+
 def _run(argv: list[str], *, timeout: float = 15.0) -> dict[str, Any]:
-    """Run fixed argv without a shell and return bounded diagnostics."""
     try:
         completed = subprocess.run(
             argv,
@@ -873,6 +1414,11 @@ def build_status() -> dict[str, Any]:
         groups[group_id] = _classify_group(spec, units, group_probes, inventory, listeners)
 
     global_status = _classify_global(groups)
+    carriers_section = _build_carriers_status_section()
+    attention = _build_attention_section()
+    carrier_lines = _carrier_attention_lines(carriers_section)
+    if carrier_lines:
+        attention["carrier_alerts"] = carrier_lines
     return {
         "schema_id": SCHEMA_ID,
         "generated_at": _utc_now(),
@@ -880,7 +1426,9 @@ def build_status() -> dict[str, Any]:
         "groups": groups,
         "queue": _build_queue_section(),
         "agents": _build_agents_section(),
-        "attention": _build_attention_section(),
+        "carriers": carriers_section,
+        "attention": attention,
+        "decisions": _build_decisions_section(),
         "instances": {
             "local_process_count": sum(len(inventory[key]) for key in ("preview", "action_gateway", "chatops")),
             "cloudflared_tunnel_count": len(inventory["cloudflared_tunnels"]),
@@ -1129,11 +1677,41 @@ def open_latest_run_view() -> dict[str, Any]:
     return {"ok": True, "run_id": _bounded(chosen.name), "viewer": viewer}
 
 
-def _parse_action(action: str) -> tuple[str, ...] | None:
+def _parse_action(action: str, extra: tuple[str, ...] = ()) -> tuple[str, ...] | None:
     if action == "status":
         return None
+    if action == "carrier-enable":
+        if len(extra) != 1:
+            raise ValueError("action_not_allowed")
+        return ("carrier", "enable", extra[0])
+    if action == "carrier-disable":
+        if len(extra) != 1:
+            raise ValueError("action_not_allowed")
+        return ("carrier", "disable", extra[0])
+    if action == "carrier-limit":
+        if len(extra) != 2:
+            raise ValueError("action_not_allowed")
+        return ("carrier", "limit", extra[0], extra[1])
+    if action == "carrier-mode":
+        if len(extra) != 2:
+            raise ValueError("action_not_allowed")
+        return ("carrier", "mode", extra[0], extra[1])
     if action == "open-latest-run-view":
         return ("open_latest_run_view",)
+    if action == "push-receipted":
+        return ("push_receipted",)
+    if action == "decision-accept":
+        if len(extra) != 1:
+            raise ValueError("action_not_allowed")
+        return ("decision", "accept", extra[0])
+    if action == "decision-deny":
+        if len(extra) != 1:
+            raise ValueError("action_not_allowed")
+        return ("decision", "deny", extra[0])
+    if action == "decision-reply":
+        if len(extra) < 2:
+            raise ValueError("action_not_allowed")
+        return ("decision", "reply", extra[0], " ".join(extra[1:]))
     if action in {"on", "off"}:
         return ("group", "helixion", action)
     for kind in TIMER_ACTION_UNITS:
@@ -1147,21 +1725,61 @@ def _parse_action(action: str) -> tuple[str, ...] | None:
 
 
 def main(argv: list[str] | None = None) -> int:
-    choices = ["status", "on", "off", "open-latest-run-view"] + [
+    choices = [
+        "status",
+        "on",
+        "off",
+        "open-latest-run-view",
+        "push-receipted",
+        "decision-accept",
+        "decision-deny",
+        "decision-reply",
+        "carrier-enable",
+        "carrier-disable",
+        "carrier-limit",
+        "carrier-mode",
+    ] + [
         f"{group_id}-{state}"
         for group_id in GROUPS
         for state in ("on", "off")
     ] + [f"{kind}-{state}" for kind in TIMER_ACTION_UNITS for state in ("on", "off")]
     parser = argparse.ArgumentParser(description="ION startup connection health and fixed group control")
     parser.add_argument("action", choices=choices, nargs="?", default="status")
+    parser.add_argument("extra", nargs=argparse.REMAINDER)
     args = parser.parse_args(argv)
-    parsed = _parse_action(args.action)
+    extra = tuple(token for token in args.extra if token != "--")
+    parsed = _parse_action(args.action, extra)
     if parsed is None:
         payload: dict[str, Any] = build_status()
     elif parsed[0] == "group":
         payload = apply_action(parsed[1], parsed[2])
     elif parsed[0] == "timer":
         payload = apply_timer_action(parsed[1], parsed[2])
+    elif parsed[0] == "push_receipted":
+        payload = push_receipted()
+    elif parsed[0] == "decision":
+        choice = parsed[1]
+        decision_id = parsed[2]
+        if choice == "reply":
+            payload = decide(decision_id, "reply", reply_text=parsed[3])
+        else:
+            payload = decide(decision_id, choice)
+    elif parsed[0] == "carrier":
+        kind = parsed[1]
+        carrier_id = parsed[2]
+        if kind == "enable":
+            payload = apply_carrier_enable(carrier_id, enabled=True)
+        elif kind == "disable":
+            payload = apply_carrier_enable(carrier_id, enabled=False)
+        elif kind == "limit":
+            try:
+                limit_value = int(parsed[3])
+            except ValueError:
+                payload = {"ok": False, "reason": "invalid_limit", "status": build_status()}
+            else:
+                payload = apply_carrier_limit(carrier_id, limit_value)
+        else:
+            payload = apply_carrier_mode(carrier_id, parsed[3])
     else:
         payload = open_latest_run_view()
     print(json.dumps(payload, separators=(",", ":"), sort_keys=True))

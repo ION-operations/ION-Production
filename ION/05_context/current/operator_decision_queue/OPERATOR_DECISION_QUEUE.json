@@ -1,0 +1,60 @@
+{
+  "entries": [
+    {
+      "category": "push_authorization",
+      "context_paths": [
+        "ION/05_context/current/domain_weaver/candidate_founding_domains/domain.artifact_provenance_and_gate_legitimacy/commit_boundary/COMMIT_BOUNDARY_RECEIPT_20260808T145740Z.candidate.json",
+        "ION/05_context/current/domain_weaver/candidate_founding_domains/domain.artifact_provenance_and_gate_legitimacy/commit_boundary/COMMIT_BOUNDARY_RECEIPT_20260808T150348Z.candidate.json"
+      ],
+      "created_at": "2026-08-08T15:18:19+00:00",
+      "decision": {
+        "choice": "accept",
+        "decided_at": "2026-08-08T15:38:01+00:00",
+        "decided_via": "gnome_panel",
+        "reply_text": null
+      },
+      "expires_at": "2026-08-15T15:18:19+00:00",
+      "from": "relay_agent",
+      "id": "push-authorization-20260808",
+      "options": [
+        {
+          "key": "accept",
+          "label": "Accept"
+        },
+        {
+          "key": "deny",
+          "label": "Deny"
+        }
+      ],
+      "question": "Authorize pushing today's commit-boundary commits (af6af5e03 + batch 2) to origin? Nothing has left this machine.",
+      "state": "accepted"
+    },
+    {
+      "category": "product_direction",
+      "context_paths": [],
+      "created_at": "2026-08-08T15:18:19+00:00",
+      "decision": {
+        "choice": "reply",
+        "decided_at": "2026-08-08T15:37:59+00:00",
+        "decided_via": "gnome_panel",
+        "reply_text": "this may be out of my area of expertise as the user. take time to get this discussed with the corretc domains and process"
+      },
+      "expires_at": "2026-08-15T15:18:19+00:00",
+      "from": "relay_agent",
+      "id": "era-material-binding-20260808",
+      "options": [
+        {
+          "key": "accept",
+          "label": "Accept"
+        },
+        {
+          "key": "deny",
+          "label": "Deny"
+        }
+      ],
+      "question": "Should domains continue owner-binding the remaining ~237 pre-2026-08-08 modified files into commit batches? (More queue rows, more tokens.)",
+      "state": "replied"
+    }
+  ],
+  "schema_id": "ion.operator_decision_queue.v0_1_candidate"
+}

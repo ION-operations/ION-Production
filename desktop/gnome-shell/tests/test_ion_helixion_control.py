@@ -59,7 +59,7 @@ def test_metadata_targets_gnome_42_and_v2():
     metadata = json.loads((EXTENSION_ROOT / "metadata.json").read_text(encoding="utf-8"))
     assert metadata["uuid"] == "ion-helixion-control@helixion.net"
     assert metadata["shell-version"] == ["42"]
-    assert metadata["version"] == 2
+    assert metadata["version"] == 5
 
 
 def test_helixion_open_url_targets_local_cockpit():
@@ -437,6 +437,14 @@ def test_action_parser_is_fixed_and_preserves_helixion_aliases():
     assert CONTROL._parse_action("chatops-on") == ("group", "chatops", "on")
     assert CONTROL._parse_action("queue-on") == ("timer", "queue", "on")
     assert CONTROL._parse_action("loop-off") == ("timer", "loop", "off")
+    assert CONTROL._parse_action("push-receipted") == ("push_receipted",)
+    assert CONTROL._parse_action("decision-accept", ("q-1",)) == ("decision", "accept", "q-1")
+    assert CONTROL._parse_action("decision-reply", ("q-1", "hello", "world")) == (
+        "decision",
+        "reply",
+        "q-1",
+        "hello world",
+    )
     with pytest.raises(ValueError, match="action_not_allowed"):
         CONTROL._parse_action("arbitrary.service-on")
 
@@ -520,6 +528,7 @@ def test_queue_section_counts_from_fixture_rows(tmp_path, monkeypatch):
     monkeypatch.setattr(CONTROL, "RUNTIME_ABSENCE_SURFACE_PATH", tmp_path / "missing_absence.json")
     monkeypatch.setattr(CONTROL, "LAST_AUTONOMOUS_LOOP_RESULT_PATH", tmp_path / "missing_loop.json")
     monkeypatch.setattr(CONTROL, "SCHEDULER_LAST_TICK_PATH", tmp_path / "missing_tick.json")
+    monkeypatch.setattr(CONTROL, "OPERATOR_DECISION_QUEUE_PATH", tmp_path / "operator_decisions.json")
 
     with (
         patch.object(CONTROL, "_unit_status", return_value={"active": True, "enabled": True}),
@@ -622,3 +631,177 @@ def test_corrupt_json_degrades_only_its_section(tmp_path, monkeypatch):
     section = CONTROL._build_queue_section()
     assert "error" in section
     assert "pending_count" not in section
+
+
+def _isolated_operator_queue(tmp_path, monkeypatch):
+    queue_path = tmp_path / "operator_decisions.json"
+    monkeypatch.setattr(CONTROL, "OPERATOR_DECISION_QUEUE_PATH", queue_path)
+    return queue_path
+
+
+def test_operator_decision_append_list_decide_happy_path(tmp_path, monkeypatch):
+    _isolated_operator_queue(tmp_path, monkeypatch)
+    appended = CONTROL.append_decision(
+        decision_id="test-q-1",
+        from_agent="test_agent",
+        category="info",
+        question="Proceed?",
+    )
+    assert appended["ok"] is True
+    rows = CONTROL.list_decisions("pending")
+    assert any(row["id"] == "test-q-1" for row in rows)
+    decided = CONTROL.decide("test-q-1", "accept")
+    assert decided["ok"] is True
+    assert decided["state"] == "accepted"
+    assert CONTROL.list_decisions("pending") == []
+
+
+def test_operator_decide_unknown_id_fails(tmp_path, monkeypatch):
+    _isolated_operator_queue(tmp_path, monkeypatch)
+    result = CONTROL.decide("missing-id", "accept")
+    assert result["ok"] is False
+    assert result["reason"] == "decision_not_found"
+
+
+def test_operator_decision_technical_category_refused(tmp_path, monkeypatch):
+    _isolated_operator_queue(tmp_path, monkeypatch)
+    result = CONTROL.append_decision(
+        decision_id="tech-q",
+        from_agent="agent",
+        category="technical",
+        question="Pick a library?",
+    )
+    assert result["ok"] is False
+    assert result["refused"] is True
+
+
+def test_operator_decision_reply_text_bounded_and_strips_control_chars():
+    dirty = "ok\x00\x07text" + ("x" * 3000)
+    cleaned = CONTROL._sanitize_decision_reply_text(dirty)
+    assert "\x00" not in cleaned
+    assert len(cleaned) <= CONTROL.MAX_DECISION_REPLY_CHARS
+    assert cleaned.startswith("oktext")
+
+
+def test_push_receipted_without_accepted_authorization(tmp_path, monkeypatch):
+    _isolated_operator_queue(tmp_path, monkeypatch)
+    with patch.object(CONTROL, "_run") as fake_run:
+        result = CONTROL.push_receipted()
+    assert result == {"ok": False, "reason": "no_accepted_push_authorization"}
+    fake_run.assert_not_called()
+
+
+def test_expired_operator_decision_cannot_be_decided(tmp_path, monkeypatch):
+    _isolated_operator_queue(tmp_path, monkeypatch)
+    CONTROL.append_decision(
+        decision_id="expired-q",
+        from_agent="agent",
+        category="info",
+        question="Late?",
+        expires_at="2020-01-01T00:00:00+00:00",
+    )
+    result = CONTROL.decide("expired-q", "accept")
+    assert result["ok"] is False
+    assert result["reason"] == "decision_expired"
+
+
+def test_carrier_actions_reject_unknown_carrier(monkeypatch):
+    with patch.object(CONTROL._carrier_settings, "write_setting") as fake_write:
+        result = CONTROL.apply_carrier_enable("bogus_cli", enabled=True)
+    assert result["ok"] is False
+    assert result["reason"] == "unknown_carrier"
+    fake_write.assert_not_called()
+
+
+def test_carrier_mode_rejects_unknown_mode(monkeypatch):
+    with patch.object(CONTROL._carrier_settings, "write_setting") as fake_write:
+        result = CONTROL.apply_carrier_mode("cursor_cli", "turbo")
+    assert result["ok"] is False
+    assert result["reason"] == "unknown_mode"
+    fake_write.assert_not_called()
+
+
+def test_carrier_limit_rejects_out_of_bounds(monkeypatch):
+    with patch.object(CONTROL._carrier_settings, "write_setting") as fake_write:
+        result = CONTROL.apply_carrier_limit("cursor_cli", 99_999)
+    assert result["ok"] is False
+    fake_write.assert_not_called()
+    assert "daily_run_limit" in result["reason"] or "out_of_bounds" in result["reason"]
+
+
+def test_carrier_enable_calls_write_setting(monkeypatch):
+    with patch.object(CONTROL._carrier_settings, "write_setting", return_value={"ok": True}) as fake_write:
+        with patch.object(CONTROL, "build_status", return_value={"schema_id": CONTROL.SCHEMA_ID}):
+            result = CONTROL.apply_carrier_enable("codex_cli", enabled=False)
+    assert result["ok"] is True
+    fake_write.assert_called_once_with(
+        CONTROL.ION_ROOT,
+        carrier_id="codex_cli",
+        field="enabled",
+        value=False,
+    )
+
+
+def test_build_carriers_section_shape(monkeypatch, tmp_path):
+    ledger = tmp_path / "ledger.json"
+    ledger.write_text(
+        json.dumps({"entries": [{}, {}], "entry_count": 2}),
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(CONTROL, "REDUCED_STATE_WORK_LEDGER_PATH", ledger)
+    fake_settings = {
+        "carriers": {
+            "cursor_cli": {
+                "enabled": True,
+                "daily_run_limit": 500,
+                "operation_mode": "full",
+            },
+            "claude_cli": {
+                "enabled": False,
+                "daily_run_limit": 100,
+                "operation_mode": "reduced",
+            },
+            "codex_cli": {
+                "enabled": True,
+                "daily_run_limit": 0,
+                "operation_mode": "premium_only",
+            },
+        },
+        "usage_today": {"cursor_cli": 12, "claude_cli": 0, "codex_cli": 3},
+        "reduced_state_policy_ref": "policy/ref",
+    }
+    with patch.object(CONTROL._carrier_settings, "read_settings", return_value=fake_settings):
+        section = CONTROL._build_carriers_status_section()
+    assert section["carriers"]["cursor_cli"]["runs_today"] == 12
+    assert section["carriers"]["claude_cli"]["enabled"] is False
+    assert section["reduced_state"]["ledger_rows"] == 2
+    assert section["reduced_state"]["policy_ref"] == "policy/ref"
+
+
+def test_count_reduced_ledger_rows_entries_and_rows_fallback(tmp_path, monkeypatch):
+    entries_ledger = tmp_path / "entries.json"
+    entries_ledger.write_text(
+        json.dumps({"entries": [{}], "entry_count": 192}),
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(CONTROL, "REDUCED_STATE_WORK_LEDGER_PATH", entries_ledger)
+    assert CONTROL._count_reduced_ledger_rows() == (192, None)
+
+    rows_ledger = tmp_path / "rows.json"
+    rows_ledger.write_text(json.dumps({"rows": [{}, {}, {}]}), encoding="utf-8")
+    monkeypatch.setattr(CONTROL, "REDUCED_STATE_WORK_LEDGER_PATH", rows_ledger)
+    assert CONTROL._count_reduced_ledger_rows() == (3, None)
+
+
+def test_status_includes_carriers_block(monkeypatch):
+    section = {
+        "carriers": {"cursor_cli": {"enabled": True, "daily_run_limit": 1, "operation_mode": "full", "runs_today": 0}},
+        "reduced_state": {"ledger_rows": 1, "policy_ref": "p"},
+    }
+    with patch.object(CONTROL, "_build_carriers_status_section", return_value=section):
+        with patch.object(CONTROL, "_unit_status", return_value=_unit(active=False, enabled=False, pid=0)):
+            with patch.object(CONTROL, "_probe", return_value=_probe(False)):
+                with patch.object(CONTROL, "_read_process_inventory", return_value=_inventory()):
+                    with patch.object(CONTROL, "_listener_status", return_value=_listener(8765, listening=False)):
+                        status = CONTROL.build_status()
+    assert status["carriers"]["reduced_state"]["ledger_rows"] == 1
